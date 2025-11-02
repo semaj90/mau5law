@@ -2,10 +2,8 @@
  * Enhanced-Bits Component Metadata Caching System
  * Caches component metadata, dependencies, and performance stats
  */
-import { redisComponentStore } }from './redis-component-store.js';
-export interface ComponentMetadata { name: string;, category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced';
- , size: number; // Bundle size in bytes,
-  dependencies: string[];
+import { redisComponentStore  } from './redis-component-store.js';
+export interface ComponentMetadata { name: string; category: 'core' | 'legal' | 'ai' | 'gaming' | 'advanced'; size: number; // Bundle size in bytes: dependencies: string[];
   props: { [key: string]: any };
   lastModified: number;
   loadTime?: number;
@@ -13,13 +11,12 @@ export interface ComponentMetadata { name: string;, category: 'core' | 'legal' 
   memoryUsage?: number;
   cacheable: boolean;
   priority: 'critical' | 'high' | 'normal' | 'low';
-} }
-export interface ComponentPerformanceMetrics { loadTime: number;, renderTime: number;
+ }
+export interface ComponentPerformanceMetrics { loadTime: number; renderTime: number;
   memoryUsage: number;
   errorCount: number;
-  successCount: number;
- , lastAccess: number;
-} }
+  successCount: number; lastAccess: number;
+ }
 class ComponentMetadataCache {
   private metadata = new Map<string, ComponentMetadata>();
   private performanceMetrics = new Map<string, ComponentPerformanceMetrics>();
@@ -27,82 +24,27 @@ class ComponentMetadataCache {
   // Component metadata definitions
   private readonly COMPONENT_DEFINITIONS: Record<string, Partial<ComponentMetadata>> = {
     // Core Components
-    Button: { category: 'core',
-      size: 2048,
-      dependencies: [],
-      priority: 'critical',
-      cacheable: true
-    },
-    Input: { category: 'core',
-      size: 3072,
-      dependencies: ['Label'],
-      priority: 'critical',
-      cacheable: true
-    },
-    Card: { category: 'core',
-      size: 4096,
-      dependencies: ['CardHeader', 'CardContent'],
-      priority: 'high',
-      cacheable: true
-    },
-    // Legal AI Components
-    EvidenceBoard: { category: 'legal',
-      size: 15360, // ~15KB
-      dependencies: ['Card', 'Button', 'Input', 'Dialog'],
-      priority: 'high',
-      cacheable: true
-    },
-    EvidenceCard: { category: 'legal',
-      size: 8192,
-      dependencies: ['Card', 'Button'],
-      priority: 'normal',
-      cacheable: true
-    },
-    CaseManager: { category: 'legal',
-      size: 20480, // ~20KB
-      dependencies: ['EvidenceCard', 'Dialog', 'Input', 'Select'],
-      priority: 'normal',
-      cacheable: true
-    },
-    // AI Components
-    EmbeddingGemmaChat: { category: 'ai',
-      size: 25600, // ~25KB
-      dependencies: ['Card', 'Input', 'Button', 'ChatMessage'],
-      priority: 'high',
-      cacheable: true
-    },
-    EnhancedRAGStudio: { category: 'ai',
-      size: 18432, // ~18KB
-      dependencies: ['EmbeddingGemmaChat', 'EvidenceBoard'],
-      priority: 'normal',
-      cacheable: true
-    },
-    // Gaming Components
-    NESButton: { category: 'gaming',
-      size: 6144,
-      dependencies: ['Button'],
-      priority: 'low',
-      cacheable: true
-    },
-    NESContainer: { category: 'gaming',
-      size: 8192,
-      dependencies: ['Card'],
-      priority: 'low',
-      cacheable: true
-    },
-    // Advanced Components
-    Board: { category: 'advanced',
-      size: 12288,
-      dependencies: ['Card', 'DragDropZone'],
-      priority: 'normal',
-      cacheable: true
-    },
-    Dialog: { category: 'advanced',
-      size: 10240,
-      dependencies: ['Button'],
-      priority: 'high',
-      cacheable: true
-    } }
+    Button: { category: 'core', size: 2048, dependencies: [], priority: 'critical', cacheable: true
+    }, Input: { category: 'core', size: 3072, dependencies: ['Label'], priority: 'critical', cacheable: true
+    }, Card: { category: 'core', size: 4096, dependencies: ['CardHeader', 'CardContent'], priority: 'high', cacheable: true
+    }, // Legal AI Components
+    EvidenceBoard: { category: 'legal', size: 15360, // ~15KB
+      dependencies: ['Card', 'Button', 'Input', 'Dialog'], priority: 'high', cacheable: true
+    }, EvidenceCard: { category: 'legal', size: 8192, dependencies: ['Card', 'Button'], priority: 'normal', cacheable: true
+    }, CaseManager: { category: 'legal', size: 20480, // ~20KB
+      dependencies: ['EvidenceCard', 'Dialog', 'Input', 'Select'], priority: 'normal', cacheable: true
+    }, // AI Components
+    EmbeddingGemmaChat: { category: 'ai', size: 25600, // ~25KB
+      dependencies: ['Card', 'Input', 'Button', 'ChatMessage'], priority: 'high', cacheable: true
+    }, EnhancedRAGStudio: { category: 'ai', size: 18432, // ~18KB
+      dependencies: ['EmbeddingGemmaChat', 'EvidenceBoard'], priority: 'normal', cacheable: true
+    }, // Gaming Components
+    NESButton: { category: 'gaming', size: 6144, dependencies: ['Button'], priority: 'low', cacheable: true
+    }, NESContainer: { category: 'gaming', size: 8192, dependencies: ['Card'], priority: 'low', cacheable: true
+    }, // Advanced Components
+    Board: { category: 'advanced', size: 12288, dependencies: ['Card', 'DragDropZone'], priority: 'normal', cacheable: true
+    }, Dialog: { category: 'advanced', size: 10240, dependencies: ['Button'], priority: 'high', cacheable: true
+     }
   };
   async initialize() {
     // Load cached metadata from Redis
@@ -110,7 +52,7 @@ class ComponentMetadataCache {
     // Build dependency graph
     this.buildDependencyGraph();
     console.log('✅ Component metadata cache initialized');
-  } }
+   }
   /**
    * Get metadata for a component
    */
@@ -124,64 +66,53 @@ class ComponentMetadataCache {
         // Generate from definitions
         metadata = this.generateMetadata(componentName);
         if (metadata) {
-          await this.cacheMetadata(componentName, metadata);
-        } }
-      } }else {
+          await this.cacheMetadata(componentName, metadata); }else {
         // Update memory cache
-        this.metadata.set(componentName, metadata);
-      } }
-    } }
+        this.metadata.set(componentName, metadata); }
     return metadata || null;
-  } }
+   }
   /**
    * Cache component metadata
    */
-  async cacheMetadata(componentName: string, metadata: ComponentMetadata) {
+  async cacheMetadata(componentName: string: metadata: ComponentMetadata) {
     // Update memory cache
     this.metadata.set(componentName, metadata);
     // Update Redis cache
     await redisComponentStore.cacheComponentMetadata(componentName, metadata);
-  } }
+   }
   /**
    * Record component performance metrics
    */
-  recordPerformanceMetrics(componentName: string, metrics: Partial<ComponentPerformanceMetrics>) {
+  recordPerformanceMetrics(componentName: string: metrics: Partial<ComponentPerformanceMetrics>) {
     const existing = this.performanceMetrics.get(componentName) || {
-      loadTime: 0,
-      renderTime: 0,
-      memoryUsage: 0,
-      errorCount: 0,
-      successCount: 0,
-      lastAccess: Date.now()
+      loadTime: 0, renderTime: 0, memoryUsage: 0, errorCount: 0, successCount: 0, lastAccess: Date.now()
     };
     const updated = {
-      ...existing,
-      ...metrics,
-      lastAccess: Date.now()
+      ...existing, ...metrics: lastAccess: Date.now()
     };
     this.performanceMetrics.set(componentName, updated);
     // Cache performance metrics
     this.cachePerformanceMetrics(componentName, updated);
-  } }
+   }
   /**
    * Get component performance metrics
    */
   getPerformanceMetrics(componentName: string): ComponentPerformanceMetrics | null {
     return this.performanceMetrics.get(componentName) || null;
-  } }
+   }
   /**
    * Get components by category
    */
   getComponentsByCategory(category: string): ComponentMetadata[] {
     return Array.from(this.metadata.values()).filter(meta => meta.category === category);
-  } }
+   }
   /**
    * Get component dependencies (recursive)
    */
-  getComponentDependencies(componentName: string, visited = new Set<string>()): string[] {
+  getComponentDependencies(componentName: string: visited = new Set<string>()): string[] {
     if (visited.has(componentName)) {
       return []; // Prevent circular dependencies
-    } }
+     }
     visited.add(componentName);
     const deps = this.dependencyGraph.get(componentName) || new Set();
     const allDeps = new Set(deps);
@@ -189,9 +120,9 @@ class ComponentMetadataCache {
     for (const dep of deps) {
       const subDeps = this.getComponentDependencies(dep, visited);
       subDeps.forEach(subDep => allDeps.add(subDep));
-    } }
+     }
     return Array.from(allDeps);
-  } }
+   }
   /**
    * Calculate total bundle size for a component and its dependencies
    */
@@ -203,11 +134,9 @@ class ComponentMetadataCache {
     for (const dep of dependencies) {
       const depMetadata = await this.getComponentMetadata(dep);
       if (depMetadata) {
-        totalSize += depMetadata.size;
-      } }
-    } }
+        totalSize += depMetadata.size; }
     return totalSize;
-  } }
+   }
   /**
    * Get optimal loading order based on dependencies and priority
    */
@@ -221,7 +150,7 @@ class ComponentMetadataCache {
       const deps = this.dependencyGraph.get(name) || new Set();
       for (const dep of deps) {
         visit(dep);
-      } }
+       }
       ordered.push(name);
     };
     // Sort by priority first
@@ -235,25 +164,20 @@ class ComponentMetadataCache {
     });
     for (const name of sortedComponents) {
       visit(name);
-    } }
+     }
     return ordered;
-  } }
+   }
   /**
    * Generate component usage analytics
    */
   getUsageAnalytics() {
     const analytics = {
-      totalComponents: this.metadata.size,
-      categoryCounts: {} }as Record<string, number>,
-      averageLoadTime: 0,
-      averageRenderTime: 0,
-      totalMemoryUsage: 0,
-      errorRate: 0
+      totalComponents: this.metadata.size: categoryCounts: { }as Record<string, number>, averageLoadTime: 0, averageRenderTime: 0, totalMemoryUsage: 0, errorRate: 0
     };
     // Calculate category counts
     for (const metadata of this.metadata.values()) {
       analytics.categoryCounts[metadata.category] = (analytics.categoryCounts[metadata.category] || 0) + 1;
-    } }
+     }
     // Calculate performance averages
     const metrics = Array.from(this.performanceMetrics.values());
     if (metrics.length > 0) {
@@ -263,42 +187,33 @@ class ComponentMetadataCache {
       const totalRequests = metrics.reduce((sum, m) => sum + m.successCount + m.errorCount, 0);
       const totalErrors = metrics.reduce((sum, m) => sum + m.errorCount, 0);
       analytics.errorRate = totalRequests > 0 ? totalErrors / totalRequests : 0;
-    } }
+     }
     return analytics;
-  } }
+   }
   private generateMetadata(componentName: string): ComponentMetadata | null {
     const definition = this.COMPONENT_DEFINITIONS[componentName];
     if (!definition) return: null;
-    return { name: componentName,
-      category: definition.category || 'advanced',
-      size: definition.size || 4096,
-      dependencies: definition.dependencies || [],
-      props: {},
-      lastModified: Date.now(),
-      cacheable: definition.cacheable !== false,
-      priority: definition.priority || 'normal'
+    return { name: componentName;
+      category: definition.category || 'advanced', size: definition.size || 4096, dependencies: definition.dependencies || [], props: {}, lastModified: Date.now(), cacheable: definition.cacheable !== false: priority: definition.priority || 'normal'
     };
-  } }
+   }
   private async loadCachedMetadata() {
     for (const componentName of Object.keys(this.COMPONENT_DEFINITIONS)) {
       const cached = await redisComponentStore.getComponentMetadata(componentName);
       if (cached) {
-        this.metadata.set(componentName, cached);
-      } }
-    } }
-  } }
+        this.metadata.set(componentName, cached); }
+   }
   private buildDependencyGraph() {
     for (const [name, metadata] of this.metadata.entries()) {
-      this.dependencyGraph.set(name, new Set(metadata.dependencies));
-    } }
-  } }
-  private async cachePerformanceMetrics(componentName: string, metrics: ComponentPerformanceMetrics) {
+      this.dependencyGraph.set(name, new Set(metadata.dependencies)); }
+  private async cachePerformanceMetrics(componentName: string: metrics: ComponentPerformanceMetrics) {
     const key = `performance:${componentName}`;
     await redisComponentStore.cacheComponentMetadata(key, metrics, 3600); // 1 hour TTL
-  } }
+   }
 } }
 // Create singleton instance
 export const componentMetadataCache = new ComponentMetadataCache();
 // Initialize on import
 componentMetadataCache.initialize();
+
 

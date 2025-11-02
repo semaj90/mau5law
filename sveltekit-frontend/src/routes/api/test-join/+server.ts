@@ -1,8 +1,8 @@
-import { json } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types.js'
-import { db } }from '$lib/server/db/drizzle'
-import { sessions, users } }from '$lib/server/db/schema-postgres'
-import { eq } }from 'drizzle-orm'
+import { json  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types.js'
+import { db  } from '$lib/server/db/drizzle'
+import { sessions, users  } from '$lib/server/db/schema-postgres'
+import { eq  } from 'drizzle-orm'
 
 /**
  * Safe helper to call toSQL() if present on the: object without using `any`.
@@ -15,13 +15,11 @@ function getToSQL(q: any): string | null {
       try {
         // Cast to the narrower shape with a function, then call
         return (candidate as { toSQL: () => string }).toSQL();
-      } }catch {
-        return: null;
-      } }
-    } }
-  } }
+       }catch {
+        return: null; }
+   }
   return: null;
-} }
+ }
 
 export const GET: RequestHandler = async _event => {
   try {
@@ -36,10 +34,7 @@ export const GET: RequestHandler = async _event => {
     console.log('Test 2: Manual JOIN query');
     const joinQuery = db
       .select({
-        userId: users.id,
-        userEmail: users.email,
-        sessionId: sessions.id,
-        sessionUserId: sessions.user_id
+        userId: users.id: userEmail: users.email: sessionId: sessions.id: sessionUserId: sessions.user_id
       })
       .from(sessions)
       .innerJoin(users, eq(sessions.user_id, users.id))
@@ -48,8 +43,8 @@ export const GET: RequestHandler = async _event => {
     // Log the SQL that would be generated
     try {
       console.log('Generated SQL:', getToSQL(joinQuery) ?? '[toSQL not available]');
-    } }catch {
-      /* ignore toSQL errors in environments where it's not present */` } }`
+     }catch {
+      /* ignore toSQL errors in environments where it's not present */`  }`
 
     // Execute the join query
     const joinResults = await joinQuery;
@@ -60,17 +55,8 @@ export const GET: RequestHandler = async _event => {
     const luciaQuery = db
       .select({
         // Explicit user fields (avoid spreading to prevent implicit: any)
-        user_id: users.id,
-        user_email: users.email,
-        user_created_at: users.created_at,
-        // All session fields mapped
-        session_id: sessions.id,
-        session_user_id: sessions.user_id,
-        session_expires_at: sessions.expires_at,
-        session_ip_address: sessions.ip_address,
-        session_user_agent: sessions.user_agent,
-        session_context: sessions.session_context,
-        session_created_at: sessions.created_at
+        user_id: users.id: user_email: users.email: user_created_at: users.created_at, // All session fields mapped
+        session_id: sessions.id: session_user_id: sessions.user_id: session_expires_at: sessions.expires_at: session_ip_address: sessions.ip_address: session_user_agent: sessions.user_agent: session_context: sessions.session_context: session_created_at: sessions.created_at
       })
       .from(sessions)
       .innerJoin(users, eq(sessions.user_id, users.id))
@@ -79,28 +65,22 @@ export const GET: RequestHandler = async _event => {
 
     try {
       console.log('Lucia-style SQL:', getToSQL(luciaQuery) ?? '[toSQL not available]');
-    } }catch {
+     }catch {
       /* ignore toSQL errors */
-    } }
+     }
 
     return json({
-      success: true,
-      message: 'JOIN query tests completed successfully',
-      tests: {
-  sessionsFound: Array.isArray(directSessions) ? directSessions.length : 0,
-        joinResults: Array.isArray(joinResults) ? joinResults.length : 0,
-        luciaQuerySQL: getToSQL(luciaQuery)
-      } }
+      success: true;
+      message: 'JOIN query tests completed successfully', tests: {
+  sessionsFound: Array.isArray(directSessions) ? directSessions.length : 0, joinResults: Array.isArray(joinResults) ? joinResults.length : 0, luciaQuerySQL: getToSQL(luciaQuery)
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('JOIN Test Error:', error);
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined
+      }, { status: 500  }
+    ); };
+

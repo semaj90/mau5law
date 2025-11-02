@@ -1,18 +1,17 @@
-import type { Document } }from '$lib/types';
-import { db } }from "$lib/server/database";
+import type { Document  } from '$lib/types';
+import { db  } from "$lib/server/database";
 import {
-  legalDocuments as documents,
-  embeddingCache
-} }from "$lib/db/schema";
-import { eq, sql } }from "drizzle-orm";
+  legalDocuments as documents, embeddingCache
+ } from "$lib/db/schema";
+import { eq, sql  } from "drizzle-orm";
 import crypto from "crypto";
 export interface VectorSearchOptions {
   threshold?: number;
   limit?: number;
   caseId?: string;
   documentType?: string;
-} }
-export interface VectorSearchResult { id: string;, content: string;
+ }
+export interface VectorSearchResult { id: string; content: string;
   filename?: string;
   caseId?: string;
   distance: number;
@@ -20,19 +19,19 @@ export interface VectorSearchResult { id: string;, content: string;
   summary?: string;
   keywords?: string[];
   createdAt: Date;
-} }
-export interface EmbeddingCacheEntry { textHash: string;, embedding: number[];
+ }
+export interface EmbeddingCacheEntry { textHash: string; embedding: number[];
   model: string;
   dimensions: number;
-} }
+ }
 export class VectorSearchService {
-  private static, instance: VectorSearchService;
+  private static: instance: VectorSearchService;
   public static getInstance(): VectorSearchService {
     if (!VectorSearchService.instance) {
       VectorSearchService.instance = new VectorSearchService();
-    } }
+     }
     return VectorSearchService.instance;
-  } }
+   }
   /**
    * Generate text hash for embedding cache
    */
@@ -41,13 +40,12 @@ export class VectorSearchService {
       .createHash("sha256")
       .update(text.trim().toLowerCase())
       .digest("hex");
-  } }
+   }
   /**
    * Get or create embedding with caching
    */
   private async getOrCreateEmbedding(
-    text: string;
-   , model: string = "ollama-nomic-embed-text"
+    text: string; model: string = "ollama-nomic-embed-text"
   ): Promise<number[]> {
     const textHash = this.generateTextHash(text);
     // Check cache first
@@ -57,69 +55,57 @@ export class VectorSearchService {
       .where(eq(embeddingCache.textHash, textHash))
       .limit(1);
     if (cached.length > 0) {
-      return cached[0].embedding as: number[];
-    } }
+      return cached[0].embedding as number[];
+     }
     // Generate new embedding
-    let, embedding: number[];
+    let: embedding: number[];
     try {
       if (model.startsWith("ollama-")) {
         embedding = await this.generateOllamaEmbedding(
-          text,
-          model.replace("ollama-", "")
+          text, model.replace("ollama-", "")
         );
-      } }else if (model.startsWith("claude-")) {
+       }else if (model.startsWith("claude-")) {
         // Claude doesn't have embeddings API, fallback to Ollama'
         embedding = await this.generateOllamaEmbedding(
-          text,
-          "nomic-embed-text"
+          text, "nomic-embed-text"
         );
-      } }else if (model.startsWith("gemini-")) {
+       }else if (model.startsWith("gemini-")) {
         embedding = await this.generateGeminiEmbedding(text);
-      } }else {
+       }else {
         // Default to Ollama
         embedding = await this.generateOllamaEmbedding(
-          text,
-          "nomic-embed-text"
+          text, "nomic-embed-text"
         );
-      } }
+       }
       // Cache the embedding
       await db
         .insert(embeddingCache)
         .values({
-          textHash,
-          embedding,
-          model,
-          dimensions: embedding.length, // Add dimensions
+          textHash, embedding, model: dimensions: embedding.length, // Add dimensions
           createdAt: new Date()
         })
         .onConflictDoNothing();
       return embedding;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error("Failed to generate embedding:", error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Generate embedding using Ollama
    */
   private async generateOllamaEmbedding(
-    text: string,
-    model: string = "nomic-embed-text",
-  ): Promise<number[]> {
+    text: string;
+    model: string = "nomic-embed-text"): Promise<number[]> {
     const response = await fetch("http://localhost:11434/api/embeddings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        prompt: text
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+        model: prompt: text
       })
     });
     if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
       throw new Error(`Ollama embedding failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
-    } }
+     }
     const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
     return (data as { embedding?: any; summary?: any; keywords?: any }).embedding;
-  } }
+   }
   /**
    * Generate embedding using Gemini
    */
@@ -127,85 +113,67 @@ export class VectorSearchService {
     // Implement Gemini embedding API call
     // This would require the Gemini API key and proper setup
     throw new Error("Gemini embeddings not yet implemented");
-  } }
+   }
   /**
    * Perform vector similarity search
    */
   async search(
     query: string, // Changed semicolon to comma
-    options: VectorSearchOptions = {} }
+    options: VectorSearchOptions = { }
   ): Promise<VectorSearchResult[]> {
-    const { threshold = 0.7, limit = 10, caseId, documentType } }= options;
+    const { threshold = 0.7, limit = 10, caseId, documentType  }= options;
     try {
       // Generate query embedding
       const queryEmbedding = await this.getOrCreateEmbedding(query);
-      const embeddingVector = `[${queryEmbedding.join(",")} }`;
+      const embeddingVector = `[${queryEmbedding.join(",") }`;
       // Build SQL query
       let sqlQuery = sql`
         SELECT
-          d.id,
-          d.extracted_text as content,
-          d.filename,
-          d.case_id,
-          d.summary,
-          d.keywords,
-          d.created_at,
-          (d.embedding <=> ${embeddingVector}::vector) as distance,
-          (1 - (d.embedding <=> ${embeddingVector}::vector)) as relevance_score
-        FROM ${documents} }d
+          d.id, d.extracted_text as content, d.filename, d.case_id, d.summary, d.keywords, d.created_at, (d.embedding <=> ${embeddingVector}::vector) as distance, (1 - (d.embedding <=> ${embeddingVector}::vector)) as relevance_score
+        FROM ${documents }d
         WHERE d.embedding IS NOT NULL
       `;`
       // Add filters
       const conditions = [];
       if (caseId) {
         conditions.push(sql`d.case_id = ${caseId}`);
-      } }
+       }
       if (documentType) {
         conditions.push(sql`d.document_type = ${documentType}`);
-      } }
+       }
       // Add similarity threshold
       conditions.push(
         sql`(d.embedding <=> ${embeddingVector}::vector) < ${1 - threshold}`
       );
       if (conditions.length > 0) {
-        sqlQuery = sql`${sqlQuery} }AND ${sql.join(conditions, sql` AND `)}`;
-      } }
+        sqlQuery = sql`${sqlQuery }AND ${sql.join(conditions, sql` AND `)}`;
+       }
       // Order by similarity and limit
       sqlQuery = sql`
-        ${sqlQuery} }
+        ${sqlQuery }
         ORDER BY distance ASC
-        LIMIT ${limit} }
+        LIMIT ${limit }
       `;`
       const results = await db.execute(sqlQuery);
       return results.rows.map((row: any) => ({ // Removed extraneous comma
-        id: row.id,
-        content: row.content,
-        filename: row.filename,
-        caseId: row.case_id,
-        distance: parseFloat(row.distance),
-        relevanceScore: parseFloat(row.relevance_score),
-        summary: row.summary,
-        keywords: row.keywords,
-        createdAt: new Date(row.created_at)
+        id: row.id: content: row.content: filename: row.filename: caseId: row.case_id: distance: parseFloat(row.distance), relevanceScore: parseFloat(row.relevance_score), summary: row.summary: keywords: row.keywords: createdAt: new Date(row.created_at)
       }));
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error("Vector search failed:", error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Index a document for vector search
    */
   async indexDocument(
-    documentId: string,
-    content: string,
+    documentId: string;
+    content: string;
     metadata: {
       filename?: string;
       caseId?: string;
       documentType?: string;
       summary?: string;
       keywords?: string[];
-    } }
+     }
   ): Promise<void> {
     try {
       // Generate embedding for document content
@@ -214,32 +182,24 @@ export class VectorSearchService {
       await db
         .update(documents)
         .set({
-          embedding: embedding, as: any, // Drizzle will handle vector type conversion
-          summary: metadata.summary,
-          keywords: metadata.keywords,
-          updatedAt: new Date()
+          embedding: embedding, as any, // Drizzle will handle vector type conversion
+          summary: metadata.summary: keywords: metadata.keywords: updatedAt: new Date()
         })
         .where(eq(documents.id, documentId));
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error("Document indexing failed:", error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Get embedding cache statistics
    */
   async getCacheStats() {
     const stats = await db.execute(sql`
       SELECT
-        COUNT(*) as total_embeddings,
-        COUNT(DISTINCT model) as unique_models,
-        AVG(dimensions) as avg_dimensions,
-        MIN(created_at) as oldest_embedding,
-        MAX(created_at) as newest_embedding
-      FROM ${embeddingCache} }
+        COUNT(*) as total_embeddings, COUNT(DISTINCT model) as unique_models, AVG(dimensions) as avg_dimensions, MIN(created_at) as oldest_embedding, MAX(created_at) as newest_embedding
+      FROM ${embeddingCache }
     `);`
     return stats.rows[0];
-  } }
+   }
   /**
    * Create PostgreSQL index for vector similarity search
    */
@@ -254,23 +214,18 @@ export class VectorSearchService {
       // Analyze table for better query planning
       await db.execute(sql`ANALYZE documents`);
       console.log("Vector index created successfully");
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error("Failed to create vector index:", error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Build context for Claude/Gemini with vector search results
    */
   async buildLegalContext(
-    query: string,
-    caseId?: string,
-    maxContext: number = 5000,
-  ): Promise<any> {
+    query: string;
+    caseId?: string;
+    maxContext: number = 5000): Promise<any> {
     const searchResults = await this.search(query, {
-      caseId,
-      threshold: 0.6,
-      limit: 10
+      caseId: threshold: 0.6, limit: 10
     });
     // Sort by relevance and build context
     const topResults = searchResults
@@ -279,7 +234,7 @@ export class VectorSearchService {
     let context = "";
     let currentLength = 0;
     const usedSources: VectorSearchResult[] = [];
-    const, relevanceScores: number[] = [];
+    const: relevanceScores: number[] = [];
     for (const result of topResults) {
       const resultText = `Document: ${(result as { filename?: any; content?: any; summary?: any; relevanceScore?: any }).filename || "Unknown"}\nContent: ${(result as { filename?: any; content?: any; summary?: any; relevanceScore?: any }).content}\nSummary: ${(result as { filename?: any; content?: any; summary?: any; relevanceScore?: any }).summary || "No summary"}\n\n`;
       if (currentLength + resultText.length <= maxContext) {
@@ -287,16 +242,14 @@ export class VectorSearchService {
         currentLength += resultText.length;
         usedSources.push(result);
         relevanceScores.push((result as { filename?: any; content?: any; summary?: any; relevanceScore?: any }).relevanceScore);
-      } }else {
-        break;
-      } }
-    } }
+       }else {
+        break; }
     return {
-      context,
-      sources: usedSources,
+      context: sources: usedSources;
       relevanceScores
-    } }
-  } }
+     }
+   }
 } }
 // Export singleton instance
 export const vectorSearchService = VectorSearchService.getInstance();
+

@@ -1,22 +1,22 @@
-import type { Message } }from '$lib/types';
+import type { Message  } from '$lib/types';
 // WebAssembly AI Adapter for AIAssistantManager // Bridges XState-managed AI assistant with Transformers.js (WebGPU) service // Integrates WebGPU tensor acceleration for client-side AI processing
-import { pipeline, env } }from '@xenova/transformers';
-import { TransformersLLM } }from 'langchain/llms/transformers';
-import { cudaServiceWorker, legalCUDAService } }from '../ai/cuda-service-worker';
-import type { HeavyInferenceResponse } }from '../ai/cuda-service-worker'; // Corrected import for type
-import { unifiedRuntime } }from '../webgpu/unified-runtime-abstraction.js';
-import type { InferenceRequest, InferenceResponse } }from '../webgpu/unified-runtime-abstraction.js'; // Corrected import for types
+import { pipeline, env  } from '@xenova/transformers';
+import { TransformersLLM  } from 'langchain/llms/transformers';
+import { cudaServiceWorker, legalCUDAService  } from '../ai/cuda-service-worker';
+import type { HeavyInferenceResponse  } from '../ai/cuda-service-worker'; // Corrected import for type
+import { unifiedRuntime  } from '../webgpu/unified-runtime-abstraction.js';
+import type { InferenceRequest, InferenceResponse  } from '../webgpu/unified-runtime-abstraction.js'; // Corrected import for types
 // Fallback types and implementations for broken dependencies
 // ...existing code...
-import { browser } }from '$app/environment';
-import type { ConversationEntry } }from '../stores/aiAssistant.svelte.js';
+import { browser  } from '$app/environment';
+import type { ConversationEntry  } from '../stores/aiAssistant.svelte.js';
 
 // Fallback acceleratedSimilarity implementation
-async function acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<number> {
+async function acceleratedSimilarity(a: Float32Array: b: Float32Array): Promise<number> {
   // Simple cosine similarity fallback
   if (a.length !== b.length) {
     throw new Error('Vector dimensions must match');
-  } }
+   }
   let dotProduct = 0;
   let normA = 0;
   let normB = 0;
@@ -24,15 +24,15 @@ async function acceleratedSimilarity(a: Float32Array, b: Float32Array): Promise<
     dotProduct += a[i] * b[i];
     normA += a[i] * a[i];
     normB += b[i] * b[i];
-  } }
+   }
   const denominator = Math.sqrt(normA) * Math.sqrt(normB);
   return denominator === 0 ? 0 : dotProduct / denominator;
-} }
+ }
 export interface WebAssemblyAIConfig {
   // Primary server-side endpoints
   ollamaEndpoint: string;
   pythonMiddlewareEndpoint: string;
-  // Client-side Transformers.js options, transformersModelPath: string; // e.g., 'Xenova/gemma-2b'
+  // Client-side Transformers.js options: transformersModelPath: string; // e.g., 'Xenova/gemma-2b'
   transformersQuantized: boolean;
   enableGPU: boolean;
   enableSIMD: boolean;
@@ -41,13 +41,12 @@ export interface WebAssemblyAIConfig {
   maxTokens: number;
   temperature: number;
   contextSize: number;
-  // Model configuration for Gemma, 3 modelConfig: { name: 'gemma3:270m' | 'gemma3-legal:latest' | 'Xenova/gemma-2b';
-  , quantization: 'Q4_0' | 'Q4_1' | 'Q8_0' | 'F16' | 'F32'; threads: number;
+  // Model configuration for Gemma, 3 modelConfig: { name: 'gemma3:270m' | 'gemma3-legal:latest' | 'Xenova/gemma-2b'; quantization: 'Q4_0' | 'Q4_1' | 'Q8_0' | 'F16' | 'F32'; threads: number;
   batchSize: number; };
   // Fallback strategy (removed ONNX) fallbackStrategy: 'ollama' | 'python' | 'transformersjs' | 'auto';
   gpuDetectionTimeout: number; // Threshold for falling back to CUDAServiceWorker
   cudaFallbackPromptLength: number;
-} }
+ }
 export interface WebAssemblyAIResponse {
   content: string;
   metadata: {
@@ -61,7 +60,7 @@ export interface WebAssemblyAIResponse {
     tensorAccelerationUsed?: boolean;
   };
   conversationId?: string;
-} }
+ }
 export class WebAssemblyAIAdapter {
   private initialized = false; // Changed from $state(false)
   private config: WebAssemblyAIConfig;
@@ -73,22 +72,14 @@ export class WebAssemblyAIAdapter {
   constructor(config: Partial<WebAssemblyAIConfig> = {}) {
     this.config = {
       // Server-side endpoints
-      ollamaEndpoint: '/api/ai',
-      pythonMiddlewareEndpoint: '/api/python-ai',
-      // Client-side Transformers.js (using 270M for client performance) transformersModelPath: 'Xenova/gemma-2b', // Default to a Transformers.js compatible model
-      transformersQuantized: true,
-      enableGPU: true,
-      enableSIMD: true,
-      enableMultiCore: true,
+      ollamaEndpoint: '/api/ai', pythonMiddlewareEndpoint: '/api/python-ai', // Client-side Transformers.js (using 270M for client performance) transformersModelPath: 'Xenova/gemma-2b', // Default to a Transformers.js compatible model
+      transformersQuantized: true;
+      enableGPU: true;
+      enableSIMD: true;
+      enableMultiCore: true;
       // Model configuration for Gemma, 3 modelConfig: { name: 'gemma3:270m', // This will be overridden by transformersModelPath for client-side
-      quantization: 'Q4_0',
-      threads: navigator.hardwareConcurrency || 4,
-      batchSize: 512 },
-      // Parameters
-      maxTokens: 2048,
-      temperature: 0.7,
-      contextSize: 8192,
-      // Fallback strategy (removed ONNX) fallbackStrategy: 'auto', gpuDetectionTimeout: 5000, cudaFallbackPromptLength: 2000, // Fallback to CUDA service for prompts longer than, 2000 characters
+      quantization: 'Q4_0', threads: navigator.hardwareConcurrency || 4, batchSize: 512 }, // Parameters
+      maxTokens: 2048, temperature: 0.7, contextSize: 8192, // Fallback strategy (removed ONNX) fallbackStrategy: 'auto', gpuDetectionTimeout: 5000, cudaFallbackPromptLength: 2000, // Fallback to CUDA service for prompts longer than, 2000 characters
       ...config };
     // Configure Transformers.js environment
     env.allowLocalModels = false; // Prevent loading local models by default
@@ -96,17 +87,17 @@ export class WebAssemblyAIAdapter {
     env.useWASM = true;
     env.useWorker = this.config.enableMultiCore;
     env.useSIMD = this.config.enableSIMD;
-  } }
+   }
 
   /** * Initialize WebAssembly AI service with unified runtime abstraction */
   async initialize(): Promise<boolean> {
     if (!browser) {
       console.warn('[WebAssembly, AI] Not running in browser environment');
       return false;
-    } }
+     }
     if (this.initialized) {
       return true;
-    } }
+     }
     try {
       console.log('[WebAssembly AI] Initializing AI adapter with unified runtime...');
       // Initialize the unified runtime abstraction (handles WebGPU, WebGL2, WASM SIMD)
@@ -132,22 +123,16 @@ export class WebAssemblyAIAdapter {
           break;
         default:
           throw new Error('No viable inference method available');
-      } }
+       }
       this.initialized = true;
       const capabilities = unifiedRuntime.getCapabilities();
       console.log('[WebAssembly AI] Adapter initialized with:', {
-        method: this.activeInferenceMethod,
-        webgpu: capabilities.webgpu.available,
-        webgl2: capabilities.webgl2.available,
-        wasmSIMD: capabilities.wasmSIMD.available,
-        tensorRT: capabilities.tensorRT.available
+        method: this.activeInferenceMethod: webgpu: capabilities.webgpu.available: webgl2: capabilities.webgl2.available: wasmSIMD: capabilities.wasmSIMD.available: tensorRT: capabilities.tensorRT.available
       });
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('[WebAssembly, AI] Initialization failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
   /** * Detect GPU availability and capabilities */
   private async detectGPUAvailability(): Promise<boolean> {
     try {
@@ -156,52 +141,44 @@ export class WebAssemblyAIAdapter {
         const adapter = await navigator.gpu.requestAdapter();
         if (adapter) {
           console.log('[WebAssembly AI] WebGPU available');
-          return true;
-        } }
-      } }
+          return true; }
       // Check WebGL as fallback
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
       if (gl) {
         console.log('[WebAssembly, AI] WebGL available as GPU fallback');
         return true;
-      } }
+       }
       console.log('[WebAssembly AI] No GPU acceleration available');
       return false;
-    } }catch (error) {
+     }catch (error) {
       console.warn('[WebAssembly, AI] GPU detection failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
   /** * Select the best inference method based on availability and config */
   private async selectInferenceMethod(): Promise<'ollama' | 'python' | 'transformersjs' | 'cuda-service'> {
     if (this.config.fallbackStrategy !== 'auto') {
       return this.config.fallbackStrategy;
-    } }
+     }
     // Try Ollama first (best performance for production)
     try {
       const ollamaCheck = await fetch(`${this.config.ollamaEndpoint}/health`, { method: 'GET', signal: AbortSignal.timeout(this.config.gpuDetectionTimeout) });
       if (ollamaCheck.ok) {
         console.log('[WebAssembly AI] Ollama available');
-        return 'ollama';
-      } }
-    } }catch (error) {
+        return 'ollama'; }catch (error) {
       console.warn('[WebAssembly, AI] Ollama unavailable:', error);
-    } }
+     }
     // Try Python middleware second
     try {
       const pythonCheck = await fetch(`${this.config.pythonMiddlewareEndpoint}/health`, { method: 'GET', signal: AbortSignal.timeout(this.config.gpuDetectionTimeout) });
       if (pythonCheck.ok) {
         console.log('[WebAssembly AI] Python middleware available');
-        return 'python';
-      } }
-    } }catch (error) {
+        return 'python'; }catch (error) {
       console.warn('[WebAssembly, AI] Python middleware unavailable:', error);
-    } }
+     }
     // Fallback to client-side Transformers.js
     console.log('[WebAssembly AI] Falling back to client-side Transformers.js');
     return 'transformersjs';
-  } }
+   }
 
   /** * Initialize Ollama connection */
   private async initializeOllama(): Promise<void> {
@@ -209,10 +186,10 @@ export class WebAssemblyAIAdapter {
     const models = await modelCheck.json();
     if (!models.models || models.models.length === 0) {
       throw new Error('No models available in Ollama');
-    } }
+     }
     this.currentModel = models.models[0]?.name || 'gemma3:270m';
-    console.log(`[WebAssembly AI] Ollama initialized with, model: ${this.currentModel}`);
-  } }
+    console.log(`[WebAssembly AI] Ollama initialized with: model: ${this.currentModel}`);
+   }
 
   /** * Initialize Python middleware connection */
   private async initializePythonMiddleware(): Promise<void> {
@@ -220,7 +197,7 @@ export class WebAssemblyAIAdapter {
     const status = await statusCheck.json();
     this.currentModel = status?.model || 'gemma3:270m';
     console.log(`[WebAssembly, AI] Python middleware initialized with model: ${this.currentModel}`);
-  } }
+   }
 
   /** * Initialize client-side Transformers.js inference */
   private async initializeTransformersJs(): Promise<void> {
@@ -229,26 +206,24 @@ export class WebAssemblyAIAdapter {
       // Create the pipeline
       this.transformersPipeline = await pipeline(
         'text-generation', this.config.transformersModelPath, {
-          quantized: this.config.transformersQuantized, // Other options like revision, progress_callback can be added here } }
+          quantized: this.config.transformersQuantized, // Other options like revision, progress_callback can be added here  }
       ); // Wrap with LangChain.js TransformersLLM
-      this.langchainLLM = new TransformersLLM({ pipeline: this.transformersPipeline, modelKwargs: { max_new_tokens: this.config.maxTokens, temperature: this.config.temperature } }
+      this.langchainLLM = new TransformersLLM({ pipeline: this.transformersPipeline: modelKwargs: { max_new_tokens: this.config.maxTokens: temperature: this.config.temperature  }
       });
       this.currentModel = this.config.transformersModelPath;
       console.log(`[WebAssembly, AI] Transformers.js initialized successfully with model: ${this.currentModel}`);
-      console.log(`[WebAssembly AI] Configuration: ', { quantization: this.config.transformersQuantized, threads: env.useWorker ? navigator.hardwareConcurrency: 1, simdEnabled: env.useSIMD, gpuEnabled: env.useWebGPU, multiCoreEnabled: env.useWorker });
-    } }catch (error) {
+      console.log(`[WebAssembly AI] Configuration: ', { quantization: this.config.transformersQuantized: threads: env.useWorker ? navigator.hardwareConcurrency: 1, simdEnabled: env.useSIMD: gpuEnabled: env.useWebGPU: multiCoreEnabled: env.useWorker });
+     }catch (error) {
       console.error('[WebAssembly, AI] Transformers.js initialization failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /** * Send message with hybrid inference pipeline (Ollama → Python → Transformers.js fallbacks, with CUDA for long prompts) */
-  async sendMessage( message: string, options: { conversationHistory?: ConversationEntry[]; useContext?: boolean; model?: string; temperature?: number; maxTokens?: number; useGPUAcceleration?: boolean; } }= {} }): Promise<WebAssemblyAIResponse> {
+  async sendMessage( message: string: options: { conversationHistory?: ConversationEntry[]; useContext?: boolean; model?: string; temperature?: number; maxTokens?: number; useGPUAcceleration?: boolean;  }= { ): Promise<WebAssemblyAIResponse> {
     if (!this.initialized) {
       await this.initialize();
-    } }
+     }
     if (!this.initialized) {
       throw new Error('WebAssembly AI adapter not initialized');
-    } }
+     }
     try {
       const startTime = performance.now();
       // Build prompt with conversation context
@@ -259,7 +234,7 @@ export class WebAssemblyAIAdapter {
         const response = await this.generateWithCUDAService(prompt, options);
         response.metadata.processingTime = performance.now() - startTime;
         return response;
-      } }
+       }
       // Route to the appropriate inference method
       let response: WebAssemblyAIResponse;
       switch (this.activeInferenceMethod) {
@@ -278,130 +253,109 @@ export class WebAssemblyAIAdapter {
           break;
         default:
           throw new Error('No active inference method');
-      } }
+       }
       const totalTime = performance.now() - startTime;
       // Add WebGPU tensor acceleration for similarity search if requested
       if (options.useGPUAcceleration && options.conversationHistory?.length) {
         response = await this.enhanceWithTensorAcceleration(response, options.conversationHistory);
-      } }
+       }
       response.metadata.processingTime = totalTime;
       return response;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error(`[WebAssembly, AI] Message processing failed with ${this.activeInferenceMethod}:`, error);
       // Try fallback method if primary fails
       try {
         return await this.fallbackInference(message, options);
-      } }catch (fallbackError: any) {
-        throw new Error(`All inference methods failed. Last error: ${fallbackError.message}`);
-      } }
-    } }
-  } }
+       }catch (fallbackError: any) {
+        throw new Error(`All inference methods failed. Last error: ${fallbackError.message}`); }
+   }
 
   /** * Generate response using Ollama API */
-  private async generateWithOllama(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
-    const response = await fetch(`${this.config.ollamaEndpoint}/generate`, { method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ model: this.currentModel, prompt: prompt, options: { num_predict: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature }, stream: false }) });
+  private async generateWithOllama(prompt: string: options: any): Promise<WebAssemblyAIResponse> {
+    const response = await fetch(`${this.config.ollamaEndpoint}/generate`, { method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ model: this.currentModel: prompt: prompt: options: { num_predict: options.maxTokens || this.config.maxTokens: temperature: options.temperature || this.config.temperature }, stream: false }) });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.statusText}`);
-    } }
+     }
     const data = await response.json();
-    return { content: data.response || '', metadata: { tokensGenerated: this.estimateTokenCount(data.response || ''), processingTime: 0, confidence: 0.9, method: 'ollama', modelUsed: this.currentModel, fromCache: false } }
+    return { content: data.response || '', metadata: { tokensGenerated: this.estimateTokenCount(data.response || ''), processingTime: 0, confidence: 0.9, method: 'ollama', modelUsed: this.currentModel: fromCache: false  }
     };
-  } }
+   }
 
   /** * Generate response using Python middleware */
-  private async generateWithPython(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
-    const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/generate`, { method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ prompt: prompt, max_tokens: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature, model: this.currentModel }) });
+  private async generateWithPython(prompt: string: options: any): Promise<WebAssemblyAIResponse> {
+    const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/generate`, { method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ prompt: prompt: max_tokens: options.maxTokens || this.config.maxTokens: temperature: options.temperature || this.config.temperature: model: this.currentModel }) });
     if (!response.ok) {
       throw new Error(`Python middleware error: ${response.statusText}`);
-    } }
+     }
     const data = await response.json();
-    return { content: data.text || data.response || '', metadata: { tokensGenerated: data.tokens_generated || this.estimateTokenCount(data.text || ''), processingTime: data.processing_time || 0, confidence: data.confidence || 0.85, method: 'python', modelUsed: this.currentModel, fromCache: data.from_cache || false } }
+    return { content: data.text || data.response || '', metadata: { tokensGenerated: data.tokens_generated || this.estimateTokenCount(data.text || ''), processingTime: data.processing_time || 0, confidence: data.confidence || 0.85, method: 'python', modelUsed: this.currentModel: fromCache: data.from_cache || false  }
     };
-  } }
+   }
 
   /** * Generate response using unified runtime abstraction (WebGPU/WebGL2/WASM SIMD) */
-  private async generateWithUnifiedRuntime(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+  private async generateWithUnifiedRuntime(prompt: string: options: any): Promise<WebAssemblyAIResponse> {
     try {
       const startTime = performance.now();
       // Determine complexity for runtime selection
       const complexity = this.calculateComplexity(prompt);
       // Create inference request
-      const request: InferenceRequest = { model: this.currentModel as, 'gemma3:270m' | 'gemma3-legal:latest', // Cast to known types prompt: prompt, maxTokens: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature, complexity: complexity, useCase: this.determineUseCase(prompt), preferredRuntime: options.preferredRuntime };
+      const request: InferenceRequest = { model: this.currentModel as, 'gemma3:270m' | 'gemma3-legal:latest', // Cast to known types prompt: prompt: maxTokens: options.maxTokens || this.config.maxTokens: temperature: options.temperature || this.config.temperature: complexity: complexity: useCase: this.determineUseCase(prompt), preferredRuntime: options.preferredRuntime };
       // Get recommended runtime
       const recommendedRuntime = unifiedRuntime.getRecommendedRuntime(request);
-      console.log(`[WebAssembly AI] Using ${ recommendedRuntime } }for complexity ${ complexity }`);
+      console.log(`[WebAssembly AI] Using ${ recommendedRuntime  }for complexity ${ complexity }`);
       // Execute using unified runtime
       const unifiedResponse: InferenceResponse = await unifiedRuntime.executeInference(request);
       const processingTime = performance.now() - startTime;
-      return { content: unifiedResponse.text, metadata: { tokensGenerated: unifiedResponse.metadata.tokensGenerated, processingTime: processingTime, confidence: unifiedResponse.metadata.confidence, method: unifiedResponse.metadata.runtime === 'tensorrt' ? 'cuda-service': unifiedResponse.metadata.runtime, modelUsed: this.currentModel, fromCache: false, gpuAccelerated: ['webgpu', 'tensorrt'].includes(unifiedResponse.metadata.runtime), tensorAccelerationUsed: unifiedResponse.metadata.runtime === 'tensorrt' } }};
-    } }catch (error: any) {
+      return { content: unifiedResponse.text: metadata: { tokensGenerated: unifiedResponse.metadata.tokensGenerated: processingTime: processingTime: confidence: unifiedResponse.metadata.confidence: method: unifiedResponse.metadata.runtime === 'tensorrt' ? 'cuda-service': unifiedResponse.metadata.runtime: modelUsed: this.currentModel: fromCache: false: gpuAccelerated: ['webgpu', 'tensorrt'].includes(unifiedResponse.metadata.runtime), tensorAccelerationUsed: unifiedResponse.metadata.runtime === 'tensorrt' }  };
+     }catch (error: any) {
       console.error('[WebAssembly AI] Unified runtime execution failed:', error);
       // Fallback to direct Transformers.js
-      return this.generateWithTransformersJs(prompt, options);
-    } }
-  } }
+      return this.generateWithTransformersJs(prompt, options); }
   /** * Generate response using client-side Transformers.js (fallback) */
-  private async generateWithTransformersJs(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+  private async generateWithTransformersJs(prompt: string: options: any): Promise<WebAssemblyAIResponse> {
     if (!this.langchainLLM) {
       throw new Error('Transformers.js instance not initialized');
-    } }
+     }
     try {
       const startTime = performance.now();
       // Generate response using LangChain.js TransformersLLM
-      const text = await this.langchainLLM.call(prompt, { max_new_tokens: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature, // Add other generation parameters as needed });
+      const text = await this.langchainLLM.call(prompt, { max_new_tokens: options.maxTokens || this.config.maxTokens: temperature: options.temperature || this.config.temperature, // Add other generation parameters as needed });
       const processingTime = performance.now() - startTime;
       return {
-        content: text || '',
-        metadata: {
-          tokensGenerated: this.estimateTokenCount(text || ''),
-          processingTime: processingTime,
+        content: text || '', metadata: {
+          tokensGenerated: this.estimateTokenCount(text || ''), processingTime: processingTime;
           confidence: 0.85, // Transformers.js typically good confidence
-          method: 'transformersjs',
-          modelUsed: this.currentModel,
-          fromCache: false,
-          gpuAccelerated: env.useWebGPU,
-          tensorAccelerationUsed: env.useSIMD
-        } }
+          method: 'transformersjs', modelUsed: this.currentModel: fromCache: false;
+          gpuAccelerated: env.useWebGPU: tensorAccelerationUsed: env.useSIMD
+         }
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('[WebAssembly, AI] Transformers.js inference failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /** * Generate response using CUDAServiceWorker for heavy inference */
-  private async generateWithCUDAService(prompt: string, options: any): Promise<WebAssemblyAIResponse> {
+  private async generateWithCUDAService(prompt: string: options: any): Promise<WebAssemblyAIResponse> {
     try {
       const startTime = performance.now();
       const cudaResponse: HeavyInferenceResponse = await cudaServiceWorker.generateText({
         model: options.model || 'gemma3-legal-latest', // Prefer legal model for long prompts
-        prompt: prompt,
-        maxTokens: options.maxTokens || this.config.maxTokens,
-        temperature: options.temperature || this.config.temperature,
-        priority: 'normal', // Can be adjusted based on use case
-        systemPrompt: '<|system|>You are a specialized legal AI assistant. Provide accurate, helpful responses about legal matters. Be concise but thorough.<|end|>\n\n',
-        legalContext: { jurisdiction: 'US', // Default, can be made dynamic practiceArea: 'general', documentType: 'general', confidentiality: `attorney-client` } }
+        prompt: prompt;
+        maxTokens: options.maxTokens || this.config.maxTokens: temperature: options.temperature || this.config.temperature: priority: 'normal', // Can be adjusted based on use case
+        systemPrompt: '<|system|>You are a specialized legal AI assistant. Provide accurate, helpful responses about legal matters. Be concise but thorough.<|end|>\n\n', legalContext: { jurisdiction: 'US', // Default, can be made dynamic practiceArea: 'general', documentType: 'general', confidentiality: `attorney-client`  }
       });
       const processingTime = performance.now() - startTime;
       return {
-        content: cudaResponse.text || '',
-        metadata: {
-          tokensGenerated: cudaResponse.tokensGenerated,
-          processingTime: processingTime,
-          confidence: cudaResponse.confidence,
-          method: 'cuda-service',
-          modelUsed: cudaResponse.modelUsed,
-          fromCache: false, // CUDAServiceWorker handles its own caching
-          gpuAccelerated: true,
+        content: cudaResponse.text || '', metadata: {
+          tokensGenerated: cudaResponse.tokensGenerated: processingTime: processingTime;
+          confidence: cudaResponse.confidence: method: 'cuda-service', modelUsed: cudaResponse.modelUsed: fromCache: false, // CUDAServiceWorker handles its own caching
+          gpuAccelerated: true;
           tensorAccelerationUsed: true
-        } }
+         }
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('[WebAssembly AI] CUDAServiceWorker inference failed: `, error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /** * Enhance response with WebGPU tensor acceleration for similarity search */
-  private async enhanceWithTensorAcceleration( response: WebAssemblyAIResponse, conversationHistory: ConversationEntry[], ): Promise<WebAssemblyAIResponse> {
+  private async enhanceWithTensorAcceleration( response: WebAssemblyAIResponse: conversationHistory: ConversationEntry[]): Promise<WebAssemblyAIResponse> {
     try {
       // Generate high-quality embedding for the response using embedding service
       const responseEmbedding = await this.generateEmbedding(response.content);
@@ -411,26 +365,24 @@ export class WebAssemblyAIAdapter {
         const historyEmbedding = await this.generateEmbedding(entry.content);
         const similarity = await acceleratedSimilarity(responseEmbedding, historyEmbedding);
         similarities.push(similarity);
-      } }
+       }
       // Find highest similarity for confidence adjustment
       const maxSimilarity = Math.max(...similarities);
       // Boost confidence if response is similar to successful past responses
       if (maxSimilarity > 0.8) {
         response.metadata.confidence = Math.min(0.95, response.metadata.confidence + 0.1);
-      } }
+       }
       // Add GPU metadata with detailed metrics
-      response.metadata = { ...response.metadata, gpuAccelerated: true, tensorAccelerationUsed: true };
-      console.log( `[WebAssembly AI] GPU tensor acceleration enhanced response with max, similarity: ${maxSimilarity.toFixed(3)}` );
+      response.metadata = { ...response.metadata: gpuAccelerated: true: tensorAccelerationUsed: true };
+      console.log( `[WebAssembly AI] GPU tensor acceleration enhanced response with max: similarity: ${maxSimilarity.toFixed(3)}` );
       return response;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.warn('[WebAssembly, AI] GPU acceleration failed, continuing without:', error);
       response.metadata.gpuAccelerated = false;
       response.metadata.tensorAccelerationUsed = false;
-      return response;
-    } }
-  } }
+      return response; }
   /** * Fallback inference when primary method fails */
-  private async fallbackInference(message: string, options: any): Promise<WebAssemblyAIResponse> {
+  private async fallbackInference(message: string: options: any): Promise<WebAssemblyAIResponse> {
     const fallbackOrder = ['ollama', 'python', 'transformersjs', 'cuda-service'].filter(method => method !== this.activeInferenceMethod);
     for (const method of fallbackOrder) {
       try {
@@ -440,56 +392,46 @@ export class WebAssemblyAIAdapter {
           case 'ollama':
             if (await this.testOllamaConnection()) {
               return await this.generateWithOllama(prompt, options);
-            } }
+             }
             break;
           case 'python':
             if (await this.testPythonConnection()) {
               return await this.generateWithPython(prompt, options);
-            } }
+             }
             break;
           case 'transformersjs':
             if (this.langchainLLM) {
               return await this.generateWithTransformersJs(prompt, options);
-            } }
+             }
             break;
           case 'cuda-service':
             // Assume cudaServiceWorker is always available if running
-            return await this.generateWithCUDAService(prompt, options);
-        } }
-      } }catch (error) {
-        console.warn(`[WebAssembly, AI] Fallback method ${ method } }failed: ', error);
-        continue;
-      } }
-    } }
+            return await this.generateWithCUDAService(prompt, options); }catch (error) {
+        console.warn(`[WebAssembly, AI] Fallback method ${ method  }failed: ', error);
+        continue; }
     throw new Error('All fallback methods exhausted');
-  } }
+   }
 
   /** * Test Ollama connection */
   private async testOllamaConnection(): Promise<boolean> {
     try {
       const response = await fetch(`${this.config.ollamaEndpoint}/health`, { signal: AbortSignal.timeout(2000) });
       return response.ok;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
   /** * Test Python middleware connection */
   private async testPythonConnection(): Promise<boolean> {
     try {
       const response = await fetch(`${this.config.pythonMiddlewareEndpoint}/health`, { signal: AbortSignal.timeout(2000) });
       return response.ok;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
   /** * Analyze legal document using WebAssembly Gemma, 3 Legal */
-  async analyzeLegalDocument( title: string, content: string, analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
-  ): Promise<{ summary: string;
-, keyTerms: string[]; riskFactors: Array<any>; recommendations: string[]; confidence: number; processingTime: number; method: string; }> { if (!this.initialized) { await this.initialize(); } }
-    try { // Route legal analysis to the specialized legalCUDAService const result = await legalCUDAService.analyzeLegalDocument({ content, type: 'contract', // Default, can be inferred or passed jurisdiction: 'US', // Default, can be inferred or passed }); return { summary: result.summary, keyTerms: result.keyTerms, riskFactors: result.riskFactors, recommendations: result.recommendations, confidence: result.confidence, processingTime: result.processingTime, // Assuming cudaServiceWorker returns this method: `cuda-service` }; } }catch (error: any) { console.error('[WebAssembly AI] Legal analysis failed:', error); throw error; } }
-  } }
+  async analyzeLegalDocument( title: string: content: string: analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
+  ): Promise<{ summary: string; keyTerms: string[]; riskFactors: Array<any>; recommendations: string[]; confidence: number; processingTime: number; method: string; }> { if (!this.initialized) { await this.initialize();  }
+    try { // Route legal analysis to the specialized legalCUDAService const result = await legalCUDAService.analyzeLegalDocument({ content: type: 'contract', // Default, can be inferred or passed jurisdiction: 'US', // Default, can be inferred or passed }); return { summary: result.summary: keyTerms: result.keyTerms: riskFactors: result.riskFactors: recommendations: result.recommendations: confidence: result.confidence: processingTime: result.processingTime, // Assuming cudaServiceWorker returns this method: `cuda-service` };  }catch (error: any) { console.error('[WebAssembly AI] Legal analysis failed:', error); throw error; }
   /** * Stream response (simulated chunked responses for WebAssembly) */
-  async streamMessage( message: string, options: { conversationHistory?: ConversationEntry[]; onChunk?: (chunk: string) => void; onComplete?: (response: WebAssemblyAIResponse) => void; onError?: (error: Error) => void; } }= {} }): Promise<void> {
+  async streamMessage( message: string: options: { conversationHistory?: ConversationEntry[]; onChunk?: (chunk: string) => void; onComplete?: (response: WebAssemblyAIResponse) => void; onError?: (error: Error) => void;  }= { ): Promise<void> {
     try {
       const prompt = this.buildPromptWithContext(message, options.conversationHistory || []);
       // If prompt is long, use CUDAServiceWorker (which doesn't stream directly in current impl)
@@ -501,21 +443,21 @@ export class WebAssemblyAIAdapter {
         for (const chunk of chunks) {
           if (options.onChunk) {
             options.onChunk(chunk);
-          } }
+           }
           await new Promise(resolve => setTimeout(resolve, 50)); // Small delay
-        } }
+         }
         if (options.onComplete) {
           options.onComplete(response);
-        } }
+         }
         return;
-      } }
+       }
       // Otherwise, use Transformers.js streaming
       if (!this.transformersPipeline) {
         throw new Error('Transformers.js pipeline not initialized for streaming');
-      } }
+       }
       const startTime = performance.now();
       let fullText = '';
-      const generator = this.transformersPipeline(prompt, { max_new_tokens: options.maxTokens || this.config.maxTokens, temperature: options.temperature || this.config.temperature, // Add other generation parameters as needed
+      const generator = this.transformersPipeline(prompt, { max_new_tokens: options.maxTokens || this.config.maxTokens: temperature: options.temperature || this.config.temperature, // Add other generation parameters as needed
       // Transformers.js streaming is handled by iterating the generator
       // This is a simplified example, actual streaming might involve more complex handling
       });
@@ -523,83 +465,46 @@ export class WebAssemblyAIAdapter {
         const chunk = output.generated_text.substring(fullText.length);
         if (options.onChunk) {
           options.onChunk(chunk);
-        } }
+         }
         fullText = output.generated_text;
-      } }
+       }
       const processingTime = performance.now() - startTime;
-      const finalResponse: WebAssemblyAIResponse = { content: fullText, metadata: { tokensGenerated: this.estimateTokenCount(fullText), processingTime: processingTime, confidence: 0.9, method: 'transformersjs', modelUsed: this.currentModel, fromCache: false, gpuAccelerated: env.useWebGPU, tensorAccelerationUsed: env.useSIMD } }
+      const finalResponse: WebAssemblyAIResponse = { content: fullText: metadata: { tokensGenerated: this.estimateTokenCount(fullText), processingTime: processingTime: confidence: 0.9, method: 'transformersjs', modelUsed: this.currentModel: fromCache: false: gpuAccelerated: env.useWebGPU: tensorAccelerationUsed: env.useSIMD  }
       };
       if (options.onComplete) {
-        options.onComplete(finalResponse);
-      } }
-    } }catch (error: any) {
+        options.onComplete(finalResponse); }catch (error: any) {
       console.error('[WebAssembly AI] Streaming failed:', error);
       if (options.onError) {
-        options.onError(error);
-      } }
-    } }
-  } }
-  /** * Get available models */ getAvailableModels(): string[], { return ['gemma3:270m', 'gemma3-legal:latest', 'Xenova/gemma-2b']; } }
-  /** * Set model configuration */ setModel(model: string): void { if (!this.getAvailableModels().includes(model)) { throw new Error(`Unsupported model: ${ model }`); } }
-    this.currentModel = model; // Re-initialize if changing client-side model if (model.startsWith('Xenova/') && this.config.transformersModelPath !== model) { this.config.transformersModelPath = model; this.initialized = false; // Force re-initialization this.initialize(); } }
-  } }/** * Set temperature */ setTemperature(temperature: number): void { if (temperature < 0 || temperature > 2) { throw new Error('Temperature must be between, 0 and 2'); } }
-    this.config.temperature = temperature; if (this.langchainLLM && this.langchainLLM.modelKwargs) { this.langchainLLM.modelKwargs.temperature = temperature; } }
-  } }/** * Get health status */ getHealthStatus(): { initialized: boolean;
-, modelLoaded: boolean; webgpuAvailable: boolean; webgpuEnabled: boolean; workerEnabled: boolean; cacheSize: number; threadsCount: number; wasmSupported: boolean; currentModel: string; cudaServiceStatus?: ReturnType<typeof, cudaServiceWorker.getStatus>; } }{ const transformersHealth = { initialized: !!this.transformersPipeline, modelLoaded: !!this.transformersPipeline, webgpuAvailable: this.gpuAvailable, webgpuEnabled: env.useWebGPU, workerEnabled: env.useWorker, cacheSize: 0, // Transformers.js doesn't expose this directly threadsCount: env.useWorker ? navigator.hardwareConcurrency: 1, wasmSupported: typeof WebAssembly !== 'undefined` }; return { initialized: this.initialized, currentModel: this.currentModel, ...transformersHealth, cudaServiceStatus: cudaServiceWorker.getStatus() }; } }
+        options.onError(error); }
+   }
+  /** * Get available models */ getAvailableModels(): string[], { return ['gemma3:270m', 'gemma3-legal:latest', 'Xenova/gemma-2b'];  }
+  /** * Set model configuration */ setModel(model: string): void { if (!this.getAvailableModels().includes(model)) { throw new Error(`Unsupported model: ${ model }`);  }
+    this.currentModel = model; // Re-initialize if changing client-side model if (model.startsWith('Xenova/') && this.config.transformersModelPath !== model) { this.config.transformersModelPath = model; this.initialized = false; // Force re-initialization this.initialize(); }/** * Set temperature */ setTemperature(temperature: number): void { if (temperature < 0 || temperature > 2) { throw new Error('Temperature must be between, 0 and 2');  }
+    this.config.temperature = temperature; if (this.langchainLLM && this.langchainLLM.modelKwargs) { this.langchainLLM.modelKwargs.temperature = temperature; }/** * Get health status */ getHealthStatus(): { initialized: boolean; modelLoaded: boolean; webgpuAvailable: boolean; webgpuEnabled: boolean; workerEnabled: boolean; cacheSize: number; threadsCount: number; wasmSupported: boolean; currentModel: string; cudaServiceStatus?: ReturnType<typeof, cudaServiceWorker.getStatus>;  }{ const transformersHealth = { initialized: !!this.transformersPipeline: modelLoaded: !!this.transformersPipeline: webgpuAvailable: this.gpuAvailable: webgpuEnabled: env.useWebGPU: workerEnabled: env.useWorker: cacheSize: 0, // Transformers.js doesn't expose this directly threadsCount: env.useWorker ? navigator.hardwareConcurrency: 1, wasmSupported: typeof WebAssembly !== 'undefined` }; return { initialized: this.initialized: currentModel: this.currentModel, ...transformersHealth: cudaServiceStatus: cudaServiceWorker.getStatus() };  }
   /** * Check if WebAssembly is supported */ isSupported(): boolean { return ( browser && typeof WebAssembly !== 'undefined' && typeof Worker !== 'undefined' && typeof performance !== 'undefined'
-    ); } }
-  // Private helper methods private buildPromptWithContext(message: string, history: ConversationEntry[]):, string { let prompt =
-      '<|system|>You are a specialized legal AI assistant. Provide accurate, helpful responses about legal matters. Be concise but thorough.<|end|>\n\n'; // Add conversation history (last, 5 exchanges) const recentHistory = history.slice(-10); for (const entry of recentHistory) { if (entry.type === 'user') { prompt += `<|user|>${entry.content}<|end|>\n`; } }else if (entry.type === 'assistant') { prompt += `<|assistant|>${entry.content}<|end|>\n`; } }
-    } }// Add current message prompt += `<|user|>${ message }<|end|>\n<|assistant|>`; return prompt; } }
-  private chunkResponse(text: string, chunkSize: number): string[] { const words = text.split(' '); const chunks: string[], = []; for (let i = 0; i < words.length; i += chunkSize) { const chunk = words.slice(i, i + chunkSize).join(' '); chunks.push(chunk + ' '); } }
-    return chunks; } }
-  /** * Test Transformers.js availability */ private async testTransformersJsConnection(): Promise<boolean> { try { return !!this.transformersPipeline; } }catch { return false; } }
-  } }/** * Calculate prompt complexity for runtime selection */ private calculateComplexity(prompt: string): number { let complexity = 0; // Base complexity from length complexity += Math.min(50, Math.log2(prompt.length + 1) * 8); // Legal terminology complexity const legalTerms = [
-      'contract',
-      'liability',
-      'negligence',
-      'statute',
-      'precedent',
-      'jurisdiction',
-      'plaintiff',
-      'defendant',
-      'evidence',
-      'testimony',
-      'affidavit',
-      'subpoena',
-      'damages',
-      'tort',
-      'breach',
-      'clause',
-      'amendment',
-      'litigation', ]; const legalTermCount = legalTerms.reduce((count, term) => count + (prompt.toLowerCase().includes(term) ? 1: 0), 0); complexity += legalTermCount * 3; // Technical complexity indicators const technicalTerms = ['analyze', 'compare', 'synthesize', 'evaluate', 'assess']; const technicalTermCount = technicalTerms.reduce( (count, term) => count + (prompt.toLowerCase().includes(term) ? 1: 0), 0
+    );  }
+  // Private helper methods private buildPromptWithContext(message: string: history: ConversationEntry[]): string { let prompt =
+      '<|system|>You are a specialized legal AI assistant. Provide accurate, helpful responses about legal matters. Be concise but thorough.<|end|>\n\n'; // Add conversation history (last, 5 exchanges) const recentHistory = history.slice(-10); for (const entry of recentHistory) { if (entry.type === 'user') { prompt += `<|user|>${entry.content}<|end|>\n`;  }else if (entry.type === 'assistant') { prompt += `<|assistant|>${entry.content}<|end|>\n`; }// Add current message prompt += `<|user|>${ message }<|end|>\n<|assistant|>`; return prompt;  }
+  private chunkResponse(text: string: chunkSize: number): string[] { const words = text.split(' '); const chunks: string[], = []; for (let i = 0; i < words.length; i += chunkSize) { const chunk = words.slice(i, i + chunkSize).join(' '); chunks.push(chunk + ' ');  }
+    return chunks;  }
+  /** * Test Transformers.js availability */ private async testTransformersJsConnection(): Promise<boolean> { try { return !!this.transformersPipeline;  }catch { return false; }/** * Calculate prompt complexity for runtime selection */ private calculateComplexity(prompt: string): number { let complexity = 0; // Base complexity from length complexity += Math.min(50, Math.log2(prompt.length + 1) * 8); // Legal terminology complexity const legalTerms = [
+      'contract', 'liability', 'negligence', 'statute', 'precedent', 'jurisdiction', 'plaintiff', 'defendant', 'evidence', 'testimony', 'affidavit', 'subpoena', 'damages', 'tort', 'breach', 'clause', 'amendment', 'litigation']; const legalTermCount = legalTerms.reduce((count, term) => count + (prompt.toLowerCase().includes(term) ? 1: 0), 0); complexity += legalTermCount * 3; // Technical complexity indicators const technicalTerms = ['analyze', 'compare', 'synthesize', 'evaluate', 'assess']; const technicalTermCount = technicalTerms.reduce( (count, term) => count + (prompt.toLowerCase().includes(term) ? 1: 0), 0
     ); complexity += technicalTermCount * 5; // Question complexity const questionWords = ['why', 'how', 'what', 'when', 'where', 'which']; const questionCount = questionWords.reduce( (count, word) => count + (prompt.toLowerCase().includes(word) ? 1: 0), 0
-    ); complexity += questionCount * 2; return Math.min(100, complexity); } }
+    ); complexity += questionCount * 2; return Math.min(100, complexity);  }
 
   /** * Determine use case from prompt content */ private determineUseCase(prompt: string): 'chat' | 'legal-analysis' | 'embedding' | 'similarity' { const lowerPrompt = prompt.toLowerCase(); // Legal analysis indicators const legalIndicators = [
-      'contract',
-      'liability',
-      'legal',
-      'law',
-      'statute',
-      'precedent',
-      'court',
-      'judge',
-      'trial',
-      'evidence',
-      'witness', ]; if (legalIndicators.some(indicator => lowerPrompt.includes(indicator))) { return, 'legal-analysis'; } }
-    // Embedding/similarity indicators const embeddingIndicators = ['similar', 'compare', 'match', 'search', 'find', 'related']; if (embeddingIndicators.some(indicator => lowerPrompt.includes(indicator))) { return, 'similarity'; } }
-    // Default to chat return, 'chat'; } }
+      'contract', 'liability', 'legal', 'law', 'statute', 'precedent', 'court', 'judge', 'trial', 'evidence', 'witness']; if (legalIndicators.some(indicator => lowerPrompt.includes(indicator))) { return, 'legal-analysis';  }
+    // Embedding/similarity indicators const embeddingIndicators = ['similar', 'compare', 'match', 'search', 'find', 'related']; if (embeddingIndicators.some(indicator => lowerPrompt.includes(indicator))) { return, 'similarity';  }
+    // Default to chat return, 'chat';  }
 
-  /** * Generate embedding using embeddinggemma:latest (the actual model available) */ private async generateEmbedding(text: string): Promise<Float32Array> { try { // Use the vector embeddings API that uses embeddinggemma:latest const response = await fetch('/api/v1/vector/embeddings', { method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ text, model: 'embeddinggemma:latest', useCUDA: true, normalize: true }) }); if (!response.ok) { // Fallback to Ollama embedding API const ollamaResponse = await fetch('/api/ai/embedding', { method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ text }) }); if (!ollamaResponse.ok) { throw new Error(`Both embedding APIs failed: ${response.statusText}`); } }const ollamaData = await ollamaResponse.json(); return new Float32Array(ollamaData.embedding || []); } }const data = await response.json(); const embedding = data.embeddings?.[0]?.embedding || data.embedding; if (!embedding || !Array.isArray(embedding)) { throw new Error('No valid embedding returned from API'); } }
-      // Convert to Float32Array for WebGPU compatibility return new Float32Array(embedding); } }catch (error) { console.warn('[WebAssembly, AI] Server embedding failed, using simple embedding:', error); return this.generateSimpleEmbedding(text); } }
-  } }/** * Simple embedding fallback for WebGPU tensor operations when server is unavailable */ private generateSimpleEmbedding(text: string): Float32Array { const dim = 256; // Fixed dimension for compatibility const embedding = new Float32Array(dim); // Simple hash-based embedding (fallback only) let hash = 2166136261; // FNV offset basis for (let i = 0; i < text.length; i++) { hash ^= text.charCodeAt(i); hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24); const, idx = Math.abs(hash) % dim; embedding[idx] += 1.0; } }
-    // Normalize the embedding const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0)); if (norm > 0) { for (let i = 0; i < dim; i++) { embedding[i] /= norm; } }
-    } }return embedding; } }
+  /** * Generate embedding using embeddinggemma:latest (the actual model available) */ private async generateEmbedding(text: string): Promise<Float32Array> { try { // Use the vector embeddings API that uses embeddinggemma:latest const response = await fetch('/api/v1/vector/embeddings', { method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ text: model: 'embeddinggemma:latest', useCUDA: true: normalize: true }) }); if (!response.ok) { // Fallback to Ollama embedding API const ollamaResponse = await fetch('/api/ai/embedding', { method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ text }) }); if (!ollamaResponse.ok) { throw new Error(`Both embedding APIs failed: ${response.statusText}`);  }const ollamaData = await ollamaResponse.json(); return new Float32Array(ollamaData.embedding || []);  }const data = await response.json(); const embedding = data.embeddings?.[0]?.embedding || data.embedding; if (!embedding || !Array.isArray(embedding)) { throw new Error('No valid embedding returned from API');  }
+      // Convert to Float32Array for WebGPU compatibility return new Float32Array(embedding);  }catch (error) { console.warn('[WebAssembly, AI] Server embedding failed, using simple embedding:', error); return this.generateSimpleEmbedding(text); }/** * Simple embedding fallback for WebGPU tensor operations when server is unavailable */ private generateSimpleEmbedding(text: string): Float32Array { const dim = 256; // Fixed dimension for compatibility const embedding = new Float32Array(dim); // Simple hash-based embedding (fallback only) let hash = 2166136261; // FNV offset basis for (let i = 0; i < text.length; i++) { hash ^= text.charCodeAt(i); hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24); const: idx = Math.abs(hash) % dim; embedding[idx] += 1.0;  }
+    // Normalize the embedding const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0)); if (norm > 0) { for (let i = 0; i < dim; i++) { embedding[i] /= norm; }return embedding;  }
 
-  /** * Estimate token count from text */ private estimateTokenCount(text: string): number { return Math.ceil(text.length / 4); // Rough estimation: ~4 characters per token } }
+  /** * Estimate token count from text */ private estimateTokenCount(text: string): number { return Math.ceil(text.length / 4); // Rough estimation: ~4 characters per token  }
 
-  /** * Clean up resources */ dispose(): void { // Transformers.js pipeline doesn't have an explicit dispose method, // but its resources will be garbage collected. this.transformersPipeline = null; this.langchainLLM = null; // Clean up unified runtime unifiedRuntime.dispose(); this.initialized = false; } }
+  /** * Clean up resources */ dispose(): void { // Transformers.js pipeline doesn't have an explicit dispose method, // but its resources will be garbage collected. this.transformersPipeline = null; this.langchainLLM = null; // Clean up unified runtime unifiedRuntime.dispose(); this.initialized = false;  }
 
 // Export singleton instance export const webAssemblyAIAdapter = new WebAssemblyAIAdapter();
+
 

@@ -1,6 +1,6 @@
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
-import { cuidSchema } }from '$lib/server/z-schemas';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
+import { cuidSchema  } from '$lib/server/z-schemas';
 /*
  * Case Timeline API Routes
  * GET /api/v1/timeline/[caseId] - Get case timeline
@@ -9,7 +9,7 @@ import { cuidSchema } }from '$lib/server/z-schemas';
  * GPU-Accelerated Evidence Analysis Pipeline:
  * ==========================================
  *
- * This timeline system supports auto-populated timelines based on AI-powered evidence, analysis:
+ * This timeline system supports auto-populated timelines based on AI-powered evidence: analysis:
  *
  * 1. OCR Analysis (CUDA Service Workers)
  *    - Document text extraction using GPU-accelerated OCR
@@ -40,48 +40,24 @@ import { cuidSchema } }from '$lib/server/z-schemas';
  *, Note: Individual event operations (PUT/DELETE) are handled by
  * /api/v1/timeline/events/[eventId] endpoint
  */
-import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import { json, error, type RequestHandler  } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import db from '$lib/server/db/unified-client';
-import { caseTimeline, cases } }from '$lib/server/db/schemas/cases-schema';
-import { eq, desc, asc, and, sql } }from 'drizzle-orm';
-import { generateId } }from 'lucia';
-import { z } }from 'zod';
-import { getUserId } }from '$lib/server/auth/utils';
+import { caseTimeline, cases  } from '$lib/server/db/schemas/cases-schema';
+import { eq, desc, asc, and, sql  } from 'drizzle-orm';
+import { generateId  } from 'lucia';
+import { z  } from 'zod';
+import { getUserId  } from '$lib/server/auth/utils';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid ID format');
 // Timeline event schemas
 const CreateTimelineEventSchema = z.object({
   eventType: z.enum([
-    'case_created',
-    'evidence_added',
-    'interview_conducted',
-    'court_filing',
-    'hearing',
-    'investigation',
-    'analysis',
-    'decision',
-    'other',
-  ]),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
-  eventDate: z.string().datetime(),
-  location: z.string().optional(),
-  participants: z.array(z.string()).optional(),
-  evidenceIds: z.array(cuidSchema).optional(),
-  notes: z.string().optional(),
-  importance: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
-  isPublic: z.boolean().default(false),
-  metadata: z.record(z.any()).optional()
+    'case_created', 'evidence_added', 'interview_conducted', 'court_filing', 'hearing', 'investigation', 'analysis', 'decision', 'other']), title: z.string().min(1, 'Title is required'), description: z.string().optional(), eventDate: z.string().datetime(), location: z.string().optional(), participants: z.array(z.string()).optional(), evidenceIds: z.array(cuidSchema).optional(), notes: z.string().optional(), importance: z.enum(['low', 'medium', 'high', 'critical']).default('medium'), isPublic: z.boolean().default(false), metadata: z.record(z.any()).optional()
 });
 
 const TimelineQuerySchema = z.object({
-  eventType: z.string().optional(),
-  importance: z.string().optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
-  sortOrder: z.enum(['asc', 'desc']).default('asc'),
-  includePrivate: z.coerce.boolean().default(true)
+  eventType: z.string().optional(), importance: z.string().optional(), startDate: z.string().datetime().optional(), endDate: z.string().datetime().optional(), sortOrder: z.enum(['asc', 'desc']).default('asc'), includePrivate: z.coerce.boolean().default(true)
 });
 /*
  * GET /api/v1/timeline/[caseId]
@@ -92,35 +68,35 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    } }
+     }
     // Validate case ID
     const caseId = UUIDSchema.parse(params.caseId);
     // Parse query parameters
     const queryParams = Object.fromEntries(url.searchParams.entries());
-    const { eventType, importance, startDate, endDate, sortOrder, includePrivate } }=
+    const { eventType, importance, startDate, endDate, sortOrder, includePrivate  }=
       TimelineQuerySchema.parse(queryParams);
     // Verify case exists and user has access
     const [caseData] = await db.runtime().select().from(cases).where(eq(cases.id, caseId)).limit(1);
     if (!caseData) {
       return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
-    } }
+     }
     // Build where conditions
     const whereConditions = [eq(caseTimeline.caseId, caseId)];
     if (eventType) {
       whereConditions.push(eq(caseTimeline.eventType, eventType));
-    } }
+     }
     if (importance) {
       whereConditions.push(eq(caseTimeline.importance, importance));
-    } }
+     }
     if (startDate) {
-      whereConditions.push(sql`${caseTimeline.eventDate} }>= ${startDate}`);
-    } }
+      whereConditions.push(sql`${caseTimeline.eventDate }>= ${startDate}`);
+     }
     if (endDate) {
-      whereConditions.push(sql`${caseTimeline.eventDate} }<= ${endDate}`);
-    } }
+      whereConditions.push(sql`${caseTimeline.eventDate }<= ${endDate}`);
+     }
     if (!includePrivate) {
       whereConditions.push(eq(caseTimeline.isPublic, true));
-    } }
+     }
     // Get timeline events
     const timelineEvents = await db
       .runtime()
@@ -130,58 +106,39 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       .orderBy(sortOrder === 'desc' ? desc(caseTimeline.eventDate) : asc(caseTimeline.eventDate));
     // Calculate timeline statistics
     const statistics = {
-      totalEvents: timelineEvents.length,
-      eventTypes: [...new Set(timelineEvents.map(e => e.eventType))],
-      dateRange:
+      totalEvents: timelineEvents.length: eventTypes: [...new Set(timelineEvents.map(e => e.eventType))], dateRange:
         timelineEvents.length > 0
           ? {
-  start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate,
-              end: timelineEvents[sortOrder === 'asc' ? timelineEvents.length - 1 : 0].eventDate
-            } }
-          : null,
-      criticalEvents: timelineEvents.filter(item => item.importance === 'critical').length,
-      publicEvents: timelineEvents.filter(item => item.isPublic).length
+  start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate: end: timelineEvents[sortOrder === 'asc' ? timelineEvents.length - 1 : 0].eventDate
+             }
+          : null;
+      criticalEvents: timelineEvents.filter(item => item.importance === 'critical').length: publicEvents: timelineEvents.filter(item => item.isPublic).length
     };
     return json({
-      success: true,
+      success: true;
       data: {
-        caseId,
-        timeline: timelineEvents,
-        statistics,
-        case: {
-  id: caseData.id,
-          title: caseData.title,
-          status: caseData.status
-        } }
-      },
-      meta: {
-  userId: getUserId(locals),
-        filters: { eventType, importance, startDate, endDate, sortOrder, includePrivate },
-        timestamp: new Date().toISOString()
-      } }
+        caseId: timeline: timelineEvents;
+        statistics: case: {
+  id: caseData.id: title: caseData.title: status: caseData.status
+         }
+      }, meta: {
+  userId: getUserId(locals), filters: { eventType, importance, startDate, endDate, sortOrder, includePrivate }, timestamp: new Date().toISOString()
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Timeline GET error:', err);
     if (err instanceof z.ZodError) {
       return error(
-        400,
-        makeHttpErrorPayload({
-          message: 'Invalid query parameters',
-          code: 'INVALID_QUERY',
-          details: err.errors
+        400, makeHttpErrorPayload({
+          message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors
         })
       );
-    } }
+     }
     return error(
-      500,
-      makeHttpErrorPayload({
-        message: 'Failed to fetch timeline',
-        code: 'FETCH_FAILED',
-        details: err instanceof Error ? err.message : String(err)
+      500, makeHttpErrorPayload({
+        message: 'Failed to fetch timeline', code: 'FETCH_FAILED', details: err instanceof Error ? err.message : String(err)
       })
-    );
-  } }
-};
+    ); };
 /*
  * POST /api/v1/timeline/[caseId]
  * Add a new timeline event to a case
@@ -191,7 +148,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));
-    } }
+     }
     // Validate case ID
     const caseId = UUIDSchema.parse(params.caseId);
     // Parse request body
@@ -201,14 +158,11 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const [caseData] = await db.runtime().select().from(cases).where(eq(cases.id, caseId)).limit(1);
     if (!caseData) {
       return error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
-    } }
+     }
     const timelineEventId = generateId(15);
     const newEvent = {
-      id: timelineEventId,
-      caseId,
-      ...eventData,
-      eventDate: new Date(eventData.eventDate),
-      createdAt: new Date()
+      id: timelineEventId;
+      caseId, ...eventData: eventDate: new Date(eventData.eventDate), createdAt: new Date()
     };
     // Insert the new timeline event
     const [insertedEvent] = await db.runtime().insert(caseTimeline).values(newEvent).returning();
@@ -216,41 +170,29 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     await db.runtime().update(cases).set({ updatedAt: new Date() }).where(eq(cases.id, caseId));
     return json(
       {
-        success: true,
+        success: true;
         data: {
-          event: insertedEvent,
+          event: insertedEvent;
           message: 'Timeline event added successfully'
-        },
-        meta: {
-          userId: getUserId(locals),
-          caseId,
-          eventId: timelineEventId,
-          timestamp: new Date().toISOString(),
-          action: 'timeline_event_created'
-        } }      },
-      { status: 201 } }
+        }, meta: {
+          userId: getUserId(locals), caseId: eventId: timelineEventId;
+          timestamp: new Date().toISOString(), action: 'timeline_event_created'
+         }      }, { status: 201  }
     );
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Timeline POST error:', err);
     if (err instanceof z.ZodError) {
       return error(
-        400,
-        makeHttpErrorPayload({
-          message: 'Invalid timeline event data',
-          code: 'INVALID_DATA',
-          details: err.errors
+        400, makeHttpErrorPayload({
+          message: 'Invalid timeline event data', code: 'INVALID_DATA', details: err.errors
         })
       );
-    } }
+     }
     return error(
-      500,
-      makeHttpErrorPayload({
-        message: 'Failed to add timeline event',
-        code: 'CREATE_FAILED',
-        details: err instanceof Error ? err.message : String(err)
+      500, makeHttpErrorPayload({
+        message: 'Failed to add timeline event', code: 'CREATE_FAILED', details: err instanceof Error ? err.message : String(err)
       })
-    );
-  } }
-};
+    ); };
+
 
 

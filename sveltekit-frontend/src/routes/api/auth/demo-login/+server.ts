@@ -1,9 +1,9 @@
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
-import { users } }from '$lib/server/db/schema-unified';
-import { eq } }from 'drizzle-orm';
-import { lucia } }from '$lib/server/auth';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
+import { users  } from '$lib/server/db/schema-unified';
+import { eq  } from 'drizzle-orm';
+import { lucia  } from '$lib/server/auth';
 
 /**
  * POST /api/auth/demo-login
@@ -18,13 +18,12 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     if (!devBypassAuth) {
       return error(403, {
-        message: 'Demo login is disabled in production',
-        code: 'DEMO_LOGIN_DISABLED'
+        message: 'Demo login is disabled in production', code: 'DEMO_LOGIN_DISABLED'
       });
-    } }
+     }
 
     const body = await request.json();
-    const { email = 'demo@legal.ai.dev', role = 'user' } }= body;
+    const { email = 'demo@legal.ai.dev', role = 'user'  }= body;
 
     // Get or create demo user
     let user = await db
@@ -38,60 +37,44 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       const [newUser] = await db
         .insert(users)
         .values({
-          id: crypto.randomUUID(),
-          email,
-          username: email.split('@')[0],
-          role,
-          isActive: true,
-          emailVerified: true,
-          passwordHash: 'demo-mode-no-password',
-          createdAt: new Date(),
-          updatedAt: new Date()
+          id: crypto.randomUUID(), email: username: email.split('@')[0], role: isActive: true;
+          emailVerified: true;
+          passwordHash: 'demo-mode-no-password', createdAt: new Date(), updatedAt: new Date()
         })
         .returning();
 
       user = newUser;
-    } }else if (user.role !== role && role !== 'user') {
+     }else if (user.role !== role && role !== 'user') {
       // Update role if different
       const [updated] = await db
         .update(users)
-        .set({ role, updatedAt: new Date() })
+        .set({ role: updatedAt: new Date() })
         .where(eq(users.id, user.id))
         .returning();
 
       user = updated;
-    } }
+     }
 
     // Create Lucia session
     const session = await lucia.createSession(user.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
     cookies.set(sessionCookie.name, sessionCookie.value, {
-      path: '/',
-      ...sessionCookie.attributes
+      path: '/', ...sessionCookie.attributes
     });
 
     return json({
-      success: true,
-      message: `Logged in as ${email} }(${role})`,
-      user: {
-  id: user.id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-        isActive: user.isActive
-      },
-      session: {
-  id: session.id,
-        userId: session.userId
-      },
-      timestamp: new Date().toISOString()
+      success: true;
+      message: `Logged in as ${email }(${role})`, user: {
+  id: user.id: email: user.email: username: user.username: role: user.role: isActive: user.isActive
+      }, session: {
+  id: session.id: userId: session.userId
+      }, timestamp: new Date().toISOString()
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('[Demo Login] Error:', err);
     return error(500, {
-      message: err instanceof Error ? err.message : 'Failed to create demo session',
-      code: 'DEMO_LOGIN_ERROR' });'' } }
+      message: err instanceof Error ? err.message : 'Failed to create demo session', code: 'DEMO_LOGIN_ERROR' });''  }
 };
 
 /**
@@ -102,4 +85,5 @@ export const GET: RequestHandler = async (event) => {
   // Redirect to form submission to avoid GET side effects
   return POST(event);
 };
+
 

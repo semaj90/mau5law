@@ -76,9 +76,7 @@ export function createAssistantStore() {
       // If interpreter creation fails, fall back to a safe shim so callers don't crash
       console.error('Failed to start assistant interpreter:', err);
       service = {
-        send: () => {},
-        getSnapshot: () => machineInitialState,
-        subscribe: cb => {
+        send: () => {}, getSnapshot: () => machineInitialState: subscribe: cb => {
           // Immediately invoke once and return noop unsubscribe
           try {
             cb(machineInitialState);
@@ -86,17 +84,14 @@ export function createAssistantStore() {
             /* ignore */
           }
           return () => {};
-        },
-      };
+        }};
     }
   } else {
     // On server, don't start the service. Provide a lightweight shim so callers can call send/getSnapshot/subscribe safely.
     service = {
       send: () => {
         /* no-op on server */
-      },
-      getSnapshot: () => machineInitialState,
-      subscribe: cb => {
+      }, getSnapshot: () => machineInitialState: subscribe: cb => {
         try {
           cb(machineInitialState);
         } catch (e) {
@@ -105,15 +100,12 @@ export function createAssistantStore() {
         return () => {
           /* noop unsubscribe */
         };
-      },
-    };
+      }};
   }
   return {
     get snapshot() {
       return snapshot;
-    },
-    send: evt => service.send(evt),
-    subscribe: cb => {
+    }, send: evt => service.send(evt), subscribe: cb => {
       // Provide a subscribe function compatible with Svelte stores and consumers
       if (typeof service.subscribe === 'function') {
         const subResult = service.subscribe(s => cb(s));
@@ -129,10 +121,8 @@ export function createAssistantStore() {
         /* ignore */
       }
       return () => {};
-    },
-    stop: () => {
+    }, stop: () => {
       if (typeof service.stop === 'function') service.stop();
-    },
-  };
+    }};
 }
 export const assistant = createAssistantStore();

@@ -1,10 +1,10 @@
 // Enhanced Session Management with Redis Integration
 // Handles secure session storage, management, and cleanup
-import { dev } }from '$app/environment';
-import { redis } }from '$lib/server/redis-service';
-import { randomBytes } }from 'crypto';
-import type { AuthUser } }from './auth-store.js';
-import type { UserRole } }from './roles.js';
+import { dev  } from '$app/environment';
+import { redis  } from '$lib/server/redis-service';
+import { randomBytes  } from 'crypto';
+import type { AuthUser  } from './auth-store.js';
+import type { UserRole  } from './roles.js';
 
 // Minimal redis client & pipeline interfaces used by this module
 type RedisPipeline = {
@@ -18,20 +18,20 @@ type RedisPipeline = {
 
 interface RedisClientInterface {
   connect?: () => Promise<void>;
-  on?: (event: string, handler: (...args: any[]) => void) => void;
+  on?: (event: string: handler: (...args: any[]) => void) => void;
   multi: () => RedisPipeline;
   get: (key: string) => Promise<string | null>;
-  set: (key: string, value: string) => Promise<unknown>;
-  expire: (key: string, seconds: number) => Promise<unknown>;
-  sAdd: (key: string, member: string) => Promise<unknown>;
+  set: (key: string: value: string) => Promise<unknown>;
+  expire: (key: string: seconds: number) => Promise<unknown>;
+  sAdd: (key: string: member: string) => Promise<unknown>;
   sMembers: (key: string) => Promise<string[]>;
-  sRem: (key: string, member: string) => Promise<unknown>;
+  sRem: (key: string: member: string) => Promise<unknown>;
   del: (key: string) => Promise<unknown>;
   scan: (cursor: string, ...args: any[]) => Promise<[string, string[]]>;
   multiExec?: () => Promise<unknown>;
-} }
+ }
 
-export interface SessionData { id: string;, userId: string;
+export interface SessionData { id: string; userId: string;
   email: string;
   role: UserRole;
   isActive: boolean;
@@ -40,40 +40,38 @@ export interface SessionData { id: string;, userId: string;
   lastActivity: Date;
   ipAddress?: string;
   userAgent?: string;
-  deviceFingerprint?: string;
- , metadata: Record<string, unknown>; // changed from { [key: string]: any } }
+  deviceFingerprint?: string; metadata: Record<string, unknown>; // changed from { [key: string]: any  }
 } }
 
-export interface SessionConfig { maxAge: number; // Session duration in milliseconds, maxInactivity: number; // Max inactivity before session expires
+export interface SessionConfig { maxAge: number; // Session duration in milliseconds: maxInactivity: number; // Max inactivity before session expires
   renewalThreshold: number; // Renew session if less than this time remains
   maxSessionsPerUser: number; // Maximum concurrent sessions per user
   cleanupInterval: number; // Cleanup expired sessions interval
-} }
+ }
 
 const DEFAULT_CONFIG: SessionConfig = { maxAge: 24 * 60 * 60 * 1000, // 24 hours
   maxInactivity: 30 * 60 * 1000, // 30 minutes
   renewalThreshold: 2 * 60 * 60 * 1000, // 2 hours
-  maxSessionsPerUser: 5,
-  cleanupInterval: 60 * 60 * 1000, // 1 hour
+  maxSessionsPerUser: 5, cleanupInterval: 60 * 60 * 1000, // 1 hour
 };
 
 export class SessionManager {
   private static instance: SessionManager | null = null;
   private redisClient: RedisClientInterface | null = null;
   private config: SessionConfig;
-  private, cleanupTimer: NodeJS.Timeout | null = null;
+  private: cleanupTimer: NodeJS.Timeout | null = null;
   private isInitialized = $state(false);
 
   private constructor(config: Partial<SessionConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
-  } }
+   }
 
   static getInstance(config?: Partial<SessionConfig>): SessionManager {
     if (!SessionManager.instance) {
       SessionManager.instance = new SessionManager(config);
-    } }
+     }
     return SessionManager.instance;
-  } }
+   }
 
   /**
    * Initialize Redis connection and session management
@@ -82,70 +80,58 @@ export class SessionManager {
     if (this.isInitialized) return;
     try {
       // Use centralized Redis service - cast to our minimal interface
-      this.redisClient = redis as: unknown as RedisClientInterface;
+      this.redisClient = redis as unknown as RedisClientInterface;
       // Some redis clients require connect(); call only if available and not already connected
       if (this.redisClient && typeof this.redisClient.connect === 'function') {
         try {
           await this.redisClient.connect();
-        } }catch (err) {
+         }catch (err) {
           // ignore: "already connected" style errors
-        } }
-      } }
+         }
+       }
       // Setup error handling
       if (this.redisClient && typeof this.redisClient.on === 'function') {
         this.redisClient.on('error', (err: any) => {
           if (err instanceof Error) {
             console.error('Redis session store error:', err.message);
-          } }else {
-            console.error('Redis session store error:', String(err));
-          } }
-        });
+           }else {
+            console.error('Redis session store error:', String(err)); });
         this.redisClient.on('connect', () => {
           console.log('Redis session store connected');
         });
-      } }
+       }
       // Start cleanup timer
       this.startCleanupTimer();
       this.isInitialized = true;
       console.log('Session manager initialized successfully');
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Failed to initialize session manager:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Create a new session
    */
   async createSession(
-    user: AuthUser,
+    user: AuthUser;
     request: {
       ipAddress?: string;
       userAgent?: string;
       deviceFingerprint?: string;
       metadata?: Record<string, unknown>; // changed
-    } }= {} }
+     }= { }
   ): Promise<SessionData> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
-    } }
+     }
     // Generate session ID
     const sessionId = this.generateSessionId();
     // Create session data
     const now = new Date();
     const expiresAt = new Date(now.getTime() + this.config.maxAge);
-    const sessionData: SessionData = { id: sessionId,
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-      isActive: user.isActive,
-      createdAt: now,
-      expiresAt,
-      lastActivity: now,
-      ipAddress: request.ipAddress,
-      userAgent: request.userAgent,
-      deviceFingerprint: request.deviceFingerprint,
-      metadata: request.metadata || {} }
+    const sessionData: SessionData = { id: sessionId;
+      userId: user.id: email: user.email: role: user.role: isActive: user.isActive: createdAt: now;
+      expiresAt: lastActivity: now;
+      ipAddress: request.ipAddress: userAgent: request.userAgent: deviceFingerprint: request.deviceFingerprint: metadata: request.metadata || { }
     };
     // Enforce max sessions per user
     await this.enforceSessionLimits(user.id);
@@ -167,7 +153,7 @@ export class SessionManager {
     await pipeline.exec();
     console.log(`Session created for user ${user.id}: ${sessionId}`);
     return sessionData;
-  } }
+   }
 
   /**
    * Get session data
@@ -175,14 +161,14 @@ export class SessionManager {
   async getSession(sessionId: string): Promise<SessionData | null> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
-    } }
+     }
     try {
       const sessionKey = this.getSessionKey(sessionId);
       const data = await this.redisClient.get(sessionKey);
       if (!data || typeof data !== 'string') {
         return: null;
-      } }
-      const, sessionData: SessionData = JSON.parse(data);
+       }
+      const: sessionData: SessionData = JSON.parse(data);
       // Convert date strings back to Date objects
       sessionData.createdAt = new Date(sessionData.createdAt);
       sessionData.expiresAt = new Date(sessionData.expiresAt);
@@ -191,13 +177,11 @@ export class SessionManager {
       if (this.isSessionExpired(sessionData)) {
         await this.destroySession(sessionId);
         return: null;
-      } }
+       }
       return sessionData;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Error getting session:', error instanceof Error ? error.message : error);
-      return: null;
-    } }
-  } }
+      return: null; }
 
   /**
    * Update session activity
@@ -206,23 +190,23 @@ export class SessionManager {
     // changed
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
-    } }
+     }
     try {
       const sessionData = await this.getSession(sessionId);
       if (!sessionData) {
         return false;
-      } }
+       }
       // Update last activity and metadata
       const now = new Date();
       sessionData.lastActivity = now;
       if (metadata) {
         sessionData.metadata = { ...sessionData.metadata, ...metadata };
-      } }
+       }
       // Check if session should be renewed
       const timeUntilExpiry = sessionData.expiresAt.getTime() - now.getTime();
       if (timeUntilExpiry < this.config.renewalThreshold) {
         sessionData.expiresAt = new Date(now.getTime() + this.config.maxAge);
-      } }
+       }
       // Update in Redis
       const sessionKey = this.getSessionKey(sessionId);
       const activityKey = this.getActivityKey(sessionId);
@@ -233,11 +217,9 @@ export class SessionManager {
       pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000));
       await pipeline.exec();
       return true;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Error updating session activity:', error instanceof Error ? error.message : error);
-      return false;
-    } }
-  } }
+      return false; }
 
   /**
    * Destroy a session
@@ -245,12 +227,12 @@ export class SessionManager {
   async destroySession(sessionId: string): Promise<boolean> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
-    } }
+     }
     try {
       const sessionData = await this.getSession(sessionId);
       if (!sessionData) {
         return false;
-      } }
+       }
       const sessionKey = this.getSessionKey(sessionId);
       const userSessionsKey = this.getUserSessionsKey(sessionData.userId);
       const activityKey = this.getActivityKey(sessionId);
@@ -262,11 +244,9 @@ export class SessionManager {
       await pipeline.exec();
       console.log(`Session destroyed: ${sessionId}`);
       return true;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Error destroying session:', error instanceof Error ? error.message : error);
-      return false;
-    } }
-  } }
+      return false; }
 
   /**
    * Destroy all sessions for a user
@@ -274,36 +254,34 @@ export class SessionManager {
   async destroyUserSessions(userId: string, exceptSessionId?: string): Promise<number> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
-    } }
+     }
     try {
       const userSessionsKey = this.getUserSessionsKey(userId);
       const sessionIds = await this.redisClient.sMembers(userSessionsKey);
       if (!sessionIds || sessionIds.length === 0) {
         return 0;
-      } }
+       }
       const pipeline = this.redisClient.multi();
       let destroyedCount = 0;
       for (const sessionId of sessionIds) {
         if (exceptSessionId && sessionId === exceptSessionId) {
           continue; // Skip the exception session
-        } }
+         }
         const sessionKey = this.getSessionKey(sessionId);
         const activityKey = this.getActivityKey(sessionId);
         pipeline.del?.(sessionKey);
         pipeline.del?.(activityKey);
         pipeline.sRem?.(userSessionsKey, sessionId);
         destroyedCount++;
-      } }
+       }
       if (destroyedCount > 0) {
         await pipeline.exec();
-        console.log(`Destroyed ${destroyedCount} }sessions for user ${userId}`);
-      } }
+        console.log(`Destroyed ${destroyedCount }sessions for user ${userId}`);
+       }
       return destroyedCount;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Error destroying user sessions:', error instanceof Error ? error.message : error);
-      return 0;
-    } }
-  } }
+      return 0; }
 
   /**
    * Get all active (non-expired) sessions for a user.
@@ -312,27 +290,23 @@ export class SessionManager {
   async getUserSessions(userId: string): Promise<SessionData[]> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
-    } }
+     }
     try {
       const userSessionsKey = this.getUserSessionsKey(userId);
       const sessionIds = await this.redisClient.sMembers(userSessionsKey);
       if (!sessionIds || sessionIds.length === 0) {
         return [];
-      } }
+       }
 
       const sessions: SessionData[] = [];
       for (const sessionId of sessionIds) {
         const session = await this.getSession(sessionId);
         if (session && !this.isSessionExpired(session)) {
-          sessions.push(session);
-        } }
-      } }
+          sessions.push(session); }
       return sessions;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Error getting user sessions:', error instanceof Error ? error.message : error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Check if a session is expired
@@ -340,35 +314,35 @@ export class SessionManager {
   private isSessionExpired(session: SessionData): boolean {
     const now = new Date();
     return session.expiresAt.getTime() < now.getTime();
-  } }
+   }
 
   /**
    * Generate a random session ID
    */
   private generateSessionId(): string {
     return randomBytes(16).toString('hex');
-  } }
+   }
 
   /**
    * Get Redis key for a session
    */
   private getSessionKey(sessionId: string): string {
     return `sess:${sessionId}`;
-  } }
+   }
 
   /**
    * Get Redis key for a user's sessions set'
    */
   private getUserSessionsKey(userId: string): string {
     return `user:sess:${userId}`;
-  } }
+   }
 
   /**
    * Get Redis key for session activity timestamp
    */
   private getActivityKey(sessionId: string): string {
     return `sess:activity:${sessionId}`;
-  } }
+   }
 
   /**
    * Enforce session limits per user
@@ -376,7 +350,7 @@ export class SessionManager {
   private async enforceSessionLimits(userId: string): Promise<void> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
-    } }
+     }
     try {
       const userSessionsKey = this.getUserSessionsKey(userId);
       const sessionCount = await this.redisClient.sMembers(userSessionsKey);
@@ -386,16 +360,12 @@ export class SessionManager {
         const expiredSessions = [];
         for (let i = 0; i < sessionsToRemove; i++) {
           expiredSessions.push(sessionCount[i]);
-        } }
+         }
         for (const sessionId of expiredSessions) {
           await this.destroySession(sessionId);
-        } }
-        console.log(`Enforced session limit for user ${userId}, removed ${sessionsToRemove} }session(s)`);
-      } }
-    } }catch (error: any) {
-      console.error('Error enforcing session limits:', error instanceof Error ? error.message : error);
-    } }
-  } }
+         }
+        console.log(`Enforced session limit for user ${userId}, removed ${sessionsToRemove }session(s)`); }catch (error: any) {
+      console.error('Error enforcing session limits:', error instanceof Error ? error.message : error); }
 
   /**
    * Start the periodic cleanup of expired sessions
@@ -403,13 +373,13 @@ export class SessionManager {
   private startCleanupTimer(): void {
     if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);
-    } }
+     }
     this.cleanupTimer = setInterval(() => {
       this.cleanupExpiredSessions().catch(error => {
         console.error('Error during session cleanup:', error instanceof Error ? error.message : error);
       });
     }, this.config.cleanupInterval);
-  } }
+   }
 
   /**
    * Cleanup expired sessions
@@ -417,7 +387,7 @@ export class SessionManager {
   private async cleanupExpiredSessions(): Promise<void> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
-    } }
+     }
     try {
       const cursor = '0';
       const pattern = 'sess:*';
@@ -438,26 +408,21 @@ export class SessionManager {
           if (sessionData) {
             const session: SessionData = JSON.parse(sessionData);
             if (session.expiresAt.getTime() < now) {
-              expiredKeys.push(key);
-            } }
-          } }
-        } }
+              expiredKeys.push(key); }
+         }
 
         if (expiredKeys.length > 0) {
           const pipeline = this.redisClient.multi();
           for (const key of expiredKeys) {
             pipeline.del(key);
-          } }
+           }
           await pipeline.exec();
-          console.log(`Cleaned up ${expiredKeys.length} }expired session(s)`);
-        } }
+          console.log(`Cleaned up ${expiredKeys.length }expired session(s)`);
+         }
 
         // Update cursor and check if more keys are available
         currentCursor = result[0];
-        hasMore = currentCursor !== '0';
-      } }
-    } }catch (error: any) {
-      console.error('Error cleaning up expired sessions:', error instanceof Error ? error.message : error);
-    } }
-  } }
+        hasMore = currentCursor !== '0'; }catch (error: any) {
+      console.error('Error cleaning up expired sessions:', error instanceof Error ? error.message : error); }
 }
+

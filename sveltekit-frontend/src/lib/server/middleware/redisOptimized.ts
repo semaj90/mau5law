@@ -1,15 +1,14 @@
-import type { RequestHandler } }from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
 
 /**
  * Placeholder for Redis optimization middleware.
- * This middleware can be extended to implement global caching,
- * rate limiting, or other Redis-related logic that applies
+ * This middleware can be extended to implement global caching, * rate limiting, or other Redis-related logic that applies
  * across various API endpoints.
  */
 interface RedisOptimizedMiddleware {
   aiSearch: (handler: RequestHandler) => RequestHandler;
   // Add other middleware functions as needed for different endpoint types
-} }
+ }
 
 export const redisOptimized: RedisOptimizedMiddleware = {
   aiSearch: (handler: RequestHandler) => {
@@ -21,6 +20,6 @@ export const redisOptimized: RedisOptimizedMiddleware = {
       // - Request/response logging to Redis
       return handler(event);
     };
-  }
-};
+   };
+
 

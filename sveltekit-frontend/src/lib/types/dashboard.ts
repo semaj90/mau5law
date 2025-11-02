@@ -1,4 +1,4 @@
-import type { SvelteComponentTyped } }from 'svelte';
+import type { SvelteComponentTyped  } from 'svelte';
 
 /**
  * A single dashboard card entry.
@@ -9,7 +9,7 @@ export type DashboardCard = {
   id?: string;
   title: string;
   value: string | number;
-  // Prefer a Svelte component or, a: string identifier over `unknown`
+  // Prefer a Svelte component or: a: string identifier over `unknown`
   icon?: typeof SvelteComponentTyped | string | null;
   // optional short description or subtitle
   description?: string;
@@ -21,4 +21,5 @@ export type DashboardCard = {
  * Layout keyed by region/slot name (e.g. "left", "right", "top", "overview").
  */
 export type DashboardLayout = Record<string, { cards: DashboardCard[] }>;
+
 

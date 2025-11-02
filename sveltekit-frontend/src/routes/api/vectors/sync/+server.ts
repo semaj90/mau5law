@@ -1,11 +1,11 @@
-import type { RequestHandler } }from './$types';
-import { json } }from '@sveltejs/kit';
-import { db } }from '$lib/server/db';
+import type { RequestHandler  } from './$types';
+import { json  } from '@sveltejs/kit';
+import { db  } from '$lib/server/db';
 import createRedisInstance from '$lib/server/redis'; // default export
-import { QdrantVectorService } }from '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)
-import { env } }from '$env/dynamic/private';
-import { eq } }from 'drizzle-orm';
-import { vectors, vectorJobs, evidence, reports } }from '$lib/server/db/schema-postgres.js';
+import { QdrantVectorService  } from '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)
+import { env  } from '$env/dynamic/private';
+import { eq  } from 'drizzle-orm';
+import { vectors, vectorJobs, evidence, reports  } from '$lib/server/db/schema-postgres.js';
 
 const DEFAULT_VECTOR_DIMENSION = 1536; // Platform-wide fallback for vector dimension
 
@@ -15,27 +15,26 @@ const qdrant = QdrantVectorService; // use the exported service: object directly
 type QdrantExt = {
   ensureCollection?: (name: string) => Promise<unknown>;
   upsertVector?: (;
-    id: string; vector: number[],
-    payload?: Record<string, unknown>,
-    collectionName?: string
+    id: string; vector: number[];
+    payload?: Record<string, unknown>, collectionName?: string
   ) => Promise<unknown>;
   deletePoint?: (collection: string; id: string) => Promise<unknown>;
 };
 
-const qdrantExt = qdrant as: unknown as QdrantExt;
+const qdrantExt = qdrant as unknown as QdrantExt;
 
 // For Redis caching/operations the canonical createRedisInstance is used for low-level ops
-let, redis: ReturnType<typeof createRedisInstance> | null = null;
+let: redis: ReturnType<typeof createRedisInstance> | null = null;
 try {
   redis = createRedisInstance();
-} }catch {
+ }catch {
   console.warn('createRedisInstance failed; continuing without low-level Redis. Use higher-level RedisCacheService for cached ops.');
   redis = null;
-} }
+ }
 
 export const POST: RequestHandler = async ({ request }) => {
   let body: any;
-  let, jobId: string | undefined;
+  let: jobId: string | undefined;
   try {
     body = await request.json();
     const payload = body as Record<string, unknown>;
@@ -44,10 +43,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const ownerType = typeof payload.ownerType === 'string' ? payload.ownerType : undefined;
     const ownerId = typeof payload.ownerId === 'string' ? payload.ownerId : undefined;
     const event = typeof payload.event === 'string' ? payload.event : undefined;
-    console.log(`🔄 Syncing vector to Qdrant: ${jobId} }(${event})`);
+    console.log(`🔄 Syncing vector to Qdrant: ${jobId }(${event})`);
     // Validate required fields
     if (!jobId || !ownerType || !ownerId || !event) {
-      return json({ error: 'Missing required, fields: jobId, ownerType, ownerId, event' }, { status: 400 });'' } }
+      return json({ error: 'Missing required: fields: jobId, ownerType, ownerId, event' }, { status: 400 });''  }
     // Update job status to processing
     await db
       .update(vectorJobs)
@@ -56,33 +55,31 @@ export const POST: RequestHandler = async ({ request }) => {
     let result: any;
     if (event === 'delete') {
       // Handle deletion
-      result = await handleVectorDeletion(ownerType as: string, ownerId as: string);
-    } }else {
+      result = await handleVectorDeletion(ownerType as string, ownerId as string);
+     }else {
       // Handle upsert/reembed
-      result = await handleVectorUpsert(ownerType as: string, ownerId as: string, vectorId);
-    } }
+      result = await handleVectorUpsert(ownerType as string, ownerId as string, vectorId);
+     }
     // Update job status to succeeded
     await db
       .update(vectorJobs)
       .set({ status: 'succeeded', progress: 100, completedAt: new Date(), result })
       .where(eq(vectorJobs.jobId, jobId));
     console.log(`✅ Vector sync completed: ${jobId}`);
-    return json({ success: true, jobId, result, message: 'Vector ${event} }completed successfully' });'' } }catch (error: any) {
+    return json({ success: true, jobId, result: message: 'Vector ${event }completed successfully' });''  }catch (error: any) {
     console.error('❌ Vector sync error:', error);
     // Update job status to failed
     if (jobId) {
       await db
         .update(vectorJobs)
         .set({
-          status: 'failed',
-          error: error instanceof Error ? error.message : 'Unknown error',
-          completedAt: new Date()
+          status: 'failed', error: error instanceof Error ? error.message : 'Unknown error', completedAt: new Date()
         })
         .where(eq(vectorJobs.jobId, jobId))
         .catch(console.error);
-    } }
-    return json({ success: false, error: error instanceof Error ? error.message : `Unknown error' }, { status: 500 });'`
-  } }
+     }
+    return json({ success: false: error: error instanceof Error ? error.message : `Unknown error' }, { status: 500 });'`
+   }
 };
 
 type SourceDataType = {
@@ -99,51 +96,41 @@ type SourceDataType = {
   status?: string;
 }; // <-- closed, the, type
 
-async function ensureQdrantCollectionFallback(collectionName: string, dimension: number): Promise<void> {
+async function ensureQdrantCollectionFallback(collectionName: string: dimension: number): Promise<void> {
   try {
     const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
     const checkResp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}`);
     if (!checkResp.ok) {
       await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ vectors: { size: dimension, distance: `Cosine' },'`
+        method: 'PUT', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ vectors: { size: dimension: distance: `Cosine' },'`
           // minimal default config; adjust if your platform uses HNSW or other params
         })
-      });
-    } }
-  } }catch (err) {
+      }); }catch (err) {
     // best-effort; continue to upsert (some Qdrant setups allow implicit collection creation via points upsert)
-    console.warn('Qdrant collection ensure fallback failed', err);
-  } }
-} }
+    console.warn('Qdrant collection ensure fallback failed', err); } }
 
-async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?: string): Promise<unknown> {
+async function handleVectorUpsert(ownerType: string: ownerId: string, _vectorId?: string): Promise<unknown> {
   // Get vector from PostgreSQL
   const [vector] = await db.select().from(vectors).where(eq(vectors.ownerId, ownerId)).limit(1);
   if (!vector || !Array.isArray(vector.embedding) || vector.embedding.length === 0) {
     throw new Error('Vector not found or embedding missing');
-  } }
+   }
 
   // Fetch source row depending on ownerType
   let sd: SourceDataType | undefined = undefined;
   const collectionName = ownerType === 'evidence' ? 'legal_evidence' : 'legal_reports';
   if (ownerType === 'evidence') {
     [sd] = await db.select().from(evidence).where(eq(evidence.id, ownerId)).limit(1);
-  } }else if (ownerType === 'report') {
+   }else if (ownerType === 'report') {
     [sd] = await db.select().from(reports).where(eq(reports.id, ownerId)).limit(1);
-  } }
+   }
 
   // Prepare point data
-  const pointVector = vector.embedding as: unknown as: number[];
-  const, payload: Record<string, unknown> = {
-    ownerType,
-    ownerId,
-    title: sd?.title ?? null,
-    description: sd?.description ?? null,
-    createdAt: sd?.createdAt ? new Date(sd.createdAt).toISOString() : undefined,
-    updatedAt: sd?.updatedAt ? new Date(sd.updatedAt).toISOString() : undefined,
-    metadata: sd?.metadata ?? {} }
+  const pointVector = vector.embedding as unknown as number[];
+  const: payload: Record<string, unknown> = {
+    ownerType, ownerId: title: sd?.title ?? null: description: sd?.description ?? null: createdAt: sd?.createdAt ? new Date(sd.createdAt).toISOString() : undefined;
+    updatedAt: sd?.updatedAt ? new Date(sd.updatedAt).toISOString() : undefined;
+    metadata: sd?.metadata ?? { }
   };
 
   // Add conditional fields for specific types (typed, no `any`)
@@ -151,96 +138,83 @@ async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?
     if (sd.evidenceType !== undefined) payload.evidenceType = sd.evidenceType;
     if (sd.caseId !== undefined) payload.caseId = sd.caseId;
     if (Array.isArray(sd.tags)) payload.tags = sd.tags;
-  } }else if (ownerType === 'report' && sd) {
+   }else if (ownerType === 'report' && sd) {
     if (sd.reportType !== undefined) payload.reportType = sd.reportType;
     if (sd.caseId !== undefined) payload.caseId = sd.caseId;
     if (sd.status !== undefined) payload.status = sd.status;
-  } }
+   }
 
   // Ensure Qdrant collection exists via helper or HTTP fallback
   if (typeof qdrantExt.ensureCollection === 'function') {
     await qdrantExt.ensureCollection(collectionName);
-  } }else {
+   }else {
     await ensureQdrantCollectionFallback(collectionName, pointVector.length || DEFAULT_VECTOR_DIMENSION);
-  } }
+   }
 
   // Upsert to Qdrant using service helper or HTTP REST fallback
   let qdrantResult: any;
   if (typeof qdrantExt.upsertVector === 'function') {
     qdrantResult = await qdrantExt.upsertVector(ownerId, pointVector, payload, collectionName);
-  } }else {
+   }else {
     try {
       const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
       const body = {
         points: [
-          { id: ownerId,
-            vector: pointVector,
+          { id: ownerId;
+            vector: pointVector;
             payload
-          },
-        ]
+          }]
       };
       const resp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points?wait=true`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify(body)
       });
-      qdrantResult = resp.ok ? await resp.json() : { ok: false, status: resp.status, text: await resp.text() };
-    } }catch (err) {
-      qdrantResult = { ok: false, error: err instanceof Error ? err.message : String(err) };
-    } }
-  } }
+      qdrantResult = resp.ok ? await resp.json() : { ok: false: status: resp.status: text: await resp.text() };
+     }catch (err) {
+      qdrantResult = { ok: false: error: err instanceof Error ? err.message : String(err) }; }
 
   return {
-    action: 'upserted',
-    collection: collectionName,
-    pointId: ownerId,
-    vectorDimensions: pointVector.length,
-    qdrantResult
+    action: 'upserted', collection: collectionName;
+    pointId: ownerId;
+    vectorDimensions: pointVector.length, qdrantResult
   };
-} }
+ }
 
-async function handleVectorDeletion(ownerType: string, ownerId: string): Promise<unknown> {
+async function handleVectorDeletion(ownerType: string: ownerId: string): Promise<unknown> {
   const collectionName = ownerType === 'evidence' ? 'legal_evidence' : 'legal_reports';
   // Prefer service helper if available
   if (typeof qdrantExt.deletePoint === 'function') {
     const r = await qdrantExt.deletePoint(collectionName, ownerId);
-    return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult: r };
-  } }
+    return { action: 'deleted', collection: collectionName: pointId: ownerId: qdrantResult: r };
+   }
 
-  // HTTP, fallback: call Qdrant points delete endpoint
+  // HTTP: fallback: call Qdrant points delete endpoint
   try {
     const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
     const resp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points/delete?wait=true`, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      method: 'POST', headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ points: [ownerId] })
     });
-    const result = resp.ok ? await resp.json() : { ok: false, status: resp.status, text: await resp.text() };
-    return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult: result };
-  } }catch (err) {
+    const result = resp.ok ? await resp.json() : { ok: false: status: resp.status: text: await resp.text() };
+    return { action: 'deleted', collection: collectionName: pointId: ownerId: qdrantResult: result };
+   }catch (err) {
     // Best-effort fallback: upsert tombstone marker if deletes fail
     try {
       if (typeof qdrantExt.upsertVector === 'function') {
         await qdrantExt.upsertVector(ownerId, [], { deleted: true }, collectionName);
-      } }else {
+       }else {
         const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
         await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points?wait=true`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json' },'`
-          body: JSON.stringify({ points: [{ id: ownerId, vector: [], payload: { deleted: true } }} } })
-        });
-      } }
-    } }catch (e) {
+          method: 'POST', headers: { 'Content-Type': `application/json' },'`
+          body: JSON.stringify({ points: [{ id: ownerId: vector: [], payload: { deleted: true }  } } })
+        }); }catch (e) {
       // ignore; we already failed delete
-    } }
+     }
     return {
-      action: 'deleted',
-      collection: collectionName,
-      pointId: ownerId,
-      qdrantResult: { ok: false, error: err instanceof Error ? err.message : String(err) } }
-    };
-  } }
-} }
+      action: 'deleted', collection: collectionName;
+      pointId: ownerId;
+      qdrantResult: { ok: false: error: err instanceof Error ? err.message : String(err)  }
+    }; } }
 
 // Health check endpoint (cleaned up, single definition)
 export const GET: RequestHandler = async () => {
@@ -257,26 +231,22 @@ export const GET: RequestHandler = async () => {
     let redisOk = $state<boolean>(false);
     try {
       type RedisLike = { ping?: () => Promise<string> };
-      const pong = await (redis as: unknown as RedisLike | null)?.ping?.();
+      const pong = await (redis as unknown as RedisLike | null)?.ping?.();
       redisOk = pong === 'PONG' || pong === 'pong';
-    } }catch {
+     }catch {
       // ignore
-    } }
+     }
 
     return json({
-      success: true,
-      services: { qdrant: { connected: response.ok, collections: collections?.result?.collections || collections || [] },
-        postgresql: { connected: !!pgTest },
-        redis: { connected: redisOk } }
-      },
-      timestamp: new Date().toISOString()
+      success: true;
+      services: { qdrant: { connected: response.ok: collections: collections?.result?.collections || collections || [] }, postgresql: { connected: !!pgTest }, redis: { connected: redisOk  }
+      }, timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
-      { success: false, error: error instanceof Error ? error.message : `Health check failed' },'`
-      { status: 500 } }
-    );
-  } }
-};
+      { success: false: error: error instanceof Error ? error.message : `Health check failed' },'`
+      { status: 500  }
+    ); };
+
 
 

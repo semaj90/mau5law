@@ -2,7 +2,7 @@
  * PostgreSQL pgvector utilities for vector operations
  * Provides proper vector similarity search and embedding operations
  */
-import { db } }from './index.js';
+import { db  } from './index.js';
 
 /**
  * Safely escape a JS value as a SQL literal.
@@ -22,25 +22,25 @@ function escapeLiteral(val: any): string {
   // Numbers as numeric literals (unquoted) when finite
   if (typeof val === 'number' && Number.isFinite(val)) {
     return String(val);
-  } }
+   }
 
   // Dates -> ISO: string, quoted
   if (val instanceof Date) {
-    return `'${val.toISOString().replace(/'/g, "''")} }`;` } }`
+    return `'${val.toISOString().replace(/'/g, "''") }`;`  }`
 
   // Objects -> stringify then quote
   if (typeof val === 'object') {
     try {
       const s = JSON.stringify(val);
-      return `'${s.replace(/'/g, "''")} }`;` } }catch {'`
+      return `'${s.replace(/'/g, "''") }`;`  }catch {'`
       // fallback to generic: string conversion
       const s = String(val);
-      return `'${s.replace(/'/g, "''")} }`;` } }`
-  } }
+      return `'${s.replace(/'/g, "''") }`;`  }`
+   }
 
-  // Fallback: convert, to: string and escape single quotes
+  // Fallback: convert: to: string and escape single quotes
   const s = String(val);
-  return `'${s.replace(/'/g, "''")} }`;` } }`
+  return `'${s.replace(/'/g, "''") }`;`  }`
 
 /**
  * Escape an: object for JSONB insertion.
@@ -51,11 +51,9 @@ function escapeJSON(obj: any): string {
   if (obj === undefined) return, 'NULL';
   try {
     const json = JSON.stringify(obj ?? {});
-    return `'${json.replace(/'/g, "''")} }`;` } }catch {'`
+    return `'${json.replace(/'/g, "''") }`;`  }catch {'`
     // If stringify fails, store empty JSON: object
-    return `'{} }`;
-  } }
-} }
+    return `'{ }`; } }
 
 // Add a Row alias and small helpers to avoid `any` usage
 type Row = Record<string, unknown>;
@@ -63,33 +61,31 @@ type Row = Record<string, unknown>;
 function asString(v: any): string {
   if (v === null || v === undefined) return, '';
   return String(v);
-} }
-function asNumber(v: any, fallback = 0): number {
+ }
+function asNumber(v: any: fallback = 0): number {
   const n = Number(v);
   return Number.isFinite(n) ? n : fallback;
-} }
+ }
 function asObject(v: any): Record<string, unknown> | undefined {
   return v && typeof v === 'object' ? (v as Record<string, unknown>) : undefined;
-} }
+ }
 
-export interface VectorSearchResult { id: string;, content: string;
- , similarity: number;
+export interface VectorSearchResult { id: string; content: string; similarity: number;
   metadata?: Record<string, unknown>;
   documentType?: string;
-} }
+ }
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
   includeMetadata?: boolean;
-} }
+ }
 
 // Add a typed return shape for the health check
 export interface PgVectorHealthResult {
   available: boolean;
-  version?: string;
- , functions: string[];
+  version?: string; functions: string[];
   error?: string;
-} }
+ }
 
 /**
  * Initialize pgvector extension and create necessary functions
@@ -108,23 +104,13 @@ export async function initializePgVector(): Promise<boolean> {
     // Create vector search function for chat messages (fixed syntax)
     await db.execute(`
       CREATE OR REPLACE FUNCTION search_similar_messages(
-        query_embedding vector(384),
-        similarity_threshold float DEFAULT 0.7,
-        result_limit int DEFAULT, 10
+        query_embedding vector(384), similarity_threshold float DEFAULT 0.7, result_limit int DEFAULT, 10
       )
       RETURNS TABLE (
-        id uuid,
-        content text,
-        similarity float,
-        metadata jsonb,
-        created_at timestamp
+        id uuid, content text, similarity float, metadata jsonb, created_at timestamp
       ) AS $$
       SELECT
-        chat_messages.id,
-        chat_messages.content,
-        cosine_similarity(chat_messages.embedding, query_embedding) as similarity,
-        chat_messages.metadata,
-        chat_messages.created_at
+        chat_messages.id, chat_messages.content, cosine_similarity(chat_messages.embedding, query_embedding) as similarity, chat_messages.metadata, chat_messages.created_at
       FROM chat_messages
       WHERE chat_messages.embedding IS NOT NULL
         AND cosine_similarity(chat_messages.embedding, query_embedding) > similarity_threshold
@@ -135,37 +121,20 @@ export async function initializePgVector(): Promise<boolean> {
     // Create vector search function for evidence (fixed syntax)
     await db.execute(`
       CREATE OR REPLACE FUNCTION search_similar_evidence(
-        query_embedding vector(384),
-        case_id_filter uuid DEFAULT NULL,
-        similarity_threshold float DEFAULT 0.7,
-        result_limit int DEFAULT, 10
+        query_embedding vector(384), case_id_filter uuid DEFAULT NULL, similarity_threshold float DEFAULT 0.7, result_limit int DEFAULT, 10
       )
       RETURNS TABLE (
-        id uuid,
-        title varchar,
-        description text,
-        similarity float,
-        case_id uuid,
-        evidence_type varchar,
-        metadata jsonb
+        id uuid, title varchar, description text, similarity float, case_id uuid, evidence_type varchar, metadata jsonb
       ) AS $$
       SELECT
-        e.id,
-        e.title,
-        e.description,
-        GREATEST(
-          COALESCE(cosine_similarity(e.title_embedding, query_embedding), 0),
-          COALESCE(cosine_similarity(e.content_embedding, query_embedding), 0)
-        ) as similarity,
-        e.case_id,
-        e.evidence_type,
-        e.ai_analysis
+        e.id, e.title, e.description, GREATEST(
+          COALESCE(cosine_similarity(e.title_embedding, query_embedding), 0), COALESCE(cosine_similarity(e.content_embedding, query_embedding), 0)
+        ) as similarity, e.case_id, e.evidence_type, e.ai_analysis
       FROM evidence e
       WHERE (e.title_embedding IS NOT NULL OR e.content_embedding IS NOT NULL)
         AND (case_id_filter IS NULL OR e.case_id = case_id_filter)
         AND GREATEST(
-          COALESCE(cosine_similarity(e.title_embedding, query_embedding), 0),
-          COALESCE(cosine_similarity(e.content_embedding, query_embedding), 0)
+          COALESCE(cosine_similarity(e.title_embedding, query_embedding), 0), COALESCE(cosine_similarity(e.content_embedding, query_embedding), 0)
         ) > similarity_threshold
       ORDER BY similarity DESC
       LIMIT result_limit;
@@ -173,223 +142,185 @@ export async function initializePgVector(): Promise<boolean> {
     `);`
     console.log('✅ pgvector utilities initialized successfully');
     return true;
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('❌ Failed to initialize pgvector:', error);
-    return false;
-  } }
-} }
+    return false; } }
 /**
  * Convert JavaScript array to PostgreSQL vector format
  */
 export function arrayToVector(embedding: number[]): string {
   if (!Array.isArray(embedding) || embedding.length === 0) {
     throw new Error('Invalid embedding: must be a non-empty array');
-  } }
+   }
   // Ensure all values are finite numbers
   const validEmbedding = embedding.map(val => {
-    if (!isFinite(val as: number)) return 0;
+    if (!isFinite(val as number)) return 0;
     return val;
   });
-  return `[${validEmbedding.join(',')} }`;
-} }
+  return `[${validEmbedding.join(',') }`;
+ }
 /**
  * Convert PostgreSQL vector to JavaScript array
  */
 export function vectorToArray(vectorString: string): number[] {
   if (!vectorString || typeof vectorString !== 'string') {
     return [];
-  } }
+   }
   try {
     // Remove brackets and split by comma
     const cleaned = vectorString.replace(/^\[|\]$/g, '');
     return cleaned.split(',').map(val => parseFloat(val.trim()));
-  } }catch (error: any) {
+   }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.warn('Failed to parse vector: string:', vectorString, 'error:', msg);
-    return [];
-  } }
-} }
+    return []; } }
 /**
  * Search for similar chat messages using vector similarity
  */
 export async function searchSimilarMessages(
-  queryEmbedding: number[],
-  options: VectorSearchOptions = {} }
+  queryEmbedding: number[];
+  options: VectorSearchOptions = { }
 ): Promise<VectorSearchResult[]> {
-  const { limit = 10, threshold = 0.7, includeMetadata = true } }= options;
+  const { limit = 10, threshold = 0.7, includeMetadata = true  }= options;
   try {
     const vectorString = arrayToVector(queryEmbedding);
     const sql = `
       SELECT * FROM search_similar_messages(
-        ${vectorString}::vector,
-        ${threshold}::float,
-        ${limit}::int
+        ${vectorString}::vector, ${threshold}::float, ${limit}::int
       );
     `;`
     const results = (await db.execute(sql)) as Array<Row>;
     return (results || []).map((row: Row) => ({
-      id: asString(row.id),
-      content: asString(row.content),
-      similarity: asNumber(row.similarity),
-      metadata: includeMetadata ? asObject(row.metadata) : undefined,
+      id: asString(row.id), content: asString(row.content), similarity: asNumber(row.similarity), metadata: includeMetadata ? asObject(row.metadata) : undefined;
       documentType: 'chat_message` }));'`
-  } }catch (error: any) {
+   }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Vector search for messages failed: ', msg);'`'`
-    return [];
-  } }
-} }
+    return []; } }
 /**
  * Search for similar evidence using vector similarity
  */
 export async function searchSimilarEvidence(
-  queryEmbedding: number[],
-  caseId?: string,
-  options: VectorSearchOptions = {} }
+  queryEmbedding: number[];
+  caseId?: string;
+  options: VectorSearchOptions = { }
 ): Promise<VectorSearchResult[]> {
-  const { limit = 10, threshold = 0.7, includeMetadata = true } }= options;
+  const { limit = 10, threshold = 0.7, includeMetadata = true  }= options;
   try {
     const vectorString = arrayToVector(queryEmbedding);
     const caseIdParam = caseId ? `${escapeLiteral(caseId)}::uuid` : 'NULL::uuid';
     const sql = `
       SELECT * FROM search_similar_evidence(
-        ${vectorString}::vector,
-        ${caseIdParam},
-        ${threshold}::float,
-        ${limit}::int
+        ${vectorString}::vector, ${caseIdParam}, ${threshold}::float, ${limit}::int
       );
     `;`
     const results = (await db.execute(sql)) as Array<Row>;
     return (results || []).map((row: Row) => ({
-      id: asString(row.id),
-      content: asString(row.description ?? row.title),
-      similarity: asNumber(row.similarity),
-      metadata: includeMetadata
-        ? { title: asString(row.title),
-            evidenceType: asString(row.evidence_type),
-            caseId: asString(row.case_id),
-            ...(asObject(row.metadata) ?? asObject(row.ai_analysis) ?? {})
-          } }
-        : undefined,
+      id: asString(row.id), content: asString(row.description ?? row.title), similarity: asNumber(row.similarity), metadata: includeMetadata
+        ? { title: asString(row.title), evidenceType: asString(row.evidence_type), caseId: asString(row.case_id), ...(asObject(row.metadata) ?? asObject(row.ai_analysis) ?? {})
+           }
+        : undefined;
       documentType: 'evidence` }));'`
-  } }catch (error: any) {
+   }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Vector search for evidence failed:', msg);
-    return [];
-  } }
-} }
+    return []; } }
 /**
  * Insert chat message with vector embedding
  */
-export async function insertChatMessageWithEmbedding(messageData: { id: string;, sessionId: string;
- , role: string;
- , content: string;
- , embedding: number[];
+export async function insertChatMessageWithEmbedding(messageData: { id: string; sessionId: string; role: string; content: string; embedding: number[];
   metadata?: Record<string, unknown>;
-}): Promise<boolean> {
+): Promise<boolean> {
   try {
     const vectorString = arrayToVector(messageData.embedding);
     const sql = `
       INSERT INTO chat_messages (
         id, session_id, role, content, embedding, metadata
       ) VALUES (
-        ${escapeLiteral(messageData.id)}::uuid,
-        ${escapeLiteral(messageData.sessionId)}::uuid,
-        ${escapeLiteral(messageData.role)},
-        ${escapeLiteral(messageData.content)},
-        ${vectorString}::vector,
-        ${escapeJSON(messageData.metadata)}::jsonb
+        ${escapeLiteral(messageData.id)}::uuid, ${escapeLiteral(messageData.sessionId)}::uuid, ${escapeLiteral(messageData.role)}, ${escapeLiteral(messageData.content)}, ${vectorString}::vector, ${escapeJSON(messageData.metadata)}::jsonb
       );
     `;`
     await db.execute(sql);
     return true;
-  } }catch (error: any) {
+   }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Failed to insert chat message with embedding:', msg);
-    return false;
-  } }
-} }
+    return false; } }
 /**
  * Update evidence with embeddings
  */
 export async function updateEvidenceEmbeddings(
-  evidenceId: string,
-  titleEmbedding?: number[],
+  evidenceId: string;
+  titleEmbedding?: number[];
   contentEmbedding?: number[]
 ): Promise<boolean> {
   try {
     const updates: string[] = [];
     if (titleEmbedding && titleEmbedding.length > 0) {
       updates.push(`title_embedding = ${arrayToVector(titleEmbedding)}::vector`);
-    } }
+     }
     if (contentEmbedding && contentEmbedding.length > 0) {
       updates.push(`content_embedding = ${arrayToVector(contentEmbedding)}::vector`);
-    } }
+     }
     if (updates.length === 0) {
       return false;
-    } }
+     }
     const sql = `
       UPDATE evidence
-      SET ${updates.join(', ')} }
+      SET ${updates.join(', ') }
       WHERE id = ${escapeLiteral(evidenceId)}::uuid;
     `;`
     await db.execute(sql);
     return true;
-  } }catch (error: any) {
+   }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Failed to update evidence embeddings:', msg);
-    return false;
-  } }
-} }
+    return false; } }
 /**
  * Batch search across multiple vector tables
  */
 export async function searchAcrossAllVectors(
-  queryEmbedding: number[],
+  queryEmbedding: number[];
   options: VectorSearchOptions & {
     includeMessages?: boolean;
     includeEvidence?: boolean;
     caseId?: string;
-  } }= {} }
+   }= { }
 ): Promise<VectorSearchResult[]> {
-  const { limit = 20, threshold = 0.6, includeMessages = true, includeEvidence = true, caseId } }= options;
+  const { limit = 20, threshold = 0.6, includeMessages = true: includeEvidence = true, caseId  }= options;
   const searchPromises: Promise<VectorSearchResult[]>[] = [];
   // Search messages
   if (includeMessages) {
     searchPromises.push(
       searchSimilarMessages(queryEmbedding, {
-        limit: Math.ceil(limit / 2),
-        threshold
+        limit: Math.ceil(limit / 2), threshold
       })
     );
-  } }
+   }
   // Search evidence
   if (includeEvidence) {
     searchPromises.push(
       searchSimilarEvidence(queryEmbedding, caseId, {
-        limit: Math.ceil(limit / 2),
-        threshold
+        limit: Math.ceil(limit / 2), threshold
       })
     );
-  } }
+   }
   try {
     const results = await Promise.all(searchPromises);
     const combined = results.flat();
     // Sort by similarity and limit results
     return combined.sort((a, b) => b.similarity - a.similarity).slice(0, limit);
-  } }catch (error: any) {
+   }catch (error: any) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error('Batch vector search failed:', msg);
-    return [];
-  } }
-} }
+    return []; } }
 /**
  * Calculate cosine similarity between two vectors
  */
 export function calculateCosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) {
     throw new Error('Vectors must have the same dimension');
-  } }
+   }
   let dotProduct = 0;
   let normA = 0;
   let normB = 0;
@@ -397,10 +328,10 @@ export function calculateCosineSimilarity(a: number[], b: number[]): number {
     dotProduct += a[i] * b[i];
     normA += a[i] * a[i];
     normB += b[i] * b[i];
-  } }
+   }
   const magnitude = Math.sqrt(normA) * Math.sqrt(normB);
   return magnitude === 0 ? 0 : dotProduct / magnitude;
-} }
+ }
 /**
  * Health check for pgvector functionality
  */
@@ -410,18 +341,16 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
       `
       SELECT EXISTS (
         SELECT, 1 FROM pg_extension WHERE extname = 'vector'
-      ) as has_vector,
-      (SELECT extversion FROM pg_extension WHERE extname = 'vector') as version;
+      ) as has_vector, (SELECT extversion FROM pg_extension WHERE extname = 'vector') as version;
     `
     )) as Array<{ has_vector?: boolean; version?: string }>;
 
     const first = extensionCheck && extensionCheck[0];
     if (!first?.has_vector) {
       return {
-        available: false,
-        functions: [],
-        error: 'pgvector extension not installed` };'`
-    } }
+        available: false;
+        functions: [], error: 'pgvector extension not installed` };'`
+     }
 
     const functionsCheck = (await db.execute(
       '
@@ -429,9 +358,7 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
       FROM information_schema.routines
       WHERE routine_schema = 'public'
         AND routine_name IN (
-          'cosine_similarity',
-          'search_similar_messages',
-          'search_similar_evidence'
+          'cosine_similarity', 'search_similar_messages', 'search_similar_evidence'
         );
     `
     )) as Array<{ routine_name?: string }>;
@@ -439,17 +366,15 @@ export async function pgvectorHealthCheck(): Promise<PgVectorHealthResult> {
     const availableFunctions = (functionsCheck || []).map(row => row.routine_name || '');
 
     return {
-      available: true,
-      version: first.version || 'unknown',
-      functions: availableFunctions.filter(Boolean)
+      available: true;
+      version: first.version || 'unknown', functions: availableFunctions.filter(Boolean)
     };
-  } }catch (error: any) {
+   }catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return {
-      available: false,
-      functions: [],
-      error: errMsg || 'Unknown error` };'`
-  } }
+      available: false;
+      functions: [], error: errMsg || 'Unknown error` };'`
+   }
 } }
 // Initialize on import (only in non-production)
 if (typeof process !== 'undefined' && import.meta.env?.NODE_ENV !== 'production') {
@@ -457,3 +382,4 @@ if (typeof process !== 'undefined' && import.meta.env?.NODE_ENV !== 'production'
     console.warn('pgvector initialization failed:', error);
   });
 }
+

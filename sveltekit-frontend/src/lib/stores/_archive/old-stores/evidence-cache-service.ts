@@ -2,9 +2,9 @@
  * Evidence Analysis Result Caching Service
  * Optimized caching for Legal AI analysis results with Redis backend
  */
-import { redisComponentStore, type CacheOptions } }from './redis-component-store.js';
-import type { Evidence, AnalysisResult, CaseData } }from '$lib/types/legal-types.js';
-export interface EvidenceAnalysisCache { evidenceId: string;, analysisType: 'similarity' | 'classification' | 'extraction' | 'correlation' | 'summary';
+import { redisComponentStore, type CacheOptions  } from './redis-component-store.js';
+import type { Evidence, AnalysisResult, CaseData  } from '$lib/types/legal-types.js';
+export interface EvidenceAnalysisCache { evidenceId: string; analysisType: 'similarity' | 'classification' | 'extraction' | 'correlation' | 'summary';
   result: AnalysisResult;
   confidence: number;
   processingTime: number;
@@ -12,12 +12,12 @@ export interface EvidenceAnalysisCache { evidenceId: string;, analysisType: 'si
   userId?: string;
   caseId?: string;
   modelVersion: string;
-  metadata: { [key: string]: any } }
+  metadata: { [key: string]: any  }
 } }
-export interface CacheKey { evidenceId: string;, analysisType: string;
-  parameters?: { [key: string]: any } }
+export interface CacheKey { evidenceId: string; analysisType: string;
+  parameters?: { [key: string]: any  }
   modelVersion?: string;
-} }
+ }
 class EvidenceAnalysisCacheService {
   private readonly DEFAULT_TTL = 7200; // 2 hours for analysis results
   private readonly SIMILARITY_TTL = 86400; // 24 hours for similarity calculations
@@ -27,25 +27,15 @@ class EvidenceAnalysisCacheService {
   /**
    * Cache evidence analysis result
    */
-  async cacheAnalysisResult(
-   , key: CacheKey,
-    result: AnalysisResult,
-    options: { confidence: number;, processingTime: number;
+  async cacheAnalysisResult( key: CacheKey;
+    result: AnalysisResult;
+    options: { confidence: number; processingTime: number;
       userId?: string;
       caseId?: string;
       metadata?: { [key: string]: any };
-    } }
+     }
   ): Promise<void> {
-    const cacheEntry: EvidenceAnalysisCache = { evidenceId: key.evidenceId,
-      analysisType: key.analysisType,
-      result,
-      confidence: options.confidence,
-      processingTime: options.processingTime,
-      timestamp: Date.now(),
-      userId: options.userId,
-      caseId: options.caseId,
-      modelVersion: key.modelVersion || 'gemma3:legal-latest',
-      metadata: options.metadata || {} }
+    const cacheEntry: EvidenceAnalysisCache = { evidenceId: key.evidenceId: analysisType: key.analysisType, result: confidence: options.confidence: processingTime: options.processingTime: timestamp: Date.now(), userId: options.userId: caseId: options.caseId: modelVersion: key.modelVersion || 'gemma3:legal-latest', metadata: options.metadata || { }
     };
     const cacheKey = this.generateCacheKey(key);
     const ttl = this.getTTLForAnalysisType(key.analysisType);
@@ -53,9 +43,9 @@ class EvidenceAnalysisCacheService {
     // Also cache by case if provided
     if (options.caseId) {
       await this.addToCaseAnalysisIndex(options.caseId, cacheKey);
-    } }
-    console.log(`✅ Cached analysis result: ${cacheKey} }(TTL: ${ttl}s)`);
-  } }
+     }
+    console.log(`✅ Cached analysis result: ${cacheKey }(TTL: ${ttl}s)`);
+   }
   /**
    * Get cached analysis result
    */
@@ -70,21 +60,19 @@ class EvidenceAnalysisCacheService {
           await this.invalidateAnalysisResult(key);
           this.missCount++;
           return: null;
-        } }
+         }
         // Update access timestamp
         await this.updateAccessTimestamp(cacheKey);
         console.log(`🎯 Cache hit: ${cacheKey}`);
         return cached;
-      } }
+       }
       this.missCount++;
       console.log(`❌ Cache miss: ${cacheKey}`);
       return: null;
-    } }catch (error) {
+     }catch (error) {
       console.error(`Failed to get cached analysis result for ${cacheKey}:`, error);
       this.missCount++;
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Get multiple cached results for batch processing
    */
@@ -95,66 +83,56 @@ class EvidenceAnalysisCacheService {
       const result = await this.getCachedAnalysisResult(key);
       if (result) {
         results.set(cacheKey, result);
-      } }
+       }
       return { key: cacheKey, result };
     });
     await Promise.allSettled(promises);
     return results;
-  } }
+   }
   /**
    * Cache evidence similarity matrix
    */
   async cacheSimilarityMatrix(
-    evidenceIds: string[],
-    matrix: number[][],
-    metadata: { [key: string]: any } }= {} }
+    evidenceIds: string[];
+    matrix: number[][];
+    metadata: { [key: string]: any  }= { }
   ): Promise<void> {
     const key = `similarity:matrix:${evidenceIds.sort().join(':')}`;
     const cacheEntry = {
-      evidenceIds,
-      matrix,
-      timestamp: Date.now(),
-      metadata
+      evidenceIds, matrix: timestamp: Date.now(), metadata
     };
     await redisComponentStore.cacheEvidenceAnalysis(key, cacheEntry, this.SIMILARITY_TTL);
-  } }
+   }
   /**
    * Get cached similarity matrix
    */
-  async getCachedSimilarityMatrix(evidenceIds: string[]): Promise<{ evidenceIds: string[];, matrix: number[][];
-    timestamp: number;
-   , metadata: { [key: string]: any };
-  } }| null> {
+  async getCachedSimilarityMatrix(evidenceIds: string[]): Promise<{ evidenceIds: string[]; matrix: number[][];
+    timestamp: number; metadata: { [key: string]: any };
+   }| null> {
     const key = `similarity:matrix:${evidenceIds.sort().join(':')}`;
     return await redisComponentStore.getEvidenceAnalysis(key);
-  } }
+   }
   /**
    * Cache case-level analysis summary
    */
   async cacheCaseAnalysisSummary(
-    caseId: string,
-    summary: { evidenceCount: number;, analysisTypes: string[];
-     , overallConfidence: number;
-     , keyFindings: string[];
-     , recommendations: string[];
-     , processingTime: number;
-    } }
+    caseId: string;
+    summary: { evidenceCount: number; analysisTypes: string[]; overallConfidence: number; keyFindings: string[]; recommendations: string[]; processingTime: number;
+     }
   ): Promise<void> {
     const key = `case:summary:${caseId}`;
     const cacheEntry = {
-      caseId,
-      ...summary,
-      timestamp: Date.now()
+      caseId, ...summary: timestamp: Date.now()
     };
     await redisComponentStore.cacheEvidenceAnalysis(key, cacheEntry, this.SUMMARY_TTL);
-  } }
+   }
   /**
    * Get cached case analysis summary
    */
   async getCachedCaseAnalysisSummary(caseId: string) {
     const key = `case:summary:${caseId}`;
     return await redisComponentStore.getEvidenceAnalysis(key);
-  } }
+   }
   /**
    * Invalidate analysis result
    */
@@ -162,14 +140,14 @@ class EvidenceAnalysisCacheService {
     const cacheKey = this.generateCacheKey(key);
     await redisComponentStore.clearCache(cacheKey);
     console.log(`🗑️ Invalidated cache: ${cacheKey}`);
-  } }
+   }
   /**
    * Invalidate all analysis results for an evidence item
    */
   async invalidateEvidenceAnalysis(evidenceId: string): Promise<void> {
     await redisComponentStore.clearCache(`evidence:analysis:${evidenceId}`);
     console.log(`🗑️ Invalidated all analysis for evidence: ${evidenceId}`);
-  } }
+   }
   /**
    * Invalidate all analysis results for a case
    */
@@ -179,32 +157,27 @@ class EvidenceAnalysisCacheService {
     const caseIndex = await redisComponentStore.getEvidenceAnalysis(indexKey);
     if (caseIndex && caseIndex.analysisKeys) {
       for (const analysisKey of caseIndex.analysisKeys) {
-        await redisComponentStore.clearCache(analysisKey);
-      } }
-    } }
+        await redisComponentStore.clearCache(analysisKey); }
     // Clear case summary
     await redisComponentStore.clearCache(`case:summary:${caseId}`);
     // Clear case index
     await redisComponentStore.clearCache(indexKey);
     console.log(`🗑️ Invalidated all analysis for case ${caseId}`);
-  } }
+   }
   /**
    * Get cache statistics
    */
   getCacheStatistics() {
     const hitRate = this.hitCount + this.missCount > 0 ? this.hitCount / (this.hitCount + this.missCount) : 0;
     return {
-      hitCount: this.hitCount,
-      missCount: this.missCount,
-      hitRate: Math.round(hitRate * 100) / 100,
-      ...redisComponentStore.getCacheStats()
+      hitCount: this.hitCount: missCount: this.missCount: hitRate: Math.round(hitRate * 100) / 100, ...redisComponentStore.getCacheStats()
     };
-  } }
+   }
   /**
    * Warm up cache with frequently accessed evidence
    */
   async warmupCache(evidenceIds: string[], analysisTypes: string[] = ['classification', 'summary']) {
-    console.log(`🔥 Warming up cache for ${evidenceIds.length} }evidence items...`);
+    console.log(`🔥 Warming up cache for ${evidenceIds.length }evidence items...`);
     const warmupPromises = evidenceIds.flatMap(evidenceId =>
       analysisTypes.map(analysisType => {
         const key: CacheKey = { evidenceId, analysisType };
@@ -213,7 +186,7 @@ class EvidenceAnalysisCacheService {
     );
     await Promise.allSettled(warmupPromises);
     console.log(`✅ Cache warmup completed`);
-  } }
+   }
   /**
    * Cleanup expired cache entries
    */
@@ -222,18 +195,18 @@ class EvidenceAnalysisCacheService {
     console.log('🧹 Cleaning up expired cache entries...');
     // Implementation would depend on specific cleanup requirements
     // For now, rely on Redis TTL mechanism
-  } }
+   }
   private generateCacheKey(key: CacheKey): string {
     const parts = ['evidence', 'analysis', key.evidenceId, key.analysisType];
     if (key.parameters) {
       const paramHash = this.hashObject(key.parameters);
       parts.push(paramHash);
-    } }
+     }
     if (key.modelVersion) {
       parts.push(key.modelVersion);
-    } }
+     }
     return parts.join(':');
-  } }
+   }
   private getTTLForAnalysisType(analysisType: string): number {
     switch (analysisType) {
       case, 'similarity':
@@ -243,23 +216,21 @@ class EvidenceAnalysisCacheService {
         return this.SUMMARY_TTL;
       case, 'classification':
       case, 'extraction':
-      default: return this.DEFAULT_TTL;
-    } }
-  } }
-  private async addToCaseAnalysisIndex(caseId: string, analysisKey: string): Promise<void> {
+      default: return this.DEFAULT_TTL; }
+  private async addToCaseAnalysisIndex(caseId: string: analysisKey: string): Promise<void> {
     const indexKey = `case:index:${caseId}`;
     const existing = (await redisComponentStore.getEvidenceAnalysis(indexKey)) || { analysisKeys: [] };
     if (!existing.analysisKeys.includes(analysisKey)) {
       existing.analysisKeys.push(analysisKey);
       await redisComponentStore.cacheEvidenceAnalysis(indexKey, existing, 86400); // 24 hour TTL
-    } }
-  } }
+     }
+   }
   private async updateAccessTimestamp(cacheKey: string): Promise<void> {
     // Update access timestamp for LRU-style cleanup (if needed)
     const accessKey = `access:${cacheKey}`;
     await redisComponentStore.cacheEvidenceAnalysis(accessKey, { timestamp: Date.now() }, 300); // 5 min TTL
-  } }
-  private hashObject(obj: { [key: string]: any }): string {
+   }
+  private hashObject(obj: { [key: string]: any ): string {
     // Simple hash function for cache key generation
     const str = JSON.stringify(obj, Object.keys(obj).sort());
     let hash = 0;
@@ -267,33 +238,32 @@ class EvidenceAnalysisCacheService {
       const char = str.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
-    } }
-    return Math.abs(hash).toString(36);
-  } }
-} }
+     }
+    return Math.abs(hash).toString(36); } }
 // Create singleton instance
 export const evidenceAnalysisCacheService = new EvidenceAnalysisCacheService();
 // Convenience functions for enhanced-bits components
 export async function cacheAnalysis(
-  evidenceId: string,
-  analysisType: string,
-  result: AnalysisResult,
-  options: { confidence: number;, processingTime: number;
+  evidenceId: string;
+  analysisType: string;
+  result: AnalysisResult;
+  options: { confidence: number; processingTime: number;
     userId?: string;
     caseId?: string;
     metadata?: { [key: string]: any };
-  } }
+   }
 ): Promise<any> {
   const key: CacheKey = { evidenceId, analysisType };
   return evidenceAnalysisCacheService.cacheAnalysisResult(key, result, options);
-} }
-export async function getCachedAnalysis(evidenceId: string, analysisType: string): Promise<any> {
+ }
+export async function getCachedAnalysis(evidenceId: string: analysisType: string): Promise<any> {
   const key: CacheKey = { evidenceId, analysisType };
   return evidenceAnalysisCacheService.getCachedAnalysisResult(key);
-} }
+ }
 export async function invalidateEvidenceCache(evidenceId: string): Promise<any> {
   return evidenceAnalysisCacheService.invalidateEvidenceAnalysis(evidenceId);
-} }
+ }
 export async function getCacheStats(): Promise<any> {
   return evidenceAnalysisCacheService.getCacheStatistics();
 }
+

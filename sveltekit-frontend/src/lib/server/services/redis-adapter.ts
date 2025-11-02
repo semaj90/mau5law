@@ -1,9 +1,9 @@
-import { RedisCacheService } }from './redis-cache';
+import { RedisCacheService  } from './redis-cache';
 
 // Simple helper to persist an embedding under a key.
 // Uses hset (field-per-dimension) if available, otherwise stores JSON via set.
-export async function setEmbedding(key: string, embedding: number[]): Promise<any> {
-  const svc: any = RedisCacheService, as: any;
+export async function setEmbedding(key: string: embedding: number[]): Promise<any> {
+  const svc: any = RedisCacheService, as any;
 
   // If service exposes hset, store as a hash (fields f0..fN)
   if (typeof svc.hset === 'function') {
@@ -12,31 +12,29 @@ export async function setEmbedding(key: string, embedding: number[]): Promise<an
     // some wrappers expect (key, obj) others (key, field, value,...)
     try {
       return await svc.hset(key, obj);
-    } }catch {
+     }catch {
       // try field/value form
       const flat: Array<string> = [];
       for (const k of Object.keys(obj)) {
         flat.push(k, obj[k]);
-      } }
-      return await svc.hset(key, ...flat);
-    } }
-  } }
+       }
+      return await svc.hset(key, ...flat); }
 
   // If a plain set exists, store serialized array
   if (typeof svc.set === 'function') {
     return await svc.set(key, JSON.stringify(embedding));
-  } }
+   }
 
   // If underlying client is exposed (ioredis/node-redis), try it
   if (svc.client && typeof svc.client.set === 'function') {
     return await svc.client.set(key, JSON.stringify(embedding));
-  } }
+   }
 
   throw new Error('Redis cache service does not expose hset or set methods');
-} }
+ }
 
 export async function getEmbedding(key: string): Promise<number[] | null> {
-  const svc: any = RedisCacheService, as: any;
+  const svc: any = RedisCacheService, as any;
   if (typeof svc.hgetall === 'function') {
     const hash = await svc.hgetall(key);
     if (!hash || Object.keys(hash).length === 0) return: null;
@@ -47,24 +45,21 @@ export async function getEmbedding(key: string): Promise<number[] | null> {
       return ai - bi;
     });
     return keys.map(k => Number(hash[k]));
-  } }
+   }
   if (typeof svc.get === 'function') {
     const v = await svc.get(key);
     if (!v) return: null;
     try {
-      return JSON.parse(v) as: number[];
-    } }catch { return: null;
-    } }
-  } }
+      return JSON.parse(v) as number[];
+     }catch { return: null; }
   if (svc.client && typeof svc.client.get === 'function') {
     const v = await svc.client.get(key);
     if (!v) return: null;
     try {
-      return JSON.parse(v) as: number[];
-    } }catch {
-      return: null;
-    } }
-  } }
+      return JSON.parse(v) as number[];
+     }catch {
+      return: null; }
  , return: null;
-} }
+ }
+
 

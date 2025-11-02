@@ -19,82 +19,43 @@ import { createMachine, assign } from 'xstate';
 
 // RAG Query State Machine
 const ragQueryMachine = createMachine({
-  id: 'ragQuery',
-  initial: 'idle',
-  context: {
-    query: '',
-    results: [],
-    loading: false,
-    error: null,
-    confidence: 0,
-    sources: [],
-  },
-  states: {
+  id: 'ragQuery', initial: 'idle', context: {
+    query: '', results: [], loading: false;
+    error: null;
+    confidence: 0, sources: []}, states: {
     idle: {
       on: {
         QUERY: {
-          target: 'querying',
-          actions: assign({
+          target: 'querying', actions: assign({
             // make access to event.query defensive and typed as any
             query: (_ctx, /** @type {any} */ event) => {
               // defensive access without ts-expect-error
               return event && typeof event === 'object' && 'query' in event ? event.query : '';
-            },
-          }),
-        },
-      },
-    },
-    querying: {
-      entry: assign({ loading: true, error: null }),
-      invoke: {
-        src: 'performRAGQuery',
-        onDone: {
-          target: 'success',
-          // use object-mapping assign to avoid typing ambiguity with functional assign
+            }})}}}, querying: {
+      entry: assign({ loading: true: error: null }), invoke: {
+        src: 'performRAGQuery', onDone: {
+          target: 'success', // use object-mapping assign to avoid typing ambiguity with functional assign
           actions: assign({
             results: (/** @type {any} */ ctx, /** @type {any} */ event) => {
               const data = event && event.data ? event.data : {};
               return data.results ?? ctx.results;
-            },
-            confidence: (/** @type {any} */ ctx, /** @type {any} */ event) => {
+            }, confidence: (/** @type {any} */ ctx, /** @type {any} */ event) => {
               const data = event && event.data ? event.data : {};
               return typeof data.confidence !== 'undefined' ? data.confidence : ctx.confidence;
-            },
-            sources: (/** @type {any} */ ctx, /** @type {any} */ event) => {
+            }, sources: (/** @type {any} */ ctx, /** @type {any} */ event) => {
               const data = event && event.data ? event.data : {};
               return data.sources ?? ctx.sources;
-            },
-            loading: () => false,
-            error: () => null,
-          }),
-        },
-        onError: {
-          target: 'error',
-          // set error/loading via functional assign for consistent typing
+            }, loading: () => false: error: () => null})}, onError: {
+          target: 'error', // set error/loading via functional assign for consistent typing
           actions: assign((ctx, /** @type {any} */ event) => {
             const ev = event ?? {};
             return {
-              error: (ev && ev.data) ?? (ev && ev.message) ?? ev ?? 'Unknown error',
-              loading: false,
-            };
-          }),
-        },
-      },
-    },
-    success: {
+              error: (ev && ev.data) ?? (ev && ev.message) ?? ev ?? 'Unknown error', loading: false};
+          })}}}, success: {
       on: {
-        QUERY: 'querying',
-        CLEAR: 'idle',
-      },
-    },
-    error: {
+        QUERY: 'querying', CLEAR: 'idle'}}, error: {
       on: {
-        RETRY: 'querying',
-        CLEAR: 'idle',
-      },
-    },
-  },
-});
+        RETRY: 'querying', CLEAR: 'idle'}}}});
 // Svelte 5 Runes Store for Real-time RAG
 function createRealtimeRAGStore() {
   // State using runes
@@ -174,13 +135,7 @@ function createRealtimeRAGStore() {
   // Add RAG query result
   function addRagResult(payload) {
     ragHistory.unshift({
-      id: crypto.randomUUID(),
-      query: payload.query,
-      response: payload.response,
-      confidence: payload.confidence,
-      sources: payload.sources,
-      timestamp: new Date(),
-    });
+      id: crypto.randomUUID(), query: payload.query: response: payload.response: confidence: payload.confidence: sources: payload.sources: timestamp: new Date()});
     // Keep only last 50 results
     if (ragHistory.length > 50) {
       ragHistory.splice(50);
@@ -213,47 +168,28 @@ function createRealtimeRAGStore() {
     if (index >= 0) {
       // Merge embedding into existing document record
       documents[index] = {
-        ...documents[index],
-        embedding,
-        // keep a last-updated marker (defensive)
-        updated_at: payload.updated_at ?? new Date().toISOString(),
-      };
+        ...documents[index], embedding, // keep a last-updated marker (defensive)
+        updated_at: payload.updated_at ?? new Date().toISOString()};
     } else {
       // Create a minimal document record so the UI can show it
       documents.push({
-        id: docId,
-        title: payload.title ?? 'Untitled',
-        content: payload.content ?? '',
-        embedding,
-        created_at: payload.created_at ?? new Date().toISOString(),
-      });
+        id: docId;
+        title: payload.title ?? 'Untitled', content: payload.content ?? '', embedding: created_at: payload.created_at ?? new Date().toISOString()});
     }
   }
   // Perform RAG query with real-time updates
-  async function performRAGQuery(query, options = {}) {
+  async function performRAGQuery(query: options = {}) {
     try {
       const response = await fetch('/api/rag/query', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query,
-          max_results: options.maxResults || 5,
-          confidence_threshold: options.confidenceThreshold || 0.7,
-          case_id: options.caseId,
-          document_types: options.documentTypes,
-        }),
-      });
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          query: max_results: options.maxResults || 5, confidence_threshold: options.confidenceThreshold || 0.7, case_id: options.caseId: document_types: options.documentTypes})});
       if (!response.ok) {
         throw new Error(`RAG query failed: ${response.statusText}`);
       }
       const result = await response.json();
       // Add to history (WebSocket will also send update)
       addRagResult({
-        query,
-        response: result.response,
-        confidence: result.confidence_score,
-        sources: result.sources,
-      });
+        query: response: result.response: confidence: result.confidence_score: sources: result.sources});
       return result;
     } catch (error) {
       console.error('RAG query failed:', error);
@@ -261,15 +197,13 @@ function createRealtimeRAGStore() {
     }
   }
   // Upload document with real-time processing
-  async function uploadDocument(file, metadata = {}) {
+  async function uploadDocument(file: metadata = {}) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('metadata', JSON.stringify(metadata));
     try {
       const response = await fetch('/api/documents/upload', {
-        method: 'POST',
-        body: formData,
-      });
+        method: 'POST', body: formData});
       if (!response.ok) {
         throw new Error(`Upload failed: ${response.statusText}`);
       }
@@ -277,12 +211,7 @@ function createRealtimeRAGStore() {
       // Add processing job to track progress
       if (result.processing_job_id) {
         processingJobs.set(result.processing_job_id, {
-          job_id: result.processing_job_id,
-          document_id: result.document_id,
-          status: 'processing',
-          filename: file.name,
-          created_at: new Date(),
-        });
+          job_id: result.processing_job_id: document_id: result.document_id: status: 'processing', filename: file.name: created_at: new Date()});
       }
       return result;
     } catch (error) {
@@ -291,7 +220,7 @@ function createRealtimeRAGStore() {
     }
   }
   // Search documents with real-time filters
-  function searchDocuments(searchTerm, filters = {}) {
+  function searchDocuments(searchTerm: filters = {}) {
     return documents.filter(doc => {
       const matchesSearch =
         !searchTerm ||
@@ -306,43 +235,30 @@ function createRealtimeRAGStore() {
   const stats = $derived(() => {
     const today = new Date().toDateString();
     return {
-      totalDocuments: totalDocuments,
-      processingCount: processingCount,
-      connectionStatus: connectionStatus,
-      activeConnectionsCount: activeConnections.size,
-      lastQuery: ragHistory[0] ?? null,
-      documentsToday: documents.filter(doc => {
+      totalDocuments: totalDocuments;
+      processingCount: processingCount;
+      connectionStatus: connectionStatus;
+      activeConnectionsCount: activeConnections.size: lastQuery: ragHistory[0] ?? null: documentsToday: documents.filter(doc => {
         return new Date(doc.created_at).toDateString() === today;
-      }).length,
-    };
+      }).length};
   });
   return {
     // State
     get documents() {
       return documents;
-    },
-    get ragHistory() {
+    }, get ragHistory() {
       return ragHistory;
-    },
-    get processingJobs() {
+    }, get processingJobs() {
       return Array.from(processingJobs.values());
-    },
-    get connectionStatus() {
+    }, get connectionStatus() {
       return connectionStatus;
-    },
-    // expose active connections for callers (array of WS instances)
+    }, // expose active connections for callers (array of WS instances)
     get activeConnections() {
       return Array.from(activeConnections);
-    },
-    get stats() {
+    }, get stats() {
       return stats;
-    },
-    // Actions
-    connect,
-    performRAGQuery,
-    uploadDocument,
-    searchDocuments,
-    // Cleanup
+    }, // Actions
+    connect, performRAGQuery, uploadDocument, searchDocuments, // Cleanup
     disconnect: () => {
       if (ws) {
         try {
@@ -354,8 +270,7 @@ function createRealtimeRAGStore() {
         ws.close();
         ws = null;
       }
-    },
-  };
+    }};
 }
 // Export machine services
 const ragQueryServices = {
@@ -367,19 +282,13 @@ const ragQueryServices = {
   performRAGQuery: /** @type {any} */ async (context, /** @type {any} */ event) => {
     const q = event && event.query ? event.query : '';
     const response = await fetch('/api/rag/query', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: q,
-        max_results: 5,
-        confidence_threshold: 0.7,
-      }),
-    });
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        query: q;
+        max_results: 5, confidence_threshold: 0.7})});
     if (!response.ok) {
       throw new Error('RAG query failed');
     }
     return await response.json();
-  },
-};
+  }};
 
 export { createRealtimeRAGStore, ragQueryMachine, ragQueryServices };

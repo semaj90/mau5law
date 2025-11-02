@@ -1,14 +1,14 @@
-import { browser } }from '$app/environment';
+import { browser  } from '$app/environment';
 
 // Types & enums (fixed unmatched braces / typos)
 export interface ServiceError extends Error {
   code?: number;
   details?: string;
   metadata?: Record<string, unknown>;
-} }
+ }
 export interface ClientOptions {
   [key: string]: any;
-} }
+ }
 
 // Server-side gRPC variable (lazy-loaded in connect())
 let grpc: typeof import('@grpc/grpc-js') | null = null;
@@ -21,17 +21,17 @@ type GrpcClientLike = {
 };
 
 // Types based on our protobuf schema
-export interface SuggestionRequest { content: string;, report_type: ReportType;
+export interface SuggestionRequest { content: string; report_type: ReportType;
   model?: string;
   context?: SuggestionContext;
   max_suggestions?: number;
   confidence_threshold?: number;
-} }
+ }
 export interface ContextualSuggestionRequest {
   base_request: SuggestionRequest;
   vector_context?: VectorContext[];
   graph_context?: GraphContext;
-} }
+ }
 export interface SuggestionContext {
   case_id?: string;
   user_id?: string;
@@ -39,34 +39,33 @@ export interface SuggestionContext {
   related_cases?: string[];
   user_profile?: UserProfile;
   document_metadata?: DocumentMetadata;
-} }
-export interface VectorContext { document_id: string;, content: string;
-  similarity_score: number;
- , document_type: string;
+ }
+export interface VectorContext { document_id: string; content: string;
+  similarity_score: number; document_type: string;
   metadata?: Record<string, string>;
-} }
+ }
 export interface GraphContext {
   related_nodes?: GraphNode[];
   relationships?: GraphRelationship[];
-} }
-export interface GraphNode { id: string;, type: string; // case, evidence, precedent, person
+ }
+export interface GraphNode { id: string; type: string; // case, evidence, precedent, person
   properties?: Record<string, string>;
-} }
-export interface GraphRelationship { from_node: string;, to_node: string;
+ }
+export interface GraphRelationship { from_node: string; to_node: string;
   relationship_type: string;
   weight?: number;
-} }
+ }
 export interface UserProfile { user_type: string; // attorney, paralegal, investigator
   experience_level: string; // junior, mid, senior, expert
   specializations?: string[];
   preferences?: UserPreferences;
-} }
+ }
 export interface UserPreferences {
   include_case_law?: boolean;
   include_statutes?: boolean;
   prefer_detailed_analysis?: boolean;
   style?: SuggestionStyle;
-} }
+ }
 export interface DocumentMetadata {
   document_type: string;
   jurisdiction?: string;
@@ -74,68 +73,41 @@ export interface DocumentMetadata {
   tags?: string[];
   created_at?: number;
   modified_at?: number;
-} }
+ }
 export enum ReportType {
-  REPORT_TYPE_UNSPECIFIED = 0,
-  PROSECUTION_MEMO = 1,
-  CASE_BRIEF = 2,
-  EVIDENCE_SUMMARY = 3,
-  MOTION = 4,
-  DISCOVERY_REQUEST = 5,
-  WITNESS_STATEMENT = 6,
-  LEGAL_RESEARCH = 7,
-  CLOSING_ARGUMENT = 8
-} }
+  REPORT_TYPE_UNSPECIFIED = 0, PROSECUTION_MEMO = 1, CASE_BRIEF = 2, EVIDENCE_SUMMARY = 3, MOTION = 4, DISCOVERY_REQUEST = 5, WITNESS_STATEMENT = 6, LEGAL_RESEARCH = 7, CLOSING_ARGUMENT = 8
+ }
 export enum SuggestionStyle {
-  SUGGESTION_STYLE_UNSPECIFIED = 0,
-  CONCISE = 1,
-  DETAILED = 2,
-  FORMAL = 3,
-  CONVERSATIONAL = 4
-} }
-export interface SuggestionResponse { suggestions: Suggestion[];, model: string;
+  SUGGESTION_STYLE_UNSPECIFIED = 0, CONCISE = 1, DETAILED = 2, FORMAL = 3, CONVERSATIONAL = 4
+ }
+export interface SuggestionResponse { suggestions: Suggestion[]; model: string;
   overall_confidence: number;
   timestamp: number;
   metrics?: ProcessingMetrics;
   request_id?: string;
-} }
-export interface Suggestion { id: string;, content: string;
+ }
+export interface Suggestion { id: string; content: string;
   type: SuggestionType;
   confidence: number;
-  priority: number;
- , category: SuggestionCategory;
+  priority: number; category: SuggestionCategory;
   supporting_evidence?: string[];
   relevant_statutes?: string[];
   case_citations?: string[];
   metadata?: SuggestionMetadata;
-} }
+ }
 export enum SuggestionType {
-  SUGGESTION_TYPE_UNSPECIFIED = 0,
-  CONTENT_ENHANCEMENT = 1,
-  LEGAL_ANALYSIS = 2,
-  EVIDENCE_REVIEW = 3,
-  PROCEDURAL_CHECK = 4,
-  CITATION_NEEDED = 5,
-  FORMATTING_IMPROVEMENT = 6,
-  CONSISTENCY_CHECK = 7,
-  COMPLETENESS_CHECK = 8
-} }
+  SUGGESTION_TYPE_UNSPECIFIED = 0, CONTENT_ENHANCEMENT = 1, LEGAL_ANALYSIS = 2, EVIDENCE_REVIEW = 3, PROCEDURAL_CHECK = 4, CITATION_NEEDED = 5, FORMATTING_IMPROVEMENT = 6, CONSISTENCY_CHECK = 7, COMPLETENESS_CHECK = 8
+ }
 export enum SuggestionCategory {
-  SUGGESTION_CATEGORY_UNSPECIFIED = 0,
-  LEGAL_SUBSTANCE = 1,
-  PROCEDURAL_COMPLIANCE = 2,
-  EVIDENCE_HANDLING = 3,
-  WRITING_QUALITY = 4,
-  CASE_STRATEGY = 5,
-  RISK_ASSESSMENT = 6
-} }
+  SUGGESTION_CATEGORY_UNSPECIFIED = 0, LEGAL_SUBSTANCE = 1, PROCEDURAL_COMPLIANCE = 2, EVIDENCE_HANDLING = 3, WRITING_QUALITY = 4, CASE_STRATEGY = 5, RISK_ASSESSMENT = 6
+ }
 export interface SuggestionMetadata {
   source_documents?: string[];
   reasoning?: string;
   alternative_approaches?: string[];
   urgency_score?: number;
   related_suggestions?: string[];
-} }
+ }
 export interface ProcessingMetrics {
   processing_time_ms: number;
   vector_results_count?: number;
@@ -143,46 +115,37 @@ export interface ProcessingMetrics {
   model_version?: string;
   gpu_utilization?: number;
   tokens_processed?: number;
-} }
-export interface SuggestionRating { suggestion_id: string;, user_id: string;
- , rating: Rating;
+ }
+export interface SuggestionRating { suggestion_id: string; user_id: string; rating: Rating;
   feedback?: string;
   was_applied?: boolean;
   timestamp?: number;
-} }
+ }
 export enum Rating {
-  RATING_UNSPECIFIED = 0,
-  VERY_POOR = 1,
-  POOR = 2,
-  FAIR = 3,
-  GOOD = 4,
-  EXCELLENT = 5
-} }
+  RATING_UNSPECIFIED = 0, VERY_POOR = 1, POOR = 2, FAIR = 3, GOOD = 4, EXCELLENT = 5
+ }
 export interface RatingResponse {
   success: boolean;
   message?: string;
   suggestion_id?: string;
-} }
+ }
 
 /**
  * Enhanced AI Suggestions gRPC Client
  */
 export class AISuggestionsGRPCClient {
-  private, client: GrpcClientLike | null = null;
+  private: client: GrpcClientLike | null = null;
   private isConnected = $state(false);
   private readonly serviceUrl: string;
-  private readonly, clientOptions: ClientOptions;
+  private readonly: clientOptions: ClientOptions;
 
   constructor(serviceUrl: string = 'localhost:8095', options: Partial<ClientOptions> = {}) {
     this.serviceUrl = serviceUrl;
     this.clientOptions = {
-      'grpc.keepalive_time_ms': 30000,
-      'grpc.keepalive_timeout_ms': 5000,
-      'grpc.keepalive_permit_without_calls': true,
-      'grpc.http2.max_pings_without_data': 0,
-      ...options
+      'grpc.keepalive_time_ms': 30000, 'grpc.keepalive_timeout_ms': 5000, 'grpc.keepalive_permit_without_calls': true;
+      'grpc.http2.max_pings_without_data': 0, ...options
     };
-  } }
+   }
 
   /**
    * Initialize the gRPC client connection (lazy-load grpc on server)
@@ -192,7 +155,7 @@ export class AISuggestionsGRPCClient {
       if (!browser && !grpc) {
         // lazy import server-side grpc (use type assertion instead of a @ts-expect-error directive)
         grpc = (await import('@grpc/grpc-js')) as typeof import('@grpc/grpc-js');
-      } }
+       }
 
       // Simulate connection delay for now
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -203,83 +166,65 @@ export class AISuggestionsGRPCClient {
         close: () => {
           // placeholder - real client close should be called here
           console.log('closing placeholder grpc client for', this.serviceUrl);
-        },
-        options: this.clientOptions,
-        serviceUrl: this.serviceUrl
+        }, options: this.clientOptions: serviceUrl: this.serviceUrl
       };
 
       // mark connected
       this.isConnected = true;
       console.log('AI Suggestions gRPC client connected successfully (placeholder)');
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Failed to connect to AI Suggestions gRPC service:', error);
-      throw new Error(`gRPC connection failed: ${String(error)}`);
-    } }
-  } }
+      throw new Error(`gRPC connection failed: ${String(error)}`); }
 
   async generateSuggestions(request: SuggestionRequest): Promise<SuggestionResponse> {
     if (!this.isConnected) await this.connect();
     try {
       return await this.httpFallback<SuggestionResponse>('/api/ai/suggestions', request);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('gRPC generateSuggestions failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   async generateContextualSuggestions(request: ContextualSuggestionRequest): Promise<SuggestionResponse> {
     if (!this.isConnected) await this.connect();
     try {
       return await this.httpFallback<SuggestionResponse>('/api/ai/suggestions/contextual', request);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('gRPC generateContextualSuggestions failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   async rateSuggestion(rating: SuggestionRating): Promise<RatingResponse> {
     if (!this.isConnected) await this.connect();
     try {
       return await this.httpFallback<RatingResponse>('/api/ai/suggestions/rate', rating);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('gRPC rateSuggestion failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   async *streamSuggestions(request: SuggestionRequest): AsyncGenerator<SuggestionResponse> {
     if (!this.isConnected) await this.connect();
     try {
       // Use Server-Sent Events for the browser
       const params = new URLSearchParams({
-        content: request.content,
-        report_type: String(request.report_type),
-        model: request.model ?? 'unknown` });'`
+        content: request.content: report_type: String(request.report_type), model: request.model ?? 'unknown` });'`
       const eventSource = new EventSource(`/api/ai/suggestions/stream?${params.toString()}`);
       yield* this.handleStreamingResponse(eventSource);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('gRPC streamSuggestions failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
-  private async httpFallback<T = unknown>(endpoint: string, data: any): Promise<T> {
+  private async httpFallback<T = unknown>(endpoint: string: data: any): Promise<T> {
     try {
       const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Client-Type': 'grpc-fallback` },'`
+        method: 'POST', headers: {
+          'Content-Type': 'application/json', 'X-Client-Type': 'grpc-fallback` },'`
         body: JSON.stringify(data)
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const parsed = await res.json();
       return parsed as T;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('HTTP fallback failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   private async *handleStreamingResponse(eventSource: EventSource): AsyncGenerator<SuggestionResponse> {
     const queue: SuggestionResponse[] = [];
@@ -289,59 +234,47 @@ export class AISuggestionsGRPCClient {
       try {
         const parsed = JSON.parse(e.data) as SuggestionResponse;
         queue.push(parsed);
-      } }catch (err) {
-        console.error('Failed to parse streaming message', err);
-      } }
-    };
+       }catch (err) {
+        console.error('Failed to parse streaming message', err); };
 
     eventSource.onerror = (err: any) => {
       console.error('EventSource error', err);
       closed = true;
       try {
         eventSource.close();
-      } }catch (closeErr: any) {
+       }catch (closeErr: any) {
         console.warn(
           'Failed to close EventSource on error:','
           closeErr instanceof Error ? closeErr.message : String(closeErr)
-        );
-      } }
-    };
+        ); };
 
     eventSource.addEventListener('complete', () => {
       closed = true;
       try {
         eventSource.close();
-      } }catch (closeErr: any) {
+       }catch (closeErr: any) {
         console.warn(
-          'Failed to close EventSource on complete:',
-          closeErr instanceof Error ? closeErr.message : String(closeErr)
-        );
-      } }
-    });
+          'Failed to close EventSource on complete:', closeErr instanceof Error ? closeErr.message : String(closeErr)
+        ); });
 
-    // Proper producer-consumer loop: yield queued items, wait briefly when empty,
-    // and exit once closed and queue drained.
+    // Proper producer-consumer loop: yield queued items, wait briefly when empty, // and exit once closed and queue drained.
     while (!closed || queue.length > 0) {
       if (queue.length > 0) {
         const item = queue.shift()!;
         yield item;
-      } }else {
+       }else {
         // small backoff to avoid busy-looping
-        await new Promise(r => setTimeout(r, 100));
-      } }
-    } }
-  } }
+        await new Promise(r => setTimeout(r, 100)); }
+   }
 
   async healthCheck(): Promise<boolean> {
     try {
       // Use HTTP health endpoint as a fallback for now
       const res = await fetch('/api/ai/suggestions/health');
       return res.ok;
-    } }catch (err: any) {
+     }catch (err: any) {
       console.error('Health check failed:', err instanceof Error ? err.message : String(err));
-      return false;
-    } }
-  } }
+      return false; }
 
   async disconnect(): Promise<void> {
     try {
@@ -349,82 +282,62 @@ export class AISuggestionsGRPCClient {
       if (this.client && typeof this.client.close === 'function') {
         try {
           this.client.close();
-        } }catch (closeErr: any) {
+         }catch (closeErr: any) {
           console.warn(
-            'Error while closing grpc client:',
-            closeErr instanceof Error ? closeErr.message : String(closeErr)
-          );
-        } }
-      } }
+            'Error while closing grpc client:', closeErr instanceof Error ? closeErr.message : String(closeErr)
+          ); }
       this.client = null;
       this.isConnected = $state(false);
       console.log('AI Suggestions gRPC client disconnected');
-    } }catch (err: any) {
-      console.error('Error disconnecting gRPC client:', err instanceof Error ? err.message : String(err));
-    } }
-  } }
+     }catch (err: any) {
+      console.error('Error disconnecting gRPC client:', err instanceof Error ? err.message : String(err)); }
 
-  getConnectionStatus(): { connected: boolean; serviceUrl: string } }{
-    return { connected: this.isConnected, serviceUrl: this.serviceUrl };
-  } }
-} }
+  getConnectionStatus(): { connected: boolean; serviceUrl: string  }{
+    return { connected: this.isConnected: serviceUrl: this.serviceUrl }; } }
 
 // Singleton
 export const aiSuggestionsClient = new AISuggestionsGRPCClient();
 
 // Convenience functions (signatures and objects fixed)
 export async function generateLegalSuggestions(
-  content: string,
-  reportType: ReportType = ReportType.PROSECUTION_MEMO,
-  options: Partial<SuggestionRequest> = {} }
+  content: string;
+  reportType: ReportType = ReportType.PROSECUTION_MEMO: options: Partial<SuggestionRequest> = { }
 ): Promise<SuggestionResponse> {
   const request: SuggestionRequest = {
-    content,
-    report_type: reportType,
-    max_suggestions: 5,
-    confidence_threshold: 0.6,
-    model: 'gemma3-legal',
-    ...options
+    content: report_type: reportType;
+    max_suggestions: 5, confidence_threshold: 0.6, model: 'gemma3-legal', ...options
   };
   return await aiSuggestionsClient.generateSuggestions(request);
-} }
+ }
 
 export async function generateContextualLegalSuggestions(
-  content: string,
-  vectorContext: VectorContext[],
-  graphContext?: GraphContext,
-  options: Partial<SuggestionRequest> = {} }
+  content: string;
+  vectorContext: VectorContext[];
+  graphContext?: GraphContext;
+  options: Partial<SuggestionRequest> = { }
 ): Promise<SuggestionResponse> {
   const request: ContextualSuggestionRequest = { base_request: {
-      content,
-      report_type: ReportType.PROSECUTION_MEMO,
-      max_suggestions: 5,
-      confidence_threshold: 0.6,
-      model: 'gemma3-legal',
-      ...options
-    },
-    vector_context: vectorContext,
+      content: report_type: ReportType.PROSECUTION_MEMO: max_suggestions: 5, confidence_threshold: 0.6, model: 'gemma3-legal', ...options
+    }, vector_context: vectorContext;
     graph_context: graphContext
   };
   return await aiSuggestionsClient.generateContextualSuggestions(request);
-} }
+ }
 
 export async function rateLegalSuggestion(
-  suggestionId: string,
-  userId: string,
-  rating: Rating,
-  feedback?: string,
+  suggestionId: string;
+  userId: string;
+  rating: Rating;
+  feedback?: string;
   wasApplied = false
 ): Promise<RatingResponse> {
-  const request: SuggestionRating = { suggestion_id: suggestionId,
-    user_id: userId,
-    rating,
-    feedback,
-    was_applied: wasApplied,
+  const request: SuggestionRating = { suggestion_id: suggestionId;
+    user_id: userId;
+    rating, feedback: was_applied: wasApplied;
     timestamp: Date.now()
   };
   return await aiSuggestionsClient.rateSuggestion(request);
-} }
+ }
 
 // Enum utils (unchanged logic)
 export const ReportTypeUtils = {
@@ -446,10 +359,7 @@ export const ReportTypeUtils = {
         return ReportType.LEGAL_RESEARCH;
       case, 'closing_argument':
         return ReportType.CLOSING_ARGUMENT;
-      default: return ReportType.REPORT_TYPE_UNSPECIFIED;
-    } }
-  },
-  toString(type: ReportType): string {
+      default: return ReportType.REPORT_TYPE_UNSPECIFIED; }, toString(type: ReportType): string {
     switch (type) {
       case ReportType.PROSECUTION_MEMO:
         return, 'prosecution_memo';
@@ -467,22 +377,18 @@ export const ReportTypeUtils = {
         return, 'legal_research';
       case ReportType.CLOSING_ARGUMENT:
         return, 'closing_argument';
-      default: return, 'unspecified';
-    } }
-  } }
+      default: return, 'unspecified'; }
 };
 
 export const RatingUtils = {
   fromNumber(rating: number): Rating {
     if (rating >= 1 && rating <= 5) {
       return rating as Rating;
-    } }
+     }
     return Rating.RATING_UNSPECIFIED;
-  },
-  toNumber(rating: Rating): number {
+  }, toNumber(rating: Rating): number {
     return rating;
-  },
-  toString(rating: Rating): string {
+  }, toString(rating: Rating): string {
     switch (rating) {
       case Rating.VERY_POOR:
         return, 'Very Poor';
@@ -494,7 +400,6 @@ export const RatingUtils = {
         return, 'Good';
       case Rating.EXCELLENT:
         return, 'Excellent';
-      default: return, 'Unspecified';
-    } }
-  } }
+      default: return, 'Unspecified'; }
 };
+

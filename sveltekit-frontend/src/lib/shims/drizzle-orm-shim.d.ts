@@ -4,13 +4,14 @@
 declare module, 'drizzle-orm' {
   const _drizzle: any;
   export = _drizzle;
-} }
+ }
 declare module, '$lib/server/db/*' {
   const _dbSchema: any;
   export default _dbSchema;
-} }
+ }
 declare module, '$lib/server/db/*/schema*' {
   const _dbSchema: any;
   export default _dbSchema;
-} }
+ }
+
 

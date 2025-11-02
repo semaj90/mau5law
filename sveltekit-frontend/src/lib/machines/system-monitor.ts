@@ -1,20 +1,19 @@
-import { createMachine, assign, interpret } }from 'xstate';
+import { createMachine, assign, interpret  } from 'xstate';
 
 export interface SystemMonitorContext {
   // timestamp ms of last user activity
   lastActivity: number | null;
-  // last observed network latency in ms
- , latency: number | null;
+  // last observed network latency in ms: latency: number | null;
   // whether fallback mode (e.g. CPU-only) is enabled
   fallbackMode: boolean;
-} }
+ }
 
 export type SystemMonitorEvent =
-  | { type: 'USER_ACTIVITY' } }
-  | { type: 'NETWORK_PING'; latency: number } }
-  | { type: 'NETWORK_TIMEOUT' } }
-  | { type: 'CHECK_IDLE' } }
-  | { type: 'FORCE_OFFLINE' } }
+  | { type: 'USER_ACTIVITY'  }
+  | { type: 'NETWORK_PING'; latency: number  }
+  | { type: 'NETWORK_TIMEOUT'  }
+  | { type: 'CHECK_IDLE'  }
+  | { type: 'FORCE_OFFLINE'  }
   | { type: 'FORCE_ONLINE' };
 
 const IDLE_TIMEOUT_MS = 30_000; // 30s
@@ -26,108 +25,64 @@ const LOW_LATENCY_MS = 250;
 type XStateArgs = {
   event?: SystemMonitorEvent;
   ctx?: SystemMonitorContext;
-  state?: { context?: SystemMonitorContext } }| undefined;
+  state?: { context?: SystemMonitorContext  }| undefined;
 };
 
 // Remove explicit generic parameters on createMachine (XState v5 signature)
 export const systemMonitorMachine = createMachine(
   {
-    id: 'systemMonitor',
-    initial: 'active',
-    context: { lastActivity: null,
-      latency: null,
+    id: 'systemMonitor', initial: 'active', context: { lastActivity: null;
+      latency: null;
       fallbackMode: false
-    },
-    states: { active: { entry: ['logResumeGPU'],
-        on: { USER_ACTIVITY: { actions: ['updateActivity'] },
+    }, states: { active: { entry: ['logResumeGPU'], on: { USER_ACTIVITY: { actions: ['updateActivity'] }, NETWORK_PING: [
+            { cond: 'highLatency', target: 'degraded', actions: ['updateLatency', 'enableFallback'] }, { actions: ['updateLatency']  }
+          ], CHECK_IDLE: { cond: 'isIdle', target: 'idle' }, FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback']  }
+         }
+      }, idle: { entry: ['pauseGPU', 'markIdle'], on: { USER_ACTIVITY: { target: 'active', actions: ['updateActivity', 'logResumeGPU'] }, FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback']  }
+         }
+      }, degraded: { entry: ['enableFallback', 'notifyLatencyHigh'], on: {
           NETWORK_PING: [
-            { cond: 'highLatency', target: 'degraded', actions: ['updateLatency', 'enableFallback'] },
-            { actions: ['updateLatency'] } }
-          ],
-          CHECK_IDLE: { cond: 'isIdle', target: 'idle' },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] } }
-        } }
-      },
-      idle: { entry: ['pauseGPU', 'markIdle'],
-        on: { USER_ACTIVITY: { target: 'active', actions: ['updateActivity', 'logResumeGPU'] },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] } }
-        } }
-      },
-      degraded: { entry: ['enableFallback', 'notifyLatencyHigh'],
-        on: {
-          NETWORK_PING: [
-            { cond: 'lowLatency', target: 'active', actions: ['updateLatency', 'resumeGPU'] },
-            { actions: ['updateLatency'] } }
-          ],
-          NETWORK_TIMEOUT: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] },
-          FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] } }
-        } }
-      },
-      offline: { entry: ['enableFallback', 'notifyOffline'],
-        on: { FORCE_ONLINE: { target: 'active', actions: ['logResumeGPU', 'resumeGPU'] },
-          NETWORK_PING: { target: 'active', actions: ['updateLatency', 'resumeGPU'] } }
-        } }
-      } }
-    } }
-  },
-  {
+            { cond: 'lowLatency', target: 'active', actions: ['updateLatency', 'resumeGPU'] }, { actions: ['updateLatency']  }
+          ], NETWORK_TIMEOUT: { target: 'offline', actions: ['notifyOffline', 'enableFallback'] }, FORCE_OFFLINE: { target: 'offline', actions: ['notifyOffline', 'enableFallback']  }
+         }
+      }, offline: { entry: ['enableFallback', 'notifyOffline'], on: { FORCE_ONLINE: { target: 'active', actions: ['logResumeGPU', 'resumeGPU'] }, NETWORK_PING: { target: 'active', actions: ['updateLatency', 'resumeGPU']  }
+         }
+       }
+     }
+  }, {
     actions: {
-      // typed assigns using XState v5 args shape
-     , updateActivity: assign(() => ({
+      // typed assigns using XState v5 args shape: updateActivity: assign(() => ({
         lastActivity: Date.now()
-      })),
-
-      // use the typed args: object and discriminate on event.type
-     , updateLatency: assign((args: XStateArgs) => {
+      })), // use the typed args: object and discriminate on event.type: updateLatency: assign((args: XStateArgs) => {
         const ev = args.event;
         if (ev && ev.type === 'NETWORK_PING') {
           return { latency: Math.max(0, Math.round(ev.latency)) };
-        } }
+         }
         return {};
-      }),
-
-      // return partial context objects
-      enableFallback: assign(() => ({ fallbackMode: true })),
-      resumeGPU: assign(() => ({ fallbackMode: false })),
-
-      // action functions receive a single args: object; extract ctx/state safely
-     , logResumeGPU: (args: XStateArgs) => {
+      }), // return partial context objects
+      enableFallback: assign(() => ({ fallbackMode: true })), resumeGPU: assign(() => ({ fallbackMode: false })), // action functions receive a single args: object; extract ctx/state safely: logResumeGPU: (args: XStateArgs) => {
         const ctx = args.ctx ?? args.state?.context;
         if (ctx?.fallbackMode) {
-          console.info('system-monitor: resuming GPU acceleration (fallback disabled)');
-        } }
-      },
-      pauseGPU: (args: XStateArgs) => {
+          console.info('system-monitor: resuming GPU acceleration (fallback disabled)'); }, pauseGPU: (args: XStateArgs) => {
         const ctx = args.ctx ?? args.state?.context;
         console.info('system-monitor: pausing GPU usage (idle/fallback)', ctx);
-      },
-      markIdle: () => {
+      }, markIdle: () => {
         console.log('system-monitor: user marked idle');
-      },
-      notifyLatencyHigh: () => {
+      }, notifyLatencyHigh: () => {
         console.warn('system-monitor: network latency high');
-      },
-      notifyOffline: () => {
-        console.error('system-monitor: network/offline detected');
-      } }
-    },
-    guards: {
-      // guards accept a single args: object; extract ctx/event safely
-     , isIdle: (args: XStateArgs) => {
+      }, notifyOffline: () => {
+        console.error('system-monitor: network/offline detected'); }, guards: {
+      // guards accept a single args: object; extract ctx/event safely: isIdle: (args: XStateArgs) => {
         const ctx = args.ctx ?? args.state?.context;
         if (!ctx?.lastActivity) return true;
         return Date.now() - ctx.lastActivity > IDLE_TIMEOUT_MS;
-      },
-      highLatency: (args: XStateArgs) => {
+      }, highLatency: (args: XStateArgs) => {
         const ev = args.event;
         return ev && ev.type === 'NETWORK_PING' && ev.latency >= HIGH_LATENCY_MS;
-      },
-      lowLatency: (args: XStateArgs) => {
+      }, lowLatency: (args: XStateArgs) => {
         const ev = args.event;
-        return ev && ev.type === 'NETWORK_PING' && ev.latency < LOW_LATENCY_MS;
-      } }
-    } }
-  } }
+        return ev && ev.type === 'NETWORK_PING' && ev.latency < LOW_LATENCY_MS; }
+   }
 );
 
 /**
@@ -170,19 +125,15 @@ export function startSystemMonitorService(opts?: {
         const latency = Math.max(0, Math.round(performance.now() - start));
         if (resp && resp.ok) {
           service.send({ type: 'NETWORK_PING', latency });
-        } }else {
-          service.send({ type: `NETWORK_TIMEOUT` });
-        } }
-      } }catch (err) {
-        service.send({ type: `NETWORK_TIMEOUT` });
-      } }
-    };
+         }else {
+          service.send({ type: `NETWORK_TIMEOUT` }); }catch (err) {
+        service.send({ type: `NETWORK_TIMEOUT` }); };
     doPing();
     pingTimer = setInterval(doPing, pingIntervalMs);
 
     try {
-      type NetworkConnection = { effectiveType?: string } }| undefined;
-      const nav = navigator as: unknown as {
+      type NetworkConnection = { effectiveType?: string  }| undefined;
+      const nav = navigator as unknown as {
         connection?: NetworkConnection;
         mozConnection?: NetworkConnection;
         webkitConnection?: NetworkConnection;
@@ -191,12 +142,10 @@ export function startSystemMonitorService(opts?: {
       if (conn && typeof conn.effectiveType === 'string') {
         const et = String(conn.effectiveType);
         if (et === 'slow-2g' || et === '2g') {
-          service.send({ type: 'NETWORK_PING', latency: HIGH_LATENCY_MS + 50 });
-        } }
-      } }
-    } }catch (_e) {
+          service.send({ type: 'NETWORK_PING', latency: HIGH_LATENCY_MS + 50 }); }
+     }catch (_e) {
       // ignore
-    } }
+     }
 
     let lastFrame = performance.now();
     let rafId: number | null = null;
@@ -205,7 +154,7 @@ export function startSystemMonitorService(opts?: {
       lastFrame = ts;
       if (delta > rafThresholdMs) {
         service.send({ type: 'NETWORK_PING', latency: Math.round(delta) });
-      } }
+       }
       rafId = requestAnimationFrame(rafCheck);
     };
     rafId = requestAnimationFrame(rafCheck);
@@ -220,9 +169,10 @@ export function startSystemMonitorService(opts?: {
     };
 
     // return a lightly typed service: object; using ReturnType<typeof, interpret> keeps types simple
-    return { service, stop } }as { service: ReturnType<typeof, interpret>; stop: () => void };
-  } }
+    return { service, stop  }as { service: ReturnType<typeof, interpret>; stop: () => void };
+   }
 
   // non-browser fallback: started interpreter with noop stop
-  return { service, stop: () => service.stop() } }as { service: ReturnType<typeof, interpret>; stop: () => void };
+  return { service: stop: () => service.stop()  }as { service: ReturnType<typeof, interpret>; stop: () => void };
 }
+

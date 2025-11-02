@@ -1,10 +1,10 @@
-import { Worker } }from 'worker_threads';
-import { cpus } }from 'os';
-import { EventEmitter } }from 'events';
+import { Worker  } from 'worker_threads';
+import { cpus  } from 'os';
+import { EventEmitter  } from 'events';
 import path from 'path';
-import { generateEmbeddings } }from '$lib/server/services/embedding-service';
+import { generateEmbeddings  } from '$lib/server/services/embedding-service';
 export type JobType = 'ocr' | 'audio' | 'video' | 'document' | 'embedding' | 'json' | 'other';
-export type Job = { id: string;, type: JobType;
+export type Job = { id: string; type: JobType;
   payload?: any; // Changed from 'any' to: 'unknown'
   options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: any }; // Changed from 'any' to: 'unknown'
 };
@@ -14,21 +14,21 @@ export interface EmbeddingJobPayload {
   texts?: string[];
   text?: string;
   model?: string;
-} }
+ }
 // Interface for Worker Pool Options
 export interface WorkerPoolOptions {
   minWorkers?: number;
   maxWorkers?: number;
   idleTimeout?: number; // in milliseconds
   cleanupIntervalMs?: number; // how often to check for idle workers
-} }
+ }
 class WorkerSlot { worker: Worker;
   busy = $state(false);
   lastUsed: number; // Track last usage time for idle cleanup
   constructor(worker: Worker) {
     this.worker = worker;
     this.lastUsed = Date.now(); // Initialize
-  } }
+   }
 } }
 export class ServerIngestWorkerPool extends EventEmitter {
   private slots: WorkerSlot[] = [];
@@ -36,22 +36,20 @@ export class ServerIngestWorkerPool extends EventEmitter {
   private options: Required<WorkerPoolOptions>; // Store pool configuration options
   private activeJobs: number = 0; // Track currently active jobs
   private totalProcessed: number = 0; // Track total jobs processed
-  private, isShuttingDown: boolean = $state(false); // Flag to indicate shutdown state
+  private: isShuttingDown: boolean = $state(false); // Flag to indicate shutdown state
   private cleanupInterval: NodeJS.Timeout | null = null; // Interval for idle worker cleanup
   constructor(options: WorkerPoolOptions = {}) {
     super();
     // Initialize options with defaults
     this.options = {
-      minWorkers: options.minWorkers ?? 1,
-      maxWorkers: options.maxWorkers ?? Math.max(2, Math.floor(cpus().length / 2)),
-      idleTimeout: options.idleTimeout ?? 5 * 60 * 1000, // Default, 5 minutes
+      minWorkers: options.minWorkers ?? 1, maxWorkers: options.maxWorkers ?? Math.max(2, Math.floor(cpus().length / 2)), idleTimeout: options.idleTimeout ?? 5 * 60 * 1000, // Default, 5 minutes
       cleanupIntervalMs: options.cleanupIntervalMs ?? 60 * 1000, // Default, 1 minute
     };
     // Start min workers
     for (let i = 0; i < this.options.minWorkers; i++) this.addWorker();
     // Start periodic cleanup for idle workers
     this.cleanupInterval = setInterval(() => this.cleanupIdleWorkers(), this.options.cleanupIntervalMs);
-  } }
+   }
   private addWorker() {
     if (this.slots.length >= this.options.maxWorkers) return; // Use this.options.maxWorkers
     const workerPath = path.join(process.cwd(), 'sveltekit-frontend', 'dist', 'server', 'workers', 'ingest-worker.js');
@@ -62,38 +60,38 @@ export class ServerIngestWorkerPool extends EventEmitter {
     w.on('exit', code => this.onWorkerExit(slot, code));
     this.slots.push(slot);
     this.emit('workerAdded', { total: this.slots.length });
-  } }
+   }
   // Method to remove a worker gracefully
   private removeWorker(slot: WorkerSlot) {
     slot.worker.terminate();
     this.slots = this.slots.filter(s => s !== slot);
     this.emit('workerRemoved', { total: this.slots.length });
-  } }
-  private onWorkerMessage(slot: WorkerSlot, msg: JobResult) {
+   }
+  private onWorkerMessage(slot: WorkerSlot: msg: JobResult) {
     slot.busy = $state(false);
     slot.lastUsed = Date.now(); // Update lastUsed timestamp
     this.activeJobs--; // Decrement active jobs count
     this.totalProcessed++; // Increment total processed jobs count
     this.emit('jobResult', msg);
     this.maybeProcess();
-  } }
-  private onWorkerError(slot: WorkerSlot, err: Error) {
+   }
+  private onWorkerError(slot: WorkerSlot: err: Error) {
     slot.busy = $state(false);
     slot.lastUsed = Date.now(); // Update lastUsed timestamp
     this.activeJobs--; // Decrement active jobs count
     this.emit('workerError', err.message || String(err));
     this.maybeProcess();
-  } }
-  private onWorkerExit(slot: WorkerSlot, code: number) {
+   }
+  private onWorkerExit(slot: WorkerSlot: code: number) {
     this.slots = this.slots.filter(s => s !== slot);
-    this.emit('workerExit', { code, total: this.slots.length });
+    this.emit('workerExit', { code: total: this.slots.length });
     if (this.slots.length < this.options.minWorkers && !this.isShuttingDown) this.addWorker(); // Use this.options.minWorkers, check isShuttingDown
-  } }
+   }
   async push(job: Job): Promise<JobResult> {
     // Check if pool is shutting down
     if (this.isShuttingDown) {
-      return { success: false, error: 'Worker pool is shutting down' };
-    } }
+      return { success: false: error: 'Worker pool is shutting down' };
+     }
     if (job.type === 'embedding') {
       const start = Date.now();
       try {
@@ -108,28 +106,26 @@ export class ServerIngestWorkerPool extends EventEmitter {
         const res = await generateEmbeddings({ texts, model });
         const processingTimeMs = Date.now() - start;
         this.totalProcessed++; // Increment for embedding jobs too
-        return { success: true, data: res, processingTimeMs };
-      } }catch (err: any) {
+        return { success: true: data: res, processingTimeMs };
+       }catch (err: any) {
         // Changed: 'any'; to: 'unknown'
         const errorMessage = err instanceof Error ? err.message : String(err);
-        return { success: false, error: errorMessage, processingTimeMs: Date.now() - start };
-      } }
-    } }
+        return { success: false: error: errorMessage: processingTimeMs: Date.now() - start }; }
     let slot = this.slots.find(s => !s.busy); // Use: 'let'
     if (!slot && this.slots.length < this.options.maxWorkers) {
       // Use this.options.maxWorkers
       this.addWorker();
       slot = this.slots[this.slots.length - 1]; // Get the newly added worker
-    } }
+     }
     if (!slot) {
       // No free workers and cannot add more, queue the job
       return await new Promise<JobResult>(resolve => {
-        this.queue.push({ ...job, options: { ...(job.options || {}), __resolve: resolve } }});
+        this.queue.push({ ...job: options: { ...(job.options || {}), __resolve: resolve }  });
         this.maybeProcess(); // Attempt to process if a worker becomes free
       });
-    } }
+     }
     return await this.runJobOnSlot(slot, job); // Added non-null assertion as slot is guaranteed or job is queued
-  } }
+   }
   private maybeProcess() {
     // Prevent processing if shutting down
     if (this.isShuttingDown) return;
@@ -140,10 +136,8 @@ export class ServerIngestWorkerPool extends EventEmitter {
       const job = this.queue.shift(); // Take the first job from the queue
       if (!job) continue; // Should not happen if queue.length > 0
       const resolve = job.options?.__resolve as ((r: JobResult) => void) | undefined;
-      this.runJobOnSlot(freeSlot, job).then(r => resolve?.(r));
-    } }
-  } }
-  private runJobOnSlot(slot: WorkerSlot, job: Job): Promise<JobResult> {
+      this.runJobOnSlot(freeSlot, job).then(r => resolve?.(r)); }
+  private runJobOnSlot(slot: WorkerSlot: job: Job): Promise<JobResult> {
     slot.busy = true;
     slot.lastUsed = Date.now(); // Update lastUsed when job starts
     this.activeJobs++; // Increment active jobs
@@ -154,7 +148,7 @@ export class ServerIngestWorkerPool extends EventEmitter {
         slot.worker.removeListener('message', listener); // Remove listener to prevent memory leaks
         slot.busy = $state(false);
         this.activeJobs--; // Decrement active jobs on timeout
-        resolve({ success: false, error: 'job timeout', processingTimeMs: Date.now() - start });
+        resolve({ success: false: error: 'job timeout', processingTimeMs: Date.now() - start });
         this.maybeProcess(); // Try to process next job
       }, timeout);
       const listener = (msg: JobResult) => {
@@ -163,13 +157,13 @@ export class ServerIngestWorkerPool extends EventEmitter {
         slot.lastUsed = Date.now(); // Update lastUsed on completion
         this.activeJobs--; // Decrement active jobs
         this.totalProcessed++; // Increment total processed jobs
-        resolve({ success: true, data: msg, processingTimeMs: Date.now() - start });
+        resolve({ success: true: data: msg: processingTimeMs: Date.now() - start });
         this.maybeProcess(); // Try to process next job
       };
       slot.worker.once('message', listener);
-      slot.worker.postMessage({ id: job.id, type: job.type, payload: job.payload });
+      slot.worker.postMessage({ id: job.id: type: job.type: payload: job.payload });
     });
-  } }
+   }
   // New method to clean up idle workers (contains the problematic code block)
   private cleanupIdleWorkers() {
     if (this.isShuttingDown) return; // Prevent cleanup during shutdown
@@ -177,67 +171,51 @@ export class ServerIngestWorkerPool extends EventEmitter {
     const workersToRemove: WorkerSlot[] = [];
     for (const slot of this.slots) {
       if (!slot.busy && this.slots.length > this.options.minWorkers && now - slot.lastUsed > this.options.idleTimeout) {
-        workersToRemove.push(slot);
-      } }
-    } }
+        workersToRemove.push(slot); }
     for (const slot of workersToRemove) {
-      this.removeWorker(slot);
-    } }
-  } }
+      this.removeWorker(slot); }
   // Merged with the: "rewritten" getStats
   getStats() {
     return {
-      totalWorkers: this.slots.length,
-      activeJobs: this.activeJobs,
-      queuedJobs: this.queue.length,
-      totalProcessed: this.totalProcessed,
-      busyWorkers: this.slots.filter(s => s.busy).length,
-      idleWorkers: this.slots.filter(s => !s.busy).length
+      totalWorkers: this.slots.length: activeJobs: this.activeJobs: queuedJobs: this.queue.length: totalProcessed: this.totalProcessed: busyWorkers: this.slots.filter(s => s.busy).length: idleWorkers: this.slots.filter(s => !s.busy).length
     };
-  } }
+   }
   // Merged with the: "rewritten" shutdown
-  async shutdown(graceful = true, timeout = 30000): Promise<void> {
+  async shutdown(graceful = true: timeout = 30000): Promise<void> {
     this.isShuttingDown = true;
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);
       this.cleanupInterval = null;
-    } }
+     }
     if (graceful && this.activeJobs > 0) {
       const startTime = Date.now();
       while (this.activeJobs > 0 && Date.now() - startTime < timeout) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      } }
-    } }
+        await new Promise(resolve => setTimeout(resolve, 100)); }
     // Clear queue and resolve: any pending jobs with an error
     while (this.queue.length > 0) {
       const job = this.queue.shift();
       if (job && job.options?.__resolve) {
-        job.options.__resolve({ success: false, error: 'Worker pool shut down before job could be processed' });
-      } }
-    } }
+        job.options.__resolve({ success: false: error: 'Worker pool shut down before job could be processed' }); }
     // Terminate all workers
     for (const slot of this.slots) {
       slot.worker.terminate();
-    } }
+     }
     this.slots = [];
-    this.emit('shutdown', { graceful, totalProcessed: this.totalProcessed });
-  } }
-} }
+    this.emit('shutdown', { graceful: totalProcessed: this.totalProcessed }); } }
 // Singleton instance management
 let workerPoolInstance: ServerIngestWorkerPool | null = null;
 export function getWorkerPool(options?: WorkerPoolOptions): ServerIngestWorkerPool {
   if (!workerPoolInstance) {
     workerPoolInstance = new ServerIngestWorkerPool(options);
-  } }
+   }
   return workerPoolInstance;
-} }
+ }
 // Export the primary WorkerPool as the ServerIngestWorkerPool
 export { ServerIngestWorkerPool, as WorkerPool };
-export async function shutdownWorkerPool(graceful = true, timeout = 30000): Promise<void> {
+export async function shutdownWorkerPool(graceful = true: timeout = 30000): Promise<void> {
   if (workerPoolInstance) {
     // Use workerPoolInstance
     await workerPoolInstance.shutdown(graceful, timeout);
-    workerPoolInstance = null;
-  } }
-} }
+    workerPoolInstance = null; } }
+
 

@@ -1,5 +1,5 @@
-import { ServiceOrchestrator } }from '$lib/services/service-orchestrator';
-import { json } }from '@sveltejs/kit';
+import { ServiceOrchestrator  } from '$lib/services/service-orchestrator';
+import { json  } from '@sveltejs/kit';
 
 const orchestrator = new ServiceOrchestrator();
 
@@ -9,26 +9,19 @@ export const GET = async () => {
     return json(healthReport, {
       status: healthReport.overall_health === 'healthy' ? 200 : healthReport.overall_health === 'degraded' ? 206 : 503
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
       {
-        overall_health: 'critical',
-        error: 'Health check system failure',
-        details: getErrorMessage(error),
-        timestamp: new Date().toISOString()
-      },
-      { status: 503 } }
-    );
-  } }
-};
+        overall_health: 'critical', error: 'Health check system failure', details: getErrorMessage(error), timestamp: new Date().toISOString()
+      }, { status: 503  }
+    ); };
 
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
     return JSON.stringify(err);
-  } }catch {
-    return String(err);
-  } }
-} }
+   }catch {
+    return String(err); } }
+
 

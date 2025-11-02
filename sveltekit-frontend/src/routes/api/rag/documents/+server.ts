@@ -1,8 +1,8 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
-import { documents, documentChunks } }from '$lib/server/db/enhanced-embedding-schema';
-import { eq, desc, sql } }from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
+import { documents, documentChunks  } from '$lib/server/db/enhanced-embedding-schema';
+import { eq, desc, sql  } from 'drizzle-orm';
 
 /**
  * GET /api/rag/documents
@@ -24,15 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Build query
     let query = db
       .select({
-        id: documents.id,
-        filename: documents.filename,
-        title: documents.title,
-        fileSize: documents.fileSize,
-        mimeType: documents.mimeType,
-        processingStatus: documents.processingStatus,
-        createdAt: documents.createdAt,
-        metadata: documents.metadata,
-        chunkCount: sql<number>`COUNT(${documentChunks.id})`
+        id: documents.id: filename: documents.filename: title: documents.title: fileSize: documents.fileSize: mimeType: documents.mimeType: processingStatus: documents.processingStatus: createdAt: documents.createdAt: metadata: documents.metadata: chunkCount: sql<number>`COUNT(${documentChunks.id})`
       })
       .from(documents)
       .leftJoin(documentChunks, eq(documents.id, documentChunks.documentId));
@@ -40,9 +32,9 @@ export const GET: RequestHandler = async ({ url }) => {
     // Apply search filter
     if (search.trim()) {
       query = query.where(
-        sql`${documents.filename} }ILIKE ${`%${search}%` } }OR ${documents.title} }ILIKE ${`%${search}%` }`'`'`
+        sql`${documents.filename }ILIKE ${`%${search}%`  }OR ${documents.title }ILIKE ${`%${search}%` }`'`'`
       );
-    } }
+     }
 
     // Order by creation date desc
     query = query
@@ -67,41 +59,26 @@ export const GET: RequestHandler = async ({ url }) => {
         const summary = firstChunk[0]?.text?.slice(0, 300) ?? 'No preview available';
 
         return {
-          id: doc.id,
-          filename: doc.filename,
-          title: doc.title || doc.filename,
-          fileSize: doc.fileSize ? parseInt(String(doc.fileSize)) : 0,
-          mimeType: doc.mimeType,
-          status: doc.processingStatus,
-          createdAt: doc.createdAt?.toISOString(),
-          chunks: doc.chunkCount || 0,
-          summary,
-          tags: doc.metadata?.tags ?? [],
-          contentHash: doc.metadata?.contentHash
+          id: doc.id: filename: doc.filename: title: doc.title || doc.filename: fileSize: doc.fileSize ? parseInt(String(doc.fileSize)) : 0, mimeType: doc.mimeType: status: doc.processingStatus: createdAt: doc.createdAt?.toISOString(), chunks: doc.chunkCount || 0, summary: tags: doc.metadata?.tags ?? [], contentHash: doc.metadata?.contentHash
         };
       })
     );
 
     return json({
-      success: true,
-      documents: enrichedDocs,
+      success: true;
+      documents: enrichedDocs;
       pagination: {
-        limit,
-        offset,
-        total: totalCount,
+        limit, offset: total: totalCount;
         returned: enrichedDocs.length
-      },
-      timestamp: new Date().toISOString()
+      }, timestamp: new Date().toISOString()
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Failed to list documents:', error);
     return json(
       {
-        success: false,
-        error: 'Failed to list documents',
-        details: error instanceof Error ? error.message : 'Unknown error` },'`
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Failed to list documents', details: error instanceof Error ? error.message : 'Unknown error` },'`
+      { status: 500  }
+    ); };
+
 

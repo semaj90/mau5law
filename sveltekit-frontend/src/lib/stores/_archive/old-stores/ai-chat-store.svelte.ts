@@ -1,12 +1,12 @@
-import type { Message } }from '$lib/types';
-import type { User } }from '$lib/types';
+import type { Message  } from '$lib/types';
+import type { User  } from '$lib/types';
 /**
  * YoRHa AI Chat Store - Persistent Chat Management with Svelte, 5 Runes
  * Handles conversation history, user preferences, and Enhanced RAG integration
  */
-import { browser } }from '$app/environment';
+import { browser  } from '$app/environment';
 
-export interface ChatMessage { id: string;, role: 'user' | 'assistant' | 'system';
+export interface ChatMessage { id: string; role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   type?: 'user' | 'assistant' | 'system' | 'error' | 'command';
@@ -17,47 +17,42 @@ export interface ChatMessage { id: string;, role: 'user' | 'assistant' | 'syste
     model?: string;
     tokens_used?: number;
   };
-} }
+ }
 
-export interface ChatSession { id: string;, title: string;
+export interface ChatSession { id: string; title: string;
   messages: ChatMessage[];
   created_at: Date;
   updated_at: Date;
   tags: string[];
   case_id?: string;
   evidence_id?: string;
-} }
+ }
 
-export interface UserPreferences { theme: 'yorha-dark' | 'yorha-light';, auto_save: boolean;
+export interface UserPreferences { theme: 'yorha-dark' | 'yorha-light'; auto_save: boolean;
   max_history: number;
   enable_rag: boolean;
   default_model: string;
   notification_sound: boolean;
   export_format: 'json' | 'markdown' | 'txt';
-} }
+ }
 
-export interface ChatState { currentSession: ChatSession | null;, sessions: ChatSession[];
+export interface ChatState { currentSession: ChatSession | null; sessions: ChatSession[];
   preferences: UserPreferences;
   isLoading: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'connecting';
   ragServiceUrl: string;
   lastError: string | null;
-} }
+ }
 
 // Default preferences
-const defaultPreferences: UserPreferences = { theme: 'yorha-dark',
-  auto_save: true,
-  max_history: 100,
-  enable_rag: true,
-  default_model: 'enhanced-rag',
-  notification_sound: false,
+const defaultPreferences: UserPreferences = { theme: 'yorha-dark', auto_save: true;
+  max_history: 100, enable_rag: true;
+  default_model: 'enhanced-rag', notification_sound: false;
   export_format: 'markdown'
 };
 
 // Storage keys
-const STORAGE_KEYS = { SESSIONS: 'yorha-ai-chat-sessions',
-  PREFERENCES: 'yorha-ai-chat-preferences',
-  CURRENT_SESSION: 'yorha-ai-current-session'
+const STORAGE_KEYS = { SESSIONS: 'yorha-ai-chat-sessions', PREFERENCES: 'yorha-ai-chat-preferences', CURRENT_SESSION: 'yorha-ai-current-session'
 };
 
 /**
@@ -68,13 +63,10 @@ class AIChatStore {
 
   // Using Svelte, 5 $state rune
   private state = $state<ChatState>({
-    currentSession: null,
-    sessions: [],
-    preferences: defaultPreferences,
-    isLoading: false,
-    connectionStatus: 'disconnected',
-    ragServiceUrl: 'http://localhost:8093',
-    lastError: null
+    currentSession: null;
+    sessions: [], preferences: defaultPreferences;
+    isLoading: false;
+    connectionStatus: 'disconnected', ragServiceUrl: 'http://localhost:8093', lastError: null
   });
 
   // Derived values using $derived rune
@@ -88,18 +80,11 @@ class AIChatStore {
   constructor() {
     if (browser) {
       this.loadFromStorage();
-      this.checkRAGConnection();
-    } }
-  } }
+      this.checkRAGConnection(); }
 
   // Session Management
   createNewSession(title?: string): ChatSession {
-    const session: ChatSession = { id: `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title: title || `YoRHa Session ${new Date().toLocaleString()}`,
-      messages: [],
-      created_at: new Date(),
-      updated_at: new Date(),
-      tags: ['yorha', 'legal-ai']
+    const session: ChatSession = { id: `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, title: title || `YoRHa Session ${new Date().toLocaleString()}`, messages: [], created_at: new Date(), updated_at: new Date(), tags: ['yorha', 'legal-ai']
     };
 
     this.state.currentSession = session;
@@ -108,19 +93,17 @@ class AIChatStore {
     // Limit sessions based on preferences
     if (this.state.sessions.length > this.state.preferences.max_history) {
       this.state.sessions = this.state.sessions.slice(0, this.state.preferences.max_history);
-    } }
+     }
 
     this.saveToStorage();
     return session;
-  } }
+   }
 
   switchToSession(sessionId: string): void {
     const session = this.state.sessions.find(s => s.id === sessionId);
     if (session) {
       this.state.currentSession = session;
-      this.saveToStorage();
-    } }
-  } }
+      this.saveToStorage(); }
 
   deleteSession(sessionId: string): void {
     this.state.sessions = this.state.sessions.filter(s => s.id !== sessionId);
@@ -128,22 +111,20 @@ class AIChatStore {
     // If current session was deleted, switch to most recent
     if (this.state.currentSession?.id === sessionId) {
       this.state.currentSession = this.state.sessions[0] || null;
-    } }
+     }
 
     this.saveToStorage();
-  } }
+   }
 
   // Message Management
   addMessage(message: Omit<ChatMessage, 'id'>): ChatMessage {
     const fullMessage: ChatMessage = {
-      ...message,
-      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: message.timestamp || new Date()
+      ...message: id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, timestamp: message.timestamp || new Date()
     };
 
     if (!this.state.currentSession) {
       this.state.currentSession = this.createNewSession();
-    } }
+     }
 
     this.state.currentSession.messages.push(fullMessage);
     this.state.currentSession.updated_at = new Date();
@@ -152,44 +133,41 @@ class AIChatStore {
     const sessionIndex = this.state.sessions.findIndex(s => s.id === this.state.currentSession!.id);
     if (sessionIndex >= 0) {
       this.state.sessions[sessionIndex] = this.state.currentSession;
-    } }
+     }
 
     if (this.state.preferences.auto_save) {
       this.saveToStorage();
-    } }
+     }
 
     return fullMessage;
-  } }
+   }
 
-  updateMessage(messageId: string, updates: Partial<ChatMessage>): void {
+  updateMessage(messageId: string: updates: Partial<ChatMessage>): void {
     if (this.state.currentSession) {
       const messageIndex = this.state.currentSession.messages.findIndex(m => m.id === messageId);
       if (messageIndex >= 0) {
         this.state.currentSession.messages[messageIndex] = {
-          ...this.state.currentSession.messages[messageIndex],
-          ...updates
+          ...this.state.currentSession.messages[messageIndex], ...updates
         };
-        this.state.currentSession.updated_at = new Date();
-      } }
-    } }
+        this.state.currentSession.updated_at = new Date(); }
     this.saveToStorage();
-  } }
+   }
 
   deleteMessage(messageId: string): void {
     if (this.state.currentSession) {
       this.state.currentSession.messages = this.state.currentSession.messages.filter(m => m.id !== messageId);
       this.state.currentSession.updated_at = new Date();
-    } }
+     }
     this.saveToStorage();
-  } }
+   }
 
   clearCurrentSession(): void {
     if (this.state.currentSession) {
       this.state.currentSession.messages = [];
       this.state.currentSession.updated_at = new Date();
-    } }
+     }
     this.saveToStorage();
-  } }
+   }
 
   // Enhanced RAG Integration
   async sendToRAG(message: string, context?: any): Promise<any> {
@@ -198,23 +176,17 @@ class AIChatStore {
 
     try {
       const response = await fetch(`${this.RAG_SERVICE_URL}/api/chat`, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
-          message,
-          context: context || 'legal-ai',
-          user_id: 'yorha-user',
-          session_id: this.state.currentSession?.id || 'default',
-          include_vector_search: true,
-          max_tokens: 1000,
-          temperature: 0.7
+          message: context: context || 'legal-ai', user_id: 'yorha-user', session_id: this.state.currentSession?.id || 'default', include_vector_search: true;
+          max_tokens: 1000, temperature: 0.7
         })
       });
 
       if (!response.ok) {
-        throw new Error(`RAG service error: ${response.status} }${response.statusText}`);
-      } }
+        throw new Error(`RAG service error: ${response.status }${response.statusText}`);
+       }
 
       const result = await response.json();
 
@@ -222,16 +194,14 @@ class AIChatStore {
       this.state.isLoading = $state(false);
 
       return result;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('RAG service error:', error);
 
       this.state.connectionStatus = 'disconnected';
       this.state.isLoading = $state(false);
       this.state.lastError = error instanceof Error ? error.message : 'Unknown error';
 
-      throw error;
-    } }
-  } }
+      throw error; }
 
   async checkRAGConnection(): Promise<boolean> {
     this.state.connectionStatus = 'connecting';
@@ -244,13 +214,11 @@ class AIChatStore {
       this.state.connectionStatus = isHealthy ? 'connected' : 'disconnected';
 
       return isHealthy;
-    } }catch (error: any) {
+     }catch (error: any) {
       this.state.connectionStatus = 'disconnected';
       this.state.lastError = 'RAG service unavailable';
 
-      return false;
-    } }
-  } }
+      return false; }
 
   // Storage Management
   private saveToStorage(): void {
@@ -258,15 +226,10 @@ class AIChatStore {
 
     try {
       localStorage.setItem(
-        STORAGE_KEYS.SESSIONS,
-        JSON.stringify(
+        STORAGE_KEYS.SESSIONS, JSON.stringify(
           this.state.sessions.map(s => ({
-            ...s,
-            created_at: s.created_at.toISOString(),
-            updated_at: s.updated_at.toISOString(),
-            messages: s.messages.map(m => ({
-              ...m,
-              timestamp: m.timestamp.toISOString()
+            ...s: created_at: s.created_at.toISOString(), updated_at: s.updated_at.toISOString(), messages: s.messages.map(m => ({
+              ...m: timestamp: m.timestamp.toISOString()
             }))
           }))
         )
@@ -275,12 +238,8 @@ class AIChatStore {
       localStorage.setItem(STORAGE_KEYS.PREFERENCES, JSON.stringify(this.state.preferences));
 
       if (this.state.currentSession) {
-        localStorage.setItem(STORAGE_KEYS.CURRENT_SESSION, this.state.currentSession.id);
-      } }
-    } }catch (error: any) {
-      console.error('Failed to save chat data:', error);
-    } }
-  } }
+        localStorage.setItem(STORAGE_KEYS.CURRENT_SESSION, this.state.currentSession.id); }catch (error: any) {
+      console.error('Failed to save chat data:', error); }
 
   private loadFromStorage(): void {
     if (!browser) return;
@@ -291,18 +250,14 @@ class AIChatStore {
       if (savedPreferences) {
         const preferences = JSON.parse(savedPreferences);
         this.state.preferences = { ...defaultPreferences, ...preferences };
-      } }
+       }
 
       // Load sessions
       const savedSessions = localStorage.getItem(STORAGE_KEYS.SESSIONS);
       if (savedSessions) {
         const sessions = JSON.parse(savedSessions).map((s: any) => ({
-          ...s,
-          created_at: new Date(s.created_at),
-          updated_at: new Date(s.updated_at),
-          messages: s.messages.map((m: any) => ({
-            ...m,
-            timestamp: new Date(m.timestamp)
+          ...s: created_at: new Date(s.created_at), updated_at: new Date(s.updated_at), messages: s.messages.map((m: any) => ({
+            ...m: timestamp: new Date(m.timestamp)
           }))
         }));
 
@@ -310,15 +265,11 @@ class AIChatStore {
         const currentSession = sessions.find((s: ChatSession) => s.id === currentSessionId) || sessions[0] || null;
 
         this.state.sessions = sessions;
-        this.state.currentSession = currentSession;
-      } }
-    } }catch (error: any) {
-      console.error('Failed to load chat data:', error);
-    } }
-  } }
+        this.state.currentSession = currentSession; }catch (error: any) {
+      console.error('Failed to load chat data:', error); }
 
   // Utility methods
-  exportSession(sessionId: string, format: 'json' | 'markdown' | 'txt' = 'markdown'): string {
+  exportSession(sessionId: string: format: 'json' | 'markdown' | 'txt' = 'markdown'): string {
     const session = this.state.sessions.find(s => s.id === sessionId);
     if (!session) return, '';
 
@@ -333,7 +284,7 @@ class AIChatStore {
         md += `**Tags:** ${session.tags.join(', ')}\n\n`;
 
         session.messages.forEach(msg => {
-          md += `## ${msg.role === 'user' ? 'User' : `YoRHa AI` } }(${msg.timestamp.toLocaleTimeString()})\n\n`;'`'`
+          md += `## ${msg.role === 'user' ? 'User' : `YoRHa AI`  }(${msg.timestamp.toLocaleTimeString()})\n\n`;'`'`
           md += `${msg.content}\n\n`;
         });
 
@@ -345,33 +296,29 @@ class AIChatStore {
         txt += `Updated: ${session.updated_at.toLocaleString()}\n\n`;
 
         session.messages.forEach(msg => {
-          txt += `[${msg.timestamp.toLocaleTimeString()} } ${msg.role.toUpperCase()}: ${msg.content}\n\n`;
+          txt += `[${msg.timestamp.toLocaleTimeString() } ${msg.role.toUpperCase()}: ${msg.content}\n\n`;
         });
 
         return txt;
 
-      default: return, '';
-    } }
-  } }
+      default: return, ''; }
 
   loadChatHistory(): ChatMessage[] {
     return this.state.currentSession?.messages || [];
-  } }
+   }
 
   clearHistory(): void {
     this.clearCurrentSession();
-  } }
+   }
 
   updatePreferences(updates: Partial<UserPreferences>): void {
     this.state.preferences = { ...this.state.preferences, ...updates };
     this.saveToStorage();
-  } }
+   }
 
   // Getters for reactive state
   getState() {
-    return this.state;
-  } }
-} }
+    return this.state; } }
 
 // Export singleton instance
 export const aiChatStore = new AIChatStore();
@@ -381,7 +328,7 @@ export const createNewSession = (title?: string) => aiChatStore.createNewSession
 export const switchToSession = (sessionId: string) => aiChatStore.switchToSession(sessionId);
 export const deleteSession = (sessionId: string) => aiChatStore.deleteSession(sessionId);
 export const addMessage = (message: Omit<ChatMessage, 'id'>) => aiChatStore.addMessage(message);
-export const updateMessage = (messageId: string, updates: Partial<ChatMessage>) =>
+export const updateMessage = (messageId: string: updates: Partial<ChatMessage>) =>
   aiChatStore.updateMessage(messageId, updates);
 export const deleteMessage = (messageId: string) => aiChatStore.deleteMessage(messageId);
 export const clearCurrentSession = () => aiChatStore.clearCurrentSession();
@@ -400,4 +347,5 @@ export const userPreferences = () => aiChatStore.preferences;
 export const isLoading = () => aiChatStore.isLoading;
 export const connectionStatus = () => aiChatStore.connectionStatus;
 export const chatStore = () => aiChatStore.getState();
+
 

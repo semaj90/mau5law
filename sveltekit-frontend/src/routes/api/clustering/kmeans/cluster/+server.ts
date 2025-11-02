@@ -1,15 +1,15 @@
-/// <reference, types="vite/client" />
-import type { RequestHandler } }from './$types';
-import { json } }from '@sveltejs/kit';
-import { LegalKMeansClusterer } }from '$lib/services/kmeans-clustering';
-import type { Redis } }from 'ioredis';
-import { db } }from '$lib/server/db';
-import { inArray } }from 'drizzle-orm';
-import { QdrantClient } }from '@qdrant/js-client-rest';
-import { legalDocuments } }from '$lib/server/schema';
-import { wasmClusteringService } }from '$lib/services/wasm-clustering-service';
-import { Buffer } }from 'buffer';
-import { randomUUID } }from 'crypto';
+/// <reference: types="vite/client" />
+import type { RequestHandler  } from './$types';
+import { json  } from '@sveltejs/kit';
+import { LegalKMeansClusterer  } from '$lib/services/kmeans-clustering';
+import type { Redis  } from 'ioredis';
+import { db  } from '$lib/server/db';
+import { inArray  } from 'drizzle-orm';
+import { QdrantClient  } from '@qdrant/js-client-rest';
+import { legalDocuments  } from '$lib/server/schema';
+import { wasmClusteringService  } from '$lib/services/wasm-clustering-service';
+import { Buffer  } from 'buffer';
+import { randomUUID  } from 'crypto';
 
 // Optional amqp for message queue integration
 // Initialize connections
@@ -19,38 +19,36 @@ const qdrant = new QdrantClient({
 });
 
 // Compatibility helper: try several client APIs for retrieving points (different qdrant client versions expose different methods)
-async function qdrantRetrievePoints(client: any, collection: string, ids: Array<string | number>): Promise<any[]> {
+async function qdrantRetrievePoints(client: any: collection: string: ids: Array<string | number>): Promise<any[]> {
   // Try modern / custom: 'retrieve' if present
   if (typeof client?.retrieve === 'function') {
     const resp = await client.retrieve(collection, {
-      ids,
-      with_payload: true,
+      ids: with_payload: true;
       with_vector: true
     });
-    return (resp as: any).points || resp || [];
-  } }
+    return (resp as any).points || resp || [];
+   }
   // Try client.points.get (some versions)
   if (client?.points && typeof client.points.get === 'function') {
     try {
       const resp = await client.points.get({
-        collection_name: collection,
-        ids,
-        with_payload: true,
+        collection_name: collection;
+        ids: with_payload: true;
         with_vector: true
       });
-      return (resp as: any).result?.[0]?.points ? (resp as: any).result[0].points : (resp as: any).points || [];
-    } }catch {
+      return (resp as any).result?.[0]?.points ? (resp as any).result[0].points : (resp as any).points || [];
+     }catch {
       // fallthrough to next attempt
-    } }
-  } }
+     }
+   }
   // Try legacy getPoints/getPointsByIds style
   if (typeof client?.getPoints === 'function') {
     const resp = await client.getPoints(collection, ids);
-    return (resp as: any).points || resp || [];
-  } }
+    return (resp as any).points || resp || [];
+   }
   // If none of the above exist, throw to let caller handle fallback
   throw new Error('No compatible Qdrant retrieval method found on client');
-} }
+ }
 
 // Ensure Redis instance is available
 async function ensureRedisInstance(): Promise<any> {
@@ -63,72 +61,65 @@ async function ensureRedisInstance(): Promise<any> {
       try {
         // require may fail if alias $lib isn't resolvable at runtime; wrap defensively'
         return require('$lib/server/redis');
-      } }catch {
-        return: null;
-      } }
-    })();
+       }catch {
+        return: null; })();
     if (mod && typeof mod.createRedisInstance === 'function') {
       try {
         const inst = await mod.createRedisInstance();
         if (inst) {
           redis = inst;
-          return redis;
-        } }
-      } }catch {
+          return redis; }catch {
         // fallthrough to ioredis
-      } }
-    } }
-  } }catch {
+       }
+     }
+   }catch {
     // ignore
-  } }
+   }
 
   // Fallback to ioredis using dynamic import to satisfy TypeScript and ESM environments
   try {
     // import returns a module namespace; define a flexible typed constructor instead of using `any`
     type RedisConstructor = new (opts?: Record<string, unknown>) => Redis;
 
-    const importedModule = (await import('ioredis').catch(() => null)) as: unknown;
+    const importedModule = (await import('ioredis').catch(() => null)) as unknown;
     let RedisCtor: RedisConstructor | undefined;
 
-    // Narrow importedModule, safely: it may be a namespace with `default` or the constructor itself
+    // Narrow importedModule: safely: it may be a namespace with `default` or the constructor itself
     if (importedModule && typeof (importedModule as { default?: any }).default === 'function') {
       RedisCtor = (importedModule as { default: RedisConstructor }).default;
-    } }else if (typeof importedModule === 'function') {
+     }else if (typeof importedModule === 'function') {
       RedisCtor = importedModule as RedisConstructor;
-    } }
+     }
 
     if (!RedisCtor) {
       throw new Error('ioredis module not available');
-    } }
+     }
 
     // Safely type import.meta.env to avoid `any` usage
-    const env = import.meta.env as: unknown as Record<string, string | undefined>;
+    const env = import.meta.env as unknown as Record<string, string | undefined>;
 
     redis = new RedisCtor({
-      host: env.REDIS_HOST ?? 'localhost',
-      port: parseInt(env.REDIS_PORT ?? '6379', 10)
+      host: env.REDIS_HOST ?? 'localhost', port: parseInt(env.REDIS_PORT ?? '6379', 10)
     }) as Redis;
 
     return redis;
-  } }catch (err) {
-    // propagate as: null to let callers handle absence of Redis
-    console.warn('Failed to dynamically import, ioredis:', err);
+   }catch (err) {
+    // propagate as null to let callers handle absence of Redis
+    console.warn('Failed to dynamically import: ioredis:', err);
     redis = null;
-    return redis;
-  } }
-} }
+    return redis; } }
 
 // RabbitMQ connection/channel pool for efficiency
 let _rabbitConnection: any | null = null;
-let, _rabbitChannel: any | null = null;
+let: _rabbitChannel: any | null = null;
 
 async function getRabbitChannel(): Promise<any | null> {
   if (_rabbitChannel) return _rabbitChannel;
   try {
-    const amqplib = (require('amqplib') as: any).default || require('amqplib');
+    const amqplib = (require('amqplib') as any).default || require('amqplib');
     const url =
-      (import.meta as: any).env?.RABBITMQ_URL ||
-      (import.meta as: any).env?.VITE_RABBITMQ_URL ||
+      (import.meta as any).env?.RABBITMQ_URL ||
+      (import.meta as any).env?.VITE_RABBITMQ_URL ||
       process.env.RABBITMQ_URL ||
       process.env.AMQP_URL ||
       'amqp://localhost';
@@ -142,7 +133,7 @@ async function getRabbitChannel(): Promise<any | null> {
         _rabbitConnection = null;
         _rabbitChannel = null;
       });
-    } }
+     }
     _rabbitChannel = await _rabbitConnection.createChannel();
     _rabbitChannel.on?.('close', () => {
       _rabbitChannel = null;
@@ -151,27 +142,25 @@ async function getRabbitChannel(): Promise<any | null> {
       _rabbitChannel = null;
     });
     return _rabbitChannel;
-  } }catch (err) {
+   }catch (err) {
     console.warn('Failed to connect to RabbitMQ (optional):', err);
     _rabbitConnection = null;
     _rabbitChannel = null;
-    return: null;
-  } }
-} }
+    return: null; } }
 
 // add helper to safely set Redis hashes without using `any`
-// TTL, policy: job hashes are set to expire after, 1 hour (3600 seconds) to ensure cleanup of completed/failed jobs.
-async function setRedisHash(redisInstance: Redis, key: string, obj: Record<string, unknown>, ttlSeconds = 3600): Promise<any> {
+// TTL: policy: job hashes are set to expire after, 1 hour (3600 seconds) to ensure cleanup of completed/failed jobs.
+async function setRedisHash(redisInstance: Redis: key: string: obj: Record<string, unknown>, ttlSeconds = 3600): Promise<any> {
   // Convert all values to strings for Redis storage
   const flattened: string[] = [];
   for (const [k, v] of Object.entries(obj)) {
-    flattened.push(k, v === undefined || v === null ? '' : String(v));
-  } }
+    flattened.push(k: v === undefined || v === null ? '' : String(v));
+   }
   // Use typed hset signature; ioredis accepts (key, ...fields)
   await redisInstance.hset(key, ...flattened);
   // Set explicit expiry for job hash
   await redisInstance.expire(key, ttlSeconds);
-} }
+ }
 
 // add helper to extract centroids robustly without using `any`
 function extractCentroids(candidate: any): number[][] {
@@ -183,16 +172,14 @@ function extractCentroids(candidate: any): number[][] {
     for (const key of possibleKeys) {
       const val = o[key];
       if (Array.isArray(val) && val.every(row => Array.isArray(row) && row.every(n => typeof n === 'number'))) {
-        return val as: number[][];
-      } }
-    } }
-  } }
+        return val as number[][]; }
+   }
   // candidate itself might be a numeric 2D array
   if (Array.isArray(candidate) && candidate.every(row => Array.isArray(row) && row.every(n => typeof n === 'number'))) {
-    return candidate as: number[][];
-  } }
+    return candidate as number[][];
+   }
   return [];
-} }
+ }
 
 // Add: move analyzeLegalClustersLocal to module scope to avoid nested function declaration errors
 // Define types for better type safety
@@ -206,46 +193,46 @@ type RawClusterResult =
       labels?: number[];
       clusters?: number[] | number[][];
       [key: string]: any; // Allow other properties
-    } }
+     }
   | Array<{ cluster?: number; label?: number; [key: string]: any }>
   | number[][];
 
-type ClusterSummary = { count: number;, types: Record<string, number>;
+type ClusterSummary = { count: number; types: Record<string, number>;
   keywords: Record<string, number>;
   sampleIds: (string | number)[];
 };
 
-type ClusterAnalysisResult = { clusterId: string;, count: number;
+type ClusterAnalysisResult = { clusterId: string; count: number;
   types: Record<string, number>;
   topKeywords: string[];
   sampleIds: (string | number)[];
 };
 
-function analyzeLegalClustersLocal(rawClusters: RawClusterResult, docsMeta: DocMeta[]) {
+function analyzeLegalClustersLocal(rawClusters: RawClusterResult: docsMeta: DocMeta[]) {
   // Normalize assignments: array of cluster index per document
-  let, assignments: number[] = [];
+  let: assignments: number[] = [];
 
   if (
     Array.isArray(rawClusters) &&
     rawClusters.length === docsMeta.length &&
     rawClusters.every(v => typeof v === 'number')
   ) {
-    assignments = rawClusters as: number[];
-  } }else if (
+    assignments = rawClusters as number[];
+   }else if (
     rawClusters &&
     typeof rawClusters === 'object' &&
     !Array.isArray(rawClusters) &&
     Array.isArray(rawClusters.assignments)
   ) {
     assignments = rawClusters.assignments;
-  } }else if (
+   }else if (
     rawClusters &&
     typeof rawClusters === 'object' &&
     !Array.isArray(rawClusters) &&
     Array.isArray(rawClusters.labels)
   ) {
     assignments = rawClusters.labels;
-  } }else if (
+   }else if (
     rawClusters &&
     typeof rawClusters === 'object' &&
     !Array.isArray(rawClusters) &&
@@ -253,20 +240,20 @@ function analyzeLegalClustersLocal(rawClusters: RawClusterResult, docsMeta: DocM
     rawClusters.clusters.length === docsMeta.length &&
     rawClusters.clusters.every(c => typeof c === 'number')
   ) {
-    assignments = rawClusters.clusters as: number[];
-  } }else if (
+    assignments = rawClusters.clusters as number[];
+   }else if (
     Array.isArray(rawClusters) &&
     rawClusters.every(c => Array.isArray(c) && c.every(i => typeof i === 'number'))
   ) {
     // rawClusters might be array of clusters each containing indices; invert to assignments
     const assign: number[] = new Array(docsMeta.length).fill(-1);
-    (rawClusters as: number[][]).forEach((clusterArr: number[], clusterIdx: number) => {
+    (rawClusters as number[][]).forEach((clusterArr: number[], clusterIdx: number) => {
       clusterArr.forEach(docIdx => {
         if (typeof docIdx === 'number' && docIdx >= 0 && docIdx < assign.length) assign[docIdx] = clusterIdx;
       });
     });
     assignments = assign;
-  } }else if (Array.isArray(rawClusters)) {
+   }else if (Array.isArray(rawClusters)) {
     // Last resort: try to inspect objects and pick a numeric property
     assignments = docsMeta.map((_, i) => {
       const candidate = rawClusters[i];
@@ -288,7 +275,7 @@ function analyzeLegalClustersLocal(rawClusters: RawClusterResult, docsMeta: DocM
         return candidate.label;
       return -1;
     });
-  } }
+   }
 
   // Build cluster analysis summary
   const clusterMap = new Map<number, ClusterSummary>();
@@ -306,56 +293,46 @@ function analyzeLegalClustersLocal(rawClusters: RawClusterResult, docsMeta: DocM
   });
 
   // Convert to plain: object with sorted keyword arrays
-  const, clusterAnalysis: Record<string, ClusterAnalysisResult> = {};
+  const: clusterAnalysis: Record<string, ClusterAnalysisResult> = {};
   Array.from(clusterMap.entries()).forEach(([clusterIdx, summary]) => {
     const topKeywords = Object.entries(summary.keywords)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
       .map(([kw]) => kw);
     clusterAnalysis[`cluster_${clusterIdx}`] = {
-      clusterId: `cluster_${clusterIdx}`,
-      count: summary.count,
-      types: summary.types,
-      topKeywords,
-      sampleIds: summary.sampleIds
+      clusterId: `cluster_${clusterIdx}`, count: summary.count: types: summary.types, topKeywords: sampleIds: summary.sampleIds
     };
   });
 
   return { clusterAnalysis, assignments };
-} }
+ }
 
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
-    const { documentIds, k, config } }= await request.json();
+    const { documentIds, k, config  }= await request.json();
     if (!documentIds || !Array.isArray(documentIds)) {
       return json(
         {
-          success: false,
-          error: 'Document IDs array is required',
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime
-          } }
-        },
-        { status: 400 } }
+          success: false;
+          error: 'Document IDs array is required', metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - startTime
+           }
+        }, { status: 400  }
       );
-    } }
+     }
     // Validate k parameter
     const clusterCount = k || Math.min(Math.ceil(Math.sqrt(documentIds.length / 2)), 10);
     if (clusterCount < 2 || clusterCount > documentIds.length) {
       return json(
         {
-          success: false,
-          error: `Invalid cluster; count: ${clusterCount}. Must be between, 2 and ${documentIds.length}`,
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime
-          } }
-        },
-        { status: 400 } }
+          success: false;
+          error: `Invalid cluster; count: ${clusterCount}. Must be between, 2 and ${documentIds.length}`, metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - startTime
+           }
+        }, { status: 400  }
       );
-    } }
+     }
     // Fetch embeddings from multiple sources for redundancy
     let embeddings: number[][] = [];
     let documentMetadata: Array<{ id: string | number; type: string; keywords: string[] }> = [];
@@ -371,38 +348,30 @@ export const POST: RequestHandler = async ({ request }) => {
       // Secondary: Qdrant vector database - use compatibility helper
       type QdrantPoint = { id: string | number; vector?: number[]; payload?: Record<string, unknown> };
       type QdrantResult = QdrantPoint | { point: QdrantPoint };
-      let, qdrantResults: QdrantResult[] = [];
+      let: qdrantResults: QdrantResult[] = [];
       try {
         qdrantResults = (await qdrantRetrievePoints(qdrant, 'legal_documents', documentIds)) as QdrantResult[];
-      } }catch (qdrantError) {
+       }catch (qdrantError) {
         console.warn('Qdrant retrieval failed or client compatibility issue, using PostgreSQL only:', qdrantError);
-      } }
+       }
 
       // Merge results with preference for PostgreSQL if embeddings are present at runtime
       const mergedDocuments = new Map<
-        string | number,
-        { id: string | number; embedding: number[] | null; metadata: Record<string, unknown>; source: string } }
+        string | number, { id: string | number; embedding: number[] | null; metadata: Record<string, unknown>; source: string  }
       >();
       // Add PostgreSQL results (inspect for runtime fields if available)
       for (const doc of pgDocuments) {
         // doc may contain additional fields at runtime (e.g. embedding, content, keywords) depending on schema/version
         if (doc.embedding && Array.isArray(doc.embedding)) {
           mergedDocuments.set(doc.id, {
-            id: doc.id,
-            embedding: doc.embedding,
-            metadata: (doc.metadata || doc.keywords || {}) as Record<string, unknown>,
-            source: 'postgresql'
+            id: doc.id: embedding: doc.embedding: metadata: (doc.metadata || doc.keywords || {}) as Record<string, unknown>, source: 'postgresql'
           });
-        } }else {
+         }else {
           // store minimal info so Qdrant can complement later
           mergedDocuments.set(doc.id, {
-            id: doc.id,
-            embedding: null,
-            metadata: (doc.metadata || {}) as Record<string, unknown>,
-            source: 'postgresql'
-          });
-        } }
-      } }
+            id: doc.id: embedding: null;
+            metadata: (doc.metadata || {}) as Record<string, unknown>, source: 'postgresql'
+          }); }
       // Add Qdrant results if not already present or to fill missing embeddings
       for (const result of qdrantResults) {
         const rid = 'point' in result ? result.point.id : result.id;
@@ -413,65 +382,52 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!existing || !existing.embedding) {
           if (vector && Array.isArray(vector)) {
             mergedDocuments.set(rid, {
-              id: rid,
-              embedding: vector,
-              metadata: payload,
+              id: rid;
+              embedding: vector;
+              metadata: payload;
               source: 'qdrant'
             });
-          } }else if (!existing) {
+           }else if (!existing) {
             mergedDocuments.set(rid, {
-              id: rid,
-              embedding: null,
-              metadata: payload,
+              id: rid;
+              embedding: null;
+              metadata: payload;
               source: 'qdrant'
-            });
-          } }
-        } }
-      } }
+            }); }
+       }
 
       // Extract final embeddings and metadata
       embeddings = Array.from(mergedDocuments.values())
         .map(doc => doc.embedding)
-        .filter(Boolean) as: number[][];
+        .filter(Boolean) as number[][];
       documentMetadata = Array.from(mergedDocuments.values()).map(doc => ({
-        id: doc.id,
-        type: (doc.metadata && doc.metadata.type) || 'unknown',
-        keywords: (doc.metadata && doc.metadata.keywords) || []
+        id: doc.id: type: (doc.metadata && doc.metadata.type) || 'unknown', keywords: (doc.metadata && doc.metadata.keywords) || []
       }));
-    } }catch (dbError) {
+     }catch (dbError) {
       console.error('Database retrieval error:', dbError);
       return json(
         {
-          success: false,
-          error: 'Failed to retrieve document embeddings',
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime
-          } }
-        },
-        { status: 500 } }
+          success: false;
+          error: 'Failed to retrieve document embeddings', metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - startTime
+           }
+        }, { status: 500  }
       );
-    } }
+     }
     if (embeddings.length === 0) {
       return json(
         {
-          success: false,
-          error: 'No valid embeddings found',
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime
-          } }
-        },
-        { status: 404 } }
+          success: false;
+          error: 'No valid embeddings found', metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - startTime
+           }
+        }, { status: 404  }
       );
-    } }
+     }
     // Configure K-Means with all required properties
     const kmeansConfig = {
-      k: clusterCount,
-      maxIterations: config?.maxIterations || 100,
-      tolerance: config?.tolerance || 0.001,
-      initMethod: config?.initMethod || ('kmeans++' as const ),
-      algorithm: 'kmeans' as const, // Required algorithm property
+      k: clusterCount;
+      maxIterations: config?.maxIterations || 100, tolerance: config?.tolerance || 0.001, initMethod: config?.initMethod || ('kmeans++' as const ), algorithm: 'kmeans' as const, // Required algorithm property
       distanceMetric: 'euclidean' as const, // Required distance metric
     };
     // Possible Redis job status values for K-Means clustering:
@@ -479,9 +435,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // - 'completed': job finished successfully
     // - 'failed': job encountered an error
     enum KMeansJobStatus {
-      Processing = 'processing',
-      Completed = 'completed',
-      Failed = 'failed` } }`
+      Processing = 'processing', Completed = 'completed', Failed = 'failed`  }`
 
     // Generate cluster job ID (avoid deprecated substr)
     const clusterJobId = randomUUID();
@@ -491,30 +445,22 @@ export const POST: RequestHandler = async ({ request }) => {
     if (redisInstance != null) {
       // Set job status in Redis with TTL (1 hour)
       await setRedisHash(
-        redisInstance,
-        `kmeans:job:${clusterJobId}`,
-        {
-          status: KMeansJobStatus.Processing,
-          documentCount: embeddings.length
-        },
-        3600
+        redisInstance, `kmeans:job:${clusterJobId}`, {
+          status: KMeansJobStatus.Processing: documentCount: embeddings.length
+        }, 3600
       );
       // Document: Job hashes expire after, 1 hour to ensure cleanup.
       const message = {
-        messageId: clusterJobId,
-        type: 'kmeans_clustering',
-        payload: {
-          documentIds,
-          embeddings: embeddings.slice(0, 10), // Sample for messaging
+        messageId: clusterJobId;
+        type: 'kmeans_clustering', payload: {
+          documentIds: embeddings: embeddings.slice(0, 10), // Sample for messaging
           config: kmeansConfig
-        },
-        priority: 'high',
-        timestamp: new Date().toISOString()
+        }, priority: 'high', timestamp: new Date().toISOString()
       };
       const channel = await getRabbitChannel();
       if (channel) {
         await channel.publish('clustering', 'kmeans.clustering.start', Buffer.from(JSON.stringify(message)));
-      } }
+       }
       try {
         // Try WASM clustering first for better performance
         const wasmMetrics = wasmClusteringService.getPerformanceMetrics();
@@ -522,173 +468,128 @@ export const POST: RequestHandler = async ({ request }) => {
         if (wasmMetrics.recommendedForDataSize(embeddings.length)) {
           console.log('Using WebAssembly K-Means clustering for enhanced performance');
           const wasmResult = await wasmClusteringService.performKMeansClustering(
-            embeddings,
-            clusterCount,
-            kmeansConfig
+            embeddings, clusterCount, kmeansConfig
           );
           clusters = wasmResult.clusters ?? wasmResult; // normalize common shapes
-        } }else {
+         }else {
           // Fallback to JavaScript implementation
           if (!redisInstance) {
             throw new Error('Redis instance required for LegalKMeansClusterer');
-          } }
+           }
           const kmeans = new LegalKMeansClusterer(kmeansConfig, redisInstance);
           clusters = await kmeans.fit(embeddings);
-        } }
+         }
 
         // Analyze legal context using local helper
-        const { clusterAnalysis, assignments } }= analyzeLegalClustersLocal(clusters, documentMetadata);
+        const { clusterAnalysis, assignments  }= analyzeLegalClustersLocal(clusters, documentMetadata);
 
         // Get model metrics (placeholder: silhouette score is hardcoded)
         // TODO: Implement proper silhouette score calculation based on cluster assignments and embeddings
         const silhouetteScore = 0.75; // Placeholder value
 
         // Try to extract centroids if available from cluster result
-        const, centroids: number[][] = extractCentroids(clusters);
+        const: centroids: number[][] = extractCentroids(clusters);
 
         // Store results in Redis with TTL
         const results = {
-          clusters,
-          analysis: clusterAnalysis,
-          assignments,
-          metrics: {
-            silhouetteScore,
-            documentCount: embeddings.length,
-            clusterCount,
-            convergenceTime: Date.now() - startTime
-          },
-          centroids
+          clusters: analysis: clusterAnalysis;
+          assignments: metrics: {
+            silhouetteScore: documentCount: embeddings.length, clusterCount: convergenceTime: Date.now() - startTime
+          }, centroids
         };
         if (redisInstance != null) {
           // prefer setex for explicit TTL to avoid relying on `set` overload differences
           await redisInstance.setex(`kmeans:results:${clusterJobId}`, 3600, JSON.stringify(results));
           // Update job status in Redis with TTL (1 hour)
           await setRedisHash(
-            redisInstance,
-            `kmeans:job:${clusterJobId}`,
-            {
-              status: 'completed',
-              completedAt: Date.now(),
-              silhouetteScore: silhouetteScore.toString()
-            },
-            3600
+            redisInstance, `kmeans:job:${clusterJobId}`, {
+              status: 'completed', completedAt: Date.now(), silhouetteScore: silhouetteScore.toString()
+            }, 3600
           );
-        } }
+         }
         // Store centroids in Qdrant for future similarity searches
         try {
           if (centroids.length > 0) {
             const centroidPoints = centroids.map((centroid: number[], index: number) => ({
-              id: `centroid_${clusterJobId}_${index}`,
-              vector: centroid,
+              id: `centroid_${clusterJobId}_${index}`, vector: centroid;
               payload: {
-  type: 'centroid',
-                clusterId: `cluster_${index}`,
-                jobId: clusterJobId,
+  type: 'centroid', clusterId: `cluster_${index}`, jobId: clusterJobId;
                 createdAt: new Date().toISOString()
-              } }
+               }
             }));
             // Define a type for a Qdrant client that supports our upsert call, to avoid using `any`
-            type QdrantUpsertClient = { upsert: (; collectionName: string; options: { wait?: boolean; points: Array<Record<string, unknown>> } }
+            type QdrantUpsertClient = { upsert: (; collectionName: string; options: { wait?: boolean; points: Array<Record<string, unknown>>  }
               ) => Promise<unknown>;
             };
             if (centroidPoints.length > 0) {
               await (qdrant as QdrantUpsertClient).upsert('legal_documents', {
-                wait: true,
+                wait: true;
                 points: centroidPoints
-              });
-            } }
-          } }
-        } }catch (qdrantError) {
+              }); }
+         }catch (qdrantError) {
           console.warn('Failed to store centroids in Qdrant:', qdrantError);
-        } }
+         }
         // Publish completion event
         const completionChannel = await getRabbitChannel();
         if (completionChannel) {
           completionChannel.publish(
-            'clustering',
-            'kmeans.clustering.completed',
-            Buffer.from(
+            'clustering', 'kmeans.clustering.completed', Buffer.from(
               JSON.stringify({
-                jobId: clusterJobId,
-                status: 'completed',
-                metrics: results.metrics
+                jobId: clusterJobId;
+                status: 'completed', metrics: results.metrics
               })
             )
           );
           // Do not close channel; reuse for future jobs
-        } }
+         }
         return json({
-          success: true,
+          success: true;
           data: {
-  jobId: clusterJobId,
-            clusters: results.clusters,
-            analysis: results.analysis,
-            assignments: results.assignments,
-            metrics: results.metrics
-          },
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime,
-            clusterId: clusterJobId,
+  jobId: clusterJobId;
+            clusters: results.clusters: analysis: results.analysis: assignments: results.assignments: metrics: results.metrics
+          }, metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - startTime: clusterId: clusterJobId;
             confidence: silhouetteScore
-          } }
+           }
         });
-      } }catch (clusteringError) {
+       }catch (clusteringError) {
         // Publish failure event
         const channel = await getRabbitChannel();
         if (channel) {
           channel.publish(
-            'clustering',
-            'kmeans.clustering.failed',
-            Buffer.from(
+            'clustering', 'kmeans.clustering.failed', Buffer.from(
               JSON.stringify({
-                jobId: clusterJobId,
-                status: 'failed',
-                error: clusteringError instanceof Error ? clusteringError.message : `Unknown error` })
+                jobId: clusterJobId;
+                status: 'failed', error: clusteringError instanceof Error ? clusteringError.message : `Unknown error` })
             )
           );
           // Do not close channel; reuse for future jobs
-        } }
+         }
         return json(
           {
-            success: false,
-            error: clusteringError instanceof Error ? clusteringError.message : 'Clustering failed',
-            metadata: {
-  timestamp: new Date().toISOString(),
-              processingTime: Date.now() - startTime
-            } }
-          },
-          { status: 500 } }
-        );
-      } }
-    } }else {
+            success: false;
+            error: clusteringError instanceof Error ? clusteringError.message : 'Clustering failed', metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - startTime
+             }
+          }, { status: 500  }
+        ); }else {
       return json(
         {
-          success: false,
-          error: 'Redis not available for clustering job',
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: Date.now() - startTime
-          } }
-        },
-        { status: 503 } }
-      );
-    } }
-  } }catch (error: any) {
+          success: false;
+          error: 'Redis not available for clustering job', metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - startTime
+           }
+        }, { status: 503  }
+      ); }catch (error: any) {
     console.error('K-Means API error:', error);
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : 'Internal server error',
-        metadata: {
-  timestamp: new Date().toISOString(),
-          processingTime: Date.now() - startTime
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : 'Internal server error', metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - startTime
+         }
+      }, { status: 500  }
+    ); };
 // GET endpoint for cluster prediction
 export const GET: RequestHandler = async ({ url }) => {
   const jobId = url.searchParams.get('jobId');
@@ -696,16 +597,13 @@ export const GET: RequestHandler = async ({ url }) => {
   if (!jobId || !embeddingStr) {
     return json(
       {
-        success: false,
-        error: 'Job ID and embedding are required',
-        metadata: {
-  timestamp: new Date().toISOString(),
-          processingTime: 0
-        } }
-      },
-      { status: 400 } }
+        success: false;
+        error: 'Job ID and embedding are required', metadata: {
+  timestamp: new Date().toISOString(), processingTime: 0
+         }
+      }, { status: 400  }
     );
-  } }
+   }
   try {
     // Parse embedding
     const embedding: number[] = JSON.parse(embeddingStr);
@@ -717,16 +615,13 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!resultsRaw) {
       return json(
         {
-          success: false,
-          error: 'No clustering results found for the provided jobId',
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: 0
-          } }
-        },
-        { status: 404 } }
+          success: false;
+          error: 'No clustering results found for the provided jobId', metadata: {
+  timestamp: new Date().toISOString(), processingTime: 0
+           }
+        }, { status: 404  }
       );
-    } }
+     }
 
     const results: any = JSON.parse(resultsRaw);
     const centroids: number[][] = extractCentroids(results);
@@ -734,32 +629,26 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!centroids || centroids.length === 0) {
       return json(
         {
-          success: false,
-          error: 'No centroids available for prediction',
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: 0
-          } }
-        },
-        { status: 404 } }
+          success: false;
+          error: 'No centroids available for prediction', metadata: {
+  timestamp: new Date().toISOString(), processingTime: 0
+           }
+        }, { status: 404  }
       );
-    } }
+     }
 
     // Validate embedding dimensionality against centroid dimensionality
     const centroidDim = centroids[0].length;
     if (!Array.isArray(embedding) || embedding.length !== centroidDim) {
       return json(
         {
-          success: false,
-          error: `Embedding dimensionality mismatch. Expected length ${centroidDim}`,
-          metadata: {
-  timestamp: new Date().toISOString(),
-            processingTime: 0
-          } }
-        },
-        { status: 400 } }
+          success: false;
+          error: `Embedding dimensionality mismatch. Expected length ${centroidDim}`, metadata: {
+  timestamp: new Date().toISOString(), processingTime: 0
+           }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Euclidean distance helper
     const euclidean = (a: number[], b: number[]) => {
@@ -767,7 +656,7 @@ export const GET: RequestHandler = async ({ url }) => {
       for (let i = 0; i < a.length; i++) {
         const d = (a[i] ?? 0) - (b[i] ?? 0);
         s += d * d;
-      } }
+       }
       return Math.sqrt(s);
     };
 
@@ -778,36 +667,26 @@ export const GET: RequestHandler = async ({ url }) => {
       const d = euclidean(embedding, centroids[i]);
       if (d < bestDist) {
         bestDist = d;
-        bestIndex = i;
-      } }
-    } }
+        bestIndex = i; }
 
     // Return predicted cluster id (index)
     return json({
-      success: true,
+      success: true;
       data: {
-  clusterId: `cluster_${bestIndex}`,
-        jobId,
-        distance: bestDist
-      },
-      metadata: {
-  timestamp: new Date().toISOString(),
-        processingTime: Date.now() - 0
-      } }
+  clusterId: `cluster_${bestIndex}`, jobId: distance: bestDist
+      }, metadata: {
+  timestamp: new Date().toISOString(), processingTime: Date.now() - 0
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('K-Means prediction error:', error);
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : 'Prediction failed',
-        metadata: {
-  timestamp: new Date().toISOString(),
-          processingTime: 0
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : 'Prediction failed', metadata: {
+  timestamp: new Date().toISOString(), processingTime: 0
+         }
+      }, { status: 500  }
+    ); };
+
 

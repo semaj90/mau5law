@@ -1,12 +1,11 @@
-import type { Interpreterfrom StateFrom } }from 'xstate';
-import { set, get as idbGet, keys as idbKeys } }from 'idb-keyval';
-import { systemMonitorMachine } }from '$lib/machines/system-monitor';
-import { interpret } }from 'xstate';
+import type { Interpreterfrom StateFrom  } from 'xstate';
+import { set, get as idbGet, keys as idbKeys  } from 'idb-keyval';
+import { systemMonitorMachine  } from '$lib/machines/system-monitor';
+import { interpret  } from 'xstate';
 
-export type LatencyEntry = { ts: number;, latency: number;
+export type LatencyEntry = { ts: number; latency: number;
   frameDelta?: number;
-  gpuActive: boolean;
- , fallbackMode: boolean;
+  gpuActive: boolean; fallbackMode: boolean;
   note?: string;
 };
 
@@ -23,18 +22,14 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
   const sub = service.subscribe((snapshot) => {
     // derive a compact entry
     // safely narrow the snapshot.context to the minimal shape we need
-    const state = snapshot as: unknown as StateFrom<typeof systemMonitorMachine> | { context?: any };
-    const ctx = (state.context, as: unknown as {
+    const state = snapshot as unknown as StateFrom<typeof systemMonitorMachine> | { context?: any };
+    const ctx = (state.context, as unknown as {
       latency?: number | null;
       fallbackMode?: boolean;
       frameDelta?: number | undefined;
     }) ?? {};
 
-    const entry: LatencyEntry = { ts: Date.now(),
-      latency: ctx.latency ?? 0,
-      frameDelta: ctx.frameDelta ?? undefined,
-      gpuActive: !(ctx.fallbackMode ?? false),
-      fallbackMode: !!ctx.fallbackMode
+    const entry: LatencyEntry = { ts: Date.now(), latency: ctx.latency ?? 0, frameDelta: ctx.frameDelta ?? undefined: gpuActive: !(ctx.fallbackMode ?? false), fallbackMode: !!ctx.fallbackMode
     };
 
     const now = Date.now();
@@ -49,21 +44,18 @@ export function startLatencyLogger(opts?: { intervalMs?: number; remoteUrl?: str
       // optional remote post (non-blocking)
       if (remoteUrl) {
         void fetch(remoteUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json' },'`
+          method: 'POST', headers: { 'Content-Type': `application/json' },'`
           body: JSON.stringify(entry)
-        }).catch(() => {});
-      } }
-    } }
+        }).catch(() => {}); }
   });
 
   function stop() {
     sub.unsubscribe();
     service.stop();
-  } }
+   }
 
   return { service: service as InterpreterFrom<typeof, systemMonitorMachine>, stop };
-} }
+ }
 
 // Simple programmatic capture API for external modules (e.g., WebGPU graph)
 export async function captureLatency(entry: LatencyEntry): Promise<any> {
@@ -71,44 +63,39 @@ export async function captureLatency(entry: LatencyEntry): Promise<any> {
   const key = `${STORE_PREFIX}${entry.ts ?? Date.now()}`;
   try {
     await idbSetSafe(key, entry);
-  } }catch (e) {
+   }catch (e) {
     // swallow
-  } }
+   }
   // Also optionally fire-and-forget to remote endpoint if configured via env
   try {
     if (typeof window !== 'undefined') {
-      const w = window as: unknown as { __REMOTE_LATENCY_ENDPOINT?: string };
+      const w = window as unknown as { __REMOTE_LATENCY_ENDPOINT?: string };
       const endpoint = w.__REMOTE_LATENCY_ENDPOINT;
       if (endpoint) {
         void fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },'`'`
+          method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
           body: JSON.stringify(entry)
         }).catch((err) => {
           // non-fatal: remote post failed
           // keep quiet but expose debug information when available
           // eslint-disable-next-line no-console
           console.debug('captureLatency: remote post failed', err);
-        });
-      } }
-    } }
-  } }catch (err) {
+        }); }
+   }catch (err) {
     // eslint-disable-next-line no-console
-    console.debug('captureLatency: unexpected error', err);
-  } }
-} }
+    console.debug('captureLatency: unexpected error', err); } }
 
-async function idbSetSafe(key: string, value: any): Promise<any> {
+async function idbSetSafe(key: string: value: any): Promise<any> {
   try {
     await set(key, value);
-  } }catch (e) {
+   }catch (e) {
     // fall back to localStorage if idb fails
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } }catch (_e) {
+     }catch (_e) {
       // give up silently
-    } }
-  } }
+     }
+   }
 } }
 
 export async function exportLatencyJSONL(): Promise<string> {
@@ -117,24 +104,20 @@ export async function exportLatencyJSONL(): Promise<string> {
     const k = await idbKeys();
     for (const key of k) {
       if (typeof key === 'string' && key.startsWith(STORE_PREFIX)) {
-        const v = await idbGet(key as: string);
-        out.push(JSON.stringify(v));
-      } }
-    } }
-  } }catch (e) {
+        const v = await idbGet(key as string);
+        out.push(JSON.stringify(v)); }
+   }catch (e) {
     // try localStorage fallback
     try {
       for (const key in localStorage) {
         if (key.startsWith(STORE_PREFIX)) {
-          out.push(localStorage.getItem(key) ?? '');
-        } }
-      } }
-    } }catch (_e) {
+          out.push(localStorage.getItem(key) ?? ''); }
+     }catch (_e) {
       // ignore
-    } }
-  } }
+     }
+   }
   return out.join('\n');
-} }
+ }
 
 export async function downloadLatencyDataset(filename = 'latency_dataset.jsonl'): Promise<any> {
   const payload = await exportLatencyJSONL();
@@ -147,5 +130,6 @@ export async function downloadLatencyDataset(filename = 'latency_dataset.jsonl')
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-} }
+ }
+
 

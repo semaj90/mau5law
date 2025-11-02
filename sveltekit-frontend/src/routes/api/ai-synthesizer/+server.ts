@@ -1,12 +1,12 @@
-import type { RequestHandler } }from './$types.js';
+import type { RequestHandler  } from './$types.js';
 // AI Synthesizer API Route - Full Stack Integration
 // Uses Neo4j, PostgreSQL/pgvector, XState, Redis, Ollama with gemma3-legal:latest
 // TypeScript-safe with Drizzle ORM and MCP Context7 best practices
-import { aiOrchestrator } }from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
-import { monitoringService } }from '$lib/server/ai/monitoring-service';
+import { aiOrchestrator  } from '$lib/server/ai/enhanced-ai-synthesis-orchestrator';
+import { monitoringService  } from '$lib/server/ai/monitoring-service';
 // --- added imports ---
-import { json, error } }from '@sveltejs/kit';
-import { logger } }from '$lib/server/logger';
+import { json, error  } from '@sveltejs/kit';
+import { logger  } from '$lib/server/logger';
 import * as caching from '$lib/server/cache';
 
 // Add typed result/metric definitions
@@ -20,7 +20,7 @@ type SynthResult = {
 type Metric = { name: string; value: number };
 
 // --- added typed interfaces to replace: 'any' usage ---
-type CacheStats = { hits: number;, misses: number;
+type CacheStats = { hits: number; misses: number;
 	hitRate: number;
   memoryUsage: number;
 };
@@ -32,13 +32,13 @@ type CacheModule = {
 };
 
 // Define TestResult interface
-interface TestResult { query: string;, success: boolean;
+interface TestResult { query: string; success: boolean;
   processingTime: number;
   confidence?: number;
   sourcesUsed?: any[];
   expectedSources?: string[];
   error?: string;
-} }
+ }
 
 // Stream update/result shapes returned by aiOrchestrator.processStream
 type ProcessResult = SynthResult;
@@ -52,13 +52,11 @@ function errToString(err: any): string {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
-  } }catch {
-    return String(err);
-  } }
-} }
+   }catch {
+    return String(err); } }
 
 // SSE stream storage for real-time updates
-type ActiveStreamState = { query: string;, startTime: number;
+type ActiveStreamState = { query: string; startTime: number;
   status: 'initializing' | 'processing' | 'complete' | 'error';
   lastUpdate?: any;
   updates?: any[];
@@ -67,7 +65,7 @@ type ActiveStreamState = { query: string;, startTime: number;
 };
 const activeStreams = new Map<string, ActiveStreamState>();
 // Main synthesis endpoint
-export const POST: RequestHandler = async ({ request, url: _url }) => {
+export const POST: RequestHandler = async ({ request: url: _url }) => {
   const startTime = Date.now();
   let requestId: string | undefined;
   try {
@@ -79,7 +77,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
 
     if (!rawQuery || typeof rawQuery !== 'string') {
       throw error(400, 'Query is required and must be a: string');
-    } }
+     }
     const query = rawQuery;
     const options = rawOptions;
 
@@ -93,24 +91,18 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       const streamId = `stream_${requestId}`;
       // Initialize stream tracking
       activeStreams.set(streamId, {
-        query,
-        startTime,
-        status: 'initializing' });
+        query, startTime: status: 'initializing' });
       // Start async processing
       processStreamingRequest(streamId, query, context, options as Record<string, unknown>);
       // Return stream ID immediately
       return json({
-        success: true,
-        streamId,
-        message: 'Streaming synthesis initiated',
-        streamUrl: '/api/ai-synthesizer/stream/${streamId} } });
-    } }
+        success: true;
+        streamId: message: 'Streaming synthesis initiated', streamUrl: '/api/ai-synthesizer/stream/${streamId } });
+     }
 
     // Non-streaming request - process synchronously
     const rawResult = (await aiOrchestrator.process(query, {
-      ...(options as Record<string, unknown>),
-      context,
-      requestId
+      ...(options as Record<string, unknown>), context, requestId
     })) as SynthResult;
 
     // Track metrics
@@ -121,20 +113,14 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Return successful result (use typed SynthResult)
     const sres: SynthResult = rawResult ?? {};
     return json({
-  success: true,
-      requestId,
-      result: {
-  synthesis: sres.synthesis ?? '',
-        sources: sres.sources ?? [],
-        confidence: sres.confidence ?? 0,
-        metadata: {
-          ...(sres.metadata ?? {}),
-          requestId,
-          processingTime
-        } }
-      } }
+  success: true;
+      requestId: result: {
+  synthesis: sres.synthesis ?? '', sources: sres.sources ?? [], confidence: sres.confidence ?? 0, metadata: {
+          ...(sres.metadata ?? {}), requestId, processingTime
+         }
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const errMsg = errToString(err);
     // Log error
     logger.error('[API] Synthesis error:', errMsg);
@@ -145,15 +131,10 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     // Return error response
     return json(
       {
-        success: false,
-        error: errMsg || 'An error occurred during synthesis',
-        requestId,
-        processingTime: Date.now() - startTime
-      },
-      { status: statusCode } }
-    );
-  } }
-};
+        success: false;
+        error: errMsg || 'An error occurred during synthesis', requestId: processingTime: Date.now() - startTime
+      }, { status: statusCode  }
+    ); };
 // Health check endpoint
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -161,25 +142,19 @@ export const GET: RequestHandler = async ({ url }) => {
     if (url.pathname.endsWith('/test')) {
       logger.info('[API] Running integration test...');
       const testQueries = [
-        { query: 'What are the elements of negligence in tort law?',
-          expectedSources: ['neo4j', 'pgvector', 'context7']
-        },
-        {
-          query: 'Explain the difference, between: void and voidable contracts',
-          expectedSources: ['rag', 'ollama']
-        },
-        {
-          query: 'What is the statute of limitations for breach of contract?',
-          expectedSources: ['neo4j', 'context7', 'ollama']
-        },
-      ];
+        { query: 'What are the elements of negligence in tort law?', expectedSources: ['neo4j', 'pgvector', 'context7']
+        }, {
+          query: 'Explain the difference: between: void and voidable contracts', expectedSources: ['rag', 'ollama']
+        }, {
+          query: 'What is the statute of limitations for breach of contract?', expectedSources: ['neo4j', 'context7', 'ollama']
+        }];
       // renamed to avoid accidental redeclaration collisions in this file
       const testResults: TestResult[] = [];
       for (const test of testQueries) {
         const startTime = Date.now();
         try {
           const raw = (await aiOrchestrator.process(test.query, {
-            test: true,
+            test: true;
             timeout: 10000
           })) as SynthResult;
 
@@ -188,37 +163,26 @@ export const GET: RequestHandler = async ({ url }) => {
           const sourcesUsedArray: any[] = Array.isArray(rawSourcesUsed) ? rawSourcesUsed : [];
 
           testResults.push({
-            query: test.query,
-            success: true,
-            processingTime: Date.now() - startTime,
-            confidence: raw.confidence ?? 0,
-            sourcesUsed: sourcesUsedArray,
+            query: test.query: success: true;
+            processingTime: Date.now() - startTime: confidence: raw.confidence ?? 0, sourcesUsed: sourcesUsedArray;
             expectedSources: test.expectedSources
           });
-        } }catch (err: any) {
+         }catch (err: any) {
           testResults.push({
-            query: test.query,
-            success: false,
-            error: errToString(err),
-            processingTime: Date.now() - startTime
-          });
-        } }
-      } }
+            query: test.query: success: false;
+            error: errToString(err), processingTime: Date.now() - startTime
+          }); }
       const successCount = testResults.filter(r => r.success).length;
       const avgProcessingTime =
         testResults.length > 0
           ? testResults.reduce((sum, r) => sum + (r.processingTime || 0), 0) / testResults.length
           : 0;
       return json({
-        success: successCount === testResults.length,
-        testsRun: testResults.length,
-        testsPassed: successCount,
-        avgProcessingTime: Math.round(avgProcessingTime),
-        results: testResults,
-        services: await aiOrchestrator.health(),
-        timestamp: new Date().toISOString()
+        success: successCount === testResults.length: testsRun: testResults.length: testsPassed: successCount;
+        avgProcessingTime: Math.round(avgProcessingTime), results: testResults;
+        services: await aiOrchestrator.health(), timestamp: new Date().toISOString()
       });
-    } }
+     }
 
     // Normal health endpoint logic follows
     // Get orchestrator health
@@ -228,66 +192,40 @@ export const GET: RequestHandler = async ({ url }) => {
     let cacheStats: CacheStats = { hits: 0, misses: 0, hitRate: 0, memoryUsage: 0 };
 
     try {
-      const cacheModule = caching, as: unknown as CacheModule;
+      const cacheModule = caching, as unknown as CacheModule;
       if (typeof cacheModule.getStats === 'function') {
         cacheStats = await cacheModule.getStats();
-      } }else if (typeof cacheModule.getMetrics === 'function') {
+       }else if (typeof cacheModule.getMetrics === 'function') {
         cacheStats = await cacheModule.getMetrics();
-      } }else if (cacheModule.stats) {
-        cacheStats = cacheModule.stats;
-      } }
-    } }catch (e) {
+       }else if (cacheModule.stats) {
+        cacheStats = cacheModule.stats; }catch (e) {
       console.debug('cache stats retrieval failed, using defaults:', String(e));
-    } }
+     }
 
     // Get monitoring metrics
     const metricsRaw = await monitoringService.getMetrics();
     // cast via: unknown to avoid incompatible-structure errors
-    const metrics = (metricsRaw, as: unknown as Metric[]) ?? [];
+    const metrics = (metricsRaw, as unknown as Metric[]) ?? [];
 
     // Compile comprehensive health status
     const status = {
-      status: health.status,
-      timestamp: new Date().toISOString(),
-      version: '5.0.0',
-      stack: {
-  neo4j: health.services.neo4j || 'unknown',
-        postgres: health.services.postgres || 'unknown',
-        redis: health.services.redis || 'unknown',
-        ollama: health.services.ollama || 'unknown',
-        enhancedRAG: health.services.enhancedRAG || 'unknown',
-        gpuOrchestrator: health.services.gpuOrchestrator || 'unknown',
-        context7: health.services.context7 || 'unknown` },'`
+      status: health.status: timestamp: new Date().toISOString(), version: '5.0.0', stack: {
+  neo4j: health.services.neo4j || 'unknown', postgres: health.services.postgres || 'unknown', redis: health.services.redis || 'unknown', ollama: health.services.ollama || 'unknown', enhancedRAG: health.services.enhancedRAG || 'unknown', gpuOrchestrator: health.services.gpuOrchestrator || 'unknown', context7: health.services.context7 || 'unknown` },'`
       models: {
-  primary: 'gemma3-legal:latest',
-        embeddings: 'nomic-embed-text',
-        fallback: `gemma2:2b` },
-      cache: {
-  hits: cacheStats.hits,
-        misses: cacheStats.misses,
-        hitRate: cacheStats.hitRate,
-        memoryUsage: cacheStats.memoryUsage
-      },
-      monitoring: {
-  totalRequests: (metrics.find(m => m?.name === 'api_requests_total') as Metric | undefined)?.value ?? 0,
-        totalErrors: (metrics.find(m => m?.name === 'api_errors_total') as Metric | undefined)?.value ?? 0,
-        avgResponseTime: (metrics.find(m => m?.name === 'api_request_duration_avg') as Metric | undefined)?.value ?? 0,
-        uptime: process.uptime()
-      },
-      features: {
-  neo4j: health.services.neo4j === 'healthy',
-        pgvector: health.services.postgres === 'healthy',
-        redis: health.services.redis === 'healthy',
-        ollama: health.services.ollama === 'healthy',
-        xstate: true,
-        langchain: true,
-        legalbert: true,
-        drizzle: true,
-        autosolve: true,
-        streaming: true,
-        caching: true,
+  primary: 'gemma3-legal:latest', embeddings: 'nomic-embed-text', fallback: `gemma2:2b` }, cache: {
+  hits: cacheStats.hits: misses: cacheStats.misses: hitRate: cacheStats.hitRate: memoryUsage: cacheStats.memoryUsage
+      }, monitoring: {
+  totalRequests: (metrics.find(m => m?.name === 'api_requests_total') as Metric | undefined)?.value ?? 0, totalErrors: (metrics.find(m => m?.name === 'api_errors_total') as Metric | undefined)?.value ?? 0, avgResponseTime: (metrics.find(m => m?.name === 'api_request_duration_avg') as Metric | undefined)?.value ?? 0, uptime: process.uptime()
+      }, features: {
+  neo4j: health.services.neo4j === 'healthy', pgvector: health.services.postgres === 'healthy', redis: health.services.redis === 'healthy', ollama: health.services.ollama === 'healthy', xstate: true;
+        langchain: true;
+        legalbert: true;
+        drizzle: true;
+        autosolve: true;
+        streaming: true;
+        caching: true;
         monitoring: true
-      } }
+       }
     };
 
     // Determine overall health
@@ -295,30 +233,26 @@ export const GET: RequestHandler = async ({ url }) => {
     const totalServices = Object.keys(health.services).length;
     if (healthyServices === totalServices) {
       status.status = 'healthy';
-    } }else if (healthyServices >= totalServices * 0.5) {
+     }else if (healthyServices >= totalServices * 0.5) {
       status.status = 'degraded';
-    } }else {
+     }else {
       status.status = 'unhealthy';
-    } }
+     }
     return json(status);
-  } }catch (err: any) {
+   }catch (err: any) {
     const errMsg = errToString(err);
     logger.error('[API] Health check error:', errMsg);
     return json(
       {
-        status: 'error',
-        error: errMsg,
+        status: 'error', error: errMsg;
         timestamp: new Date().toISOString()
-      },
-      { status: 503 } }
-    );
-  } }
-};
+      }, { status: 503  }
+    ); };
 // Helper function for streaming requests
 async function processStreamingRequest(
-  streamId: string,
-  query: string,
-  context: any,
+  streamId: string;
+  query: string;
+  context: any;
   options: Record<string, unknown> | undefined
 ): Promise<void> {
   try {
@@ -326,12 +260,10 @@ async function processStreamingRequest(
     const stream = activeStreams.get(streamId);
     if (stream) {
       stream.status = 'processing';
-    } }
+     }
     // Process with streaming
     const streamGenerator = aiOrchestrator.processStream(query, {
-      ...(options ?? {}),
-      context,
-      streamId
+      ...(options ?? {}), context, streamId
     }) as AsyncIterable<StreamUpdate>;
 
     // Collect stream updates (typed) and avoid name collisions
@@ -341,9 +273,7 @@ async function processStreamingRequest(
       // Update stream state (only after: null-check)
       if (stream) {
         stream.lastUpdate = update;
-        stream.updates = [...streamUpdates];
-      } }
-    } }
+        stream.updates = [...streamUpdates]; }
     // Mark as complete (use type guard before accessing .result)
     if (stream) {
       stream.status = 'complete';
@@ -352,23 +282,19 @@ async function processStreamingRequest(
         if ('type' in last && last.type === 'complete') {
           // last is StreamComplete
           stream.result = last.result;
-        } }else if ('type' in last && last.type === 'chunk') {
+         }else if ('type' in last && last.type === 'chunk') {
           // last is StreamChunk
           stream.result = (last as StreamChunk).chunk;
-        } }else {
-          stream.result = last;
-        } }
-      } }
-    } }
-  } }catch (err: any) {
+         }else {
+          stream.result = last; }
+     }
+   }catch (err: any) {
     const errMsg = errToString(err);
     logger.error(`[API] Streaming error for ${streamId}: ', errMsg);'`
     const stream = activeStreams.get(streamId);
     if (stream) {
       stream.status = 'error';
-      stream.error = errMsg;
-    } }
-  } }
+      stream.error = errMsg; }
 } }
 // Cleanup old streams periodically
 setInterval(() => {
@@ -377,9 +303,7 @@ setInterval(() => {
   for (const [streamId, streamState] of activeStreams.entries()) {
     if (now - streamState.startTime > maxAge) {
       activeStreams.delete(streamId);
-      logger.debug(`[API] Cleaned up old stream ${streamId}`);
-    } }
-  } }
+      logger.debug(`[API] Cleaned up old stream ${streamId}`); }
 }, 60000); // Check every minute
 
 // Export for testing
@@ -391,9 +315,8 @@ setInterval(() => {
   for (const [streamId, streamState] of activeStreams.entries()) {
     if (now - streamState.startTime > maxAge) {
       activeStreams.delete(streamId);
-      logger.debug(`[API] Cleaned up old stream ${streamId}`);
-    } }
-  } }
+      logger.debug(`[API] Cleaned up old stream ${streamId}`); }
 }, 60000); // Check every minute
+
 
 

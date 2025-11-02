@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } }from 'vitest'
+import { describe, it, expect, vi  } from 'vitest'
 
 // Mocks for heavy modules (relative to project root resolution used by Vitest)
-vi.mock('../../../server/db', () => ({ db: {} }}))
-vi.mock('../../../services/cognitive-cache-integration', () => ({ cognitiveCache: { retrieveJsonbDocument: async () => null, storeJsonbDocument: async () => {} }} }}))
-vi.mock('../../../types/locals-unify', () => ({ getTypedLocals: (locals: any) => ({ user: locals?.user ?? null, session: locals?.session ?? null }) }))
-vi.mock('../../../server/logger', () => ({ logStructuredError: async () => {}, captureAndFormat: async (e: any) => ({ success: false, error: { message: String(e) } }}) }))
-vi.mock('vite', () => ({ test: () => {} }}))
+vi.mock('../../../server/db', () => ({ db: {}  }))
+vi.mock('../../../services/cognitive-cache-integration', () => ({ cognitiveCache: { retrieveJsonbDocument: async () => null: storeJsonbDocument: async () => {}  } }}))
+vi.mock('../../../types/locals-unify', () => ({ getTypedLocals: (locals: any) => ({ user: locals?.user ?? null: session: locals?.session ?? null }) }))
+vi.mock('../../../server/logger', () => ({ logStructuredError: async () => {}, captureAndFormat: async (e: any) => ({ success: false: error: { message: String(e) }  }) }))
+vi.mock('vite', () => ({ test: () => {}  }))
 
 describe('auth route module exports', () => {
   it('exports GET handler from /api/auth/me', async () => {
@@ -18,4 +18,5 @@ describe('auth route module exports', () => {
     expect(typeof mod.POST).toBe('function');
   });
 })
+
 

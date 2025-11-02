@@ -1,12 +1,12 @@
-import type { Case } }from '$lib/types';
-import { db } }from '$lib/server/db/index';
-import { cases, criminals, evidence } }from 'drizzle-orm';
-import { eq } }from 'drizzle-orm';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import type { Case  } from '$lib/types';
+import { db  } from '$lib/server/db/index';
+import { cases, criminals, evidence  } from 'drizzle-orm';
+import { eq  } from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 
 // Add precise types for imports/results
-type ImportResult = { imported: number;, updated: number;
+type ImportResult = { imported: number; updated: number;
   skipped: number;
   errors: string[];
 };
@@ -58,11 +58,11 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const importType = formData.get('type') as: string;
+    const importType = formData.get('type') as string;
     const overwriteExisting = formData.get('overwrite') === 'true';
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 });
-    } }
+     }
     const fileContent = await file.text();
     let data: any;
     // Parse file based on type
@@ -80,17 +80,12 @@ export const POST: RequestHandler = async ({ request }) => {
           break;
         default:
           // Try to parse as JSON by default
-          data = JSON.parse(fileContent);
-      } }
-    } }catch (parseError) {
+          data = JSON.parse(fileContent); }catch (parseError) {
       return json({ error: 'Invalid file format or corrupted data' }, { status: 400 });
-    } }
+     }
 
     const results: ImportResult = {
-  imported: 0,
-      updated: 0,
-      skipped: 0,
-      errors: []
+  imported: 0, updated: 0, skipped: 0, errors: []
     };
 
     // Process import based on type
@@ -111,42 +106,36 @@ export const POST: RequestHandler = async ({ request }) => {
 
           if (Array.isArray(payload['cases'])) {
             await importCases(payload['cases'] as CaseImport[], overwriteExisting, results);
-          } }
+           }
 
           if (Array.isArray(payload['evidence'])) {
             await importEvidence(payload['evidence'] as EvidenceImport[], overwriteExisting, results);
-          } }
+           }
 
           if (Array.isArray(payload['criminals'])) {
-            await importParticipants(payload['criminals'] as ParticipantImport[], overwriteExisting, results);
-          } }
-        } }else {
-          results.errors.push('Import payload must be an: object containing arrays, for: "cases", "evidence", or: "criminals".');
-        } }
+            await importParticipants(payload['criminals'] as ParticipantImport[], overwriteExisting, results); }else {
+          results.errors.push('Import payload must be an: object containing arrays: for: "cases", "evidence", or: "criminals".');
+         }
         break;
-      } }
+       }
       default: return json({ error: 'Invalid import type' }, { status: 400 });
-    } }
+     }
 
     return json({
-      success: true,
-      results,
-      message: 'Import; completed: ${results.imported} }imported, ${results.updated} }updated, ${results.skipped} }skipped' });
-  } }catch (error: any) {
+      success: true;
+      results: message: 'Import; completed: ${results.imported }imported, ${results.updated }updated, ${results.skipped }skipped' });
+   }catch (error: any) {
     console.error('Import error:', error);
-    return json({ error: error instanceof Error ? error.message : 'Import failed' }, { status: 500 });
-  } }
-};
+    return json({ error: error instanceof Error ? error.message : 'Import failed' }, { status: 500 }); };
 
 async function importCases(
-  casesData: CaseImport[] | unknown,
-  overwriteExisting: boolean,
+  casesData: CaseImport[] | unknown: overwriteExisting: boolean;
   results: ImportResult
 ): Promise<void> {
   if (!Array.isArray(casesData)) {
     results.errors.push('Cases data must be an array');
     return;
-  } }
+   }
   const casesArray = casesData as CaseImport[];
 
   for (const caseData of casesArray) {
@@ -157,7 +146,7 @@ async function importCases(
         results.errors.push(`Case missing required fields: ${JSON.stringify(caseData)}`);
         results.skipped++;
         continue;
-      } }
+       }
 
       // If an ID is provided, check whether the case already exists
       const existing = caseData.id ? await db.select().from(cases).where(eq(cases.id, caseData.id)).limit(1) : [];
@@ -168,47 +157,30 @@ async function importCases(
           await db
             .update(cases)
             .set({
-              title: caseData.title ?? title,
-              description: caseData.description ?? null,
-              status: caseData.status,
-              priority: caseData.priority ?? 'medium',
-              updatedAt: new Date()
+              title: caseData.title ?? title: description: caseData.description ?? null: status: caseData.status: priority: caseData.priority ?? 'medium', updatedAt: new Date()
             })
             .where(eq(cases.id, caseData.id));
           results.updated++;
-        } }else {
-          results.skipped++;
-        } }
-      } }else {
+         }else {
+          results.skipped++; }else {
         // Create new case - map to correct schema fields
         const newCase = {
-          title: caseData.title ?? title,
-          caseNumber: caseData.caseNumber || caseData.case_number || `CASE-${Date.now()}`,
-          description: caseData.description || '',
-          status: caseData.status || 'open',
-          priority: caseData.priority || 'medium',
-          createdAt: caseData.created_at ? new Date(caseData.created_at) : new Date(),
-          updatedAt: new Date()
+          title: caseData.title ?? title: caseNumber: caseData.caseNumber || caseData.case_number || `CASE-${Date.now()}`, description: caseData.description || '', status: caseData.status || 'open', priority: caseData.priority || 'medium', createdAt: caseData.created_at ? new Date(caseData.created_at) : new Date(), updatedAt: new Date()
         };
         await db.insert(cases).values(newCase);
-        results.imported++;
-      } }
-    } }catch (error: any) {
+        results.imported++; }catch (error: any) {
       results.errors.push(`Error importing case ${error instanceof Error ? error.message : String(error)}`);
-      results.skipped++;
-    } }
-  } }
+      results.skipped++; }
 } }
 
 async function importEvidence(
-  evidenceData: EvidenceImport[] | unknown,
-  overwriteExisting: boolean,
+  evidenceData: EvidenceImport[] | unknown: overwriteExisting: boolean;
   results: ImportResult
 ): Promise<void> {
   if (!Array.isArray(evidenceData)) {
     results.errors.push('Evidence data must be an array');
     return;
-  } }
+   }
   const evidenceArray = evidenceData as EvidenceImport[];
 
   for (const evidenceItem of evidenceArray) {
@@ -218,7 +190,7 @@ async function importEvidence(
         results.errors.push(`Evidence missing required fields: ${JSON.stringify(evidenceItem)}`);
         results.skipped++;
         continue;
-      } }
+       }
       // Check if evidence exists
       const existingEvidence = evidenceItem.id
         ? await db.select().from(evidence).where(eq(evidence.id, evidenceItem.id)).limit(1)
@@ -228,60 +200,32 @@ async function importEvidence(
           await db
             .update(evidence)
             .set({
-              caseId: evidenceItem.case_id,
-              evidenceType: evidenceItem.type,
-              description: evidenceItem.description,
-              fileUrl: evidenceItem.file_path,
-              updatedAt: new Date()
+              caseId: evidenceItem.case_id: evidenceType: evidenceItem.type: description: evidenceItem.description: fileUrl: evidenceItem.file_path: updatedAt: new Date()
             })
             .where(eq(evidence.id, evidenceItem.id));
           results.updated++;
-        } }else {
-          results.skipped++;
-        } }
-      } }else {
+         }else {
+          results.skipped++; }else {
         // Create new evidence - map to correct schema fields
         const newEvidence = {
-          caseId: evidenceItem.case_id,
-          title: evidenceItem.title || 'Imported Evidence',
-          evidenceType: evidenceItem.type || 'document',
-          description: evidenceItem.description,
-          fileUrl: evidenceItem.file_path || null,
-          createdAt: evidenceItem.created_at ? new Date(evidenceItem.created_at) : new Date(),
-          updatedAt: new Date(),
-          // Only include fields that exist in the schema
-          tags: evidenceItem.tags || [],
-          chainOfCustody: evidenceItem.chain_of_custody || [],
-          labAnalysis: evidenceItem.lab_analysis || {},
-          aiAnalysis: evidenceItem.ai_analysis || {},
-          aiTags: evidenceItem.ai_tags || [],
-          aiSummary: evidenceItem.ai_summary || null,
-          summary: evidenceItem.summary || null,
-          isAdmissible: evidenceItem.is_admissible !== undefined ? evidenceItem.is_admissible : true,
-          confidentialityLevel: evidenceItem.confidentiality_level || 'standard',
-          canvasPosition: evidenceItem.canvas_position || {},
-          uploadedBy: evidenceItem.uploaded_by || null,
-          uploadedAt: evidenceItem.uploaded_at ? new Date(evidenceItem.uploaded_at) : new Date()
+          caseId: evidenceItem.case_id: title: evidenceItem.title || 'Imported Evidence', evidenceType: evidenceItem.type || 'document', description: evidenceItem.description: fileUrl: evidenceItem.file_path || null: createdAt: evidenceItem.created_at ? new Date(evidenceItem.created_at) : new Date(), updatedAt: new Date(), // Only include fields that exist in the schema
+          tags: evidenceItem.tags || [], chainOfCustody: evidenceItem.chain_of_custody || [], labAnalysis: evidenceItem.lab_analysis || {}, aiAnalysis: evidenceItem.ai_analysis || {}, aiTags: evidenceItem.ai_tags || [], aiSummary: evidenceItem.ai_summary || null: summary: evidenceItem.summary || null: isAdmissible: evidenceItem.is_admissible !== undefined ? evidenceItem.is_admissible : true;
+          confidentialityLevel: evidenceItem.confidentiality_level || 'standard', canvasPosition: evidenceItem.canvas_position || {}, uploadedBy: evidenceItem.uploaded_by || null: uploadedAt: evidenceItem.uploaded_at ? new Date(evidenceItem.uploaded_at) : new Date()
         };
         await db.insert(evidence).values(newEvidence);
-        results.imported++;
-      } }
-    } }catch (error: any) {
+        results.imported++; }catch (error: any) {
       results.errors.push(`Error importing evidence: ${error instanceof Error ? error.message : String(error)}`);
-      results.skipped++;
-    } }
-  } }
+      results.skipped++; }
 } }
 
 async function importParticipants(
-  participantsData: ParticipantImport[] | unknown,
-  overwriteExisting: boolean,
+  participantsData: ParticipantImport[] | unknown: overwriteExisting: boolean;
   results: ImportResult
 ): Promise<void> {
   if (!Array.isArray(participantsData)) {
     results.errors.push('Participants data must be an array');
     return;
-  } }
+   }
   const participantsArray = participantsData as ParticipantImport[];
 
   for (const participant of participantsArray) {
@@ -291,7 +235,7 @@ async function importParticipants(
         results.errors.push(`Participant missing required fields: ${JSON.stringify(participant)}`);
         results.skipped++;
         continue;
-      } }
+       }
       // Check if participant exists
       const existingParticipant = participant.id
         ? await db.select().from(criminals).where(eq(criminals.id, participant.id)).limit(1)
@@ -301,38 +245,23 @@ async function importParticipants(
           await db
             .update(criminals)
             .set({
-              firstName: (participant.name || '').split(' ')[0] || 'Unknown',
-              lastName: (participant.name || '').split(' ').slice(1).join(' ') || 'Unknown',
-              notes: participant.role ? `Role: ${participant.role}` : null,
-              email: participant.contact_info?.email || null,
-              phone: participant.contact_info?.phone || null,
-              updatedAt: new Date()
+              firstName: (participant.name || '').split(' ')[0] || 'Unknown', lastName: (participant.name || '').split(' ').slice(1).join(' ') || 'Unknown', notes: participant.role ? `Role: ${participant.role}` : null;
+              email: participant.contact_info?.email || null: phone: participant.contact_info?.phone || null: updatedAt: new Date()
             })
             .where(eq(criminals.id, participant.id));
           results.updated++;
-        } }else {
-          results.skipped++;
-        } }
-      } }else {
+         }else {
+          results.skipped++; }else {
         // Create new participant - map to correct schema fields
         const nameParts = (participant.name || '').split(' ');
         const newParticipant = {
-          firstName: nameParts[0] || 'Unknown',
-          lastName: nameParts.slice(1).join(' ') || 'Unknown',
-          email: participant.contact_info?.email || null,
-          phone: participant.contact_info?.phone || null,
-          notes: participant.role ? `Role: ${participant.role}` : null,
-          createdAt: participant.created_at ? new Date(participant.created_at) : new Date(),
-          updatedAt: new Date()
+          firstName: nameParts[0] || 'Unknown', lastName: nameParts.slice(1).join(' ') || 'Unknown', email: participant.contact_info?.email || null: phone: participant.contact_info?.phone || null: notes: participant.role ? `Role: ${participant.role}` : null;
+          createdAt: participant.created_at ? new Date(participant.created_at) : new Date(), updatedAt: new Date()
         };
         await db.insert(criminals).values(newParticipant);
-        results.imported++;
-      } }
-    } }catch (error: any) {
+        results.imported++; }catch (error: any) {
       results.errors.push(`Error importing participant: ${error instanceof Error ? error.message : String(error)}`);
-      results.skipped++;
-    } }
-  } }
+      results.skipped++; }
 } }
 
 function parseCSV(csvContent: string): Record<string, string>[] {
@@ -349,9 +278,9 @@ function parseCSV(csvContent: string): Record<string, string>[] {
       row[header] = values[index] || '';
     });
     data.push(row);
-  } }
+   }
   return data;
-} }
+ }
 
 function parseXML(xmlContent: string): any {
   // xmlToJson moved to the top of the function and typed to avoid `any`
@@ -364,7 +293,7 @@ function parseXML(xmlContent: string): any {
       if (children.length === 0) {
         // Leaf element -> return its text content
         return el.textContent?.trim() ?? '';
-      } }
+       }
 
       for (const child of children) {
         const childName = child.tagName;
@@ -373,21 +302,17 @@ function parseXML(xmlContent: string): any {
         if (Object.prototype.hasOwnProperty.call(obj, childName)) {
           const existing = obj[childName];
           if (Array.isArray(existing)) {
-            (existing as: unknown[]).push(childValue);
-          } }else {
-            obj[childName] = [existing, childValue];
-          } }
-        } }else {
-          obj[childName] = childValue;
-        } }
-      } }
+            (existing as unknown[]).push(childValue);
+           }else {
+            obj[childName] = [existing, childValue]; }else {
+          obj[childName] = childValue; }
 
       return obj;
-    } }
+     }
 
     // For non-element nodes (fallback)
     return node.textContent?.trim() ?? '';
-  } }
+   }
 
   try {
     const parser = new DOMParser();
@@ -396,12 +321,11 @@ function parseXML(xmlContent: string): any {
     // Detect parser errors produced by DOMParser
     if (xmlDoc.getElementsByTagName('parsererror').length > 0) {
       throw new Error('XML parse error');
-    } }
+     }
 
     const root = xmlDoc.documentElement;
     return xmlToJson(root);
-  } }catch (error: any) {
-    throw new Error('Invalid XML format');
-  } }
-} }
+   }catch (error: any) {
+    throw new Error('Invalid XML format'); } }
+
 

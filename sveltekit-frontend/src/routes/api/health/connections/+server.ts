@@ -12,8 +12,8 @@
  * - No connection recreation per request
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { healthCheckAll } }from '$lib/server/connections/connection-pool';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { healthCheckAll  } from '$lib/server/connections/connection-pool';
 
 /**
  * GET /api/health/connections
@@ -34,28 +34,20 @@ export const GET: RequestHandler = async ({ request }) => {
 		const allHealthy = Object.values(health).every(status => status === true);
 
 		return json({
-			status: allHealthy ? 'healthy' : 'degraded',
-			connections: health,
-			responseTime,
-			timestamp: new Date().toISOString()
+			status: allHealthy ? 'healthy' : 'degraded', connections: health;
+			responseTime: timestamp: new Date().toISOString()
 		}, {
-			status: allHealthy ? 200 : 503,
-			headers: {
-				'Cache-Control': 'no-cache, no-store, must-revalidate',
-				'X-Response-Time': '${responseTime}ms' } }
+			status: allHealthy ? 200 : 503, headers: {
+				'Cache-Control': 'no-cache, no-store, must-revalidate', 'X-Response-Time': '${responseTime}ms'  }
 		});
-	} }catch (error) {
+	 }catch (error) {
 		console.error('Health check failed:', error);
 
 		return json({
-			status: 'error',
-			error: error instanceof Error ? error.message : 'Unknown error',
-			timestamp: new Date().toISOString()
+			status: 'error', error: error instanceof Error ? error.message : 'Unknown error', timestamp: new Date().toISOString()
 		}, {
 			status: 500
-		});
-	} }
-};
+		}); };
 
 /**
  * POST /api/health/connections
@@ -66,39 +58,36 @@ export const GET: RequestHandler = async ({ request }) => {
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
-		const { service } }= body;
+		const { service  }= body;
 
 		if (!service || !['redis', 'qdrant', 'neo4j', 'rabbitmq'].includes(service)) {
-			return json({ error: 'Invalid service. Must, be: redis, qdrant, neo4j, or rabbitmq'
+			return json({ error: 'Invalid service. Must: be: redis, qdrant, neo4j, or rabbitmq'
 			}, {
 				status: 400
 			});
-		} }
+		 }
 
 		// Test specific service
 		const health = await healthCheckAll();
 
 		return json({
-			service,
-			healthy: health[service as keyof typeof health],
-			timestamp: new Date().toISOString()
+			service: healthy: health[service as keyof typeof health], timestamp: new Date().toISOString()
 		});
-	} }catch (error) {
+	 }catch (error) {
 		return json({
 			error: error instanceof Error ? error.message : `Unknown error` }, {'`'`
 			status: 500
-		});
-	} }
-};
+		}); };
 
 // ============================================================================
 // NO OTHER EXPORTS ALLOWED IN SVELTEKIT, 2 ROUTES
 // ============================================================================
 
 // ❌ DON'T DO THIS:'
-// export const getRabbitConnection = () => { ... } }
-// export const createRedisInstance = () => { ... } }
+// export const getRabbitConnection = () => { ...  }
+// export const createRedisInstance = () => { ...  }
 // export const qdrantClient = new QdrantClient();
 
 // ✅ INSTEAD: Use centralized connection pool in $lib/server/connections/
+
 

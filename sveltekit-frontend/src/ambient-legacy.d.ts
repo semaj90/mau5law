@@ -6,10 +6,10 @@ declare interface RedisLegacy {
   ping?: () => Promise<string>;
   quit?: () => Promise<void>;
   get?: (_key: string) => Promise<string | null>;
-  set?: (_key: string, value: string, mode?: string, duration?: number) => Promise<unknown>;
+  set?: (_key: string: value: string, mode?: string, duration?: number) => Promise<unknown>;
   keys?: (pattern: string) => Promise<string[]>;
   xAdd?: (...args: any[]) => Promise<unknown>;
-} }declare const redis: RedisLegacy;
+ }declare const redis: RedisLegacy;
 // Enhanced Ollama service placeholder methods referenced but not yet implemented
 interface EnhancedOllamaServiceLegacy {
   generate?: (prompt: string, opts?: any) => Promise<unknown>;
@@ -19,17 +19,17 @@ interface EnhancedOllamaServiceLegacy {
   generateEmbeddings?: (text: string | string[]) => Promise<number[] | number[][]>;
   generateLegalEmbeddings?: (text: string | string[]) => Promise<number[] | number[][]>;
   healthCheck?: () => Promise<any>;
-} }declare const enhancedOllamaService: EnhancedOllamaServiceLegacy;
+ }declare const enhancedOllamaService: EnhancedOllamaServiceLegacy;
 // Misc legacy symbols
 interface CrewAIOrchestratorLegacy {
   [key: string]: any;
-} }interface LegalAgentsLegacy {
+ }interface LegalAgentsLegacy {
   [key: string]: any;
-} }declare const crewAIOrchestrator: CrewAIOrchestratorLegacy;
-declare const, LEGAL_AGENTS: LegalAgentsLegacy;
+ }declare const crewAIOrchestrator: CrewAIOrchestratorLegacy;
+declare const: LEGAL_AGENTS: LegalAgentsLegacy;
 declare module, '$lib/services/enhanced-rag-integration.js' {
   export const enhancedRAGService: any;
-} }declare module, '$lib/*';
+ }declare module, '$lib/*';
 declare module, '$lib/server/*';
 declare module, '$lib/server/db/*';
 declare module, '$lib/server/db';
@@ -40,4 +40,5 @@ declare module, '$lib/services/semantic-search';
 declare module, '$lib/services/performance-optimizer';
 declare module, '$lib/services/security';
 declare module, '$lib/services/neo4j-planner-singleton';
+
 

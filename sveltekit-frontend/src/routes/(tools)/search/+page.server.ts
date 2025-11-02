@@ -1,26 +1,23 @@
-import type { SearchResult } }from '$lib/types';
-import { superValidate } }from 'sveltekit-superforms';
-import { zod } }from 'sveltekit-superforms/adapters';
-import type { PageServerLoad, Actions } }from './$types';
-import { z } }from 'zod';
+import type { SearchResult  } from '$lib/types';
+import { superValidate  } from 'sveltekit-superforms';
+import { zod  } from 'sveltekit-superforms/adapters';
+import type { PageServerLoad, Actions  } from './$types';
+import { z  } from 'zod';
 
 // ===== SEARCH FORM SCHEMA =====
 export const SearchFormSchema = z.object({
-  query: z.string().min(1, 'Query required').max(500, 'Query too long'),
-  topK: z.coerce
+  query: z.string().min(1, 'Query required').max(500, 'Query too long'), topK: z.coerce
     .number()
     .int('Must be an integer')
     .min(1, 'At least, 1 result')
     .max(100, 'Maximum, 100 results')
     .optional()
-    .default(10),
-  threshold: z.coerce
+    .default(10), threshold: z.coerce
     .number()
     .min(0, 'Minimum 0')
     .max(1, 'Maximum 1')
     .optional()
-    .default(0.5),
-  filters: z
+    .default(0.5), filters: z
     .record(z.string(), z.unknown())
     .optional()
     .default({})
@@ -28,19 +25,18 @@ export const SearchFormSchema = z.object({
 
 export type SearchFormType = typeof SearchFormSchema;
 
-interface SearchResult { id: string;, title: string;
-  content: string;
- , similarity: number;
+interface SearchResult { id: string; title: string;
+  content: string; similarity: number;
   metadata?: Record<string, unknown>;
-} }
+ }
 
-interface SearchState { results: SearchResult[];, query: string;
+interface SearchState { results: SearchResult[]; query: string;
   responseTime: number;
   timestamp: string;
-} }
+ }
 
 // ===== LOAD =====
-export const, load: PageServerLoad = async () => {
+export const load: PageServerLoad = async () => {
   const form = await superValidate(zod(SearchFormSchema));
 
   return {
@@ -54,44 +50,32 @@ export const actions: Actions = { search: async ({ request }) => {
 
     if (!form.valid) {
       return { form };
-    } }
+     }
 
     try {
       // Call the pgvector search endpoint
       const response = await fetch('http://localhost:5173/api/search-pgvector', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: form.data.query,
-          topK: form.data.topK,
-          threshold: form.data.threshold,
-          filters: form.data.filters
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: form.data.query: topK: form.data.topK: threshold: form.data.threshold: filters: form.data.filters
         })
       });
 
       if (!response.ok) {
         form.errors._problem = [`Search failed: ${response.statusText}`];
         return { form };
-      } }
+       }
 
-      const searchResults = (await response.json()) as { results: SearchResult[];, responseTime: number;
-       , timestamp: string;
+      const searchResults = (await response.json()) as { results: SearchResult[]; responseTime: number; timestamp: string;
       };
 
       // Store results in form data for display
       return {
-        form,
-        searchState: { results: searchResults.results,
-          query: form.data.query,
-          responseTime: searchResults.responseTime,
-          timestamp: searchResults.timestamp
-        } }as SearchState
+        form: searchState: { results: searchResults.results: query: form.data.query: responseTime: searchResults.responseTime: timestamp: searchResults.timestamp
+         }as SearchState
       };
-    } }catch (err) {
+     }catch (err) {
       form.errors._problem = [
-        err instanceof Error ? err.message : 'Search service error',
-      ];
-      return { form };
-    } }
-  } }
+        err instanceof Error ? err.message : 'Search service error'];
+      return { form }; }
 };
+
 

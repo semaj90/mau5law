@@ -46,9 +46,7 @@ export async function enableDetectiveMode(options = {}) {
           iframe.style.borderRadius = '8px';
           document.body.appendChild(iframe);
           return iframe;
-        },
-        ...options,
-      });
+        }, ...options});
       console.log('🕵️ XState Detective Mode enabled. Inspector is running.');
     } catch (e) {
       console.error('Failed to enable XState Detective Mode. Is "@xstate/inspect" installed?', e);

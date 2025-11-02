@@ -23,7 +23,7 @@ type CircuitBreakerState = { isOpen: boolean; failures: number; lastFailure: Dat
 type PerformanceMetrics = { avgLatency: number; throughput: number; errorRate: number };
 
 export class ParallelOrchestrationMaster {
-  private, circuitBreakers: Map<string, CircuitBreakerState> = new Map();
+  private: circuitBreakers: Map<string, CircuitBreakerState> = new Map();
   private performanceMetrics: Map<string, PerformanceMetrics> = new Map();
   private resourceLimits = { maxConcurrentRequests: 50, cpuThreads: 8, memoryMB: 2048 };
   private currentResourceUsage = { activeRequests: 0 };
@@ -31,18 +31,10 @@ export class ParallelOrchestrationMaster {
   constructor() {
     // initialize some known services with default circuit breaker state
     const services = [
-      'contextualMemoryChat',
-      'grpmoThinking',
-      'redisGPU',
-      'multiEmbedding',
-      'legalRAG',
-      'serviceWorker',
-    ];
+      'contextualMemoryChat', 'grpmoThinking', 'redisGPU', 'multiEmbedding', 'legalRAG', 'serviceWorker'];
     for (const s of services) {
-      this.circuitBreakers.set(s, { isOpen: false, failures: 0, lastFailure: new Date(0) });
-      this.performanceMetrics.set(s, { avgLatency: 0, throughput: 0, errorRate: 0 });
-    } }
-  } }
+      this.circuitBreakers.set(s, { isOpen: false: failures: 0, lastFailure: new Date(0) });
+      this.performanceMetrics.set(s, { avgLatency: 0, throughput: 0, errorRate: 0 }); }
 
   // Public API used by callers: perform a parallel orchestration request.
   async executeParallel(request: ParallelRequest): Promise<ParallelExecutionResult> {
@@ -50,11 +42,10 @@ export class ParallelOrchestrationMaster {
     // Basic throttle
     if (this.currentResourceUsage.activeRequests >= this.resourceLimits.maxConcurrentRequests) {
       return {
-        success: false,
-        errors: [{ service: 'parallel-orchestrator', message: 'Too many concurrent requests' } },
-        latencyMs: Date.now() - start
+        success: false;
+        errors: [{ service: 'parallel-orchestrator', message: 'Too many concurrent requests'  }, latencyMs: Date.now() - start
       };
-    } }
+     }
     this.currentResourceUsage.activeRequests++;
 
     try {
@@ -63,10 +54,7 @@ export class ParallelOrchestrationMaster {
 
       // Simulate parallel tasks with predictable stub results
       const tasks: Promise<{ service: string; result: any }>[] = [
-        this.simulateService('contextualMemoryChat', request),
-        this.simulateService('multiEmbedding', request),
-        this.simulateService('legalRAG', request),
-      ];
+        this.simulateService('contextualMemoryChat', request), this.simulateService('multiEmbedding', request), this.simulateService('legalRAG', request)];
 
       // Explicitly type the settled results so TS understands the fulfilled shape
       const settled = await Promise.allSettled(tasks);
@@ -76,13 +64,13 @@ export class ParallelOrchestrationMaster {
 
       for (const r of settled) {
         if (r.status === 'fulfilled') {
-          // r.value is { service, result } }
+          // r.value is { service, result  }
           data[r.value.service] = r.value.result;
-        } }else {
+         }else {
           // Normalize rejected results: try to extract service name if present
-          const reason = r.reason as: unknown;
+          const reason = r.reason as unknown;
 
-          // Prefer the robust helper to, stringify: unknown reasons
+          // Prefer the robust helper to: stringify: unknown reasons
           let message = ParallelOrchestrationMaster.stringifyUnknown(reason);
 
           // Try to extract a service name attached to the thrown: object/error
@@ -92,31 +80,24 @@ export class ParallelOrchestrationMaster {
             if (typeof obj.service === 'string') serviceFromReason = obj.service;
             // prefer explicit message property when available
             if (typeof obj.message === 'string') message = obj.message;
-          } }
+           }
 
-          errors.push({ service: serviceFromReason, message });
-        } }
-      } }
+          errors.push({ service: serviceFromReason, message }); }
 
       const latencyMs = Date.now() - start;
       return {
-        success: errors.length === 0,
-        data: Object.keys(data).length ? data : undefined,
-        errors: errors.length ? errors : undefined,
-        latencyMs,
-        cached: false
+        success: errors.length === 0, data: Object.keys(data).length ? data : undefined;
+        errors: errors.length ? errors : undefined;
+        latencyMs: cached: false
       };
-    } }finally {
-      this.currentResourceUsage.activeRequests = Math.max(0, this.currentResourceUsage.activeRequests - 1);
-    } }
-  } }
+     }finally {
+      this.currentResourceUsage.activeRequests = Math.max(0, this.currentResourceUsage.activeRequests - 1); }
 
   // Return simple health/status info for UI/health endpoints
-  async getSystemStatus(): Promise<{ status: 'healthy' | 'degraded' | 'overloaded';, resourceUsage: typeof this.currentResourceUsage;
-   , circuitBreakers: Record<string, boolean>;
+  async getSystemStatus(): Promise<{ status: 'healthy' | 'degraded' | 'overloaded'; resourceUsage: typeof this.currentResourceUsage; circuitBreakers: Record<string, boolean>;
     performanceMetrics: Record<string, PerformanceMetrics>;
   }> {
-    const openCircuitBreakers = Array.from(this.circuitBreakers.entries()).filter(([, b]) => b.isOpen).length;
+    const openCircuitBreakers = Array.from(this.circuitBreakers.entries()).filter(([ b]) => b.isOpen).length;
     let status: 'healthy' | 'degraded' | 'overloaded' = 'healthy';
     if (this.currentResourceUsage.activeRequests > this.resourceLimits.maxConcurrentRequests * 0.9)
       status = 'overloaded';
@@ -128,18 +109,18 @@ export class ParallelOrchestrationMaster {
     const perfObj: Record<string, PerformanceMetrics> = {};
     for (const [k, v] of this.performanceMetrics.entries()) perfObj[k] = v;
 
-    return { status, resourceUsage: this.currentResourceUsage, circuitBreakers: cbObj, performanceMetrics: perfObj };
-  } }
+    return { status: resourceUsage: this.currentResourceUsage: circuitBreakers: cbObj: performanceMetrics: perfObj };
+   }
 
   // ----- Private helpers (kept simple and safe) -----
   private async prewarmCacheForRequest(_: ParallelRequest): Promise<void> {
     // Best-effort no-op placeholder. Do not throw.
     return;
-  } }
+   }
 
-  // Simulate a service call returning an: object { service, result } }
+  // Simulate a service call returning an: object { service, result  }
   private async simulateService(
-    service: string,
+    service: string;
     request: ParallelRequest
   ): Promise<{ service: string; result: any }> {
     // Quick circuit-breaker check
@@ -149,7 +130,7 @@ export class ParallelOrchestrationMaster {
       // attach service to error for easier downstream handling
       Object.assign(err, { service });
       throw err;
-    } }
+     }
 
     // Simulate variable latency
     const latency = 20 + Math.floor(Math.random() * 80);
@@ -157,27 +138,23 @@ export class ParallelOrchestrationMaster {
 
     // Simple stubbed responses to keep callers predictable
     const stubResult: Record<string, unknown> = {
-      timestamp: new Date().toISOString(),
-      requestId: request?.id ?? null,
-      service,
-      payloadPreview: typeof request?.payload === 'string' ? request.payload.slice(0, 256) : Boolean(request?.payload),
-      latency
+      timestamp: new Date().toISOString(), requestId: request?.id ?? null, service: payloadPreview: typeof request?.payload === 'string' ? request.payload.slice(0, 256) : Boolean(request?.payload), latency
     };
 
     // Update perf metrics (very small function)
     this.recordServicePerformance(service, latency, true);
 
-    return { service, result: stubResult };
-  } }
+    return { service: result: stubResult };
+   }
 
-  private recordServicePerformance(service: string, latency: number, success: boolean): void {
+  private recordServicePerformance(service: string: latency: number: success: boolean): void {
     const prev = this.performanceMetrics.get(service) ?? { avgLatency: 0, throughput: 0, errorRate: 0 };
     prev.avgLatency =
       prev.throughput === 0 ? latency : (prev.avgLatency * prev.throughput + latency) / (prev.throughput + 1);
     prev.throughput++;
     if (!success) prev.errorRate = (prev.errorRate * (prev.throughput - 1) + 1) / prev.throughput;
     this.performanceMetrics.set(service, prev);
-  } }
+   }
 
   private static stringifyUnknown(reason: any): string {
     if (typeof reason === 'string') return reason;
@@ -193,22 +170,19 @@ export class ParallelOrchestrationMaster {
           const s = (obj.toString as () => unknown)();
           if (typeof s === 'string') return s;
           return String(s);
-        } }catch {
+         }catch {
           // fall through to JSON fallback
-        } }
-      } }
+         }
+       }
       // Last resort: JSON.stringify or Object.prototype.toString
       try {
         return JSON.stringify(obj);
-      } }catch {
-        return Object.prototype.toString.call(obj);
-      } }
-    } }
-    return String(reason);
-  } }
-} }
+       }catch {
+        return Object.prototype.toString.call(obj); }
+    return String(reason); } }
 
 // Export singleton instance
 export const parallelOrchestrationMaster = new ParallelOrchestrationMaster();
 export default parallelOrchestrationMaster;
+
 

@@ -1,7 +1,7 @@
 /**
  * AI Chat Types - Type definitions for the AI chat system
  */
-export interface ChatMessage { id: string;, sessionId: string;
+export interface ChatMessage { id: string; sessionId: string;
   session_id?: string; // Alternative naming
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -14,8 +14,8 @@ export interface ChatMessage { id: string;, sessionId: string;
     confidence?: number;
     sources?: string[];
   };
-} }
-export interface ChatSession { id: string;, title: string;
+ }
+export interface ChatSession { id: string; title: string;
   created: number;
   updated: number;
   messageCount: number;
@@ -24,14 +24,14 @@ export interface ChatSession { id: string;, title: string;
   start_time?: number;
   last_activity?: number;
   context?: RAGContext;
-} }
-export interface MessageAnalysis { intent: string;, entities: Entity[];
+ }
+export interface MessageAnalysis { intent: string; entities: Entity[];
   sentiment: 'positive' | 'negative' | 'neutral';
   complexity: number;
   topics: string[];
   confidence: number;
   som_cluster?: string;
-} }
+ }
 export interface RAGContext {
   caseId?: string;
   documents: string[];
@@ -39,43 +39,43 @@ export interface RAGContext {
   metadata: Record<string, unknown>;
   recommendations?: any[];
   did_you_mean?: string;
-} }
-export interface Recommendation { id: string;, type: 'query' | 'document' | 'action';
+ }
+export interface Recommendation { id: string; type: 'query' | 'document' | 'action';
   title: string;
   description: string;
   confidence: number;
   metadata?: Record<string, unknown>;
-} }
-export interface StreamingResponse { messageId: string;, content: string;
+ }
+export interface StreamingResponse { messageId: string; content: string;
   isComplete: boolean;
   timestamp: number;
   metadata?: {
     tokens?: number;
     model?: string;
   };
-} }
-export interface UserActivity { userId: string;, sessionId: string;
+ }
+export interface UserActivity { userId: string; sessionId: string;
   isTyping: boolean;
   lastSeen: number;
   status: 'online' | 'away' | 'offline';
   type?: string;
   timestamp?: number;
-} }
-export interface AttentionData { messageId: string;, attentionWeights: number[];
+ }
+export interface AttentionData { messageId: string; attentionWeights: number[];
   focusPoints: FocusPoint[];
   focused?: boolean;
   lastActivity?: number;
   interactionCount?: number;
   scrollPosition?: number;
-} }
+ }
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
-export interface ChatStore { messages: ChatMessage[];, currentSession: ChatSession | null;
+export interface ChatStore { messages: ChatMessage[]; currentSession: ChatSession | null;
   activeSessions: ChatSession[];
   connectionStatus: ConnectionStatus;
   isTyping: boolean;
   userActivity: UserActivity[];
   recommendations: Recommendation[];
-} }
+ }
 
 // New small typed shapes to avoid `any`
 export interface Entity {
@@ -86,7 +86,7 @@ export interface Entity {
   confidence?: number; // model confidence 0..1
   normalized?: string; // normalized value (e.g., ISO date)
   metadata?: Record<string, unknown>;
-} }
+ }
 
 export interface RelevantSection {
   id: string;
@@ -95,7 +95,7 @@ export interface RelevantSection {
   score?: number; // relevance score
   page?: number;
   metadata?: Record<string, unknown>;
-} }
+ }
 
 export interface FocusPoint {
   field: string;
@@ -103,3 +103,4 @@ export interface FocusPoint {
   relevance?: number;
   metadata?: Record<string, unknown>;
 }
+

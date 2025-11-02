@@ -3,10 +3,7 @@
  * Verifies that the orchestration system works correctly
  */
 import {
-  copilotOrchestrator,
-  generateMCPPrompt,
-  commonMCPQueries,
-  validateMCPRequest
+  copilotOrchestrator, generateMCPPrompt, commonMCPQueries, validateMCPRequest
 } from '../../utils/mcp-helpers.js.js';
 async function testSelfPromptingDemo() {
   console.log('🚀 Testing Self-Prompting Demo Components...\n');
@@ -14,7 +11,7 @@ async function testSelfPromptingDemo() {
   console.log('1. Testing basic orchestration...');
   try {
     const result = await copilotOrchestrator(
-      'Analyze legal evidence for case CASE-2024-001',)
+      'Analyze legal evidence for case CASE-2024-001')
       {
         useSemanticSearch: true
         useMemory: true
@@ -65,9 +62,7 @@ async function testSelfPromptingDemo() {
   console.log('\n4. Testing Context7 MCP integration...');
   try {
     const context7Queries = [
-      commonMCPQueries.performanceBestPractices(),
-      commonMCPQueries.securityBestPractices(),
-      commonMCPQueries.aiChatIntegration()
+      commonMCPQueries.performanceBestPractices(), commonMCPQueries.securityBestPractices(), commonMCPQueries.aiChatIntegration()
     ];
     for (const query of context7Queries) {
       const validation = validateMCPRequest(query);

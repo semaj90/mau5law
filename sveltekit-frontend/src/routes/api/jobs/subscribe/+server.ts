@@ -1,22 +1,20 @@
-import type { RequestHandler } }from '@sveltejs/kit';
-import { jobStore /*, jobMachine */ } }from '$lib/workers/job-state';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { jobStore /*, jobMachine */  } from '$lib/workers/job-state';
 
 // Define a basic interface for a job item
-interface JobItem { id: string;, status: string;
+interface JobItem { id: string; status: string;
   // Add other properties of a job item as needed
   [key: string]: any;
-} }
+ }
 
 // Define an interface for the jobStore to provide type safety
-interface JobStore { listJobs: () => Promise<JobItem[]>; //, Removed: '?' to make it a required method, on: (event: 'update' | 'remove', listener: (item: JobItem | string) => void) => void;
+interface JobStore { listJobs: () => Promise<JobItem[]>; //, Removed: '?' to make it a required method: on: (event: 'update' | 'remove', listener: (item: JobItem | string) => void) => void;
   off: (event: 'update' | 'remove', listener: (item: JobItem | string) => void) => void;
-} }
+ }
 
 export const GET: RequestHandler = async ({ request }) => {
   const headers = new Headers({
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    Connection: 'keep-alive'
+    'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive'
   });
   const stream = new ReadableStream({
     start(controller) {
@@ -37,8 +35,7 @@ export const GET: RequestHandler = async ({ request }) => {
         jobStore.off('update', onUpdate);
         jobStore.off('remove', onRemove); // Removed: 'as: any'
         controller.close();
-      });
-    } }
-  });
+      }); });
   return new Response(stream, { headers });
 };
+

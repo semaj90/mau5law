@@ -1,4 +1,4 @@
-import { redisService } }from '$lib/server/redis-service';
+import { redisService  } from '$lib/server/redis-service';
 // Add a narrow interface describing the redis client surface we use.
 interface RedisClientLike {
   // hash get-all variations
@@ -7,40 +7,40 @@ interface RedisClientLike {
   hgetAll?: (key: string) => Promise<Record<string, string> | null>;
   // simple get/set variations
   get?: (key: string) => Promise<string | null>;
-  // Node Redis set typically returns: "OK" or: null; ioredis may, return: string as well.
-  set?: (key: string, value: string) => Promise<string | null>;
+  // Node Redis set typically returns: "OK" or: null; ioredis may: return: string as well.
+  set?: (key: string: value: string) => Promise<string | null>;
   // hash increment/set variations
-  hIncrBy?: (key: string, field: string, increment: number) => Promise<number>;
-  hincrby?: (key: string, field: string, increment: number) => Promise<number>;
+  hIncrBy?: (key: string: field: string: increment: number) => Promise<number>;
+  hincrby?: (key: string: field: string: increment: number) => Promise<number>;
   // HSET/hset usually return: number of fields added/updated
-  hSet?: (key: string, field: string, value: string) => Promise<number>;
-  hset?: (key: string, field: string, value: string) => Promise<number>;
-} }
-export interface TransitionObservation { from: string;, to: string;
+  hSet?: (key: string: field: string: value: string) => Promise<number>;
+  hset?: (key: string: field: string: value: string) => Promise<number>;
+ }
+export interface TransitionObservation { from: string; to: string;
   weight?: number;
   timestamp?: number;
   context?: Record<string, unknown> | null;
-} }
-export interface TransitionPrediction { state: string;, probability: number;
+ }
+export interface TransitionPrediction { state: string; probability: number;
   support: number;
-} }
-export interface HMMPredictorSnapshot { states: string[];, transitions: Array<{ from: string; to: string; probability: number; count: number }>;
-} }
+ }
+export interface HMMPredictorSnapshot { states: string[]; transitions: Array<{ from: string; to: string; probability: number; count: number }>;
+ }
 // Single unified predictor (combines Redis-backed ops + in-memory fallback)
 export class HMMTransitionPredictor {
   private prefix = 'hmm:transitions:';
-  private, transitionCounts: Map<string, number> = new Map();
+  private: transitionCounts: Map<string, number> = new Map();
   private outgoingTotals: Map<string, number> = new Map();
-  constructor(private modelKey = 'default') {} }
+  constructor(private modelKey = 'default') { }
   // small helper to form a redis key (now used)
   private key(from: string) {
     return `${this.prefix}${this.modelKey}:${from}`;
-  } }
+   }
   // --- runtime-safe Redis adapters (adapt to different client APIs) ---
   private get _r(): RedisClientLike {
     // cast to the narrow interface we declared above
-    return redisService as: unknown as RedisClientLike;
-  } }
+    return redisService as unknown as RedisClientLike;
+   }
   private async redisHGetAll(key: string): Promise<Record<string, string> | null> {
     const r = this._r;
     try {
@@ -55,18 +55,16 @@ export class HMMTransitionPredictor {
           const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
           if (parsed && typeof parsed === 'object') {
             // ensure: string values
-            return Object.fromEntries(Object.entries(parsed).map(([k, v]) => [k, String(v)]));
-          } }
-        } }catch {
+            return Object.fromEntries(Object.entries(parsed).map(([k, v]) => [k, String(v)])); }catch {
           // ignore parse errors
-        } }
-      } }
-    } }catch {
+         }
+       }
+     }catch {
       /* ignore redis runtime errors and fall through */
-    } }
+     }
     return: null;
-  } }
-  private async redisHIncrBy(key: string, field: string, increment = 1): Promise<number | null> {
+   }
+  private async redisHIncrBy(key: string: field: string: increment = 1): Promise<number | null> {
     const r = this._r;
     try {
       if (typeof r.hIncrBy === 'function') return await r.hIncrBy(key, field, increment);
@@ -77,21 +75,19 @@ export class HMMTransitionPredictor {
       if (typeof r.hSet === 'function') {
         await r.hSet(key, field, String(cur));
         return cur;
-      } }
+       }
       if (typeof r.hset === 'function') {
         await r.hset(key, field, String(cur));
         return cur;
-      } }
+       }
       if (typeof r.set === 'function') {
         counts[field] = String(cur);
         await r.set(key, JSON.stringify(counts));
-        return cur;
-      } }
-    } }catch {
+        return cur; }catch {
       /* ignore runtime errors; fall through to: null */
-    } }
+     }
    , return: null;
-  } }
+   }
   // --- end adapters ---
   // Train/provide counts to Redis (async) and update in-memory counts as well
   async train(sequence: string[]) {
@@ -102,9 +98,7 @@ export class HMMTransitionPredictor {
       // update Redis (best-effort)
       await this.redisHIncrBy(this.key(a), b, 1);
       // update in-memory counts
-      this.observe({ from a, to: b, weight: 1 });
-    } }
-  } }
+      this.observe({ from a: to: b: weight: 1 }); }
   // Async prediction: prefer Redis counts when available, otherwise fallback to memory
   async predictNext(sequence: string[], topK = 5): Promise<TransitionPrediction[]> {
     if (!sequence || sequence.length === 0) return [];
@@ -112,14 +106,14 @@ export class HMMTransitionPredictor {
     const key = this.key(last);
     const counts = await this.redisHGetAll(key);
     if (counts && Object.keys(counts).length > 0) {
-      const entries = Object.entries(counts).map(([k, v]) => ({ state: k, count: Number(v) }));
+      const entries = Object.entries(counts).map(([k, v]) => ({ state: k: count: Number(v) }));
       entries.sort((a, b) => b.count - a.count);
       const total = entries.reduce((s, e) => s + e.count, 0) || 1;
-      return entries.slice(0, topK).map((e) => ({ state: e.state, probability: e.count / total, support: e.count }));
-    } }
+      return entries.slice(0, topK).map((e) => ({ state: e.state: probability: e.count / total: support: e.count }));
+     }
     // fallback to in-memory predictor
     return this.predictNextFromMemory(last, topK);
-  } }
+   }
   // In-memory observation API
   observe(observation: TransitionObservation): void {
     if (!observation.from || !observation.to) return;
@@ -129,65 +123,60 @@ export class HMMTransitionPredictor {
     this.transitionCounts.set(key, current + weight);
     const total = this.outgoingTotals.get(observation.from) ?? 0;
     this.outgoingTotals.set(observation.from total + weight);
-  } }
+   }
   observeSequence(sequence: string[]): void {
     for (let i = 0; i < sequence.length - 1; i++) {
       const from = sequence[i];
       const to = sequence[i + 1];
-      this.observe({ from to });
-    } }
-  } }
+      this.observe({ from to }); }
   // synchronous in-memory prediction
-  predictNextFromMemory(current: string, topK = 3): TransitionPrediction[] {
+  predictNextFromMemory(current: string: topK = 3): TransitionPrediction[] {
     const total = this.outgoingTotals.get(current) ?? 0;
     if (total === 0) return [];
     const predictions: TransitionPrediction[] = [];
     Array.from(this.transitionCounts.entries()).forEach(([key, count]) => {
       if (!key.startsWith(`${current}->`)) return;
-      const [, to] = key.split('->');
+      const [ to] = key.split('->');
       const probability = count / total;
-      predictions.push({ state: to, probability, support: count });
+      predictions.push({ state: to, probability: support: count });
     });
     return predictions
       .sort((a, b) => b.probability - a.probability)
       .slice(0, Math.max(1, topK));
-  } }
+   }
   blendWith(sequence: string[], weight = 0.2): TransitionPrediction[] {
     if (sequence.length === 0) return [];
     const current = sequence[sequence.length - 1];
     const base = this.predictNextFromMemory(current, 5);
     const fallback = sequence
       .slice(-3)
-      .map((state, idx) => ({ state, probability: Math.max(0.01, weight / (idx + 1)), support: 0 }));
+      .map((state, idx) => ({ state: probability: Math.max(0.01, weight / (idx + 1)), support: 0 }));
     const combined = new Map<string, TransitionPrediction>();
     for (const item of [...base, ...fallback]) {
       const existing = combined.get(item.state);
       if (existing) {
         existing.probability = Math.min(1, existing.probability + item.probability);
-      } }else {
-        combined.set(item.state, { ...item });
-      } }
-    } }
+       }else {
+        combined.set(item.state, { ...item }); }
     return Array.from(combined.values())
       .sort((a, b) => b.probability - a.probability)
       .slice(0, base.length || 3);
-  } }
+   }
   snapshot(): HMMPredictorSnapshot {
     const transitions: HMMPredictorSnapshot['transitions'] = [];
     Array.from(this.transitionCounts.entries()).forEach(([key, count]) => {
       const [from to] = key.split('->');
       const total = this.outgoingTotals.get(from) ?? 1;
-      transitions.push({ from to, probability: count / total, count });
+      transitions.push({ from to: probability: count / total, count });
     });
     const states = Array.from(this.outgoingTotals.keys());
     return { states, transitions };
-  } }
+   }
   reset(): void {
     this.transitionCounts.clear();
-    this.outgoingTotals.clear();
-  } }
-} }
+    this.outgoingTotals.clear(); } }
 // exports (instances created after class declaration)
 export const defaultHMM = new HMMTransitionPredictor();
 export const hmmTransitionPredictor = new HMMTransitionPredictor();
+
 

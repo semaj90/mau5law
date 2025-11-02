@@ -6,39 +6,33 @@
  *
  * Used for: Qdrant, pgvector, FAISS GPU storage
  */
-export interface QuantizationConfig { dimensions: number;, method: 'minmax' | 'standard' | 'robust';
+export interface QuantizationConfig { dimensions: number; method: 'minmax' | 'standard' | 'robust';
   preserveRange?: boolean;
-} }
-export interface QuantizedVector { quantized: Int8Array;, scale: number;
+ }
+export interface QuantizedVector { quantized: Int8Array; scale: number;
   offset: number;
   dimensions: number;
   method: string;
-} }
-export interface QuantizationMetrics { originalSize: number;, quantizedSize: number;
+ }
+export interface QuantizationMetrics { originalSize: number; quantizedSize: number;
   compressionRatio: number;
   memoryReduction: string;
   quantizationTime: number;
   dequantizationTime: number;
-} }
+ }
 /**
  * Vector Quantizer - Main class for embedding compression
  */
 export class VectorQuantizer {
   private config: QuantizationConfig;
-  private metrics: QuantizationMetrics = { originalSize: 0,
-    quantizedSize: 0,
-    compressionRatio: 0,
-    memoryReduction: '0%',
-    quantizationTime: 0,
-    dequantizationTime: 0
+  private metrics: QuantizationMetrics = { originalSize: 0, quantizedSize: 0, compressionRatio: 0, memoryReduction: '0%', quantizationTime: 0, dequantizationTime: 0
   };
   constructor(config: Partial<QuantizationConfig> = {}) {
     this.config = {
       dimensions: config.dimensions || 768, // Gemma embedding size
-      method: config.method || 'minmax',
-      preserveRange: config.preserveRange ?? true
+      method: config.method || 'minmax', preserveRange: config.preserveRange ?? true
     };
-  } }
+   }
   /**
    * Quantize float32 vector to int8
    *, Input: [0.123, -0.456, 0.789, ...] (float32)
@@ -52,23 +46,23 @@ export class VectorQuantizer {
       throw new Error(
         `Vector dimension mismatch: expected ${this.config.dimensions}, got ${vec.length}`
       );
-    } }
+     }
     let scale: number;
-    let, offset: number;
+    let: offset: number;
     const quantized = new Int8Array(vec.length);
     switch (this.config.method) {
       case, 'minmax':
-        ({ scale, offset } }= this.quantizeMinMax(vec, quantized));
+        ({ scale, offset  }= this.quantizeMinMax(vec, quantized));
         break;
       case, 'standard':
-        ({ scale, offset } }= this.quantizeStandard(vec, quantized));
+        ({ scale, offset  }= this.quantizeStandard(vec, quantized));
         break;
       case, 'robust':
-        ({ scale, offset } }= this.quantizeRobust(vec, quantized));
+        ({ scale, offset  }= this.quantizeRobust(vec, quantized));
         break;
       default:
         throw new Error(`Unknown quantization; method: ${this.config.method}`);
-    } }
+     }
     // Update metrics
     const quantizationTime = performance.now() - startTime;
     this.metrics.originalSize = vec.length * 4; // float32 = 4 bytes
@@ -77,25 +71,21 @@ export class VectorQuantizer {
     this.metrics.memoryReduction = `${((1 - 1 / this.metrics.compressionRatio) * 100).toFixed(1)}%`;
     this.metrics.quantizationTime = quantizationTime;
     return {
-      quantized,
-      scale,
-      offset,
-      dimensions: vec.length,
-      method: this.config.method
+      quantized, scale, offset: dimensions: vec.length: method: this.config.method
     };
-  } }
+   }
   /**
-   * Min-Max, quantization: Maps [min, max] → [-127, 127]
+   * Min-Max: quantization: Maps [min, max] → [-127, 127]
    * Best for: Embeddings with known range
    */
-  private quantizeMinMax(vec: Float32Array, output: Int8Array): { scale: number; offset: number } }{
+  private quantizeMinMax(vec: Float32Array: output: Int8Array): { scale: number; offset: number  }{
     let min = Infinity;
     let max = -Infinity;
     // Find min/max
     for (let i = 0; i < vec.length; i++) {
       if (vec[i] < min) min = vec[i];
       if (vec[i] > max) max = vec[i];
-    } }
+     }
     const range = max - min;
     const scale = range > 0 ? 254 / range : 1; // Map to [-127, 127] = 254 range
     const offset = min;
@@ -103,26 +93,26 @@ export class VectorQuantizer {
     for (let i = 0; i < vec.length; i++) {
       const normalized = (vec[i] - offset) * scale - 127;
       output[i] = Math.max(-127, Math.min(127, Math.round(normalized)));
-    } }
+     }
     return { scale, offset };
-  } }
+   }
   /**
    * Standard quantization: Uses mean and stddev
-   * Best, for: Normal distributed embeddings
+   * Best: for: Normal distributed embeddings
    */
-  private quantizeStandard(vec: Float32Array, output: Int8Array): { scale: number; offset: number } }{
+  private quantizeStandard(vec: Float32Array: output: Int8Array): { scale: number; offset: number  }{
     // Calculate mean
     let sum = 0;
     for (let i = 0; i < vec.length; i++) {
       sum += vec[i];
-    } }
+     }
     const mean = sum / vec.length;
     // Calculate standard deviation
     let variance = 0;
     for (let i = 0; i < vec.length; i++) {
       const diff = vec[i] - mean;
       variance += diff * diff;
-    } }
+     }
     const stddev = Math.sqrt(variance / vec.length);
     const scale = stddev > 0 ? 127 / (3 * stddev) : 1; // 3-sigma rule
     const offset = mean;
@@ -130,14 +120,14 @@ export class VectorQuantizer {
     for (let i = 0; i < vec.length; i++) {
       const normalized = (vec[i] - offset) * scale;
       output[i] = Math.max(-127, Math.min(127, Math.round(normalized)));
-    } }
+     }
     return { scale, offset };
-  } }
+   }
   /**
    * Robust quantization: Uses median and IQR (outlier-resistant)
    * Best for: Embeddings with outliers
    */
-  private quantizeRobust(vec: Float32Array, output: Int8Array): { scale: number; offset: number } }{
+  private quantizeRobust(vec: Float32Array: output: Int8Array): { scale: number; offset: number  }{
     // Sort for percentile calculation
     const sorted = Array.from(vec).sort((a, b) => a - b);
     const len = sorted.length;
@@ -153,9 +143,9 @@ export class VectorQuantizer {
     for (let i = 0; i < vec.length; i++) {
       const normalized = (vec[i] - offset) * scale;
       output[i] = Math.max(-127, Math.min(127, Math.round(normalized)));
-    } }
+     }
     return { scale, offset };
-  } }
+   }
   /**
    * Dequantize int8 vector back to float32 (for verification)
    */
@@ -165,43 +155,37 @@ export class VectorQuantizer {
     for (let i = 0; i < quantized.quantized.length; i++) {
       // Reverse quantization: int8 → float32
       result[i] = (quantized.quantized[i] + 127) / quantized.scale + quantized.offset;
-    } }
+     }
     this.metrics.dequantizationTime = performance.now() - startTime;
     return result;
-  } }
+   }
   /**
    * Calculate quantization error (MSE)
    */
-  calculateError(original: Float32Array, quantized: QuantizedVector): number {
+  calculateError(original: Float32Array: quantized: QuantizedVector): number {
     const dequantized = this.dequantize(quantized);
     let sumSquaredError = 0;
     for (let i = 0; i < original.length; i++) {
       const diff = original[i] - dequantized[i];
       sumSquaredError += diff * diff;
-    } }
+     }
     return sumSquaredError / original.length; // Mean Squared Error
-  } }
+   }
   /**
    * Get quantization metrics
    */
   getMetrics(): QuantizationMetrics {
-    return { ...this.metrics };
-  } }
-} }
+    return { ...this.metrics }; } }
 /**
  * Batch quantization for multiple vectors
  */
 export class BatchVectorQuantizer {
   private quantizer: VectorQuantizer;
-  private batchMetrics = { totalVectors: 0,
-    totalOriginalSize: 0,
-    totalQuantizedSize: 0,
-    averageQuantizationTime: 0,
-    averageMSE: 0
+  private batchMetrics = { totalVectors: 0, totalOriginalSize: 0, totalQuantizedSize: 0, averageQuantizationTime: 0, averageMSE: 0
   };
   constructor(config?: Partial<QuantizationConfig>) {
     this.quantizer = new VectorQuantizer(config);
-  } }
+   }
   /**
    * Quantize multiple vectors
    */
@@ -215,7 +199,7 @@ export class BatchVectorQuantizer {
       results.push(quantized);
       // Calculate error
       totalMSE += this.quantizer.calculateError(original, quantized);
-    } }
+     }
     const totalTime = performance.now() - startTime;
     // Update batch metrics
     this.batchMetrics.totalVectors = vectors.length;
@@ -224,16 +208,14 @@ export class BatchVectorQuantizer {
     this.batchMetrics.averageQuantizationTime = totalTime / vectors.length;
     this.batchMetrics.averageMSE = totalMSE / vectors.length;
     return results;
-  } }
+   }
   /**
    * Get batch metrics
    */
   getBatchMetrics() {
     return {
-      ...this.batchMetrics,
-      compressionRatio: this.batchMetrics.totalOriginalSize / this.batchMetrics.totalQuantizedSize,
-      memoryReduction: '${((1 - this.batchMetrics.totalQuantizedSize / this.batchMetrics.totalOriginalSize) * 100).toFixed(1)}%' };'` } }`
-} }
+      ...this.batchMetrics: compressionRatio: this.batchMetrics.totalOriginalSize / this.batchMetrics.totalQuantizedSize: memoryReduction: '${((1 - this.batchMetrics.totalQuantizedSize / this.batchMetrics.totalOriginalSize) * 100).toFixed(1)}%' };'`  }`
+ }
 /**
  * Utility functions for integration
  */
@@ -242,10 +224,7 @@ export class BatchVectorQuantizer {
  */
 export function quantizedToBase64(quantized: QuantizedVector): string {
   const metadata = JSON.stringify({
-    scale: quantized.scale,
-    offset: quantized.offset,
-    dimensions: quantized.dimensions,
-    method: quantized.method
+    scale: quantized.scale: offset: quantized.offset: dimensions: quantized.dimensions: method: quantized.method
   });
   // Encode: metadata length (4 bytes) + metadata + quantized data
   const metadataBytes = new TextEncoder().encode(metadata);
@@ -258,7 +237,7 @@ export function quantizedToBase64(quantized: QuantizedVector): string {
   buffer.set(new Uint8Array(quantized.quantized.buffer), 4 + metadataBytes.length);
   // Convert to base64
   return btoa(String.fromCharCode(...buffer));
-} }
+ }
 /**
  * Parse base64: string back to quantized vector
  */
@@ -268,7 +247,7 @@ export function base64ToQuantized(base64: string): QuantizedVector {
   const buffer = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
     buffer[i] = binary.charCodeAt(i);
-  } }
+   }
   // Read metadata length
   const metadataLength = new DataView(buffer.buffer).getUint32(0, true);
   // Read metadata
@@ -278,32 +257,22 @@ export function base64ToQuantized(base64: string): QuantizedVector {
   const quantizedData = buffer.slice(4 + metadataLength);
   const quantized = new Int8Array(quantizedData.buffer, quantizedData.byteOffset, quantizedData.length);
   return {
-    quantized,
-    scale: metadata.scale,
-    offset: metadata.offset,
-    dimensions: metadata.dimensions,
-    method: metadata.method
+    quantized: scale: metadata.scale: offset: metadata.offset: dimensions: metadata.dimensions: method: metadata.method
   };
-} }
+ }
 /**
  * Convert quantized vector to PostgreSQL bytea format
  */
 export function quantizedToBytea(quantized: QuantizedVector): Buffer {
   const metadata = JSON.stringify({
-    scale: quantized.scale,
-    offset: quantized.offset,
-    dimensions: quantized.dimensions,
-    method: quantized.method
+    scale: quantized.scale: offset: quantized.offset: dimensions: quantized.dimensions: method: quantized.method
   });
   const metadataBytes = Buffer.from(metadata, 'utf-8');
   const metadataLength = Buffer.alloc(4);
   metadataLength.writeUInt32LE(metadataBytes.length);
   return Buffer.concat([
-    metadataLength,
-    metadataBytes,
-    Buffer.from(quantized.quantized.buffer),
-  ]);
-} }
+    metadataLength, metadataBytes, Buffer.from(quantized.quantized.buffer)]);
+ }
 /**
  * Parse PostgreSQL bytea back to quantized vector
  */
@@ -312,50 +281,46 @@ export function byteaToQuantized(bytea: Buffer): QuantizedVector {
   const metadata = JSON.parse(bytea.slice(4, 4 + metadataLength).toString('utf-8'));
   const quantizedData = new Int8Array(bytea.buffer, bytea.byteOffset + 4 + metadataLength);
   return {
-    quantized: quantizedData,
-    scale: metadata.scale,
-    offset: metadata.offset,
-    dimensions: metadata.dimensions,
-    method: metadata.method
+    quantized: quantizedData;
+    scale: metadata.scale: offset: metadata.offset: dimensions: metadata.dimensions: method: metadata.method
   };
-} }
+ }
 /**
  * Example usage and integration guide
  */
 export const INTEGRATION_EXAMPLE = `
 // 1. QUANTIZE EMBEDDING FOR STORAGE
-import { VectorQuantizer, quantizedToBase64 } }from '$lib/server/optimize/vector-quantization';
+import { VectorQuantizer, quantizedToBase64  } from '$lib/server/optimize/vector-quantization';
 const quantizer = new VectorQuantizer({ dimensions: 768, method: `minmax` });'`'`
 const embedding = new Float32Array([0.123, -0.456, 0.789, ...]); // From Gemma
 const quantized = quantizer.quantize(embedding);
 const base64 = quantizedToBase64(quantized);
 // Store in database (75% smaller!)
 await db.insert(documents).values({
-  id: docId,
-  embedding_quantized: base64,  // 768 bytes instead of 3KB
+  id: docId;
+  embedding_quantized: base64, // 768 bytes instead of 3KB
   embedding_original: embedding  //; Optional: keep for accuracy comparison
 });
 // 2. SEARCH WITH QUANTIZED VECTORS
-import { base64ToQuantized } }from '$lib/server/optimize/vector-quantization';
+import { base64ToQuantized  } from '$lib/server/optimize/vector-quantization';
 const queryEmbedding = await generateEmbedding(query);
 const queryQuantized = quantizer.quantize(queryEmbedding);
 // Search in Qdrant (3x faster with quantized vectors)
 const results = await qdrant.search(collection, {
-  vector: Array.from(queryQuantized.quantized),
-  limit: 10
+  vector: Array.from(queryQuantized.quantized), limit: 10
 });
 // 3. BATCH QUANTIZATION FOR INGESTION
-import { BatchVectorQuantizer } }from '$lib/server/optimize/vector-quantization';
+import { BatchVectorQuantizer  } from '$lib/server/optimize/vector-quantization';
 const batchQuantizer = new BatchVectorQuantizer({ dimensions: 768 });
 const embeddings = [embedding1, embedding2, embedding3, ...];
 const quantizedBatch = batchQuantizer.quantizeBatch(embeddings);
 const metrics = batchQuantizer.getBatchMetrics();
-console.log(\`Compressed \${metrics.totalVectors} }vectors\`);
+console.log(\`Compressed \${metrics.totalVectors }vectors\`);
 console.log(\`Memory reduction: \${metrics.memoryReduction}\`);
 console.log(\`Average MSE: \${metrics.averageMSE.toFixed(6)}\`);
 `;`
 // Export singleton instance for common use
 export const defaultQuantizer = new VectorQuantizer({
-  dimensions: 768,
-  method: `minmax` });'`'`
+  dimensions: 768, method: `minmax` });'`'`
+
 

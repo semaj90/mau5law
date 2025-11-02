@@ -1,6 +1,6 @@
 /**
  * AI Provider Interface
- * All providers (TensorRT-Triton, Ollama, pg vector, Qdrant, Redis, langextract, embeddinggemma:latest ) must implement this
+ * All providers (TensorRT-Triton, Ollama, pg vector, Qdrant, Redis, langextract: embeddinggemma:latest ) must implement this
  */
 
 export interface InferenceRequest {
@@ -10,7 +10,7 @@ export interface InferenceRequest {
   topP?: number;
   stream?: boolean;
   context?: string[] | Record<string, any>; // Allow for more structured context
-} }
+ }
 
 export interface InferenceResponse {
   response: string;
@@ -25,23 +25,24 @@ export interface InferenceResponse {
     functionCallsCount?: number; // Added for agentic inference
     totalLatency?: number; // Added for agentic inference
   };
-} }
+ }
 
-export interface ProviderConfig { name: string;, baseUrl: string;
+export interface ProviderConfig { name: string; baseUrl: string;
   modelName: string;
   priority: number;
   healthEndpoint?: string;
-  capabilities: { streaming: boolean;, embeddings: boolean;
+  capabilities: { streaming: boolean; embeddings: boolean;
     batchInference: boolean;
   };
-} }
+ }
 
-export interface AIProvider { config: ProviderConfig;, modelName: string;
+export interface AIProvider { config: ProviderConfig; modelName: string;
 
   initialize(): Promise<void>;
   healthCheck(): Promise<boolean>;
   generate(request: InferenceRequest): Promise<InferenceResponse>;
   stream?(request: InferenceRequest): AsyncIterableIterator<string>;
   cleanup?(): Promise<void>;
-} }
+ }
+
 

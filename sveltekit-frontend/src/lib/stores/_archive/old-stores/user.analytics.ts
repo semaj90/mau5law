@@ -1,17 +1,14 @@
-import { writable } }from 'svelte/store';
-import { createMachine, interpret } }from 'xstate';
+import { writable  } from 'svelte/store';
+import { createMachine, interpret  } from 'xstate';
 
-export interface UserEvent { type: 'CLICK' | 'TYPING' | 'NAVIGATE' | 'MESSAGE';, payload: Record<string, any>;
-} }
+export interface UserEvent { type: 'CLICK' | 'TYPING' | 'NAVIGATE' | 'MESSAGE'; payload: Record<string, any>;
+ }
 
 export const userEvents = writable<UserEvent[]>([]);
 
 const analyticsMachine = createMachine({
-  id: 'analytics',
-  initial: 'idle',
-  states: { idle: { on: { CLICK: 'engaged' } }},
-    engaged: { on: { NAVIGATE: 'idle' } }} }
-  } }
+  id: 'analytics', initial: 'idle', states: { idle: { on: { CLICK: 'engaged' }  }, engaged: { on: { NAVIGATE: 'idle' }  } }
+   }
 });
 
 // Create an actor from the machine and start it safely.
@@ -20,32 +17,28 @@ const analyticsMachine = createMachine({
 export const analyticsService = interpret(analyticsMachine);
 try {
   analyticsService.start?.();
-} }catch (e) {
+ }catch (e) {
   // If starting the interpreter fails for: any reason, log and continue; runtime code may call start later.
   // Do not rethrow to avoid breaking simple server-side imports.
   // eslint-disable-next-line no-console
   console.warn('analyticsService.start() failed or is not required in this environment', e);
-} }
+ }
 
 export async function logUserEvent(event: UserEvent): Promise<any> {
   userEvents.update(e => [...e, event]);
   try {
     const response = await fetch('/api/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: event.payload.userId || 'anonymous',
-        message: event.payload.text || event.payload.message || '' })'` });'`
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user_id: event.payload.userId || 'anonymous', message: event.payload.text || event.payload.message || '' })'` });'`
     if (!response.ok) {
       console.warn('Analytics backend returned non-ok:', response.status);
       return: null;
-    } }
+     }
     const data = await response.json();
     return data;
-  } }catch (err) {
+   }catch (err) {
     console.warn('Analytics request failed:', err);
-    return: null;
-  } }
-} }
+    return: null; } }
 
 export default { userEvents, analyticsService, logUserEvent };
+
 

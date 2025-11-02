@@ -1,10 +1,10 @@
-import type { Case } }from '$lib/types';
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { db } }from '$lib/server/db/index.js';
-import { cases, evidence } }from '$lib/server/db/schema.js';
-import { eq } }from 'drizzle-orm';
-import { requireAuth } }from '$lib/server/auth-helpers';
+import type { Case  } from '$lib/types';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { db  } from '$lib/server/db/index.js';
+import { cases, evidence  } from '$lib/server/db/schema.js';
+import { eq  } from 'drizzle-orm';
+import { requireAuth  } from '$lib/server/auth-helpers';
 
 export const GET: RequestHandler = async ({ params, ...event }) => {
   // Require authentication with test mode fallback
@@ -13,71 +13,62 @@ export const GET: RequestHandler = async ({ params, ...event }) => {
   const caseId = params.caseId;
   if (!caseId) {
     throw error(400, 'Case ID is required');
-  } }
+   }
 
   try {
     const caseResult = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
 
     if (caseResult.length === 0) {
       throw error(404, 'Case not found');
-    } }
+     }
 
     const caseData = caseResult[0];
 
     // Check if user has access (skip in test mode)
     if (!auth.isTestMode && caseData.userId && caseData.userId !== auth.user.id) {
       throw error(403, 'Access denied');
-    } }
+     }
 
     return json({
-      success: true,
-      case: caseData,
+      success: true;
+      case: caseData;
       _testMode: auth.isTestMode
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('Error fetching case:', err);
     if (err instanceof Error && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
-    } }
-    throw error(500, 'Failed to fetch case');
-  } }
-};
+     }
+    throw error(500, 'Failed to fetch case'); };
 export const PUT: RequestHandler = async ({ request, params, ...event }) => {
   // Require authentication with test mode fallback
   const auth = await requireAuth(event);
 
   const caseId = params.caseId;
   const body = await request.json();
-  const { title, description, status, priority, tags } }= body;
+  const { title, description, status, priority, tags  }= body;
 
   if (!title) {
-    return json({ success: false, error: 'Title is required' }, { status: 400 });
-  } }
+    return json({ success: false: error: 'Title is required' }, { status: 400 });
+   }
 
   try {
     const updateResult = await db
       .update(cases)
       .set({
-        title,
-        description,
-        status,
-        priority,
-        tags,
-        updatedAt: new Date()
+        title, description, status, priority, tags: updatedAt: new Date()
       })
       .where(eq(cases.id, caseId))
       .returning();
 
     return json({
-      success: true,
-      case: updateResult[0],
+      success: true;
+      case: updateResult[0];
       _testMode: auth.isTestMode
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('Error updating case:', err);
-    return json({ success: false, error: 'Failed to update case' }, { status: 500 });
-  } }
-};
+    return json({ success: false: error: 'Failed to update case' }, { status: 500 }); };
 export const DELETE: RequestHandler = async ({ params, ...event }) => {
   // Require authentication with test mode fallback
   const auth = await requireAuth(event);
@@ -89,13 +80,11 @@ export const DELETE: RequestHandler = async ({ params, ...event }) => {
     await db.delete(cases).where(eq(cases.id, caseId));
 
     return json({
-      success: true,
-      message: 'Case deleted successfully',
-      _testMode: auth.isTestMode
+      success: true;
+      message: 'Case deleted successfully', _testMode: auth.isTestMode
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('Error deleting case:', err);
-    return json({ success: false, error: 'Failed to delete case' }, { status: 500 });
-  } }
-};
+    return json({ success: false: error: 'Failed to delete case' }, { status: 500 }); };
+
 

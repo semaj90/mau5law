@@ -3,15 +3,15 @@
  * Implements intelligent caching for both retrieval results and embeddings
  * Integrates with Nintendo-style memory management and existing infrastructure
  */
-import { Redis } }from 'ioredis';
-import { Pool } }from 'pg';
-import { createHash } }from 'crypto';
-import { NintendoMemoryManager, Priority } }from './nintendo-memory-manager.js';
-import type { LegalDocument, APIResponse } }from '$lib/types';
-// REMOVE: import { getEmbeddingFromOllama } }from '$lib/server/services/ollama-api';
+import { Redis  } from 'ioredis';
+import { Pool  } from 'pg';
+import { createHash  } from 'crypto';
+import { NintendoMemoryManager, Priority  } from './nintendo-memory-manager.js';
+import type { LegalDocument, APIResponse  } from '$lib/types';
+// REMOVE: import { getEmbeddingFromOllama  } from '$lib/server/services/ollama-api';
 
 // ADD: Imports for server-side integration helpers and their types
-import { ollamaEmbed } }from './cached-rag-service.js';
+import { ollamaEmbed  } from './cached-rag-service.js';
 
 // Local type matching the shape returned by cached-rag-service's ollamaEmbed'
 // (module does not export this type, so define it locally for compilation)
@@ -20,7 +20,7 @@ type EmbeddingResult = {
 };
 
 // ADD: Imports for external service types from chr-rom-precomputation-service.ts
-import type { UltraJSONParser, WasmClusteringService, NESGPUBridge } }from './chr-rom-precomputation-service.js';
+import type { UltraJSONParser, WasmClusteringService, NESGPUBridge  } from './chr-rom-precomputation-service.js';
 
 // Minimal typed adapters for external services referenced by the orchestrator.
 // Fill with concrete implementations / imports when integrating.
@@ -33,46 +33,45 @@ interface CacheConfig { retrieval: { ttl: number;
     maxResults: number;
     keyPrefix: string;
   };
-  embedding: { ttl: number;, keyPrefix: string;
+  embedding: { ttl: number; keyPrefix: string;
     dimensions: number;
   };
-  invalidation: { strategies: string[];, interval: number;
+  invalidation: { strategies: string[]; interval: number;
   };
-} }
+ }
 
-type CachedRetrieval = { query: string;, queryHash: string;
+type CachedRetrieval = { query: string; queryHash: string;
   chunkIds: string[];
-  similarity: number[];
- , metadata: Record<string, unknown>;
+  similarity: number[]; metadata: Record<string, unknown>;
   modelId: string;
   timestamp: number;
   hitCount: number;
 };
 
-type CachedEmbedding = { textHash: string;, embedding: Float32Array;
+type CachedEmbedding = { textHash: string; embedding: Float32Array;
   modelId: string;
   dimensions: number;
   timestamp: number;
   contentLength: number;
 };
 
-type CacheStats = { retrieval: {; hits: number;, misses: number;
+type CacheStats = { retrieval: {; hits: number; misses: number;
     hitRate: number;
     totalQueries: number;
   };
-  embedding: { hits: number;, misses: number;
+  embedding: { hits: number; misses: number;
     hitRate: number;
     totalRequests: number;
     costSavings: number;
   };
-  memory: { l1Usage: number;, l2Usage: number;
+  memory: { l1Usage: number; l2Usage: number;
     l3Usage: number;
     totalCachedItems: number;
   };
 };
 
 // Add a small local interface describing the memory manager methods we rely on
-type MemoryManagerInterface = { store: (key: string; value: any; priority: Priority; ttlSeconds: number) => Promise<void>;, retrieve: (key: string) => Promise<unknown | null>;
+type MemoryManagerInterface = { store: (key: string; value: any; priority: Priority; ttlSeconds: number) => Promise<void>; retrieve: (key: string) => Promise<unknown | null>;
   delete?: (key: string) => Promise<void>;
 };
 
@@ -85,9 +84,9 @@ type VectorSearchOptions = {
 };
 
 // Assuming LegalDocumentChunk looks something like this based on usage
-interface LegalDocumentChunk { id: string;, content: string;
+interface LegalDocumentChunk { id: string; content: string;
   similarity?: number;
-} }
+ }
 
 // Define specific types for cache metadata and invalidation context
 interface CacheMetadata {
@@ -96,76 +95,65 @@ interface CacheMetadata {
   practiceArea?: string;
   jurisdiction?: string;
   [key: string]: any; // Allow other arbitrary properties
-} }
+ }
 
 interface InvalidationContext {
   caseId?: string;
   documentId?: string;
   practiceArea?: string;
   jurisdiction?: string;
-} }
+ }
 
 export class UnifiedLegalCacheOrchestrator {
   private redis: Redis;
   private pgPool: Pool;
-  private, memoryManager: MemoryManagerInterface; // <- narrowed, type
+  private: memoryManager: MemoryManagerInterface; // <- narrowed, type
   private retrievalL1 = new Map<string, CachedRetrieval>();
   private embeddingL1 = new Map<string, CachedEmbedding>();
   // ADD: Properties for external service integrations
   private jsonParser?: $UltraJSONParser;
   private wasmClusteringService?: $WasmClusteringService;
   private nesGpuBridge?: $NesGPUBridge;
-  private config: CacheConfig = { retrieval: { ttl: 3600,
-      maxResults: 50,
-      keyPrefix: 'legal:rag'
-    },
-    embedding: { ttl: 86400 * 7,
-      keyPrefix: 'legal:embedding',
-      dimensions: 768
-    },
-    invalidation: { strategies: ['ttl', 'lru', 'legal-context'],
-      interval: 300000
-    } }
+  private config: CacheConfig = { retrieval: { ttl: 3600, maxResults: 50, keyPrefix: 'legal:rag'
+    }, embedding: { ttl: 86400 * 7, keyPrefix: 'legal:embedding', dimensions: 768
+    }, invalidation: { strategies: ['ttl', 'lru', 'legal-context'], interval: 300000
+     }
   };
-  private stats: CacheStats = { retrieval: { hits: 0, misses: 0, hitRate: 0, totalQueries: 0 },
-    embedding: { hits: 0, misses: 0, hitRate: 0, totalRequests: 0, costSavings: 0 },
-    memory: { l1Usage: 0, l2Usage: 0, l3Usage: 0, totalCachedItems: 0 } }
+  private stats: CacheStats = { retrieval: { hits: 0, misses: 0, hitRate: 0, totalQueries: 0 }, embedding: { hits: 0, misses: 0, hitRate: 0, totalRequests: 0, costSavings: 0 }, memory: { l1Usage: 0, l2Usage: 0, l3Usage: 0, totalCachedItems: 0  }
   };
 
-  constructor(
-   , redis: Redis,
-    pgPool: Pool,
-    memoryManager: NintendoMemoryManager,
-    config?: Partial<CacheConfig>,
+  constructor( redis: Redis;
+    pgPool: Pool;
+    memoryManager: NintendoMemoryManager;
+    config?: Partial<CacheConfig>;
     // ADD: Optional parameters for external services
-    jsonParser?: $UltraJSONParser,
-    wasmClusteringService?: $WasmClusteringService,
+    jsonParser?: $UltraJSONParser;
+    wasmClusteringService?: $WasmClusteringService;
     nesGpuBridge?: $NesGPUBridge
   ) {
     this.redis = redis;
     this.pgPool = pgPool;
     // cast incoming implementation to the narrower interface we use
-    this.memoryManager = memoryManager as: unknown as MemoryManagerInterface;
+    this.memoryManager = memoryManager as unknown as MemoryManagerInterface;
     if (config) {
       this.config = { ...this.config, ...config };
-    } }
+     }
     // ADD: Assign external service instances
     this.jsonParser = jsonParser;
     this.wasmClusteringService = wasmClusteringService;
     this.nesGpuBridge = nesGpuBridge;
     this.startCacheMaintenanceLoop();
-  } }
+   }
 
   // Cache-aware retrieval
   async performCachedRetrieval(
-    query: string,
-    modelId = 'embeddinggemma:latest',
-    options: {
+    query: string;
+    modelId = 'embeddinggemma:latest', options: {
       maxResults?: number;
       similarityThreshold?: number;
       caseContext?: string;
       forceRefresh?: boolean;
-    } }= {} }
+     }= { }
   ): Promise<APIResponse> {
     const startTime = performance.now();
     const queryHash = this.generateQueryHash(query, modelId, options);
@@ -181,7 +169,7 @@ export class UnifiedLegalCacheOrchestrator {
         const duration = performance.now() - startTime;
         console.log(`🎯 L1 Cache HIT for query: "${query}" (${duration.toFixed(2)}ms)`);
         return this.reconstructRAGResponse(l1Result);
-      } }
+       }
 
       const cachedResult = await this.memoryManager.retrieve(cacheKey);
       if (cachedResult) {
@@ -189,21 +177,12 @@ export class UnifiedLegalCacheOrchestrator {
         // promote to L1 (typed extraction)
         const rec = this.asRecord(cachedResult);
         const promoted: CachedRetrieval = {
-          query: (rec?.query, as: string) ?? query,
-          queryHash: (rec?.queryHash, as: string) ?? queryHash,
-          chunkIds: this.getArrayField(rec, 'chunkIds'),
-          similarity: this.getArrayField(rec, 'similarity'),
-          metadata: (rec?.metadata as Record<string, unknown>) ?? {},
-          modelId: (rec?.modelId, as: string) ?? modelId,
-          timestamp: this.getNumberField(rec, 'timestamp', Date.now()),
-          hitCount: this.getNumberField(rec, 'hitCount', 0)
+          query: (rec?.query, as string) ?? query: queryHash: (rec?.queryHash, as string) ?? queryHash: chunkIds: this.getArrayField(rec, 'chunkIds'), similarity: this.getArrayField(rec, 'similarity'), metadata: (rec?.metadata as Record<string, unknown>) ?? {}, modelId: (rec?.modelId, as string) ?? modelId: timestamp: this.getNumberField(rec, 'timestamp', Date.now()), hitCount: this.getNumberField(rec, 'hitCount', 0)
         };
         this.retrievalL1.set(cacheKey, promoted);
         const duration = performance.now() - startTime;
         console.log(`🎮 Nintendo Cache HIT for query: "${query}" (${duration.toFixed(2)}ms)`);
-        return this.reconstructRAGResponse(promoted);
-      } }
-    } }
+        return this.reconstructRAGResponse(promoted); }
 
     // Cache miss -> perform vector search and cache
     this.stats.retrieval.misses++;
@@ -218,14 +197,8 @@ export class UnifiedLegalCacheOrchestrator {
 
     const priority = this.calculateRetrievalPriority(query, options.caseContext);
     const cachedRetrieval: CachedRetrieval = {
-      query,
-      queryHash,
-      chunkIds,
-      similarity: similarities,
-      metadata,
-      modelId,
-      timestamp: Date.now(),
-      hitCount: 0
+      query, queryHash, chunkIds: similarity: similarities;
+      metadata, modelId: timestamp: Date.now(), hitCount: 0
     };
 
     await this.storeCachedRetrieval(cacheKey, cachedRetrieval, priority);
@@ -233,13 +206,12 @@ export class UnifiedLegalCacheOrchestrator {
     console.log(`💾 Cached new retrieval result for: "${query}" (${duration.toFixed(2)}ms)`);
     this.updateCacheStats();
     return retrievalResult;
-  } }
+   }
 
   // Cache-aware embedding generation
   async getCachedEmbedding(
-    text: string,
-    modelId = 'embeddinggemma:latest',
-    options: { priority?: Priority; forceRefresh?: boolean } }= {} }
+    text: string;
+    modelId = 'embeddinggemma:latest', options: { priority?: Priority; forceRefresh?: boolean  }= { }
   ): Promise<Float32Array> {
     const startTime = performance.now();
     const textHash = this.generateTextHash(text);
@@ -256,7 +228,7 @@ export class UnifiedLegalCacheOrchestrator {
           `🎯 L1 Embedding cache HIT (${duration.toFixed(2)}ms, saved $${this.estimateEmbeddingCost(text.length).toFixed(6)})`
         );
         return l1Embedding.embedding;
-      } }
+       }
 
       const cachedEmbedding = await this.memoryManager.retrieve(cacheKey);
       if (cachedEmbedding) {
@@ -266,40 +238,28 @@ export class UnifiedLegalCacheOrchestrator {
         // cachedEmbedding may also be a plain array (legacy), handle both
         let arr: number[] = [];
         if (rec && Array.isArray(rec.embedding)) {
-          arr = rec.embedding as: number[];
-        } }else if (Array.isArray(cachedEmbedding)) {
-          arr = cachedEmbedding as: unknown, as: number[];
-        } }
+          arr = rec.embedding as number[];
+         }else if (Array.isArray(cachedEmbedding)) {
+          arr = cachedEmbedding as unknown, as number[];
+         }
 
         const embedding = new Float32Array(arr.map(Number));
         this.embeddingL1.set(cacheKey, {
-          textHash,
-          embedding,
-          modelId,
-          dimensions: embedding.length,
-          timestamp: Date.now(),
-          contentLength: text.length
+          textHash, embedding, modelId: dimensions: embedding.length: timestamp: Date.now(), contentLength: text.length
         });
         const duration = performance.now() - startTime;
         console.log(
           `🎮 Nintendo Embedding cache HIT (${duration.toFixed(2)}ms, saved $${this.estimateEmbeddingCost(text.length).toFixed(6)})`
         );
-        return embedding;
-      } }
-    } }
+        return embedding; }
 
     // Cache miss -> generate new embedding and cache
     this.stats.embedding.misses++;
-    console.log(`🔄 Generating new embedding for ${text.length} }chars`);
+    console.log(`🔄 Generating new embedding for ${text.length }chars`);
     const embedding = await this.generateEmbedding(text, modelId);
     const priority = options.priority ?? this.calculateEmbeddingPriority(text);
     const cachedEmbedding: CachedEmbedding = {
-      textHash,
-      embedding,
-      modelId,
-      dimensions: embedding.length,
-      timestamp: Date.now(),
-      contentLength: text.length
+      textHash, embedding, modelId: dimensions: embedding.length: timestamp: Date.now(), contentLength: text.length
     };
 
     await this.storeCachedEmbedding(cacheKey, cachedEmbedding, priority);
@@ -309,7 +269,7 @@ export class UnifiedLegalCacheOrchestrator {
     );
     this.updateCacheStats();
     return embedding;
-  } }
+   }
 
   // Intelligent invalidation by legal context
   async invalidateByLegalContext(context: {
@@ -317,7 +277,7 @@ export class UnifiedLegalCacheOrchestrator {
     documentId?: string;
     practiceArea?: string;
     jurisdiction?: string;
-  }): Promise<number> {
+  ): Promise<number> {
     console.log('🧹 Performing intelligent cache invalidation for legal context:', context);
     let invalidatedCount = 0;
     const retrievalPattern = `${this.config.retrieval.keyPrefix}:*`;
@@ -331,23 +291,20 @@ export class UnifiedLegalCacheOrchestrator {
         if (this.memoryManager.delete) await this.memoryManager.delete(key).catch(() => undefined);
         await this.redis.del(key);
         this.retrievalL1.delete(key);
-        invalidatedCount++;
-      } }
-    } }
-    console.log(`✅ Invalidated ${invalidatedCount} }cache entries for legal context change`);
+        invalidatedCount++; }
+    console.log(`✅ Invalidated ${invalidatedCount }cache entries for legal context change`);
     return invalidatedCount;
-  } }
+   }
 
   // Batch embedding caching
   async batchCacheEmbeddings(
-    textChunks: string[],
-    modelId = 'embeddinggemma:latest',
-    options: { priority?: Priority; batchSize?: number; progressCallback?: (p: number) => void } }= {} }
+    textChunks: string[];
+    modelId = 'embeddinggemma:latest', options: { priority?: Priority; batchSize?: number; progressCallback?: (p: number) => void  }= { }
   ): Promise<Float32Array[]> {
     const batchSize = options.batchSize ?? 10;
     const embeddings: Float32Array[] = [];
     let processedCount = 0;
-    console.log(`📦 Batch processing ${textChunks.length} }text chunks for embeddings`);
+    console.log(`📦 Batch processing ${textChunks.length }text chunks for embeddings`);
     for (let i = 0; i < textChunks.length; i += batchSize) {
       const batch = textChunks.slice(i, i + batchSize);
       const batchPromises = batch.map(text => this.getCachedEmbedding(text, modelId, { priority: options.priority }));
@@ -356,13 +313,13 @@ export class UnifiedLegalCacheOrchestrator {
       processedCount += batch.length;
       if (options.progressCallback) {
         options.progressCallback((processedCount / textChunks.length) * 100);
-      } }
+       }
       // small delay to yield to event loop / avoid overloading
       await new Promise(r => setTimeout(r, 10));
-    } }
-    console.log(`✅ ${processedCount} }embeddings processed`);
+     }
+    console.log(`✅ ${processedCount }embeddings processed`);
     return embeddings;
-  } }
+   }
 
   getCacheStats(): CacheStats {
     this.stats.retrieval.hitRate =
@@ -374,85 +331,69 @@ export class UnifiedLegalCacheOrchestrator {
     this.stats.memory.l1Usage = this.retrievalL1.size + this.embeddingL1.size;
     this.stats.memory.totalCachedItems = this.stats.memory.l1Usage;
     return { ...this.stats };
-  } }
+   }
 
   async preloadCriticalEmbeddings(documentIds: string[], priority: Priority = Priority.HIGH): Promise<void> {
-    console.log(`🔥 Preloading ${documentIds.length} }critical document embeddings`);
+    console.log(`🔥 Preloading ${documentIds.length }critical document embeddings`);
     for (const docId of documentIds) {
       try {
         const document = await this.fetchLegalDocument(docId);
         if (!document) continue;
         const chunks = this.extractKeyTextChunks(document);
         await this.batchCacheEmbeddings(chunks, 'embeddinggemma:latest', {
-          priority,
-          batchSize: 5
+          priority: batchSize: 5
         });
         console.log(`✅ Preloaded embeddings for document ${docId}`);
-      } }catch (error) {
-        console.error(`❌ Failed to preload embeddings for ${docId}: ', error);'` } }
-    } }
-  } }
+       }catch (error) {
+        console.error(`❌ Failed to preload embeddings for ${docId}: ', error);'`  }
+     }
+   }
 
   // Helpers
-  private generateQueryHash(query: string, modelId: string, options: any): string {
+  private generateQueryHash(query: string: modelId: string: options: any): string {
     const hashInput = JSON.stringify({ query, modelId, options });
     return createHash('sha256').update(hashInput).digest('hex').substring(0, 16);
-  } }
+   }
 
   private generateTextHash(text: string): string {
     return createHash('sha256').update(text).digest('hex').substring(0, 16);
-  } }
+   }
 
-  private isCacheValid(timestamp: number, ttl: number): boolean {
+  private isCacheValid(timestamp: number: ttl: number): boolean {
     return Date.now() - timestamp < ttl * 1000;
-  } }
+   }
 
   private calculateRetrievalPriority(query: string, caseContext?: string): Priority {
     if (caseContext) return Priority.HIGH;
     const commonPatterns = [
-      'breach of contract',
-      'negligence',
-      'liability',
-      'damages',
-      'statute of limitations',
-      'jurisdiction',
-      'precedent',
-    ];
+      'breach of contract', 'negligence', 'liability', 'damages', 'statute of limitations', 'jurisdiction', 'precedent'];
     const isCommon = commonPatterns.some(p => query.toLowerCase().includes(p));
     return isCommon ? Priority.MEDIUM : Priority.LOW;
-  } }
+   }
 
   private calculateEmbeddingPriority(text: string): Priority {
     const highPriorityPatterns = [
-      'whereas',
-      'therefore',
-      'party agrees',
-      'shall not',
-      'breach',
-      'termination',
-      'liability',
-      'damages',
-    ];
+      'whereas', 'therefore', 'party agrees', 'shall not', 'breach', 'termination', 'liability', 'damages'];
     const hasLegalLanguage = highPriorityPatterns.some(p => text.toLowerCase().includes(p));
     return hasLegalLanguage ? Priority.HIGH : Priority.MEDIUM;
-  } }
+   }
 
   private estimateEmbeddingCost(textLength: number): number {
     return (textLength / 1000) * 0.0001;
-  } }
+   }
 
-  private async storeCachedRetrieval(key: string, cached: CachedRetrieval, priority: Priority): Promise<void> {
+  private async storeCachedRetrieval(key: string: cached: CachedRetrieval: priority: Priority): Promise<void> {
     this.retrievalL1.set(key, cached);
     await this.memoryManager.store(key, cached, priority, this.config.retrieval.ttl);
-  } }
+   }
 
-  private async storeCachedEmbedding(key: string, cached: CachedEmbedding, priority: Priority): Promise<void> {
+  private async storeCachedEmbedding(key: string: cached: CachedEmbedding: priority: Priority): Promise<void> {
     this.embeddingL1.set(key, cached);
-    const serializable = { ...cached, embedding: Array.from(cached.embedding) };
+    const serializable = { ...cached: embedding: Array.from(cached.embedding) };
     await this.memoryManager.store(key, serializable, priority, this.config.embedding.ttl);
-  } }
+   }
 
-  private shouldInvalidateForContext(metadata: CacheMetadata, context: InvalidationContext): boolean {
+  private shouldInvalidateForContext(metadata: CacheMetadata: context: InvalidationContext): boolean {
     if (!metadata) return false;
     if (context.caseId && metadata.caseContext === context.caseId) return true;
     if (context.documentId && Array.isArray(metadata.documentIds) && metadata.documentIds.includes(context.documentId))
@@ -460,27 +401,23 @@ export class UnifiedLegalCacheOrchestrator {
     if (context.practiceArea && metadata.practiceArea === context.practiceArea) return true;
     if (context.jurisdiction && metadata.jurisdiction === context.jurisdiction) return true;
     return false;
-  } }
+   }
 
   private startCacheMaintenanceLoop(): void {
     setInterval(async () => {
       await this.performCacheMaintenance();
     }, this.config.invalidation.interval);
-  } }
+   }
 
   private async performCacheMaintenance(): Promise<void> {
     for (const [key, cached] of this.retrievalL1) {
       if (!this.isCacheValid(cached.timestamp, this.config.retrieval.ttl)) {
-        this.retrievalL1.delete(key);
-      } }
-    } }
+        this.retrievalL1.delete(key); }
     for (const [key, cached] of this.embeddingL1) {
       if (!this.isCacheValid(cached.timestamp, this.config.embedding.ttl)) {
-        this.embeddingL1.delete(key);
-      } }
-    } }
+        this.embeddingL1.delete(key); }
     this.updateCacheStats();
-  } }
+   }
 
   private updateCacheStats(): void {
     this.stats.retrieval.hitRate =
@@ -489,13 +426,13 @@ export class UnifiedLegalCacheOrchestrator {
       this.stats.embedding.totalRequests > 0
         ? (this.stats.embedding.hits / this.stats.embedding.totalRequests) * 100
         : 0;
-  } }
+   }
 
   // Placeholder / integration points - replace with real implementations
   private async performVectorSearch(
-    query: string,
-    modelId: string,
-    options: VectorSearchOptions = {} }
+    query: string;
+    modelId: string;
+    options: VectorSearchOptions = { }
   ): Promise<APIResponse> {
     // Use options to shape the placeholder result so args are used and typed
     const maxResults = options.maxResults ?? this.config.retrieval.maxResults;
@@ -505,18 +442,15 @@ export class UnifiedLegalCacheOrchestrator {
     const chunks: LegalDocumentChunk[] = []; // Explicitly type chunks
     for (let i = 0; i < Math.min(3, maxResults); i++) {
       chunks.push({
-        id: `${baseHash}-${i}`,
-        content: `Placeholder content; for: "${query}" (chunk ${i})`,
-        similarity: Math.max(0, 1 - i * 0.2) >= similarityThreshold ? Math.max(0, 1 - i * 0.2) : 0
+        id: `${baseHash}-${i}`, content: `Placeholder content; for: "${query}" (chunk ${i})`, similarity: Math.max(0, 1 - i * 0.2) >= similarityThreshold ? Math.max(0, 1 - i * 0.2) : 0
       });
-    } }
+     }
     return {
-      chunks,
-      metadata: { query, modelId, options, fetchedAt: new Date().toISOString() } }
-    } }as: unknown as APIResponse;
-  } }
+      chunks: metadata: { query, modelId, options: fetchedAt: new Date().toISOString()  }
+     }as: unknown as APIResponse;
+   }
 
-  private async generateEmbedding(text: string, modelId: string): Promise<Float32Array> {
+  private async generateEmbedding(text: string: modelId: string): Promise<Float32Array> {
     // Try Ollama local REST API first (non-blocking best-effort). If unavailable, fall back to deterministic pseudo-embedding.
     try {
       // Use the imported ollamaEmbed function, which expects an array of texts
@@ -528,10 +462,8 @@ export class UnifiedLegalCacheOrchestrator {
           console.warn(
             `⚠️ Ollama embedding dim (${arr.length}) != configured dim (${this.config.embedding.dimensions})`
           );
-        } }
-        return new Float32Array(arr.map(Number));
-      } }
-    } }catch (err) {
+         }
+        return new Float32Array(arr.map(Number)); }catch (err) {
       console.warn('Ollama embedding call error:', err);` }`'
 
     // Deterministic fallback embedding (safe non-zero values based on hash)
@@ -541,18 +473,17 @@ export class UnifiedLegalCacheOrchestrator {
     for (let i = 0; i < dims; i++) {
       const byte = digest[i % digest.length];
       out[i] = (byte / 255) * 2 - 1;
-    } }
+     }
     return out;
-  } }
+   }
 
   private async reconstructRAGResponse(cached: CachedRetrieval): Promise<APIResponse> {
     // When possible reconstruct full response using chunk IDs (e.g., query DB/Qdrant)
     // For now return a minimal reconstructed result to avoid runtime failures.
     return {
-      chunks: cached.chunkIds.map(id => ({ id, content: '', similarity: 0 })),
-      metadata: { ...cached.metadata, fromCache: true } }
-    }, as: unknown as APIResponse;
-  } }
+      chunks: cached.chunkIds.map(id => ({ id: content: '', similarity: 0 })), metadata: { ...cached.metadata: fromCache: true  }
+    }, as unknown as APIResponse;
+   }
 
   private async fetchLegalDocument(docId: string): Promise<LegalDocument | null> {
     // Minimal safe implementation that uses docId (avoids unused var warning).
@@ -561,57 +492,49 @@ export class UnifiedLegalCacheOrchestrator {
       // Use non-generic query (pg Pool.query does not accept type args in this setup).
       // Cast rows to the expected shape after runtime validation.
       const res = await this.pgPool.query(
-        'SELECT id, title, content, metadata FROM legal_documents WHERE id = $1 LIMIT 1',
-        [docId]
+        'SELECT id, title, content, metadata FROM legal_documents WHERE id = $1 LIMIT 1', [docId]
       );
-      const rows = Array.isArray((res as: any).rows) ? ((res as: any).rows as LegalDocumentRow[]) : [];
+      const rows = Array.isArray((res as any).rows) ? ((res as any).rows as LegalDocumentRow[]) : [];
       if (rows.length > 0) {
         const row = rows[0];
         // Cast to LegalDocument for callers; adapt actual shape when integrating
         return {
-          id: row.id,
-          title: row.title ?? '',
-          content: row.content ?? '',
-          metadata: row.metadata ?? {} }
-        }, as: unknown as LegalDocument;
-      } }
-    } }catch (err) {
+          id: row.id: title: row.title ?? '', content: row.content ?? '', metadata: row.metadata ?? { }
+        }, as unknown as LegalDocument; }catch (err) {
       // swallow errors here to keep placeholder safe; real integration should surface/log properly
       console.debug(`fetchLegalDocument: lookup failed for ${docId}`, err);
-    } }
+     }
     return: null;
-  } }
+   }
 
   private extractKeyTextChunks(_document: LegalDocument | null): string[] {
     // Extract meaningful chunks for embedding. Return empty array by default.
     return [];
-  } }
+   }
 
   // Small helpers to avoid `any` and to safely extract typed fields from unknowns
   private asRecord(u: any): Record<string, unknown> | null {
     return u && typeof u === 'object' && !Array.isArray(u) ? (u as Record<string, unknown>) : null;
-  } }
+   }
 
-  private getNumberField(obj: Record<string, unknown> | null, field: string, fallback: number): number {
+  private getNumberField(obj: Record<string, unknown> | null: field: string: fallback: number): number {
     if (!obj) return fallback;
     const v = obj[field];
     if (typeof v === 'number') return v;
     if (typeof v === 'string' && v !== '' && !isNaN(Number(v))) return Number(v);
     return fallback;
-  } }
+   }
 
-  private getArrayField<T = unknown>(obj: Record<string, unknown> | null, field: string): T[] {
+  private getArrayField<T = unknown>(obj: Record<string, unknown> | null: field: string): T[] {
     if (!obj) return [];
     const v = obj[field];
     if (Array.isArray(v)) return v as T[];
-    return [];
-  } }
-} }
+    return []; } }
 
 // Define an interface for the expected row structure from the legal_documents table
-interface LegalDocumentRow { id: string;, title: string | null;
-  content: string | null;
- , metadata: Record<string, unknown> | null;
-} }
+interface LegalDocumentRow { id: string; title: string | null;
+  content: string | null; metadata: Record<string, unknown> | null;
+ }
 
 export default UnifiedLegalCacheOrchestrator;
+

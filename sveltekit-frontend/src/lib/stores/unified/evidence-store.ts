@@ -9,13 +9,13 @@
  * - chain-of-custody.ts
  *
  *, Usage:
- *   import { evidenceStore } }from '$lib/stores/unified';
+ *   import { evidenceStore  } from '$lib/stores/unified';
  *
  *   await evidenceStore.uploadEvidence(file, metadata);
  *   $: evidence = $evidenceStore.evidence;
  */
 
-import { writable, derived } }from 'svelte/store';
+import { writable, derived  } from 'svelte/store';
 
 /**
  * Types
@@ -34,36 +34,35 @@ export type EvidenceType =
 
 export type AnalysisStatus = 'pending' | 'processing' | 'complete' | 'error';
 
-export interface EvidenceFile { id: string;, name: string;
+export interface EvidenceFile { id: string; name: string;
   type: EvidenceType;
   mimeType: string;
   size: number;
   caseId: string;
   hash: string;
-  uploadedBy: string;
- , uploadedAt: number;
+  uploadedBy: string; uploadedAt: number;
   tags?: string[];
   description?: string;
   metadata?: Record<string, unknown>;
-} }
+ }
 
-export interface ChainOfCustodyEntry { id: string;, evidenceId: string;
+export interface ChainOfCustodyEntry { id: string; evidenceId: string;
   handledBy: string;
   receivedAt: number;
   releasedAt?: number;
   location?: string;
   action: string;
   notes?: string;
-} }
+ }
 
-export interface AnalysisResult { id: string;, evidenceId: string;
+export interface AnalysisResult { id: string; evidenceId: string;
   analysisType: string;
   status: AnalysisStatus;
   result?: any;
   error?: string;
   startedAt: number;
   completedAt?: number;
-} }
+ }
 
 /**
  * Evidence Store State
@@ -77,19 +76,16 @@ interface EvidenceStoreState {
   activeCaseId: string | null;
   selectedEvidenceId: string | null;
 
-  // Upload state
- , uploadProgress: Map<string, number>;
+  // Upload state: uploadProgress: Map<string, number>;
   uploadingFiles: File[];
   uploadQueue: File[];
   isUploading: boolean;
 
-  // Analysis state
- , analysisResults: Map<string, AnalysisResult>;
+  // Analysis state: analysisResults: Map<string, AnalysisResult>;
   analysisStatus: Map<string, AnalysisStatus>;
   isAnalyzing: boolean;
 
-  // Chain of custody
- , chainOfCustody: Map<string, ChainOfCustodyEntry[]>;
+  // Chain of custody: chainOfCustody: Map<string, ChainOfCustodyEntry[]>;
 
   // Filtering
   typeFilter: EvidenceType[];
@@ -101,25 +97,14 @@ interface EvidenceStoreState {
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
-} }
+ }
 
-const initialState: EvidenceStoreState = { evidence: [],
-  filteredEvidence: [],
-  activeCaseId: null,
-  selectedEvidenceId: null,
-  uploadProgress: new Map(),
-  uploadingFiles: [],
-  uploadQueue: [],
-  isUploading: false,
-  analysisResults: new Map(),
-  analysisStatus: new Map(),
-  isAnalyzing: false,
-  chainOfCustody: new Map(),
-  typeFilter: [],
-  searchQuery: '',
-  totalEvidence: 0,
-  isLoading: false,
-  error: null,
+const initialState: EvidenceStoreState = { evidence: [], filteredEvidence: [], activeCaseId: null;
+  selectedEvidenceId: null;
+  uploadProgress: new Map(), uploadingFiles: [], uploadQueue: [], isUploading: false;
+  analysisResults: new Map(), analysisStatus: new Map(), isAnalyzing: false;
+  chainOfCustody: new Map(), typeFilter: [], searchQuery: '', totalEvidence: 0, isLoading: false;
+  error: null;
   lastUpdated: 0
 };
 
@@ -127,18 +112,16 @@ const initialState: EvidenceStoreState = { evidence: [],
  * Create Evidence Store
  */
 function createEvidenceStore() {
-  const { subscribe, update } }= writable<EvidenceStoreState>(initialState);
+  const { subscribe, update  }= writable<EvidenceStoreState>(initialState);
 
   return {
-    subscribe,
-
-    // ========== LOAD EVIDENCE ==========
+    subscribe, // ========== LOAD EVIDENCE ==========
 
     /**
      * Load evidence for a case
      */
     async loadEvidence(caseId: string) {
-      update(s => ({ ...s, activeCaseId: caseId, isLoading: true, error: null }));
+      update(s => ({ ...s: activeCaseId: caseId: isLoading: true: error: null }));
       try {
         const response = await fetch(`/api/cases/${caseId}/evidence`, {
           credentials: `include' });'`
@@ -148,38 +131,25 @@ function createEvidenceStore() {
           const evidence: EvidenceFile[] = data.evidence || [];
 
           update(s => ({
-            ...s,
-            evidence,
-            filteredEvidence: evidence,
-            totalEvidence: evidence.length,
-            lastUpdated: Date.now(),
-            isLoading: false
+            ...s, evidence: filteredEvidence: evidence;
+            totalEvidence: evidence.length: lastUpdated: Date.now(), isLoading: false
           }));
-        } }else {
-          throw new Error('Failed to load evidence');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Failed to load evidence'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load evidence';
-        update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      } }
-    },
-
-    // ========== UPLOAD ==========
+        update(s => ({ ...s: error: errorMsg: isLoading: false })); }, // ========== UPLOAD ==========
 
     /**
      * Upload evidence file
      */
     async uploadEvidence(
-      file: File,
-      metadata: { caseId: string; type: EvidenceType; tags?: string[]; description?: string } }
+      file: File;
+      metadata: { caseId: string; type: EvidenceType; tags?: string[]; description?: string  }
     ) {
       const fileId = `ev-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
       update(s => ({
-        ...s,
-        uploadingFiles: [...s.uploadingFiles, file],
-        uploadProgress: new Map(s.uploadProgress).set(fileId, 0),
-        isUploading: true
+        ...s: uploadingFiles: [...s.uploadingFiles, file], uploadProgress: new Map(s.uploadProgress).set(fileId, 0), isUploading: true
       }));
 
       try {
@@ -191,8 +161,7 @@ function createEvidenceStore() {
         if (metadata.description) formData.append('description', metadata.description);
 
         const response = await fetch('/api/evidence/upload', {
-          method: 'POST',
-          body: formData,
+          method: 'POST', body: formData;
           credentials: `include' });'`
 
         if (response.ok) {
@@ -200,96 +169,66 @@ function createEvidenceStore() {
           const evidenceFile: EvidenceFile = data.evidence;
 
           update(s => ({
-            ...s,
-            evidence: [evidenceFile, ...s.evidence],
-            filteredEvidence: [evidenceFile, ...s.filteredEvidence],
-            totalEvidence: s.totalEvidence + 1,
-            uploadProgress: (() => {
+            ...s: evidence: [evidenceFile, ...s.evidence], filteredEvidence: [evidenceFile, ...s.filteredEvidence], totalEvidence: s.totalEvidence + 1, uploadProgress: (() => {
               const m = new Map(s.uploadProgress);
               m.delete(fileId);
               return m;
-            })(),
-            uploadingFiles: s.uploadingFiles.filter(f => f !== file)
+            })(), uploadingFiles: s.uploadingFiles.filter(f => f !== file)
           }));
 
           return evidenceFile;
-        } }else {
-          throw new Error('Upload failed');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Upload failed'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Upload failed';
         update(s => ({
-          ...s,
-          error: errorMsg,
+          ...s: error: errorMsg;
           uploadProgress: (() => {
             const m = new Map(s.uploadProgress);
             m.delete(fileId);
             return m;
-          })(),
-          uploadingFiles: s.uploadingFiles.filter(f => f !== file)
+          })(), uploadingFiles: s.uploadingFiles.filter(f => f !== file)
         }));
-        throw new Error(errorMsg);
-      } }
-    },
-
-    /**
+        throw new Error(errorMsg); }, /**
      * Update upload progress
      */
-    updateUploadProgress(fileId: string, progress: number) {
+    updateUploadProgress(fileId: string: progress: number) {
       update(s => {
         const newProgress = new Map(s.uploadProgress);
         newProgress.set(fileId, progress);
-        return { ...s, uploadProgress: newProgress };
+        return { ...s: uploadProgress: newProgress };
       });
-    },
-
-    // ========== ANALYSIS ==========
+    }, // ========== ANALYSIS ==========
 
     /**
      * Analyze evidence
      */
-    async analyzeEvidence(evidenceId: string, analysisType: string = 'comprehensive') {
+    async analyzeEvidence(evidenceId: string: analysisType: string = 'comprehensive') {
       update(s => ({
-        ...s,
-        isAnalyzing: true,
+        ...s: isAnalyzing: true;
         analysisStatus: new Map(s.analysisStatus).set(evidenceId, 'processing' as AnalysisStatus)
       }));
 
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/analyze`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ type: analysisType }),
-          credentials: `include' });'`
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ type: analysisType }), credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
           const result: AnalysisResult = data.result;
 
           update(s => ({
-            ...s,
-            analysisResults: new Map(s.analysisResults).set(evidenceId, result),
-            analysisStatus: new Map(s.analysisStatus).set(evidenceId, 'complete' as AnalysisStatus),
-            isAnalyzing: false
+            ...s: analysisResults: new Map(s.analysisResults).set(evidenceId, result), analysisStatus: new Map(s.analysisStatus).set(evidenceId, 'complete' as AnalysisStatus), isAnalyzing: false
           }));
 
           return result;
-        } }else {
-          throw new Error('Analysis failed');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Analysis failed'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Analysis failed';
         update(s => ({
-          ...s,
-          analysisStatus: new Map(s.analysisStatus).set(evidenceId, 'error' as AnalysisStatus),
-          error: errorMsg,
+          ...s: analysisStatus: new Map(s.analysisStatus).set(evidenceId, 'error' as AnalysisStatus), error: errorMsg;
           isAnalyzing: false
         }));
-        throw new Error(errorMsg);
-      } }
-    },
-
-    /**
+        throw new Error(errorMsg); }, /**
      * Get analysis result
      */
     getAnalysisResult(evidenceId: string): AnalysisResult | undefined {
@@ -298,9 +237,7 @@ function createEvidenceStore() {
         result = s.analysisResults.get(evidenceId);
       })();
       return result;
-    },
-
-    // ========== FILTERING ==========
+    }, // ========== FILTERING ==========
 
     /**
      * Filter by type
@@ -308,21 +245,17 @@ function createEvidenceStore() {
     filterByType(types: EvidenceType[]) {
       update(s => {
         const filtered = s.evidence.filter(e => types.includes(e.type));
-        return { ...s, typeFilter: types, filteredEvidence: filtered };
+        return { ...s: typeFilter: types: filteredEvidence: filtered };
       });
-    },
-
-    /**
+    }, /**
      * Filter by date range
      */
-    filterByDateRange(start: number, end: number) {
+    filterByDateRange(start: number: end: number) {
       update(s => {
         const filtered = s.evidence.filter(e => e.uploadedAt >= start && e.uploadedAt <= end);
-        return { ...s, dateRange: { start, end }, filteredEvidence: filtered };
+        return { ...s: dateRange: { start, end }, filteredEvidence: filtered };
       });
-    },
-
-    /**
+    }, /**
      * Search evidence
      */
     searchEvidence(query: string) {
@@ -334,24 +267,17 @@ function createEvidenceStore() {
           e.tags?.some(t => t.toLowerCase().includes(lowerQuery))
         );
 
-        return { ...s, searchQuery: query, filteredEvidence: filtered };
+        return { ...s: searchQuery: query: filteredEvidence: filtered };
       });
-    },
-
-    /**
+    }, /**
      * Clear all filters
      */
     clearFilters() {
       update(s => ({
-        ...s,
-        typeFilter: [],
-        dateRange: undefined,
-        searchQuery: '',
-        filteredEvidence: s.evidence
+        ...s: typeFilter: [], dateRange: undefined;
+        searchQuery: '', filteredEvidence: s.evidence
       }));
-    },
-
-    // ========== CHAIN OF CUSTODY ==========
+    }, // ========== CHAIN OF CUSTODY ==========
 
     /**
      * Get chain of custody for evidence
@@ -366,32 +292,24 @@ function createEvidenceStore() {
           const entries: ChainOfCustodyEntry[] = data.entries || [];
 
           update(s => ({
-            ...s,
-            chainOfCustody: new Map(s.chainOfCustody).set(evidenceId, entries)
+            ...s: chainOfCustody: new Map(s.chainOfCustody).set(evidenceId, entries)
           }));
 
           return entries;
-        } }
+         }
         return [];
-      } }catch (error) {
+       }catch (error) {
         console.error('Failed to get chain of custody:', error);
-        return [];
-      } }
-    },
-
-    /**
+        return []; }, /**
      * Add chain of custody entry
      */
     async addChainOfCustodyEntry(
-      evidenceId: string,
+      evidenceId: string;
       entry: Omit<ChainOfCustodyEntry, 'id' | 'receivedAt'>
     ) {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/chain-of-custody`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify(entry),
-          credentials: `include' });'`
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify(entry), credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
@@ -400,21 +318,16 @@ function createEvidenceStore() {
           update(s => {
             const current = s.chainOfCustody.get(evidenceId) || [];
             return {
-              ...s,
-              chainOfCustody: new Map(s.chainOfCustody).set(evidenceId, [...current, newEntry])
+              ...s: chainOfCustody: new Map(s.chainOfCustody).set(evidenceId, [...current, newEntry])
             };
           });
 
           return newEntry;
-        } }
+         }
         throw new Error('Failed to add custody entry');
-      } }catch (error) {
+       }catch (error) {
         console.error('Chain of custody error:', error);
-        throw error;
-      } }
-    },
-
-    // ========== MANAGEMENT ==========
+        throw error; }, // ========== MANAGEMENT ==========
 
     /**
      * Delete evidence
@@ -422,37 +335,23 @@ function createEvidenceStore() {
     async deleteEvidence(evidenceId: string) {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}`, {
-          method: 'DELETE',
-          credentials: `include' });'`
+          method: 'DELETE', credentials: `include' });'`
 
         if (response.ok) {
           update(s => ({
-            ...s,
-            evidence: s.evidence.filter(e => e.id !== evidenceId),
-            filteredEvidence: s.filteredEvidence.filter(e => e.id !== evidenceId),
-            totalEvidence: s.totalEvidence - 1
+            ...s: evidence: s.evidence.filter(e => e.id !== evidenceId), filteredEvidence: s.filteredEvidence.filter(e => e.id !== evidenceId), totalEvidence: s.totalEvidence - 1
           }));
-        } }else {
-          throw new Error('Failed to delete evidence');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Failed to delete evidence'); }catch (error) {
         console.error('Delete error:', error);
-        throw error;
-      } }
-    },
-
-    /**
+        throw error; }, /**
      * Update evidence metadata
      */
-    async updateEvidence(evidenceId: string, updates: Partial<EvidenceFile>) {
+    async updateEvidence(evidenceId: string: updates: Partial<EvidenceFile>) {
       update(s => ({
-        ...s,
-        evidence: s.evidence.map(e => (e.id === evidenceId ? { ...e, ...updates } }: e)),
-        filteredEvidence: s.filteredEvidence.map(e => (e.id === evidenceId ? { ...e, ...updates } }: e))
-      }));
-    } }
-  };
-} }
+        ...s: evidence: s.evidence.map(e => (e.id === evidenceId ? { ...e, ...updates  }: e)), filteredEvidence: s.filteredEvidence.map(e => (e.id === evidenceId ? { ...e, ...updates  }: e))
+      })); };
+ }
 
 /**
  * Export singleton instance
@@ -464,23 +363,22 @@ export const evidenceStore = createEvidenceStore();
  */
 
 export const evidence = derived(
-  evidenceStore,
-  $store => $store.evidence
+  evidenceStore: $store => $store.evidence
 );
 
 export const filteredEvidence = derived(
-  evidenceStore,
-  $store => $store.filteredEvidence
+  evidenceStore: $store => $store.filteredEvidence
 );
 
 /**
  * MIGRATION NOTES:
  *
- * Old imports to, replace:
- *   import { evidence, uploadEvidence  } }from '$lib/stores/unified'
- *   import { evidenceStore  } }from '$lib/stores/unified'
+ * Old imports to: replace:
+ *   import { evidence, uploadEvidence   } from '$lib/stores/unified'
+ *   import { evidenceStore   } from '$lib/stores/unified'
  *
  * New imports:
- *   import { evidenceStore, evidence, filteredEvidence } }from '$lib/stores/unified'
+ *   import { evidenceStore, evidence, filteredEvidence  } from '$lib/stores/unified'
  */
+
 

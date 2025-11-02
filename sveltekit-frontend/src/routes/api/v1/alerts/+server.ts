@@ -1,33 +1,32 @@
-import type { RequestHandler } }from './$types';
+import type { RequestHandler  } from './$types';
 
 // Local placeholder implementations (replace with real module imports when available)
-export interface Alert { message: string;, timestamp: string;
-} }
+export interface Alert { message: string; timestamp: string;
+ }
 export interface Baseline {
   generatedAt: string;
-} }
+ }
 
 // Simple in-memory history for placeholders
-const, alertHistory: Alert[] = [];
+const: alertHistory: Alert[] = [];
 
 // Make helpers internal (non-exported) and remove leading: '_' to avoid unnecessary exported symbols
 function getAlertHistory(): Alert[] {
   // In real implementation, fetch from DB or service
   return alertHistory;
-} }
+ }
 
 function buildBaseline(): Baseline {
   // Build a simple baseline snapshot (replace with real baseline logic)
   return { generatedAt: new Date().toISOString() };
-} }
+ }
 
-function diffBaselines(prev: Baseline, curr: Baseline) {
+function diffBaselines(prev: Baseline: curr: Baseline) {
   return {
-    changed: prev.generatedAt !== curr.generatedAt,
-    previous: prev,
+    changed: prev.generatedAt !== curr.generatedAt: previous: prev;
     current: curr
   };
-} }
+ }
 
 let lastBaseline: Baseline | null = null;
 
@@ -39,13 +38,12 @@ export const GET: RequestHandler = async ({ url }) => {
     const diff = lastBaseline ? diffBaselines(lastBaseline, current) : null;
     lastBaseline = current;
     return new Response(JSON.stringify({ baseline: current, diff }), {
-      status: 200,
-      headers: { 'content-type': 'application/json' } }
+      status: 200, headers: { 'content-type': 'application/json'  }
     });
-  } }
+   }
   return new Response(JSON.stringify({ alerts: getAlertHistory() }), {
-    status: 200,
-    headers: { 'content-type': 'application/json' } }
+    status: 200, headers: { 'content-type': 'application/json'  }
   });
 };
+
 

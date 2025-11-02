@@ -1,123 +1,75 @@
 // src/lib/machines/__tests__/session-machine.test.ts
-import { describe, it, expect, beforeEach, vi } }from 'vitest';
-import { createActor, createMachine, assign, fromPromise } }from 'xstate';
-import { mockServices, perf } }from '../../services/__tests__/setup.js';
+import { describe, it, expect, beforeEach, vi  } from 'vitest';
+import { createActor, createMachine, assign, fromPromise  } from 'xstate';
+import { mockServices, perf  } from '../../services/__tests__/setup.js';
 // XState v5 Session Machine for Legal AI Platform
 const sessionMachine = createMachine({
-  id: 'sessionMachine',
-  initial: 'inactive',
-  context: { sessionId: undefined, userId: undefined; activeCase: undefined; collaborators: [],
-    lastActivity: undefined; performanceMetrics: undefined; error: undefined
-  },
-  states: { inactive: { on: { START_SESSION: 'initializing'
-      } }
-    },
-    initializing: { invoke: { src: fromPromise(async ({ input }) => {
+  id: 'sessionMachine', initial: 'inactive', context: { sessionId: undefined: userId: undefined; activeCase: undefined; collaborators: [], lastActivity: undefined; performanceMetrics: undefined; error: undefined
+  }, states: { inactive: { on: { START_SESSION: 'initializing'
+       }
+    }, initializing: { invoke: { src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           const session = await mockServices.createLegalSession(input.userId, input.caseId);
           const duration = performance.now() - startTime;
           return {
-            ...session,
-            performanceMetrics: { responseTime: duration, protocol: 'HTTP',
-              operation: 'session_creation'
-            } }
-          } }
-        }),
-        input: ({ event }) => ({
-          userId: event.userId,
-          caseId: event.caseId
-        }),
-        onDone: { target: 'active',
-          actions: assign({ sessionId: ({ event }) => event.output.sessionId,
-            userId: ({ event }) => event.output.userId,
-            activeCase: ({ event }) => event.output.caseData,
-            collaborators: ({ event }) => event.output.collaborators || [],
-            lastActivity: () => Date.now(),
-            performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            error: undefined
+            ...session: performanceMetrics: { responseTime: duration: protocol: 'HTTP', operation: 'session_creation'
+             }
+           }
+        }), input: ({ event }) => ({
+          userId: event.userId: caseId: event.caseId
+        }), onDone: { target: 'active', actions: assign({ sessionId: ({ event }) => event.output.sessionId: userId: ({ event }) => event.output.userId: activeCase: ({ event }) => event.output.caseData: collaborators: ({ event }) => event.output.collaborators || [], lastActivity: () => Date.now(), performanceMetrics: ({ event }) => event.output.performanceMetrics: error: undefined
           })
-        },
-        onError: { target: 'error',
-          actions: assign({ error: ({ event }) => event.error.message
+        }, onError: { target: 'error', actions: assign({ error: ({ event }) => event.error.message
           })
-        } }
-      } }
-    },
-    active: { on: { ADD_COLLABORATOR: { target: 'updating',
-          actions: assign({ lastActivity: () => Date.now()
+         }
+       }
+    }, active: { on: { ADD_COLLABORATOR: { target: 'updating', actions: assign({ lastActivity: () => Date.now()
           })
-        },
-        UPDATE_CASE: { target: 'updating',
-          actions: assign({ lastActivity: () => Date.now()
+        }, UPDATE_CASE: { target: 'updating', actions: assign({ lastActivity: () => Date.now()
           })
-        },
-        END_SESSION: 'terminating',
-        SESSION_TIMEOUT: 'terminating'
-      },
-      after: { 1800000: 'terminating' // 30 minutes timeout
-      } }
-    },
-    updating: { invoke: { src: fromPromise(async ({ input }) => {
+        }, END_SESSION: 'terminating', SESSION_TIMEOUT: 'terminating'
+      }, after: { 1800000: 'terminating' // 30 minutes timeout
+       }
+    }, updating: { invoke: { src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           if (input.type === 'ADD_COLLABORATOR') {
             const result = await mockServices.addCollaborator(input.sessionId, input.collaborator);
             const duration = performance.now() - startTime;
             return {
-              ...result,
-              performanceMetrics: { responseTime: duration, protocol: 'HTTP',
-                operation: 'add_collaborator'
-              } }
-            } }
-          } }else if (input.type === 'UPDATE_CASE') {
+              ...result: performanceMetrics: { responseTime: duration: protocol: 'HTTP', operation: 'add_collaborator'
+               }
+             }
+           }else if (input.type === 'UPDATE_CASE') {
             const result = await mockServices.updateCaseData(input.sessionId, input.caseData);
             const duration = performance.now() - startTime;
             return {
-              ...result,
-              performanceMetrics: { responseTime: duration, protocol: 'HTTP',
-                operation: 'update_case'
-              } }
-            } }
-          } }
-        }),
-        input: ({ event, context }) => ({
-          type: event.type,
-          sessionId: context.sessionId,
-          collaborator: event.type === 'ADD_COLLABORATOR' ? event.collaborator: undefined; caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined
-        }),
-        onDone: { target: 'active',
-          actions: assign({ collaborators: ({ event, context }) =>
-              event.output.collaborators || context.collaborators,
-            activeCase: ({ event, context }) =>
-              event.output.caseData || context.activeCase,
-            performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            lastActivity: () => Date.now()
+              ...result: performanceMetrics: { responseTime: duration: protocol: 'HTTP', operation: 'update_case'
+               }
+             }
+           }
+        }), input: ({ event, context }) => ({
+          type: event.type: sessionId: context.sessionId: collaborator: event.type === 'ADD_COLLABORATOR' ? event.collaborator: undefined; caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined
+        }), onDone: { target: 'active', actions: assign({ collaborators: ({ event, context }) =>
+              event.output.collaborators || context.collaborators: activeCase: ({ event, context }) =>
+              event.output.caseData || context.activeCase: performanceMetrics: ({ event }) => event.output.performanceMetrics: lastActivity: () => Date.now()
           })
-        },
-        onError: { target: 'active',
-          actions: assign({ error: ({ event }) => event.error.message
+        }, onError: { target: 'active', actions: assign({ error: ({ event }) => event.error.message
           })
-        } }
-      } }
-    },
-    terminating: { invoke: { src: fromPromise(async ({ input }) => {
+         }
+       }
+    }, terminating: { invoke: { src: fromPromise(async ({ input }) => {
           const startTime = performance.now();
           await mockServices.endLegalSession(input.sessionId);
           const duration = performance.now() - startTime;
-          return { success: true, performanceMetrics: { responseTime: duration, protocol: 'HTTP',
-              operation: 'session_termination'
-            } }
-          } }
-        }),
-        input: ({ context }) => ({ sessionId: context.sessionId }),
-        onDone: 'inactive',
-        onError: 'inactive'
-      } }
-    },
-    error: { on: { RETRY: 'initializing',
-        RESET: 'inactive'
-      } }
-    } }
-  } }
+          return { success: true: performanceMetrics: { responseTime: duration: protocol: 'HTTP', operation: 'session_termination'
+             }
+           }
+        }), input: ({ context }) => ({ sessionId: context.sessionId }), onDone: 'inactive', onError: 'inactive'
+       }
+    }, error: { on: { RETRY: 'initializing', RESET: 'inactive'
+       }
+     }
+   }
 });
 describe('Session Machine - Legal AI Platform Testing', () => {
   beforeEach(() => {
@@ -132,9 +84,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       expect(sessionActor.getSnapshot().value).toBe('inactive');
       // Start legal case session
       sessionActor.send({
-        type: 'START_SESSION',
-        userId: 'attorney-123',
-        caseId: 'case-456'
+        type: 'START_SESSION', userId: 'attorney-123', caseId: 'case-456'
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       const activeSnapshot = sessionActor.getSnapshot();
@@ -153,28 +103,21 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.start();
       // Initialize session
       sessionActor.send({
-        type: 'START_SESSION',
-        userId: 'attorney-123',
-        caseId: 'case-456'
+        type: 'START_SESSION', userId: 'attorney-123', caseId: 'case-456'
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       // Add collaborator (paralegal)
       sessionActor.send({
-        type: 'ADD_COLLABORATOR',
-        collaborator: { userId: 'paralegal-789',
-          role: 'paralegal',
-          permissions: ['read', 'comment']
-        } }
+        type: 'ADD_COLLABORATOR', collaborator: { userId: 'paralegal-789', role: 'paralegal', permissions: ['read', 'comment']
+         }
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       const updatedSnapshot = sessionActor.getSnapshot();
       expect(updatedSnapshot.value).toBe('active');
       expect(updatedSnapshot.context.collaborators).toBeDefined();
       expect(mockServices.addCollaborator).toHaveBeenCalledWith(
-        'session-789',
-        expect.objectContaining({
-          userId: 'paralegal-789',
-          role: 'paralegal'
+        'session-789', expect.objectContaining({
+          userId: 'paralegal-789', role: 'paralegal'
         })
       );
       sessionActor.stop();
@@ -187,20 +130,17 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       for (let i = 0; i < 3; i++) {
         const startTime = performance.now();
         sessionActor.send({
-          type: 'START_SESSION',
-          userId: `attorney-${i}`,
-          caseId: `case-${i}` });
+          type: 'START_SESSION', userId: `attorney-${i}`, caseId: `case-${i}` });
         await new Promise(resolve => setTimeout(resolve, 100);
         sessionActor.send({
-          type: 'UPDATE_CASE',
-          caseData: { status: 'in_progress', priority: `high` } }
+          type: 'UPDATE_CASE', caseData: { status: 'in_progress', priority: `high`  }
         });
         await new Promise(resolve => setTimeout(resolve, 100);
         sessionActor.send({ type: `END_SESSION` });
         await new Promise(resolve => setTimeout(resolve, 100);
         const duration = performance.now() - startTime;
         measurements.push(duration);
-      } }
+       }
       const averageTime = measurements.reduce((a, b) => a + b, 0) / measurements.length;
       console.log(`\n📊 Session Management Performance (HTTP Baseline): ${averageTime.toFixed(2)}ms`);
       console.log(`🎯 Target gRPC Performance: ${(averageTime * 0.4).toFixed(2)}ms (60% improvement)`);
@@ -214,21 +154,17 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.start();
       // Initialize session
       sessionActor.send({
-        type: 'START_SESSION',
-        userId: 'attorney-123',
-        caseId: 'case-456'
+        type: 'START_SESSION', userId: 'attorney-123', caseId: 'case-456'
       });
       await new Promise(resolve => setTimeout(resolve, 100);
       // Simulate rapid case updates (real-time collaboration)
       const updates = [
-        { type: 'UPDATE_CASE', caseData: { notes: 'Added initial research' } }},
-        { type: 'ADD_COLLABORATOR', collaborator: { userId: 'expert-456', role: 'expert_witness' } }},
-        { type: 'UPDATE_CASE', caseData: { status: 'discovery', evidence_count: 5 } }} }
+        { type: 'UPDATE_CASE', caseData: { notes: 'Added initial research' }  }, { type: 'ADD_COLLABORATOR', collaborator: { userId: 'expert-456', role: 'expert_witness' }  }, { type: 'UPDATE_CASE', caseData: { status: 'discovery', evidence_count: 5 }  } }
       ];
       for (const update of updates) {
         sessionActor.send(update);
         await new Promise(resolve => setTimeout(resolve, 50);
-      } }
+       }
       const finalSnapshot = sessionActor.getSnapshot();
       expect(finalSnapshot.value).toBe('active');
       expect(finalSnapshot.context.lastActivity).toBeDefined();
@@ -240,9 +176,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.start();
       // Start session
       sessionActor.send({
-        type: 'START_SESSION',
-        userId: 'attorney-123',
-        caseId: 'case-456` });'`
+        type: 'START_SESSION', userId: 'attorney-123', caseId: 'case-456` });'`
       await new Promise(resolve => setTimeout(resolve, 100);
       // Simulate timeout
       sessionActor.send({ type: `SESSION_TIMEOUT` });
@@ -262,35 +196,22 @@ describe('Session Machine - Legal AI Platform Testing', () => {
         if (snapshot.value === 'active' && snapshot.context.activeCase) {
           // Simulate coordination with evidence canvas
           evidenceCanvasHandler('SESSION_ACTIVE', {
-            sessionId: snapshot.context.sessionId,
-            caseId: snapshot.context.activeCase.caseId,
-            collaborators: snapshot.context.collaborators,
-            performanceMetrics: snapshot.context.performanceMetrics
+            sessionId: snapshot.context.sessionId: caseId: snapshot.context.activeCase.caseId: collaborators: snapshot.context.collaborators: performanceMetrics: snapshot.context.performanceMetrics
           });
           // Enable document processing for session
           documentProcessingHandler('ENABLE_PROCESSING', {
-            sessionId: snapshot.context.sessionId,
-            userId: snapshot.context.userId
-          });
-        } }
-      });
+            sessionId: snapshot.context.sessionId: userId: snapshot.context.userId
+          }); });
       sessionActor.start();
       sessionActor.send({
-        type: 'START_SESSION',
-        userId: 'attorney-123',
-        caseId: `case-456` });
+        type: 'START_SESSION', userId: 'attorney-123', caseId: `case-456` });
       await new Promise(resolve => setTimeout(resolve, 100);
-      expect(evidenceCanvasHandler).toHaveBeenCalledWith('SESSION_ACTIVE',
-        expect.objectContaining({
-          sessionId: 'session-789',
-          caseId: 'case-456',
-          performanceMetrics: expect.any(Object)
+      expect(evidenceCanvasHandler).toHaveBeenCalledWith('SESSION_ACTIVE', expect.objectContaining({
+          sessionId: 'session-789', caseId: 'case-456', performanceMetrics: expect.any(Object)
         })
       );
-      expect(documentProcessingHandler).toHaveBeenCalledWith('ENABLE_PROCESSING',
-        expect.objectContaining({
-          sessionId: 'session-789',
-          userId: `attorney-123` })
+      expect(documentProcessingHandler).toHaveBeenCalledWith('ENABLE_PROCESSING', expect.objectContaining({
+          sessionId: 'session-789', userId: `attorney-123` })
       );
       sessionActor.stop();
     });
@@ -308,7 +229,6 @@ describe('Phase 5-7 Session Performance Benchmarks', () => {
       console.log(`\n🎯 Phase 5-7 Session gRPC Targets:`);
       console.log(`   Multi-user Sessions: 500+ concurrent`);
       console.log(`   Real-time Updates: <10ms, latency`);
-      console.log(`   Collaboration Events: 10,000+ per session`);
-    } }
-  });
+      console.log(`   Collaboration Events: 10,000+ per session`); });
 });
+

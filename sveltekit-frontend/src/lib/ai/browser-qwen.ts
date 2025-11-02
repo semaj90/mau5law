@@ -1,4 +1,4 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Browser-based Qwen 0.5B LLM using Transformer.js v3
  *
@@ -21,7 +21,7 @@ import type { Document } }from '$lib/types';
  *   await qwen.initialize();
  *   const response = await qwen.generate('Summarize this contract...');
  */
-import { pipeline, env } }from '@huggingface/transformers';
+import { pipeline, env  } from '@huggingface/transformers';
 // Configure Transformers.js for browser
 env.allowLocalModels = true;
 env.useBrowserCache = true;
@@ -33,160 +33,126 @@ export interface GenerateOptions {
   topK?: number;
   repetitionPenalty?: number;
   systemPrompt?: string;
-} }
+ }
 export class BrowserQwen {
   private generator: any = null;
   private isInitialized = $state(false);
   private modelName: string;
   private device: 'webgpu' | 'wasm' | 'cpu';
-  constructor(
-   , modelName: string = 'onnx-community/Qwen2.5-0.5B-Instruct-q4',
-    device: 'webgpu' | 'wasm' | 'cpu' = 'webgpu'
+  constructor( modelName: string = 'onnx-community/Qwen2.5-0.5B-Instruct-q4', device: 'webgpu' | 'wasm' | 'cpu' = 'webgpu'
   ) {
     this.modelName = modelName;
     this.device = device;
-  } }
+   }
   /**
    * Initialize Qwen 0.5B model (downloads ~300MB on first run)
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     try {
-      console.log(`🧠 [Qwen Browser] Loading ${this.modelName} }(${this.device})...`);
+      console.log(`🧠 [Qwen Browser] Loading ${this.modelName }(${this.device})...`);
       console.log('⏳ First load: ~1-2 minutes (~300MB download)');
       try {
         this.generator = await pipeline(
-          'text-generation',
-          this.modelName,
-          {
-            device: this.device,
-            dtype: this.device === 'webgpu' ? 'fp32' : 'q4',
-            progress_callback: (progress: any) => {
+          'text-generation', this.modelName, {
+            device: this.device: dtype: this.device === 'webgpu' ? 'fp32' : 'q4', progress_callback: (progress: any) => {
               if (progress.status === 'downloading') {
                 const pct = ((progress.loaded / progress.total) * 100).toFixed(1);
                 console.log(`📥 Downloading: ${pct}%`);
-              } }else if (progress.status === 'ready') {
-                console.log('✅ Model ready!');
-              } }
-            } }
-          } }
+               }else if (progress.status === 'ready') {
+                console.log('✅ Model ready!'); }
+           }
         );
-      } }catch (gpuError) {
+       }catch (gpuError) {
         console.warn('⚠️ WebGPU unavailable, falling back to WASM', gpuError);
         this.device = 'wasm';
         this.generator = await pipeline('text-generation', this.modelName, {
-          device: 'wasm' });'' } }
+          device: 'wasm' });''  }
       this.isInitialized = true;
       console.log(`✅ [Qwen Browser] Model loaded (${this.device})`);
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ [Qwen Browser] Failed to load:', error);
-      throw new Error(`Qwen initialization failed: ${error}`);
-    } }
-  } }
+      throw new Error(`Qwen initialization failed: ${error}`); }
   /**
    * Generate text response
    */
   async generate(
-    prompt: string,
-    options: GenerateOptions = {} }
+    prompt: string;
+    options: GenerateOptions = { }
   ): Promise<string> {
     if (!this.isInitialized) {
       await this.initialize();
-    } }
+     }
     const {
-      maxTokens = 256,
-      temperature = 0.7,
-      topP = 0.9,
-      topK = 50,
-      repetitionPenalty = 1.1,
-      systemPrompt = 'You are a helpful legal AI assistant.' } }= options;'`'`
+      maxTokens = 256, temperature = 0.7, topP = 0.9, topK = 50, repetitionPenalty = 1.1, systemPrompt = 'You are a helpful legal AI assistant.'  }= options;'`'`
     try {
       const startTime = performance.now();
       // Qwen prompt format
       const formattedPrompt = `<|im_start|>system\n${systemPrompt}<|im_end|>\n<|im_start|>user\n${prompt}<|im_end|>\n<|im_start|>assistant\n`;
       const output = await this.generator(formattedPrompt, {
-        max_new_tokens: maxTokens,
-        temperature,
-        top_p: topP,
-        top_k: topK,
-        repetition_penalty: repetitionPenalty,
-        do_sample: temperature > 0,
-        return_full_text: false
+        max_new_tokens: maxTokens;
+        temperature: top_p: topP;
+        top_k: topK;
+        repetition_penalty: repetitionPenalty;
+        do_sample: temperature > 0, return_full_text: false
       });
       const endTime = performance.now();
       const generatedText = output[0].generated_text.trim();
       const tokensPerSec = (maxTokens / (endTime - startTime)) * 1000;
-      console.log(`⚡ [Qwen] Generated in ${(endTime - startTime).toFixed(0)}ms (~${tokensPerSec.toFixed(1)} }tok/sec)`);
+      console.log(`⚡ [Qwen] Generated in ${(endTime - startTime).toFixed(0)}ms (~${tokensPerSec.toFixed(1) }tok/sec)`);
       return generatedText;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ [Qwen] Generation failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Chat with conversation history
    */
   async chat(
-    messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
-    options: GenerateOptions = {} }
+    messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>, options: GenerateOptions = { }
   ): Promise<string> {
     let prompt = '';
     for (const msg of messages) {
       if (msg.role === 'system') {
         prompt += `<|im_start|>system\n${msg.content}<|im_end|>\n`;
-      } }else if (msg.role === 'user') {
+       }else if (msg.role === 'user') {
         prompt += `<|im_start|>user\n${msg.content}<|im_end|>\n`;
-      } }else if (msg.role === 'assistant') {
-        prompt += `<|im_start|>assistant\n${msg.content}<|im_end|>\n`;
-      } }
-    } }
+       }else if (msg.role === 'assistant') {
+        prompt += `<|im_start|>assistant\n${msg.content}<|im_end|>\n`; }
     prompt += '<|im_start|>assistant\n';
-    const { maxTokens = 256, temperature = 0.7, topP = 0.9, topK = 50, repetitionPenalty = 1.1 } }= options;
+    const { maxTokens = 256, temperature = 0.7, topP = 0.9, topK = 50, repetitionPenalty = 1.1  }= options;
     try {
       const output = await this.generator(prompt, {
-        max_new_tokens: maxTokens,
-        temperature,
-        top_p: topP,
-        top_k: topK,
-        repetition_penalty: repetitionPenalty,
-        do_sample: temperature > 0,
-        return_full_text: false
+        max_new_tokens: maxTokens;
+        temperature: top_p: topP;
+        top_k: topK;
+        repetition_penalty: repetitionPenalty;
+        do_sample: temperature > 0, return_full_text: false
       });
       return output[0].generated_text.trim();
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ [Qwen] Chat failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Legal-specific helpers
    */
-  async summarizeLegalDocument(text: string, maxTokens: number = 200): Promise<string> {
+  async summarizeLegalDocument(text: string: maxTokens: number = 200): Promise<string> {
     return this.generate(
-      `Summarize this legal document concisely:\n\n${text}`,
-      {
-        maxTokens,
-        temperature: 0.3,
-        systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.' } }`'`
+      `Summarize this legal document concisely:\n\n${text}`, {
+        maxTokens: temperature: 0.3, systemPrompt: 'You are a legal AI assistant. Provide accurate, professional summaries.'  }`'`
     );
-  } }
-  async answerLegalQuestion(question: string, context: string): Promise<string> {
+   }
+  async answerLegalQuestion(question: string: context: string): Promise<string> {
     return this.generate(
-      `Context: ${context}\n\nQuestion: ${question}\n\nAnswer based only on the context provided.`,
-      {
-        maxTokens: 300,
-        temperature: 0.5,
-        systemPrompt: 'You are a legal AI assistant. Answer questions accurately based on provided context.' } }`'`
+      `Context: ${context}\n\nQuestion: ${question}\n\nAnswer based only on the context provided.`, {
+        maxTokens: 300, temperature: 0.5, systemPrompt: 'You are a legal AI assistant. Answer questions accurately based on provided context.'  }`'`
     );
-  } }
+   }
   getDevice(): string {
     return this.device;
-  } }
+   }
   dispose(): void {
     this.generator = null;
-    this.isInitialized = $state(false);
-  } }
-} }
+    this.isInitialized = $state(false); } }
 /**
  * Singleton instance
  */
@@ -206,4 +172,5 @@ export const browserQwen = new BrowserQwen();
  *
  * VERDICT: Qwen 0.5B is the closest browser equivalent to; gemma3:270m!
  */
+
 

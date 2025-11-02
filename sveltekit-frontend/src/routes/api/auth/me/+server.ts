@@ -3,8 +3,8 @@
  * Returns authenticated user data and session details
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { auth } }from '$lib/server/auth';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { auth  } from '$lib/server/auth';
 
 export const GET: RequestHandler = async (event) => {
   try {
@@ -14,70 +14,52 @@ export const GET: RequestHandler = async (event) => {
     if (!sessionId) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Not authenticated',
-            code: 'NO_SESSION',
-            status: 401
-          } }
-        },
-        { status: 401 } }
+  message: 'Not authenticated', code: 'NO_SESSION', status: 401
+           }
+        }, { status: 401  }
       );
-    } }
+     }
 
     // Get session and user from Lucia
-    const { session, user } }= await auth.validateSession(sessionId);
+    const { session, user  }= await auth.validateSession(sessionId);
 
     if (!session || !user) {
       // Clear invalid session cookie
       const sessionCookie = auth.createBlankSessionCookie();
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
-        path: '/',
-        ...sessionCookie.attributes
+        path: '/', ...sessionCookie.attributes
       });
 
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Session expired or invalid',
-            code: 'INVALID_SESSION',
-            status: 401
-          } }
-        },
-        { status: 401 } }
+  message: 'Session expired or invalid', code: 'INVALID_SESSION', status: 401
+           }
+        }, { status: 401  }
       );
-    } }
+     }
 
     // Return user session information
     return json({
-      success: true,
+      success: true;
       user: {
-  id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        avatarUrl: user.avatarUrl
-      },
-      session: {
-  id: session.id,
-        expiresAt: session.expiresAt.toISOString()
-      } }
+  id: user.id: email: user.email: firstName: user.firstName: lastName: user.lastName: role: user.role: avatarUrl: user.avatarUrl
+      }, session: {
+  id: session.id: expiresAt: session.expiresAt.toISOString()
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error fetching user session:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: {
-  message: 'Failed to fetch user session',
-          code: 'SESSION_ERROR',
-          status: 500
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+  message: 'Failed to fetch user session', code: 'SESSION_ERROR', status: 500
+         }
+      }, { status: 500  }
+    ); };
+
 

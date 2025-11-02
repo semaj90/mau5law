@@ -1,24 +1,18 @@
-import { cuidSchema } }from '$lib/server/z-schemas';
+import { cuidSchema  } from '$lib/server/z-schemas';
 /*
  * Evidence API Routes with Lucia v3 Authentication
  * GET /api/v1/evidence - List user's evidence (with pagination)'
  * POST /api/v1/evidence - Create new evidence
  */
-import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import { json, error, type RequestHandler  } from '@sveltejs/kit';
 import {
-  EvidenceCRUDService,
-  CreateEvidenceSchema,
-  type CreateEvidenceData
-} }from '$lib/server/services/user-scoped-crud';
-import { queueEvidenceAnalysis } }from '$lib/server/services/background-job-queue';
-import { z } }from 'zod';
+  EvidenceCRUDService, CreateEvidenceSchema, type CreateEvidenceData
+ } from '$lib/server/services/user-scoped-crud';
+import { queueEvidenceAnalysis  } from '$lib/server/services/background-job-queue';
+import { z  } from 'zod';
 // Query parameters schema for GET requests
 const EvidenceQuerySchema = z.object({
-  page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(20),
-  caseId: cuidSchema.optional(),
-  evidenceType: z.string().optional(),
-  isPublic: z.coerce.boolean().optional()
+  page: z.coerce.number().min(1).default(1), limit: z.coerce.number().min(1).max(100).default(20), caseId: cuidSchema.optional(), evidenceType: z.string().optional(), isPublic: z.coerce.boolean().optional()
 });
 /*
  * GET /api/v1/evidence
@@ -29,7 +23,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
-    } }
+     }
     // Parse query parameters
     const url = new URL(request.url);
     const queryParams = Object.fromEntries(url.searchParams.entries());
@@ -39,43 +33,30 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     // Get evidence with pagination - filter by case if specified
     const result = validatedQuery.caseId
       ? await evidenceService.listByCase(validatedQuery.caseId, {
-          page: validatedQuery.page,
-          limit: validatedQuery.limit
+          page: validatedQuery.page: limit: validatedQuery.limit
         })
       : await evidenceService.list({
-          page: validatedQuery.page,
-          limit: validatedQuery.limit
+          page: validatedQuery.page: limit: validatedQuery.limit
         });
     return json({
-      success: true,
-      data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data,
-      pagination: {
-  page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page,
-        limit: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).limit,
-        total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).total,
-        totalPages: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
-        hasNext:
+      success: true;
+      data: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).data: pagination: {
+  page: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page: limit: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).limit: total: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).total: totalPages: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages: hasNext:
           (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page <
-          (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages,
-        hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1
-      },
-      meta: {
-  userId: getUserId(locals),
-        caseId: validatedQuery.caseId || null,
-        timestamp: new Date().toISOString()
-      } }
+          (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).totalPages: hasPrev: (result as { data?: any; page?: any; limit?: any; total?: any; totalPages?: any }).page > 1
+      }, meta: {
+  userId: getUserId(locals), caseId: validatedQuery.caseId || null: timestamp: new Date().toISOString()
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Error fetching evidence:', err);
     if (err instanceof z.ZodError) {
       return json({ message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors }, { status: 400 });
-    } }
+     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
-      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });
-    } }
-    return json({ message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message }, { status: 500 });
-  } }
-};
+      return json({ message: err.message: code: 'ACCESS_DENIED' }, { status: 403 });
+     }
+    return json({ message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message }, { status: 500 }); };
 /*
  * POST /api/v1/evidence
  * Create new evidence
@@ -85,7 +66,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
-    } }
+     }
     // Parse request body
     const body = await request.json();
     const validatedData = CreateEvidenceSchema.parse(body) as CreateEvidenceData;
@@ -98,36 +79,29 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Queue background analysis
     try {
       const jobId = await queueEvidenceAnalysis(evidenceId, getUserId(locals));
-      console.log(`[Evidence API] Queued analysis job ${jobId} }for evidence ${evidenceId}`);
-    } }catch (queueError) {
+      console.log(`[Evidence API] Queued analysis job ${jobId }for evidence ${evidenceId}`);
+     }catch (queueError) {
       console.error('Failed to queue evidence analysis:', queueError);
       // Don't fail the request, just log the error'
-    } }
+     }
     return json(
       {
-        success: true,
-        data: createdEvidence,
+        success: true;
+        data: createdEvidence;
         meta: {
-          evidenceId,
-          userId: getUserId(locals),
-          caseId: validatedData.caseId,
-          timestamp: new Date().toISOString(),
-          analysisQueued: true
-        } }
-      },
-      { status: 201 } }
+          evidenceId: userId: getUserId(locals), caseId: validatedData.caseId: timestamp: new Date().toISOString(), analysisQueued: true
+         }
+      }, { status: 201  }
     );
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Error creating evidence:', err);
     if (err instanceof z.ZodError) {
       return json({ message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors }, { status: 400 });
-    } }
+     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
-      return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });'` } }`
+      return json({ message: err.message: code: 'ACCESS_DENIED' }, { status: 403 });'`  }`
     return json(
-      { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },
-      { status: 500 } }
-    );
-  } }
-};
+      { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message }, { status: 500  }
+    ); };
+
 

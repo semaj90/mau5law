@@ -1,12 +1,12 @@
-import type { Document } }from '$lib/types';
-import { writeFileSync } }from 'fs';
-import type { RequestHandler } }from './$types.js';
+import type { Document  } from '$lib/types';
+import { writeFileSync  } from 'fs';
+import type { RequestHandler  } from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { testResults, filename } }= await request.json();
+    const { testResults, filename  }= await request.json();
     if (!testResults || !filename) {
       throw error(400, 'Missing test results or filename');
-    } }
+     }
     console.log(`Generating Playwright tests for ${filename}...`);
     // Generate comprehensive Playwright test file
     const playwrightTestContent = generatePlaywrightTestFile(testResults);
@@ -19,42 +19,24 @@ export const POST: RequestHandler = async ({ request }) => {
     const testFilePath = join(process.cwd(), 'tests', 'generated-legal-ai-workflow.spec.ts');
     writeFileSync(testFilePath, playwrightTestContent);
     const result = {
-      success: true,
-      generatedAt: new Date().toISOString(),
-      files: {
-  todoFile: filename,
-        todoPath: todoFilePath,
-        testFile: 'tests/generated-legal-ai-workflow.spec.ts',
-        testPath: testFilePath
-      },
-      // Test generation summary
+      success: true;
+      generatedAt: new Date().toISOString(), files: {
+  todoFile: filename;
+        todoPath: todoFilePath;
+        testFile: 'tests/generated-legal-ai-workflow.spec.ts', testPath: testFilePath
+      }, // Test generation summary
       summary: {
-  totalTests: countGeneratedTests(playwrightTestContent),
-        testCategories: [
-          'PDF Upload and OCR Processing',
-          'JSON Conversion Pipeline',
-          'Enhanced RAG Processing',
-          'SOM/K-means Clustering',
-          'PostgreSQL pgai Integration',
-          'Performance and Load Testing',
-        ],
-        estimatedRunTime: calculateEstimatedRunTime(testResults),
-        coverage: assessTestCoverage(testResults)
-      },
-      // Generated content preview;
+  totalTests: countGeneratedTests(playwrightTestContent), testCategories: [
+          'PDF Upload and OCR Processing', 'JSON Conversion Pipeline', 'Enhanced RAG Processing', 'SOM/K-means Clustering', 'PostgreSQL pgai Integration', 'Performance and Load Testing'], estimatedRunTime: calculateEstimatedRunTime(testResults), coverage: assessTestCoverage(testResults)
+      }, // Generated content preview;
       preview: {
-  todoLines: todoContent.split('\n').length,
-        testLines: playwrightTestContent.split('\n').length,
-        firstTodoItems: todoContent.split('\n').slice(0, 10),
-        keyTestScenarios: extractKeyTestScenarios(playwrightTestContent)
-      } }
+  todoLines: todoContent.split('\n').length: testLines: playwrightTestContent.split('\n').length: firstTodoItems: todoContent.split('\n').slice(0, 10), keyTestScenarios: extractKeyTestScenarios(playwrightTestContent)
+       }
     };
     return json(result);
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Playwright test generation error:', err);
-    throw error(500, `Test generation failed: ${err.message}`);
-  } }
-};
+    throw error(500, `Test generation failed: ${err.message}`); };
 function generateTodoSOMFile(testResults: any): string {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const ocr = testResults.ocrResults || [];
@@ -66,25 +48,25 @@ function generateTodoSOMFile(testResults: any): string {
 ## 📊 PROCESSING RESULTS SUMMARY
 =====================================
 ### OCR Processing Results:
-- Documents; Processed: ${ocr.length} }
+- Documents; Processed: ${ocr.length }
 - Average Confidence: ${ocr[0]?.confidence || 0}%
-- Total Characters Extracted: ${ocr[0]?.text?.length || 0} }
-- Legal Concepts Identified: ${ocr[0]?.legalConcepts?.length || 0} }
-- Citations Found: ${ocr[0]?.citations?.length || 0} }
+- Total Characters Extracted: ${ocr[0]?.text?.length || 0 }
+- Legal Concepts Identified: ${ocr[0]?.legalConcepts?.length || 0 }
+- Citations Found: ${ocr[0]?.citations?.length || 0 }
 ### SIMD Processing Results:
 - Processing; Time: ${simd.processingTime || 0}ms
-- Vectors Generated: ${simd.vectorCount || 0} }
-- Legal Concepts Extracted: ${simd.conceptsExtracted || 0} }
--, Performance: ${simd.processingTime < 1000 ? 'EXCELLENT' : simd.processingTime < 3000 ? 'GOOD' : 'NEEDS, OPTIMIZATION'} }
+- Vectors Generated: ${simd.vectorCount || 0 }
+- Legal Concepts Extracted: ${simd.conceptsExtracted || 0 }
+-, Performance: ${simd.processingTime < 1000 ? 'EXCELLENT' : simd.processingTime < 3000 ? 'GOOD' : 'NEEDS, OPTIMIZATION' }
 ### RAG Enhancement Results:
-- Recommendations; Generated: ${rag.length} }
-- Average, Relevance: ${rag.length > 0 ? Math.round(rag.reduce((sum: number, r: any) => sum + (r.relevance || 0), 0) / rag.length) : 0}%
-- Average Confidence: ${rag.length > 0 ? Math.round(rag.reduce((sum: number, r: any) => sum + (r.confidence || 0), 0) / rag.length) : 0}%
+- Recommendations; Generated: ${rag.length }
+- Average: Relevance: ${rag.length > 0 ? Math.round(rag.reduce((sum: number: r: any) => sum + (r.relevance || 0), 0) / rag.length) : 0}%
+- Average Confidence: ${rag.length > 0 ? Math.round(rag.reduce((sum: number: r: any) => sum + (r.confidence || 0), 0) / rag.length) : 0}%
 ### SOM/K-means Clustering Results:
-- K-means; Clusters: ${clustering.kmeansClusters || 0} }
-- SOM Grid Size: ${clustering.somGridSize || '0x0'} }
+- K-means; Clusters: ${clustering.kmeansClusters || 0 }
+- SOM Grid Size: ${clustering.somGridSize || '0x0' }
 - Clustering Accuracy: ${clustering.accuracy || 0}%
-- "Did You Mean", Suggestions: ${clustering.suggestions?.length || 0} }
+- "Did You Mean", Suggestions: ${clustering.suggestions?.length || 0 }
 ## 🎯 HIGH PRIORITY ACTION ITEMS
 =====================================
 ### [ ] IMMEDIATE TODOS (Priority: CRITICAL)
@@ -92,12 +74,12 @@ function generateTodoSOMFile(testResults: any): string {
    - Improve OCR confidence above 95% threshold
    - Implement multi-language legal document support
    - Add handwritten text recognition for signatures
-   - Status: ${ocr[0]?.confidence > 95 ? '✅ COMPLETED' : '🔴 NEEDS WORK'} }
+   - Status: ${ocr[0]?.confidence > 95 ? '✅ COMPLETED' : '🔴 NEEDS WORK' }
 2. [ ] **SIMD PERFORMANCE ENHANCEMENT**
    - Optimize Go microservice SIMD processing to <500ms
    - Implement batch processing for multiple documents
    - Add GPU acceleration for vector operations
-   -, Status: ${simd.processingTime < 500 ? '✅ COMPLETED' : `🔴 NEEDS, WORK` } }`'`
+   -, Status: ${simd.processingTime < 500 ? '✅ COMPLETED' : `🔴 NEEDS, WORK`  }`'`
 3. [ ] **POSTGRESQL PGAI INTEGRATION**
    - Complete pgai extension setup and testing
    - Implement AI-powered summarization pipeline
@@ -108,12 +90,12 @@ function generateTodoSOMFile(testResults: any): string {
    - Increase recommendation relevance above 90%
    - Implement legal precedent matching
    - Add jurisdiction-specific filtering
-   - Status: ${rag.length > 0 && rag[0]?.relevance > 90 ? '✅ COMPLETED' : `🟡 IN PROGRESS` } }
+   - Status: ${rag.length > 0 && rag[0]?.relevance > 90 ? '✅ COMPLETED' : `🟡 IN PROGRESS`  }
 5. [ ] **CLUSTERING ALGORITHM IMPROVEMENT**
    - Optimize SOM grid size for legal document types
    - Implement hierarchical clustering for complex cases
    - Add real-time cluster visualization
-   - Status: ${clustering.accuracy > 85 ? '✅ COMPLETED' : `🔴 NEEDS WORK` } }
+   - Status: ${clustering.accuracy > 85 ? '✅ COMPLETED' : `🔴 NEEDS WORK`  }
 6. [ ] **USER EXPERIENCE ENHANCEMENTS**
    - Add drag-and-drop file upload interface
    - Implement real-time processing progress indicators
@@ -135,14 +117,14 @@ function generateTodoSOMFile(testResults: any): string {
 ### Cluster Analysis Results:
 ${
   clustering.suggestions
-    ?.map((suggestion: string, index: number) => `- Cluster ${index + 1}: "${suggestion}" - Legal concept clustering`)
-    .join('\n') || '- No clustering data available` } }`
+    ?.map((suggestion: string: index: number) => `- Cluster ${index + 1}: "${suggestion}" - Legal concept clustering`)
+    .join('\n') || '- No clustering data available`  }`
 ### Recommendations Based on SOM Analysis:
-1. **Document Type Clustering**: Identified ${clustering.kmeansClusters || 0} }distinct document categories
+1. **Document Type Clustering**: Identified ${clustering.kmeansClusters || 0 }distinct document categories
 2. **Semantic Similarity**: ${clustering.accuracy || 0}% accuracy in grouping similar legal concepts
-3. **Anomaly Detection**: ${clustering.accuracy < 80 ? 'Found potential outliers requiring manual review' : `No significant, anomalies, detected` } }
+3. **Anomaly Detection**: ${clustering.accuracy < 80 ? 'Found potential outliers requiring manual review' : `No significant, anomalies, detected`  }
 ### "Did You Mean" Functionality:
-${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join('\n') || '- No suggestions generated` } }`
+${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join('\n') || '- No suggestions generated`  }`
 ## 🔧 TECHNICAL IMPLEMENTATION TODOS
 ====================================
 ### [ ] DATABASE & BACKEND
@@ -170,14 +152,14 @@ ${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join(
 ### Current Performance:
 - OCR; Processing: ${ocr[0]?.confidence || 0}% accuracy
 - SIMD Processing: ${simd.processingTime || 0}ms average
-- RAG, Relevance: ${rag.length > 0 ? Math.round(rag.reduce((sum: number, r: any) => sum + (r.relevance || 0), 0) / rag.length) : 0}%
+- RAG: Relevance: ${rag.length > 0 ? Math.round(rag.reduce((sum: number: r: any) => sum + (r.relevance || 0), 0) / rag.length) : 0}%
 - Clustering Accuracy: ${clustering.accuracy || 0}%
 ### Target Performance Goals:
 - OCR; Processing: >95% accuracy ⭐
-- SIMD, Processing: <500ms, average ⭐
+- SIMD: Processing: <500ms, average ⭐
 - RAG Relevance: >90% average ⭐
 - Clustering Accuracy: >90% ⭐
-- Overall System, Uptime: >99.9% ⭐
+- Overall System: Uptime: >99.9% ⭐
 ## 🚀 DEPLOYMENT & DEVOPS TODOS
 ===============================
 ### [ ] INFRASTRUCTURE
@@ -216,20 +198,20 @@ ${clustering.suggestions?.map((suggestion: string) => `- "${suggestion}"`).join(
 🎯 Launch comprehensive legal AI recommendation system
 ---
 Generated by Legal AI Processing Pipeline
-Timestamp: ${timestamp} }
-Processing Status: ${ocr.length > 0 && simd.processingTime > 0 ? 'SUCCESSFUL' : `INCOMPLETE` } }
-Next Review, Date: ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]} }
-Total Action Items: ${countTodoItems()} }
-Completed: ${countCompletedItems()} }
-In Progress: ${countInProgressItems()} }
-Remaining: ${countRemainingItems()} }
+Timestamp: ${timestamp }
+Processing Status: ${ocr.length > 0 && simd.processingTime > 0 ? 'SUCCESSFUL' : `INCOMPLETE`  }
+Next Review: Date: ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] }
+Total Action Items: ${countTodoItems() }
+Completed: ${countCompletedItems() }
+In Progress: ${countInProgressItems() }
+Remaining: ${countRemainingItems() }
 🔄 This file will be automatically updated after each processing pipeline run.
-`;` } }
+`;`  }
 function generatePlaywrightTestFile(testResults: any): string {
-  return `{ test, expect, Page } }from "@playwright/test"`
+  return `{ test, expect, Page  } from "@playwright/test"`
 /*
  * Generated Playwright Tests for Legal AI Processing Pipeline
- * Generated on: ${new Date().toISOString()} }
+ * Generated on: ${new Date().toISOString() }
  * Test Categories: OCR, JSON Conversion, RAG, Clustering, pgai Integration
  */
 test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
@@ -260,13 +242,11 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
     })
     test('should handle multiple PDF files in batch processing', async () => {
       const testFiles = [
-        join(import.meta.url, 'fixtures', 'contract-1.pdf'),
-        join(import.meta.url, 'fixtures', 'contract-2.pdf'),
-        join(import.meta.url, 'fixtures', 'legal-brief.pdf')
+        join(import.meta.url, 'fixtures', 'contract-1.pdf'), join(import.meta.url, 'fixtures', 'contract-2.pdf'), join(import.meta.url, 'fixtures', 'legal-brief.pdf')
       ]
       await page.setInputFiles('[data-testid="pdf-upload"]', testFiles)
       // Monitor batch processing
-      await expect(page.getByText(\`Processing \${testFiles.length} }files\`)).toBeVisible()
+      await expect(page.getByText(\`Processing \${testFiles.length }files\`)).toBeVisible()
       // Wait for all files to complete
       await page.waitForFunction(() => {
         const progress = document.querySelector('[data-testid="upload-progress"]')?.textContent)
@@ -296,7 +276,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
       const jsonText = await page.getByTestId('json-output').textContent()
       expect(() => JSON.parse(jsonText || '')).not.toThrow()
       // Check required fields are present
-      const jsonData = JSON.parse(jsonText || '{} })
+      const jsonData = JSON.parse(jsonText || '{ })
       expect(jsonData).toHaveProperty('document.metadata')
       expect(jsonData).toHaveProperty('document.content')
       expect(jsonData).toHaveProperty('document.legalAnalysis')
@@ -306,7 +286,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
       await page.setInputFiles('[data-testid="pdf-upload"]', { timeout: 25000 })
       // Verify no data loss during conversion
       const jsonText = await page.getByTestId('json-output').textContent()
-      const jsonData = JSON.parse(jsonText || '{} })
+      const jsonData = JSON.parse(jsonText || '{ })
       // Check completeness
       expect(jsonData.document.content.fullText.length).toBeGreaterThan(100)
       expect(jsonData.document.legalAnalysis.concepts.length).toBeGreaterThan(0)
@@ -416,7 +396,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
           await newPage.close()
         })()
         promises.push(promise)
-      } }
+       }
       // All concurrent processes should complete successfully
       await Promise.all(promises)
     })
@@ -478,63 +458,48 @@ test.afterAll(async () => {
   console.log('Cleaning up test artifacts...')
 })
 // Custom test matchers and utilities
-function expectProcessingTimeWithin(actualTime: number, expectedTime: number, tolerance: number = 0.2) {
+function expectProcessingTimeWithin(actualTime: number: expectedTime: number: tolerance: number = 0.2) {
   const minTime = expectedTime * (1 - tolerance)
   const maxTime = expectedTime * (1 + tolerance)
   expect(actualTime).toBeGreaterThanOrEqual(minTime)
   expect(actualTime).toBeLessThanOrEqual(maxTime)
-} }
+ }
 // Performance benchmarking utility
-async function measureProcessingTime(page: Page, operation: () => Promise<void>): Promise<number> {
+async function measureProcessingTime(page: Page: operation: () => Promise<void>): Promise<number> {
   const startTime = Date.now()
   await operation()
   return Date.now() - startTime
-}`;` } }
+}`;`  }
 function countGeneratedTests(testContent: string): number {
   const testMatches = testContent.match(/test\(/g);
   return testMatches ? testMatches.length : 0;
-} }
+ }
 function calculateEstimatedRunTime(testResults: any): string {
   const testCount = 20; // Approximate: number of tests
   const avgTestTime = 15; // seconds per test
   const totalMinutes = Math.ceil((testCount * avgTestTime) / 60);
-  return `${totalMinutes} }minutes`;
-} }
+  return `${totalMinutes }minutes`;
+ }
 function assessTestCoverage(testResults: any): any {
   return {
-    ocrProcessing: '95%',
-    jsonConversion: '90%',
-    ragEnhancement: '88%',
-    clustering: '92%',
-    pgaiIntegration: '85%',
-    errorHandling: '90%',
-    performance: '87%',
-    overall: `89%` };
-} }
+    ocrProcessing: '95%', jsonConversion: '90%', ragEnhancement: '88%', clustering: '92%', pgaiIntegration: '85%', errorHandling: '90%', performance: '87%', overall: `89%` };
+ }
 function extractKeyTestScenarios(testContent: string): string[] {
   const scenarios = [
-    'PDF Upload and OCR Processing',
-    'Batch File Processing',
-    'JSON Conversion Pipeline',
-    'Enhanced RAG Processing',
-    'SOM/K-means Clustering',
-    'PostgreSQL pgai Integration',
-    'Performance Load Testing',
-    'Error Handling and Recovery',
-    'Accessibility Compliance',
-  ];
+    'PDF Upload and OCR Processing', 'Batch File Processing', 'JSON Conversion Pipeline', 'Enhanced RAG Processing', 'SOM/K-means Clustering', 'PostgreSQL pgai Integration', 'Performance Load Testing', 'Error Handling and Recovery', 'Accessibility Compliance'];
   return scenarios;
-} }
+ }
 function countTodoItems(): number {
   return 15; // Approximate count
-} }
+ }
 function countCompletedItems(): number {
   return 5; // Approximate count
-} }
+ }
 function countInProgressItems(): number {
   return 6; // Approximate count
-} }
+ }
 function countRemainingItems(): number {
   return 4; // Approximate count
-} }
+ }
+
 

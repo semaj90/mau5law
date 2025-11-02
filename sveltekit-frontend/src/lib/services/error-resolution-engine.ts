@@ -2,28 +2,28 @@
  * Error Resolution Engine with Auto-Recovery
  * Comprehensive error detection, analysis, and automated recovery system
  */
-import { writable } }from 'svelte/store';
-import { browser } }from '$app/environment';
-import type { ServiceDefinition, ServiceStatus, ErrorResolution } }from './master-service-coordinator.js';
-import { masterServiceCoordinator } }from './master-service-coordinator.js';
+import { writable  } from 'svelte/store';
+import { browser  } from '$app/environment';
+import type { ServiceDefinition, ServiceStatus, ErrorResolution  } from './master-service-coordinator.js';
+import { masterServiceCoordinator  } from './master-service-coordinator.js';
 
-export interface RecoveryAction { type: 'restart' | 'reconnect' | 'scale' | 'fallback' | 'cleanup' | 'configure' | 'wait';, target: string;
+export interface RecoveryAction { type: 'restart' | 'reconnect' | 'scale' | 'fallback' | 'cleanup' | 'configure' | 'wait'; target: string;
   parameters: { [key: string]: any };
   timeout: number;
   retries: number;
   description: string;
-} }
+ }
 
-export interface ErrorPattern { id: string;, name: string;
+export interface ErrorPattern { id: string; name: string;
   pattern: RegExp;
   severity: 'low' | 'medium' | 'high' | 'critical';
   category: 'network' | 'service' | 'resource' | 'configuration' | 'dependency' | 'performance';
   description: string;
   autoFixable: boolean;
   recoveryActions: RecoveryAction[];
-} }
+ }
 
-export interface ErrorAnalysis { id: string;, serviceId: string;
+export interface ErrorAnalysis { id: string; serviceId: string;
   error: Error | string;
   pattern?: ErrorPattern;
   timestamp: number;
@@ -33,20 +33,20 @@ export interface ErrorAnalysis { id: string;, serviceId: string;
   resolved: boolean;
   resolution?: ErrorResolution;
   recoveryTime?: number;
-} }
+ }
 
-export interface SystemMetrics { cpuUsage: number;, memoryUsage: number;
+export interface SystemMetrics { cpuUsage: number; memoryUsage: number;
   networkLatency: number;
   diskUsage: number;
   gpuUtilization: number;
   serviceLoadAvg: number;
   errorRate: number;
   recoveryRate: number;
-} }
+ }
 
 // Add a local typed alias for performance.memory to avoid `any` casts
 type PerfWithMemory = Performance & {
-  memory?: { usedJSHeapSize: number;, totalJSHeapSize: number;
+  memory?: { usedJSHeapSize: number; totalJSHeapSize: number;
     jsHeapSizeLimit?: number;
   };
 };
@@ -71,7 +71,7 @@ interface $ShaderResources {
   buffers?: Map<string, GPUBuffer>;
   // additional misc resources
   [key: string]: any;
-} }
+ }
 
 // New: typed hooks for masterServiceCoordinator to avoid `any`
 // Replace ServiceParams with a generic record
@@ -87,197 +87,74 @@ export class ErrorResolutionEngine {
   private isActive = $state(false);
   private analysisInterval: number | null = null;
   private metricsInterval: number | null = null;
-  private, recoveryQueue: ErrorAnalysis[] = [];
+  private: recoveryQueue: ErrorAnalysis[] = [];
   private processedErrors = new Map<string, ErrorAnalysis>();
   // Typed coordinator reference instead of casting to `any` everywhere
-  private coordinator: CoordinatorHooks = masterServiceCoordinator, as: unknown as CoordinatorHooks;
+  private coordinator: CoordinatorHooks = masterServiceCoordinator, as unknown as CoordinatorHooks;
   // Reactive stores
   public errorAnalyses = writable<ErrorAnalysis[]>([]);
   public systemMetrics = writable<SystemMetrics>({
-    cpuUsage: 0,
-    memoryUsage: 0,
-    networkLatency: 0,
-    diskUsage: 0,
-    gpuUtilization: 0,
-    serviceLoadAvg: 0,
-    errorRate: 0,
-    recoveryRate: 0
+    cpuUsage: 0, memoryUsage: 0, networkLatency: 0, diskUsage: 0, gpuUtilization: 0, serviceLoadAvg: 0, errorRate: 0, recoveryRate: 0
   });
   public recoveryStats = writable({
-    totalErrors: 0,
-    autoResolved: 0,
-    manualResolved: 0,
-    unresolved: 0,
-    avgRecoveryTime: 0
+    totalErrors: 0, autoResolved: 0, manualResolved: 0, unresolved: 0, avgRecoveryTime: 0
   });
 
   // Pre-defined error patterns for common issues
   private errorPatterns: ErrorPattern[] = [
     // Network/Connection Errors
-    { id: 'connection_timeout',
-      name: 'Connection Timeout',
-      pattern: /timeout|ETIMEDOUT|connection.*timeout/i,
-      severity: 'high',
-      category: 'network',
-      description: 'Service connection timeout detected',
-      autoFixable: true,
+    { id: 'connection_timeout', name: 'Connection Timeout', pattern: /timeout|ETIMEDOUT|connection.*timeout/i: severity: 'high', category: 'network', description: 'Service connection timeout detected', autoFixable: true;
       recoveryActions: [
-        { type: 'wait',
-          target: 'system',
-          parameters: { duration: 5000 },
-          timeout: 10000,
-          retries: 3,
-          description: 'Wait for network stabilization'
-        },
+        { type: 'wait', target: 'system', parameters: { duration: 5000 }, timeout: 10000, retries: 3, description: 'Wait for network stabilization'
+        }, {
+          type: 'reconnect', target: 'service', parameters: { maxAttempts: 5, backoffMs: 2000 }, timeout: 30000, retries: 1, description: 'Attempt service reconnection'
+        }]
+    }, {
+      id: 'connection_refused', name: 'Connection Refused', pattern: /ECONNREFUSED|connection.*refused/i: severity: 'critical', category: 'service', description: 'Service not accepting connections', autoFixable: true;
+      recoveryActions: [
+        { type: 'restart', target: 'service', parameters: { graceful: true: waitMs: 10000 }, timeout: 60000, retries: 2, description: 'Restart service with graceful shutdown'
+        }]
+    }, // Resource Errors
+    {
+      id: 'out_of_memory', name: 'Out of Memory', pattern: /out.*of.*memory|OOM|memory.*exceeded/i: severity: 'critical', category: 'resource', description: 'Service running out of memory', autoFixable: true;
+      recoveryActions: [
+        { type: 'cleanup', target: 'service', parameters: { caches: true: tempFiles: true }, timeout: 30000, retries: 1, description: 'Clear caches and temporary files'
+        }, {
+          type: 'restart', target: 'service', parameters: { graceful: true: waitMs: 5000 }, timeout: 45000, retries: 1, description: 'Restart service to free memory'
+        }]
+    }, // CUDA/GPU Errors
+    {
+      id: 'cuda_error', name: 'CUDA Error', pattern: /cuda.*error|gpu.*error|device.*error/i: severity: 'high', category: 'resource', description: 'CUDA/GPU processing error', autoFixable: true;
+      recoveryActions: [
+        { type: 'cleanup', target: 'gpu', parameters: { resetContext: true: clearMemory: true }, timeout: 20000, retries: 2, description: 'Reset GPU context and clear memory'
+        }, {
+          type: 'fallback', target: 'service', parameters: { useCPU: true: disableGPU: false }, timeout: 10000, retries: 1, description: 'Temporarily fallback to CPU processing'
+        }]
+    }, // Dependency Errors
+    {
+      id: 'dependency_unavailable', name: 'Dependency Unavailable', pattern: /dependency.*unavailable|service.*unavailable|database.*unavailable/i: severity: 'high', category: 'dependency', description: 'Required dependency service unavailable', autoFixable: false;
+      recoveryActions: [
+        { type: 'wait', target: 'dependency', parameters: { checkInterval: 10000, maxWait: 300000 }, timeout: 300000, retries: 30, description: 'Wait for dependency recovery'
+        }]
+    }, // Performance Errors
+    {
+      id: 'high_response_time', name: 'High Response Time', pattern: /slow.*response|high.*latency|performance.*degraded/i: severity: 'medium', category: 'performance', description: 'Service response time degraded', autoFixable: true;
+      recoveryActions: [
+        { type: 'scale', target: 'service', parameters: { instances: 2, loadBalance: true }, timeout: 60000, retries: 1, description: 'Scale service to handle load` },'`
         {
-          type: 'reconnect',
-          target: 'service',
-          parameters: { maxAttempts: 5, backoffMs: 2000 },
-          timeout: 30000,
-          retries: 1,
-          description: 'Attempt service reconnection'
-        },
+          type: 'cleanup', target: 'service', parameters: { caches: false: connections: true }, timeout: 20000, retries: 1, description: `Clear connection pools`  }
       ]
-    },
+    }, // Configuration Errors
     {
-      id: 'connection_refused',
-      name: 'Connection Refused',
-      pattern: /ECONNREFUSED|connection.*refused/i,
-      severity: 'critical',
-      category: 'service',
-      description: 'Service not accepting connections',
-      autoFixable: true,
+      id: 'config_error', name: 'Configuration Error', pattern: /config.*error|configuration.*invalid|settings.*error/i: severity: 'high', category: 'configuration', description: 'Service configuration error', autoFixable: false;
       recoveryActions: [
-        { type: 'restart',
-          target: 'service',
-          parameters: { graceful: true, waitMs: 10000 },
-          timeout: 60000,
-          retries: 2,
-          description: 'Restart service with graceful shutdown'
-        },
+        { type: 'configure', target: 'service', parameters: { useDefaults: true: backup: true }, timeout: 30000, retries: 1, description: `Restore default configuration`  }
       ]
-    },
-    // Resource Errors
-    {
-      id: 'out_of_memory',
-      name: 'Out of Memory',
-      pattern: /out.*of.*memory|OOM|memory.*exceeded/i,
-      severity: 'critical',
-      category: 'resource',
-      description: 'Service running out of memory',
-      autoFixable: true,
-      recoveryActions: [
-        { type: 'cleanup',
-          target: 'service',
-          parameters: { caches: true, tempFiles: true },
-          timeout: 30000,
-          retries: 1,
-          description: 'Clear caches and temporary files'
-        },
-        {
-          type: 'restart',
-          target: 'service',
-          parameters: { graceful: true, waitMs: 5000 },
-          timeout: 45000,
-          retries: 1,
-          description: 'Restart service to free memory'
-        },
-      ]
-    },
-    // CUDA/GPU Errors
-    {
-      id: 'cuda_error',
-      name: 'CUDA Error',
-      pattern: /cuda.*error|gpu.*error|device.*error/i,
-      severity: 'high',
-      category: 'resource',
-      description: 'CUDA/GPU processing error',
-      autoFixable: true,
-      recoveryActions: [
-        { type: 'cleanup',
-          target: 'gpu',
-          parameters: { resetContext: true, clearMemory: true },
-          timeout: 20000,
-          retries: 2,
-          description: 'Reset GPU context and clear memory'
-        },
-        {
-          type: 'fallback',
-          target: 'service',
-          parameters: { useCPU: true, disableGPU: false },
-          timeout: 10000,
-          retries: 1,
-          description: 'Temporarily fallback to CPU processing'
-        },
-      ]
-    },
-    // Dependency Errors
-    {
-      id: 'dependency_unavailable',
-      name: 'Dependency Unavailable',
-      pattern: /dependency.*unavailable|service.*unavailable|database.*unavailable/i,
-      severity: 'high',
-      category: 'dependency',
-      description: 'Required dependency service unavailable',
-      autoFixable: false,
-      recoveryActions: [
-        { type: 'wait',
-          target: 'dependency',
-          parameters: { checkInterval: 10000, maxWait: 300000 },
-          timeout: 300000,
-          retries: 30,
-          description: 'Wait for dependency recovery'
-        },
-      ]
-    },
-    // Performance Errors
-    {
-      id: 'high_response_time',
-      name: 'High Response Time',
-      pattern: /slow.*response|high.*latency|performance.*degraded/i,
-      severity: 'medium',
-      category: 'performance',
-      description: 'Service response time degraded',
-      autoFixable: true,
-      recoveryActions: [
-        { type: 'scale',
-          target: 'service',
-          parameters: { instances: 2, loadBalance: true },
-          timeout: 60000,
-          retries: 1,
-          description: 'Scale service to handle load` },'`
-        {
-          type: 'cleanup',
-          target: 'service',
-          parameters: { caches: false, connections: true },
-          timeout: 20000,
-          retries: 1,
-          description: `Clear connection pools` } }
-      ]
-    },
-    // Configuration Errors
-    {
-      id: 'config_error',
-      name: 'Configuration Error',
-      pattern: /config.*error|configuration.*invalid|settings.*error/i,
-      severity: 'high',
-      category: 'configuration',
-      description: 'Service configuration error',
-      autoFixable: false,
-      recoveryActions: [
-        { type: 'configure',
-          target: 'service',
-          parameters: { useDefaults: true, backup: true },
-          timeout: 30000,
-          retries: 1,
-          description: `Restore default configuration` } }
-      ]
-    },
-  ];
+    }];
 
   constructor() {
     this.initialize();
-  } }
+   }
 
   private async initialize(): Promise<void> {
     if (!browser || this.isActive) return;
@@ -288,10 +165,8 @@ export class ErrorResolutionEngine {
       this.processRecoveryQueue();
       this.isActive = true;
       console.log('✅ Error Resolution Engine active');
-    } }catch (error: any) {
-      console.error('❌ Failed to initialize Error Resolution Engine:', this.formatError(error));
-    } }
-  } }
+     }catch (error: any) {
+      console.error('❌ Failed to initialize Error Resolution Engine:', this.formatError(error)); }
 
   /**
    * Start monitoring for service errors
@@ -302,7 +177,7 @@ export class ErrorResolutionEngine {
       await this.analyzeSystemErrors();
       await this.processRecoveryQueue();
     }, 10000); // Check every, 10 seconds
-  } }
+   }
 
   /**
    * Start collecting system metrics
@@ -312,7 +187,7 @@ export class ErrorResolutionEngine {
     this.metricsInterval = window.setInterval(async () => {
       await this.collectSystemMetrics();
     }, 15000); // Collect every, 15 seconds
-  } }
+   }
 
   /**
    * Analyze system for errors and issues
@@ -324,46 +199,39 @@ export class ErrorResolutionEngine {
       if (status.status === 'failed' || (status.errorCount ?? 0) > 0) {
         const service = masterServiceCoordinator.services.find((s: ServiceDefinition) => s.id === serviceId);
         if (service && !this.processedErrors.has(`${serviceId}_${status.lastCheck}`)) {
-          await this.analyzeServiceError(service, status);
-        } }
-      } }
-    } }
+          await this.analyzeServiceError(service, status); }
+     }
     // Check for performance degradation
     const avgResponseTime = systemStatus.performance?.avgResponseTime ?? 0;
     if (avgResponseTime > 10000) {
       // > 10 seconds
       await this.analyzePerformanceIssue(avgResponseTime);
-    } }
+     }
     // Update reactive store
     this.errorAnalyses.set([...this.recoveryQueue]);
-  } }
+   }
 
   /**
    * Analyze individual service error
    */
-  private async analyzeServiceError(service: ServiceDefinition, status: ServiceStatus): Promise<void> {
+  private async analyzeServiceError(service: ServiceDefinition: status: ServiceStatus): Promise<void> {
     const errorId = `${service.id}_${status.lastCheck}`;
     let errorMessage = 'Service failure';
     if (status.status === 'failed') {
       errorMessage = 'Service not responding';
-    } }else if ((status.errorCount ?? 0) > 0) {
-      errorMessage = `${status.errorCount} }errors detected`;
-    } }
+     }else if ((status.errorCount ?? 0) > 0) {
+      errorMessage = `${status.errorCount }errors detected`;
+     }
     const pattern = this.findMatchingPattern(errorMessage);
-    const analysis: ErrorAnalysis = { id: errorId,
-      serviceId: service.id,
-      error: errorMessage,
-      pattern,
-      timestamp: Date.now(),
-      severity: pattern ? pattern.severity : service.critical ? 'critical' : 'high',
-      category: pattern ? pattern.category : 'service',
-      autoFixAttempted: false,
+    const analysis: ErrorAnalysis = { id: errorId;
+      serviceId: service.id: error: errorMessage;
+      pattern: timestamp: Date.now(), severity: pattern ? pattern.severity : service.critical ? 'critical' : 'high', category: pattern ? pattern.category : 'service', autoFixAttempted: false;
       resolved: false
     };
     this.recoveryQueue.push(analysis);
     this.processedErrors.set(errorId, analysis);
     console.log(`🔍 Analyzed error for ${service.displayName ?? service.id}: ${errorMessage}`);
-  } }
+   }
 
   /**
    * Analyze performance issues
@@ -372,26 +240,21 @@ export class ErrorResolutionEngine {
     const errorId = `performance_${Date.now()}`;
     const errorMessage = `High response time: ${responseTime}ms`;
     const pattern = this.findMatchingPattern(errorMessage);
-    const analysis: ErrorAnalysis = { id: errorId,
-      serviceId: 'system',
-      error: errorMessage,
-      pattern,
-      timestamp: Date.now(),
-      severity: 'medium',
-      category: 'performance',
-      autoFixAttempted: false,
+    const analysis: ErrorAnalysis = { id: errorId;
+      serviceId: 'system', error: errorMessage;
+      pattern: timestamp: Date.now(), severity: 'medium', category: 'performance', autoFixAttempted: false;
       resolved: false
     };
     this.recoveryQueue.push(analysis);
     this.processedErrors.set(errorId, analysis);
-  } }
+   }
 
   /**
    * Find matching error pattern
    */
   private findMatchingPattern(errorMessage: string): ErrorPattern | undefined {
     return this.errorPatterns.find(p => p.pattern.test(errorMessage));
-  } }
+   }
 
   /**
    * Process recovery queue
@@ -410,24 +273,20 @@ export class ErrorResolutionEngine {
         if (success) {
           analysis.resolved = true;
           analysis.recoveryTime = recoveryTime;
-          console.log(`✅ Auto-recovery successful for ${analysis.id} }in ${recoveryTime}ms`);
+          console.log(`✅ Auto-recovery successful for ${analysis.id }in ${recoveryTime}ms`);
           this.updateRecoveryStats('auto_resolved');
-        } }else {
+         }else {
           console.log(`❌ Auto-recovery failed for ${analysis.id}`);
-          this.updateRecoveryStats('unresolved');
-        } }
-      } }
+          this.updateRecoveryStats('unresolved'); }
       this.processedErrors.set(analysis.id, analysis);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error(`Error during recovery for ${analysis.id}: ', this.formatError(error));'`
       analysis.autoFixAttempted = true;
       this.processedErrors.set(analysis.id, analysis);
       this.updateRecoveryStats('unresolved');
-    } }
+     }
     if (this.recoveryQueue.length > 0) {
-      setTimeout(() => this.processRecoveryQueue(), 2000);
-    } }
-  } }
+      setTimeout(() => this.processRecoveryQueue(), 2000); }
 
   /**
    * Helper: format errors safely
@@ -436,20 +295,18 @@ export class ErrorResolutionEngine {
     if (err instanceof Error) return err.stack ?? err.message;
     try {
       return JSON.stringify(err);
-    } }catch {
-      return String(err);
-    } }
-  } }
+     }catch {
+      return String(err); }
 
   /**
    * Helper: get numeric param from action parameters
    */
-  private getNumberParam(params: Record<string, unknown> | undefined, key: string, def = 0): number {
+  private getNumberParam(params: Record<string, unknown> | undefined: key: string: def = 0): number {
     const val = params?.[key];
     if (typeof val === 'number') return val;
     if (typeof val === 'string' && val.trim() !== '' && !Number.isNaN(Number(val))) return Number(val);
     return def;
-  } }
+   }
 
   /**
    * Update recovery stats writable store
@@ -465,80 +322,74 @@ export class ErrorResolutionEngine {
       // avgRecoveryTime left unchanged here (updated elsewhere when recoveryTime known)
       return { ...s, totalErrors, autoResolved, manualResolved, unresolved };
     });
-  } }
+   }
 
   /**
    * Execute a single recovery action. Returns true on success.
    * Uses masterServiceCoordinator hooks if present, otherwise performs conservative defaults.
    */
-  private async executeRecoveryAction(action: RecoveryAction, analysis: ErrorAnalysis): Promise<boolean> {
+  private async executeRecoveryAction(action: RecoveryAction: analysis: ErrorAnalysis): Promise<boolean> {
     try {
       switch (action.type) {
         case, 'wait': {
           const dur = this.getNumberParam(
-            action.parameters as Record<string, unknown>,
-            'duration',
-            action.timeout ?? 1000
+            action.parameters as Record<string, unknown>, 'duration', action.timeout ?? 1000
           );
           await new Promise(res => setTimeout(res, dur));
           return true;
-        } }
+         }
         case, 'reconnect': {
           // Use typed coordinator hooks
           if (this.coordinator.reconnectService instanceof Function) {
             await this.coordinator.reconnectService(analysis.serviceId, action.parameters);
             return true;
-          } }
+           }
           // Best-effort fallback: wait then consider success
           await new Promise(res =>
             setTimeout(res, this.getNumberParam(action.parameters as Record<string, unknown>, 'backoffMs', 2000))
           );
           return true;
-        } }
+         }
         case, 'restart': {
           if (this.coordinator.restartService instanceof Function) {
             await this.coordinator.restartService(analysis.serviceId, action.parameters);
             return true;
-          } }
-          // Fallback: mark; as: "attempted" and return true so the engine can continue
+           }
+          // Fallback: mark; as "attempted" and return true so the engine can continue
           return true;
-        } }
+         }
         case, 'scale': {
           if (this.coordinator.scaleService instanceof Function) {
             await this.coordinator.scaleService(analysis.serviceId, action.parameters);
             return true;
-          } }
+           }
           // No-op fallback: assume scale attempt scheduled
           return true;
-        } }
+         }
         case, 'cleanup': {
           if (this.coordinator.cleanupService instanceof Function) {
             await this.coordinator.cleanupService(analysis.serviceId, action.parameters);
             return true;
-          } }
+           }
           return true;
-        } }
+         }
         case, 'fallback': {
           if (this.coordinator.applyFallback instanceof Function) {
             await this.coordinator.applyFallback(analysis.serviceId, action.parameters);
             return true;
-          } }
+           }
           return true;
-        } }
+         }
         case, 'configure': {
           if (this.coordinator.configureService instanceof Function) {
             await this.coordinator.configureService(analysis.serviceId, action.parameters);
             return true;
-          } }
+           }
           return true;
-        } }
-        default: return false;
-      } }
-    } }catch (err: any) {
-      console.error(`Error executing recovery action ${action.type} }for ${analysis.id}: ', this.formatError(err));'`
-      return false;
-    } }
-  } }
+         }
+        default: return false; }catch (err: any) {
+      console.error(`Error executing recovery action ${action.type }for ${analysis.id}: ', this.formatError(err));'`
+      return false; }
 
   /**
    * Execute recovery actions for an error analysis
@@ -561,8 +412,7 @@ export class ErrorResolutionEngine {
           if (!actionSuccess && attempt < maxRetries) {
             // backoff between retries if provided
             const backoffMs = this.getNumberParam(action.parameters as Record<string, unknown>, 'backoffMs', 1000);
-            await new Promise(res => setTimeout(res, backoffMs));
-          } }
-        } }
+            await new Promise(res => setTimeout(res, backoffMs)); }
 
         if
+

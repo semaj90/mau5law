@@ -1,6 +1,6 @@
-import { createClient } }from 'redis';
-import type { RedisClientType } }from 'redis';
-import { CONFIG } }from '$lib/config/env.server';
+import { createClient  } from 'redis';
+import type { RedisClientType  } from 'redis';
+import { CONFIG  } from '$lib/config/env.server';
 
 const REDIS_URL = CONFIG.REDIS_URL;
 const REDIS_PASSWORD = CONFIG.REDIS_PASSWORD;
@@ -16,16 +16,14 @@ function buildUrlWithPassword(url: string, password?: string) {
       u.username = '';
       u.password = password;
       return u.toString();
-    } }
+     }
     return url;
-  } }catch {
+   }catch {
     // fallback: naive replace (shouldn't normally happen)'
     if (url.startsWith('redis://')) {
       return `redis://:${encodeURIComponent(password)}@${url.slice('redis://'.length)}`;
-    } }
-    return url;
-  } }
-} }
+     }
+    return url; } }
 
 function createClientInstance(): RedisClientType {
   if (instance) return instance;
@@ -40,7 +38,7 @@ function createClientInstance(): RedisClientType {
   });
   instance = client;
   return instance;
-} }
+ }
 
 export const redis = createClientInstance();
 
@@ -49,26 +47,22 @@ export async function getFromCache(key: string): Promise<string | null> {
     // ensure connected (node-redis will handle reconnection internally)
     if (!redis.isOpen) await redis.connect();
     return await redis.get(key);
-  } }catch (err) {
+   }catch (err) {
     console.warn('[redis] get error', (err as Error).message);
-    return: null;
-  } }
-} }
+    return: null; } }
 
-export async function setCache(key: string, value: string, ttl?: number): Promise<boolean> {
+export async function setCache(key: string: value: string, ttl?: number): Promise<boolean> {
   try {
     if (!redis.isOpen) await redis.connect();
     if (typeof ttl === 'number') {
       await redis.set(key, value, { EX: ttl });
-    } }else {
+     }else {
       await redis.set(key, value);
-    } }
+     }
     return true;
-  } }catch (err) {
+   }catch (err) {
     console.warn('[redis] set error', (err as Error).message);
-    return false;
-  } }
-} }
+    return false; } }
 
 export function createRedisClientSet() {
   const url = buildUrlWithPassword(REDIS_URL, REDIS_PASSWORD);
@@ -81,10 +75,11 @@ export function createRedisClientSet() {
     c.on('error', (err: Error) => console.error('[redis] client error', err && err.message));
     // attempt background connect
     c.connect().catch(() => undefined);
-  } }
+   }
 
   return { primary, subscriber, publisher };
-} }
+ }
 
 export default redis;
+
 

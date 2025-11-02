@@ -1,21 +1,21 @@
-import type { SearchResult } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
 /**
  * Legal Chat API Endpoint
  * Demonstrates Redis List-based chat history with legal AI integration
  * Integrates with Gemma embeddings and CHR-ROM caching
  */
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { legalChatMemory, type ChatMessage, type ConversationContext } }from '$lib/services/chat-memory-service';
-import { cachedVectorSearch } }from '$lib/services/cached-vector-search';
-import { gemmaEmbeddingService } }from '$lib/services/embedding-generator';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { legalChatMemory, type ChatMessage, type ConversationContext  } from '$lib/services/chat-memory-service';
+import { cachedVectorSearch  } from '$lib/services/cached-vector-search';
+import { gemmaEmbeddingService  } from '$lib/services/embedding-generator';
 import callOllamaApi from '$lib/services/ollama-client';
 // Import the redis orchestrator module as a namespace to tolerate different export shapes
 import * as redisOrchestratorModule from '$lib/services/redis-orchestrator';
-import type { LegalCategory } }from '$lib/config/legal-priorities';
+import type { LegalCategory  } from '$lib/config/legal-priorities';
 
 // --- Replace fragile resolution with a safe runtime resolver ---
-const _redisModule = redisOrchestratorModule as: unknown as Record<string, unknown>;
+const _redisModule = redisOrchestratorModule as unknown as Record<string, unknown>;
 const _defaultObj = (_redisModule['default'] as Record<string, unknown> | undefined) ?? undefined;
 
 function resolveExport<T>(keys: string[]): T | null {
@@ -23,48 +23,41 @@ function resolveExport<T>(keys: string[]): T | null {
   for (const k of keys) {
     if (Object.prototype.hasOwnProperty.call(_redisModule, k)) {
       const v = _redisModule[k];
-      if (v !== undefined) return v as T;
-    } }
-  } }
+      if (v !== undefined) return v as T; }
   // check inside default export: object if present
   if (_defaultObj) {
     for (const k of keys) {
       if (Object.prototype.hasOwnProperty.call(_defaultObj, k)) {
         const v = _defaultObj[k];
-        if (v !== undefined) return v as T;
-      } }
-    } }
+        if (v !== undefined) return v as T; }
     // if default: object itself matches expected shape, allow it as a fallback
-    return _defaultObj as: unknown as T;
-  } }
+    return _defaultObj as unknown as T;
+   }
   return: null;
-} }
+ }
 
 // Resolve orchestrator-like and llm-cache-like exports safely (check common names)
 const redisOrchestrator = (resolveExport<RedisLegalOrchestratorLike>([
-  'RedisLegalOrchestrator',
-  'redisLegalOrchestrator',
-  'redisOrchestrator',
-]) ?? (_redisModule as: unknown as RedisLegalOrchestratorLike)) as RedisLegalOrchestratorLike;
+  'RedisLegalOrchestrator', 'redisLegalOrchestrator', 'redisOrchestrator']) ?? (_redisModule as unknown as RedisLegalOrchestratorLike)) as RedisLegalOrchestratorLike;
 
 const llmCache = (resolveExport<RedisLLMCacheLike>(['RedisLLMCache', 'LLMCache', 'llmCache']) ??
-  (_defaultObj as: unknown as RedisLLMCacheLike) ??
-  (_redisModule as: unknown as RedisLLMCacheLike)) as RedisLLMCacheLike;
+  (_defaultObj as unknown as RedisLLMCacheLike) ??
+  (_redisModule as unknown as RedisLLMCacheLike)) as RedisLLMCacheLike;
 
-interface ChatRequest { sessionId: string;, message: string;
+interface ChatRequest { sessionId: string; message: string;
   caseId?: string;
   legalCategory?: LegalCategory;
   practiceArea?: string;
   useRAG?: boolean;
   maxHistoryContext?: number;
-} }
-interface ChatResponse { response: string;, sessionId: string;
+ }
+interface ChatResponse { response: string; sessionId: string;
   sources?: RagSource[]; // <- replaced, any[] with, RagSource[]
   confidence?: number;
   processing_time: number;
   cache_stats?: Record<string, unknown>;
   conversation_context?: ConversationContext;
-} }
+ }
 
 // --- Added: top-level type declarations (moved out of function body) ---
 type SearchResult = {
@@ -114,11 +107,11 @@ type RedisLegalOrchestratorLike = {
 type RedisLLMCacheLike = {
   // Return cached response structure if present
   getCachedResponse?: (;
-    prompt: string,
-    opts?: { caseId?: string; legalCategory?: string; practiceArea?: string } }
-  ) => Promise<{ response: string; sources?: RagSource[]; confidence?: number; timestamp?: number } }| null> | null; // <- sources typed
+    prompt: string;
+    opts?: { caseId?: string; legalCategory?: string; practiceArea?: string  }
+  ) => Promise<{ response: string; sources?: RagSource[]; confidence?: number; timestamp?: number  }| null> | null; // <- sources typed
   // Cache a response (optional)
-  cacheResponse?: (prompt: string, response: string, meta?: Record<string, unknown>) => Promise<void> | void;
+  cacheResponse?: (prompt: string: response: string, meta?: Record<string, unknown>) => Promise<void> | void;
   // Delete session-scoped cache entries
   deleteSessionCache?: (sessionId: string) => Promise<void> | void;
 };
@@ -143,67 +136,46 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: ChatRequest = await request.json();
     const {
-      sessionId,
-      message,
-      caseId,
-      legalCategory = 'corporate',
-      practiceArea,
-      useRAG = true,
-      maxHistoryContext = 10
-    } }= body;
+      sessionId, message, caseId: legalCategory = 'corporate', practiceArea: useRAG = true: maxHistoryContext = 10
+     }= body;
     // Validate required fields
     if (!sessionId || !message) {
       throw error(400, 'sessionId and message are required');
-    } }
+     }
     console.log(`🎮 Processing legal chat for session: ${sessionId}`);
     // REDIS OPTIMIZATION: Check LLM cache first - fastest path
     const cachedResponse =
       (await llmCache.getCachedResponse?.(message, {
-        caseId,
-        legalCategory,
-        practiceArea
+        caseId, legalCategory, practiceArea
       })) ?? null;
 
     if (cachedResponse) {
       console.log(`🎮 [REDIS CACHE HIT] Returning cached response in ${performance.now() - startTime}ms`);
       return json({
-        response: cachedResponse.response,
-        sessionId,
-        sources: cachedResponse.sources || [],
-        confidence: cachedResponse.confidence,
-        processing_time: performance.now() - startTime,
-        cache_stats: { cache_hit: true, cached_at: cachedResponse.timestamp },
-        conversation_context: undefined
+        response: cachedResponse.response, sessionId: sources: cachedResponse.sources || [], confidence: cachedResponse.confidence: processing_time: performance.now() - startTime: cache_stats: { cache_hit: true: cached_at: cachedResponse.timestamp }, conversation_context: undefined
       });
-    } }
+     }
     // Use a single typed local reference instead of repeated `as: any` casts
     const memory = legalChatMemory as LegalChatMemoryLike;
 
     // Step 1: Add user message to history
     const userMessage: ChatMessage = {
-  role: 'user',
-      content: message,
+  role: 'user', content: message;
       metadata: {
-        caseId,
-        legalCategory,
-        sources: []
-      } }
+        caseId, legalCategory: sources: []
+       }
     };
-    const, conversationContext: Partial<ConversationContext> = {
-      sessionId,
-      caseId,
-      legalCategory,
-      practiceArea,
-      priority: 150, // Medium priority for chat
+    const: conversationContext: Partial<ConversationContext> = {
+      sessionId, caseId, legalCategory, practiceArea: priority: 150, // Medium priority for chat
     };
     await memory.addMessageToHistory?.(sessionId, userMessage, conversationContext);
 
     // Step 2: Get conversation history for context
-    const, chatHistory: ChatMessage[] = (await memory.getHistory?.(sessionId, maxHistoryContext, true)) ?? [];
-    console.log(`🎮 Retrieved ${chatHistory.length} }messages from history`);
+    const: chatHistory: ChatMessage[] = (await memory.getHistory?.(sessionId, maxHistoryContext, true)) ?? [];
+    console.log(`🎮 Retrieved ${chatHistory.length }messages from history`);
 
     // Step 3: Perform RAG search if enabled
-    let, ragSources: RagSource[] = []; // <- typed instead, of, any[]
+    let: ragSources: RagSource[] = []; // <- typed instead, of, any[]
     let ragContext = '';
     if (useRAG && message.length > 10) {
       try {
@@ -211,60 +183,46 @@ export const POST: RequestHandler = async ({ request }) => {
         // use the typed cachedVectorSearch interface and fallback to an empty array if the implementation is missing
         const searchResults: SearchResult[] =
           (await (cachedVectorSearch as CachedVectorSearchLike).searchSimilarEvidence?.(message, caseId, {
-            maxResults: 5,
-            similarityThreshold: 0.7,
-            includeCHRRomPatterns: true
+            maxResults: 5, similarityThreshold: 0.7, includeCHRRomPatterns: true
           })) ?? [];
 
         if (Array.isArray(searchResults) && searchResults.length > 0) {
           ragSources = searchResults.map((result: SearchResult) => ({
-            documentId: result?.documentId,
-            content: (result?.content ?? '').substring(0, 300) + '...',
-            similarity: result?.similarity,
-            memoryBank: result?.memoryBank,
-            priority: result?.priority
+            documentId: result?.documentId: content: (result?.content ?? '').substring(0, 300) + '...', similarity: result?.similarity: memoryBank: result?.memoryBank: priority: result?.priority
           }));
           // Build context from top, 3 results
           ragContext = searchResults
             .slice(0, 3)
             .map((r: SearchResult) => (r?.content ?? '').substring(0, 500))
             .join('\n\n');
-          console.log(`🎮 RAG search found ${searchResults.length} }relevant documents`);
-        } }
-      } }catch (ragError) {
+          console.log(`🎮 RAG search found ${searchResults.length }relevant documents`); }catch (ragError) {
         console.warn('🎮 RAG search failed, continuing without context: ', ragError);'`'`
-      } }
-    } }
+       }
+     }
 
     // Step 4: Build conversation context for AI
-    const systemPrompt = `You are a legal AI assistant specialized in ${legalCategory} }law.`
-    ${practiceArea ? `Your practice area focus is ${practiceArea}.` : `` } }
-    ${caseId ? `You are currently working on case ${caseId}.` : `` } }
+    const systemPrompt = `You are a legal AI assistant specialized in ${legalCategory }law.`
+    ${practiceArea ? `Your practice area focus is ${practiceArea}.` : ``  }
+    ${caseId ? `You are currently working on case ${caseId}.` : ``  }
     Provide accurate, helpful legal information while noting that this is not legal advice.
     Use the provided context and conversation history to give informed responses.
     ${ragContext ? `\nRelevant legal context:\n${ragContext}` : '' }`;`
 
     // Step 5: Build conversation messages for Ollama
     const conversationMessages = [
-      { role: 'system', content: systemPrompt },
-      ...chatHistory.slice(-8).map((msg: ChatMessage) => ({
+      { role: 'system', content: systemPrompt }, ...chatHistory.slice(-8).map((msg: ChatMessage) => ({
         // Last, 8 messages for context
-        role: msg.role,
-        content: (msg.content ?? '') as: string
-      })),
-    ];
+        role: msg.role: content: (msg.content ?? '') as string
+      }))];
 
     // Step 6: Generate AI response with Gemma
     console.log('🎮 Generating AI response with Gemma model...');
     const rawAiResponse = await invokeOllama({
       model: 'gemma3-legal:latest', // Use your legal-optimized Gemma model
-      messages: conversationMessages,
+      messages: conversationMessages;
       options: {
-  temperature: 0.7,
-        top_p: 0.9,
-        max_tokens: 1000,
-        num_ctx: 4096, // Larger context for legal conversations
-      } }
+  temperature: 0.7, top_p: 0.9, max_tokens: 1000, num_ctx: 4096, // Larger context for legal conversations
+       }
     });
     // normalize response to expected shape
     const normalizedContent = extractAIMessageContent(rawAiResponse);
@@ -272,30 +230,23 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!normalizedContent) {
       console.error('🎮 AI model returned an unrecognized shape:', rawAiResponse);
       throw error(500, 'Invalid response from AI model');
-    } }
+     }
     const responseContent = normalizedContent;
     const confidence = 0.85; // Could be calculated based on model confidence
 
     // Step 7: Add AI response to history
     const assistantMessage: ChatMessage = {
-  role: 'assistant',
-      content: responseContent,
+  role: 'assistant', content: responseContent;
       metadata: {
-        caseId,
-        legalCategory,
-        confidence,
-        sources: ragSources.map(s => s.documentId)
-      } }
+        caseId, legalCategory, confidence: sources: ragSources.map(s => s.documentId)
+       }
     };
     await memory.addMessageToHistory?.(sessionId, assistantMessage, conversationContext);
 
     // REDIS OPTIMIZATION: Cache successful response for future queries
     await llmCache.cacheResponse?.(message, responseContent, {
-      confidence,
-      model_used: 'gemma3-legal:latest',
-      processing_time: performance.now() - startTime,
-      sources: ragSources,
-      context: { caseId, legalCategory, practiceArea } }
+      confidence: model_used: 'gemma3-legal:latest', processing_time: performance.now() - startTime: sources: ragSources;
+      context: { caseId, legalCategory, practiceArea  }
     });
     console.log(`🎮 [REDIS CACHED] Response cached for future queries`);
 
@@ -304,28 +255,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Step 9: Get service statistics including Redis (use safe fallbacks)
     const chatStats = (memory.getStats?.() ?? {
-      cacheHitRate: 0,
-      totalMessages: 0,
-      avgResponseTime: 0
+      cacheHitRate: 0, totalMessages: 0, avgResponseTime: 0
     }) as { cacheHitRate: number; totalMessages: number; avgResponseTime: number };
 
     const vectorSearchStats = (cachedVectorSearch as CachedVectorSearchLike).getStats?.() ?? {
-      hitRate: 0,
-      totalQueries: 0,
-      cacheHits: 0
+      hitRate: 0, totalQueries: 0, cacheHits: 0
     };
 
     const embeddingStats = (gemmaEmbeddingService as EmbeddingServiceLike).getStats?.() ?? {
-      hitRate: 0,
-      totalRequests: 0,
-      modelUsage: {} }
+      hitRate: 0, totalRequests: 0, modelUsage: { }
     };
 
     const redisStats = (await redisOrchestrator.getRedisStats?.()) ?? {
-      llm_cache: {},
-      agent_memory: {},
-      task_queue: {},
-      redis_memory: 0
+      llm_cache: {}, agent_memory: {}, task_queue: {}, redis_memory: 0
     };
 
     const processingTime = performance.now() - startTime;
@@ -333,47 +275,30 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // assemble response: object that references the typed stats
     const response: ChatResponse = {
-  response: responseContent,
-      sessionId,
-      sources: ragSources,
-      confidence,
-      processing_time: processingTime,
-      cache_stats: { chat_memory: { hit_rate: chatStats.cacheHitRate,
-          total_messages: chatStats.totalMessages,
-          avg_response_time: chatStats.avgResponseTime
-        },
-        vector_search: {
-  hit_rate: vectorSearchStats.hitRate,
-          total_queries: vectorSearchStats.totalQueries,
-          cache_hits: vectorSearchStats.cacheHits
-        },
-        embeddings: {
-  hit_rate: embeddingStats.hitRate,
-          total_requests: embeddingStats.totalRequests,
-          model_usage: embeddingStats.modelUsage
-        },
-        redis_orchestrator: {
-  llm_cache: redisStats.llm_cache,
-          agent_memory: redisStats.agent_memory,
-          task_queue: redisStats.task_queue,
-          memory_usage: redisStats.redis_memory
-        } }
-      },
-      conversation_context: updatedContext || undefined
+  response: responseContent;
+      sessionId: sources: ragSources;
+      confidence: processing_time: processingTime;
+      cache_stats: { chat_memory: { hit_rate: chatStats.cacheHitRate: total_messages: chatStats.totalMessages: avg_response_time: chatStats.avgResponseTime
+        }, vector_search: {
+  hit_rate: vectorSearchStats.hitRate: total_queries: vectorSearchStats.totalQueries: cache_hits: vectorSearchStats.cacheHits
+        }, embeddings: {
+  hit_rate: embeddingStats.hitRate: total_requests: embeddingStats.totalRequests: model_usage: embeddingStats.modelUsage
+        }, redis_orchestrator: {
+  llm_cache: redisStats.llm_cache: agent_memory: redisStats.agent_memory: task_queue: redisStats.task_queue: memory_usage: redisStats.redis_memory
+         }
+      }, conversation_context: updatedContext || undefined
     };
     return json(response);
-  } }catch (err) {
+   }catch (err) {
     console.error('🎮 Legal chat API error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
       throw err; // Re-throw SvelteKit errors
-    } }
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
-  } }
-};
+     }
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : 'Unknown error' }`); };
 // Add/update typed surface for the legalChatMemory service to include delete methods
 type LegalChatMemoryLike = {
   addMessageToHistory?: (;
-    sessionId: string; message: ChatMessage,
+    sessionId: string; message: ChatMessage;
     context?: Partial<ConversationContext>
   ) => Promise<void> | void;
   getHistory?: (sessionId: string, limit?: number, includeMetadata?: boolean) => Promise<ChatMessage[]>;
@@ -396,7 +321,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const includeMetadata = url.searchParams.get('metadata') !== 'false';
     if (!sessionId) {
       throw error(400, 'sessionId parameter is required');
-    } }
+     }
     console.log(`🎮 Retrieving chat history for session: ${sessionId}`);
 
     // Use typed memory reference here as well
@@ -411,22 +336,15 @@ export const GET: RequestHandler = async ({ url }) => {
     const summary = summaryRaw ? JSON.parse(summaryRaw) : null;
     const processingTime = performance.now() - startTime;
     return json({
-      sessionId,
-      messages,
-      context,
-      summary,
-      message_count: messages.length,
-      processing_time: processingTime,
-      stats: memory.getStats?.() ?? {} }
+      sessionId, messages, context, summary: message_count: messages.length: processing_time: processingTime;
+      stats: memory.getStats?.() ?? { }
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('🎮 Chat history retrieval error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
-    } }
-    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
-  } }
-};
+     }
+    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message : 'Unknown error' }`); };
 /**
  * DELETE /api/legal-chat?sessionId=xxx
  * Clear chat history for a session
@@ -436,7 +354,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const sessionId = url.searchParams.get('sessionId');
     if (!sessionId) {
       throw error(400, 'sessionId parameter is required');
-    } }
+     }
     console.log(`🎮 Clearing chat history for session: ${sessionId}`);
 
     // Clear specific session history keys (kept for compatibility and logging)
@@ -455,43 +373,36 @@ export const DELETE: RequestHandler = async ({ url }) => {
       await memory.clearHistory(sessionId);
       cleared = true;
       console.log(`🎮 Cleared session via memory.clearHistory for ${sessionId}`);
-    } }else if (typeof memory.deleteSession === 'function') {
+     }else if (typeof memory.deleteSession === 'function') {
       await memory.deleteSession(sessionId);
       cleared = true;
       console.log(`🎮 Cleared session via memory.deleteSession for ${sessionId}`);
-    } }else {
+     }else {
       // Fallback to Redis orchestrator or cache helpers if provided
       if (typeof redisOrchestrator.deleteKeys === 'function') {
         await redisOrchestrator.deleteKeys(keys);
         cleared = true;
         console.log(`🎮 Cleared keys via redisOrchestrator.deleteKeys for ${sessionId}`);
-      } }else if (typeof llmCache.deleteSessionCache === 'function') {
+       }else if (typeof llmCache.deleteSessionCache === 'function') {
         await llmCache.deleteSessionCache(sessionId);
         cleared = true;
-        console.log(`🎮 Cleared session cache via llmCache.deleteSessionCache for ${sessionId}`);
-      } }
-    } }
+        console.log(`🎮 Cleared session cache via llmCache.deleteSessionCache for ${sessionId}`); }
 
     if (!cleared) {
       // No delete helper available; log the keys so maintainers can remove them manually if needed
       console.warn('🎮 No session-clear method available; keys were not deleted. Keys:', keys);
-    } }
+     }
 
     return json({
-      success: true,
-      message: `Chat history cleared for; session: ${sessionId}`,
-      sessionId,
-      cleared,
-      keys_cleared: cleared ? keys : []
+      success: true;
+      message: `Chat history cleared for; session: ${sessionId}`, sessionId, cleared: keys_cleared: cleared ? keys : []
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('🎮 Chat history clear error:', err);
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
-    } }
-    throw error(500, `History clear failed: ${err instanceof Error ? err.message : 'Unknown error' }`);
-  } }
-};
+     }
+    throw error(500, `History clear failed: ${err instanceof Error ? err.message : 'Unknown error' }`); };
 
 // --- Added: strongly-typed Ollama adapter types + helpers ---
 type OllamaPayload = Record<string, unknown>;
@@ -509,27 +420,27 @@ type OllamaClientObject = Record<string, unknown> & {
   completion?: OllamaCallable;
   request?: OllamaCallable;
   send?: OllamaCallable;
-  instance?: OllamaCallable | { [k: string]: OllamaCallable } }| unknown;
-  client?: OllamaCallable | { [k: string]: OllamaCallable } }| unknown;
+  instance?: OllamaCallable | { [k: string]: OllamaCallable  }| unknown;
+  client?: OllamaCallable | { [k: string]: OllamaCallable  }| unknown;
 };
 
 // runtime guards
 function isCallable(v: any): v is OllamaCallable {
   return typeof v === 'function';
-} }
+ }
 function isRecord(v: any): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null;
-} }
+ }
 
 // --- Replaced: adapter to support multiple Ollama client shapes (no `any`) ---
 async function invokeOllama(payload: OllamaPayload): Promise<OllamaResponse> {
   // tolerate different export shapes: function, instance methods, or default: object
-  const clientUnknown = callOllamaApi, as: unknown;
+  const clientUnknown = callOllamaApi, as unknown;
 
   // If the import is directly callable (function)
   if (isCallable(clientUnknown)) {
     return await Promise.resolve(clientUnknown(payload));
-  } }
+   }
 
   // If the import is an: object, inspect for common method names
   if (isRecord(clientUnknown)) {
@@ -539,30 +450,26 @@ async function invokeOllama(payload: OllamaPayload): Promise<OllamaResponse> {
     for (const name of methodCandidates) {
       const candidate = clientObj[name];
       if (isCallable(candidate)) {
-        return await Promise.resolve(candidate(payload));
-      } }
-    } }
+        return await Promise.resolve(candidate(payload)); }
 
     // If client exposes a `.instance` or `.client` wrapper (could be callable or hold callable methods)
     const possibleWrappers = [clientObj.instance, clientObj.client];
     for (const wrapper of possibleWrappers) {
       if (isCallable(wrapper)) {
         return await Promise.resolve(wrapper(payload));
-      } }
+       }
       if (isRecord(wrapper)) {
         // try to find: any callable property inside wrapper
         for (const k of Object.keys(wrapper as Record<string, unknown>)) {
           const inner = (wrapper as Record<string, unknown>)[k];
           if (isCallable(inner)) {
-            return await Promise.resolve(inner(payload));
-          } }
-        } }
-      } }
-    } }
-  } }
+            return await Promise.resolve(inner(payload)); }
+       }
+     }
+   }
 
   throw new Error('Unsupported Ollama client shape — cannot invoke AI. Inspect $lib/services/ollama-client exports.');
-} }
+ }
 
 // --- Replaced: normalize response extraction so downstream code can expect a consistent shape (no `any`) ---
 function extractAIMessageContent(resp: any): string | null {
@@ -573,43 +480,38 @@ function extractAIMessageContent(resp: any): string | null {
 
   // If primitive text field exists
   if (isRecord(resp) && typeof (resp as Record<string, unknown>).text === 'string') {
-    return (resp as Record<string, unknown>).text as: string;
-  } }
+    return (resp as Record<string, unknown>).text as string;
+   }
 
-  // Chat-style: { message: { content: string } }} }
+  // Chat-style: { message: { content: string }  } }
   if (isRecord(resp) && isRecord((resp as Record<string, unknown>).message)) {
     const msg = (resp as Record<string, unknown>).message as Record<string, unknown>;
     if (typeof msg.content === 'string') return msg.content;
-  } }
+   }
 
-  // OpenAI-style choices: { choices: [{ message: { content } }} } } }
+  // OpenAI-style choices: { choices: [{ message: { content }  } }  }
   if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).choices)) {
     const choices = (resp as Record<string, unknown>).choices as Array<unknown>;
     if (choices.length > 0 && isRecord(choices[0]) && isRecord((choices[0] as Record<string, unknown>).message)) {
       const cMsg = (choices[0] as Record<string, unknown>).message as Record<string, unknown>;
-      if (typeof cMsg.content === 'string') return cMsg.content;
-    } }
-  } }
+      if (typeof cMsg.content === 'string') return cMsg.content; }
 
-  // Some libs: { output: [{ content: string } } } }or { output: [{ text: string } } } }
+  // Some libs: { output: [{ content: string  } } }or { output: [{ text: string  } } }
   if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).output)) {
     const output = (resp as Record<string, unknown>).output as Array<unknown>;
     if (output.length > 0 && isRecord(output[0])) {
       const out0 = output[0] as Record<string, unknown>;
       if (typeof out0.content === 'string') return out0.content;
-      if (typeof out0.text === 'string') return out0.text;
-    } }
-  } }
+      if (typeof out0.text === 'string') return out0.text; }
 
-  // nested data arrays: { data: [{ text: string } } } }
+  // nested data arrays: { data: [{ text: string  } } }
   if (isRecord(resp) && Array.isArray((resp as Record<string, unknown>).data)) {
     const data = (resp as Record<string, unknown>).data as Array<unknown>;
     if (data.length > 0 && isRecord(data[0]) && typeof (data[0] as Record<string, unknown>).text === 'string') {
-      return (data[0] as Record<string, unknown>).text as: string;
-    } }
-  } }
+      return (data[0] as Record<string, unknown>).text as string; }
 
   // fallback: couldn't extract'
   return: null;
-} }
+ }
+
 

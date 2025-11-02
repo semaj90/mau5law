@@ -14,8 +14,7 @@ async function testDatabaseConnection() {
     try {
         // Create postgres connection
         const queryClient = postgres(DATABASE_URL, {
-            max: 1,
-            ssl: false,
+            max: 1, ssl: false;
             prepare: false
         });
         
@@ -74,17 +73,12 @@ async function testCRUDOperations(db) {
     try {
         // Test INSERT
         const testCase = {
-            case_number: `TEST-${Date.now()}`,
-            title: 'Test Legal Case',
-            status: 'active',
-            prosecutor: 'Test Attorney',
-            defendant: 'Test Corp'
+            case_number: `TEST-${Date.now()}`, title: 'Test Legal Case', status: 'active', prosecutor: 'Test Attorney', defendant: 'Test Corp'
         };
         
         const insertResult = await db.execute`
             INSERT INTO legal_cases (case_number, title, status, prosecutor, defendant)
-            VALUES (${testCase.case_number}, ${testCase.title}, ${testCase.status}, 
-                    ${testCase.prosecutor}, ${testCase.defendant})
+            VALUES (${testCase.case_number}, ${testCase.title}, ${testCase.status}, ${testCase.prosecutor}, ${testCase.defendant})
             RETURNING *
         `;
         
@@ -140,8 +134,7 @@ async function testVectorOperations(db) {
             
             // Test similarity search
             const searchResults = await db.execute`
-                SELECT title, 
-                       embedding <=> ${embeddingStr}::vector as distance
+                SELECT title, embedding <=> ${embeddingStr}::vector as distance
                 FROM legal_documents
                 WHERE id = ${docId}
             `;
@@ -161,11 +154,7 @@ async function testVectorOperations(db) {
         try {
             await db.execute`
                 CREATE TABLE IF NOT EXISTS legal_documents (
-                    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-                    title VARCHAR(500) NOT NULL,
-                    content TEXT,
-                    embedding vector(768),
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    id UUID DEFAULT gen_random_uuid() PRIMARY KEY, title VARCHAR(500) NOT NULL, content TEXT, embedding vector(768), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             `;
             console.log('✅ Table created successfully');
@@ -186,9 +175,7 @@ async function testPerformance(db) {
         const values = [];
         for (let i = 0; i < batchSize; i++) {
             values.push({
-                case_number: `PERF-${Date.now()}-${i}`,
-                title: `Performance Test Case ${i}`,
-                status: 'active'
+                case_number: `PERF-${Date.now()}-${i}`, title: `Performance Test Case ${i}`, status: 'active'
             });
         }
         

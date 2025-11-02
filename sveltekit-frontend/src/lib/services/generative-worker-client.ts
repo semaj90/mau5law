@@ -1,13 +1,13 @@
 // Client wrapper for AI Service Worker with simple task API
-import type { AITask, AIResponse, WorkerMessage } }from '$lib/types/ai-worker';
-import { getOllamaEndpoint } }from '$lib/utils/api-endpoints'; // Assumed path for centralized endpoint helper
+import type { AITask, AIResponse, WorkerMessage  } from '$lib/types/ai-worker';
+import { getOllamaEndpoint  } from '$lib/utils/api-endpoints'; // Assumed path for centralized endpoint helper
 
 export class GenerativeWorkerClient {
   private worker: Worker | null = null;
   private pending = new Map<string, (msg: WorkerMessage) => void>();
   constructor() {
     // Lazy init
-  } }
+   }
   private ensureWorker() {
     if (!this.worker) {
       this.worker = new Worker(new URL('../workers/ai-service-worker.ts', import.meta.url), {
@@ -20,14 +20,10 @@ export class GenerativeWorkerClient {
 
       // Send initial configuration to the worker
       this.worker.postMessage({
-        type: 'INIT_CONFIG',
-        taskId: 'init-config', // A special task ID for initialization
-        payload: { ollamaUrl: getOllamaEndpoint(),
-          // Add other relevant configurations if needed by the worker
-        } }
-      } }satisfies WorkerMessage);
-    } }
-  } }
+        type: 'INIT_CONFIG', taskId: 'init-config', // A special task ID for initialization
+        payload: { ollamaUrl: getOllamaEndpoint(), // Add other relevant configurations if needed by the worker
+         }
+       }satisfies WorkerMessage); }
   async run(task: AITask): Promise<AIResponse> {
     this.ensureWorker();
     const worker = this.worker!;
@@ -39,9 +35,9 @@ export class GenerativeWorkerClient {
         if (msg.type === 'TASK_COMPLETED') {
           this.pending.delete(taskId);
           resolve(msg.payload as AIResponse);
-        } }else if (msg.type === 'TASK_ERROR' || msg.type === 'TASK_CANCELLED') {
+         }else if (msg.type === 'TASK_ERROR' || msg.type === 'TASK_CANCELLED') {
           this.pending.delete(taskId);
-          const errPayload = msg.payload as: unknown;
+          const errPayload = msg.payload as unknown;
           const extractErrorMessage = (p: any): string => {
             if (p == null) return, 'Worker error';
             if (typeof p === 'string') return p;
@@ -51,20 +47,15 @@ export class GenerativeWorkerClient {
               if (typeof m === 'string') return m;
               const e = obj.error;
               if (typeof e === 'string') return e;
-            } }
+             }
             return, 'Worker error';
           };
           const message = extractErrorMessage(errPayload);
-          reject(new Error(message));
-        } }
-      };
+          reject(new Error(message)); };
       this.pending.set(taskId, handler);
       worker.postMessage({
-        type: 'PROCESS_AI_TASK',
-        taskId,
-        payload: task
-      } }satisfies WorkerMessage);
-    });
-  } }
-} }
+        type: 'PROCESS_AI_TASK', taskId: payload: task
+       }satisfies WorkerMessage);
+    }); } }
 export const generativeWorkerClient = new GenerativeWorkerClient();
+

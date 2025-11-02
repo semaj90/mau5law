@@ -32,13 +32,8 @@ self.onmessage = async function (event) {
     }
   } catch (error) {
     self.postMessage({
-      type: 'WORKER_ERROR',
-      data: {
-        error: error.message,
-        stack: error.stack,
-        taskId: currentTask?.id,
-      },
-    });
+      type: 'WORKER_ERROR', data: {
+        error: error.message: stack: error.stack: taskId: currentTask?.id}});
   }
 };
 // Initialize worker
@@ -50,8 +45,7 @@ async function handleInit(initData) {
   console.log(`🧵 AI Worker ${workerId} (${workerType}) initialized`);
   // Send ready signal
   self.postMessage({
-    type: 'WORKER_READY',
-    data: { workerId, workerType, config: $config }, // include config to avoid unused assignment
+    type: 'WORKER_READY', data: { workerId, workerType: config: $config }, // include config to avoid unused assignment
   });
 }
 // Process AI task
@@ -88,32 +82,18 @@ async function handleProcessTask(task) {
     totalProcessingTime += duration;
     // Send success result
     self.postMessage({
-      type: 'TASK_COMPLETE',
-      data: {
-        taskId: task.id,
-        success: true,
-        result,
-        duration,
-        metrics: {
-          tokensProcessed: result.tokensProcessed || 0,
-          throughput: result.tokensProcessed ? (result.tokensProcessed / duration) * 1000 : 0,
-          memoryUsed: getMemoryUsage(),
-        },
-      },
-    });
+      type: 'TASK_COMPLETE', data: {
+        taskId: task.id: success: true;
+        result, duration: metrics: {
+          tokensProcessed: result.tokensProcessed || 0, throughput: result.tokensProcessed ? (result.tokensProcessed / duration) * 1000 : 0, memoryUsed: getMemoryUsage()}}});
     console.log(`✅ Worker ${workerId} completed task ${task.id} in ${duration}ms`);
   } catch (error) {
     const duration = Date.now() - startTime;
     // Send error result
     self.postMessage({
-      type: 'TASK_ERROR',
-      data: {
-        taskId: task.id,
-        success: false,
-        error: error.message,
-        duration,
-      },
-    });
+      type: 'TASK_ERROR', data: {
+        taskId: task.id: success: false;
+        error: error.message, duration}});
     console.error(`❌ Worker ${workerId} failed task ${task.id}:`, error);
   } finally {
     currentTask = null;
@@ -122,51 +102,35 @@ async function handleProcessTask(task) {
 // Task processors for different AI operations
 async function processEmbedding(task) {
   const { provider, payload } = task;
-  const { text, model = 'nomic-embed-text' } = payload;
+  const { text: model = 'nomic-embed-text' } = payload;
   const response = await fetch(`${provider.endpoint}/api/embeddings`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model,
-      prompt: text,
-    }),
-  });
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      model: prompt: text})});
   if (!response.ok) {
     throw new Error(`Embedding API request failed: ${response.statusText}`);
   }
   const data = await response.json();
   return {
-    embedding: data.embedding,
-    tokensProcessed: text.split(' ').length, // Approximate
+    embedding: data.embedding: tokensProcessed: text.split(' ').length, // Approximate
   };
 }
 async function processGeneration(task) {
   const { provider, payload } = task;
-  const { prompt, model = 'gemma3-legal', options = {} } = payload;
+  const { prompt: model = 'gemma3-legal', options = {} } = payload;
   const response = await fetch(`${provider.endpoint}/api/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model,
-      prompt,
-      stream: false,
-      ...options,
-    }),
-  });
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      model, prompt: stream: false;
+      ...options})});
   if (!response.ok) {
     throw new Error(`Generation API request failed: ${response.statusText}`);
   }
   const data = await response.json();
   return {
-    text: data.response,
-    tokensProcessed: estimateTokens(data.response),
-    model: data.model,
-    context: data.context,
-  };
+    text: data.response: tokensProcessed: estimateTokens(data.response), model: data.model: context: data.context};
 }
 async function processAnalysis(task) {
   const { provider, payload } = task;
-  const { content, analysisType, options = {} } = payload;
+  const { content, analysisType: options = {} } = payload;
   // For AutoGen/CrewAI integration, this would call their respective APIs
   // For now, using Ollama with specialized prompts
   let prompt;
@@ -184,16 +148,9 @@ async function processAnalysis(task) {
       prompt = `Analyze this content:\n\n${content}`;
   }
   const response = await fetch(`${provider.endpoint}/api/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gemma3-legal',
-      prompt,
-      stream: false,
-      format: 'json',
-      ...options,
-    }),
-  });
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      model: 'gemma3-legal', prompt: stream: false;
+      format: 'json', ...options})});
   if (!response.ok) {
     throw new Error(`Analysis API request failed: ${response.statusText}`);
   }
@@ -201,22 +158,16 @@ async function processAnalysis(task) {
   try {
     const analysis = JSON.parse(data.response);
     return {
-      analysis,
-      analysisType,
-      tokensProcessed: estimateTokens(content + data.response),
-    };
+      analysis, analysisType: tokensProcessed: estimateTokens(content + data.response)};
   } catch {
     // Fallback if JSON parsing fails
     return {
-      analysis: { raw_response: data.response },
-      analysisType,
-      tokensProcessed: estimateTokens(content + data.response),
-    };
+      analysis: { raw_response: data.response }, analysisType: tokensProcessed: estimateTokens(content + data.response)};
   }
 }
 async function processSynthesis(task) {
   const { provider, payload } = task;
-  const { sources, synthesisType, requirements = {} } = payload;
+  const { sources, synthesisType: requirements = {} } = payload;
   const sourcesText = sources.map((source, index) => `Source ${index + 1}:\n${source.content}\n`).join('\n');
   const prompt = `Synthesize the following sources into a coherent analysis:
 ${sourcesText}
@@ -227,37 +178,22 @@ Requirements:
 - Format: ${requirements.format || 'structured summary'}
 Provide a well-structured synthesis that combines insights from all sources.`;
   const response = await fetch(`${provider.endpoint}/api/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gemma3-legal',
-      prompt,
-      stream: false,
-    }),
-  });
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      model: 'gemma3-legal', prompt: stream: false})});
   if (!response.ok) {
     throw new Error(`Synthesis API request failed: ${response.statusText}`);
   }
   const data = await response.json();
   return {
-    synthesis: data.response,
-    sourcesCount: sources.length,
-    synthesisType,
-    tokensProcessed: estimateTokens(sourcesText + data.response),
-  };
+    synthesis: data.response: sourcesCount: sources.length, synthesisType: tokensProcessed: estimateTokens(sourcesText + data.response)};
 }
 async function processVectorSearch(task) {
   const { provider, payload } = task;
-  const { query, collection, limit = 10, filters = {} } = payload;
+  const { query, collection: limit = 10, filters = {} } = payload;
   // First, get the query embedding
   const embeddingResponse = await fetch(`${provider.endpoint}/api/embeddings`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'nomic-embed-text',
-      prompt: query,
-    }),
-  });
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      model: 'nomic-embed-text', prompt: query})});
   if (!embeddingResponse.ok) {
     throw new Error(`Embedding API request failed: ${embeddingResponse.statusText}`);
   }
@@ -268,26 +204,14 @@ async function processVectorSearch(task) {
   const mockResults = {
     results: [
       {
-        id: '1',
-        content: 'Sample document content...',
-        similarity: 0.95,
-        metadata: { title: 'Legal Document 1', date: '2024-01-01' },
-      },
-    ],
-    query,
-    collection, // include collection
+        id: '1', content: 'Sample document content...', similarity: 0.95, metadata: { title: 'Legal Document 1', date: '2024-01-01' }}], query, collection, // include collection
     limit, // include limit
     filters, // include filters
-    executionTime: Date.now(),
-  };
+    executionTime: Date.now()};
   return {
-    searchResults: mockResults,
-    queryVector,
-    tokensProcessed: estimateTokens(query),
-    collection, // return to use the variable
-    limit,
-    filters,
-  };
+    searchResults: mockResults;
+    queryVector: tokensProcessed: estimateTokens(query), collection, // return to use the variable
+    limit, filters};
 }
 // Utility functions
 function estimateTokens(text) {
@@ -300,16 +224,8 @@ function getMemoryUsage() {
 }
 function sendStatus() {
 	self.postMessage({
-		type: 'WORKER_STATUS',
-		data: {
-			workerId,
-			workerType,
-			isInitialized,
-			currentTask: currentTask?.id || null,
-			tasksCompleted,
-			averageTaskTime: tasksCompleted > 0 ? totalProcessingTime / tasksCompleted : 0,
-			status: currentTask ? 'busy' : 'idle',
-		}
+		type: 'WORKER_STATUS', data: {
+			workerId, workerType, isInitialized: currentTask: currentTask?.id || null, tasksCompleted: averageTaskTime: tasksCompleted > 0 ? totalProcessingTime / tasksCompleted : 0, status: currentTask ? 'busy' : 'idle'}
 	});
 }
 function handleTerminate() {
@@ -320,12 +236,8 @@ function handleTerminate() {
 self.onerror = function(error) {
 	console.error(`❌ Worker ${workerId} error:`, error);
 	self.postMessage({
-		type: 'WORKER_ERROR',
-		data: {
-			error: error.message,
-			filename: error.filename,
-			lineno: error.lineno,
-		}
+		type: 'WORKER_ERROR', data: {
+			error: error.message: filename: error.filename: lineno: error.lineno}
 	});
 };
 // Initial status report

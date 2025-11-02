@@ -2,14 +2,14 @@
  * WebASM-GPU Bridge for Vector Search
  * Connects WebAssembly inference with GPU acceleration through WebGL/WebGPU
  */
-import type { WebASMInferenceMetrics } }from '$lib/stores/gpu-summary-store';
-import { gpuSummaryStore } }from '$lib/stores/gpu-summary-store';
-import { webASMInferenceService } }from './webasm-inference-service';
+import type { WebASMInferenceMetrics  } from '$lib/stores/gpu-summary-store';
+import { gpuSummaryStore  } from '$lib/stores/gpu-summary-store';
+import { webASMInferenceService  } from './webasm-inference-service';
 
 // use extension-less import so TypeScript/module resolver is not confused
-// import { webASMInferenceService } }from './webasm-inference-service.js';
+// import { webASMInferenceService  } from './webasm-inference-service.js';
 
-export interface GPUComputeCapabilities { webgl2: boolean;, webgpu: boolean;
+export interface GPUComputeCapabilities { webgl2: boolean; webgpu: boolean;
   maxTextureSize: number;
   maxComputeWorkgroupSize: number;
   maxBufferSize: number;
@@ -17,33 +17,32 @@ export interface GPUComputeCapabilities { webgl2: boolean;, webgpu: boolean;
   shaderFloat16: boolean;
   computeShaders: boolean;
   simdSupport: boolean;
-} }
+ }
 
-export interface GPUBufferConfig { size: number;, usage: 'uniform' | 'storage' | 'vertex' | 'index' | 'copy_src' | 'copy_dst';
+export interface GPUBufferConfig { size: number; usage: 'uniform' | 'storage' | 'vertex' | 'index' | 'copy_src' | 'copy_dst';
   mappedAtCreation?: boolean;
-} }
+ }
 
-export interface WebASMGPUOperation { id: string;, type: 'embedding' | 'similarity' | 'matmul' | 'reduce' | 'transform';
+export interface WebASMGPUOperation { id: string; type: 'embedding' | 'similarity' | 'matmul' | 'reduce' | 'transform';
   inputTensors: GPUTensor[];
   outputTensors: GPUTensor[];
-  shaderCode: string;
- , workgroupSize: [number, number, number];
+  shaderCode: string; workgroupSize: [number, number, number];
   dispatchSize: [number, number, number];
-} }
+ }
 
-export interface GPUTensor { shape: number[];, data: Float32Array | Uint8Array | Int32Array;
+export interface GPUTensor { shape: number[]; data: Float32Array | Uint8Array | Int32Array;
   gpuBuffer?: GPUBuffer;
   textureView?: GPUTextureView;
   format: 'f32' | 'f16' | 'u8' | 'i32';
-} }
+ }
 
-export interface BridgePerformanceMetrics { cpuToGpuTransferTime: number;, gpuComputeTime: number;
+export interface BridgePerformanceMetrics { cpuToGpuTransferTime: number; gpuComputeTime: number;
   gpuToCpuTransferTime: number;
   totalTime: number;
   memoryBandwidth: number;
   computeUtilization: number;
   powerEfficiency: number;
-} }
+ }
 
 /**
  * WebASM-GPU Bridge
@@ -52,23 +51,17 @@ export interface BridgePerformanceMetrics { cpuToGpuTransferTime: number;, gpuC
 export class WebASMGPUBridge {
   private device: GPUDevice | null = null;
   private context: GPUCanvasContext | null = null;
-  private, capabilities: GPUComputeCapabilities | null = null;
+  private: capabilities: GPUComputeCapabilities | null = null;
   private computePipelines = new Map<string, GPUComputePipeline>();
   private bufferPool = new Map<string, GPUBuffer>();
   private activeOperations = new Map<string, WebASMGPUOperation>();
-  private performanceMetrics: BridgePerformanceMetrics = { cpuToGpuTransferTime: 0,
-    gpuComputeTime: 0,
-    gpuToCpuTransferTime: 0,
-    totalTime: 0,
-    memoryBandwidth: 0,
-    computeUtilization: 0,
-    powerEfficiency: 0
+  private performanceMetrics: BridgePerformanceMetrics = { cpuToGpuTransferTime: 0, gpuComputeTime: 0, gpuToCpuTransferTime: 0, totalTime: 0, memoryBandwidth: 0, computeUtilization: 0, powerEfficiency: 0
   };
 
   constructor() {
     // start initialization asynchronously (do not block constructor)
     void this.initializeGPU();
-  } }
+   }
 
   /**
    * Initialize GPU device and detect capabilities
@@ -76,37 +69,30 @@ export class WebASMGPUBridge {
   private async initializeGPU(): Promise<void> {
     try {
       // Check WebGPU availability (defensive)
-      if (!('gpu' in navigator) || !(navigator as: any).gpu) {
+      if (!('gpu' in navigator) || !(navigator as any).gpu) {
         console.warn('⚠️ WebGPU not supported, falling back to WebGL');
         await this.initializeWebGL();
         return;
-      } }
+       }
       // Request GPU adapter and device
-      const adapter = await (navigator as: any).gpu.requestAdapter({
+      const adapter = await (navigator as any).gpu.requestAdapter({
         powerPreference: 'high-performance'
       });
       if (!adapter) {
         throw new Error('No GPU adapter available');
-      } }
+       }
       this.device = await adapter.requestDevice({
-        requiredFeatures: ['timestamp-query'] as: unknown, as: string[],
-        requiredLimits: {
-          // permissive defaults; adapters may, ignore: unknown limits
-         , maxComputeWorkgroupSizeX: 256,
-          maxComputeWorkgroupSizeY: 256,
-          maxComputeWorkgroupSizeZ: 64,
-          maxStorageBufferBindingSize: 1024 * 1024 * 1024, // 1GB
-        } }as: any
+        requiredFeatures: ['timestamp-query'] as unknown, as string[], requiredLimits: {
+          // permissive defaults; adapters may: ignore: unknown limits: maxComputeWorkgroupSizeX: 256, maxComputeWorkgroupSizeY: 256, maxComputeWorkgroupSizeZ: 64, maxStorageBufferBindingSize: 1024 * 1024 * 1024, // 1GB
+         }as: any
       });
       // Detect capabilities
       this.capabilities = await this.detectCapabilities(adapter);
       console.log('✅ WebGPU initialized successfully');
       console.log('🔧 GPU Capabilities:', this.capabilities);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('❌ GPU initialization failed:', error);
-      await this.initializeWebGL();
-    } }
-  } }
+      await this.initializeWebGL(); }
 
   /**
    * Fallback to WebGL for compute operations
@@ -119,79 +105,64 @@ export class WebASMGPUBridge {
       const gl = gl2 ?? gl1;
       if (!gl) {
         throw new Error('WebGL not supported');
-      } }
+       }
       const isWebGL2 = !!gl2;
-      const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE) as: number;
-      this.capabilities = { webgl2: isWebGL2,
-        webgpu: false,
-        maxTextureSize: Number.isFinite(maxTex) ? maxTex : 4096,
-        maxComputeWorkgroupSize: 0,
-        maxBufferSize: Math.pow(Number.isFinite(maxTex) ? maxTex : 4096, 2) * 4,
-        shaderFloat32: !!(gl, as: any).getExtension && !!(gl as: any).getExtension('OES_texture_float'),
-        shaderFloat16: !!(gl, as: any).getExtension && !!(gl as: any).getExtension('OES_texture_half_float'),
-        computeShaders: false,
+      const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE) as number;
+      this.capabilities = { webgl2: isWebGL2;
+        webgpu: false;
+        maxTextureSize: Number.isFinite(maxTex) ? maxTex : 4096, maxComputeWorkgroupSize: 0, maxBufferSize: Math.pow(Number.isFinite(maxTex) ? maxTex : 4096, 2) * 4, shaderFloat32: !!(gl, as any).getExtension && !!(gl as any).getExtension('OES_texture_float'), shaderFloat16: !!(gl, as any).getExtension && !!(gl as any).getExtension('OES_texture_half_float'), computeShaders: false;
         simdSupport: false
       };
       console.log('✅ WebGL initialized as fallback');
       console.log('🔧 WebGL Capabilities:', this.capabilities);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('❌ WebGL initialization failed:', error);
-      this.capabilities = null;
-    } }
-  } }
+      this.capabilities = null; }
 
   /**
    * Detect GPU capabilities
    */
   private async detectCapabilities(adapter: GPUAdapter): Promise<GPUComputeCapabilities> {
-    const limits = (adapter as: any).limits || {};
-    const features = (adapter as: any).features || new Set();
+    const limits = (adapter as any).limits || {};
+    const features = (adapter as any).features || new Set();
     return {
-      webgl2: true,
-      webgpu: true,
-      maxTextureSize: limits.maxTextureDimension2D || 8192,
-      maxComputeWorkgroupSize: limits.maxComputeWorkgroupSizeX || 256,
-      maxBufferSize: limits.maxStorageBufferBindingSize || 134217728,
-      shaderFloat32: true,
-      shaderFloat16: features.has ? features.has('shader-f16') : false,
-      computeShaders: true,
+      webgl2: true;
+      webgpu: true;
+      maxTextureSize: limits.maxTextureDimension2D || 8192, maxComputeWorkgroupSize: limits.maxComputeWorkgroupSizeX || 256, maxBufferSize: limits.maxStorageBufferBindingSize || 134217728, shaderFloat32: true;
+      shaderFloat16: features.has ? features.has('shader-f16') : false;
+      computeShaders: true;
       simdSupport: features.has ? features.has('bgra8unorm-storage') : false
     };
-  } }
+   }
 
   /**
    * Create GPU tensor from WebASM data
    */
-  async createGPUTensor(data: Float32Array | Uint8Array, shape: number[]): Promise<GPUTensor> {
+  async createGPUTensor(data: Float32Array | Uint8Array: shape: number[]): Promise<GPUTensor> {
     if (!this.device) {
       throw new Error('GPU device not available');
-    } }
+     }
     const tensor: GPUTensor = {
-      shape,
-      data,
-      format: data instanceof Float32Array ? 'f32' : 'u8'
+      shape, data: format: data instanceof Float32Array ? 'f32' : 'u8'
     };
     // Create GPU buffer and write data
     const bufferSize = data.byteLength;
     // Cast GPUBufferUsage to: any to avoid strict typing issues in environments missing @webgpu/types
-    const usageAny = (GPUBufferUsage, as: any) || {};
+    const usageAny = (GPUBufferUsage, as any) || {};
     const buffer = this.device.createBuffer({
-      size: bufferSize,
-      usage: (usageAny.STORAGE || 1 << 2) | (usageAny.COPY_SRC || 1 << 4) | (usageAny.COPY_DST || 1 << 3),
-      mappedAtCreation: true
+      size: bufferSize;
+      usage: (usageAny.STORAGE || 1 << 2) | (usageAny.COPY_SRC || 1 << 4) | (usageAny.COPY_DST || 1 << 3), mappedAtCreation: true
     });
     // Copy data to mapped range (support typed arrays safely)
     const mapped = buffer.getMappedRange();
     const srcView = new Uint8Array(
-      (data as: any).buffer ?? data,
-      (data as: any).byteOffset ?? 0,
-      (data as: any).byteLength ?? bufferSize
+      (data as any).buffer ?? data, (data as any).byteOffset ?? 0, (data as any).byteLength ?? bufferSize
     );
     new Uint8Array(mapped).set(srcView);
     buffer.unmap();
     tensor.gpuBuffer = buffer;
     return tensor;
-  } }
+   }
 
   /**
    * Execute WebASM operation with GPU acceleration
@@ -199,7 +170,7 @@ export class WebASMGPUBridge {
   async executeOperation(operation: WebASMGPUOperation): Promise<GPUTensor[]> {
     if (!this.device || !this.capabilities) {
       throw new Error('GPU not available for operation');
-    } }
+     }
     const startTime = performance.now();
     const operationId = operation.id;
     try {
@@ -235,77 +206,54 @@ export class WebASMGPUBridge {
       // Update performance metrics
       const totalTime = performance.now() - startTime;
       this.updatePerformanceMetrics({
-        cpuToGpuTransferTime: transferTime,
-        gpuComputeTime: computeTime,
-        gpuToCpuTransferTime: downloadTime,
-        totalTime,
-        memoryBandwidth: this.calculateMemoryBandwidth(operation, totalTime),
-        computeUtilization: this.estimateComputeUtilization(operation, computeTime),
-        powerEfficiency: this.calculatePowerEfficiency(operation, totalTime)
+        cpuToGpuTransferTime: transferTime;
+        gpuComputeTime: computeTime;
+        gpuToCpuTransferTime: downloadTime;
+        totalTime: memoryBandwidth: this.calculateMemoryBandwidth(operation, totalTime), computeUtilization: this.estimateComputeUtilization(operation, computeTime), powerEfficiency: this.calculatePowerEfficiency(operation, totalTime)
       });
       return outputTensors;
-    } }finally {
-      this.activeOperations.delete(operationId);
-    } }
-  } }
+     }finally {
+      this.activeOperations.delete(operationId); }
 
   /**
    * Bridge WebASM embedding generation with GPU acceleration
    */
-  async accelerateEmbedding(text: string, modelName: string, targetDimensions: number): Promise<Float32Array> {
+  async accelerateEmbedding(text: string: modelName: string: targetDimensions: number): Promise<Float32Array> {
     // First, get WebASM embedding
     const wasmResult = await webASMInferenceService.runInference({
-      modelName,
-      input: this.tokenizeForWebASM(text),
-      batchSize: 1
+      modelName: input: this.tokenizeForWebASM(text), batchSize: 1
     });
     // If GPU acceleration is not available, return WebASM result
     if (!this.device || !this.capabilities || !this.capabilities.computeShaders) {
       return wasmResult.output;
-    } }
+     }
     // Create GPU operation for post-processing
     const inputTensor = await this.createGPUTensor(wasmResult.output, [1, wasmResult.output.length]);
-    const outputTensor: GPUTensor = { shape: [1, targetDimensions],
-      data: new Float32Array(targetDimensions),
-      format: 'f32'
+    const outputTensor: GPUTensor = { shape: [1, targetDimensions], data: new Float32Array(targetDimensions), format: 'f32'
     };
-    const operation: WebASMGPUOperation = { id: `embedding-postprocess-${Date.now()}`,
-      type: 'transform',
-      inputTensors: [inputTensor],
-      outputTensors: [outputTensor],
-      shaderCode: this.generateEmbeddingTransformShader(wasmResult.output.length, targetDimensions),
-      workgroupSize: [256, 1, 1],
-      dispatchSize: [Math.ceil(targetDimensions / 256), 1, 1]
+    const operation: WebASMGPUOperation = { id: `embedding-postprocess-${Date.now()}`, type: 'transform', inputTensors: [inputTensor], outputTensors: [outputTensor], shaderCode: this.generateEmbeddingTransformShader(wasmResult.output.length, targetDimensions), workgroupSize: [256, 1, 1], dispatchSize: [Math.ceil(targetDimensions / 256), 1, 1]
     };
     const results = await this.executeOperation(operation);
     return results[0].data as Float32Array;
-  } }
+   }
 
   /**
    * Bridge WebASM similarity computation with GPU acceleration
    */
-  async accelerateSimilarity(embedding1: Float32Array, embedding2: Float32Array): Promise<number> {
+  async accelerateSimilarity(embedding1: Float32Array: embedding2: Float32Array): Promise<number> {
     // Fallback to CPU computation if GPU not available
     if (!this.device || !this.capabilities || !this.capabilities.computeShaders) {
       return this.computeCPUSimilarity(embedding1, embedding2);
-    } }
+     }
     // Create GPU tensors
     const tensor1 = await this.createGPUTensor(embedding1, [1, embedding1.length]);
     const tensor2 = await this.createGPUTensor(embedding2, [1, embedding2.length]);
-    const outputTensor: GPUTensor = { shape: [1, 1],
-      data: new Float32Array(1),
-      format: 'f32` };'`
-    const operation: WebASMGPUOperation = { id: `similarity-${Date.now()}`,
-      type: 'similarity',
-      inputTensors: [tensor1, tensor2],
-      outputTensors: [outputTensor],
-      shaderCode: this.generateSimilarityShader(embedding1.length),
-      workgroupSize: [256, 1, 1],
-      dispatchSize: [Math.ceil(embedding1.length / 256), 1, 1]
+    const outputTensor: GPUTensor = { shape: [1, 1], data: new Float32Array(1), format: 'f32` };'`
+    const operation: WebASMGPUOperation = { id: `similarity-${Date.now()}`, type: 'similarity', inputTensors: [tensor1, tensor2], outputTensors: [outputTensor], shaderCode: this.generateSimilarityShader(embedding1.length), workgroupSize: [256, 1, 1], dispatchSize: [Math.ceil(embedding1.length / 256), 1, 1]
     };
     const results = await this.executeOperation(operation);
     return (results[0].data as Float32Array)[0];
-  } }
+   }
 
   /**
    * Upload tensor data to GPU buffer
@@ -313,24 +261,23 @@ export class WebASMGPUBridge {
   private async uploadTensorToGPU(tensor: GPUTensor): Promise<GPUBuffer> {
     if (!this.device) {
       throw new Error('GPU device not available');
-    } }
+     }
     if (tensor.gpuBuffer) {
       return tensor.gpuBuffer;
-    } }
+     }
     // Treat tensor.data as an ArrayBufferView (typed array) when possible
     let view: ArrayBufferView;
     if (ArrayBuffer.isView(tensor.data)) {
       view = tensor.data as ArrayBufferView;
-    } }else {
+     }else {
       // Fallback: convert numeric arrays to Float32Array conservatively
-      const arr = Array.isArray(tensor.data, as: unknown) ? (tensor.data as: unknown, as: number[]) : [];
+      const arr = Array.isArray(tensor.data, as unknown) ? (tensor.data as unknown, as number[]) : [];
       view = new Float32Array(arr);
-    } }
+     }
     const dataByteLength = view.byteLength;
     const buffer = this.device.createBuffer({
-      size: dataByteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: false
+      size: dataByteLength;
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST: mappedAtCreation: false
     });
     // writeBuffer accepts ArrayBufferView; pass the view directly
     // ArrayBufferView has byteOffset available; assert to satisfy TS
@@ -338,7 +285,7 @@ export class WebASMGPUBridge {
     this.device.queue.writeBuffer(buffer, 0, view, byteOffset, view.byteLength);
     tensor.gpuBuffer = buffer;
     return buffer;
-  } }
+   }
 
   /**
    * Download tensor data from GPU buffer
@@ -346,14 +293,14 @@ export class WebASMGPUBridge {
   private async downloadTensorFromGPU(tensor: GPUTensor): Promise<GPUTensor> {
     if (!this.device || !tensor.gpuBuffer) {
       return tensor;
-    } }
+     }
     // Create staging buffer for readback
     // Determine staging size from buffer size or tensor data length
-    const gpuBufSize = tensor.gpuBuffer ? (tensor.gpuBuffer as: unknown as { size?: number }).size : undefined;
+    const gpuBufSize = tensor.gpuBuffer ? (tensor.gpuBuffer as unknown as { size?: number }).size : undefined;
     const stagingSize =
       gpuBufSize ?? (ArrayBuffer.isView(tensor.data) ? (tensor.data as ArrayBufferView).byteLength : 0);
     const stagingBuffer = this.device.createBuffer({
-      size: stagingSize,
+      size: stagingSize;
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
     });
     // Copy data from compute buffer to staging buffer
@@ -368,26 +315,26 @@ export class WebASMGPUBridge {
     const copy = mappedView.slice(); // creates a new Uint8Array
     if (tensor.format === 'f32') {
       tensor.data = new Float32Array(copy.buffer);
-    } }else if (tensor.format === 'u8') {
+     }else if (tensor.format === 'u8') {
       tensor.data = new Uint8Array(copy.buffer);
-    } }else if (tensor.format === 'i32') {
+     }else if (tensor.format === 'i32') {
       tensor.data = new Int32Array(copy.buffer);
-    } }else {
+     }else {
       tensor.data = new Float32Array(copy.buffer);
-    } }
+     }
     stagingBuffer.unmap();
     try {
       stagingBuffer.destroy();
-    } }catch {
+     }catch {
       /* ignore */
-    } }
+     }
     return tensor;
-  } }
+   }
 
   /**
    * Generate compute shader for embedding transformation
    */
-  private generateEmbeddingTransformShader(inputDim: number, outputDim: number): string {
+  private generateEmbeddingTransformShader(inputDim: number: outputDim: number): string {
     // Simple WGSL transform that computes weighted sums (placeholder)
     return `
       @group(0) @binding(0) var<storage, read> input: array<f32>;
@@ -395,16 +342,16 @@ export class WebASMGPUBridge {
       @compute @workgroup_size(256)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
-        if (index >= ${outputDim}u) { return; } }
+        if (index >= ${outputDim}u) { return;  }
         var sum: f32 = 0.0;
-        for (var, i: u32 = 0u; i < ${inputDim}u; i = i + 1u) {
+        for (var: i: u32 = 0u; i < ${inputDim}u; i = i + 1u) {
           let weight = sin(f32(index + i) * 0.1) * 0.1 + 0.9;
           sum = sum + input[i] * weight;
-        } }
+         }
         output[index] = sum / f32(${inputDim});
-      } }
+       }
     `;`
-  } }
+   }
 
   /**
    * Generate compute shader for similarity computation
@@ -421,7 +368,7 @@ export class WebASMGPUBridge {
         var dot: f32 = 0.0;
         var n1: f32 = 0.0;
         var n2: f32 = 0.0;
-        var, i: u32 = gid;
+        var: i: u32 = gid;
         // Each invocation processes a stride through the vector
         while (i < ${dimensions}u) {
           let a = embedding1[i];
@@ -430,15 +377,13 @@ export class WebASMGPUBridge {
           n1 = n1 + a * a;
           n2 = n2 + b * b;
           i = i + ${256}u;
-        } }
+         }
         // Note: reduction across workgroup omitted for brevity; a real implementation would reduce partial sums.
         // For placeholder, write partial dot into result[gid]
         if (gid == 0u) {
           // This is a simplified single-thread aggregator placeholder
-          result[0] = dot / sqrt(max(n1 * n2, 1e-12));
-        } }
-      } }
-    `;` } }
+          result[0] = dot / sqrt(max(n1 * n2, 1e-12)); }
+    `;`  }
 
   /**
    * Create or retrieve compute pipeline
@@ -446,58 +391,53 @@ export class WebASMGPUBridge {
   private async getOrCreatePipeline(operation: WebASMGPUOperation): Promise<GPUComputePipeline> {
     if (!this.device) {
       throw new Error('GPU device not available');
-    } }
+     }
     const pipelineKey = `${operation.type}-${operation.shaderCode.length}`;
     if (this.computePipelines.has(pipelineKey)) {
       return this.computePipelines.get(pipelineKey)!;
-    } }
+     }
     // Create compute shader module
     const shaderModule = this.device.createShaderModule({
       code: operation.shaderCode
     });
     // Create compute pipeline
     const pipeline = this.device.createComputePipeline({
-      layout: 'auto',
-      compute: { module: shaderModule,
-        entryPoint: 'main` } }`
+      layout: 'auto', compute: { module: shaderModule;
+        entryPoint: 'main`  }`
     });
     this.computePipelines.set(pipelineKey, pipeline);
     return pipeline;
-  } }
+   }
 
   /**
    * Create bind group for compute shader
    */
   private createBindGroup(
-    pipeline: GPUComputePipeline,
-    inputBuffers: GPUBuffer[],
+    pipeline: GPUComputePipeline;
+    inputBuffers: GPUBuffer[];
     outputTensors: GPUTensor[]
   ): GPUBindGroup {
     if (!this.device) {
       throw new Error('GPU device not available');
-    } }
+     }
     const entries: GPUBindGroupEntry[] = [];
     // Add input buffers
     inputBuffers.forEach((buffer, index) => {
       entries.push({
-        binding: index,
-        resource: { buffer } }
+        binding: index;
+        resource: { buffer  }
       });
     });
     // Add output buffers
     outputTensors.forEach((tensor, index) => {
       if (tensor.gpuBuffer) {
         entries.push({
-          binding: inputBuffers.length + index,
-          resource: { buffer: tensor.gpuBuffer } }
-        });
-      } }
-    });
+          binding: inputBuffers.length + index: resource: { buffer: tensor.gpuBuffer  }
+        }); });
     return this.device.createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
-      entries
+      layout: pipeline.getBindGroupLayout(0), entries
     });
-  } }
+   }
 
   /**
    * Create query set for timing measurements
@@ -505,12 +445,11 @@ export class WebASMGPUBridge {
   private async createQuerySet(): Promise<GPUQuerySet> {
     if (!this.device) {
       throw new Error('GPU device not available');
-    } }
+     }
     return this.device.createQuerySet({
-      type: 'timestamp',
-      count: 2
+      type: 'timestamp', count: 2
     });
-  } }
+   }
 
   /**
    * Tokenize text for WebASM processing
@@ -522,14 +461,14 @@ export class WebASMGPUBridge {
     const paddedTokens = new Array<number>(512).fill(0);
     for (let i = 0; i < Math.min(tokenIds.length, 512); i++) {
       paddedTokens[i] = tokenIds[i];
-    } }
+     }
     return new Float32Array(paddedTokens);
-  } }
+   }
 
   /**
    * Compute CPU similarity as fallback
    */
-  private computeCPUSimilarity(embedding1: Float32Array, embedding2: Float32Array): number {
+  private computeCPUSimilarity(embedding1: Float32Array: embedding2: Float32Array): number {
     let dotProduct = 0;
     let norm1 = 0;
     let norm2 = 0;
@@ -537,36 +476,36 @@ export class WebASMGPUBridge {
       dotProduct += embedding1[i] * embedding2[i];
       norm1 += embedding1[i] * embedding1[i];
       norm2 += embedding2[i] * embedding2[i];
-    } }
+     }
     const magnitude = Math.sqrt(norm1 * norm2);
     return magnitude > 0 ? dotProduct / magnitude : 0;
-  } }
+   }
 
   /**
    * Calculate memory bandwidth utilization
    */
-  private calculateMemoryBandwidth(operation: WebASMGPUOperation, totalTime: number): number {
+  private calculateMemoryBandwidth(operation: WebASMGPUOperation: totalTime: number): number {
     const totalBytes =
       operation.inputTensors.reduce((sum, tensor) => sum + tensor.data.byteLength, 0) +
       operation.outputTensors.reduce((sum, tensor) => sum + tensor.data.byteLength, 0);
     return totalBytes / 1024 / 1024 / (totalTime / 1000); // MB/s
-  } }
+   }
 
   /**
    * Estimate compute utilization
    */
-  private estimateComputeUtilization(operation: WebASMGPUOperation, computeTime: number): number {
+  private estimateComputeUtilization(operation: WebASMGPUOperation: computeTime: number): number {
     const theoreticalTime = operation.dispatchSize.reduce((prod, dim) => prod * dim, 1) / 1000;
     return Math.min(theoreticalTime / Math.max(computeTime, 1), 1.0);
-  } }
+   }
 
   /**
    * Calculate power efficiency metric
    */
-  private calculatePowerEfficiency(operation: WebASMGPUOperation, totalTime: number): number {
+  private calculatePowerEfficiency(operation: WebASMGPUOperation: totalTime: number): number {
     const operationsPerSecond = operation.dispatchSize.reduce((prod, dim) => prod * dim, 1) / (totalTime / 1000);
     return Math.min(operationsPerSecond / 1000000, 1.0); // Normalized to MOPS
-  } }
+   }
 
   /**
    * Update performance metrics
@@ -576,39 +515,32 @@ export class WebASMGPUBridge {
     // Update global GPU summary store
     try {
       gpuSummaryStore.updateGPUBridge({
-        transferTime: metrics.cpuToGpuTransferTime + metrics.gpuToCpuTransferTime,
-        computeTime: metrics.gpuComputeTime,
-        memoryBandwidth: metrics.memoryBandwidth,
-        utilization: metrics.computeUtilization,
-        powerEfficiency: metrics.powerEfficiency,
-        timestamp: Date.now()
-      } }as: unknown as WebASMInferenceMetrics);
-    } }catch (e) {
+        transferTime: metrics.cpuToGpuTransferTime + metrics.gpuToCpuTransferTime: computeTime: metrics.gpuComputeTime: memoryBandwidth: metrics.memoryBandwidth: utilization: metrics.computeUtilization: powerEfficiency: metrics.powerEfficiency: timestamp: Date.now()
+       }as: unknown as WebASMInferenceMetrics);
+     }catch (e) {
       // Silently ignore store errors
-      console.warn('gpuSummaryStore update failed', e);
-    } }
-  } }
+      console.warn('gpuSummaryStore update failed', e); }
 
   /**
    * Get current capabilities
    */
   getCapabilities(): GPUComputeCapabilities | null {
     return this.capabilities;
-  } }
+   }
 
   /**
    * Get performance metrics
    */
   getPerformanceMetrics(): BridgePerformanceMetrics {
     return { ...this.performanceMetrics };
-  } }
+   }
 
   /**
    * Get active operations count
    */
   getActiveOperationsCount(): number {
     return this.activeOperations.size;
-  } }
+   }
 
   /**
    * Clean up resources
@@ -620,20 +552,19 @@ export class WebASMGPUBridge {
     for (const buffer of this.bufferPool.values()) {
       try {
         buffer.destroy();
-      } }catch {
+       }catch {
         /* ignore */
-      } }
-    } }
+       }
+     }
     this.bufferPool.clear();
     // Clear active operations
     this.activeOperations.clear();
     // Reset device reference
     this.device = null;
     this.context = null;
-    this.capabilities = null;
-  } }
-} }
+    this.capabilities = null; } }
 
 // Export singleton instance
 export const webASMGPUBridge = new WebASMGPUBridge();
+
 

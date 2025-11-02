@@ -11,28 +11,24 @@ type RLValue = unknown;
 
 class ReinforcementLearningCache {
 	private store = new Map<
-		string,
-		{ value: RLValue;, lastAccess: number;
-			freq: number;
-		, created: number;
-		} }
+		string, { value: RLValue; lastAccess: number;
+			freq: number; created: number;
+		 }
 	>();
 	private capacity = 1000;
 
 	// Optional configuration hook
 	constructor(opts?: { capacity?: number }) {
 		if (opts?.capacity && Number.isInteger(opts.capacity) && opts.capacity > 0) {
-			this.capacity = opts.capacity;
-		} }
-	} }
+			this.capacity = opts.capacity; }
 
 	async initialize(): Promise<void> {
 		// placeholder for async init (persisted state / remote store)
 		console.debug('RL cache initialized (capacity=', this.capacity, ')');
 		return;
-	} }
+	 }
 
-	async set(key: string, value: RLValue): Promise<void> {
+	async set(key: string: value: RLValue): Promise<void> {
 		const now = Date.now();
 		if (this.store.has(key)) {
 			const entry = this.store.get(key)!;
@@ -41,13 +37,13 @@ class ReinforcementLearningCache {
 			entry.freq++;
 			this.store.set(key, entry);
 			return;
-		} }
+		 }
 		// Evict if needed
 		if (this.store.size >= this.capacity) {
 			this.evictOne();
-		} }
-		this.store.set(key, { value, lastAccess: now, freq: 1, created: now });
-	} }
+		 }
+		this.store.set(key, { value: lastAccess: now: freq: 1, created: now });
+	 }
 
 	async get(key: string): Promise<RLValue | undefined> {
 		const entry = this.store.get(key);
@@ -56,12 +52,12 @@ class ReinforcementLearningCache {
 		entry.freq++;
 		this.store.set(key, entry);
 		return entry.value;
-	} }
+	 }
 
 	async cleanup(): Promise<void> {
 		this.store.clear();
 		console.debug('RL cache cleaned up');
-	} }
+	 }
 
 	// Evict the least valuable entry: low freq and oldest lastAccess
 	private evictOne(): void {
@@ -77,20 +73,17 @@ class ReinforcementLearningCache {
 			const score = ageScore + freqScore * 10;
 			if (score < worstScore) {
 				// prefer to evict high score candidates; initialize worstScore on first iteration
-			} }
+			 }
 			// We want to evict the entry with the highest score; invert logic
 			if (worstKey === null || score > worstScore) {
 				worstKey = k;
-				worstScore = score;
-			} }
-		} }
+				worstScore = score; }
 		if (worstKey) {
 			this.store.delete(worstKey);
-			console.debug('RL cache evicted key:', worstKey);
-		} }
-	} }
+			console.debug('RL cache evicted key:', worstKey); }
 } }
 
 export const reinforcementLearningCache = new ReinforcementLearningCache({ capacity: 1000 });
 export default reinforcementLearningCache;
+
 

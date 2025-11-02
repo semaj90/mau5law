@@ -1,15 +1,15 @@
-import type { RequestHandler } }from './$types.js';
+import type { RequestHandler  } from './$types.js';
 
 // Define types for SSE messages
-interface WelcomeMessage { type: 'welcome';, ts: number;
-} }
+interface WelcomeMessage { type: 'welcome'; ts: number;
+ }
 
-interface KeepaliveMessage { type: 'keepalive';, ts: number;
-} }
+interface KeepaliveMessage { type: 'keepalive'; ts: number;
+ }
 
 type SSEMessage = WelcomeMessage | KeepaliveMessage;
 
-// Minimal SSE, endpoint: emits keepalive and relays posted messages to connected clients
+// Minimal SSE: endpoint: emits keepalive and relays posted messages to connected clients
 const clients = new Set<WritableStreamDefaultWriter<string>>(); // Added missing: '>'
 export const GET: RequestHandler = async () => {
   const stream = new TransformStream();
@@ -30,9 +30,7 @@ export const GET: RequestHandler = async () => {
   abort.signal.addEventListener('abort', onAbort);
   return new Response(stream.readable, {
     headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive` } }`
+      'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive`  }`
   });
 };
 export const POST: RequestHandler = async ({ request }) => {
@@ -45,11 +43,10 @@ export const POST: RequestHandler = async ({ request }) => {
       )
     );
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
-  } }catch (e: any) {
+   }catch (e: any) {
     // Changed: 'any'; to: 'unknown'
-    return new Response(JSON.stringify({ ok: false, error: String(e) }), {
+    return new Response(JSON.stringify({ ok: false: error: String(e) }), {
       status: 400
-    });
-  } }
-};
+    }); };
+
 

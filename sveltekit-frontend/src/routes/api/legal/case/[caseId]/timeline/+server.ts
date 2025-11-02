@@ -1,5 +1,5 @@
-import { json } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types.js'
+import { json  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types.js'
 
 // Temporary parser-safe stub for timeline endpoint.
 // The original file had extensive mock generation and complex logic
@@ -9,18 +9,18 @@ import type { RequestHandler } }from './$types.js'
 
 export const GET: RequestHandler = async ({ params }) => {
   const caseId = params?.caseId ?? 'unknown'
-  return json({ success: true, caseId, timeline: [], message: 'Timeline endpoint temporarily stubbed for parser fixes' })
-} }
+  return json({ success: true, caseId: timeline: [], message: 'Timeline endpoint temporarily stubbed for parser fixes' })
+ }
 
 export const POST: RequestHandler = async ({ params }) => {
   const caseId = params?.caseId ?? 'unknown';
   return json(
-    { success: false, caseId, message: 'Create timeline temporarily disabled during parser triage' },
-    { status: 501 } }
+    { success: false, caseId: message: 'Create timeline temporarily disabled during parser triage' }, { status: 501  }
   );
 };
 
 export const PUT: RequestHandler = async ({ params }) => {
   const caseId = params?.caseId ?? 'unknown'
-  return json({ success: false, caseId, message: 'Update timeline temporarily disabled during parser triage' }, { status: 501 })
+  return json({ success: false, caseId: message: 'Update timeline temporarily disabled during parser triage' }, { status: 501 })
 }
+

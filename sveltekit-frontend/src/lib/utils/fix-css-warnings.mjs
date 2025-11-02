@@ -8,16 +8,8 @@ console.log("🔧 Fixing TypeScript and CSS issues...");
 
 const fixes = [
   {
-    file: "src/routes/cases/[id]/enhanced/+page.svelte",
-    action: "remove_unused_css",
-    selector: ".add-to-canvas-btn",
-  },
-  {
-    file: "src/routes/crud-dashboard/+page.svelte",
-    action: "remove_unused_css",
-    selectors: [".page-header", ".page-title h1"],
-  },
-];
+    file: "src/routes/cases/[id]/enhanced/+page.svelte", action: "remove_unused_css", selector: ".add-to-canvas-btn"}, {
+    file: "src/routes/crud-dashboard/+page.svelte", action: "remove_unused_css", selectors: [".page-header", ".page-title h1"]}];
 
 function removeUnusedCSSSelector(filePath, selector) {
   try {
@@ -25,15 +17,12 @@ function removeUnusedCSSSelector(filePath, selector) {
 
     // Remove CSS rule and its content
     const cssRegex = new RegExp(
-      `\\s*${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*{[^{}]*}`,
-      "g",
-    );
+      `\\s*${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*{[^{}]*}`, "g");
     content = content.replace(cssRegex, "");
 
     writeFileSync(filePath, content);
     console.log(
-      `✅ Removed unused CSS selector "${selector}" from ${filePath}`,
-    );
+      `✅ Removed unused CSS selector "${selector}" from ${filePath}`);
   } catch (error) {
     console.log(`⚠️ Could not process ${filePath}: ${error.message}`);
   }

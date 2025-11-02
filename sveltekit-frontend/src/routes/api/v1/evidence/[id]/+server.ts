@@ -4,13 +4,11 @@
  * PUT /api/v1/evidence/[id] - Update specific evidence
  * DELETE /api/v1/evidence/[id] - Delete specific evidence
  */
-import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import { json, error, type RequestHandler  } from '@sveltejs/kit';
 import {
-  EvidenceCRUDService,
-  UpdateEvidenceSchema,
-  type UpdateEvidenceData
-} }from '$lib/server/services/user-scoped-crud';
-import { z } }from 'zod';
+  EvidenceCRUDService, UpdateEvidenceSchema, type UpdateEvidenceData
+ } from '$lib/server/services/user-scoped-crud';
+import { z  } from 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid evidence ID format');
 /*
@@ -22,7 +20,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
-    } }
+     }
     // Validate evidence ID
     const evidenceId = UUIDSchema.parse(params.id);
     // Create service instance
@@ -30,24 +28,21 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     // Get evidence
     const evidenceData = await evidenceService.getById(evidenceId);
     return json({
-      success: true,
-      data: evidenceData,
+      success: true;
+      data: evidenceData;
       meta: {
-  userId: getUserId(locals),
-        timestamp: new Date().toISOString()
-      } }
+  userId: getUserId(locals), timestamp: new Date().toISOString()
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Error fetching evidence:', err);
     if (err instanceof z.ZodError) {
       return json({ message: 'Invalid evidence ID', code: 'INVALID_ID', details: err.errors }, { status: 400 });
-    } }
+     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
       return json({ message: 'Evidence not found', code: 'EVIDENCE_NOT_FOUND' }, { status: 404 });
-    } }
-    return json({ message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message }, { status: 500 });
-  } }
-};
+     }
+    return json({ message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message }, { status: 500 }); };
 /*
  * PUT /api/v1/evidence/[id]
  * Update a specific evidence
@@ -57,13 +52,13 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
-    } }
+     }
     // Validate evidence ID
     const evidenceId = UUIDSchema.parse(params.id);
     // Parse request body
     const body = await request.json();
     const validatedData = UpdateEvidenceSchema.parse({
-      id: evidenceId,
+      id: evidenceId;
       ...body
     }) as UpdateEvidenceData;
     // Create service instance
@@ -73,27 +68,23 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Get updated evidence details
     const updatedEvidence = await evidenceService.getById(evidenceId);
     return json({
-      success: true,
-      data: updatedEvidence,
+      success: true;
+      data: updatedEvidence;
       meta: {
-  userId: getUserId(locals),
-        timestamp: new Date().toISOString()
-      } }
+  userId: getUserId(locals), timestamp: new Date().toISOString()
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Error updating evidence:', err);
     if (err instanceof z.ZodError) {
       return json({ message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors }, { status: 400 });
-    } }
+     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
       return json({ message: 'Evidence not found', code: 'EVIDENCE_NOT_FOUND' }, { status: 404 });
-    } }
+     }
     return json(
-      { message: 'Failed to update evidence', code: 'UPDATE_FAILED', details: err?.message },
-      { status: 500 } }
-    );
-  } }
-};
+      { message: 'Failed to update evidence', code: 'UPDATE_FAILED', details: err?.message }, { status: 500  }
+    ); };
 /*
  * DELETE /api/v1/evidence/[id]
  * Delete a specific evidence
@@ -103,7 +94,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Check authentication
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
-    } }
+     }
     // Validate evidence ID
     const evidenceId = UUIDSchema.parse(params.id);
     // Create service instance
@@ -111,26 +102,22 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete evidence
     await evidenceService.delete(evidenceId);
     return json({
-      success: true,
-      message: 'Evidence deleted successfully',
-      meta: {
-  deletedEvidenceId: evidenceId,
-        userId: getUserId(locals),
-        timestamp: new Date().toISOString()
-      } }
+      success: true;
+      message: 'Evidence deleted successfully', meta: {
+  deletedEvidenceId: evidenceId;
+        userId: getUserId(locals), timestamp: new Date().toISOString()
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Error deleting evidence:', err);
     if (err instanceof z.ZodError) {
       return json({ message: 'Invalid evidence ID', code: 'INVALID_ID', details: err.errors }, { status: 400 });
-    } }
+     }
     if (err?.message?.includes('not found') || err?.message?.includes('access denied')) {
       return json({ message: 'Evidence not found', code: 'EVIDENCE_NOT_FOUND' }, { status: 404 });
-    } }
+     }
     return json(
-      { message: 'Failed to delete evidence', code: 'DELETE_FAILED', details: err?.message },
-      { status: 500 } }
-    );
-  } }
-};
+      { message: 'Failed to delete evidence', code: 'DELETE_FAILED', details: err?.message }, { status: 500  }
+    ); };
+
 

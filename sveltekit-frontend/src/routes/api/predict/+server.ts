@@ -1,4 +1,4 @@
-import type { RequestHandler } }from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
 
 const LANGEXTRACT_BASE = process.env.LANGEXTRACT_URL
   ? process.env.LANGEXTRACT_URL.replace(/\/analyze$/, '')
@@ -12,8 +12,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const resp = await fetch(`${LANGEXTRACT_PREDICT}?word=${encodeURIComponent(word)}&top=${encodeURIComponent(top)}`);
     const data = await resp.json();
     return new Response(JSON.stringify(data), { status: resp.status });
-  } }catch (err) {
-    return new Response(JSON.stringify({ predictions: [] }), { status: 200 });
-  } }
-};
+   }catch (err) {
+    return new Response(JSON.stringify({ predictions: [] }), { status: 200 }); };
+
 

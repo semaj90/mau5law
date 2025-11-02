@@ -2,13 +2,13 @@
 // Provides the small API surface used by the ranking route.
 export type Metadata = Record<string, unknown>;
 
-export type CanonicalResult = { docId: string;, score: number;
+export type CanonicalResult = { docId: string; score: number;
   flags?: number;
   summaryHash?: string;
   targetUrlId?: string | number;
   metadata?: Metadata;
 };
-export type RankingSet = { results: CanonicalResult[];, query: string;
+export type RankingSet = { results: CanonicalResult[]; query: string;
   totalResults: number;
   timestamp: number;
   version?: number;
@@ -21,26 +21,22 @@ function generateSlotKey(): string {
   // generate a reproducible single-character slot key (a-z)
   const c = Math.floor(Math.random() * 26);
   return String.fromCharCode(97 + c);
-} }
+ }
 export const canonicalResultCache = {
   async retrieveRankingSet(slotKey: string): Promise<RankingSet | undefined> {
     return slotMap.get(slotKey);
-  },
-  async storeRankingSet(rankingSet: RankingSet): Promise<string> {
+  }, async storeRankingSet(rankingSet: RankingSet): Promise<string> {
     // store and return a single-character slot key
     let key = generateSlotKey();
     // ensure uniqueness (small loop because slot space small)
     for (let i = 0; i < 100 && slotMap.has(key); i++) {
       key = generateSlotKey();
-    } }
+     }
     slotMap.set(key, rankingSet);
     return key;
-  },
-  getSlotTableStatus(): SlotTableStatus {
+  }, getSlotTableStatus(): SlotTableStatus {
     return { utilization: slotMap.size };
-  },
-  async clear() {
-    slotMap.clear();
-  } }
-};
+  }, async clear() {
+    slotMap.clear(); };
 export default canonicalResultCache;
+

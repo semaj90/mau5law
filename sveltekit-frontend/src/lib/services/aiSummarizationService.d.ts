@@ -1,5 +1,5 @@
-export interface AIAnalysis { extractedTags: string[];, summary: string;
-} }
+export interface AIAnalysis { extractedTags: string[]; summary: string;
+ }
 
 // Lightweight evidence shape used across the summarization service.
 export interface EvidenceItem {
@@ -10,7 +10,7 @@ export interface EvidenceItem {
   timestamp?: string;
   // free-form structured metadata
   metadata?: Record<string, unknown>;
-} }
+ }
 
 // Minimal canvas element description to avoid `any[]`
 export interface CanvasElement {
@@ -20,18 +20,18 @@ export interface CanvasElement {
   properties?: Record<string, unknown>;
   // nested elements if applicable
   children?: CanvasElement[];
-} }
+ }
 
-export interface CaseSummaryReport { content: string;, richTextContent: string;
+export interface CaseSummaryReport { content: string; richTextContent: string;
   // use a safe, unknown-based map instead of `any`
   metadata: Record<string, unknown>;
   // typed canvas elements instead of `any[]`
   canvasElements: CanvasElement[];
-} }
-export interface ProsecutionStrategyReport { content: string;, richTextContent: string;
+ }
+export interface ProsecutionStrategyReport { content: string; richTextContent: string;
   metadata: Record<string, unknown>;
   canvasElements: CanvasElement[];
-} }
+ }
 export interface AISummarizationService {
   // accept a single evidence item or an array of items
   analyzeEvidence: (evidence: EvidenceItem | EvidenceItem[]) => Promise<AIAnalysis>;
@@ -48,5 +48,6 @@ export interface AISummarizationService {
     objectives?: string[];
     context?: Record<string, unknown>;
   }) => Promise<ProsecutionStrategyReport>;
-} }
+ }
+
 

@@ -12,7 +12,8 @@ declare module, 'lucide-svelte' {
   export const Users: any;
 
   // allow default import if used elsewhere
-  const, _default: any;
+  const: _default: any;
   export default _default;
-} }
+ }
+
 

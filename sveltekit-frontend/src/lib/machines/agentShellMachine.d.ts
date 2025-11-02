@@ -3,7 +3,8 @@ declare module, '../machines/agentShellMachine' {
     commands?: string[];
     lastCommandResult?: any;
     [key: string]: any;
-  } }
-  export const, agentShellMachine: any;
-} }
+   }
+  export const agentShellMachine: any;
+ }
+
 

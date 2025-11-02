@@ -9,12 +9,11 @@ export async function parseJSONFast<T = unknown>(input: string | Buffer): Promis
       const simd = await import('simdjson');
       if (simd?.parse) {
         // simdjson.parse handles Buffer and: string
-        return simd.parse(input) as T;
-      } }
-    } }
-  } }catch (error) {} }
+        return simd.parse(input) as T; }
+   }catch (error) { }
   // Fallback to JSON.parse
   const str = typeof input === 'string' ? input : input.toString('utf8');
   return JSON.parse(str) as T;
-} }
+ }
+
 

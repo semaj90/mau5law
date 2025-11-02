@@ -1,5 +1,5 @@
-import type { RequestHandler } }from './$types.js';
-import { minioService } }from '$lib/server/storage/minio-service';
+import type { RequestHandler  } from './$types.js';
+import { minioService  } from '$lib/server/storage/minio-service';
 // Lightweight MinIO direct upload endpoint
 // Accepts multipart/form-data with field name: "file". Optional ?bucket= override.
 export const POST: RequestHandler = async ({ request, url }) => {
@@ -8,12 +8,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const file = form.get('file');
     if (!file || !(file instanceof File)) {
       return new Response(JSON.stringify({ error: 'No file provided' }), { status: 400 });
-    } }
+     }
     const bucket = url.searchParams.get('bucket') || undefined;
     const ok = await minioService.initialize(); // idempotent ensure client ready
     if (!ok) {
       return new Response(JSON.stringify({ error: 'MinIO unavailable' }), { status: 503 });
-    } }
+     }
     const result = await minioService.uploadFile(file, file.name, { bucket });
     if (
       !(
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           size?: any;
           url?: any;
           metadata?: any;
-        } }
+         }
       ).success
     ) {
       return new Response(
@@ -42,15 +42,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 size?: any;
                 url?: any;
                 metadata?: any;
-              } }
+               }
             ).error || 'Upload failed'
-        }),
-        { status: 500 } }
+        }), { status: 500  }
       );
-    } }
+     }
     return new Response(
       JSON.stringify({
-        success: true,
+        success: true;
         fileId: (
           result as {
             success?: any;
@@ -61,9 +60,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
             size?: any;
             url?: any;
             metadata?: any;
-          } }
-        ).fileId,
-        fileName: (
+           }
+        ).fileId: fileName: (
           result as {
             success?: any;
             error?: any;
@@ -73,9 +71,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
             size?: any;
             url?: any;
             metadata?: any;
-          } }
-        ).fileName,
-        bucket: (
+           }
+        ).fileName: bucket: (
           result as {
             success?: any;
             error?: any;
@@ -85,9 +82,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
             size?: any;
             url?: any;
             metadata?: any;
-          } }
-        ).bucket,
-        size: (
+           }
+        ).bucket: size: (
           result as {
             success?: any;
             error?: any;
@@ -97,9 +93,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
             size?: any;
             url?: any;
             metadata?: any;
-          } }
-        ).size,
-        url: (
+           }
+        ).size: url: (
           result as {
             success?: any;
             error?: any;
@@ -109,9 +104,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
             size?: any;
             url?: any;
             metadata?: any;
-          } }
-        ).url,
-        metadata: (
+           }
+        ).url: metadata: (
           result as {
             success?: any;
             error?: any;
@@ -121,13 +115,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
             size?: any;
             url?: any;
             metadata?: any;
-          } }
+           }
         ).metadata
-      }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }} }
+      }), { status: 200, headers: { 'Content-Type': 'application/json' }  } }
     );
-  } }catch (e: any) {
-    return new Response(JSON.stringify({ error: e?.message || 'Unknown error' }), { status: 500 });
-  } }
-};
+   }catch (e: any) {
+    return new Response(JSON.stringify({ error: e?.message || 'Unknown error' }), { status: 500 }); };
+
 

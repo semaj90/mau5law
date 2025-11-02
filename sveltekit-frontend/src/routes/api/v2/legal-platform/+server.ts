@@ -1,112 +1,84 @@
-import type { Case } }from '$lib/types';
-import type { RequestHandler } }from './$types.js';
+import type { Case  } from '$lib/types';
+import type { RequestHandler  } from './$types.js';
 /*
  * Legal AI Platform API Router v2
  * Centralized endpoint routing to Go microservices for the full-stack legal AI platform
  * Integrates: Enhanced RAG, Upload Service, Vector Search, Case Management, Evidence Processing
  */
-import { json, error } }from '@sveltejs/kit';
-import { db } }from '$lib/server/db/unified-client';
-import { cases, evidence, criminals, legalDocuments } }from '$lib/server/db/schema-postgres';
-import { eq, or, desc, ilike, and, SQL, sql } }from 'drizzle-orm';
-import { createId } }from '@paralleldrive/cuid2';
+import { json, error  } from '@sveltejs/kit';
+import { db  } from '$lib/server/db/unified-client';
+import { cases, evidence, criminals, legalDocuments  } from '$lib/server/db/schema-postgres';
+import { eq, or, desc, ilike, and, SQL, sql  } from 'drizzle-orm';
+import { createId  } from '@paralleldrive/cuid2';
 
 // Go Microservice Configuration
-const GO_SERVICES = { enhanced_rag: { url: 'http://localhost:8094',
-    endpoints: {
-  health: '/api/health',
-      gpu_compute: '/api/gpu/compute',
-      som_train: '/api/som/train',
-      xstate_event: '/api/xstate/event',
-      websocket: '/ws'
-    } }
-  },
-  upload_service: {
-  url: 'http://localhost:8093',
-    endpoints: {
-  upload: '/upload',
-      status: '/status',
-      health: '/health'
-    } }
-  },
-  vector_service: {
-  url: 'http://localhost:8095',
-    endpoints: {
-  search: '/api/vector/search',
-      similarity: '/api/vector/similarity'
-    } }
-  },
-  grpc_server: {
-  url: 'http://localhost:50051',
-    protocols: ['grpc', 'http']
-  },
-  load_balancer: {
-  url: 'http://localhost:8224',
-    endpoints: {
-  health: '/health',
-      metrics: '/metrics'
-    } }
-  } }
+const GO_SERVICES = { enhanced_rag: { url: 'http://localhost:8094', endpoints: {
+  health: '/api/health', gpu_compute: '/api/gpu/compute', som_train: '/api/som/train', xstate_event: '/api/xstate/event', websocket: '/ws'
+     }
+  }, upload_service: {
+  url: 'http://localhost:8093', endpoints: {
+  upload: '/upload', status: '/status', health: '/health'
+     }
+  }, vector_service: {
+  url: 'http://localhost:8095', endpoints: {
+  search: '/api/vector/search', similarity: '/api/vector/similarity'
+     }
+  }, grpc_server: {
+  url: 'http://localhost:50051', protocols: ['grpc', 'http']
+  }, load_balancer: {
+  url: 'http://localhost:8224', endpoints: {
+  health: '/health', metrics: '/metrics'
+     }
+   }
 };
 // Request Types
-export interface LegalPlatformRequest { action: 'create' | 'read' | 'update' | 'delete' | 'search' | 'process' | 'analyze';, entity: 'case' | 'evidence' | 'criminal' | 'document' | 'search' | 'upload' | 'ai';
+export interface LegalPlatformRequest { action: 'create' | 'read' | 'update' | 'delete' | 'search' | 'process' | 'analyze'; entity: 'case' | 'evidence' | 'criminal' | 'document' | 'search' | 'upload' | 'ai';
   data?: any;
   id?: string;
   filters?: { [key: string]: any };
-} }
+ }
 // Utility function to call Go microservices
 async function callGoService(
-  service: keyof typeof GO_SERVICES,
-  endpoint: string,
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
-  data?: any
+  service: keyof typeof GO_SERVICES: endpoint: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET', data?: any
 ): Promise<any> {
   const serviceConfig = GO_SERVICES[service];
   const url = `${serviceConfig.url}${endpoint}`;
   try {
     const response = await fetch(url, {
-      method,
-      headers: {
+      method: headers: {
         'Content-Type': `application/json' },'`
       body: data ? JSON.stringify(data) : undefined
     });
     if (!response.ok) {
-      throw new Error(`Service ${service} }returned ${response.status}: ${response.statusText}`);
-    } }
+      throw new Error(`Service ${service }returned ${response.status}: ${response.statusText}`);
+     }
     return await response.json();
-  } }catch (err: any) {
-    console.error(`Error calling ${service} }service:`, err);
-    throw new Error(`Failed to communicate with ${service} }service`);
-  } }
-} }
+   }catch (err: any) {
+    console.error(`Error calling ${service }service:`, err);
+    throw new Error(`Failed to communicate with ${service }service`); } }
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const req: LegalPlatformRequest = await request.json();
     // Handle health check
-    if (req.action === ('health' as: any)) {
+    if (req.action === ('health' as any)) {
       let dbHealthy = false;
       try {
         // Simple query to check database connectivity
         await db.execute(sql`SELECT 1`);
         dbHealthy = true;
-      } }catch (e) {
+       }catch (e) {
         console.error('Database health check failed:', e);
         dbHealthy = false;
-      } }
+       }
       const healthChecks = await Promise.allSettled([
-        callGoService('enhanced_rag', '/api/health'),
-        callGoService('upload_service', '/health'),
-      ]);
+        callGoService('enhanced_rag', '/api/health'), callGoService('upload_service', '/health')]);
       const services = {
-        enhanced_rag: healthChecks[0].status === 'fulfilled',
-        upload_service: healthChecks[1].status === 'fulfilled',
-        database: dbHealthy
+        enhanced_rag: healthChecks[0].status === 'fulfilled', upload_service: healthChecks[1].status === 'fulfilled', database: dbHealthy
       };
       return json({
-  success: true,
-        data: { services },
-        timestamp: new Date().toISOString(),
-        message: 'Health check completed' });'' } }
+  success: true;
+        data: { services }, timestamp: new Date().toISOString(), message: 'Health check completed' });''  }
     // Route based on entity and action
     switch (req.entity) {
       case, 'case':
@@ -124,29 +96,22 @@ export const POST: RequestHandler = async ({ request, url }) => {
       case, 'ai':
         return await handleAIOperations(req);
       default:
-        throw error(400, `Unknown entity: ${req.entity}`);
-    } }
-  } }catch (err: any) {
+        throw error(400, `Unknown entity: ${req.entity}`); }catch (err: any) {
     console.error('API Error:', err);
-    throw error(500, err instanceof Error ? err.message : 'Internal server error');
-  } }
-};
+    throw error(500, err instanceof Error ? err.message : 'Internal server error'); };
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   const entity = url.searchParams.get('entity');
   const id = url.searchParams.get('id');
   if (!action || !entity) {
     throw error(400, 'Missing required parameters: action and entity');
-  } }
+   }
   const req: LegalPlatformRequest = {
-    action: action, as: any,
-    entity: entity, as: any,
-    id: id || undefined
+    action: action, as any: entity: entity, as any: id: id || undefined
   };
   return await POST({
-  request: new Request('', { method: 'POST', body: JSON.stringify(req) }),
-    url
-  } }as: any);
+  request: new Request('', { method: 'POST', body: JSON.stringify(req) }), url
+   }as: any);
 };
 // Case Management Operations
 async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response> {
@@ -155,75 +120,58 @@ async function handleCaseOperations(req: LegalPlatformRequest): Promise<Response
       const newCase = await db
         .insert(cases)
         .values({
-          id: createId(),
-          caseNumber: `CASE-${Date.now()}`,
-          title: req.data.title,
-          name: req.data.title, // Backward compatibility
-          description: req.data.description,
-          priority: req.data.priority || 'medium',
-          status: 'open',
-          incidentDate: req.data.incidentDate ? new Date(req.data.incidentDate) : undefined,
-          location: req.data.location,
-          userId: req.data.userId,
-          createdBy: req.data.userId,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          id: createId(), caseNumber: `CASE-${Date.now()}`, title: req.data.title: name: req.data.title, // Backward compatibility
+          description: req.data.description: priority: req.data.priority || 'medium', status: 'open', incidentDate: req.data.incidentDate ? new Date(req.data.incidentDate) : undefined;
+          location: req.data.location: userId: req.data.userId: createdBy: req.data.userId: createdAt: new Date(), updatedAt: new Date()
         })
         .returning();
       return json({
-        success: true,
-        data: newCase[0],
-        message: 'Case created successfully' });'' } }
+        success: true;
+        data: newCase[0];
+        message: 'Case created successfully' });''  }
     case, 'read': {
       if (req.id) {
         const caseData = await db.select().from(cases).where(eq(cases.id, req.id));
         if (caseData.length === 0) {
           throw error(404, 'Case not found');
-        } }
-        return json({ success: true, data: caseData[0] });
-      } }else {
+         }
+        return json({ success: true: data: caseData[0] });
+       }else {
         const allCases = await db.select().from(cases).orderBy(desc(cases.createdAt)).limit(50);
-        return json({ success: true, data: allCases });
-      } }
-    } }
+        return json({ success: true: data: allCases }); }
     case, 'update': {
       if (!req.id) throw error(400, 'Case ID required for update');
       const updatedCase = await db
         .update(cases)
         .set({
-          ...req.data,
-          updatedAt: new Date()
+          ...req.data: updatedAt: new Date()
         })
         .where(eq(cases.id, req.id))
         .returning();
       return json({
-        success: true,
-        data: updatedCase[0],
-        message: 'Case updated successfully' });'' } }
+        success: true;
+        data: updatedCase[0];
+        message: 'Case updated successfully' });''  }
     case, 'delete': {
       if (!req.id) throw error(400, 'Case ID required for deletion');
       await db.delete(cases).where(eq(cases.id, req.id));
       return json({
-        success: true,
-        message: 'Case deleted successfully' });'' } }
+        success: true;
+        message: 'Case deleted successfully' });''  }
     case, 'search': {
       const searchResults = await db
         .select()
         .from(cases)
         .where(
           or(
-            cases.title.ilike(`%${req.data.query}%`),
-            cases.description.ilike(`%${req.data.query}%`),
-            cases.caseNumber.ilike(`%${req.data.query}%`)
+            cases.title.ilike(`%${req.data.query}%`), cases.description.ilike(`%${req.data.query}%`), cases.caseNumber.ilike(`%${req.data.query}%`)
           )
         )
         .limit(20);
-      return json({ success: true, data: searchResults });
-    } }
+      return json({ success: true: data: searchResults });
+     }
     default:
-      throw error(400, `Unknown case action: ${req.action}`);
-  } }
-} }
+      throw error(400, `Unknown case action: ${req.action}`); } }
 // Evidence Management Operations
 async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
@@ -231,62 +179,44 @@ async function handleEvidenceOperations(req: LegalPlatformRequest): Promise<Resp
       const newEvidence = await db
         .insert(evidence)
         .values({
-          id: createId(),
-          caseId: req.data.caseId,
-          title: req.data.title,
-          description: req.data.description,
-          evidenceType: req.data.evidenceType,
-          fileUrl: req.data.fileUrl,
-          fileName: req.data.fileName,
-          fileSize: req.data.fileSize,
-          mimeType: req.data.mimeType,
-          tags: req.data.tags || [],
-          uploadedBy: req.data.userId,
-          uploadedAt: new Date(),
-          updatedAt: new Date()
+          id: createId(), caseId: req.data.caseId: title: req.data.title: description: req.data.description: evidenceType: req.data.evidenceType: fileUrl: req.data.fileUrl: fileName: req.data.fileName: fileSize: req.data.fileSize: mimeType: req.data.mimeType: tags: req.data.tags || [], uploadedBy: req.data.userId: uploadedAt: new Date(), updatedAt: new Date()
         })
         .returning();
       return json({
-        success: true,
-        data: newEvidence[0],
-        message: 'Evidence created successfully' });'' } }
+        success: true;
+        data: newEvidence[0];
+        message: 'Evidence created successfully' });''  }
     case, 'read': {
       if (req.id) {
         const evidenceData = await db.select().from(evidence).where(eq(evidence.id, req.id));
         if (evidenceData.length === 0) {
           throw error(404, 'Evidence not found');
-        } }
-        return json({ success: true, data: evidenceData[0] });
-      } }else {
+         }
+        return json({ success: true: data: evidenceData[0] });
+       }else {
         const filters = req.filters || {};
         const whereClauses: SQL[] = [];
         if (filters.caseId) {
           whereClauses.push(eq(evidence.caseId, filters.caseId));
-        } }
+         }
         const allEvidence = await db
           .select()
           .from(evidence)
           .where(whereClauses.length ? and(...whereClauses) : undefined)
           .orderBy(desc(evidence.uploadedAt))
           .limit(50);
-        return json({ success: true, data: allEvidence });
-      } }
-    } }
+        return json({ success: true: data: allEvidence }); }
     case, 'analyze': {
       // Call enhanced RAG service for AI analysis
       const analysisResult = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
-        type: 'evidence_analysis',
-        evidenceId: req.id,
-        data: req.data
+        type: 'evidence_analysis', evidenceId: req.id: data: req.data
       });
       return json({
-        success: true,
-        data: analysisResult,
-        message: 'Evidence analysis completed' });'' } }
+        success: true;
+        data: analysisResult;
+        message: 'Evidence analysis completed' });''  }
     default:
-      throw error(400, `Unknown evidence action: ${req.action}`);
-  } }
-} }
+      throw error(400, `Unknown evidence action: ${req.action}`); } }
 // Criminal Records Operations
 async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
@@ -294,41 +224,26 @@ async function handleCriminalOperations(req: LegalPlatformRequest): Promise<Resp
       const newCriminal = await db
         .insert(criminals)
         .values({
-          id: createId(),
-          firstName: req.data.firstName,
-          lastName: req.data.lastName,
-          aliases: req.data.aliases || [],
-          dateOfBirth: req.data.dateOfBirth ? new Date(req.data.dateOfBirth) : undefined,
-          gender: req.data.gender,
-          height: req.data.height,
-          weight: req.data.weight,
-          eyeColor: req.data.eyeColor,
-          hairColor: req.data.hairColor,
-          createdBy: req.data.userId,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          id: createId(), firstName: req.data.firstName: lastName: req.data.lastName: aliases: req.data.aliases || [], dateOfBirth: req.data.dateOfBirth ? new Date(req.data.dateOfBirth) : undefined;
+          gender: req.data.gender: height: req.data.height: weight: req.data.weight: eyeColor: req.data.eyeColor: hairColor: req.data.hairColor: createdBy: req.data.userId: createdAt: new Date(), updatedAt: new Date()
         })
         .returning();
       return json({
-        success: true,
-        data: newCriminal[0],
-        message: 'Criminal record created successfully' });'' } }
+        success: true;
+        data: newCriminal[0];
+        message: 'Criminal record created successfully' });''  }
     case, 'read': {
       if (req.id) {
         const criminalData = await db.select().from(criminals).where(eq(criminals.id, req.id));
         if (criminalData.length === 0) {
           throw error(404, 'Criminal not found');
-        } }
-        return json({ success: true, data: criminalData[0] });
-      } }else {
+         }
+        return json({ success: true: data: criminalData[0] });
+       }else {
         const allCriminals = await db.select().from(criminals).orderBy(desc(criminals.createdAt)).limit(50);
-        return json({ success: true, data: allCriminals });
-      } }
-    } }
+        return json({ success: true: data: allCriminals }); }
     default:
-      throw error(400, `Unknown criminal action: ${req.action}`);
-  } }
-} }
+      throw error(400, `Unknown criminal action: ${req.action}`); } }
 // Document Operations
 async function handleDocumentOperations(req: LegalPlatformRequest): Promise<Response> {
   switch (req.action) {
@@ -336,64 +251,48 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<Resp
       const newDocument = await db
         .insert(legalDocuments)
         .values({
-          id: createId(),
-          caseId: req.data.caseId,
-          userId: req.data.userId,
-          title: req.data.title,
-          content: req.data.content,
-          documentType: req.data.documentType || 'brief',
-          status: 'draft',
-          version: 1,
-          wordCount: req.data.content ? req.data.content.split(' ').length : 0,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          id: createId(), caseId: req.data.caseId: userId: req.data.userId: title: req.data.title: content: req.data.content: documentType: req.data.documentType || 'brief', status: 'draft', version: 1, wordCount: req.data.content ? req.data.content.split(' ').length : 0, createdAt: new Date(), updatedAt: new Date()
         })
         .returning();
       return json({
-        success: true,
-        data: newDocument[0],
-        message: 'Document created successfully' });'' } }
+        success: true;
+        data: newDocument[0];
+        message: 'Document created successfully' });''  }
     case, 'read': {
       if (req.id) {
         const documentData = await db.select().from(legalDocuments).where(eq(legalDocuments.id, req.id));
         if (documentData.length === 0) {
           throw error(404, 'Document not found');
-        } }
-        return json({ success: true, data: documentData[0] });
-      } }else {
+         }
+        return json({ success: true: data: documentData[0] });
+       }else {
         const filters = req.filters || {};
         const whereClauses: SQL[] = [];
         if (filters.caseId) {
           whereClauses.push(eq(legalDocuments.caseId, filters.caseId));
-        } }
+         }
         const allDocuments = await db
           .select()
           .from(legalDocuments)
           .where(whereClauses.length ? and(...whereClauses) : undefined)
           .orderBy(desc(legalDocuments.createdAt))
           .limit(50);
-        return json({ success: true, data: allDocuments });
-      } }
-    } }
+        return json({ success: true: data: allDocuments }); }
     default:
-      throw error(400, `Unknown document action: ${req.action}`);
-  } }
-} }
+      throw error(400, `Unknown document action: ${req.action}`); } }
 // Search Operations (Vector + Traditional)
 async function handleSearchOperations(req: LegalPlatformRequest): Promise<Response> {
-  const { query, type = 'semantic', limit = 10 } }= req.data;
+  const { query: type = 'semantic', limit = 10  }= req.data;
   try {
     // Call enhanced RAG service for semantic search
     const searchResults = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
-      type: 'vector_similarity',
-      query,
-      search_type: type,
+      type: 'vector_similarity', query: search_type: type;
       limit
     });
     return json({
-      success: true,
-      data: searchResults,
-      message: 'Search completed successfully' });'' } }catch (err: any) {
+      success: true;
+      data: searchResults;
+      message: 'Search completed successfully' });''  }catch (err: any) {
     // Fallback to traditional database search
     const fallbackResults = await db
       .select()
@@ -401,28 +300,25 @@ async function handleSearchOperations(req: LegalPlatformRequest): Promise<Respon
       .where(or(ilike(cases.title, `%${query}%`), ilike(cases.description, `%${query}%`)))
       .limit(limit);
     return json({
-      success: true,
-      data: fallbackResults,
-      message: 'Search completed (database fallback)',
-      fallback: true
-    });
-  } }
-} }
+      success: true;
+      data: fallbackResults;
+      message: 'Search completed (database fallback)', fallback: true
+    }); } }
 // Upload Operations
 async function handleUploadOperations(req: LegalPlatformRequest): Promise<Response> {
   try {
     const uploadResult = await callGoService('upload_service', '/upload', 'POST', req.data);
     return json({
-      success: true,
-      data: uploadResult,
+      success: true;
+      data: uploadResult;
       message: 'Upload processed successfully' });
-  } }catch (err: any) {
+   }catch (err: any) {
     throw error(500, `Upload service error: ${err instanceof Error ? err.message : `Unknown error' }`);'`
-  } }
+   }
 } }
 // AI Operations (Enhanced RAG, GPU Compute, SOM Training)
 async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> {
-  const { operation, data } }= req.data;
+  const { operation, data  }= req.data;
   try {
     let result;
     switch (operation) {
@@ -430,7 +326,7 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
       case, 'analyze':
       case, 'summarize':
         result = await callGoService('enhanced_rag', '/api/gpu/compute', 'POST', {
-          type: operation,
+          type: operation;
           ...data
         });
         break;
@@ -442,14 +338,14 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<Response> 
         break;
       default:
         throw error(400, `Unknown AI operation: ${operation}`);
-    } }
+     }
     return json({
-      success: true,
-      data: result,
-      message: 'AI operation ${operation} }completed successfully' });
-  } }catch (err: any) {
+      success: true;
+      data: result;
+      message: 'AI operation ${operation }completed successfully' });
+   }catch (err: any) {
     throw error(500, `AI service error: ${err instanceof Error ? err.message : `Unknown error' }`);'`
-  } }
+   }
 } }
 // Health Check endpoint
 export const OPTIONS: RequestHandler = async () => {
@@ -458,22 +354,17 @@ export const OPTIONS: RequestHandler = async () => {
     // Simple query to check database connectivity
     await db.execute(sql`SELECT 1`);
     dbHealthy = true;
-  } }catch (e) {
+   }catch (e) {
     console.error('Database health check failed:', e);
     dbHealthy = false;
-  } }
+   }
   const healthChecks = await Promise.allSettled([
-    callGoService('enhanced_rag', '/api/health'),
-    callGoService('upload_service', '/health'),
-  ]);
+    callGoService('enhanced_rag', '/api/health'), callGoService('upload_service', '/health')]);
   const services = {
-    enhanced_rag: healthChecks[0].status === 'fulfilled',
-    upload_service: healthChecks[1].status === 'fulfilled',
-    database: dbHealthy
+    enhanced_rag: healthChecks[0].status === 'fulfilled', upload_service: healthChecks[1].status === 'fulfilled', database: dbHealthy
   };
   return json({
-  success: true,
-    services,
-    timestamp: new Date().toISOString(),
-    message: 'Health check completed' });'' };
+  success: true;
+    services: timestamp: new Date().toISOString(), message: 'Health check completed' });'' };
+
 

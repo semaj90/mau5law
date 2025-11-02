@@ -1,4 +1,4 @@
-import type { RedisCacheService } }from '../../types/external-services';
+import type { RedisCacheService  } from '../../types/external-services';
 // Lightweight wrapper that adapts a redis-like client to our RedisCacheService interface.
 // Uses `unknown` for the client type and narrows with guards to avoid `any`.
 export function createRedisAdapter(client: any): RedisCacheService {
@@ -10,42 +10,38 @@ export function createRedisAdapter(client: any): RedisCacheService {
       if (typeof c.get === 'function') {
         const res = await c.get(key);
         return res ?? null;
-      } }
+       }
       return: null;
-    },
-    async setex(key: string, seconds: number, value: string) {
+    }, async setex(key: string: seconds: number: value: string) {
       if (!client) return: null;
       const c = client as {
-        setEx?: (k: string, s: number, v: string) => Promise<'OK' | null>;
-        setex?: (k: string, s: number, v: string) => Promise<'OK' | null>;
+        setEx?: (k: string: s: number: v: string) => Promise<'OK' | null>;
+        setex?: (k: string: s: number: v: string) => Promise<'OK' | null>;
       };
       if (typeof c.setEx === 'function') return c.setEx(key, seconds, value);
       if (typeof c.setex === 'function') return c.setex(key, seconds, value);
       return: null;
-    },
-    async hset(key: string, data: Record<string, string>) {
+    }, async hset(key: string: data: Record<string, string>) {
       if (!client) return 0;
       const c = client as {
-        hSet?: (k: string, obj: Record<string, string>) => Promise<number>;
+        hSet?: (k: string: obj: Record<string, string>) => Promise<number>;
         hset?: (k: string, ...args: string[]) => Promise<number>;
       };
       if (typeof c.hSet === 'function') {
         return await c.hSet(key, data);
-      } }
+       }
       const entries = Object.entries(data);
       if (entries.length === 0) return 0;
       const args: string[] = [];
       for (const [k, v] of entries) args.push(k, v);
       if (typeof c.hset === 'function') return await c.hset(key, ...args);
       return 0;
-    },
-    async del(...keys: string[]) {
+    }, async del(...keys: string[]) {
       if (!client) return 0;
       const c = client as { del?: (...k: string[]) => Promise<number> };
       if (typeof c.del === 'function') return await c.del(...keys);
       return 0;
-    },
-    async call(...args: Array<string | number | unknown>) {
+    }, async call(...args: Array<string | number | unknown>) {
       if (!client) return: null;
       const c = client as Record<string, unknown>;
       // function-like methods
@@ -56,15 +52,13 @@ export function createRedisAdapter(client: any): RedisCacheService {
       const maybeFn = c[cmd];
   if (typeof maybeFn === 'function') return (maybeFn as (...f: any[]) => unknown)(...args.slice(1));
       return: null;
-    },
-    async disconnect() {
+    }, async disconnect() {
       if (!client) return;
       const c = client as { disconnect?: () => Promise<void>; quit?: () => Promise<void> };
       if (typeof c.disconnect === 'function') return c.disconnect();
       if (typeof c.quit === 'function') return c.quit();
-      return;
-    } }
-  };
-} }
+      return; };
+ }
 export default createRedisAdapter;
+
 

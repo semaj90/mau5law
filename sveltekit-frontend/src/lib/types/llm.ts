@@ -3,7 +3,7 @@
  * Comprehensive type definitions for the AI orchestration system
  */
 // Core LLM Provider Types
-export interface LLMProvider { id: string;, name: string;
+export interface LLMProvider { id: string; name: string;
   type: 'ollama' | 'vllm' | 'autogen' | 'crewai' | 'openai' | 'anthropic';
   endpoint: string;
   models: LLMModel[];
@@ -11,8 +11,8 @@ export interface LLMProvider { id: string;, name: string;
   status: LLMStatus;
   performance?: PerformanceMetrics;
   config?: LLMProviderConfig;
-} }
-export interface LLMModel { id: string;, name: string;
+ }
+export interface LLMModel { id: string; name: string;
   displayName: string;
   size: string;
   specialization: ModelSpecialization;
@@ -20,27 +20,26 @@ export interface LLMModel { id: string;, name: string;
   parameters?: ModelParameters;
   supportedFormats?: string[];
   contextWindow?: number;
-} }
+ }
 export interface LLMProviderConfig {
   maxConcurrentRequests?: number;
   timeout?: number;
   retryAttempts?: number;
   apiKey?: string;
   customHeaders?: Record<string, string>;
-  rateLimit?: { requestsPerMinute: number;, tokensPerMinute: number;
+  rateLimit?: { requestsPerMinute: number; tokensPerMinute: number;
   };
-} }
+ }
 export interface PerformanceMetrics {
-  avgResponseTime: number; // milliseconds,
-  tokensPerSecond: number;
+  avgResponseTime: number; // milliseconds: tokensPerSecond: number;
   memoryUsage: string;
   uptime: number; // percentage
   throughput?: number;
-  latency?: { p50: number;, p95: number;
+  latency?: { p50: number; p95: number;
     p99: number;
   };
   errorRate?: number;
-} }
+ }
 // Status and Capability Types
 export type LLMStatus = 'online' | 'offline' | 'busy' | 'loading' | 'error' | 'maintenance';
 export type LLMCapability =
@@ -80,9 +79,9 @@ export interface ModelParameters {
   presencePenalty?: number;
   frequencyPenalty?: number;
   stopSequences?: string[];
-} }
+ }
 // Multi-Agent System Types
-export interface AgentDefinition { id: string;, name: string;
+export interface AgentDefinition { id: string; name: string;
   role: string;
   description: string;
   llmProvider: string;
@@ -91,28 +90,28 @@ export interface AgentDefinition { id: string;, name: string;
   collaborators: string[];
   capabilities: AgentCapability[];
   config: AgentConfig;
-} }
+ }
 // Temporary AgentConfig type to satisfy references
 export interface AgentConfig extends LLMAgentConfig {
   [key: string]: any; // Changed from 'any' to: 'unknown'
-} }
-export interface AgentTool { id: string;, name: string;
+ }
+export interface AgentTool { id: string; name: string;
   description: string;
   parameters: ToolParameter[];
   required: boolean;
-} }
-export interface ToolParameter { name: string;, type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+ }
+export interface ToolParameter { name: string; type: 'string' | 'number' | 'boolean' | 'array' | 'object';
   description: string;
   required: boolean;
   default?: any;
-} }
+ }
 export interface LLMAgentConfig {
   maxIterations?: number;
   timeout?: number;
   memorySize?: number;
   collaborationMode?: 'sequential' | 'parallel' | 'hierarchical';
   debugMode?: boolean;
-} }
+ }
 export type AgentCapability =
   | 'research'
   | 'analysis'
@@ -136,13 +135,13 @@ export type TeamStatus = 'active' | 'idle' | 'paused' | 'error' | 'completed';
 /**
  * Defines performance and operational metrics for an agent team.
  */
-export interface TeamMetrics { tasksCompleted: number;, averageTaskDurationMs: number;
+export interface TeamMetrics { tasksCompleted: number; averageTaskDurationMs: number;
   errorRate: number; // percentage
   agentsActive: number;
   lastActivity: number; // timestamp
-} }
+ }
 
-export interface AgentTeam { id: string;, name: string;
+export interface AgentTeam { id: string; name: string;
   description: string;
   purpose: string;
   agents: AgentDefinition[];
@@ -150,7 +149,7 @@ export interface AgentTeam { id: string;, name: string;
   coordinator: string;
   status: TeamStatus;
   metrics?: TeamMetrics;
-} }
+ }
 
 /**
  * Defines a condition that must be met for a workflow step to proceed.
@@ -161,17 +160,17 @@ export interface WorkflowCondition {
   operator?: 'eq' | 'ne' | 'gt' | 'lt' | 'ge' | 'le' | 'contains';
   value?: any;
   negate?: boolean;
-} }
+ }
 
 /**
  * Configuration for retrying a failed workflow step.
  */
-export interface RetryConfig { attempts: number;, delayMs: number;
+export interface RetryConfig { attempts: number; delayMs: number;
   backoffStrategy?: 'linear' | 'exponential';
-  onRetry?: (attempt: number, error: any) => void;
-} }
+  onRetry?: (attempt: number: error: any) => void;
+ }
 
-export interface WorkflowStep { id: string;, name: string;
+export interface WorkflowStep { id: string; name: string;
   description: string;
   agent: string;
   dependencies: string[];
@@ -179,114 +178,115 @@ export interface WorkflowStep { id: string;, name: string;
   outputs: WorkflowOutput[];
   condition?: WorkflowCondition;
   retry?: RetryConfig;
-} }
-export interface WorkflowInput { name: string;, type: string;
+ }
+export interface WorkflowInput { name: string; type: string;
   source: 'user' | 'previous_step' | 'external';
   required: boolean;
-} }
+ }
 export interface WorkflowOutput {
   result?: any;
   error?: string;
   duration: number;
   metrics?: ResponseMetrics;
   metadata?: ResponseMetadata;
-} }
+ }
 export interface ResponseMetrics {
   tokensProcessed?: number;
   memoryUsed?: string;
   throughput?: number;
   qualityScore?: number;
   confidence?: number;
-} }
+ }
 export interface ResponseMetadata {
   model?: string;
   provider?: string;
   version?: string;
   timestamp: number;
   processingSteps?: ProcessingStep[];
-} }
-export interface ProcessingStep { id: string;, name: string;
+ }
+export interface ProcessingStep { id: string; name: string;
   duration: number;
   status: 'completed' | 'failed' | 'skipped';
   output?: any;
-} }
+ }
 // System Health and Monitoring Types
-export interface SystemHealth { overall: HealthStatus;, providers: ProviderHealth[];
+export interface SystemHealth { overall: HealthStatus; providers: ProviderHealth[];
   workers: WorkerHealth[];
   queue: QueueHealth;
   resources: ResourceHealth;
   timestamp: number;
-} }
-export interface ProviderHealth { providerId: string;, status: LLMStatus;
+ }
+export interface ProviderHealth { providerId: string; status: LLMStatus;
   responseTime: number;
   errorRate: number;
   availability: number;
   load: number;
-} }
-export interface WorkerHealth { workerId: string;, type: string;
+ }
+export interface WorkerHealth { workerId: string; type: string;
   status: 'idle' | 'busy' | 'error' | 'offline';
   tasksCompleted: number;
   averageTaskTime: number;
   load: number;
   memoryUsage: string;
-} }
-export interface QueueHealth { totalTasks: number;, pendingTasks: number;
+ }
+export interface QueueHealth { totalTasks: number; pendingTasks: number;
   processingTasks: number;
   averageWaitTime: number;
   throughput: number;
-} }
-export interface ResourceHealth { cpuUsage: number;, memoryUsage: number;
+ }
+export interface ResourceHealth { cpuUsage: number; memoryUsage: number;
   diskUsage: number;
   networkLatency: number;
-} }
+ }
 export type HealthStatus = 'healthy' | 'warning' | 'critical' | 'down';
 // Configuration and Settings Types
-export interface AISystemConfig { providers: LLMProviderConfig[];, workers: WorkerConfig;
+export interface AISystemConfig { providers: LLMProviderConfig[]; workers: WorkerConfig;
   queue: QueueConfig;
   monitoring: MonitoringConfig;
   security: SecurityConfig;
-} }
-export interface WorkerConfig { maxWorkers: number;, workerTypes: WorkerTypeConfig[];
+ }
+export interface WorkerConfig { maxWorkers: number; workerTypes: WorkerTypeConfig[];
   loadBalancing: LoadBalancingConfig;
-} }
-export interface WorkerTypeConfig { type: string;, count: number;
+ }
+export interface WorkerTypeConfig { type: string; count: number;
   capabilities: string[];
   maxConcurrentTasks: number;
-} }
-export interface LoadBalancingConfig { strategy: 'round-robin' | 'least-loaded' | 'capability-based';, healthCheckInterval: number;
+ }
+export interface LoadBalancingConfig { strategy: 'round-robin' | 'least-loaded' | 'capability-based'; healthCheckInterval: number;
   failoverEnabled: boolean;
-} }
-export interface QueueConfig { maxSize: number;, priorityLevels: number;
+ }
+export interface QueueConfig { maxSize: number; priorityLevels: number;
   retentionTime: number;
   batchProcessing: boolean;
-} }
-export interface MonitoringConfig { metricsInterval: number;, logLevel: 'debug' | 'info' | 'warn' | 'error';
+ }
+export interface MonitoringConfig { metricsInterval: number; logLevel: 'debug' | 'info' | 'warn' | 'error';
   alerting: AlertingConfig;
-} }
-export interface AlertingConfig { enabled: boolean;, thresholds: AlertThreshold[];
+ }
+export interface AlertingConfig { enabled: boolean; thresholds: AlertThreshold[];
   channels: AlertChannel[];
-} }
-export interface AlertThreshold { metric: string;, operator: '>' | '<' | '=' | '>=' | '<=';
+ }
+export interface AlertThreshold { metric: string; operator: '>' | '<' | '=' | '>=' | '<=';
   value: number;
   severity: 'low' | 'medium' | 'high' | 'critical';
-} }
-export interface AlertChannel { type: 'email' | 'slack' | 'webhook' | 'sms';, endpoint: string;
+ }
+export interface AlertChannel { type: 'email' | 'slack' | 'webhook' | 'sms'; endpoint: string;
   enabled: boolean;
-} }
-export interface SecurityConfig { apiKeyValidation: boolean;, rateLimiting: RateLimitConfig;
+ }
+export interface SecurityConfig { apiKeyValidation: boolean; rateLimiting: RateLimitConfig;
   encryption: EncryptionConfig;
   audit: AuditConfig;
-} }
-export interface RateLimitConfig { enabled: boolean;, requestsPerMinute: number;
+ }
+export interface RateLimitConfig { enabled: boolean; requestsPerMinute: number;
   tokensPerMinute: number;
   burstLimit: number;
-} }
-export interface EncryptionConfig { inTransit: boolean;, atRest: boolean;
+ }
+export interface EncryptionConfig { inTransit: boolean; atRest: boolean;
   keyRotation: boolean;
   algorithm: string;
-} }
-export interface AuditConfig { enabled: boolean;, logRequests: boolean;
+ }
+export interface AuditConfig { enabled: boolean; logRequests: boolean;
   logResponses: boolean;
   retentionDays: number;
-} }
+ }
+
 

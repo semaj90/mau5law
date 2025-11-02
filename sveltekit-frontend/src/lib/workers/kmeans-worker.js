@@ -46,11 +46,7 @@ class KMeansWorker {
     const sendProgress = (iteration, converged) => {
       if (parentPort) {
         parentPort.postMessage({
-          type: 'progress',
-          iteration,
-          converged,
-          timestamp: Date.now(),
-        });
+          type: 'progress', iteration, converged: timestamp: Date.now()});
       }
     };
     while (!hasConverged && iteration < this.maxIterations) {
@@ -114,13 +110,10 @@ class KMeansWorker {
     // Calculate cluster metrics
     const clusterMetrics = this.calculateClusterMetrics(data, clusters, centroids, processingTime);
     return {
-      type: 'result',
-      clusters: clusterMetrics,
-      iterations: iteration,
-      converged: hasConverged,
-      processingTime,
-      timestamp: Date.now(),
-    };
+      type: 'result', clusters: clusterMetrics;
+      iterations: iteration;
+      converged: hasConverged;
+      processingTime: timestamp: Date.now()};
   }
   /**
    * K-means++ initialization for better cluster starting points
@@ -168,16 +161,8 @@ class KMeansWorker {
       const silhouette = this.calculateSilhouetteScore(clusterData, clusters, centroids, i);
       const memoryUsage = this.estimateClusterMemoryUsage(clusterData);
       return {
-        id: `cluster_${i}`,
-        centroid: centroids[i],
-        size: cluster.length,
-        cohesion,
-        silhouette,
-        separability: this.calculateSeparability(centroids, i),
-        memoryUsage,
-        processingTime: processingTime / Math.max(1, clusters.length),
-        dataIndices: cluster,
-      };
+        id: `cluster_${i}`, centroid: centroids[i];
+        size: cluster.length, cohesion, silhouette: separability: this.calculateSeparability(centroids, i), memoryUsage: processingTime: processingTime / Math.max(1, clusters.length), dataIndices: cluster};
     });
   }
   calculateCohesion(clusterData, centroid) {
@@ -240,7 +225,7 @@ class KMeansWorker {
 if (parentPort) {
   parentPort.on("message", async (message) => {
     try {
-      const { data, k, dimensions, options = {} } = message;
+      const { data, k, dimensions: options = {} } = message;
       const worker = new KMeansWorker();
       // Apply any options
       if (options.maxIterations) worker.maxIterations = options.maxIterations;
@@ -253,11 +238,7 @@ if (parentPort) {
     } catch (error) {
       if (parentPort) {
         parentPort.postMessage({
-          type: "error",
-          error: error.message,
-          stack: error.stack,
-          timestamp: Date.now(),
-        });
+          type: "error", error: error.message: stack: error.stack: timestamp: Date.now()});
       }
     }
   });

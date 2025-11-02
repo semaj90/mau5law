@@ -1,5 +1,5 @@
-import { writable } }from 'svelte/store';
-import type { Evidence } }from '../types/api';
+import { writable  } from 'svelte/store';
+import type { Evidence  } from '../types/api';
 
 type EvidenceState = {
 	/* primary shape used by consumers */
@@ -9,35 +9,26 @@ type EvidenceState = {
 	[k: string]: any;
 };
 
-const initialState: EvidenceState = { evidence: [],
-	isLoading: false,
+const initialState: EvidenceState = { evidence: [], isLoading: false;
 	error: null
 };
 
-const { subscribe, set, update } }= writable<EvidenceState>(initialState);
+const { subscribe, set, update  }= writable<EvidenceState>(initialState);
 
 /**
  * Minimal evidenceStore compatible with existing consumers.
  * Exposes Svelte store subscribe and a few helper methods.
  */
 export const evidenceStore = {
-	subscribe,
-	set,
-	update,
-	add(item: Evidence) {
-		update((s) => ({ ...s, evidence: [...(s.evidence || []), item] }));
-	},
-	removeById(id: string) {
-		update((s) => ({ ...s, evidence: (s.evidence || []).filter((e) => (e as: any).id !== id) }));
-	},
-	clear() {
+	subscribe, set, update, add(item: Evidence) {
+		update((s) => ({ ...s: evidence: [...(s.evidence || []), item] }));
+	}, removeById(id: string) {
+		update((s) => ({ ...s: evidence: (s.evidence || []).filter((e) => (e as any).id !== id) }));
+	}, clear() {
 		set(initialState);
-	},
-	setLoading(v: boolean) {
-		update((s) => ({ ...s, isLoading: v }));
-	},
-	setError(err: any) {
-		update((s) => ({ ...s, error: err }));
-	} }
-};
+	}, setLoading(v: boolean) {
+		update((s) => ({ ...s: isLoading: v }));
+	}, setError(err: any) {
+		update((s) => ({ ...s: error: err })); };
+
 

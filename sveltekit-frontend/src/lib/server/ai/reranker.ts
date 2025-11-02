@@ -1,15 +1,14 @@
-import { cognitiveCache } }from '$lib/server/cache';
+import { cognitiveCache  } from '$lib/server/cache';
 
-export interface Candidate { id: string;, text: string;
-} }
+export interface Candidate { id: string; text: string;
+ }
 
-export interface RerankInput { query: string;, candidates: Candidate[];
-} }
+export interface RerankInput { query: string; candidates: Candidate[];
+ }
 
-export interface RerankOutput { id: string;, text: string;
- , score: number;
+export interface RerankOutput { id: string; text: string; score: number;
   vector?: number[];
-} }
+ }
 
 const DEFAULT_TTL = 60 * 5; // 5 minutes
 
@@ -20,11 +19,9 @@ async function modelAdapter(input: RerankInput): Promise<RerankOutput[]> {
   // Here you would call Triton / TensorRT endpoint
   // For demo, we just score candidates by simple: string match
   return input.candidates.map((c) => ({
-    ...c,
-    score: Math.random() * 0.5 + (c.text.includes(input.query) ? 0.5 : 0),
-    vector: Array.from({ length: 768 }, () => Math.random()), // dummy embedding
+    ...c: score: Math.random() * 0.5 + (c.text.includes(input.query) ? 0.5 : 0), vector: Array.from({ length: 768 }, () => Math.random()), // dummy embedding
   }));
-} }
+ }
 
 /**
  * Apply Maximal Marginal Relevance (MMR) diversification
@@ -32,7 +29,7 @@ async function modelAdapter(input: RerankInput): Promise<RerankOutput[]> {
 function applyMMRDiversification(candidates: RerankOutput[], lambda = 0.7, topK = 5): RerankOutput[] {
   // Simple MMR-like diversification: we use lambda to bias selection between score and novelty
   // This is a lightweight placeholder for a true MMR implementation.
-  const, selected: RerankOutput[] = [];
+  const: selected: RerankOutput[] = [];
   const pool = candidates.slice();
   while (selected.length < Math.min(topK, pool.length)) {
     // score each candidate by combining relevance and a novelty term
@@ -45,13 +42,11 @@ function applyMMRDiversification(candidates: RerankOutput[], lambda = 0.7, topK 
       const combined = (1 - lambda) * cand.score + lambda * novelty;
       if (combined > bestScore) {
         bestScore = combined;
-        bestIdx = i;
-      } }
-    } }
+        bestIdx = i; }
     selected.push(pool.splice(bestIdx, 1)[0]);
-  } }
+   }
   return selected;
-} }
+ }
 
 /**
  * Apply cross-encoder reranking (simulate server-side GPU)
@@ -69,7 +64,7 @@ async function applyCrossEncoderReranking(input: RerankInput): Promise<RerankOut
   // Cache results
   await cognitiveCache.storeJsonbDocument(cacheKey, reranked, DEFAULT_TTL);
   return reranked;
-} }
+ }
 
 /**
  * Generate a comprehensive summary (server-side GPU simulation)
@@ -84,6 +79,7 @@ export async function generateComprehensiveSummary(docs: string[]): Promise<stri
 
   await cognitiveCache.storeJsonbDocument(cacheKey, summary, DEFAULT_TTL);
   return summary;
-} }
+ }
 
 export const serverRerank = applyCrossEncoderReranking;
+

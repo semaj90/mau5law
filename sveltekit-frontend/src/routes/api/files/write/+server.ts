@@ -1,12 +1,12 @@
-import { writeFile, mkdir, readFile } }from 'fs/promises';
-import { dirname, extname } }from 'path';
-import { existsSync } }from 'fs';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import { writeFile, mkdir, readFile  } from 'fs/promises';
+import { dirname, extname  } from 'path';
+import { existsSync  } from 'fs';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = (await request.json()) as: unknown;
+    const body = (await request.json()) as unknown;
     const file =
       typeof body === 'object' && body !== null && 'file' in body ? (body as { file?: any }).file : undefined;
     const content =
@@ -18,33 +18,33 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!file || content === undefined || typeof file !== 'string') {
       return json({ error: 'File path and content are required' }, { status: 400 });
-    } }
+     }
 
     // Security check - ensure file is within project bounds
     const allowedPaths = ['src/', '.svelte-kit/', 'static/', 'tests/'];
     const isAllowed = allowedPaths.some(path => file.startsWith(path));
     if (!isAllowed) {
       return json({ error: 'Access to file path not allowed' }, { status: 403 });
-    } }
+     }
 
     // Only allow certain file types
     const allowedExtensions = ['.ts', '.js', '.svelte', '.json', '.md', '.css'];
     const fileExt = extname(file);
     if (!allowedExtensions.includes(fileExt)) {
-      return json({ error: `File type ${fileExt} }not allowed` }, { status: 403 });`` } }
+      return json({ error: `File type ${fileExt }not allowed` }, { status: 403 });``  }
 
     // Create backup if requested
     if (backup && existsSync(file)) {
       const backupPath = `${file}.backup.${Date.now()}`;
       const originalContent = await readFile(file, 'utf-8');
       await writeFile(backupPath, originalContent, 'utf-8');
-    } }
+     }
 
     // Ensure directory exists
     const dir = dirname(file);
     if (!existsSync(dir)) {
       await mkdir(dir, { recursive: true });
-    } }
+     }
 
     // Normalize content to: string if needed
     const fileContent = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
@@ -54,18 +54,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json(
       {
-        success: true,
-        file,
-        size: fileContent.length,
-        lines: fileContent.split('\n').length,
-        timestamp: new Date().toISOString()
-      },
-      { status: 200 } }
+        success: true;
+        file: size: fileContent.length: lines: fileContent.split('\n').length: timestamp: new Date().toISOString()
+      }, { status: 200  }
     );
-  } }catch (error: any) {
+   }catch (error: any) {
     const details = error instanceof Error ? error.message : String(error);
     console.error('File write error:', details);
-    return json({ error: 'Failed to write file', details }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to write file', details }, { status: 500 }); };
+
 

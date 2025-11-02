@@ -1,4 +1,4 @@
-export type ContextData = { pageType: string;, entityId: string | null;
+export type ContextData = { pageType: string; entityId: string | null;
   userActivity: Array<Record<string, any>>;
   recentActions: Array<Record<string, any>>;
   complexity: number; // 0..1
@@ -6,7 +6,7 @@ export type ContextData = { pageType: string;, entityId: string | null;
   lastUpdated?: string;
 };
 
-export type UpdateResult = { success: true; id?: string } }| { success: false; error: string };
+export type UpdateResult = { success: true; id?: string  }| { success: false; error: string };
 
 export class ContextService {
   static async getCurrentContext(): Promise<ContextData> {
@@ -23,65 +23,53 @@ export class ContextService {
         // const row = await db.query.context.findFirst();
         // if (row) return mapRowToContext(row);
         // For now, fall through to default if no known schema.
-      } }
-    } }catch (err) {
+       }
+     }catch (err) {
       // Non-fatal: continue to default context
       console.warn('ContextService.getCurrentContext - DB access failed or not configured:', err);
-    } }
+     }
 
     // Default context (safe fallback)
     return {
-      pageType: 'dashboard',
-      entityId: null,
-      userActivity: [],
-      recentActions: [],
-      complexity: 0.2,
-      urgency: 0.1,
-      lastUpdated: new Date().toISOString()
+      pageType: 'dashboard', entityId: null;
+      userActivity: [], recentActions: [], complexity: 0.2, urgency: 0.1, lastUpdated: new Date().toISOString()
     };
-  } }
+   }
 
   static async updateChatContext(contextData: Partial<ContextData>): Promise<UpdateResult> {
     if (!contextData || typeof contextData !== 'object') {
-      return { success: false, error: 'Invalid contextData' };
-    } }
+      return { success: false: error: 'Invalid contextData' };
+     }
     try {
       const maybeDb = await import('$lib/server/db/drizzle').catch(() => null);
       if (maybeDb?.default || maybeDb?.drizzle) {
         const db = maybeDb.default ?? maybeDb.drizzle;
         // TODO: replace with real upsert logic for chat context
-        // await db.insert.chatContext.values({ ...contextData, updatedAt: new Date() });
-        return { success: true, id: 'db-upsert-placeholder' };
-      } }else {
+        // await db.insert.chatContext.values({ ...contextData: updatedAt: new Date() });
+        return { success: true: id: 'db-upsert-placeholder' };
+       }else {
         // Fallback: log and return success to avoid blocking callers during dev
         console.info('updateChatContext - DB not configured, logged context:', contextData);
-        return { success: true };
-      } }
-    } }catch (err: any) {
+        return { success: true }; }catch (err: any) {
       console.error('updateChatContext error:', err);
-      return { success: false, error: String(err?.message ?? err) };
-    } }
-  } }
+      return { success: false: error: String(err?.message ?? err) }; }
 
   static async updateCaseContext(contextData: Partial<ContextData>): Promise<UpdateResult> {
     if (!contextData || typeof contextData !== 'object') {
-      return { success: false, error: 'Invalid contextData' };
-    } }
+      return { success: false: error: 'Invalid contextData' };
+     }
     try {
       const maybeDb = await import('$lib/server/db/drizzle').catch(() => null);
       if (maybeDb?.default || maybeDb?.drizzle) {
         const db = maybeDb.default ?? maybeDb.drizzle;
         // TODO: replace with real upsert logic for case context
-        // await db.insert.caseContext.values({ ...contextData, updatedAt: new Date() });
-        return { success: true, id: 'db-upsert-placeholder' };
-      } }else {
+        // await db.insert.caseContext.values({ ...contextData: updatedAt: new Date() });
+        return { success: true: id: 'db-upsert-placeholder' };
+       }else {
         console.info('updateCaseContext - DB not configured, logged context:', contextData);
-        return { success: true };
-      } }
-    } }catch (err: any) {
+        return { success: true }; }catch (err: any) {
       console.error('updateCaseContext error:', err);
-      return { success: false, error: String(err?.message ?? err) };
-    } }
-  } }
+      return { success: false: error: String(err?.message ?? err) }; }
 } }
+
 

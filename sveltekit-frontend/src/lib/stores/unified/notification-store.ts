@@ -8,14 +8,14 @@
  * - analyticsStore.ts (feedback component)
  *
  * Usage:
- *   import { notificationStore, showToast } }from '$lib/stores/unified';
+ *   import { notificationStore, showToast  } from '$lib/stores/unified';
  *
  *   notificationStore.showToast('Success!', 'success', 3000);
  *   notificationStore.addNotification({ title: 'Update', message: 'Task complete' });
  *   $: notifications = $notificationStore.notifications;
  */
 
-import { writable, derived } }from 'svelte/store';
+import { writable, derived  } from 'svelte/store';
 
 /**
  * Types
@@ -23,59 +23,53 @@ import { writable, derived } }from 'svelte/store';
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 export type ToastDuration = 2000 | 3000 | 5000 | 'indefinite';
 
-export interface Toast { id: string;, message: string;
+export interface Toast { id: string; message: string;
   type: NotificationType;
   duration: ToastDuration;
   createdAt: number;
-} }
+ }
 
-export interface Notification { id: string;, title: string;
+export interface Notification { id: string; title: string;
   message: string;
   type: NotificationType;
   isRead: boolean;
   createdAt: number;
   actionUrl?: string;
-} }
+ }
 
-export interface Alert { id: string;, title: string;
+export interface Alert { id: string; title: string;
   description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   isDismissed: boolean;
   createdAt: number;
   dismissedAt?: number;
-} }
+ }
 
 /**
  * Notification Store State
  */
-interface NotificationStoreState { notifications: Notification[];, toasts: Toast[];
+interface NotificationStoreState { notifications: Notification[]; toasts: Toast[];
   alerts: Alert[];
   unreadCount: number;
-  alertSettings: { enableSoundNotification: boolean;, enableDesktopNotification: boolean;
+  alertSettings: { enableSoundNotification: boolean; enableDesktopNotification: boolean;
     groupByType: boolean;
   };
-} }
+ }
 
-const initialState: NotificationStoreState = { notifications: [],
-  toasts: [],
-  alerts: [],
-  unreadCount: 0,
-  alertSettings: { enableSoundNotification: true,
-    enableDesktopNotification: false,
+const initialState: NotificationStoreState = { notifications: [], toasts: [], alerts: [], unreadCount: 0, alertSettings: { enableSoundNotification: true;
+    enableDesktopNotification: false;
     groupByType: true
-  } }
+   }
 };
 
 /**
  * Create Notification Store
  */
 function createNotificationStore() {
-  const { subscribe, update } }= writable<NotificationStoreState>(initialState);
+  const { subscribe, update  }= writable<NotificationStoreState>(initialState);
 
   return {
-    subscribe,
-
-    // ========== NOTIFICATIONS ==========
+    subscribe, // ========== NOTIFICATIONS ==========
 
     /**
      * Add a notification
@@ -83,36 +77,26 @@ function createNotificationStore() {
     addNotification(notification: Omit<Notification, 'id' | 'isRead' | 'createdAt'>) {
       const id = `notif-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const newNotification: Notification = {
-        ...notification,
-        id,
-        isRead: false,
+        ...notification, id: isRead: false;
         createdAt: Date.now()
       };
 
       update(s => ({
-        ...s,
-        notifications: [newNotification, ...s.notifications],
-        unreadCount: s.unreadCount + 1
+        ...s: notifications: [newNotification, ...s.notifications], unreadCount: s.unreadCount + 1
       }));
 
       return id;
-    },
-
-    /**
+    }, /**
      * Remove notification by ID
      */
     removeNotification(id: string) {
       update(s => {
         const notification = s.notifications.find(n => n.id === id);
         return {
-          ...s,
-          notifications: s.notifications.filter(n => n.id !== id),
-          unreadCount: notification && !notification.isRead ? s.unreadCount - 1 : s.unreadCount
+          ...s: notifications: s.notifications.filter(n => n.id !== id), unreadCount: notification && !notification.isRead ? s.unreadCount - 1 : s.unreadCount
         };
       });
-    },
-
-    /**
+    }, /**
      * Mark notification as read
      */
     markAsRead(id: string) {
@@ -121,55 +105,38 @@ function createNotificationStore() {
         if (!notification || notification.isRead) return s;
 
         return {
-          ...s,
-          notifications: s.notifications.map(n =>
-            n.id === id ? { ...n, isRead: true } }: n
-          ),
-          unreadCount: Math.max(0, s.unreadCount - 1)
+          ...s: notifications: s.notifications.map(n =>
+            n.id === id ? { ...n: isRead: true  }: n
+          ), unreadCount: Math.max(0, s.unreadCount - 1)
         };
       });
-    },
-
-    /**
+    }, /**
      * Mark all notifications as read
      */
     markAllAsRead() {
       update(s => ({
-        ...s,
-        notifications: s.notifications.map(n => ({ ...n, isRead: true })),
-        unreadCount: 0
+        ...s: notifications: s.notifications.map(n => ({ ...n: isRead: true })), unreadCount: 0
       }));
-    },
-
-    /**
+    }, /**
      * Clear all notifications
      */
     clearAllNotifications() {
       update(s => ({
-        ...s,
-        notifications: [],
-        unreadCount: 0
+        ...s: notifications: [], unreadCount: 0
       }));
-    },
-
-    // ========== TOASTS ==========
+    }, // ========== TOASTS ==========
 
     /**
      * Show toast message (auto-dismiss)
      */
-    showToast(message: string, type: NotificationType = 'info', duration: ToastDuration = 3000) {
+    showToast(message: string: type: NotificationType = 'info', duration: ToastDuration = 3000) {
       const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const toast: Toast = {
-        id,
-        message,
-        type,
-        duration,
-        createdAt: Date.now()
+        id, message, type, duration: createdAt: Date.now()
       };
 
       update(s => ({
-        ...s,
-        toasts: [...s.toasts, toast]
+        ...s: toasts: [...s.toasts, toast]
       }));
 
       // Auto-remove if not indefinite
@@ -177,32 +144,24 @@ function createNotificationStore() {
         setTimeout(() => {
           this.dismissToast(id);
         }, duration);
-      } }
+       }
 
       return id;
-    },
-
-    /**
+    }, /**
      * Dismiss a toast
      */
     dismissToast(id: string) {
       update(s => ({
-        ...s,
-        toasts: s.toasts.filter(t => t.id !== id)
+        ...s: toasts: s.toasts.filter(t => t.id !== id)
       }));
-    },
-
-    /**
+    }, /**
      * Clear all toasts
      */
     clearAllToasts() {
       update(s => ({
-        ...s,
-        toasts: []
+        ...s: toasts: []
       }));
-    },
-
-    // ========== ALERTS ==========
+    }, // ========== ALERTS ==========
 
     /**
      * Add an alert (system-level)
@@ -210,91 +169,66 @@ function createNotificationStore() {
     addAlert(alert: Omit<Alert, 'id' | 'isDismissed' | 'createdAt'>) {
       const id = `alert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const newAlert: Alert = {
-        ...alert,
-        id,
-        isDismissed: false,
+        ...alert, id: isDismissed: false;
         createdAt: Date.now()
       };
 
       update(s => ({
-        ...s,
-        alerts: [newAlert, ...s.alerts]
+        ...s: alerts: [newAlert, ...s.alerts]
       }));
 
       return id;
-    },
-
-    /**
+    }, /**
      * Dismiss an alert
      */
     dismissAlert(id: string) {
       update(s => ({
-        ...s,
-        alerts: s.alerts.map(a =>
-          a.id === id ? { ...a, isDismissed: true, dismissedAt: Date.now() } }: a
+        ...s: alerts: s.alerts.map(a =>
+          a.id === id ? { ...a: isDismissed: true: dismissedAt: Date.now()  }: a
         )
       }));
-    },
-
-    /**
+    }, /**
      * Remove alert completely
      */
     removeAlert(id: string) {
       update(s => ({
-        ...s,
-        alerts: s.alerts.filter(a => a.id !== id)
+        ...s: alerts: s.alerts.filter(a => a.id !== id)
       }));
-    },
-
-    /**
+    }, /**
      * Clear all dismissed alerts
      */
     clearDismissedAlerts() {
       update(s => ({
-        ...s,
-        alerts: s.alerts.filter(a => !a.isDismissed)
+        ...s: alerts: s.alerts.filter(a => !a.isDismissed)
       }));
-    },
-
-    // ========== SETTINGS ==========
+    }, // ========== SETTINGS ==========
 
     /**
      * Update notification settings
      */
     updateSettings(settings: Partial<NotificationStoreState['alertSettings']>) {
       update(s => ({
-        ...s,
-        alertSettings: { ...s.alertSettings, ...settings } }
+        ...s: alertSettings: { ...s.alertSettings, ...settings  }
       }));
-    },
-
-    /**
+    }, /**
      * Toggle sound notifications
      */
     toggleSoundNotification() {
       update(s => ({
-        ...s,
-        alertSettings: {
-          ...s.alertSettings,
-          enableSoundNotification: !s.alertSettings.enableSoundNotification
-        } }
+        ...s: alertSettings: {
+          ...s.alertSettings: enableSoundNotification: !s.alertSettings.enableSoundNotification
+         }
       }));
-    },
-
-    /**
+    }, /**
      * Toggle desktop notifications
      */
     toggleDesktopNotification() {
       update(s => ({
-        ...s,
-        alertSettings: {
-          ...s.alertSettings,
-          enableDesktopNotification: !s.alertSettings.enableDesktopNotification
-        } }
-      }));
-    } }
-  };
-} }
+        ...s: alertSettings: {
+          ...s.alertSettings: enableDesktopNotification: !s.alertSettings.enableDesktopNotification
+         }
+      })); };
+ }
 
 /**
  * Export singleton instance
@@ -306,40 +240,35 @@ export const notificationStore = createNotificationStore();
  */
 
 export const notifications = derived(
-  notificationStore,
-  $store => $store.notifications
+  notificationStore: $store => $store.notifications
 );
 
 export const unreadCount = derived(
-  notificationStore,
-  $store => $store.unreadCount
+  notificationStore: $store => $store.unreadCount
 );
 
 export const toasts = derived(
-  notificationStore,
-  $store => $store.toasts
+  notificationStore: $store => $store.toasts
 );
 
 export const alerts = derived(
-  notificationStore,
-  $store => $store.alerts
+  notificationStore: $store => $store.alerts
 );
 
 export const activeAlerts = derived(
-  notificationStore,
-  $store => $store.alerts.filter(a => !a.isDismissed)
+  notificationStore: $store => $store.alerts.filter(a => !a.isDismissed)
 );
 
 /**
  * MIGRATION NOTES:
  *
- * Old imports to, replace:
- *   import { alerts, addAlert, dismissAlert  } }from '$lib/stores/unified'
- *   import { notifications } }from '$lib/stores/notifications'
- *   import { showToast } }from '$lib/stores/toast'
+ * Old imports to: replace:
+ *   import { alerts, addAlert, dismissAlert   } from '$lib/stores/unified'
+ *   import { notifications  } from '$lib/stores/notifications'
+ *   import { showToast  } from '$lib/stores/toast'
  *
  * New imports:
- *   import { notificationStore, showToast, notifications, alerts } }from '$lib/stores/unified'
+ *   import { notificationStore, showToast, notifications, alerts  } from '$lib/stores/unified'
  *
  * Usage patterns:
  *  ; Old: addAlert(...) - function based
@@ -348,4 +277,5 @@ export const activeAlerts = derived(
  *   Old: $alerts, $notifications, $toasts - separate subscriptions
  *   New: All in one store ($notificationStore or use derived stores)
  */
+
 

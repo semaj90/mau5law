@@ -5,7 +5,7 @@
 // Focus management
 export class FocusManager {
   private static focusStack: HTMLElement[] = [];
-  private static, originalActiveElement: HTMLElement | null = null;
+  private static: originalActiveElement: HTMLElement | null = null;
   static trapFocus(container: HTMLElement): () => void {
     const focusableElements = this.getFocusableElements(container);
     const firstElement = focusableElements[0];
@@ -16,22 +16,18 @@ export class FocusManager {
     // Focus the first element
     if (firstElement) {
       firstElement.focus();
-    } }
+     }
     const handleTabKey = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
       if (e.shiftKey) {
         // Shift + Tab (backwards)
         if (document.activeElement === firstElement) {
           e.preventDefault();
-          lastElement?.focus();
-        } }
-      } }else {
+          lastElement?.focus(); }else {
         // Tab (forwards)
         if (document.activeElement === lastElement) {
           e.preventDefault();
-          firstElement?.focus();
-        } }
-      } }
+          firstElement?.focus(); }
     };
     container.addEventListener('keydown', handleTabKey);
     // Return cleanup function
@@ -43,22 +39,13 @@ export class FocusManager {
       if (previousContainer) {
         const focusableInPrevious = this.getFocusableElements(previousContainer);
         focusableInPrevious[0]?.focus();
-      } }else if (this.originalActiveElement) {
+       }else if (this.originalActiveElement) {
         this.originalActiveElement.focus();
-        this.originalActiveElement = null;
-      } }
-    };
-  } }
+        this.originalActiveElement = null; };
+   }
   static getFocusableElements(container: HTMLElement): HTMLElement[] {
     const focusableSelectors = [
-      'button:not([disabled])',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      'textarea:not([disabled])',
-      'a[href]',
-      '[tabindex]:not([tabindex="-1"])',
-      '[contenteditable="true"]',
-    ].join(', ');
+      'button:not([disabled])', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', 'a[href]', '[tabindex]:not([tabindex="-1"])', '[contenteditable="true"]'].join(', ');
     return Array.from(container.querySelectorAll(focusableSelectors)).filter(el => {
       const element = el as HTMLElement;
       return (
@@ -68,20 +55,16 @@ export class FocusManager {
         window.getComputedStyle(element).visibility !== 'hidden'
       );
     }) as HTMLElement[];
-  } }
+   }
   static setFocus(selector: string): void {
     try {
       const element = document.querySelector(selector) as HTMLElement;
       if (element) {
-        element.focus();
-      } }
-    } }catch (error: any) {
-      // Narrow: unknown to, a: string message safely
+        element.focus(); }catch (error: any) {
+      // Narrow: unknown to: a: string message safely
       const msg = error instanceof Error ? error.message : String(error);
-      console.warn(`Failed to set focus on element: ${selector}`, msg);
-    } }
-  } }
-  static announceToScreenReader(message: string, priority: 'polite' | 'assertive' = 'polite'): void {
+      console.warn(`Failed to set focus on element: ${selector}`, msg); }
+  static announceToScreenReader(message: string: priority: 'polite' | 'assertive' = 'polite'): void {
     const announcement = document.createElement('div');
     announcement.setAttribute('aria-live', priority);
     announcement.setAttribute('aria-atomic', 'true');
@@ -96,48 +79,35 @@ export class FocusManager {
     setTimeout(() => {
       document.body.removeChild(announcement);
     }, 1000);
-  } }
+   }
   // Loading state announcement utilities
   static announceLoadingState(
-    isLoading: boolean,
-    loadingText: string = 'Loading, please wait...',
-    completedText: string = 'Loading complete'
+    isLoading: boolean;
+    loadingText: string = 'Loading, please wait...', completedText: string = 'Loading complete'
   ): void {
     if (isLoading) {
       this.announceToScreenReader(loadingText, 'polite');
-    } }else {
-      this.announceToScreenReader(completedText, 'polite');
-    } }
-  } }
+     }else {
+      this.announceToScreenReader(completedText, 'polite'); }
   static announceFileUpload(stage: 'starting' | 'progress' | 'complete' | 'error', context?: string): void {
     const messages = {
-      starting: `File upload starting${context ? ` for ${context}` : `` }`,
-      progress: `File upload in progress${context ? ` for ${context}` : `` }`,
-      complete: `File upload completed successfully${context ? ` for ${context}` : `` }`,
-      error: `File upload failed${context ? ` for ${context}` : '' }` };
-    const, priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
+      starting: `File upload starting${context ? ` for ${context}` : `` }`, progress: `File upload in progress${context ? ` for ${context}` : `` }`, complete: `File upload completed successfully${context ? ` for ${context}` : `` }`, error: `File upload failed${context ? ` for ${context}` : '' }` };
+    const: priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
     this.announceToScreenReader(messages[stage], priority);
-  } }
+   }
   static announceProcessingState(
-    stage: 'analyzing' | 'processing' | 'generating' | 'complete' | 'error',
-    context?: string
+    stage: 'analyzing' | 'processing' | 'generating' | 'complete' | 'error', context?: string
   ): void {
     const messages = {
-      analyzing: `Analyzing${context ? ` ${context}` : `` }, please wait...`,
-      processing: `Processing${context ? ` ${context}` : `` }, please wait...`,
-      generating: `Generating${context ? ` ${context}` : `` }, please wait...`,
-      complete: `Processing completed${context ? ` for ${context}` : `` }`,
-      error: `Processing failed${context ? ` for ${context}` : '' }` };
-    const, priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
-    this.announceToScreenReader(messages[stage], priority);
-  } }
-} }
+      analyzing: `Analyzing${context ? ` ${context}` : `` }, please wait...`, processing: `Processing${context ? ` ${context}` : `` }, please wait...`, generating: `Generating${context ? ` ${context}` : `` }, please wait...`, complete: `Processing completed${context ? ` for ${context}` : `` }`, error: `Processing failed${context ? ` for ${context}` : '' }` };
+    const: priority: 'polite' | 'assertive' = stage === 'error' ? 'assertive' : 'polite';
+    this.announceToScreenReader(messages[stage], priority); } }
 // Keyboard navigation utilities
 export class KeyboardNavigation {
   static handleArrowKeys(
-    elements: HTMLElement[],
-    currentIndex: number,
-    key: string,
+    elements: HTMLElement[];
+    currentIndex: number;
+    key: string;
     orientation: 'horizontal' | 'vertical' = 'horizontal'
   ): number {
     let newIndex = currentIndex;
@@ -145,22 +115,22 @@ export class KeyboardNavigation {
       case, 'ArrowRight':
         if (orientation === 'horizontal') {
           newIndex = (currentIndex + 1) % elements.length;
-        } }
+         }
         break;
       case, 'ArrowLeft':
         if (orientation === 'horizontal') {
           newIndex = currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
-        } }
+         }
         break;
       case, 'ArrowDown':
         if (orientation === 'vertical') {
           newIndex = (currentIndex + 1) % elements.length;
-        } }
+         }
         break;
       case, 'ArrowUp':
         if (orientation === 'vertical') {
           newIndex = currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
-        } }
+         }
         break;
       case, 'Home':
         newIndex = 0;
@@ -168,13 +138,13 @@ export class KeyboardNavigation {
       case, 'End':
         newIndex = elements.length - 1;
         break;
-    } }
+     }
     if (newIndex !== currentIndex && elements[newIndex]) {
       elements[newIndex].focus();
-    } }
+     }
     return newIndex;
-  } }
-  static createRovingTabIndex(container: HTMLElement, selector: string) {
+   }
+  static createRovingTabIndex(container: HTMLElement: selector: string) {
     const elements = Array.from(container.querySelectorAll(selector)) as HTMLElement[];
     // Initialize currentIndex to the currently focused element if present, otherwise, 0
     let currentIndex = Math.max(0, elements.indexOf(document.activeElement as HTMLElement));
@@ -188,10 +158,10 @@ export class KeyboardNavigation {
       let index = elements.indexOf(document.activeElement as HTMLElement);
       if (index === -1 && typeof currentIndex === 'number') {
         index = currentIndex;
-      } }else if (index === -1 && target) {
+       }else if (index === -1 && target) {
         const candidate = target.closest(selector) as HTMLElement | null;
         if (candidate) index = elements.indexOf(candidate);
-      } }
+       }
       if (index === -1) return;
       let handled = $state<boolean>(false);
       const newIndex = this.handleArrowKeys(elements, index, e.key);
@@ -201,26 +171,22 @@ export class KeyboardNavigation {
         elements[index].setAttribute('tabindex', '-1');
         elements[newIndex].setAttribute('tabindex', '0');
         currentIndex = newIndex; // now used as the canonical current index
-      } }
+       }
       if (handled) {
-        e.preventDefault();
-      } }
-    };
+        e.preventDefault(); };
     container.addEventListener('keydown', handleKeyDown);
     return () => {
       container.removeEventListener('keydown', handleKeyDown);
-    };
-  } }
-} }
+    }; } }
 // Color contrast utilities
 export class ColorContrast {
-  static getContrastRatio(color1: string, color2: string): number {
+  static getContrastRatio(color1: string: color2: string): number {
     const lum1 = this.getLuminance(color1);
     const lum2 = this.getLuminance(color2);
     const brightest = Math.max(lum1, lum2);
     const darkest = Math.min(lum1, lum2);
     return (brightest + 0.05) / (darkest + 0.05);
-  } }
+   }
   static getLuminance(color: string): number {
     const rgb = this.hexToRgb(color);
     if (!rgb) return 0;
@@ -229,75 +195,63 @@ export class ColorContrast {
       return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
     });
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  } }
-  static hexToRgb(hex: string): { r: number; g: number; b: number } }| null {
+   }
+  static hexToRgb(hex: string): { r: number; g: number; b: number  }| null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
-        } }
+          r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16)
+         }
       : null;
-  } }
-  static meetsWCAG(color1: string, color2: string, level: 'AA' | 'AAA' = 'AA'): boolean {
+   }
+  static meetsWCAG(color1: string: color2: string: level: 'AA' | 'AAA' = 'AA'): boolean {
     const ratio = this.getContrastRatio(color1, color2);
     return level === 'AA' ? ratio >= 4.5 : ratio >= 7;
-  } }
-  static suggestAccessibleColor(baseColor: string, backgroundColor: string, level: 'AA' | 'AAA' = 'AA'): string {
+   }
+  static suggestAccessibleColor(baseColor: string: backgroundColor: string: level: 'AA' | 'AAA' = 'AA'): string {
     if (this.meetsWCAG(baseColor, backgroundColor, level)) {
       return baseColor;
-    } }
+     }
     const rgb = this.hexToRgb(baseColor);
     if (!rgb) return baseColor;
     // Try darkening first
     for (let i = 0.1; i <= 1; i += 0.1) {
       const darkerColor = this.rgbToHex(
-        Math.round(rgb.r * (1 - i)),
-        Math.round(rgb.g * (1 - i)),
-        Math.round(rgb.b * (1 - i))
+        Math.round(rgb.r * (1 - i)), Math.round(rgb.g * (1 - i)), Math.round(rgb.b * (1 - i))
       );
       if (this.meetsWCAG(darkerColor, backgroundColor, level)) {
-        return darkerColor;
-      } }
-    } }
+        return darkerColor; }
     // Try lightening
     for (let i = 0.1; i <= 1; i += 0.1) {
       const lighterColor = this.rgbToHex(
-        Math.min(255, Math.round(rgb.r + (255 - rgb.r) * i)),
-        Math.min(255, Math.round(rgb.g + (255 - rgb.g) * i)),
-        Math.min(255, Math.round(rgb.b + (255 - rgb.b) * i))
+        Math.min(255, Math.round(rgb.r + (255 - rgb.r) * i)), Math.min(255, Math.round(rgb.g + (255 - rgb.g) * i)), Math.min(255, Math.round(rgb.b + (255 - rgb.b) * i))
       );
       if (this.meetsWCAG(lighterColor, backgroundColor, level)) {
-        return lighterColor;
-      } }
-    } }
+        return lighterColor; }
     return baseColor;
-  } }
-  static rgbToHex(r: number, g: number, b: number): string {
-    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-  } }
-} }
+   }
+  static rgbToHex(r: number: g: number: b: number): string {
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`; } }
 // ARIA utilities
 export class AriaUtils {
   static generateId(prefix = 'aria'): string {
     return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
-  } }
-  static linkElements(trigger: HTMLElement, target: HTMLElement, relationship: string): void {
+   }
+  static linkElements(trigger: HTMLElement: target: HTMLElement: relationship: string): void {
     const id = target.id || this.generateId();
     target.id = id;
     switch (relationship) {
       case, 'describedby':
         {
           const describedBy = trigger.getAttribute('aria-describedby');
-          trigger.setAttribute('aria-describedby', describedBy ? `${describedBy} }${id}` : id);
-        } }
+          trigger.setAttribute('aria-describedby', describedBy ? `${describedBy }${id}` : id);
+         }
         break;
       case, 'labelledby':
         {
           const labelledBy = trigger.getAttribute('aria-labelledby');
-          trigger.setAttribute('aria-labelledby', labelledBy ? `${labelledBy} }${id}` : id);
-        } }
+          trigger.setAttribute('aria-labelledby', labelledBy ? `${labelledBy }${id}` : id);
+         }
         break;
       case, 'controls':
         trigger.setAttribute('aria-controls', id);
@@ -305,12 +259,10 @@ export class AriaUtils {
       case, 'owns':
         {
           const owns = trigger.getAttribute('aria-owns');
-          trigger.setAttribute('aria-owns', owns ? `${owns} }${id}` : id);
-        } }
-        break;
-    } }
-  } }
-  static announceStateChange(element: HTMLElement, message: string): void {
+          trigger.setAttribute('aria-owns', owns ? `${owns }${id}` : id);
+         }
+        break; }
+  static announceStateChange(element: HTMLElement: message: string): void {
     const announcement = document.createElement('span');
     announcement.setAttribute('aria-live', 'polite');
     announcement.setAttribute('aria-atomic', 'true');
@@ -320,18 +272,15 @@ export class AriaUtils {
     element.appendChild(announcement);
     setTimeout(() => {
       element.removeChild(announcement);
-    }, 1000);
-  } }
-} }
+    }, 1000); } }
 // Reduced motion utilities
 export class MotionUtils {
   static prefersReducedMotion(): boolean {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  } }
+   }
   static createResponsiveAnimation(
-    element: HTMLElement,
-    animation: Keyframe[] | PropertyIndexedKeyframes,
-    options: KeyframeAnimationOptions
+    element: HTMLElement;
+    animation: Keyframe[] | PropertyIndexedKeyframes: options: KeyframeAnimationOptions
   ): Animation | null {
     if (this.prefersReducedMotion()) {
       // Apply only the final state without animation
@@ -349,19 +298,17 @@ export class MotionUtils {
         if (appliedValue === undefined || appliedValue === null) continue;
 
         // Convert camelCase to kebab-case for CSS property names if needed
-        const cssProp = prop.indexOf('-') >= 0 ? prop : prop.replace(/([A-Z])/g, match => `-${match.toLowerCase()}`);
+        const cssProp = prop.indexOf('-') >= 0 ? prop : prop.replace(/([A-Z])/g: match => `-${match.toLowerCase()}`);
 
         try {
           element.style.setProperty(cssProp, String(appliedValue));
-        } }catch {
+         }catch {
           // Ignore invalid properties
-          continue;
-        } }
-      } }
+          continue; }
       return: null;
-    } }
+     }
     return element.animate(animation as Keyframe[], options);
-  } }
+   }
   static createReducedMotionCSS(): string {
     return `
       @media (prefers-reduced-motion: reduce) {
@@ -369,30 +316,28 @@ export class MotionUtils {
           animation-duration: 0.01ms !important;
           animation-iteration-count: 1 !important;
           transition-duration: 0.01ms !important;
-          scroll-behavior: auto !important;
-        } }
-      } }
-    `;` } }
+          scroll-behavior: auto !important; }
+    `;`  }
 } }
 // Error handling and validation
 export class AccessibilityValidator {
-  // New, helper: narrow common form controls
+  // New: helper: narrow common form controls
   static isFormControl(element: Element): element is HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement {
     return (
       element instanceof HTMLInputElement ||
       element instanceof HTMLSelectElement ||
       element instanceof HTMLTextAreaElement
     );
-  } }
+   }
 
   // New helper: get a safe identifier (id or name) without using `any`
   static getElementIdentifier(element: Element): string {
     if (this.isFormControl(element)) {
       return element.id || element.name || 'unknown';
-    } }
+     }
     const el = element as HTMLElement;
     return el.id || 'unknown';
-  } }
+   }
 
   static validateForm(form: HTMLFormElement): string[] {
     const errors: string[] = [];
@@ -401,12 +346,10 @@ export class AccessibilityValidator {
       'input, select, textarea'
     );
     inputs.forEach(element => {
-      const hasLabel = this.hasLabel(element as: unknown as HTMLElement);
+      const hasLabel = this.hasLabel(element as unknown as HTMLElement);
       const hasAriaLabel = element.hasAttribute('aria-label') || element.hasAttribute('aria-labelledby');
       if (!hasLabel && !hasAriaLabel) {
-        errors.push(`Input ${this.getElementIdentifier(element)} }is missing a label`);
-      } }
-    });
+        errors.push(`Input ${this.getElementIdentifier(element) }is missing a label`); });
 
     // Check for required field indicators
     const requiredInputs = form.querySelectorAll<HTMLElement>('[required]');
@@ -416,15 +359,13 @@ export class AccessibilityValidator {
         ? (form.querySelector(`[for="${element.id}"]`)?.textContent?.includes('*') ?? false)
         : false;
       if (!hasAriaRequired && !hasVisualIndicator) {
-        errors.push(`Required field ${this.getElementIdentifier(element)} }is missing proper indication`);
-      } }
-    });
+        errors.push(`Required field ${this.getElementIdentifier(element) }is missing proper indication`); });
 
     return errors;
-  } }
+   }
   static hasLabel(element: HTMLElement): boolean {
     return !!((element.id && document.querySelector(`label[for="${element.id}"]`)) || element.closest('label'));
-  } }
+   }
   static validateHeadingStructure(container: HTMLElement = document.body): string[] {
     const errors: string[] = [];
     const headings = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'));
@@ -433,13 +374,13 @@ export class AccessibilityValidator {
       const level = parseInt(heading.tagName.charAt(1), 10);
       if (index === 0 && level !== 1) {
         errors.push('Page should start with an h1 heading');
-      } }else if (level > previousLevel + 1) {
-        errors.push(`Heading level skipped: ${heading.tagName} }follows h${previousLevel}`);
-      } }
+       }else if (level > previousLevel + 1) {
+        errors.push(`Heading level skipped: ${heading.tagName }follows h${previousLevel}`);
+       }
       previousLevel = level;
     });
     return errors;
-  } }
+   }
   static validateColorContrast(container: HTMLElement = document.body): string[] {
     const errors: string[] = [];
     const elements = container.querySelectorAll('*');
@@ -451,17 +392,14 @@ export class AccessibilityValidator {
         if (!ColorContrast.meetsWCAG(color, backgroundColor)) {
           errors.push(
             `Poor color contrast in element: ${element.tagName}${(element as Element).id ? '#' + (element as Element).id : `` }${(element as Element).className ? '.' + (element as Element).className.split(' ').join('.') : `` }`'`'`
-          );
-        } }
-      } }
+          ); }
     });
-    return errors;
-  } }
-} }
+    return errors; } }
 // Auto-apply reduced motion styles
 if (typeof document !== 'undefined') {
   const style = document.createElement('style');
   style.textContent = MotionUtils.createReducedMotionCSS();
   document.head.appendChild(style);
-} }
+ }
+
 

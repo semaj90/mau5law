@@ -32,10 +32,7 @@ export const logger = {
   async logUserAction(payload) {
     try {
       const entry = {
-        type: 'user_action',
-        timestamp: Date.now(),
-        ...payload,
-      };
+        type: 'user_action', timestamp: Date.now(), ...payload};
       // Prefer existing event/info logger helpers if present
       if (typeof this.logEvent === 'function') {
         return await this.logEvent(entry);
@@ -47,10 +44,7 @@ export const logger = {
       if (typeof fetch === 'function') {
         try {
           await fetch('/api/logs', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entry),
-          });
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry)});
         } catch (e) {
           // ignore network errors for logging fallback
         }
@@ -64,6 +58,5 @@ export const logger = {
       console.debug('[logger] logUserAction failure', err);
       return Promise.resolve(false);
     }
-  },
-  // ...existing methods...
+  }, // ...existing methods...
 };

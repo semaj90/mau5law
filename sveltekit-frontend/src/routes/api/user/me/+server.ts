@@ -1,44 +1,34 @@
-import type { User } }from '$lib/types';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import type { User  } from '$lib/types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 export const GET: RequestHandler = async ({ locals }) => {
   try {
     // Lucia put user into locals in hooks.server.ts
     const user = locals.user;
     if (!user) {
       return json({
-        success: true,
+        success: true;
         user: null
       });
-    } }
+     }
     return json({
-      success: true,
+      success: true;
       user
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('User profile API error:', error);
     // Return mock user data on failure
     const mockUser = {
-      success: false,
-      error: 'failure default to mock',
-      user: {
-  id: 'mock-user-001',
-        email: 'mock.user@lawfirm.com',
-        name: 'Mock Legal User',
-        role: 'attorney',
-        preferences: {
-  theme: 'legal-console',
-          notifications: true,
+      success: false;
+      error: 'failure default to mock', user: {
+  id: 'mock-user-001', email: 'mock.user@lawfirm.com', name: 'Mock Legal User', role: 'attorney', preferences: {
+  theme: 'legal-console', notifications: true;
           practiceAreas: ['employment', 'corporate']
-        },
-        metadata: {
-  lastLogin: new Date().toISOString(),
-          caseCount: 15,
-          activeProjects: 3
-        } }
-      } }
+        }, metadata: {
+  lastLogin: new Date().toISOString(), caseCount: 15, activeProjects: 3
+         }
+       }
     };
-    return json(mockUser, { status: 500 });
-  } }
-};
+    return json(mockUser, { status: 500 }); };
+
 

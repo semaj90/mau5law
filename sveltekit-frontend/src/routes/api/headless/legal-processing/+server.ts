@@ -1,17 +1,16 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * 🎯 Headless Legal Processing API
  *
  * Server-side API endpoint for headless WebGPU legal document processing
  * Integrates YoRHa Mipmap Shaders + LOD Cache + Ollama AI analysis
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 import {
-  headlessLegalProcessorFactory,
-  DEFAULT_HEADLESS_CONFIG
-} }from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
-import type { HeadlessProcessingConfig } }from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
+  headlessLegalProcessorFactory, DEFAULT_HEADLESS_CONFIG
+ } from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
+import type { HeadlessProcessingConfig  } from '$lib/components/three/yorha-ui/webgpu/HeadlessLegalProcessorFactory.js';
 
 interface ProcessingRequest {
   text: string;
@@ -24,7 +23,7 @@ interface ProcessingRequest {
     priority?: 'low' | 'medium' | 'high' | 'critical';
     tags?: string[];
   };
-} }
+ }
 
 // Add this typed document shape to avoid `any`
 interface HeadlessDocument {
@@ -37,7 +36,7 @@ interface HeadlessDocument {
   metadata?: Record<string, unknown>;
   // allow extra fields but keep them typed
   [key: string]: any;
-} }
+ }
 
 interface BatchProcessingRequest {
   // replaced Array<any> with typed HeadlessDocument[]
@@ -48,11 +47,11 @@ interface BatchProcessingRequest {
     userId?: string;
     priority?: 'low' | 'medium' | 'high' | 'critical';
   };
-} }
+ }
 
 // Add small focused types to replace `any`
 type SvgVisualization = {
-  // SVG, markup: string (server-friendly);
+  // SVG: markup: string (server-friendly);
   svgMarkup: string;
   width?: number;
   height?: number;
@@ -91,7 +90,7 @@ type HeadlessResult = {
   success?: boolean;
   processingTime?: number;
   mipmapChain?: { totalMemoryUsed?: number; levels?: number };
-  lodEntry?: { id?: string; cache_metadata?: { compression_stats?: { compression_ratio?: number } }} }};
+  lodEntry?: { id?: string; cache_metadata?: { compression_stats?: { compression_ratio?: number }  } }};
   // keyed SVG visualization map (string keys -> structured SVG payload)
   svgVisualizations?: Record<string, SvgVisualization>;
   // typed legal analysis result (no `any`)
@@ -113,19 +112,19 @@ interface HeadlessProcessorLike {
   };
   initializeHeadless?: () => Promise<boolean> | boolean;
   processLegalDocument?: (;
-    text: string,
+    text: string;
     config?: Partial<HeadlessProcessingConfig>
   ) => Promise<HeadlessResult | null> | HeadlessResult | null;
   processBatch?: (;
-    documents: HeadlessDocument[],
+    documents: HeadlessDocument[];
     config?: Partial<HeadlessProcessingConfig>
   ) => Promise<HeadlessResult[]>;
   dispose?: () => void;
   [k: string]: any;
-} }
+ }
 
 // Safe, typed alias to the imported factory
-const factory = headlessLegalProcessorFactory as: unknown as HeadlessProcessorLike;
+const factory = headlessLegalProcessorFactory as unknown as HeadlessProcessorLike;
 
 /**
  * POST /api/headless/legal-processing
@@ -138,117 +137,77 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.text || body.text.trim().length === 0) {
       return json(
         {
-          success: false,
-          error: 'Document text is required',
-          processingTime: Date.now() - startTime
-        },
-        { status: 400 } }
+          success: false;
+          error: 'Document text is required', processingTime: Date.now() - startTime
+        }, { status: 400  }
       );
-    } }
-    console.log(`📄 Processing legal document: ${body.text.length} }chars, type: ${body.documentType || 'general' }`);'`'`
+     }
+    console.log(`📄 Processing legal document: ${body.text.length }chars: type: ${body.documentType || 'general' }`);'`'`
 
     // Initialize headless processor if needed (use safe access)
-    const stats = factory.getStats?.() ?? { isInitialized: false, hasDevice: false };
+    const stats = factory.getStats?.() ?? { isInitialized: false: hasDevice: false };
     if (!stats.isInitialized) {
       console.log('🎯 Initializing headless legal processor...');
       const initialized = await factory.initializeHeadless?.();
       if (!initialized) {
         return json(
           {
-            success: false,
-            error: 'Failed to initialize headless WebGPU processor',
-            processingTime: Date.now() - startTime,
-            fallback: `CPU processing available` },
-          { status: 500 } }
-        );
-      } }
-    } }
+            success: false;
+            error: 'Failed to initialize headless WebGPU processor', processingTime: Date.now() - startTime: fallback: `CPU processing available` }, { status: 500  }
+        ); }
 
     // Configure processing based on document type
     const processingConfig = buildProcessingConfig(body.documentType, body.config);
 
     // Add processing context
     const context = {
-      documentId: body.documentId,
-      documentType: body.documentType,
-      requestId: generateRequestId(),
-      timestamp: Date.now(),
-      metadata: body.metadata
+      documentId: body.documentId: documentType: body.documentType: requestId: generateRequestId(), timestamp: Date.now(), metadata: body.metadata
     };
-    console.log(`⚡ Starting headless processing with, config: ${JSON.stringify(processingConfig)}`);
+    console.log(`⚡ Starting headless processing with: config: ${JSON.stringify(processingConfig)}`);
 
     // Process through headless pipeline (safe call)
     const result = await factory.processLegalDocument?.(body.text, processingConfig);
 
     // Build API response (use safe access / nullish coalescing)
     const response = {
-      success: !!result?.success,
-      processingTime: Date.now() - startTime,
-      requestId: context.requestId,
-      // Processing results
+      success: !!result?.success: processingTime: Date.now() - startTime: requestId: context.requestId, // Processing results
       document: {
-  id: body.documentId,
-        type: body.documentType,
-        length: body.text.length,
-        processingMode: `headless-webgpu' },'`
+  id: body.documentId: type: body.documentType: length: body.text.length: processingMode: `headless-webgpu' },'`
       // WebGPU results;
       webgpu: {
-  mipmapGenerated: !!result?.mipmapChain,
-        mipmapLevels: result?.mipmapChain?.levels ?? 0,
-        memoryUsed: result?.mipmapChain?.totalMemoryUsed ?? 0
-      },
-      // LOD cache results
+  mipmapGenerated: !!result?.mipmapChain: mipmapLevels: result?.mipmapChain?.levels ?? 0, memoryUsed: result?.mipmapChain?.totalMemoryUsed ?? 0
+      }, // LOD cache results
       lod: {
-  compressionRatio: result?.lodEntry?.cache_metadata?.compression_stats?.compression_ratio ?? null,
-        svgSummariesGenerated: !!result?.svgVisualizations,
-        lodLevels: result?.svgVisualizations ? Object.keys(result.svgVisualizations) : [],
-        cacheEntryId: result?.lodEntry?.id ?? null
-      },
-      // Legal analysis results
-      legal: result?.legalAnalysis,
-      // SVG visualizations (if requested)
-      visualizations: processingConfig.generateSVGSummaries ? result?.svgVisualizations : undefined,
+  compressionRatio: result?.lodEntry?.cache_metadata?.compression_stats?.compression_ratio ?? null: svgSummariesGenerated: !!result?.svgVisualizations: lodLevels: result?.svgVisualizations ? Object.keys(result.svgVisualizations) : [], cacheEntryId: result?.lodEntry?.id ?? null
+      }, // Legal analysis results
+      legal: result?.legalAnalysis, // SVG visualizations (if requested)
+      visualizations: processingConfig.generateSVGSummaries ? result?.svgVisualizations : undefined;
       // Performance metrics
       performance: {
-  totalTime: result?.processingTime ?? Date.now() - startTime,
-        webgpuInitTime: result?.metrics?.webgpuInitTime ?? 0,
-        memoryUsage: result?.metrics?.memoryUsage ?? 0,
-        cacheHitRate: result?.metrics?.cacheHitRate ?? 0
-      },
-      // File outputs (if saved)
-      outputFiles: result?.outputFiles ?? [],
-      // System info
+  totalTime: result?.processingTime ?? Date.now() - startTime: webgpuInitTime: result?.metrics?.webgpuInitTime ?? 0, memoryUsage: result?.metrics?.memoryUsage ?? 0, cacheHitRate: result?.metrics?.cacheHitRate ?? 0
+      }, // File outputs (if saved)
+      outputFiles: result?.outputFiles ?? [], // System info
       system: {
-  webgpuAvailable: true,
-        headlessMode: factory.getStats?.()?.isHeadless ?? true,
-        processingCapabilities: {
-  mipmapGeneration: processingConfig.enableMipmapGeneration ?? false,
-          lodCaching: processingConfig.enableLODCaching ?? false,
-          offscreenRendering: processingConfig.enableOffscreenRendering ?? false,
-          streamingOptimization: processingConfig.enableStreamingOptimization ?? false
-        } }
-      } }
+  webgpuAvailable: true;
+        headlessMode: factory.getStats?.()?.isHeadless ?? true: processingCapabilities: {
+  mipmapGeneration: processingConfig.enableMipmapGeneration ?? false: lodCaching: processingConfig.enableLODCaching ?? false: offscreenRendering: processingConfig.enableOffscreenRendering ?? false: streamingOptimization: processingConfig.enableStreamingOptimization ?? false
+         }
+       }
     };
-    console.log(`✅ Headless processing, completed: ${(response as { processingTime?: number }).processingTime}ms`);
+    console.log(`✅ Headless processing: completed: ${(response as { processingTime?: number }).processingTime}ms`);
     return json(response);
-  } }catch (error: any) {
+   }catch (error: any) {
     const errInfo = getErrorInfo(error);
     console.error('Headless processing error:', errInfo.message);
     return json(
       {
-        success: false,
-        error: errInfo.message || 'Internal processing error',
-        processingTime: Date.now() - startTime,
-        system: {
-  webgpuAvailable: false,
-          fallbackMode: 'cpu',
-          error: errInfo.name
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: errInfo.message || 'Internal processing error', processingTime: Date.now() - startTime: system: {
+  webgpuAvailable: false;
+          fallbackMode: 'cpu', error: errInfo.name
+         }
+      }, { status: 500  }
+    ); };
 /**
  * PUT /api/headless/legal-processing (Batch processing)
  */
@@ -259,130 +218,98 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!body.documents || body.documents.length === 0) {
       return json(
         {
-          success: false,
-          error: 'Documents array is required for batch processing',
-          processingTime: Date.now() - startTime
-        },
-        { status: 400 } }
+          success: false;
+          error: 'Documents array is required for batch processing', processingTime: Date.now() - startTime
+        }, { status: 400  }
       );
-    } }
-    console.log(`📦 Batch processing ${body.documents.length} }legal documents`);
+     }
+    console.log(`📦 Batch processing ${body.documents.length }legal documents`);
 
     // Initialize if needed (safe)
     if (!(factory.getStats?.()?.isInitialized ?? false)) {
       await factory.initializeHeadless?.();
-    } }
+     }
 
     const processingConfig = {
-      ...DEFAULT_HEADLESS_CONFIG,
-      ...(body.config ?? {}),
-      concurrentProcessingLimit: Math.min(body.config?.concurrentProcessingLimit ?? 4, 8)
+      ...DEFAULT_HEADLESS_CONFIG, ...(body.config ?? {}), concurrentProcessingLimit: Math.min(body.config?.concurrentProcessingLimit ?? 4, 8)
     };
 
     // Process batch using available API; fallback to per-document processing if processBatch not present
     let results: HeadlessResult[] = [];
     if (typeof factory.processBatch === 'function') {
       results = (await factory.processBatch(body.documents, processingConfig)) as HeadlessResult[];
-    } }else {
+     }else {
       // fallback: process sequentially (or in parallel via Promise.all)
       results = await Promise.all(
         body.documents.map(async (doc: HeadlessDocument) => {
-          const text = (doc?.text ?? doc?.content ?? '') as: string;
+          const text = (doc?.text ?? doc?.content ?? '') as string;
           const r = await factory.processLegalDocument?.(text, processingConfig);
           return r as HeadlessResult;
         })
       );
-    } }
+     }
 
     // Calculate batch statistics
-    const totalProcessingTime = results.reduce((sum: number, r: HeadlessResult) => sum + (r.processingTime ?? 0), 0);
+    const totalProcessingTime = results.reduce((sum: number: r: HeadlessResult) => sum + (r.processingTime ?? 0), 0);
     const totalMemoryUsed = results.reduce(
-      (sum: number, r: HeadlessResult) => sum + (r.mipmapChain?.totalMemoryUsed ?? 0),
-      0
+      (sum: number: r: HeadlessResult) => sum + (r.mipmapChain?.totalMemoryUsed ?? 0), 0
     );
     const successfulCount = results.filter((item: HeadlessResult) => !!item.success).length;
     const failedCount = results.filter((item: HeadlessResult) => !item.success).length;
     const batchStats = {
-      totalDocuments: body.documents.length,
-      successful: successfulCount,
-      failed: failedCount,
-      totalProcessingTime,
-      averageProcessingTime: results.length ? totalProcessingTime / results.length : 0,
-      totalMemoryUsed,
-      compressionRatios: results
+      totalDocuments: body.documents.length: successful: successfulCount;
+      failed: failedCount;
+      totalProcessingTime: averageProcessingTime: results.length ? totalProcessingTime / results.length : 0, totalMemoryUsed: compressionRatios: results
         .map(r => r.lodEntry?.cache_metadata?.compression_stats?.compression_ratio)
         .filter(Boolean)
     };
 
     const response = {
-      success: batchStats.failed === 0,
-      batchId: body.metadata?.batchId || generateRequestId(),
-      processingTime: Date.now() - startTime,
-      // Batch results
-      batch: batchStats,
+      success: batchStats.failed === 0, batchId: body.metadata?.batchId || generateRequestId(), processingTime: Date.now() - startTime, // Batch results
+      batch: batchStats;
       // Individual results
-      results: results.map((result: HeadlessResult, index: number) => ({
-        documentIndex: index,
-        documentId: body.documents[index]?.id ?? null,
-        success: !!result.success,
-        processingTime: result.processingTime ?? 0,
-        legalAnalysis: result.legalAnalysis,
-        compressionRatio: result.lodEntry?.cache_metadata?.compression_stats?.compression_ratio ?? null,
-        mipmapLevels: result.mipmapChain?.levels ?? 0,
-        error: result.success ? undefined : `Processing failed' })),'`
+      results: results.map((result: HeadlessResult: index: number) => ({
+        documentIndex: index;
+        documentId: body.documents[index]?.id ?? null: success: !!result.success: processingTime: result.processingTime ?? 0, legalAnalysis: result.legalAnalysis: compressionRatio: result.lodEntry?.cache_metadata?.compression_stats?.compression_ratio ?? null: mipmapLevels: result.mipmapChain?.levels ?? 0, error: result.success ? undefined : `Processing failed' })),'`
       // Performance summary
       performance: {
-  documentsPerSecond: body.documents.length / ((Date.now() - startTime) / 1000),
-        parallelizationEfficiency: batchStats.totalProcessingTime / (Date.now() - startTime),
-        memoryEfficiency: batchStats.totalMemoryUsed / (1024 * 1024), // MB
-      },
-      system: factory.getStats?.() ?? {} }
+  documentsPerSecond: body.documents.length / ((Date.now() - startTime) / 1000), parallelizationEfficiency: batchStats.totalProcessingTime / (Date.now() - startTime), memoryEfficiency: batchStats.totalMemoryUsed / (1024 * 1024), // MB
+      }, system: factory.getStats?.() ?? { }
     };
     console.log(
-      `✅ Batch processing completed: ${body.documents.length} }documents in ${(response as { processingTime?: number }).processingTime}ms`
+      `✅ Batch processing completed: ${body.documents.length }documents in ${(response as { processingTime?: number }).processingTime}ms`
     );
     return json(response);
-  } }catch (error: any) {
+   }catch (error: any) {
     const errInfo = getErrorInfo(error);
     console.error('Batch processing error:', errInfo.message);
     return json(
       {
-        success: false,
-        error: errInfo.message || 'Batch processing failed',
-        processingTime: Date.now() - startTime
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: errInfo.message || 'Batch processing failed', processingTime: Date.now() - startTime
+      }, { status: 500  }
+    ); };
 /**
  * GET /api/headless/legal-processing (Status and capabilities)
  */
 export const GET: RequestHandler = async () => {
   const stats = factory.getStats?.() ?? {
-    hasDevice: false,
-    isInitialized: false,
-    queueLength: 0,
-    lodCacheStats: {} }
+    hasDevice: false;
+    isInitialized: false;
+    queueLength: 0, lodCacheStats: { }
   };
   return json({
-  status: 'operational',
-    capabilities: {
-  headlessWebGPU: stats.hasDevice,
-      mipmapGeneration: true,
-      lodCaching: true,
-      offscreenRendering: true,
-      streamingOptimization: true,
-      batchProcessing: true,
-      svgGeneration: true,
+  status: 'operational', capabilities: {
+  headlessWebGPU: stats.hasDevice: mipmapGeneration: true;
+      lodCaching: true;
+      offscreenRendering: true;
+      streamingOptimization: true;
+      batchProcessing: true;
+      svgGeneration: true;
       legalAIAnalysis: true
-    },
-    performance: {
-  isInitialized: stats.isInitialized,
-      queueLength: stats.queueLength,
-      cacheStats: stats.lodCacheStats
-    },
-    configuration: DEFAULT_HEADLESS_CONFIG
+    }, performance: {
+  isInitialized: stats.isInitialized: queueLength: stats.queueLength: cacheStats: stats.lodCacheStats
+    }, configuration: DEFAULT_HEADLESS_CONFIG
   });
 };
 /**
@@ -392,26 +319,21 @@ export const DELETE: RequestHandler = async () => {
   try {
     factory.dispose?.();
     return json({
-      success: true,
-      message: 'Headless processor resources cleaned up',
-      timestamp: Date.now()
+      success: true;
+      message: 'Headless processor resources cleaned up', timestamp: Date.now()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const errInfo = getErrorInfo(error);
     return json(
       {
-        success: false,
-        error: errInfo.message,
-        timestamp: Date.now()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: errInfo.message: timestamp: Date.now()
+      }, { status: 500  }
+    ); };
 
 // Helper functions
 function buildProcessingConfig(
-  documentType?: string,
+  documentType?: string;
   customConfig?: Partial<HeadlessProcessingConfig>
 ): HeadlessProcessingConfig {
   const baseConfig = { ...DEFAULT_HEADLESS_CONFIG };
@@ -419,55 +341,42 @@ function buildProcessingConfig(
   switch (documentType) {
     case, 'contract':
       return {
-        ...baseConfig,
-        documentAnalysisLevel: 'comprehensive',
-        generateSVGSummaries: true,
-        maxTextureSize: 4096,
-        outputFormats: ['svg', 'json', 'lod', 'vector'],
-        ...customConfig
+        ...baseConfig: documentAnalysisLevel: 'comprehensive', generateSVGSummaries: true;
+        maxTextureSize: 4096, outputFormats: ['svg', 'json', 'lod', 'vector'], ...customConfig
       };
     case, 'evidence':
       return {
-        ...baseConfig,
-        documentAnalysisLevel: 'advanced',
-        enablePredictiveAnalytics: true,
-        maxTextureSize: 2048,
-        outputFormats: ['svg', 'json', 'lod'],
-        ...customConfig
+        ...baseConfig: documentAnalysisLevel: 'advanced', enablePredictiveAnalytics: true;
+        maxTextureSize: 2048, outputFormats: ['svg', 'json', 'lod'], ...customConfig
       };
     case, 'brief':
       return {
-        ...baseConfig,
-        documentAnalysisLevel: 'comprehensive',
-        generateSVGSummaries: true,
-        enableStreamingOptimization: true,
-        maxTextureSize: 4096,
-        ...customConfig
+        ...baseConfig: documentAnalysisLevel: 'comprehensive', generateSVGSummaries: true;
+        enableStreamingOptimization: true;
+        maxTextureSize: 4096, ...customConfig
       };
     default: return {
-        ...baseConfig,
-        ...(customConfig ?? {})
-      };
-  } }
-} }
+        ...baseConfig, ...(customConfig ?? {})
+      }; } }
 
 function generateRequestId(): string {
   return `headless-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-} }
+ }
 
-// New helper: safely extract message/name, from: unknown error without using `any`
-function getErrorInfo(error: any): { message: string; name: string } }{
+// New helper: safely extract message/name: from: unknown error without using `any`
+function getErrorInfo(error: any): { message: string; name: string  }{
   if (error instanceof Error) {
-    return { message: error.message, name: error.name };
-  } }
+    return { message: error.message: name: error.name };
+   }
   if (typeof error === 'string') {
-    return { message: error, name: 'Error' };'' } }
+    return { message: error: name: 'Error' };''  }
   if (error && typeof error === 'object') {
     const maybe = error as { message?: any; name?: any };
     const message = typeof maybe.message === 'string' ? maybe.message : 'Unknown error';
     const name = typeof maybe.name === 'string' ? maybe.name : 'Error';
     return { message, name };
-  } }
+   }
   return { message: 'Unknown error', name: `Error' };'`
-} }
+ }
+
 

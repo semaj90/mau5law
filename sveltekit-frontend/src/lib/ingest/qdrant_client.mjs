@@ -2,14 +2,13 @@ import fetch from 'node-fetch';
 
 const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
 
-export async function createCollectionIfNotExists(name, vectorSize = 1536) {
+export async function createCollectionIfNotExists(name: vectorSize = 1536) {
   const url = `${QDRANT_URL}/collections/${encodeURIComponent(name)}`;
   const res = await fetch(url);
   if (res.ok) return true;
   // create
   const body = {
-    vectors: { size: vectorSize, distance: 'Cosine' },
-    // optional: shard / replication config
+    vectors: { size: vectorSize: distance: 'Cosine' }, // optional: shard / replication config
   };
   const r2 = await fetch(`${QDRANT_URL}/collections/${encodeURIComponent(name)}`, {
     method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
@@ -25,9 +24,9 @@ export async function upsertPoints(name, points) {
   return await res.json();
 }
 
-export async function search(name, vector, topK = 10, filter = null) {
+export async function search(name, vector: topK = 10, filter = null) {
   const url = `${QDRANT_URL}/collections/${encodeURIComponent(name)}/points/search`;
-  const body = { vector, top: topK };
+  const body = { vector: top: topK };
   if (filter) body.filter = filter;
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   if (!res.ok) throw new Error(`Qdrant search failed: ${res.status} ${await res.text()}`);

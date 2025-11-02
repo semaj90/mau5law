@@ -1,8 +1,8 @@
 // Advanced Recommendation Engine with Temporal Scoring and Multi-factor Ranking
 // Integrates with PostgreSQL + pgvector for semantic search and user preference learning
-import { db } }from '$lib/db/connection';
-import { aiResponses, recommendationScores, grpoFeedback, similarityCache } }from '$lib/db/enhanced-ai-schema';
-import { eq, desc, and, gte, sql, inArray } }from 'drizzle-orm';
+import { db  } from '$lib/db/connection';
+import { aiResponses, recommendationScores, grpoFeedback, similarityCache  } from '$lib/db/enhanced-ai-schema';
+import { eq, desc, and, gte, sql, inArray  } from 'drizzle-orm';
 
 // Recommendation types and interfaces
 export interface RecommendationRequest {
@@ -16,14 +16,14 @@ export interface RecommendationRequest {
   temporalWindow?: number;
   minConfidence?: number;
   algorithmPreference?: 'semantic' | 'collaborative' | 'hybrid' | 'temporal';
-} }
+ }
 
-export interface RecommendationResult { id: string;, score: number;
+export interface RecommendationResult { id: string; score: number;
   confidence: number;
   title: string;
   snippet: string;
   fullResponse: string;
-  metadata: { semanticSimilarity: number;, temporalScore: number;
+  metadata: { semanticSimilarity: number; temporalScore: number;
     contextRelevance: number;
     userPreference: number;
     usageScore: number;
@@ -32,40 +32,33 @@ export interface RecommendationResult { id: string;, score: number;
     createdAt: Date;
     lastAccessed: Date;
   };
-  reasoning: { algorithm: string;, factors: Array<any>;
+  reasoning: { algorithm: string; factors: Array<any>;
     explanation: string;
   };
-} }
+ }
 
-export interface PersonalizedProfile { userId: string;, preferences: { legalDomains: Array<{ domain: string; affinity: number }>;
+export interface PersonalizedProfile { userId: string; preferences: { legalDomains: Array<{ domain: string; affinity: number }>;
     responseStyles: Array<any>;
     averageRatings: { [domain: string]: number };
     commonQueries: string[];
   };
-  learningHistory: { totalInteractions: number;, avgSessionTime: number;
+  learningHistory: { totalInteractions: number; avgSessionTime: number;
     topCategories: string[];
     improvementAreas: string[];
   };
-  recommendationSettings: { algorithm: string;, temporalWeight: number;
+  recommendationSettings: { algorithm: string; temporalWeight: number;
     semanticWeight: number;
     personalWeight: number;
   };
-} }
+ }
 
 // Main recommendation engine class
 export class LegalRecommendationEngine {
-  private static readonly SCORING_WEIGHTS = { SEMANTIC: 0.35,
-    TEMPORAL: 0.20,
-    CONTEXT: 0.15,
-    USER_PREFERENCE: 0.20,
-    USAGE_POPULARITY: 0.10
-  } }as const;
+  private static readonly SCORING_WEIGHTS = { SEMANTIC: 0.35, TEMPORAL: 0.20, CONTEXT: 0.15, USER_PREFERENCE: 0.20, USAGE_POPULARITY: 0.10
+   }as const;
 
-  private static readonly TEMPORAL_CONFIG = { HALF_LIFE_DAYS: 30,
-    MIN_SCORE: 0.05,
-    MAX_SCORE: 1.0,
-    BOOST_RECENT_HOURS: 24
-  } }as const;
+  private static readonly TEMPORAL_CONFIG = { HALF_LIFE_DAYS: 30, MIN_SCORE: 0.05, MAX_SCORE: 1.0, BOOST_RECENT_HOURS: 24
+   }as const;
 
   /**
    * Get personalized recommendations based on query and user profile
@@ -94,7 +87,7 @@ export class LegalRecommendationEngine {
         default:
           results = await this.hybridRecommendations(queryEmbedding, request, userProfile);
           break;
-      } }
+       }
 
       // Apply post-processing filters
       results = await this.applyPostProcessingFilters(results, request);
@@ -104,17 +97,15 @@ export class LegalRecommendationEngine {
       const processingTime = Date.now() - startTime;
       await this.logRecommendationMetrics(request, results.length, processingTime);
       return results.slice(0, request.maxResults || 10);
-    } }catch (error) {
+     }catch (error) {
       console.error('Recommendation engine error:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Semantic similarity-based recommendations using pgvector
    */
   private static async semanticRecommendations(
-    queryEmbedding: number[],
+    queryEmbedding: number[];
     request: RecommendationRequest
   ): Promise<RecommendationResult[]> {
     // Simplified query: fetch recent responses with embeddings present, order by similarity if DB supports it.
@@ -122,102 +113,91 @@ export class LegalRecommendationEngine {
     const max = request.maxResults ?? 10;
     const query = sql`
       SELECT
-        r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction,
-        r.usage_count, r.created_at, r.last_accessed, r.metadata
+        r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction, r.usage_count, r.created_at, r.last_accessed, r.metadata
       FROM ai_responses r
       WHERE r.query_embedding IS NOT NULL
-        AND r.created_at >= NOW() - INTERVAL: '${temporalWindow} }days'
+        AND r.created_at >= NOW() - INTERVAL: '${temporalWindow }days'
       ORDER BY r.created_at DESC
-      LIMIT ${max * 2} }
+      LIMIT ${max * 2 }
     `;`
     const results = await db.execute(query);
     const rows = execRows(results);
     return rows.map((row: any) =>
       this.buildRecommendationResult(
-        row,
-        'semantic',
-        { semanticSimilarity: 0 } }
+        row, 'semantic', { semanticSimilarity: 0  }
       )
     );
-  } }
+   }
 
   /**
    * Collaborative filtering based on user behavior patterns
    */
   private static async collaborativeRecommendations(
-    request: RecommendationRequest,
+    request: RecommendationRequest;
     userProfile: PersonalizedProfile | null
   ): Promise<RecommendationResult[]> {
     // If no profile or anonymous user, fallback
     if (!request.userId || !userProfile) {
       return this.getPopularRecommendations(request);
-    } }
+     }
 
     const max = request.maxResults ?? 10;
     // Simplified collaborative: find responses with high average ratings in user's domains'
     const domains = userProfile.preferences.legalDomains.map(d => d.domain);
     const query = sql`
-      SELECT r.id, r.query, r.response, r.confidence, r.legal_domain, r.created_at,
-             AVG(f.user_rating) AS avg_rating, COUNT(f.user_rating) AS rating_count
+      SELECT r.id, r.query, r.response, r.confidence, r.legal_domain, r.created_at, AVG(f.user_rating) AS avg_rating, COUNT(f.user_rating) AS rating_count
       FROM ai_responses r
       LEFT JOIN grpo_feedback f ON f.response_id = r.id
-      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 60} }days'
+      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 60 }days'
         AND r.legal_domain = ANY(${domains})
       GROUP BY r.id, r.query, r.response, r.confidence, r.legal_domain, r.created_at
       ORDER BY avg_rating DESC NULLS LAST, rating_count DESC
-      LIMIT ${max} }
+      LIMIT ${max }
     `;`
     const results = await db.execute(query);
     const rows = execRows(results);
     return rows.map((row: any) =>
       this.buildRecommendationResult(
-        row,
-        'collaborative',
-        { userRating: parseFloat(row.avg_rating) || 0 } }
+        row, 'collaborative', { userRating: parseFloat(row.avg_rating) || 0  }
       )
     );
-  } }
+   }
 
   /**
    * Temporal-focused recommendations prioritizing recency and trends
    */
   private static async temporalRecommendations(
-    queryEmbedding: number[],
+    queryEmbedding: number[];
     request: RecommendationRequest
   ): Promise<RecommendationResult[]> {
     const max = request.maxResults ?? 10;
     const query = sql`
-      SELECT r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction,
-             r.usage_count, r.created_at, r.last_accessed, r.metadata
+      SELECT r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction, r.usage_count, r.created_at, r.last_accessed, r.metadata
       FROM ai_responses r
-      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 30} }days'
+      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 30 }days'
       ORDER BY r.created_at DESC
-      LIMIT ${max} }
+      LIMIT ${max }
     `;`
     const results = await db.execute(query);
     const rows = execRows(results);
     return rows.map((row: any) =>
       this.buildRecommendationResult(
-        row,
-        'temporal',
-        { temporalScore: 1 } }
+        row, 'temporal', { temporalScore: 1  }
       )
     );
-  } }
+   }
 
   /**
    * Hybrid recommendation algorithm combining multiple factors
    */
   private static async hybridRecommendations(
-    queryEmbedding: number[],
-    request: RecommendationRequest,
+    queryEmbedding: number[];
+    request: RecommendationRequest;
     userProfile: PersonalizedProfile | null
   ): Promise<RecommendationResult[]> {
     // Combine results from simple strategies and rank in memory
     const [semantic, collaborative, temporal] = await Promise.all([
-      this.semanticRecommendations(queryEmbedding, request),
-      this.collaborativeRecommendations(request, userProfile),
-      this.temporalRecommendations(queryEmbedding, request)
+      this.semanticRecommendations(queryEmbedding, request), this.collaborativeRecommendations(request, userProfile), this.temporalRecommendations(queryEmbedding, request)
     ]);
 
     const merged = [...semantic, ...collaborative, ...temporal];
@@ -235,8 +215,8 @@ export class LegalRecommendationEngine {
     });
 
     scored.sort((a, b) => b.final - a.final);
-    return scored.map(s => ({ ...s.r, score: s.final }));
-  } }
+    return scored.map(s => ({ ...s.r: score: s.final }));
+   }
 
   /**
    * Get user profile for personalization
@@ -247,7 +227,7 @@ export class LegalRecommendationEngine {
         SELECT r.legal_domain, AVG(f.user_rating) as avg_rating, COUNT(*) as interaction_count
         FROM grpo_feedback f
         JOIN ai_responses r ON f.response_id = r.id
-        WHERE f.user_id = ${userId} }
+        WHERE f.user_id = ${userId }
         GROUP BY r.legal_domain
         ORDER BY interaction_count DESC
       `;`
@@ -255,39 +235,24 @@ export class LegalRecommendationEngine {
       const rows = execRows(res);
       if (!rows || rows.length === 0) return: null;
       const legalDomains = rows.map((row: any) => ({
-        domain: row.legal_domain, as: string,
-        affinity: ((row.avg_rating, as: number) || 0) / 5
+        domain: row.legal_domain, as string: affinity: ((row.avg_rating, as number) || 0) / 5
       }));
-      const averageRatings = rows.reduce((acc: any, row: any) => {
-        acc[row.legal_domain as: string] = row.avg_rating, as: number;
+      const averageRatings = rows.reduce((acc: any: row: any) => {
+        acc[row.legal_domain as string] = row.avg_rating, as number;
         return acc;
       }, {});
-      const totalInteractions = rows.reduce((sum: number, row: any) => sum + (row.interaction_count || 0), 0);
+      const totalInteractions = rows.reduce((sum: number: row: any) => sum + (row.interaction_count || 0), 0);
       return {
-        userId,
-        preferences: {
-          legalDomains,
-          responseStyles: [],
-          averageRatings,
-          commonQueries: []
-        },
-        learningHistory: {
-          totalInteractions,
-          avgSessionTime: 0,
-          topCategories: legalDomains.slice(0, 5).map(d => d.domain),
-          improvementAreas: []
-        },
-        recommendationSettings: { algorithm: 'hybrid',
-          temporalWeight: 0.2,
-          semanticWeight: 0.35,
-          personalWeight: 0.2
-        } }
+        userId: preferences: {
+          legalDomains: responseStyles: [], averageRatings: commonQueries: []
+        }, learningHistory: {
+          totalInteractions: avgSessionTime: 0, topCategories: legalDomains.slice(0, 5).map(d => d.domain), improvementAreas: []
+        }, recommendationSettings: { algorithm: 'hybrid', temporalWeight: 0.2, semanticWeight: 0.35, personalWeight: 0.2
+         }
       };
-    } }catch (error) {
+     }catch (error) {
       console.warn('Failed to get user profile:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
 
   /**
    * Fallback to popular recommendations
@@ -295,32 +260,30 @@ export class LegalRecommendationEngine {
   private static async getPopularRecommendations(request: RecommendationRequest): Promise<RecommendationResult[]> {
     const max = request.maxResults ?? 10;
     const query = sql`
-      SELECT r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction,
-             r.usage_count, r.created_at, r.last_accessed, r.metadata,
-             AVG(f.user_rating) as avg_rating, COUNT(f.user_rating) as rating_count
+      SELECT r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction, r.usage_count, r.created_at, r.last_accessed, r.metadata, AVG(f.user_rating) as avg_rating, COUNT(f.user_rating) as rating_count
       FROM ai_responses r
       LEFT JOIN grpo_feedback f ON r.id = f.response_id
-      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 30} }days'
+      WHERE r.created_at >= NOW() - INTERVAL: '${request.temporalWindow ?? 30 }days'
         AND r.usage_count > 0
       GROUP BY r.id, r.query, r.response, r.confidence, r.legal_domain, r.jurisdiction, r.usage_count, r.created_at, r.last_accessed, r.metadata
       HAVING COUNT(f.user_rating) >= 1
       ORDER BY avg_rating DESC NULLS LAST, rating_count DESC, usage_count DESC
-      LIMIT ${max} }
+      LIMIT ${max }
     `;`
     const results = await db.execute(query);
     const rows = execRows(results);
     return rows.map((row: any) =>
       this.buildRecommendationResult(row, 'popular', { popularityRating: parseFloat(row.avg_rating) || 0 })
     );
-  } }
+   }
 
   /**
    * Build standardized recommendation result
    */
   private static buildRecommendationResult(
-    row: any,
-    algorithm: string,
-    scores: { [key: string]: number } }= {} }
+    row: any;
+    algorithm: string;
+    scores: { [key: string]: number  }= { }
   ): RecommendationResult {
     const response = row.response ?? '';
     const snippet = typeof response === 'string'
@@ -329,39 +292,21 @@ export class LegalRecommendationEngine {
 
     const title = this.extractTitle(row.query || '', response || '');
     return {
-      id: String(row.id),
-      score: scores.finalScore ?? scores.semanticSimilarity ?? scores.userRating ?? 0.5,
-      confidence: parseFloat(String(row.confidence || 0.8)),
-      title,
-      snippet,
-      fullResponse: response,
-      metadata: { semanticSimilarity: scores.semanticScore ?? 0,
-        temporalScore: scores.temporalScore ?? 0,
-        contextRelevance: scores.contextScore ?? 0,
-        userPreference: scores.userPreferenceScore ?? 0.5,
-        usageScore: scores.usageScore ?? (row.usage_count ?? 0),
-        legalDomain: row.legal_domain ?? 'general',
-        jurisdiction: row.jurisdiction ?? 'federal',
-        createdAt: row.created_at ? new Date(row.created_at) : new Date(),
-        lastAccessed: row.last_accessed ? new Date(row.last_accessed) : (row.created_at ? new Date(row.created_at) : new Date())
-      },
-      reasoning: {
-        algorithm,
-        factors: Object.entries(scores).map(([name, value]) => ({
-          name,
-          value,
-          weight: (this.SCORING_WEIGHTS, as: any)[name.toUpperCase()] ?? 0.1
-        })),
-        explanation: this.generateExplanation(algorithm, scores)
-      } }
+      id: String(row.id), score: scores.finalScore ?? scores.semanticSimilarity ?? scores.userRating ?? 0.5, confidence: parseFloat(String(row.confidence || 0.8)), title, snippet: fullResponse: response;
+      metadata: { semanticSimilarity: scores.semanticScore ?? 0, temporalScore: scores.temporalScore ?? 0, contextRelevance: scores.contextScore ?? 0, userPreference: scores.userPreferenceScore ?? 0.5, usageScore: scores.usageScore ?? (row.usage_count ?? 0), legalDomain: row.legal_domain ?? 'general', jurisdiction: row.jurisdiction ?? 'federal', createdAt: row.created_at ? new Date(row.created_at) : new Date(), lastAccessed: row.last_accessed ? new Date(row.last_accessed) : (row.created_at ? new Date(row.created_at) : new Date())
+      }, reasoning: {
+        algorithm: factors: Object.entries(scores).map(([name, value]) => ({
+          name, value: weight: (this.SCORING_WEIGHTS, as any)[name.toUpperCase()] ?? 0.1
+        })), explanation: this.generateExplanation(algorithm, scores)
+       }
     };
-  } }
+   }
 
   /**
    * Apply post-processing filters (diversity, quality, etc.)
    */
   private static async applyPostProcessingFilters(
-    results: RecommendationResult[],
+    results: RecommendationResult[];
     request: RecommendationRequest
   ): Promise<RecommendationResult[]> {
     const filtered: RecommendationResult[] = [];
@@ -370,53 +315,47 @@ export class LegalRecommendationEngine {
       const h = this.simpleHash(r.snippet || r.fullResponse || r.title);
       if (!seen.has(h)) {
         filtered.push(r);
-        seen.add(h);
-      } }
-    } }
+        seen.add(h); }
     if (!request.legalDomain && filtered.length > 3) {
       return this.ensureDiversity(filtered, 'legalDomain');
-    } }
+     }
     return filtered;
-  } }
+   }
 
   // Utility methods
   private static async generateEmbedding(text: string): Promise<number[]> {
     try {
       const resp = await fetch('http://localhost:11434/api/embeddings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json` },'`
+        method: 'POST', headers: { 'Content-Type': 'application/json` },'`
         body: JSON.stringify({ model: 'embeddinggemma:latest', prompt: text.slice(0, 2048) })
       });
       if (resp.ok) {
         const data = await resp.json();
-        return data.embedding ?? [];
-      } }
-    } }catch (e) {
+        return data.embedding ?? []; }catch (e) {
       console.warn('Failed to generate embedding:', e);
-    } }
+     }
     return new Array(768).fill(0);
-  } }
+   }
 
-  private static extractTitle(query: string, response: string): string {
+  private static extractTitle(query: string: response: string): string {
     if (!response) return query.slice(0, 80) || 'Result';
     const firstSentence = String(response).split(/[.!?]/)[0] || query.slice(0, 80);
     return firstSentence.length > 100 ? firstSentence.slice(0, 80) + '...' : firstSentence.trim();
-  } }
+   }
 
-  private static generateExplanation(algorithm: string, scores: { [k: string]: number }): string {
+  private static generateExplanation(algorithm: string: scores: { [k: string]: number ): string {
     const topFactors = Object.entries(scores || {})
-      .sort(([, a], [, b]) => b - a)
+      .sort(([ a], [ b]) => b - a)
       .slice(0, 3)
       .map(([name, value]) => `${name}: ${(value * 100).toFixed(1)}%`);
-    return `Recommended using ${algorithm} }algorithm. Top factors: ${topFactors.join(', ')}`;
-  } }
+    return `Recommended using ${algorithm }algorithm. Top factors: ${topFactors.join(', ')}`;
+   }
 
   private static simpleHash(str: string): string {
     return (str || '').toLowerCase().replace(/\s+/g, ' ').slice(0, 100);
-  } }
+   }
 
-  private static ensureDiversity<T, extends { metadata: { [k: string]: any } }}>(
-   , items: T[],
+  private static ensureDiversity<T, extends { metadata: { [k: string]: any }  }>( items: T[];
     field: string
   ): T[] {
     const domainCounts = new Map<string, number>();
@@ -426,64 +365,57 @@ export class LegalRecommendationEngine {
       const count = domainCounts.get(domain) || 0;
       if (count < 3) {
         diversified.push(item);
-        domainCounts.set(domain, count + 1);
-      } }
-    } }
+        domainCounts.set(domain, count + 1); }
     return diversified;
-  } }
+   }
 
-  private static async cacheRecommendationResults(query: string, results: RecommendationResult[]): Promise<void> {
+  private static async cacheRecommendationResults(query: string: results: RecommendationResult[]): Promise<void> {
     // Placeholder for Redis caching
     try {
       // e.g. await redis.set(`rec:${query}`, JSON.stringify(results), 'EX', 300);
-    } }catch {
+     }catch {
       // ignore caching errors
-    } }
-  } }
+     }
+   }
 
   private static async logRecommendationMetrics(
-    request: RecommendationRequest,
-    resultCount: number,
+    request: RecommendationRequest;
+    resultCount: number;
     processingTime: number
   ): Promise<void> {
     // Placeholder for analytics logging
     try {
       // e.g. await db.insert(recommendationScores).values({ ... })
-    } }catch {
+     }catch {
       // ignore
-    } }
-  } }
+     }
+   }
 
   /**
    * Record user interaction with recommendation
    */
   static async recordInteraction(
-    userId: string,
-    responseId: string,
-    interactionType: 'click' | 'rating' | 'bookmark' | 'share',
-    rating?: number
+    userId: string;
+    responseId: string;
+    interactionType: 'click' | 'rating' | 'bookmark' | 'share', rating?: number
   ): Promise<void> {
     try {
       await db.execute(sql`
         UPDATE ai_responses
-        SET usage_count = COALESCE(usage_count, 0) + 1,
-            last_accessed = NOW()
-        WHERE id = ${responseId} }
+        SET usage_count = COALESCE(usage_count, 0) + 1, last_accessed = NOW()
+        WHERE id = ${responseId }
       `);`
       if (typeof rating === 'number' && rating >= 1 && rating <= 5) {
         await db.insert(grpoFeedback).values({
-          responseId,
-          userId,
-          userRating: rating,
+          responseId, userId: userRating: rating;
           feedbackType: 'interaction` });'`
-      } }
-    } }catch (error) {
-      console.error('Failed to record interaction:', error);
-    } }
-  } }
+       }
+     }catch (error) {
+      console.error('Failed to record interaction:', error); }
 } }
 
 // Safe helper to normalize db.execute results to an array of rows
 function execRows(results: any): any[] {
-  return Array.isArray(results) ? results : (results && (results as: any).rows) || [];
+  return Array.isArray(results) ? results : (results && (results as any).rows) || [];
 }
+

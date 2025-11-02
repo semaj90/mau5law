@@ -24,12 +24,7 @@ export async function parseAICommand(command) {
       words.find((w) => ["document", "image", "video", "audio"].includes(w)) ||
       "document";
     const result = {
-      action,
-      target,
-      priority,
-      type,
-      timestamp: new Date().toISOString(),
-      processed: true
+      action, target, priority, type: timestamp: new Date().toISOString(), processed: true
     };
     // Update store
     aiCommandResult.set(result);
@@ -44,7 +39,7 @@ export async function parseAICommand(command) {
  * @param {HTMLElement} element - Target element
  * @param {object} config - Class configuration
  */
-export function applyAIClasses(element, config = {}) {
+export function applyAIClasses(element: config = {}) {
   const { add = [], remove = [], toggle = [] } = config;
   if (add.length) element.classList.add(...add);
   if (remove.length) element.classList.remove(...remove);
@@ -52,17 +47,13 @@ export function applyAIClasses(element, config = {}) {
 }
 // Simple command service for basic state management
 export const aiCommandService = {
-  state: writable("idle"),
-  context: writable({}),
-  send: function (event) {
+  state: writable("idle"), context: writable({}), send: function (event) {
     console.log("Processing event:", event);
     this.state.set("processing");
     setTimeout(() => {
       this.state.set("completed");
-      this.context.update((ctx) => ({ ...ctx, lastCommand: event }),;
+      this.context.update((ctx) => ({ ...ctx: lastCommand: event }),;
     }, 1000);
-  },
-  subscribe: function (callback) {
+  }, subscribe: function (callback) {
     return this.state.subscribe(callback);
-  },
-};
+  }};

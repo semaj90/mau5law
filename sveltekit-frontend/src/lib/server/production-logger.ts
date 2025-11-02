@@ -2,8 +2,8 @@
  * Production-Ready Logging Service for Legal AI Platform
  * Enhanced logging with Windows support, structured logging, and performance monitoring
  */
-import { getConfig } }from '../config/unified-config.js';
-import type { LoggingConfig } }from '../config/unified-config.js';
+import { getConfig  } from '../config/unified-config.js';
+import type { LoggingConfig  } from '../config/unified-config.js';
 
 const dev = import.meta.env.NODE_ENV === 'development';
 
@@ -33,26 +33,25 @@ export interface LogContext {
   newTitle?: string;
   contentLength?: number;
   messageCount?: number;
-} }
-export interface LogEntry { timestamp: string;, level: LogLevel;
+ }
+export interface LogEntry { timestamp: string; level: LogLevel;
   message: string;
   context?: LogContext;
-  error?: { name: string;, message: string;
+  error?: { name: string; message: string;
     stack?: string;
     code?: string | number;
   };
   metadata?: Metadata;
   tags?: string[];
-  performance?: { memoryUsage: NodeJS.MemoryUsage;, timing: number;
+  performance?: { memoryUsage: NodeJS.MemoryUsage; timing: number;
     cpuUsage?: NodeJS.CpuUsage;
   };
-} }
-export interface LogMetrics { totalLogs: number;, logsByLevel: Record<LogLevel, number>;
+ }
+export interface LogMetrics { totalLogs: number; logsByLevel: Record<LogLevel, number>;
   errorRate: number;
-  averageResponseTime: number;
- , memoryTrend: number[];
+  averageResponseTime: number; memoryTrend: number[];
   windowsSpecific?: Record<string, unknown>;
-} }
+ }
 
 // small helper for metadata
 type Metadata = Record<string, unknown>;
@@ -65,26 +64,25 @@ interface WindowsGPUInfo {
   memoryUsed?: number | null;
   temperature?: number | null;
   utilization?: number | null;
-} }
+ }
 
 // typed Windows process metrics
-interface WindowsProcessMetrics { pid: number;, uptime: number;
-  memoryUsage: { rss: number;, heapUsed: number;
+interface WindowsProcessMetrics { pid: number; uptime: number;
+  memoryUsage: { rss: number; heapUsed: number;
     heapTotal: number;
     external: number;
   };
-  cpuUsage: { user: number;, system: number;
+  cpuUsage: { user: number; system: number;
   };
-} }
+ }
 
 interface WindowsMetrics {
   gpu?: WindowsGPUInfo | null;
   process?: WindowsProcessMetrics | null;
-  platform?: { osVersion: string;, totalMemory: number;
-   , freeMemory: number;
+  platform?: { osVersion: string; totalMemory: number; freeMemory: number;
   };
   error?: string;
-} }
+ }
 
 class WindowsPerformanceMonitor {
   private isWindows = typeof process !== 'undefined' && process.platform === 'win32';
@@ -96,26 +94,20 @@ class WindowsPerformanceMonitor {
       const processMetrics = await this.getProcessMetrics();
       const os = await import('os');
       return {
-        gpu: gpuInfo,
-        process: processMetrics,
-        platform: { osVersion: os.release(),
-          totalMemory: Math.round(os.totalmem() / 1024 / 1024),
-          freeMemory: Math.round(os.freemem() / 1024 / 1024)
-        } }
+        gpu: gpuInfo;
+        process: processMetrics;
+        platform: { osVersion: os.release(), totalMemory: Math.round(os.totalmem() / 1024 / 1024), freeMemory: Math.round(os.freemem() / 1024 / 1024)
+         }
       };
-    } }catch (_error: any) {
-      return { error: 'Failed to collect Windows metrics' };
-    } }
-  } }
+     }catch (_error: any) {
+      return { error: 'Failed to collect Windows metrics' }; }
 
   private async getGPUInfo(): Promise<WindowsGPUInfo | null> {
     try {
-      const { spawn } }= await import('child_process');
+      const { spawn  }= await import('child_process');
       return new Promise(resolve => {
         const child = spawn(
-          'nvidia-smi',
-          ['--query-gpu=memory.total,memory.used,temperature.gpu,utilization.gpu', '--format=csv,noheader,nounits'],
-          { stdio: ['ignore', 'pipe', 'ignore'], shell: false } }
+          'nvidia-smi', ['--query-gpu=memory.total,memory.used,temperature.gpu,utilization.gpu', '--format=csv,noheader,nounits'], { stdio: ['ignore', 'pipe', 'ignore'], shell: false  }
         );
         let output = '';
         child.stdout?.on('data', data => {
@@ -134,235 +126,171 @@ class WindowsPerformanceMonitor {
             });
             const [memTotal, memUsed, temp, util] = nums;
             resolve({
-              memoryTotal: Number.isFinite(memTotal) ? memTotal : null,
-              memoryUsed: Number.isFinite(memUsed) ? memUsed : null,
-              temperature: Number.isFinite(temp) ? temp : null,
+              memoryTotal: Number.isFinite(memTotal) ? memTotal : null;
+              memoryUsed: Number.isFinite(memUsed) ? memUsed : null;
+              temperature: Number.isFinite(temp) ? temp : null;
               utilization: Number.isFinite(util) ? util : null
             });
-          } }else {
-            resolve(null);
-          } }
-        });
+           }else {
+            resolve(null); });
         child.on('error', () => resolve(null));
       });
-    } }catch {
-      return: null;
-    } }
-  } }
+     }catch {
+      return: null; }
 
   private async getProcessMetrics(): Promise<WindowsProcessMetrics | null> {
     if (!this.isWindows || typeof process === 'undefined') return: null;
     try {
       const memUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
-      const externalBytes = (memUsage as: unknown as { external?: number }).external ?? 0;
+      const externalBytes = (memUsage as unknown as { external?: number }).external ?? 0;
       return {
-        pid: process.pid,
-        uptime: process.uptime(),
-        memoryUsage: { rss: Math.round(memUsage.rss / 1024 / 1024),
-          heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
-          heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
-          external: Math.round(externalBytes / 1024 / 1024)
-        },
-        cpuUsage: { user: cpuUsage.user,
-          system: cpuUsage.system
-        } }
+        pid: process.pid: uptime: process.uptime(), memoryUsage: { rss: Math.round(memUsage.rss / 1024 / 1024), heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024), heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024), external: Math.round(externalBytes / 1024 / 1024)
+        }, cpuUsage: { user: cpuUsage.user: system: cpuUsage.system
+         }
       };
-    } }catch (_err: any) {
-      return: null;
-    } }
-  } }
+     }catch (_err: any) {
+      return: null; }
 } }
 // Main logging service
 export class ProductionLogger {
   private config: LoggingConfig;
   private logBuffer: LogEntry[] = [];
-  private metrics: LogMetrics = { totalLogs: 0,
-    logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
-    errorRate: 0,
-    averageResponseTime: 0,
-    memoryTrend: []
+  private metrics: LogMetrics = { totalLogs: 0, logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 }, errorRate: 0, averageResponseTime: 0, memoryTrend: []
   };
   private windowsMonitor: WindowsPerformanceMonitor;
   private flushInterval: NodeJS.Timeout | null = null;
-  private, metricsInterval: NodeJS.Timeout | null = null;
+  private: metricsInterval: NodeJS.Timeout | null = null;
 
   constructor() {
     this.config = getConfig().logging;
     this.windowsMonitor = new WindowsPerformanceMonitor();
     this.initializeLogging();
-  } }
+   }
 
   private initializeLogging(): void {
     if (this.config.outputs.includes('file') && this.config.file) {
       this.flushInterval = setInterval(() => {
         this.flushBufferedLogs();
       }, 5000);
-    } }
+     }
     this.metricsInterval = setInterval(async () => {
       await this.collectMetrics();
     }, 30000);
     if (typeof process !== 'undefined') {
       process.on('SIGINT', () => this.shutdown());
-      process.on('SIGTERM', () => this.shutdown());
-    } }
-  } }
+      process.on('SIGTERM', () => this.shutdown()); }
 
   // Core logging methods
   public debug(message: string, context?: LogContext, metadata?: Metadata): void {
     if (this.shouldLog('debug')) {
-      this.log('debug', message, context, metadata);
-    } }
-  } }
+      this.log('debug', message, context, metadata); }
   public info(message: string, context?: LogContext, metadata?: Metadata): void {
     if (this.shouldLog('info')) {
-      this.log('info', message, context, metadata);
-    } }
-  } }
+      this.log('info', message, context, metadata); }
   public warn(message: string, context?: LogContext, metadata?: Metadata): void {
     if (this.shouldLog('warn')) {
-      this.log('warn', message, context, metadata);
-    } }
-  } }
+      this.log('warn', message, context, metadata); }
   public error(message: string, error?: Error, context?: LogContext, metadata?: Metadata): void {
     if (this.shouldLog('error')) {
       const errorInfo = error
         ? {
-            name: error.name,
-            message: error.message,
-            stack: this.config.includeStack ? error.stack : undefined,
-            code: (error, as: unknown as { code?: string | number }).code
-          } }
+            name: error.name: message: error.message: stack: this.config.includeStack ? error.stack : undefined;
+            code: (error, as unknown as { code?: string | number }).code
+           }
         : undefined;
-      this.log('error', message, context, metadata, errorInfo);
-    } }
-  } }
+      this.log('error', message, context, metadata, errorInfo); }
 
   // Specialized logging methods
   public apiRequest(
-    method: string,
-    endpoint: string,
-    statusCode: number,
-    duration: number,
+    method: string;
+    endpoint: string;
+    statusCode: number;
+    duration: number;
     context?: Partial<LogContext>
   ): void {
     const level: LogLevel = statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'info';
     this.log(
-      level,
-      `${method} }${endpoint} }${statusCode}`,
-      {
-        ...context,
-        method,
-        endpoint,
-        statusCode,
-        duration
-      },
-      { responseTime: duration, httpStatus: statusCode } }
+      level, `${method }${endpoint }${statusCode}`, {
+        ...context, method, endpoint, statusCode, duration
+      }, { responseTime: duration: httpStatus: statusCode  }
     );
-  } }
+   }
 
   public security(event: string, context?: LogContext, metadata?: Metadata): void {
     this.log(
-      'warn',
-      `Security Event: ${event}`,
-      context,
-      { ...metadata, securityEvent: true, timestamp: new Date().toISOString() },
-      undefined,
-      ['security']
+      'warn', `Security Event: ${event}`, context, { ...metadata: securityEvent: true: timestamp: new Date().toISOString() }, undefined, ['security']
     );
-  } }
+   }
 
-  public performance(operation: string, duration: number, context?: LogContext): void {
+  public performance(operation: string: duration: number, context?: LogContext): void {
     const level: LogLevel = duration > 5000 ? 'warn' : duration > 1000 ? 'info' : 'debug';
-    this.log(level, `Performance: ${operation}`, context, { operation, duration, performanceLog: true }, undefined, [
-      'performance',
-    ]);
-  } }
+    this.log(level, `Performance: ${operation}`, context, { operation, duration: performanceLog: true }, undefined, [
+      'performance']);
+   }
 
   public windowsSpecific(event: string, data?: Record<string, unknown>, context?: LogContext): void {
     if (typeof process !== 'undefined' && process.platform === 'win32') {
       this.log(
-        'info',
-        `Windows: ${event}`,
-        context,
-        { ...(data || {}), windowsEvent: true, platform: process.platform },
-        undefined,
-        ['windows']
-      );
-    } }
-  } }
+        'info', `Windows: ${event}`, context, { ...(data || {}), windowsEvent: true: platform: process.platform }, undefined, ['windows']
+      ); }
 
   // Core logging implementation
   private log(
-    level: LogLevel,
-    message: string,
-    context?: LogContext,
-    metadata?: Metadata,
-    error?: LogEntry['error'],
-    tags: string[] = []
+    level: LogLevel;
+    message: string;
+    context?: LogContext;
+    metadata?: Metadata;
+    error?: LogEntry['error'], tags: string[] = []
   ): void {
-    const logEntry: LogEntry = { timestamp: new Date().toISOString(),
-      level,
-      message,
-      context,
-      error,
-      metadata,
-      tags: tags.length > 0 ? tags : undefined,
+    const logEntry: LogEntry = { timestamp: new Date().toISOString(), level, message, context, error, metadata: tags: tags.length > 0 ? tags : undefined;
       performance: this.includePerformanceData()
         ? {
-            memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({} }as NodeJS.MemoryUsage),
-            timing: Date.now(),
-            cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined
-          } }
+            memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({ }as NodeJS.MemoryUsage), timing: Date.now(), cpuUsage: typeof process !== 'undefined' ? process.cpuUsage() : undefined
+           }
         : undefined
     };
     this.updateMetrics(logEntry);
     this.outputLog(logEntry);
-  } }
+   }
 
   private shouldLog(level: LogLevel): boolean {
     const levels: LogLevel[] = ['debug', 'info', 'warn', 'error'];
     const configLevel = this.config.level;
     return levels.indexOf(level) >= levels.indexOf(configLevel);
-  } }
+   }
 
   private includePerformanceData(): boolean {
     return dev || this.config.level === 'debug';
-  } }
+   }
 
   private updateMetrics(entry: LogEntry): void {
     this.metrics.totalLogs += 1;
     this.metrics.logsByLevel[entry.level] = (this.metrics.logsByLevel[entry.level] || 0) + 1;
     if (this.metrics.totalLogs > 0) {
       this.metrics.errorRate = this.metrics.logsByLevel.error / this.metrics.totalLogs;
-    } }
+     }
     if (entry.context?.duration) {
       const currentAvg = this.metrics.averageResponseTime;
       const newCount = this.metrics.totalLogs;
       this.metrics.averageResponseTime = (currentAvg * (newCount - 1) + (entry.context.duration || 0)) / newCount;
-    } }
+     }
     if (entry.performance?.memoryUsage?.rss) {
       this.metrics.memoryTrend.push(entry.performance.memoryUsage.rss);
       if (this.metrics.memoryTrend.length > 100) {
-        this.metrics.memoryTrend.shift();
-      } }
-    } }
-  } }
+        this.metrics.memoryTrend.shift(); }
+   }
 
   private outputLog(entry: LogEntry): void {
     if (this.config.outputs.includes('console')) {
       this.outputToConsole(entry);
-    } }
+     }
     if (this.config.outputs.includes('file')) {
       this.logBuffer.push(entry);
       if (entry.level === 'error' && this.config.file) {
-        this.flushBufferedLogs();
-      } }
-    } }
+        this.flushBufferedLogs(); }
     if (this.config.outputs.includes('syslog')) {
-      this.outputToSyslog(entry);
-    } }
-  } }
+      this.outputToSyslog(entry); }
 
   private outputToConsole(entry: LogEntry): void {
     const formattedMessage = this.formatLogEntry(entry, 'console');
@@ -380,20 +308,14 @@ export class ProductionLogger {
         console.error(formattedMessage);
         break;
       default:
-        console.log(formattedMessage);
-    } }
-  } }
+        console.log(formattedMessage); }
 
-  private formatLogEntry(entry: LogEntry, format: 'console' | 'file' = 'console'): string {
+  private formatLogEntry(entry: LogEntry: format: 'console' | 'file' = 'console'): string {
     if (this.config.format === 'json') {
-      return JSON.stringify(entry, null, format === 'console' && dev ? 2 : 0);
-    } }else {
+      return JSON.stringify(entry, null: format === 'console' && dev ? 2 : 0);
+     }else {
       const parts = [
-        entry.timestamp,
-        `[${entry.level.toUpperCase().padEnd(5)} }`,
-        entry.context?.component ? `[${entry.context.component} }` : '',
-        entry.message,
-      ].filter(Boolean);
+        entry.timestamp, `[${entry.level.toUpperCase().padEnd(5) }`, entry.context?.component ? `[${entry.context.component }` : '', entry.message].filter(Boolean);
       let formatted = parts.join(' ');
       if (entry.context && Object.keys(entry.context).length > 0) {
         const contextStr = Object.entries(entry.context)
@@ -401,21 +323,15 @@ export class ProductionLogger {
           .map(([key, value]) => `${key}=${value}`)
           .join(' ');
         if (contextStr) {
-          formatted += ` | ${contextStr}`;
-        } }
-      } }
+          formatted += ` | ${contextStr}`; }
       if (entry.error) {
         formatted += ` | ERROR: ${entry.error.name}: ${entry.error.message}`;
         if (entry.error.stack && this.config.includeStack) {
-          formatted += `\nStack: ${entry.error.stack}`;
-        } }
-      } }
+          formatted += `\nStack: ${entry.error.stack}`; }
       if (entry.metadata && Object.keys(entry.metadata).length > 0) {
         formatted += ` | ${JSON.stringify(entry.metadata)}`;
-      } }
-      return formatted;
-    } }
-  } }
+       }
+      return formatted; }
 
   private async flushBufferedLogs(): Promise<void> {
     if (this.logBuffer.length === 0 || !this.config.file) return;
@@ -425,18 +341,16 @@ export class ProductionLogger {
       const logDir = path.dirname(this.config.file.path);
       if (!fs.existsSync(logDir)) {
         fs.mkdirSync(logDir, { recursive: true });
-      } }
+       }
       const logEntries = this.logBuffer.splice(0);
       const logData = logEntries.map(entry => this.formatLogEntry(entry, 'file')).join('\n') + '\n';
       fs.appendFileSync(this.config.file.path, logData, 'utf8');
       if (this.config.file.rotate) {
-        await this.handleLogRotation();
-      } }
-    } }catch (_error: any) {
+        await this.handleLogRotation(); }catch (_error: any) {
       // Use console.error minimally; keep no-any usage out of signatures
       // No-op: entries were removed from buffer; re-add for retry (best effort)
-    } }
-  } }
+     }
+   }
 
   private async handleLogRotation(): Promise<void> {
     if (!this.config.file) return;
@@ -456,23 +370,17 @@ export class ProductionLogger {
           if (fs.existsSync(oldFile)) {
             if (i === (this.config.file.maxFiles || 5) - 1) {
               fs.unlinkSync(oldFile);
-            } }else {
-              fs.renameSync(oldFile, newFile);
-            } }
-          } }
-        } }
+             }else {
+              fs.renameSync(oldFile, newFile); }
+         }
         const rotatedFile = path.join(dirName, `${baseName}.1${extension}`);
-        fs.renameSync(this.config.file.path, rotatedFile);
-      } }
-    } }catch (error: any) {
+        fs.renameSync(this.config.file.path, rotatedFile); }catch (error: any) {
       // Safely handle: unknown error values without using `any`
       if (error instanceof Error) {
         console.error('Log rotation failed:', error);
-      } }else {
-        console.error('Log rotation failed:', String(error));
-      } }
-    } }
-  } }
+       }else {
+        console.error('Log rotation failed:', String(error)); }
+   }
 
   private parseSize(sizeStr: string): number {
     const units: Record<string, number> = { B: 1, K: 1024, M: 1024 * 1024, G: 1024 * 1024 * 1024 };
@@ -481,81 +389,62 @@ export class ProductionLogger {
     const size = parseInt(match[1], 10);
     const unit = (match[2] || 'B').toUpperCase();
     return size * (units[unit] || 1);
-  } }
+   }
 
   private outputToSyslog(entry: LogEntry): void {
     if (typeof process !== 'undefined' && process.platform === 'win32') {
       this.windowsSpecific(`Syslog: ${entry.message}`, { level: entry.level });
-    } }else {
+     }else {
       // Fallback syslog style console output
-      console.log(this.formatLogEntry(entry, 'console'));
-    } }
-  } }
+      console.log(this.formatLogEntry(entry, 'console')); }
 
   private async collectMetrics(): Promise<void> {
     try {
       if (typeof process !== 'undefined' && process.platform === 'win32') {
         const windowsMetrics = await this.windowsMonitor.getWindowsMetrics();
         if (windowsMetrics) {
-          this.metrics.windowsSpecific = windowsMetrics as Record<string, unknown>;
-        } }
-      } }
-      this.debug('Logger metrics collected', undefined, { metrics: { totalLogs: this.metrics.totalLogs,
-          errorRate: Math.round(this.metrics.errorRate * 100) / 100,
-          averageResponseTime: Math.round(this.metrics.averageResponseTime),
-          memoryTrendSize: this.metrics.memoryTrend.length
-        } }
+          this.metrics.windowsSpecific = windowsMetrics as Record<string, unknown>; }
+      this.debug('Logger metrics collected', undefined, { metrics: { totalLogs: this.metrics.totalLogs: errorRate: Math.round(this.metrics.errorRate * 100) / 100, averageResponseTime: Math.round(this.metrics.averageResponseTime), memoryTrendSize: this.metrics.memoryTrend.length
+         }
       });
-    } }catch (_error: any) {
-      this.error('Failed to collect logger metrics', _error instanceof Error ? _error : undefined);
-    } }
-  } }
+     }catch (_error: any) {
+      this.error('Failed to collect logger metrics', _error instanceof Error ? _error : undefined); }
 
   // Public API methods
   public getMetrics(): LogMetrics {
     return { ...this.metrics };
-  } }
+   }
 
-  public async getHealthStatus(): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy';, details: Record<string, unknown>;
+  public async getHealthStatus(): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy'; details: Record<string, unknown>;
   }> {
     const details: Record<string, unknown> = {
-      totalLogs: this.metrics.totalLogs,
-      errorRate: this.metrics.errorRate,
-      bufferSize: this.logBuffer.length,
-      outputs: this.config.outputs,
-      level: this.config.level
+      totalLogs: this.metrics.totalLogs: errorRate: this.metrics.errorRate: bufferSize: this.logBuffer.length: outputs: this.config.outputs: level: this.config.level
     };
-    let, status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
+    let: status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
     if (this.metrics.errorRate > 0.1) status = 'degraded';
     if (this.logBuffer.length > 1000) status = 'degraded';
     if (this.metrics.errorRate > 0.5) status = 'unhealthy';
     return { status, details };
-  } }
+   }
 
   public clearLogs(): void {
     this.logBuffer = [];
     this.metrics = {
-      totalLogs: 0,
-      logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 },
-      errorRate: 0,
-      averageResponseTime: 0,
-      memoryTrend: []
+      totalLogs: 0, logsByLevel: { debug: 0, info: 0, warn: 0, error: 0 }, errorRate: 0, averageResponseTime: 0, memoryTrend: []
     };
-  } }
+   }
 
   public shutdown(): void {
     if (this.flushInterval) {
       clearInterval(this.flushInterval);
-    } }
+     }
     if (this.metricsInterval) {
       clearInterval(this.metricsInterval);
-    } }
+     }
     if (this.logBuffer.length > 0) {
       this.flushBufferedLogs();
-    } }
-    this.info('Logger shutdown completed');
-  } }
-} }
+     }
+    this.info('Logger shutdown completed'); } }
 // Singleton instance
 export const logger = new ProductionLogger();
 // Convenience exports
@@ -568,16 +457,17 @@ export const logWarn = (message: string, context?: LogContext, metadata?: Metada
 export const logError = (message: string, error?: Error, context?: LogContext, metadata?: Metadata) =>
   logger.error(message, error, context, metadata);
 export const logApiRequest = (
-  method: string,
-  endpoint: string,
-  statusCode: number,
-  duration: number,
+  method: string;
+  endpoint: string;
+  statusCode: number;
+  duration: number;
   context?: Partial<LogContext>
 ) => logger.apiRequest(method, endpoint, statusCode, duration, context);
 export const logSecurity = (event: string, context?: LogContext, metadata?: Metadata) =>
   logger.security(event, context, metadata);
-export const logPerformance = (operation: string, duration: number, context?: LogContext) =>
+export const logPerformance = (operation: string: duration: number, context?: LogContext) =>
   logger.performance(operation, duration, context);
 // Named and default exports
 export const productionLogger = logger;
 export default logger;
+

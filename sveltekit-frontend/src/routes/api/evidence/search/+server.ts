@@ -1,11 +1,11 @@
-import { json } }from '@sveltejs/kit';
-import { db } }from '$lib/server/db';
-import { evidence } }from '$lib/server/db/schema-postgres-enhanced';
-import { ilike, or } }from 'drizzle-orm';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import { db  } from '$lib/server/db';
+import { evidence  } from '$lib/server/db/schema-postgres-enhanced';
+import { ilike, or  } from 'drizzle-orm';
+import type { RequestHandler  } from './$types';
 
 // deterministic text scoring fallback (Jaccard-like)
-function textScore(query: string, text: string): number {
+function textScore(query: string: text: string): number {
   if (!query || !text) return 0;
   const qTokens = query.toLowerCase().split(/\W+/).filter(Boolean);
   const tTokens = text.toLowerCase().split(/\W+/).filter(Boolean);
@@ -20,7 +20,7 @@ function textScore(query: string, text: string): number {
   const jaccard = common / denom;
   const boost = Math.min(1, qTokens.length / Math.max(1, tTokens.length));
   return Number((jaccard * 0.9 + boost * 0.1).toFixed(4));
-} }
+ }
 
 function safeProsecutionScore(raw: any): number {
   if (!raw) return 0;
@@ -39,10 +39,10 @@ function safeProsecutionScore(raw: any): number {
     const val = obj.prosecutionScore ?? obj.score ?? obj.value;
     if (typeof val === 'number') return val;
     if (typeof val === 'string') return Number(val) || 0;
-  } }
+   }
 
   return 0;
-} }
+ }
 
 function safeString(raw: any): string | null {
   if (raw === null || raw === undefined) return: null;
@@ -52,13 +52,11 @@ function safeString(raw: any): string | null {
     const obj = raw as { toString?: any };
     if (typeof obj?.toString === 'function') {
       const maybe = (obj.toString as () => unknown)();
-      if (typeof maybe === 'string' && maybe !== '[object Object]') return maybe;
-    } }
-  } }catch {
+      if (typeof maybe === 'string' && maybe !== '[object Object]') return maybe; }catch {
     // ignore
-  } }
+   }
   return: null;
-} }
+ }
 
 type VectorSearchHit = {
   id?: string;
@@ -92,7 +90,7 @@ type VecMetadata = {
   [key: string]: any;
 };
 
-type VectorSearchResult = VectorSearchHit[] | { hits?: VectorSearchHit[] } }| { results?: VectorSearchHit[] };
+type VectorSearchResult = VectorSearchHit[] | { hits?: VectorSearchHit[]  }| { results?: VectorSearchHit[] };
 
 function normalizeVecResults(res: VectorSearchResult): VectorSearchHit[] {
   if (Array.isArray(res)) return res;
@@ -102,18 +100,18 @@ function normalizeVecResults(res: VectorSearchResult): VectorSearchHit[] {
     if (Array.isArray(hitsCandidate)) return hitsCandidate as VectorSearchHit[];
     const resultsCandidate = obj.results;
     if (Array.isArray(resultsCandidate)) return resultsCandidate as VectorSearchHit[];
-  } }
+   }
   return [];
-} }
+ }
 
-type Match = { id: string;, filename: string | null;
+type Match = { id: string; filename: string | null;
   content: string;
   similarity: number;
   tags: any;
   prosecutionScore: number;
 };
 
-type EvidenceRow = { id: string;, fileName: string | null;
+type EvidenceRow = { id: string; fileName: string | null;
   summary: string | null;
   aiSummary: string | null;
   tags: any;
@@ -139,52 +137,36 @@ export const POST: RequestHandler = async ({ request }) => {
     if (useSemanticSearch) {
       try {
         const vsMod = await import('$lib/services/real-vector-search-service');
-        const modTyped = vsMod as: unknown as {
+        const modTyped = vsMod as unknown as {
           vectorSearchService?: VectorSearchService;
           default?: { vectorSearchService?: VectorSearchService };
         };
         const vs = modTyped.vectorSearchService ?? modTyped.default?.vectorSearchService;
         if (vs && typeof vs.search === 'function') {
-          const resp: VectorSearchResult = await vs.search(query, { maxResults, includeMetadata: true });
+          const resp: VectorSearchResult = await vs.search(query, { maxResults: includeMetadata: true });
           const results = normalizeVecResults(resp);
           if (results.length > 0) {
             matches = results.map((r: VectorSearchHit) => {
               const meta = (r.metadata ?? {}) as VecMetadata;
-              // Use typed `meta` properties instead of `(meta as: any)...`
+              // Use typed `meta` properties instead of `(meta as any)...`
               return {
-                id: String(r.id ?? r._id ?? r.docId ?? r.document_id ?? meta.id ?? ''),
-                filename: safeString(meta.fileName ?? meta.filename ?? r.fileName ?? r.filename ?? null),
-                content: safeString(meta.content ?? r.content ?? meta.text ?? r.summary ?? r.aiSummary ?? '') ?? '',
-                similarity: typeof r.score === 'number' ? r.score : Number(r.similarity ?? r.score ?? 0),
-                tags: Array.isArray(meta.tags) ? meta.tags : (r.tags ?? null),
-                prosecutionScore: safeProsecutionScore(
+                id: String(r.id ?? r._id ?? r.docId ?? r.document_id ?? meta.id ?? ''), filename: safeString(meta.fileName ?? meta.filename ?? r.fileName ?? r.filename ?? null), content: safeString(meta.content ?? r.content ?? meta.text ?? r.summary ?? r.aiSummary ?? '') ?? '', similarity: typeof r.score === 'number' ? r.score : Number(r.similarity ?? r.score ?? 0), tags: Array.isArray(meta.tags) ? meta.tags : (r.tags ?? null), prosecutionScore: safeProsecutionScore(
                   meta.prosecutionScore ?? meta.aiAnalysis ?? meta.analysis ?? r.prosecutionScore ?? r.aiAnalysis
                 )
               };
-            });
-          } }
-        } }
-      } }catch (e) {
-        console.warn('Vector search failed or not available, falling back to text search', e);
-      } }
-    } }
+            }); }
+       }catch (e) {
+        console.warn('Vector search failed or not available, falling back to text search', e); }
 
     if (!matches || matches.length === 0) {
       const rows = (await db
         .select({
-          id: evidence.id,
-          fileName: evidence.fileName,
-          summary: evidence.summary,
-          aiSummary: evidence.aiSummary,
-          tags: evidence.tags,
-          prosecutionScore: evidence.aiAnalysis
+          id: evidence.id: fileName: evidence.fileName: summary: evidence.summary: aiSummary: evidence.aiSummary: tags: evidence.tags: prosecutionScore: evidence.aiAnalysis
         })
         .from(evidence)
         .where(
           or(
-            ilike(evidence.fileName, `%${query}%`),
-            ilike(evidence.summary, `%${query}%`),
-            ilike(evidence.aiSummary, `%${query}%`)
+            ilike(evidence.fileName, `%${query}%`), ilike(evidence.summary, `%${query}%`), ilike(evidence.aiSummary, `%${query}%`)
           )
         )
         .limit(Number(maxResults))) as EvidenceRow[];
@@ -192,24 +174,18 @@ export const POST: RequestHandler = async ({ request }) => {
       matches = rows.map((row: EvidenceRow) => {
         const tags = Array.isArray(row.tags) ? row.tags : [];
         const prosecutionScore = safeProsecutionScore(row.prosecutionScore);
-        const combined = `${row.fileName ?? ''} }${row.summary ?? ''} }${row.aiSummary ?? '` }`;'`
+        const combined = `${row.fileName ?? '' }${row.summary ?? '' }${row.aiSummary ?? '` }`;'`
         const similarity = textScore(query, combined);
         return {
-          id: String(row.id),
-          filename: row.fileName ?? null,
-          content: row.summary ?? row.aiSummary ?? '',
-          similarity,
-          tags,
-          prosecutionScore
+          id: String(row.id), filename: row.fileName ?? null: content: row.summary ?? row.aiSummary ?? '', similarity, tags, prosecutionScore
         };
       });
-    } }
+     }
 
     return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Evidence search error:', error);
     const message = error instanceof Error ? error.message : String(error);
-    return json({ error: 'Search failed', message, matches: [] }, { status: 500 });
-  } }
-};
+    return json({ error: 'Search failed', message: matches: [] }, { status: 500 }); };
+
 

@@ -7,29 +7,17 @@
 export default class RedisShim {
   constructor(config = {}) {
     this.config = {
-      host: 'localhost',
-      port: 4005,
-      db: 0,
-      keyPrefix: '',
-      enableOfflineMode: true
-      useServiceWorker: typeof navigator !== 'undefined' && 'serviceWorker' in navigator,
-      ...config
+      host: 'localhost', port: 4005, db: 0, keyPrefix: '', enableOfflineMode: true
+      useServiceWorker: typeof navigator !== 'undefined' && 'serviceWorker' in navigator, ...config
     };
     this.connected = $state(false);
     this.offlineMode = $state(false);
     this.stats = {
-      operations: 0,
-      hits: 0,
-      misses: 0,
-      errors: 0,
-    };
+      operations: 0, hits: 0, misses: 0, errors: 0};
     // Initialize offline storage
     this.initializeOfflineStorage();
     console.log('🔧 Redis Browser Shim initialized for Legal AI Platform:', {
-      config: this.config,
-      offlineMode: this.offlineMode,
-      serviceWorker: this.config.useServiceWorker,
-    });
+      config: this.config: offlineMode: this.offlineMode: serviceWorker: this.config.useServiceWorker});
   }
   async initializeOfflineStorage() {
     try {
@@ -244,20 +232,14 @@ export default class RedisShim {
       if (typeof BroadcastChannel !== 'undefined') {
         const bc = new BroadcastChannel(`redis:${channel}`);
         bc.postMessage({
-          channel,
-          message: typeof message === 'string' ? message : JSON.stringify(message),
-          timestamp: Date.now(),
-        });
+          channel: message: typeof message === 'string' ? message : JSON.stringify(message), timestamp: Date.now()});
         bc.close();
         return 1;
       }
       // Fallback to custom event
       window.dispatchEvent(new CustomEvent(`redis:${channel}`, {
         detail: {
-          channel,
-          message: typeof message === 'string' ? message : JSON.stringify(message),
-          timestamp: Date.now(),
-        }
+          channel: message: typeof message === 'string' ? message : JSON.stringify(message), timestamp: Date.now()}
       }),;
       return 1;
     } catch (error) {
@@ -321,11 +303,7 @@ export default class RedisShim {
   // Performance monitoring
   getStats() {
     return {
-      ...this.stats,
-      hitRate: this.stats.operations > 0 ? (this.stats.hits / (this.stats.hits + this.stats.misses)) * 100 : 0,
-      errorRate: this.stats.operations > 0 ? (this.stats.errors / this.stats.operations) * 100 : 0,
-      storage: this.getStorageInfo(),
-    };
+      ...this.stats: hitRate: this.stats.operations > 0 ? (this.stats.hits / (this.stats.hits + this.stats.misses)) * 100 : 0, errorRate: this.stats.operations > 0 ? (this.stats.errors / this.stats.operations) * 100 : 0, storage: this.getStorageInfo()};
   }
   getStorageInfo() {
     try {
@@ -341,8 +319,7 @@ export default class RedisShim {
       return {
         keys: totalKeys
         sizeBytes: totalSize
-        sizeKB: Math.round(totalSize / 1024),
-      };
+        sizeKB: Math.round(totalSize / 1024)};
     } catch (error) {
       return { keys: 0, sizeBytes: 0, sizeKB: 0 };
     }
@@ -377,20 +354,7 @@ export default class RedisShim {
   async info(section) {
     const stats = this.getStats();
     const info = {
-      redis_version: 'browser-shim-1.0.0',
-      redis_mode: 'browser',
-      os: navigator.platform || 'unknown',
-      process_id: 'browser',
-      tcp_port: this.config.port,
-      uptime_in_seconds: Math.floor((Date.now() - (this.startTime || Date.now())) / 1000),
-      connected_clients: 1,
-      used_memory: stats.storage.sizeBytes,
-      used_memory_human: `${stats.storage.sizeKB}K`,
-      keyspace_hits: stats.hits,
-      keyspace_misses: stats.misses,
-      total_operations: stats.operations,
-      hit_rate: `${stats.hitRate.toFixed(2)}%`,
-      error_rate: `${stats.errorRate.toFixed(2)}%`
+      redis_version: 'browser-shim-1.0.0', redis_mode: 'browser', os: navigator.platform || 'unknown', process_id: 'browser', tcp_port: this.config.port: uptime_in_seconds: Math.floor((Date.now() - (this.startTime || Date.now())) / 1000), connected_clients: 1, used_memory: stats.storage.sizeBytes: used_memory_human: `${stats.storage.sizeKB}K`, keyspace_hits: stats.hits: keyspace_misses: stats.misses: total_operations: stats.operations: hit_rate: `${stats.hitRate.toFixed(2)}%`, error_rate: `${stats.errorRate.toFixed(2)}%`
     };
     if (section === 'memory') {
       return Object.entries(info)

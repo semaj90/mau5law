@@ -1,18 +1,18 @@
-import type { AIResponse } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { AIResponse  } from '$lib/types';
+import type { Document  } from '$lib/types';
 // AI Workflow Types - Ollama Gemma3-Legal + TensorRT-LLM Triton Integration
-import type { Actor } }from 'xstate';
+import type { Actor  } from 'xstate';
 
 // ============================================================================
 // Document & Content Types
 // ============================================================================
 
-export interface Document { id: string;, title: string;
+export interface Document { id: string; title: string;
   content: string;
   metadata: DocumentMetadata;
   createdAt: Date;
   updatedAt: Date;
-} }
+ }
 
 export interface DocumentMetadata {
   author?: string;
@@ -20,14 +20,13 @@ export interface DocumentMetadata {
   jurisdiction?: string;
   documentType: 'contract' | 'brief' | 'motion' | 'evidence' | 'other';
   tags: string[];
-} }
+ }
 
-export interface DocumentChunk { id: string;, documentId: string;
+export interface DocumentChunk { id: string; documentId: string;
   content: string;
   chunkIndex: number;
-  embedding?: VectorEmbedding;
- , metadata: Record<string, unknown>;
-} }
+  embedding?: VectorEmbedding; metadata: Record<string, unknown>;
+ }
 
 // ============================================================================
 // AI Model Types
@@ -35,25 +34,25 @@ export interface DocumentChunk { id: string;, documentId: string;
 
 export type AIModelSource = 'ollama' | 'tensorrt' | 'fallback';
 
-export interface AIModelConfig { ollamaUrl: string;, ollamaModel: string;
+export interface AIModelConfig { ollamaUrl: string; ollamaModel: string;
   tensorrtUrl: string;
   tensorrtModel: string;
   maxRetries: number;
   timeout: number;
-} }
+ }
 
-export interface AIResponse { text: string;, source: AIModelSource;
+export interface AIResponse { text: string; source: AIModelSource;
   model: string;
   toolInvocations?: ToolInvocation[];
   metadata: AIResponseMetadata;
-} }
+ }
 
 export interface AIResponseMetadata {
   tokensUsed?: number;
   latencyMs: number;
   cached: boolean;
   timestamp: number;
-} }
+ }
 
 // ============================================================================
 // Agentic AI Tool Types
@@ -61,22 +60,22 @@ export interface AIResponseMetadata {
 
 export type ToolName = 'websearch' | 'legal_analysis' | 'document_summarize' | 'vector_search' | 'case_lookup';
 
-export interface ToolInvocation { tool: ToolName;, input: Record<string, unknown>;
+export interface ToolInvocation { tool: ToolName; input: Record<string, unknown>;
   output: Record<string, unknown>;
   success: boolean;
   latencyMs: number;
-} }
+ }
 
-export interface WebSearchResult { title: string;, url: string;
+export interface WebSearchResult { title: string; url: string;
   snippet: string;
   relevance: number;
-} }
+ }
 
-export interface LegalAnalysisResult { summary: string;, keyPoints: string[];
+export interface LegalAnalysisResult { summary: string; keyPoints: string[];
   legalIssues: string[];
   citations: string[];
   confidence: number;
-} }
+ }
 
 // ============================================================================
 // Chat Types
@@ -84,24 +83,24 @@ export interface LegalAnalysisResult { summary: string;, keyPoints: string[];
 
 export type ChatRole = 'user' | 'agent' | 'system';
 
-export interface ChatMessage { id: string;, role: ChatRole;
+export interface ChatMessage { id: string; role: ChatRole;
   content: string;
   timestamp: number;
   metadata?: ChatMessageMetadata;
-} }
+ }
 
 export interface ChatMessageMetadata {
   model?: string;
   source?: AIModelSource;
   toolsUsed?: ToolName[];
   cached?: boolean;
-} }
+ }
 
-export interface ChatSession { id: string;, userId: string;
+export interface ChatSession { id: string; userId: string;
   messages: ChatMessage[];
   createdAt: Date;
   updatedAt: Date;
-} }
+ }
 
 // ============================================================================
 // Vector Storage Types
@@ -109,54 +108,52 @@ export interface ChatSession { id: string;, userId: string;
 
 export type VectorEmbedding = number[];
 
-export interface VectorSearchQuery { embedding: VectorEmbedding;, topK: number;
+export interface VectorSearchQuery { embedding: VectorEmbedding; topK: number;
   threshold?: number;
   filter?: Record<string, unknown>;
-} }
+ }
 
-export interface VectorSearchResult { id: string;, score: number;
+export interface VectorSearchResult { id: string; score: number;
   document: Document;
   chunk?: DocumentChunk;
-} }
+ }
 
-export interface PgVectorRecord { id: string;, embedding: VectorEmbedding;
- , metadata: Record<string, unknown>;
+export interface PgVectorRecord { id: string; embedding: VectorEmbedding; metadata: Record<string, unknown>;
   createdAt: Date;
-} }
+ }
 
-export interface QdrantPoint { id: string;, vector: VectorEmbedding;
- , payload: Record<string, unknown>;
-} }
+export interface QdrantPoint { id: string; vector: VectorEmbedding; payload: Record<string, unknown>;
+ }
 
 // ============================================================================
 // Workflow Types
 // ============================================================================
 
-export interface WorkflowResult { success: boolean;, processedAt: Date;
+export interface WorkflowResult { success: boolean; processedAt: Date;
   documentId: string;
   summary?: string;
   legalAnalysis?: LegalAnalysisResult;
-  embeddings?: { pgvector: boolean;, qdrant: boolean;
+  embeddings?: { pgvector: boolean; qdrant: boolean;
   };
-  cache?: { redis: boolean;, ttl: number;
+  cache?: { redis: boolean; ttl: number;
   };
-} }
+ }
 
-export interface WorkflowContext { documentId: string;, userId: string;
+export interface WorkflowContext { documentId: string; userId: string;
   progress: number;
   status: WorkflowStatus;
   errors: string[];
   results: Partial<WorkflowResult>;
-} }
+ }
 
 export type WorkflowStatus = 'idle' | 'processing' | 'embedding' | 'analyzing' | 'completed' | 'failed';
 
 export type WorkflowEvent =
-  | { type: 'START_PROCESSING'; documentId: string; userId: string } }
-  | { type: 'EMBEDDING_COMPLETE'; embeddings: VectorEmbedding[] } }
-  | { type: 'ANALYSIS_COMPLETE'; analysis: LegalAnalysisResult } }
-  | { type: 'COMPLETE'; result: WorkflowResult } }
-  | { type: 'ERROR'; error: string } }
+  | { type: 'START_PROCESSING'; documentId: string; userId: string  }
+  | { type: 'EMBEDDING_COMPLETE'; embeddings: VectorEmbedding[]  }
+  | { type: 'ANALYSIS_COMPLETE'; analysis: LegalAnalysisResult  }
+  | { type: 'COMPLETE'; result: WorkflowResult  }
+  | { type: 'ERROR'; error: string  }
   | { type: 'RESET' };
 
 // ============================================================================
@@ -176,12 +173,12 @@ export type WorkflowSnapshot = {
 // Cache Types
 // ============================================================================
 
-export interface CacheConfig { ttl: number; // seconds, prefix: string;
-} }
+export interface CacheConfig { ttl: number; // seconds: prefix: string;
+ }
 
-export interface CacheEntry<T = unknown> { value: T;, expiresAt: number;
+export interface CacheEntry<T = unknown> { value: T; expiresAt: number;
   createdAt: number;
-} }
+ }
 
 // ============================================================================
 // API Types
@@ -191,12 +188,13 @@ export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
-  metadata?: { requestId: string;, latencyMs: number;
+  metadata?: { requestId: string; latencyMs: number;
     cached: boolean;
   };
-} }
+ }
 
-export interface StreamChunk { type: 'text' | 'tool' | 'complete' | 'error';, content: string;
+export interface StreamChunk { type: 'text' | 'tool' | 'complete' | 'error'; content: string;
   metadata?: Record<string, unknown>;
-} }
+ }
+
 

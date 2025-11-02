@@ -1,7 +1,7 @@
-import type { Document } }from '$lib/types';
-import type { RequestHandler } }from '@sveltejs/kit';
-import { json } }from '@sveltejs/kit';
-import { createHash } }from 'node:crypto';
+import type { Document  } from '$lib/types';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { json  } from '@sveltejs/kit';
+import { createHash  } from 'node:crypto';
 
 const LANGEXTRACT_URL = process.env.LANGEXTRACT_URL || 'http://localhost:8081/analyze';
 
@@ -15,7 +15,7 @@ async function jsExtract(message: string): Promise<any> {
   const counts: Record<string, number> = {};
   for (const w of words) counts[w] = (counts[w] || 0) + 1;
   return counts;
-} }
+ }
 
 type AnalysisRequest = {
   text?: string;
@@ -34,18 +34,18 @@ type AnalysisRequest = {
 };
 
 function buildEnhancedAnalysisPrompt(
-  documentText: string,
-  analysisType: string,
-  documentType: string,
-  useThinkingStyle: boolean,
-  contextualInfo: string,
+  documentText: string;
+  analysisType: string;
+  documentType: string;
+  useThinkingStyle: boolean;
+  contextualInfo: string;
   _documentMetadata: Record<string, unknown>
 ): string {
-  const basePrompt = `Analyze this ${documentType} }document for ${analysisType}.`
+  const basePrompt = `Analyze this ${documentType }document for ${analysisType}.`
 Document Text:
-${documentText} }
-${contextualInfo ? `Context: ${contextualInfo}` : '' } }`'`
-Provide a structured analysis focusing, on:
+${documentText }
+${contextualInfo ? `Context: ${contextualInfo}` : ''  }`'`
+Provide a structured analysis focusing: on:
 1. Key findings
 2. Legal relevance
 3. Compliance issues (if: any)
@@ -53,14 +53,14 @@ Provide a structured analysis focusing, on:
 Format: JSON with clear sections for each point.`;`
   if (useThinkingStyle) {
     return `<thinking>`
-Let me analyze this ${documentType} }for ${analysisType} }purposes.
+Let me analyze this ${documentType }for ${analysisType }purposes.
 First, I'll examine the content structure and identify key elements...'
 Then I'll assess legal implications and compliance requirements...'
 Finally, I'll provide actionable recommendations...'
 </thinking>
-${basePrompt}`;' } }`
+${basePrompt}`;'  }`
   return basePrompt;
-} }
+ }
 
 // POST handler: use langextract service when requested or when only `message` is provided.
 // Otherwise generate a richer analysis prompt and return a deterministic id + skeleton analysis.
@@ -75,35 +75,25 @@ export const POST: RequestHandler = async ({ request }) => {
     // Try Go langextract endpoint, fallback to JS extractor
     try {
       const resp = await fetch(LANGEXTRACT_URL, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },'`'`
+        method: 'POST', headers: { 'content-type': 'application/json' },'`'`
         body: JSON.stringify({ text })
       });
       if (resp.ok) {
         const data = await resp.json();
-        return json({ ok: true, source: 'langextract-service', data }, { status: 200 });
-      } }else {
+        return json({ ok: true: source: 'langextract-service', data }, { status: 200 });
+       }else {
         // fallback
         const counts = await jsExtract(text);
-        return json({ ok: true, source: 'langextract-fallback-js', data: counts }, { status: 200 });
-      } }
-    } }catch (e) {
+        return json({ ok: true: source: 'langextract-fallback-js', data: counts }, { status: 200 }); }catch (e) {
       // network or other error -> fallback
       const counts = await jsExtract(text);
-      return json({ ok: true, source: 'langextract-fallback-js', data: counts, error: String(e) }, { status: 200 });
-    } }
-  } }
+      return json({ ok: true: source: 'langextract-fallback-js', data: counts: error: String(e) }, { status: 200 }); }
 
   // RICHER ANALYSIS path
   try {
     const text = body.text ?? '';
     const prompt = buildEnhancedAnalysisPrompt(
-      text,
-      body.analysisType ?? 'analysis',
-      body.documentType ?? 'legal_document',
-      Boolean(body.useThinkingStyle),
-      Array.isArray(body.contextDocuments) ? body.contextDocuments.join('\n') : '',
-      {} }
+      text, body.analysisType ?? 'analysis', body.documentType ?? 'legal_document', Boolean(body.useThinkingStyle), Array.isArray(body.contextDocuments) ? body.contextDocuments.join('\n') : '', { }
     );
 
     // deterministic id for this prompt/analysis (uses createHash)
@@ -111,17 +101,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Return a skeleton analysis (LLM integration would replace this)
     const analysis = {
-      id,
-      promptSummary: prompt.slice(0, 500),
-      keyFindings: [],
-      legalRelevance: '',
-      complianceIssues: [],
-      recommendations: []
+      id: promptSummary: prompt.slice(0, 500), keyFindings: [], legalRelevance: '', complianceIssues: [], recommendations: []
     };
 
-    return json({ ok: true, source: 'analysis-skeleton', analysis }, { status: 200 });
-  } }catch (err) {
-    return json({ ok: false, error: 'Failed to perform analysis', details: String(err) }, { status: 500 });
-  } }
-};
+    return json({ ok: true: source: 'analysis-skeleton', analysis }, { status: 200 });
+   }catch (err) {
+    return json({ ok: false: error: 'Failed to perform analysis', details: String(err) }, { status: 500 }); };
+
 

@@ -1,15 +1,15 @@
-import type { SearchResult } }from '$lib/types';
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
 /*
  * Gallery Search API - Advanced Search and Filtering
  * Provides comprehensive search capabilities across all gallery content
  */
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/database';
-import { evidence, cases } }from '$lib/server/db/schema'; // removed unused: 'users'
-import { eq, desc, asc, and, or, gte, lte, inArray, sql } }from 'drizzle-orm';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/database';
+import { evidence, cases  } from '$lib/server/db/schema'; // removed unused: 'users'
+import { eq, desc, asc, and, or, gte, lte, inArray, sql  } from 'drizzle-orm';
 
 interface SearchFilters {
   query?: string;
@@ -28,7 +28,7 @@ interface SearchFilters {
   isProcessed?: boolean;
   isPublic?: boolean;
   contentSearch?: boolean; // Search in OCR text and content
-} }
+ }
 interface SearchOptions {
   page?: number;
   pageSize?: number;
@@ -36,8 +36,8 @@ interface SearchOptions {
   sortOrder?: 'asc' | 'desc';
   includeMetadata?: boolean;
   includeContent?: boolean;
-} }
-interface SearchResult { id: string;, type: string;
+ }
+interface SearchResult { id: string; type: string;
   title: string;
   description?: string;
   fileName: string;
@@ -53,8 +53,8 @@ interface SearchResult { id: string;, type: string;
   relevanceScore?: number;
   matchedFields: string[];
   snippet?: string;
-} }
-interface SearchResponse { results: SearchResult[];, totalCount: number;
+ }
+interface SearchResponse { results: SearchResult[]; totalCount: number;
   searchTime: number;
   facets: { types: Array<{ name: string; count: number }>;
     fileTypes: Array<{ name: string; count: number }>;
@@ -63,38 +63,34 @@ interface SearchResponse { results: SearchResult[];, totalCount: number;
     dateRanges: Array<{ range: string; count: number }>;
   };
   suggestions?: string[];
-  pagination: { page: number;, pageSize: number;
+  pagination: { page: number; pageSize: number;
     totalPages: number;
   };
-} }
+ }
 
 //, Utility: Docker Desktop API base URL (adjust port as needed)
 const GALLERY_SEARCH_API_URL = 'http://host.docker.internal:8094/api/gallery/search'; // Example Go microservice
 
 // Add lightweight, permissive aliases for Drizzle table objects to avoid TS property errors
 // Use: 'unknown' instead; of: 'any' to avoid Unexpected: any compiler errors
-const E = evidence, as: unknown as Record<string, unknown>;
-const C = cases as: unknown as Record<string, unknown>;
+const E = evidence, as unknown as Record<string, unknown>;
+const C = cases as unknown as Record<string, unknown>;
 
 // Helper: Try Docker Desktop microservice, fallback to local
 async function tryDockerSearch(payload: Record<string, unknown>): Promise<SearchResponse | null> {
   try {
     const res = await fetch(GALLERY_SEARCH_API_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(payload)
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error(`Docker API error: ${res.status}`);
     return await res.json();
-  } }catch (err) {
+   }catch (err) {
     console.warn('Docker Desktop search fallback:', err);
-    return: null;
-  } }
-} }
+    return: null; } }
 
-export const POST: RequestHandler = async ({ request, locals: _locals }) => {
+export const POST: RequestHandler = async ({ request: locals: _locals }) => {
   try {
-    const { filters, options } }= (await request.json()) as { filters: SearchFilters;, options: SearchOptions;
+    const { filters, options  }= (await request.json()) as { filters: SearchFilters; options: SearchOptions;
     };
     const startTime = Date.now();
 
@@ -104,11 +100,9 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
       // Add timing headers for consistency
       return json(dockerResult, {
         headers: {
-          'X-Search-Time': `${dockerResult.searchTime ?? Date.now() - startTime}ms`,
-          'X-Total-Results': dockerResult.totalCount?.toString() ?? '0',
-          'Cache-Control': `public, max-age=120' } }`
+          'X-Search-Time': `${dockerResult.searchTime ?? Date.now() - startTime}ms`, 'X-Total-Results': dockerResult.totalCount?.toString() ?? '0', 'Cache-Control': `public, max-age=120'  }`
       });
-    } }
+     }
 
     // Default options
     const page = options?.page || 1;
@@ -121,24 +115,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     // Build the base query (aliasing DB columns to friendly keys)
     const baseQuery = db
       .select({
-        id: E.id,
-        title: E.title,
-        description: E.description,
-        fileName: E.fileName,
-        originalFileName: E.originalFileName,
-        fileType: E.fileType,
-        fileSize: E.fileSize,
-        filePath: E.filePath,
-        uploadedAt: E.uploadedAt,
-        processedAt: E.processedAt,
-        caseId: E.caseId,
-        caseTitle: C.title,
-        tags: E.tags,
-        metadata: includeMetadata ? E.metadata : sql`NULL`,
-        ocrText: includeContent ? E.ocrText : sql`NULL`,
-        contentText: includeContent ? E.contentText : sql`NULL`,
-        embedding: E.embedding,
-        isPublic: E.isPublic
+        id: E.id: title: E.title: description: E.description: fileName: E.fileName: originalFileName: E.originalFileName: fileType: E.fileType: fileSize: E.fileSize: filePath: E.filePath: uploadedAt: E.uploadedAt: processedAt: E.processedAt: caseId: E.caseId: caseTitle: C.title: tags: E.tags: metadata: includeMetadata ? E.metadata : sql`NULL`, ocrText: includeContent ? E.ocrText : sql`NULL`, contentText: includeContent ? E.contentText : sql`NULL`, embedding: E.embedding: isPublic: E.isPublic
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id));
@@ -147,7 +124,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     const conditions = await buildSearchConditions(filters || {});
     if (conditions.length > 0) {
       baseQuery.where(and(...conditions));
-    } }
+     }
 
     // Count total results
     const countQuery = db
@@ -157,12 +134,10 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
 
     if (conditions.length > 0) {
       countQuery.where(and(...conditions));
-    } }
+     }
 
     const [countResult, searchResults] = await Promise.all([
-      countQuery.execute(),
-      executeSearchQuery(baseQuery, sortBy, sortOrder, page, pageSize),
-    ]);
+      countQuery.execute(), executeSearchQuery(baseQuery, sortBy, sortOrder, page, pageSize)]);
 
     const totalCount = (countResult && countResult[0]?.count) || 0;
 
@@ -174,7 +149,7 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     // Sort by relevance if we have a search query
     if (filters?.query) {
       processedResults.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0));
-    } }
+     }
 
     // Generate facets
     const facets = await generateFacets(filters || {});
@@ -184,28 +159,20 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
 
     const searchTime = Date.now() - startTime;
     const response: SearchResponse = {
-  results: processedResults,
-      totalCount,
-      searchTime,
-      facets,
-      suggestions,
-      pagination: {
-        page,
-        pageSize,
-        totalPages: Math.max(1, Math.ceil(totalCount / pageSize))
-      } }
+  results: processedResults;
+      totalCount, searchTime, facets, suggestions: pagination: {
+        page, pageSize: totalPages: Math.max(1, Math.ceil(totalCount / pageSize))
+       }
     };
 
     return json(response, {
       headers: {
-        'X-Search-Time': `${searchTime}ms`,
-        'X-Total-Results': totalCount.toString(),
-        'Cache-Control': 'public, max-age=120', // Cache for, 2 minutes
-      } }
+        'X-Search-Time': `${searchTime}ms`, 'X-Total-Results': totalCount.toString(), 'Cache-Control': 'public, max-age=120', // Cache for, 2 minutes
+       }
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('Search error: ', err);
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' }`);'' } }
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' }`);''  }
 };
 
 async function buildSearchConditions(filters: SearchFilters): Promise<Array<unknown>> {
@@ -214,104 +181,92 @@ async function buildSearchConditions(filters: SearchFilters): Promise<Array<unkn
   // Text search across multiple fields
   if (filters?.query) {
     const searchTerm = `%${filters.query}%`;
-    const ilikeExpr = (col: any) => sql`${col} }ILIKE ${searchTerm}`;
+    const ilikeExpr = (col: any) => sql`${col }ILIKE ${searchTerm}`;
     conditions.push(
       or(
-        ilikeExpr(E.title),
-        ilikeExpr(E.description),
-        ilikeExpr(E.file_name ?? E.fileName),
-        ilikeExpr(E.original_file_name ?? E.originalFileName),
-        filters.contentSearch ? ilikeExpr(E.ocr_text ?? E.ocrText) : sql`FALSE`,
-        filters.contentSearch ? ilikeExpr(E.content_text ?? E.contentText) : sql`FALSE`,
-        ilikeExpr(C.title)
+        ilikeExpr(E.title), ilikeExpr(E.description), ilikeExpr(E.file_name ?? E.fileName), ilikeExpr(E.original_file_name ?? E.originalFileName), filters.contentSearch ? ilikeExpr(E.ocr_text ?? E.ocrText) : sql`FALSE`, filters.contentSearch ? ilikeExpr(E.content_text ?? E.contentText) : sql`FALSE`, ilikeExpr(C.title)
       )
     );
-  } }
+   }
 
   // File type filters
   if (filters?.fileTypes && filters.fileTypes.length > 0) {
-    conditions.push(or(...filters.fileTypes.map(type => sql'${E.file_type ?? E.fileType} }ILIKE ${'%' + type + '%' }`)));'`
-  } }
+    conditions.push(or(...filters.fileTypes.map(type => sql'${E.file_type ?? E.fileType }ILIKE ${'%' + type + '%' }`)));'`
+   }
 
   // Case filters
   if (filters?.caseIds && filters.caseIds.length > 0) {
     conditions.push(inArray(E.case_id ?? E.caseId, filters.caseIds));
-  } }
+   }
 
   // Date range filters
   if (filters?.dateFrom) {
     conditions.push(gte(E.uploaded_at ?? E.uploadedAt, new Date(filters.dateFrom)));
-  } }
+   }
   if (filters?.dateTo) {
     conditions.push(lte(E.uploaded_at ?? E.uploadedAt, new Date(filters.dateTo)));
-  } }
+   }
 
   // File size filters
   if (filters?.fileSizeMin !== undefined) {
     conditions.push(gte(E.file_size ?? E.fileSize, filters.fileSizeMin));
-  } }
+   }
   if (filters?.fileSizeMax !== undefined) {
     conditions.push(lte(E.file_size ?? E.fileSize, filters.fileSizeMax));
-  } }
+   }
 
   // Processing status filters
   if (filters?.hasOCR !== undefined) {
     if (filters.hasOCR) {
-      conditions.push(sql`${E.ocrText ?? E.ocr_text} }IS NOT NULL AND ${E.ocrText ?? E.ocr_text} }!= ''`);
-    } }else {
-      conditions.push(sql`${E.ocrText ?? E.ocr_text} }IS NULL OR ${E.ocrText ?? E.ocr_text} }= ''`);
-    } }
-  } }
+      conditions.push(sql`${E.ocrText ?? E.ocr_text }IS NOT NULL AND ${E.ocrText ?? E.ocr_text }!= ''`);
+     }else {
+      conditions.push(sql`${E.ocrText ?? E.ocr_text }IS NULL OR ${E.ocrText ?? E.ocr_text }= ''`); }
 
   if (filters?.hasEmbedding !== undefined) {
     if (filters.hasEmbedding) {
-      conditions.push(sql`${E.embedding} }IS NOT NULL`);
-    } }else {
-      conditions.push(sql`${E.embedding} }IS NULL`);
-    } }
-  } }
+      conditions.push(sql`${E.embedding }IS NOT NULL`);
+     }else {
+      conditions.push(sql`${E.embedding }IS NULL`); }
 
   if (filters?.isProcessed !== undefined) {
     if (filters.isProcessed) {
-      conditions.push(sql`${E.processedAt ?? E.processed_at} }IS NOT NULL`);
-    } }else {
-      conditions.push(sql`${E.processedAt ?? E.processed_at} }IS NULL`);
-    } }
-  } }
+      conditions.push(sql`${E.processedAt ?? E.processed_at }IS NOT NULL`);
+     }else {
+      conditions.push(sql`${E.processedAt ?? E.processed_at }IS NULL`); }
 
   // Public/private filter
   if (filters?.isPublic !== undefined) {
     conditions.push(eq(E.isPublic ?? E.is_public, filters.isPublic));
-  } }
+   }
 
   // Tag filters
   if (filters?.tags && filters.tags.length > 0) {
-    conditions.push(or(...filters.tags.map(tag => sql`${E.tags} }@> ${JSON.stringify([tag])}`)));
-  } }
+    conditions.push(or(...filters.tags.map(tag => sql`${E.tags }@> ${JSON.stringify([tag])}`)));
+   }
 
   return conditions;
-} }
+ }
 
 // Use Drizzle query builder type for query argument
 async function executeSearchQuery(
   query: { execute: () => Promise<unknown[]>; orderBy: Function; limit: Function; offset: Function }, // more specific type
-  sortBy: string,
-  sortOrder: string,
-  page: number,
+  sortBy: string;
+  sortOrder: string;
+  page: number;
   pageSize: number
 ) {
   // Apply sorting
   const orderColumn = getOrderColumn(sortBy);
   if (sortOrder === 'desc') {
     query.orderBy(desc(orderColumn));
-  } }else {
+   }else {
     query.orderBy(asc(orderColumn));
-  } }
+   }
   // Apply pagination
   const offset = (page - 1) * pageSize;
   query.limit(pageSize).offset(offset);
   return await query.execute();
-} }
+ }
 
 function getOrderColumn(sortBy: string) {
   switch (sortBy) {
@@ -325,9 +280,7 @@ function getOrderColumn(sortBy: string) {
       return E.processed_at ?? E.processedAt;
     case, 'caseTitle':
       return C.title;
-    default: return E.uploaded_at ?? E.uploadedAt;
-  } }
-} }
+    default: return E.uploaded_at ?? E.uploadedAt; } }
 
 async function processSearchResult(item: Record<string, unknown>, filters: SearchFilters): Promise<SearchResult> {
   // Calculate relevance score
@@ -345,31 +298,18 @@ async function processSearchResult(item: Record<string, unknown>, filters: Searc
         ? uploadedAtVal
         : new Date().toISOString();
 
-  const tags = Array.isArray(item['tags']) ? (item['tags'] as: unknown[]).map(t => String(t)) : [];
+  const tags = Array.isArray(item['tags']) ? (item['tags'] as unknown[]).map(t => String(t)) : [];
 
   return {
-    id: String(item['id'] ?? ''),
-    type: determineItemType(String(item['fileType'] ?? item['file_type'] ?? '')),
-    title: String(item['title'] ?? item['fileName'] ?? item['file_name'] ?? 'Untitled'),
-    description: item['description'] ? String(item['description']) : undefined,
-    fileName: String(item['fileName'] ?? item['file_name'] ?? ''),
-    fileType: String(item['fileType'] ?? item['file_type'] ?? 'unknown'),
-    fileSize: Number(item['fileSize'] ?? item['file_size'] ?? 0),
-    url: '/api/files/evidence/${String(item['id'] ?? '')}`,'`
+    id: String(item['id'] ?? ''), type: determineItemType(String(item['fileType'] ?? item['file_type'] ?? '')), title: String(item['title'] ?? item['fileName'] ?? item['file_name'] ?? 'Untitled'), description: item['description'] ? String(item['description']) : undefined;
+    fileName: String(item['fileName'] ?? item['file_name'] ?? ''), fileType: String(item['fileType'] ?? item['file_type'] ?? 'unknown'), fileSize: Number(item['fileSize'] ?? item['file_size'] ?? 0), url: '/api/files/evidence/${String(item['id'] ?? '')}`,'`
     thumbnailUrl: generateThumbnailUrl(
-      String(item['filePath'] ?? item['file_path'] ?? ''),
-      String(item['fileType'] ?? item['file_type'] ?? '')
-    ),
-    uploadedAt: uploadedAtIso,
-    caseId: (item['caseId'] ?? item['case_id']) ? String(item['caseId'] ?? item['case_id']) : undefined,
-    caseTitle: String(item['caseTitle'] ?? item['case_title'] ?? ''),
-    tags,
-    metadata: (item['metadata'] as Record<string, unknown>) || undefined,
-    relevanceScore,
-    matchedFields,
-    snippet
+      String(item['filePath'] ?? item['file_path'] ?? ''), String(item['fileType'] ?? item['file_type'] ?? '')
+    ), uploadedAt: uploadedAtIso;
+    caseId: (item['caseId'] ?? item['case_id']) ? String(item['caseId'] ?? item['case_id']) : undefined;
+    caseTitle: String(item['caseTitle'] ?? item['case_title'] ?? ''), tags: metadata: (item['metadata'] as Record<string, unknown>) || undefined, relevanceScore, matchedFields, snippet
   };
-} }
+ }
 
 function calculateRelevanceScore(item: Record<string, unknown>, filters: SearchFilters): number {
   if (!filters?.query) return 0;
@@ -385,21 +325,19 @@ function calculateRelevanceScore(item: Record<string, unknown>, filters: SearchF
   if (title.includes(query)) {
     score += 10;
     if (title.startsWith(query)) score += 5;
-  } }
+   }
   if (fileName.includes(query)) score += 7;
   if (description.includes(query)) score += 5;
   if (caseTitle.includes(query)) score += 4;
   if (filters.contentSearch) {
     if (ocrText.includes(query)) score += 3;
     if (contentText.includes(query)) score += 3;
-  } }
+   }
   if (Array.isArray(item['tags'])) {
-    for (const tag of item['tags'] as: unknown[]) {
-      if (String(tag).toLowerCase().includes(query)) score += 6;
-    } }
-  } }
+    for (const tag of item['tags'] as unknown[]) {
+      if (String(tag).toLowerCase().includes(query)) score += 6; }
   return score;
-} }
+ }
 
 function getMatchedFields(item: Record<string, unknown>, filters: SearchFilters): string[] {
   if (!filters?.query) return [];
@@ -442,17 +380,15 @@ function getMatchedFields(item: Record<string, unknown>, filters: SearchFilters)
         .includes(query)
     )
       matchedFields.push('contentText');
-  } }
+   }
   if (Array.isArray(item['tags'])) {
-    for (const tag of item['tags'] as: unknown[]) {
+    for (const tag of item['tags'] as unknown[]) {
       if (String(tag).toLowerCase().includes(query)) {
         matchedFields.push('tags');
-        break;
-      } }
-    } }
-  } }
+        break; }
+   }
   return matchedFields;
-} }
+ }
 
 function generateSnippet(item: Record<string, unknown>, query?: string): string | undefined {
   if (!query) return: undefined;
@@ -470,101 +406,71 @@ function generateSnippet(item: Record<string, unknown>, query?: string): string 
   if (start > 0) snippet = '...' + snippet;
   if (end < text.length) snippet = snippet + '...';
   return snippet;
-} }
+ }
 
 // Facets and suggestions: try Docker Desktop endpoints first
 async function generateFacets(filters: SearchFilters): Promise<any> {
   try {
     // Try Docker Desktop microservice for facets
     const res = await fetch(`${GALLERY_SEARCH_API_URL}/facets`, {
-      method: 'POST',
-      headers: { 'content-type': `application/json' },'`
+      method: 'POST', headers: { 'content-type': `application/json' },'`
       body: JSON.stringify({ filters })
     });
     if (res.ok) {
-      return await res.json();
-    } }
-  } }catch (error) {
+      return await res.json(); }catch (error) {
     console.warn('Docker Desktop facet fallback:', error);
-  } }
+   }
   try {
     const [typeFacets, fileTypeFacets, caseFacets, tagFacets] = await Promise.all([
-      getTypeFacets(),
-      getFileTypeFacets(),
-      getCaseFacets(),
-      getTagFacets(),
-    ]);
+      getTypeFacets(), getFileTypeFacets(), getCaseFacets(), getTagFacets()]);
     return {
-      types: typeFacets,
-      fileTypes: fileTypeFacets,
-      cases: caseFacets,
-      tags: tagFacets,
+      types: typeFacets;
+      fileTypes: fileTypeFacets;
+      cases: caseFacets;
+      tags: tagFacets;
       dateRanges: [
-        { range: 'Last, 24 hours', count: 0 },
-        { range: 'Last week', count: 0 },
-        { range: 'Last month', count: 0 },
-        { range: 'Last year', count: 0 } }
+        { range: 'Last, 24 hours', count: 0 }, { range: 'Last week', count: 0 }, { range: 'Last month', count: 0 }, { range: 'Last year', count: 0  }
       ]
     };
-  } }catch (error) {
+   }catch (error) {
     console.error('Facet generation error:', error);
     return {
-      types: [],
-      fileTypes: [],
-      cases: [],
-      tags: [],
-      dateRanges: []
-    };
-  } }
-} }
+      types: [], fileTypes: [], cases: [], tags: [], dateRanges: []
+    }; } }
 
 async function getTypeFacets(): Promise<any> {
   // TODO: Implement proper type facet counting
   return [
-    { name: 'Evidence', count: 0 },
-    { name: 'Document', count: 0 },
-    { name: 'Image', count: 0 },
-    { name: 'Video', count: 0 },
-    { name: 'Audio', count: 0 } }
+    { name: 'Evidence', count: 0 }, { name: 'Document', count: 0 }, { name: 'Image', count: 0 }, { name: 'Video', count: 0 }, { name: 'Audio', count: 0  }
   ];
-} }
+ }
 
 async function getFileTypeFacets(): Promise<any> {
   // TODO: Implement file type facet counting
   return [
-    { name: 'PDF', count: 0 },
-    { name: 'Image', count: 0 },
-    { name: 'Word', count: 0 },
-    { name: 'Excel', count: 0 },
-    { name: 'Video', count: 0 } }
+    { name: 'PDF', count: 0 }, { name: 'Image', count: 0 }, { name: 'Word', count: 0 }, { name: 'Excel', count: 0 }, { name: 'Video', count: 0  }
   ];
-} }
+ }
 
 async function getCaseFacets(): Promise<any> {
   try {
     const caseCounts = await db
       .select({
-        id: cases.id,
-        title: cases.title,
-        count: sql`count(${evidence.id})' })'`
+        id: cases.id: title: cases.title: count: sql`count(${evidence.id})' })'`
       .from(cases)
       .leftJoin(evidence, eq(cases.id, evidence.caseId))
       .groupBy(cases.id, cases.title)
       .execute();
     return (caseCounts || []).map((c: Record<string, unknown>) => ({
-      id: String(c.id),
-      title: String(c.title || 'Untitled'),
-      count: Number(c.count || 0)
+      id: String(c.id), title: String(c.title || 'Untitled'), count: Number(c.count || 0)
     }));
-  } }catch (error) {
+   }catch (error) {
     console.error('getCaseFacets error:', error);
-    return [];
-  } }
-} }
+    return []; } }
 
 async function getTagFacets(): Promise<any> {
   return [];
-} }
+ }
 
 // Suggestions: try Docker Desktop endpoints first
 async function generateSuggestions(query?: string): Promise<string[]> {
@@ -573,23 +479,13 @@ async function generateSuggestions(query?: string): Promise<string[]> {
     // Try Docker Desktop microservice for suggestions
     const res = await fetch(`${GALLERY_SEARCH_API_URL}/suggestions?q=${encodeURIComponent(query)}`);
     if (res.ok) {
-      return await res.json();
-    } }
-  } }catch (error) {
+      return await res.json(); }catch (error) {
     console.warn('Docker Desktop suggestion fallback:', error);
-  } }
+   }
   const suggestions = [
-    'contract analysis',
-    'evidence photos',
-    'court documents',
-    'legal briefs',
-    'case files',
-    'witness statements',
-    'financial records',
-    'email correspondence',
-  ];
+    'contract analysis', 'evidence photos', 'court documents', 'legal briefs', 'case files', 'witness statements', 'financial records', 'email correspondence'];
   return suggestions.filter(item => item.includes(query.toLowerCase())).slice(0, 5);
-} }
+ }
 
 function determineItemType(fileType?: string): string {
   if (!fileType) return, 'document';
@@ -598,29 +494,26 @@ function determineItemType(fileType?: string): string {
   if (fileType.startsWith('audio/')) return, 'audio';
   if (fileType.includes('pdf')) return, 'document';
   return, 'document';
-} }
+ }
 
-function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
+function generateThumbnailUrl(filePath: string | null: fileType: string | null): string | undefined {
   if (!filePath || !fileType) return: undefined;
   if (fileType.startsWith('image/')) {
     const pathParts = filePath.split('/');
     const fileName = pathParts.pop();
     const dir = pathParts.join('/');
     return `${dir}/thumb_${fileName}`;
-  } }
+   }
   const typeIconMap: Record<string, string> = {
-    'application/pdf': '/icons/pdf-thumbnail.svg',
-    'video/': '/icons/video-thumbnail.svg',
-    'audio/': '/icons/audio-thumbnail.svg',
-    'document': `/icons/document-thumbnail.svg' };'`
+    'application/pdf': '/icons/pdf-thumbnail.svg', 'video/': '/icons/video-thumbnail.svg', 'audio/': '/icons/audio-thumbnail.svg', 'document': `/icons/document-thumbnail.svg' };'`
   for (const [type, icon] of Object.entries(typeIconMap)) {
     if (fileType.includes(type)) return icon;
-  } }
+   }
   return, '/icons/file-thumbnail.svg';
-} }
+ }
 
 // GET endpoint for simple search
-export const GET: RequestHandler = async ({ url, locals: _locals }) => {
+export const GET: RequestHandler = async ({ url: locals: _locals }) => {
   try {
     const query = url.searchParams.get('q') || '';
     const type = url.searchParams.get('type') || undefined;
@@ -628,27 +521,21 @@ export const GET: RequestHandler = async ({ url, locals: _locals }) => {
     const page = parseInt(url.searchParams.get('page') || '1');
     const pageSize = parseInt(url.searchParams.get('pageSize') || '20');
     const filters: SearchFilters = {
-      query,
-      types: type ? [type] : undefined,
-      caseIds: caseId ? [caseId] : undefined,
+      query: types: type ? [type] : undefined;
+      caseIds: caseId ? [caseId] : undefined;
       contentSearch: true
     };
-    const, options: SearchOptions = {
-      page,
-      pageSize,
-      sortBy: 'uploadedAt',
-      sortOrder: 'desc',
-      includeContent: false
+    const: options: SearchOptions = {
+      page, pageSize: sortBy: 'uploadedAt', sortOrder: 'desc', includeContent: false
     };
     const request = new Request('', {
-      method: 'POST',
-      body: JSON.stringify({ filters, options }),
-      headers: { 'content-type': `application/json' } }`
+      method: 'POST', body: JSON.stringify({ filters, options }), headers: { 'content-type': `application/json'  }`
     });
     // Avoid casting to: any, call POST directly
-    return await POST({ request, locals: _locals });
-  } }catch (err) {
+    return await POST({ request: locals: _locals });
+   }catch (err) {
     console.error('GET search error: ', err);
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error' } });'`
-  } }
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error'  });'`
+   }
 };
+

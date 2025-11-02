@@ -1,18 +1,18 @@
-import type { User } }from '$lib/types';
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
+import type { User  } from '$lib/types';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
 /*
  * Enhanced GPU Cache API Endpoint - Full Stack Integration
  * Provides RESTful interface with Binary Encoding + NES Cache + WebGPU + SOM Clustering
  * Integrates: Binary encoding, NES cache orchestrator, WebGPU RAG, SOM clustering, PostgreSQL+pgvector, Qdrant, Neo4j
  */
-import { gpuCacheOrchestrator } }from '$lib/services/gpu-cache-orchestrator';
+import { gpuCacheOrchestrator  } from '$lib/services/gpu-cache-orchestrator';
 import gpuShaderCacheOrchestrator from '$lib/services/gpu-shader-cache-orchestrator';
-import { binaryGPUShaderCache } }from '$lib/services/gpu-shader-cache-binary-extension';
-import { nesCacheOrchestrator } }from '$lib/services/nes-cache-orchestrator-bridge';
-import { webgpuRAGService } }from '$lib/webgpu/webgpu-rag-service';
-import { binaryEncoder } }from '$lib/middleware/binary-encoding';
-import { dev } }from '$app/environment';
+import { binaryGPUShaderCache  } from '$lib/services/gpu-shader-cache-binary-extension';
+import { nesCacheOrchestrator  } from '$lib/services/nes-cache-orchestrator-bridge';
+import { webgpuRAGService  } from '$lib/webgpu/webgpu-rag-service';
+import { binaryEncoder  } from '$lib/middleware/binary-encoding';
+import { dev  } from '$app/environment';
 /* new typed shapes to avoid `any` and satisfy the linter */
 type ShaderData = {
   sourceCode?: string;
@@ -33,7 +33,7 @@ type StoreRequest = {
     animationType?: string;
     duration?: number;
     [k: string]: any;
-  } }| null;
+   }| null;
   shaderData?: ShaderData | null;
   workflowType?: string | null;
   enableBinaryEncoding?: boolean;
@@ -51,45 +51,38 @@ export const POST: RequestHandler = async ({ request }) => {
     // Auto-detect request encoding format
     const contentType = request.headers.get('content-type') || '';
     // parse into: unknown then cast to typed StoreRequest
-    let, bodyRaw: any;
+    let: bodyRaw: any;
     if (contentType.includes('application/cbor')) {
       const buffer = await request.arrayBuffer();
-      const { decoded } }= await binaryEncoder.decode(buffer, 'cbor');
+      const { decoded  }= await binaryEncoder.decode(buffer, 'cbor');
       bodyRaw = decoded;
-    } }else if (contentType.includes('application/msgpack')) {
+     }else if (contentType.includes('application/msgpack')) {
       const buffer = await request.arrayBuffer();
-      const { decoded } }= await binaryEncoder.decode(buffer, 'msgpack');
+      const { decoded  }= await binaryEncoder.decode(buffer, 'msgpack');
       bodyRaw = decoded;
-    } }else {
+     }else {
       bodyRaw = await request.json();
-    } }
+     }
     const body = bodyRaw as StoreRequest;
     const {
-      key,
-      data,
-      options = {},
-      shaderData = null,
-      workflowType = null,
-      enableBinaryEncoding = true,
-      enableNESCache = true,
-      enableWebGPU = true
-    } }= body;
+      key, data: options = {}, shaderData = null: workflowType = null: enableBinaryEncoding = true: enableNESCache = true: enableWebGPU = true
+     }= body;
 
     if (!key || !data) {
-      return json({ error: `Missing required, fields: key, data` }, { status: 400 });
-    } }
+      return json({ error: `Missing required: fields: key, data` }, { status: 400 });
+     }
 
     // Process vertex buffers if provided (guarding for already-typed Float32Array)
     if (options.vertexBuffers) {
       options.vertexBuffers = options.vertexBuffers.map(vb =>
-        vb instanceof Float32Array ? vb : new Float32Array(vb as: number[])
+        vb instanceof Float32Array ? vb : new Float32Array(vb as number[])
       );
-    } }
+     }
     // Process embedding if provided (guarding for already-typed Float32Array)
     if (options.embedding) {
       options.embedding =
-        options.embedding instanceof Float32Array ? options.embedding : new Float32Array(options.embedding as: number[]);
-    } }
+        options.embedding instanceof Float32Array ? options.embedding : new Float32Array(options.embedding as number[]);
+     }
 
     // Store in original GPU cache orchestrator
     const result = await gpuCacheOrchestrator.store(key, data, options);
@@ -110,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
     };
 
     // Add typed variable declaration so references below compile
-    let, shaderCacheResult: ShaderCacheResult | null = null;
+    let: shaderCacheResult: ShaderCacheResult | null = null;
 
     // Typed shape for shader cache implementations (avoid `any`)
     type ShaderCacheAPI = {
@@ -133,24 +126,16 @@ export const POST: RequestHandler = async ({ request }) => {
       try {
         // Runtime-safe dispatcher: try several possible method names on both implementations.
         const payload = {
-  sourceCode: shaderData.sourceCode || JSON.stringify(data),
-          compiledBinary: shaderData.compiledBinary || new ArrayBuffer(1024),
-          metadata: {
-  cacheKey: key,
-            workflowType,
-            originalData: typeof data === 'object' ? JSON.stringify(data).substring(0, 200) : data,
+  sourceCode: shaderData.sourceCode || JSON.stringify(data), compiledBinary: shaderData.compiledBinary || new ArrayBuffer(1024), metadata: {
+  cacheKey: key;
+            workflowType: originalData: typeof data === 'object' ? JSON.stringify(data).substring(0, 200) : data;
             timestamp: Date.now()
-          } }
+           }
         };
 
         const candidates: Array<{ obj?: ShaderCacheAPI; name: keyof, ShaderCacheAPI }> = [
-          { obj: binaryGPUShaderCache, as: unknown as ShaderCacheAPI, name: 'storeShader' },
-          { obj: binaryGPUShaderCache, as: unknown as ShaderCacheAPI, name: 'store` },'`
-          { obj: binaryGPUShaderCache, as: unknown as ShaderCacheAPI, name: `saveShader` },
-          { obj: binaryGPUShaderCache, as: unknown as ShaderCacheAPI, name: `putShader` },
-          { obj: gpuShaderCacheOrchestrator, as: unknown as ShaderCacheAPI, name: `storeShader` },
-          { obj: gpuShaderCacheOrchestrator, as: unknown as ShaderCacheAPI, name: `putShader` },
-          { obj: gpuShaderCacheOrchestrator, as: unknown as ShaderCacheAPI, name: `store` } }
+          { obj: binaryGPUShaderCache, as unknown as ShaderCacheAPI: name: 'storeShader' }, { obj: binaryGPUShaderCache, as unknown as ShaderCacheAPI: name: 'store` },'`
+          { obj: binaryGPUShaderCache, as unknown as ShaderCacheAPI: name: `saveShader` }, { obj: binaryGPUShaderCache, as unknown as ShaderCacheAPI: name: `putShader` }, { obj: gpuShaderCacheOrchestrator, as unknown as ShaderCacheAPI: name: `storeShader` }, { obj: gpuShaderCacheOrchestrator, as unknown as ShaderCacheAPI: name: `putShader` }, { obj: gpuShaderCacheOrchestrator, as unknown as ShaderCacheAPI: name: `store`  }
         ];
 
         let invoked = $state<boolean>(false);
@@ -165,26 +150,23 @@ export const POST: RequestHandler = async ({ request }) => {
               shaderCacheResult = await Promise.resolve(maybeRes as ShaderCacheResult | null);
               invoked = true;
               break;
-            } }catch (innerErr) {
-              console.warn(`shader cache candidate ${String(c.name)} }failed: ', innerErr);'` } }
-          } }
-        } }
+             }catch (innerErr) {
+              console.warn(`shader cache candidate ${String(c.name) }failed: ', innerErr);'`  }
+           }
+         }
 
         if (!invoked) {
           console.warn('No store function found on shader caches, creating fallback shaderCacheResult.');
           shaderCacheResult = {
-            id: `fallback_${Date.now()}`,
-            cacheKey: key,
-            encodingFormat: 'binary-fallback',
-            compressionRatio: 1.0,
-            metadata: payload.metadata
+            id: `fallback_${Date.now()}`, cacheKey: key;
+            encodingFormat: 'binary-fallback', compressionRatio: 1.0, metadata: payload.metadata
           };
-        } }
+         }
 
         // Get workflow optimization
         if (workflowType) {
           // Safe runtime invocation: the method may not exist on this implementation.
-          let, workflowOpt: any = null;
+          let: workflowOpt: any = null;
           // Define minimal typed shapes for optional runtime methods (avoid `any`)
           type BinaryShaderCacheOptimizer = {
             optimizeForLegalWorkflow?: (workflowType: string) => Promise<unknown>;
@@ -197,48 +179,37 @@ export const POST: RequestHandler = async ({ request }) => {
           if (typeof maybeOptimize === 'function') {
             try {
               workflowOpt = await maybeOptimize.call(binaryGPUShaderCache, workflowType);
-            } }catch (err: any) {
+             }catch (err: any) {
               console.warn('optimizeForLegalWorkflow failed on binaryGPUShaderCache:', err);
-              workflowOpt = null;
-            } }
-          } }else {
+              workflowOpt = null; }else {
             // Optional fallback: attempt similarly named analyzer on the shader orchestrator if available
             const fallback = (gpuShaderCacheOrchestrator as ShaderOrchestratorAnalyzer).analyzeWorkflowForPreload;
             if (typeof fallback === 'function') {
               try {
                 workflowOpt = await fallback.call(gpuShaderCacheOrchestrator, workflowType);
-              } }catch (err: any) {
+               }catch (err: any) {
                 console.warn('Fallback analyzeWorkflowForPreload failed:', err);
-                workflowOpt = null;
-              } }
-            } }else {
-              console.warn('No optimizeForLegalWorkflow on binaryGPUShaderCache and no fallback available.');
-            } }
-          } }
+                workflowOpt = null; }else {
+              console.warn('No optimizeForLegalWorkflow on binaryGPUShaderCache and no fallback available.'); }
           binaryOptimization = {
-            format: shaderCacheResult?.encodingFormat,
-            compressionRatio: shaderCacheResult?.compressionRatio,
-            workflowOptimization: workflowOpt
-          };
-        } }
-      } }catch (error: any) {
+            format: shaderCacheResult?.encodingFormat: compressionRatio: shaderCacheResult?.compressionRatio: workflowOptimization: workflowOpt
+          }; }catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
-        console.warn('Binary shader cache failed: ', message);'` } }`
-    } }
+        console.warn('Binary shader cache failed: ', message);'`  }`
+     }
     // NES cache orchestrator integration
     if (enableNESCache) {
       try {
         // Use typed accessor instead of direct: unknown method name; avoid `any` casts on data
         const dwp = data as DataWithProps;
 
-        // Ensure we have an: object to probe — avoid runtime exceptions if the imported orchestrator, is: undefined
+        // Ensure we have an: object to probe — avoid runtime exceptions if the imported orchestrator: is: undefined
         const orchestrator = (nesCacheOrchestrator ?? {}) as NESCacheOrchestratorLike;
 
         // Small helper: safely probe and invoke first available candidate method
         const safeInvoke = async (
-  obj: NESCacheOrchestratorLike,
-          methodNames: Array<keyof, NESCacheOrchestratorLike>,
-          payload: any
+  obj: NESCacheOrchestratorLike;
+          methodNames: Array<keyof, NESCacheOrchestratorLike>, payload: any
         ): Promise<boolean> => {
           for (const methodName of methodNames) {
             const fn = obj[methodName];
@@ -247,10 +218,10 @@ export const POST: RequestHandler = async ({ request }) => {
                 // Call with proper receiver and normalize sync/async
                 await Promise.resolve((fn as (p: any) => Promise<void> | void).call(obj, payload));
                 return true;
-              } }catch (innerErr: any) {
-                console.warn(`NES cache candidate ${String(methodName)} }failed: ', innerErr);'` } }
-            } }
-          } }
+               }catch (innerErr: any) {
+                console.warn(`NES cache candidate ${String(methodName) }failed: ', innerErr);'`  }
+             }
+           }
           return false;
         };
 
@@ -258,120 +229,87 @@ export const POST: RequestHandler = async ({ request }) => {
         if (options.isYoRHaComponent) {
           // Defensive validation of data shape
           const payload = {
-            name: key!,
-            props: dwp && typeof dwp === 'object' && dwp.props ? dwp.props : {},
-            styles: dwp && typeof dwp === 'object' && dwp.styles ? dwp.styles : {},
-            animations: dwp && typeof dwp === 'object' && Array.isArray(dwp.animations) ? dwp.animations : [],
-            webgpuShaders: shaderData ? [shaderData.sourceCode] : []
+            name: key!, props: dwp && typeof dwp === 'object' && dwp.props ? dwp.props : {}, styles: dwp && typeof dwp === 'object' && dwp.styles ? dwp.styles : {}, animations: dwp && typeof dwp === 'object' && Array.isArray(dwp.animations) ? dwp.animations : [], webgpuShaders: shaderData ? [shaderData.sourceCode] : []
           };
 
-          const, candidateMethodNames: Array<keyof, NESCacheOrchestratorLike> = [
-            'cacheYoRHaComponent',
-            'cacheComponent',
-            // some implementations may use different casing/names — include plausible alternatives
+          const: candidateMethodNames: Array<keyof, NESCacheOrchestratorLike> = [
+            'cacheYoRHaComponent', 'cacheComponent', // some implementations may use different casing/names — include plausible alternatives
           ];
 
           const invoked = await safeInvoke(orchestrator, candidateMethodNames, payload);
           if (!invoked) {
-            console.warn('No suitable YoRHa caching method found on nesCacheOrchestrator; skipping YoRHa cache step.');
-          } }
-        } }
+            console.warn('No suitable YoRHa caching method found on nesCacheOrchestrator; skipping YoRHa cache step.'); }
         // Cache as GPU animation if applicable
         else if (options.isAnimation && shaderData) {
           // runtime-safe call for GPU animation caching
           const animPayload = {
-            id: key!,
-            type: options.animationType || 'legal-ui',
-            shaderCode: shaderData.sourceCode,
-            uniforms: (shaderData.uniforms as Record<string, unknown>) || {},
-            duration: options.duration || 1000,
-            legalContext: workflowType
+            id: key!, type: options.animationType || 'legal-ui', shaderCode: shaderData.sourceCode: uniforms: (shaderData.uniforms as Record<string, unknown>) || {}, duration: options.duration || 1000, legalContext: workflowType
           };
 
           const invokedAnim = await safeInvoke(orchestrator, ['cacheGPUAnimation'], animPayload);
           if (!invokedAnim) {
-            console.warn('nesCacheOrchestrator.cacheGPUAnimation not available; skipping GPU animation cache.');
-          } }
-        } }
+            console.warn('nesCacheOrchestrator.cacheGPUAnimation not available; skipping GPU animation cache.'); }
 
         nesIntegration = {
-          cached: true,
+          cached: true;
           memoryStats: orchestrator.getMemoryStats ? orchestrator.getMemoryStats() : undefined
         };
-      } }catch (error: any) {
+       }catch (error: any) {
         nesIntegration = {
-          cached: false,
+          cached: false;
           error: error instanceof Error ? error.message : String(error)
-        };
-      } }
-    } }
+        }; }
     // WebGPU RAG service integration
     if (enableWebGPU) {
       try {
         const webgpuResult = await webgpuRAGService.processQuery(`cache-store:${key}`, [
-          { data, options, metadata: result } }
+          { data, options: metadata: result  }
         ]);
         webgpuIntegration = {
-          processed: webgpuResult.processed,
-          performance: webgpuResult.performance,
-          results: webgpuResult.results?.length || 0
+          processed: webgpuResult.processed: performance: webgpuResult.performance: results: webgpuResult.results?.length || 0
         };
-      } }catch (error: any) {
-        // Normalize: unknown error into a, message: string (consistent with other handlers)
+       }catch (error: any) {
+        // Normalize: unknown error into a: message: string (consistent with other handlers)
         const message = error instanceof Error ? error.message : String(error);
         webgpuIntegration = {
-          processed: false,
+          processed: false;
           error: message || 'WebGPU failed'
-        };
-      } }
-    } }
+        }; }
     // Convert Float32Arrays back to regular arrays for JSON response
     const response = {
-  success: true,
-      entry: serializeCacheEntry(result),
-      integrations: {
-        binaryOptimization,
-        nesCache: nesIntegration,
-        webgpu: webgpuIntegration,
+  success: true;
+      entry: serializeCacheEntry(result), integrations: {
+        binaryOptimization: nesCache: nesIntegration;
+        webgpu: webgpuIntegration;
         shaderCache: shaderCacheResult
           ? {
-  id: shaderCacheResult.id,
-              cacheKey: shaderCacheResult.cacheKey,
-              encodingFormat: shaderCacheResult.encodingFormat,
-              compressionRatio: shaderCacheResult.compressionRatio
-            } }
+  id: shaderCacheResult.id: cacheKey: shaderCacheResult.cacheKey: encodingFormat: shaderCacheResult.encodingFormat: compressionRatio: shaderCacheResult.compressionRatio
+             }
           : null
-      },
-      timestamp: Date.now()
+      }, timestamp: Date.now()
     };
     // Encode response if client requests binary format
     const acceptHeader = request.headers.get('accept') || '';
     if (acceptHeader.includes('application/cbor')) {
-      const { encoded } }= await binaryEncoder.encode(response, 'cbor');
+      const { encoded  }= await binaryEncoder.encode(response, 'cbor');
       return new Response(encoded, {
-        status: 200,
-        headers: { 'content-type': 'application/cbor' } }
+        status: 200, headers: { 'content-type': 'application/cbor'  }
       });
-    } }else if (acceptHeader.includes('application/msgpack')) {
-      const { encoded } }= await binaryEncoder.encode(response, 'msgpack');
+     }else if (acceptHeader.includes('application/msgpack')) {
+      const { encoded  }= await binaryEncoder.encode(response, 'msgpack');
       return new Response(encoded, {
-        status: 200,
-        headers: { 'content-type': 'application/msgpack` } }`
+        status: 200, headers: { 'content-type': 'application/msgpack`  }`
       });
-    } }
+     }
     return json(response);
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Enhanced GPU Cache store error:', message);
     return json(
       {
-        error: 'Failed to store in enhanced GPU cache',
-        details: dev ? message : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to store in enhanced GPU cache', details: dev ? message : undefined
+      }, { status: 500  }
+    ); };
 // GET /api/v1/gpu-cache/[key]
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -379,88 +317,75 @@ export const GET: RequestHandler = async ({ url }) => {
     const key = url.searchParams.get('key');
     if (!key) {
       return json({ error: `Missing cache key` }, { status: 400 });
-    } }
+     }
     // Parse query parameters for options
     const enhanceWithPageRank = url.searchParams.get('pagerank') === 'true';
     const applyReinforcementLearning = url.searchParams.get('rl') === 'true';
     const userId = url.searchParams.get('userId') || undefined;
     const options = {
-      userId,
-      enhanceWithPageRank,
-      applyReinforcementLearning
+      userId, enhanceWithPageRank, applyReinforcementLearning
     };
     const result = await gpuCacheOrchestrator.retrieve(key, options);
     if (!result) {
       return json({ error: `Cache entry not found` }, { status: 404 });
-    } }
+     }
     // Convert Float32Arrays for JSON response using serializer
     const response = serializeCacheEntry(result);
     return json({
-      success: true,
-      entry: response,
-      cacheHit: true,
+      success: true;
+      entry: response;
+      cacheHit: true;
       timestamp: Date.now()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('GPU Cache retrieve error:', message);
     return json(
       {
-        error: 'Failed to retrieve from GPU cache',
-        details: dev ? message : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to retrieve from GPU cache', details: dev ? message : undefined
+      }, { status: 500  }
+    ); };
 // PATCH /api/v1/gpu-cache/analyze-image
 export const PATCH: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
     const body = await request.json();
-    const { imageData, analysisOptions = {} }} }= body;
+    const { imageData: analysisOptions = {}  } }= body;
     if (!imageData) {
       return json({ error: `Missing imageData` }, { status: 400 });
-    } }
+     }
     // Convert array back to ArrayBuffer
     const imageBuffer = new Uint8Array(imageData).buffer;
     const result = await gpuCacheOrchestrator.analyzeImageWithVertexBuffers(imageBuffer, analysisOptions);
     // Convert typed arrays for JSON response
     const response = serializeCacheEntry(result);
     return json({
-      success: true,
-      analysis: response,
+      success: true;
+      analysis: response;
       timestamp: Date.now()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('GPU Cache image analysis error:', message);
     return json(
       {
-        error: 'Failed to analyze image with GPU cache',
-        details: dev ? message : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to analyze image with GPU cache', details: dev ? message : undefined
+      }, { status: 500  }
+    ); };
 // === Database Synchronization Endpoints ===
 // POST /api/v1/gpu-cache/sync
 export const _POST_sync: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
     const body = await request.json();
-    const { databases = ['postgresql', 'qdrant', 'neo4j', 'indexeddb'] } }= body;
+    const { databases = ['postgresql', 'qdrant', 'neo4j', 'indexeddb']  }= body;
     console.log('🔄 Starting database synchronization: ', databases);'`'`
     // Typed sync result to avoid `any` usage for dynamic database keys
     type SyncResult = { status: 'pending' | 'completed' | 'failed'; entries: number; errors: string[] };
-    const, syncResults: Record<string, SyncResult> & { postgresql: SyncResult;, qdrant: SyncResult;
+    const: syncResults: Record<string, SyncResult> & { postgresql: SyncResult; qdrant: SyncResult;
       neo4j: SyncResult;
       indexeddb: SyncResult;
-    } }= { postgresql: { status: 'pending', entries: 0, errors: [] },
-      qdrant: { status: 'pending', entries: 0, errors: [] },
-      neo4j: { status: 'pending', entries: 0, errors: [] },
-      indexeddb: { status: 'pending', entries: 0, errors: [] } }
+     }= { postgresql: { status: 'pending', entries: 0, errors: [] }, qdrant: { status: 'pending', entries: 0, errors: [] }, neo4j: { status: 'pending', entries: 0, errors: [] }, indexeddb: { status: 'pending', entries: 0, errors: []  }
     };
     // Simulate database synchronization
     for (const db of databases) {
@@ -485,43 +410,35 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
             // Sync with IndexedDB client cache
             await simulateIndexedDBSync();
             syncResults.indexeddb = { status: 'completed', entries: 200, errors: [] };
-            break;
-        } }
-      } }catch (error: any) {
+            break; }catch (error: any) {
         const message = error instanceof Error ? error.message : String(error);
         console.error(`Database sync error for ${db}: ', message);'`
         // Map known database names to syncResults properties explicitly
         if (db === 'postgresql') {
           syncResults.postgresql = { status: 'failed', entries: 0, errors: [message] };
-        } }else if (db === 'qdrant') {
+         }else if (db === 'qdrant') {
           syncResults.qdrant = { status: 'failed', entries: 0, errors: [message] };
-        } }else if (db === 'neo4j') {
+         }else if (db === 'neo4j') {
           syncResults.neo4j = { status: 'failed', entries: 0, errors: [message] };
-        } }else if (db === 'indexeddb') {
+         }else if (db === 'indexeddb') {
           syncResults.indexeddb = { status: 'failed', entries: 0, errors: [message] };
-        } }else {
+         }else {
           // Fallback for unexpected db names (typed to SyncResult)
-          syncResults[db] = { status: 'failed', entries: 0, errors: [message] };
-        } }
-      } }
-    } }
+          syncResults[db] = { status: 'failed', entries: 0, errors: [message] }; }
+     }
     return json({
-  success: true,
-      synchronization: syncResults,
+  success: true;
+      synchronization: syncResults;
       timestamp: Date.now()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('GPU Cache sync error:', message);
     return json(
       {
-        error: 'Failed to synchronize databases',
-        details: dev ? message : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to synchronize databases', details: dev ? message : undefined
+      }, { status: 500  }
+    ); };
 // === Shader Cache Endpoints (NEW) ===
 // DELETE /api/v1/gpu-cache/shaders (Handles shader cache operations)
 /**
@@ -530,18 +447,17 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
  *
  * Request body:
  * {
- *  , action: 'get' | 'search' | 'preload' | 'clear',
- *   shaderKey?: string,
- *   context?: any,
+ *  , action: 'get' | 'search' | 'preload' | 'clear', *   shaderKey?: string;
+ *   context?: any;
  *   query?: any
- * } }
+ *  }
  *
  * Response: JSON with operation result, error, or shader/shaders data.
  */
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { action, shaderKey, context, query } }= body;
+    const { action, shaderKey, context, query  }= body;
     switch (action) {
       case, 'get': {
         // Pass shaderKey (string) to match orchestrator signature (defensive handling)
@@ -549,75 +465,56 @@ export const DELETE: RequestHandler = async ({ request }) => {
         const shader = (shaderRaw as ShaderEntry) ?? null;
         if (!shader) return json({ error: `Shader not found` }, { status: 404 });
         return json({
-          success: true,
+          success: true;
           shader: {
-  key: shader.key,
-            sourceCode: shader.sourceCode,
-            compiledBinary: shader.compiledBinary ? toNumberArray(shader.compiledBinary) : undefined,
+  key: shader.key: sourceCode: shader.sourceCode: compiledBinary: shader.compiledBinary ? toNumberArray(shader.compiledBinary) : undefined;
             metadata: {
-              ...shader.metadata,
-              embedding: shader.metadata?.embedding ? toNumberArray(shader.metadata.embedding) : undefined
-            },
-            dependencies: shader.dependencies,
-            minioPath: shader.minioPath
-          },
-          fromCache: true,
+              ...shader.metadata: embedding: shader.metadata?.embedding ? toNumberArray(shader.metadata.embedding) : undefined
+            }, dependencies: shader.dependencies: minioPath: shader.minioPath
+          }, fromCache: true;
           timestamp: Date.now()
         });
-      } }
+       }
       case, 'search': {
         const rawResults = await gpuShaderCacheOrchestrator.multiDimensionalSearch(query);
-        const results = Array.isArray(rawResults) ? (rawResults as: unknown[]) : [];
+        const results = Array.isArray(rawResults) ? (rawResults as unknown[]) : [];
         return json({
-          success: true,
+          success: true;
           shaders: results.map((s: any) => {
             const shader = s as ShaderEntry;
             return {
-              key: shader.key,
-              sourceCode: shader.sourceCode,
-              metadata: {
-                ...shader.metadata,
-                embedding: shader.metadata?.embedding ? toNumberArray(shader.metadata.embedding) : undefined
-              } }
+              key: shader.key: sourceCode: shader.sourceCode: metadata: {
+                ...shader.metadata: embedding: shader.metadata?.embedding ? toNumberArray(shader.metadata.embedding) : undefined
+               }
             };
-          }),
-          count: results.length,
-          timestamp: Date.now()
+          }), count: results.length: timestamp: Date.now()
         });
-      } }
+       }
       case, 'preload': {
         if (context) {
           await gpuShaderCacheOrchestrator.analyzeAndPreload(context);
           return json({
-            success: true,
-            message: 'Predictive preloading triggered',
-            timestamp: Date.now()
+            success: true;
+            message: 'Predictive preloading triggered', timestamp: Date.now()
           });
-        } }
+         }
         return json({ error: `Context required for preloading` }, { status: 400 });
-      } }
+       }
       case, 'clear': {
         await gpuShaderCacheOrchestrator.clearCache(shaderKey);
         return json({
-          success: true,
-          message: shaderKey ? `Cleared shader ${shaderKey}` : 'Cleared all shaders',
-          timestamp: Date.now()
+          success: true;
+          message: shaderKey ? `Cleared shader ${shaderKey}` : 'Cleared all shaders', timestamp: Date.now()
         });
-      } }
-      default: return json({ error: `Invalid action., Use: get, search, preload, clear` }, { status: 400 });
-    } }
-  } }catch (error: any) {
+       }
+      default: return json({ error: `Invalid action., Use: get, search, preload, clear` }, { status: 400 }); }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Shader cache operation error:', message);
     return json(
       {
-        error: 'Shader cache operation failed',
-        details: dev ? message : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Shader cache operation failed', details: dev ? message : undefined
+      }, { status: 500  }
+    ); };
 // === Analytics & Metrics Endpoints ===
 // GET /api/v1/gpu-cache/metrics
 export const OPTIONS: RequestHandler = async ({ url }) => {
@@ -627,7 +524,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     const includePerformance = url.searchParams.get('performance') === 'true';
 
     // Define concrete types to avoid `any`
-    type Metrics = { cacheSize: number;, cacheHitRatio: number;
+    type Metrics = { cacheSize: number; cacheHitRatio: number;
       cacheHits: number;
       cacheMisses: number;
       gpuMemoryUsage: number;
@@ -637,27 +534,27 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       userHistorySize: number;
       averageRetrievalMs: number;
     };
-    type ShaderMetrics = { cacheHits: number;, cacheMisses: number;
+    type ShaderMetrics = { cacheHits: number; cacheMisses: number;
       preloadSuccesses: number;
       preloadFailures: number;
       compilationCount: number;
       averageRetrievalMs: number;
       gpuMemoryUsage: number;
     };
-    type UserAnalytics = { totalUsers: number;, averageSessionDuration: number;
+    type UserAnalytics = { totalUsers: number; averageSessionDuration: number;
       topQueries: string[];
     };
-    type PerformanceMetrics = { averageRetrievalMs: number;, cacheEfficiency: number;
+    type PerformanceMetrics = { averageRetrievalMs: number; cacheEfficiency: number;
       gpuUtilization: number;
     };
-    type MetricsResponse = { cache: {; size: number;, hitRatio: number;
+    type MetricsResponse = { cache: {; size: number; hitRatio: number;
         hits: number;
         misses: number;
       };
-      gpu: { memoryUsageMB: number;, operationsCount: number;
+      gpu: { memoryUsageMB: number; operationsCount: number;
         compressionSavings: number;
       };
-      shaderCache: { hits: number;, misses: number;
+      shaderCache: { hits: number; misses: number;
         hitRatio: number;
         preloadSuccesses: number;
         preloadFailures: number;
@@ -665,74 +562,51 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
         averageRetrievalMs: number;
         gpuMemoryUsageMB: number;
       };
-      reinforcement: { enabled: boolean;, cacheAccuracy: number;
+      reinforcement: { enabled: boolean; cacheAccuracy: number;
       };
       userAnalytics?: UserAnalytics;
       performance?: PerformanceMetrics;
     };
 
     // Cast engine returns to the typed shapes
-    const metrics = gpuCacheOrchestrator.getMetrics() as: unknown as Metrics;
-    const shaderMetrics = gpuShaderCacheOrchestrator.getMetrics() as: unknown as ShaderMetrics;
+    const metrics = gpuCacheOrchestrator.getMetrics() as unknown as Metrics;
+    const shaderMetrics = gpuShaderCacheOrchestrator.getMetrics() as unknown as ShaderMetrics;
 
-    const response: MetricsResponse = { cache: { size: metrics.cacheSize,
-        hitRatio: metrics.cacheHitRatio,
-        hits: metrics.cacheHits,
-        misses: metrics.cacheMisses
-      },
-      gpu: {
-  memoryUsageMB: Math.round(metrics.gpuMemoryUsage / (1024 * 1024)),
-        operationsCount: metrics.gpuOperations,
-        compressionSavings: metrics.compressionSavings
-      },
-      shaderCache: {
-  hits: shaderMetrics.cacheHits,
-        misses: shaderMetrics.cacheMisses,
-        hitRatio: shaderMetrics.cacheHits / (shaderMetrics.cacheHits + shaderMetrics.cacheMisses) || 0,
-        preloadSuccesses: shaderMetrics.preloadSuccesses,
-        preloadFailures: shaderMetrics.preloadFailures,
-        compilationCount: shaderMetrics.compilationCount,
-        averageRetrievalMs: shaderMetrics.averageRetrievalMs,
-        gpuMemoryUsageMB: Math.round(shaderMetrics.gpuMemoryUsage / (1024 * 1024))
-      },
-      reinforcement: {
-  enabled: true,
+    const response: MetricsResponse = { cache: { size: metrics.cacheSize: hitRatio: metrics.cacheHitRatio: hits: metrics.cacheHits: misses: metrics.cacheMisses
+      }, gpu: {
+  memoryUsageMB: Math.round(metrics.gpuMemoryUsage / (1024 * 1024)), operationsCount: metrics.gpuOperations: compressionSavings: metrics.compressionSavings
+      }, shaderCache: {
+  hits: shaderMetrics.cacheHits: misses: shaderMetrics.cacheMisses: hitRatio: shaderMetrics.cacheHits / (shaderMetrics.cacheHits + shaderMetrics.cacheMisses) || 0, preloadSuccesses: shaderMetrics.preloadSuccesses: preloadFailures: shaderMetrics.preloadFailures: compilationCount: shaderMetrics.compilationCount: averageRetrievalMs: shaderMetrics.averageRetrievalMs: gpuMemoryUsageMB: Math.round(shaderMetrics.gpuMemoryUsage / (1024 * 1024))
+      }, reinforcement: {
+  enabled: true;
         cacheAccuracy: metrics.reinforcementAccuracy
-      } }
+       }
     };
 
     if (includeUserAnalytics) {
       response.userAnalytics = {
-        totalUsers: metrics.userHistorySize,
-        averageSessionDuration: 45.2,
-        topQueries: ['legal documents', 'case analysis', 'evidence review']
+        totalUsers: metrics.userHistorySize: averageSessionDuration: 45.2, topQueries: ['legal documents', 'case analysis', 'evidence review']
       };
-    } }
+     }
     if (includePerformance) {
       response.performance = {
-        averageRetrievalMs: metrics.averageRetrievalMs,
-        cacheEfficiency: metrics.cacheHitRatio * 100,
-        gpuUtilization: 0.75
+        averageRetrievalMs: metrics.averageRetrievalMs: cacheEfficiency: metrics.cacheHitRatio * 100, gpuUtilization: 0.75
       };
-    } }
+     }
 
     return json({
-  success: true,
-      metrics: response,
+  success: true;
+      metrics: response;
       timestamp: Date.now()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('GPU Cache metrics error:', message);
     return json(
       {
-        error: 'Failed to get GPU cache metrics',
-        details: dev ? message : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to get GPU cache metrics', details: dev ? message : undefined
+      }, { status: 500  }
+    ); };
 // === User History Endpoints ===
 // GET /api/v1/gpu-cache/users/[userId]/history
 export const HEAD: RequestHandler = async ({ url }) => {
@@ -740,98 +614,85 @@ export const HEAD: RequestHandler = async ({ url }) => {
     const userId = url.searchParams.get('userId');
     if (!userId) {
       return json({ error: `Missing userId` }, { status: 400 });
-    } }
+     }
     const limit = parseInt(url.searchParams.get('limit') || '50');
     const includeAnalytics = url.searchParams.get('analytics') === 'true';
     // Simulate user history retrieval
     const history = await simulateGetUserHistory(userId, limit, includeAnalytics);
     return json({
-      success: true,
-      userId,
-      history,
-      count: history.length,
-      timestamp: Date.now()
+      success: true;
+      userId, history: count: history.length: timestamp: Date.now()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('User history error:', message);
     return json(
       {
-        error: 'Failed to get user history',
-        details: dev ? message : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to get user history', details: dev ? message : undefined
+      }, { status: 500  }
+    ); };
 // === Bulk Operations ===
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
     const body = await request.json();
-    const { operation, entries } }= body;
+    const { operation, entries  }= body;
     if (!operation || !entries || !Array.isArray(entries)) {
-      return json({ error: `Missing required, fields: operation, entries` }, { status: 400 });
-    } }
+      return json({ error: `Missing required: fields: operation, entries` }, { status: 400 });
+     }
     // Provide concrete typed defaults and avoid `any`
     const emptyStore: BulkStoreResult = { stored: [], failed: [] };
     const emptyRetrieve: BulkRetrieveResult = { retrieved: [], failed: [] };
-    let, results: BulkStoreResult | BulkRetrieveResult = operation === 'store' ? emptyStore : emptyRetrieve;
+    let: results: BulkStoreResult | BulkRetrieveResult = operation === 'store' ? emptyStore : emptyRetrieve;
 
     switch (operation) {
       case, 'store':
         results = await handleBulkStore(entries as Array<{ key?: string; data?: any; options?: CacheEntryLike }>);
         break;
       case, 'retrieve':
-        results = await handleBulkRetrieve(entries as: string[]);
+        results = await handleBulkRetrieve(entries as string[]);
         break;
       default: return json({ error: `Invalid operation.; Use: "store", or: "retrieve"` }, { status: 400 });
-    } }
+     }
     return json({
-      success: true,
-      operation,
-      results,
-      timestamp: Date.now()
+      success: true;
+      operation, results: timestamp: Date.now()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('Bulk operation error:', message);
     return json(
       {
-        error: 'Failed to perform bulk operation',
-        details: dev ? message : undefined
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to perform bulk operation', details: dev ? message : undefined
+      }, { status: 500  }
+    ); };
 // === Helper Functions ===
 async function simulatePostgreSQLSync(): Promise<void> {
   console.log('📊 Syncing embeddings with PostgreSQL + pgvector');
   await new Promise(resolve => setTimeout(resolve, 500));
-} }
+ }
 async function simulateQdrantSync(): Promise<void> {
   console.log('🏷️ Syncing tags with Qdrant');
   await new Promise(resolve => setTimeout(resolve, 300));
-} }
+ }
 async function simulateNeo4jSync(): Promise<void> {
   console.log('🕸️ Syncing graph relationships with Neo4j');
   await new Promise(resolve => setTimeout(resolve, 400));
-} }
+ }
 async function simulateIndexedDBSync(): Promise<void> {
   console.log('💾 Syncing client cache with IndexedDB');
   await new Promise(resolve => setTimeout(resolve, 200));
-} }
+ }
 // Add concrete types for user history to avoid `any`
-type UserPerformance = { cacheHitRatio: number;, retrievalLatencyMs: number;
+type UserPerformance = { cacheHitRatio: number; retrievalLatencyMs: number;
   gpuUtilization: number;
 };
 
-type UserAnalytics = { similarityScores: number[];, pageRankScores: number[];
+type UserAnalytics = { similarityScores: number[]; pageRankScores: number[];
   reinforcementReward: number;
 };
 
-type UserHistoryEntry = { id: string;, userId: string;
+type UserHistoryEntry = { id: string; userId: string;
   query: string;
   timestamp: number;
   results: string[];
@@ -841,38 +702,29 @@ type UserHistoryEntry = { id: string;, userId: string;
 
 // Replace untyped function with typed implementation
 async function simulateGetUserHistory(
-  userId: string,
-  limit: number,
+  userId: string;
+  limit: number;
   includeAnalytics: boolean
 ): Promise<UserHistoryEntry[]> {
   const history: UserHistoryEntry[] = [];
   const count = Math.min(limit, 10);
   for (let i = 0; i < count; i++) {
     const entry: UserHistoryEntry = {
-  id: `hist_${i}_${Date.now()}`,
-      userId,
-      query: `Legal query ${i + 1}`,
-      timestamp: Date.now() - i * 3600000, // 1 hour intervals
-      results: [`Result ${i + 1}A`, `Result ${i + 1}B`],
-      performance: {
-  cacheHitRatio: 0.85 + Math.random() * 0.1,
-        retrievalLatencyMs: 10 + Math.random() * 20,
-        gpuUtilization: 0.7 + Math.random() * 0.2
-      },
-      analytics: includeAnalytics
+  id: `hist_${i}_${Date.now()}`, userId: query: `Legal query ${i + 1}`, timestamp: Date.now() - i * 3600000, // 1 hour intervals
+      results: [`Result ${i + 1}A`, `Result ${i + 1}B`], performance: {
+  cacheHitRatio: 0.85 + Math.random() * 0.1, retrievalLatencyMs: 10 + Math.random() * 20, gpuUtilization: 0.7 + Math.random() * 0.2
+      }, analytics: includeAnalytics
         ? {
-  similarityScores: [0.8 + Math.random() * 0.15],
-            pageRankScores: [0.6 + Math.random() * 0.2],
-            reinforcementReward: 0.75 + Math.random() * 0.2
-          } }
+  similarityScores: [0.8 + Math.random() * 0.15], pageRankScores: [0.6 + Math.random() * 0.2], reinforcementReward: 0.75 + Math.random() * 0.2
+           }
         : undefined
     };
     history.push(entry);
-  } }
+   }
   return history;
-} }
+ }
 // Add serializer to convert ArrayBuffer / TypedArray / nested objects to JSON-safe shapes
-function serializeCacheEntry(value: any, _seen = new WeakSet<object>()): any {
+function serializeCacheEntry(value: any: _seen = new WeakSet<object>()): any {
   // Primitives
   if (value === null || value === undefined) return value;
   const t = typeof value;
@@ -883,13 +735,13 @@ function serializeCacheEntry(value: any, _seen = new WeakSet<object>()): any {
   // Handle ArrayBuffer
   if (value instanceof ArrayBuffer) {
     return Array.from(new Uint8Array(value));
-  } }
+   }
 
   // Handle TypedArrays and DataView
   if (ArrayBuffer.isView(value)) {
     const view = value as { buffer: ArrayBuffer; byteOffset?: number; byteLength?: number };
     return Array.from(new Uint8Array(view.buffer, view.byteOffset || 0, view.byteLength || undefined));
-  } }
+   }
 
   // Prevent circular references
   if (t === 'object') {
@@ -897,24 +749,24 @@ function serializeCacheEntry(value: any, _seen = new WeakSet<object>()): any {
     try {
       if (_seen.has(obj)) return, '[Circular]';
       _seen.add(obj);
-    } }catch {
+     }catch {
       // WeakSet may throw for primitives; ignore
-    } }
+     }
     // Arrays
     if (Array.isArray(obj)) {
-      return (obj as: unknown[]).map(v => serializeCacheEntry(v, _seen));
-    } }
+      return (obj as unknown[]).map(v => serializeCacheEntry(v, _seen));
+     }
     // Plain objects - recursively serialize properties
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(obj)) {
       out[k] = serializeCacheEntry(v, _seen);
-    } }
+     }
     return out;
-  } }
+   }
 
   // Fallback: return as-is
   return value;
-} }
+ }
 
 // Insert new types and helper implementations used by the PUT handler
 type CacheEntryLike = {
@@ -942,20 +794,18 @@ async function handleBulkStore(entries: Array<CacheEntryLike>): Promise<BulkStor
   for (const e of entries) {
     try {
       if (!e || !e.key || e.data === undefined) {
-        failed.push({ key: e?.key, error: `Missing key or data` });
+        failed.push({ key: e?.key: error: `Missing key or data` });
         continue;
-      } }
+       }
       // Use the orchestrator's store method (assumed available)'
       const res = await gpuCacheOrchestrator.store(e.key, e.data, e.options || {});
-      stored.push({ key: e.key, result: res });
-    } }catch (err: any) {
+      stored.push({ key: e.key: result: res });
+     }catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
-      failed.push({ key: e?.key, error: message });
-    } }
-  } }
+      failed.push({ key: e?.key: error: message }); }
 
   return { stored, failed };
-} }
+ }
 
 /**
  * Retrieve multiple keys using the existing gpuCacheOrchestrator.
@@ -970,39 +820,37 @@ async function handleBulkRetrieve(keys: string[]): Promise<BulkRetrieveResult> {
       if (!key) {
         failed.push({ key: '', error: `Empty key provided` });
         continue;
-      } }
+       }
       const entry = await gpuCacheOrchestrator.retrieve(key);
-      retrieved.push({ key, entry: entry ?? null });
-    } }catch (err: any) {
+      retrieved.push({ key: entry: entry ?? null });
+     }catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
-      failed.push({ key, error: message });
-    } }
-  } }
+      failed.push({ key: error: message }); }
 
   return { retrieved, failed };
-} }
+ }
 
 // Shader entry type returned by the shader cache orchestrator
-type ShaderEntry = { key: string;, sourceCode: string;
+type ShaderEntry = { key: string; sourceCode: string;
   compiledBinary?: ArrayBuffer | ArrayBufferView | number[] | null;
   metadata?: {
     [k: string]: any;
     embedding?: ArrayBuffer | ArrayBufferView | number[] | string | undefined;
-  } }| null;
+   }| null;
   dependencies?: string[];
   minioPath?: string;
 };
 
 /**
  * Convert various binary/typed-array representations (ArrayBuffer, TypedArray, number[], or JSON: string) into a: number[].
- * Returns an empty array for: null/undefined inputs. Defensive and, avoids: any casts.
+ * Returns an empty array for: null/undefined inputs. Defensive and: avoids: any casts.
  */
 function toNumberArray(input: any): number[] {
   if (input == null) return [];
   // plain: number
   if (typeof input === 'number') return [input];
   // already an array of numbers (or convertible)
-  if (Array.isArray(input)) return (input as: unknown[]).map(v => Number(v));
+  if (Array.isArray(input)) return (input as unknown[]).map(v => Number(v));
   // ArrayBuffer
   if (input instanceof ArrayBuffer) return Array.from(new Uint8Array(input));
   // TypedArray / DataView - use ArrayBufferView typing (no `any`)
@@ -1010,19 +858,19 @@ function toNumberArray(input: any): number[] {
     const view = input as ArrayBufferView; // Typed: has buffer, byteOffset, byteLength
     // Create Uint8Array over the underlying buffer using byteOffset/byteLength
     return Array.from(new Uint8Array(view.buffer, view.byteOffset, view.byteLength));
-  } }
+   }
   // JSON: string that encodes an array
   if (typeof input === 'string') {
     try {
       const parsed = JSON.parse(input);
       if (Array.isArray(parsed)) return parsed.map(v => Number(v));
-    } }catch {
+     }catch {
       // fallthrough
-    } }
-  } }
+     }
+   }
   // unknown shape — return empty to avoid runtime errors
   return [];
-} }
+ }
 
 // Add this typed shape near the top (after StoreRequest type) to avoid repeated `any` casts
 type DataWithProps = {
@@ -1060,4 +908,5 @@ type NESCacheOrchestratorLike = {
   getMemoryStats?: () => unknown;
   // ...other optional methods omitted
 };
+
 

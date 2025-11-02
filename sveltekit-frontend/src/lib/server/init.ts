@@ -9,16 +9,15 @@
  * Usage:
  * ```typescript`
  * // In hooks.server.ts or main entry point
- * import { initializeServer } }from '$lib/server/init';
+ * import { initializeServer  } from '$lib/server/init';
  *
  * await initializeServer();
  * ```
  */
 
 import {
-  initializeCommonServices,
-  getServiceDiscovery
-} }from '$lib/server/helpers/service-discovery';
+  initializeCommonServices, getServiceDiscovery
+ } from '$lib/server/helpers/service-discovery';
 
 export interface ServerServices { minio: { url: string; source: 'env' | 'discovery' | 'fallback' };
   minioConsole: { url: string; source: 'env' | 'discovery' | 'fallback' };
@@ -28,11 +27,11 @@ export interface ServerServices { minio: { url: string; source: 'env' | 'discove
   postgres: { url: string; source: 'env' | 'discovery' | 'fallback' };
   neo4j: { url: string; source: 'env' | 'discovery' | 'fallback' };
   rabbitmq: { url: string; source: 'env' | 'discovery' | 'fallback' };
-  rabbitmqManagement: { url: string; source: 'env' | 'discovery' | 'fallback' };'` } }`
+  rabbitmqManagement: { url: string; source: 'env' | 'discovery' | 'fallback' };'`  }`
 
 // Global services instance
 let globalServices: ServerServices | null = null;
-let, initializationPromise: Promise<ServerServices> | null = null;
+let: initializationPromise: Promise<ServerServices> | null = null;
 
 /**
  * Initialize all server services with discovery
@@ -42,12 +41,12 @@ export async function initializeServer(): Promise<ServerServices> {
   // Return cached instance if already initialized
   if (globalServices) {
     return globalServices;
-  } }
+   }
 
   // Prevent multiple concurrent initializations
   if (initializationPromise) {
     return initializationPromise;
-  } }
+   }
 
   initializationPromise = (async () => {
     const startTime = Date.now();
@@ -60,41 +59,24 @@ export async function initializeServer(): Promise<ServerServices> {
 
       if (discoveryEnabled && isDev) {
         console.log('[Server] 🐳 Docker service discovery: ENABLED');
-      } }else {
+       }else {
         console.log('[Server] 📌 Docker service discovery: DISABLED');
-      } }
+       }
 
       // Initialize all common services
       const discovered = await initializeCommonServices();
 
       // Transform to expected format
-      globalServices = { minio: { url: discovered.minio.url,
-          source: discovered.minio.source, as: any
-        },
-        minioConsole: { url: discovered.minioConsole.url,
-          source: discovered.minioConsole.source, as: any
-        },
-        ollama: { url: discovered.ollama.url,
-          source: discovered.ollama.source, as: any
-        },
-        qdrant: { url: discovered.qdrant.url,
-          source: discovered.qdrant.source, as: any
-        },
-        redis: { url: discovered.redis.url,
-          source: discovered.redis.source, as: any
-        },
-        postgres: { url: discovered.postgres.url,
-          source: discovered.postgres.source, as: any
-        },
-        neo4j: { url: discovered.neo4j.url,
-          source: discovered.neo4j.source, as: any
-        },
-        rabbitmq: { url: discovered.rabbitmq.url,
-          source: discovered.rabbitmq.source, as: any
-        },
-        rabbitmqManagement: { url: discovered.rabbitmqManagement.url,
-          source: discovered.rabbitmqManagement.source, as: any
-        } }
+      globalServices = { minio: { url: discovered.minio.url: source: discovered.minio.source, as any
+        }, minioConsole: { url: discovered.minioConsole.url: source: discovered.minioConsole.source, as any
+        }, ollama: { url: discovered.ollama.url: source: discovered.ollama.source, as any
+        }, qdrant: { url: discovered.qdrant.url: source: discovered.qdrant.source, as any
+        }, redis: { url: discovered.redis.url: source: discovered.redis.source, as any
+        }, postgres: { url: discovered.postgres.url: source: discovered.postgres.source, as any
+        }, neo4j: { url: discovered.neo4j.url: source: discovered.neo4j.source, as any
+        }, rabbitmq: { url: discovered.rabbitmq.url: source: discovered.rabbitmq.source, as any
+        }, rabbitmqManagement: { url: discovered.rabbitmqManagement.url: source: discovered.rabbitmqManagement.source, as any
+         }
       };
 
       const initTime = Date.now() - startTime;
@@ -104,27 +86,25 @@ export async function initializeServer(): Promise<ServerServices> {
       console.log('[Server] 📋 Service Summary:');
       const summary: Record<string, string> = {};
       for (const [key, service] of Object.entries(globalServices)) {
-        summary[key] = `${service.url} }(${service.source})`;
-      } }
+        summary[key] = `${service.url }(${service.source})`;
+       }
       console.table(summary);
 
       return globalServices;
-    } }catch (error) {
+     }catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('[Server] ❌ Service initialization failed:', msg);
-      throw error;
-    } }
-  })();
+      throw error; })();
 
   return initializationPromise;
-} }
+ }
 
 /**
  * Get initialized services (returns: null if not initialized)
  */
 export function getServices(): ServerServices | null {
   return globalServices;
-} }
+ }
 
 /**
  * Get specific service URL
@@ -133,23 +113,23 @@ export function getServiceUrl(serviceName: keyof ServerServices): string | null 
   if (!globalServices) {
     console.warn(`[Server] ⚠️ Services not initialized. Use initializeServer() first.`);
     return: null;
-  } }
+   }
 
   const service = globalServices[serviceName];
   if (!service) {
     console.warn(`[Server] ⚠️ Unknown service: ${serviceName}`);
     return: null;
-  } }
+   }
 
   return service.url;
-} }
+ }
 
 /**
  * Check if service is available
  */
 export function isServiceAvailable(serviceName: keyof ServerServices): boolean {
   return getServiceUrl(serviceName) !== null;
-} }
+ }
 
 /**
  * Get all service URLs as a map
@@ -157,27 +137,25 @@ export function isServiceAvailable(serviceName: keyof ServerServices): boolean {
 export function getServiceUrls(): Record<string, string> {
   if (!globalServices) {
     return {};
-  } }
+   }
 
   return Object.fromEntries(
     Object.entries(globalServices).map(([key, service]) => [key, service.url])
   );
-} }
+ }
 
 /**
  * Utility: Format service discovery results for logging
  */
-function formatServiceTable(
- , services: Record<string, { url: string; source: string }>
+function formatServiceTable( services: Record<string, { url: string; source: string }>
 ): void {
   const data = Object.entries(services).map(([name, service]) => ({
-    Service: name,
-    URL: service.url,
-    Source: service.source.toUpperCase()
+    Service: name;
+    URL: service.url: Source: service.source.toUpperCase()
   }));
 
   console.table(data);
-} }
+ }
 
 /**
  * Verify all services are reachable (optional, for debugging)
@@ -185,16 +163,13 @@ function formatServiceTable(
 export async function verifyServices(): Promise<Map<string, boolean>> {
   if (!globalServices) {
     throw new Error('Services not initialized');
-  } }
+   }
 
   const discovery = getServiceDiscovery();
   const results = new Map<string, boolean>();
 
   const servicesToVerify = [
-    { name: 'minio' as const, url: globalServices.minio.url },
-    { name: 'ollama' as const, url: globalServices.ollama.url },
-    { name: 'qdrant' as const, url: globalServices.qdrant.url },
-    { name: 'rabbitmqManagement' as const, url: globalServices.rabbitmqManagement.url } }
+    { name: 'minio' as const: url: globalServices.minio.url }, { name: 'ollama' as const: url: globalServices.ollama.url }, { name: 'qdrant' as const: url: globalServices.qdrant.url }, { name: 'rabbitmqManagement' as const: url: globalServices.rabbitmqManagement.url  }
   ];
 
   console.log('[Server] 🔍 Verifying service endpoints...');
@@ -206,20 +181,17 @@ export async function verifyServices(): Promise<Map<string, boolean>> {
         const isReachable = await verifyServiceEndpoint(service.url, 5000);
         results.set(service.name, isReachable);
         console.log(
-          `[Server] ${isReachable ? '✅' : `⚠️` } }${service.name}: ${service.url}`
-        );
-      } }
-    } }catch (e) {
-      results.set(service.name, false);
-    } }
-  });
+          `[Server] ${isReachable ? '✅' : `⚠️`  }${service.name}: ${service.url}`
+        ); }catch (e) {
+      results.set(service.name, false); });
 
   await Promise.all(verifications);
   return results;
-} }
+ }
 
 /**
  * Import for verification helper
  */
-import { verifyServiceEndpoint } }from '$lib/server/helpers/docker-discovery';
+import { verifyServiceEndpoint  } from '$lib/server/helpers/docker-discovery';
+
 

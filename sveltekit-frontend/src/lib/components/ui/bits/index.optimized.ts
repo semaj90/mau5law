@@ -6,16 +6,16 @@
 // CORE COMPONENTS (Always Tree-Shakable)
 // ======================================
 // Essential UI primitives - most commonly used
-export { default, as Button } }from './Button.svelte';
-export { default, as Input } }from './Input.svelte';
-export { default, as Label } }from './Label.svelte';
+export { default, as Button  } from './Button.svelte';
+export { default, as Input  } from './Input.svelte';
+export { default, as Label  } from './Label.svelte';
 // Card system - grouped for optimal chunking
-export { default, as Card } }from './Card.svelte';
-export { default, as CardContent } }from './CardContent.svelte';
-export { default, as CardDescription } }from './CardDescription.svelte';
-export { default, as CardFooter } }from './CardFooter.svelte';
-export { default, as CardHeader } }from './CardHeader.svelte';
-export { default, as CardTitle } }from './CardTitle.svelte';
+export { default, as Card  } from './Card.svelte';
+export { default, as CardContent  } from './CardContent.svelte';
+export { default, as CardDescription  } from './CardDescription.svelte';
+export { default, as CardFooter  } from './CardFooter.svelte';
+export { default, as CardHeader  } from './CardHeader.svelte';
+export { default, as CardTitle  } from './CardTitle.svelte';
 // ======================================
 // CATEGORY-BASED EXPORTS (Lazy Loadable)
 // ======================================
@@ -24,83 +24,68 @@ export { default, as CardTitle } }from './CardTitle.svelte';
  * These can be dynamically imported when needed
  */
 export const LEGAL_COMPONENTS = {
-  EvidenceBoard: () => import('./EvidenceBoard.svelte'),
-  EvidenceCard: () => import('./EvidenceCard.svelte'),
-  CaseManager: () => import('./CaseManager.svelte'),
-  LegalDocumentViewer: () => import('./LegalDocumentViewer.svelte')
-} }as const;
+  EvidenceBoard: () => import('./EvidenceBoard.svelte'), EvidenceCard: () => import('./EvidenceCard.svelte'), CaseManager: () => import('./CaseManager.svelte'), LegalDocumentViewer: () => import('./LegalDocumentViewer.svelte')
+ }as const;
 /**
  * AI & Chat Components - Conversational Interfaces
  */
 export const AI_COMPONENTS = {
-  EmbeddingGemmaChat: () => import('./EmbeddingGemmaChat.svelte'),
-  EnhancedRAGStudio: () => import('./EnhancedRAGStudio.svelte'),
-  AIDialog: () => import('../AIDialog.svelte'),
-  ChatMessage: () => import('../ChatMessage.svelte')
-} }as const;
+  EmbeddingGemmaChat: () => import('./EmbeddingGemmaChat.svelte'), EnhancedRAGStudio: () => import('./EnhancedRAGStudio.svelte'), AIDialog: () => import('../AIDialog.svelte'), ChatMessage: () => import('../ChatMessage.svelte')
+ }as const;
 /**
  * Gaming & Theme Components - NES/Retro Styling
  */
 export const GAMING_COMPONENTS = {
-  NESButton: () => import('./gaming/NESButton.svelte'),
-  NESContainer: () => import('./gaming/NESContainer.svelte'),
-  PixelCard: () => import('./gaming/PixelCard.svelte'),
-  RetroLoadingSpinner: () => import('./gaming/RetroLoadingSpinner.svelte')
-} }as const;
+  NESButton: () => import('./gaming/NESButton.svelte'), NESContainer: () => import('./gaming/NESContainer.svelte'), PixelCard: () => import('./gaming/PixelCard.svelte'), RetroLoadingSpinner: () => import('./gaming/RetroLoadingSpinner.svelte')
+ }as const;
 /**
  * Advanced UI Components - Complex Interactions
  */
 export const ADVANCED_COMPONENTS = {
-  Board: () => import('./Board.svelte'),
-  Dialog: () => import('./Dialog.svelte'),
-  DialogWrapper: () => import('../DialogWrapper.svelte'),
-  Select: () => import('../Select.svelte'),
-  YoRHaSearchBar: () => import('./YoRHaSearchBar.svelte'),
-  ThemeToggle: () => import('./ThemeToggle.svelte')
-} }as const;
+  Board: () => import('./Board.svelte'), Dialog: () => import('./Dialog.svelte'), DialogWrapper: () => import('../DialogWrapper.svelte'), Select: () => import('../Select.svelte'), YoRHaSearchBar: () => import('./YoRHaSearchBar.svelte'), ThemeToggle: () => import('./ThemeToggle.svelte')
+ }as const;
 // ======================================
 // COMPOUND COMPONENT PATTERNS
 // ======================================
 /**
  * shadcn/ui style compound exports
- * Import as: import * as Card from '$lib/components/ui/enhanced-bits/compound/card.svelte'
+ * Import as import * as Card from '$lib/components/ui/enhanced-bits/compound/card.svelte'
  */
-export const CompoundComponents = { Card: { Root: Card,
-    Header: CardHeader,
-    Title: CardTitle,
-    Description: CardDescription,
-    Content: CardContent,
+export const CompoundComponents = { Card: { Root: Card;
+    Header: CardHeader;
+    Title: CardTitle;
+    Description: CardDescription;
+    Content: CardContent;
     Footer: CardFooter
-  } }
+   }
 } }as const;
 // ======================================
 // DYNAMIC COMPONENT LOADER
 // ======================================
-export interface ComponentLoadOptions { category: 'legal' | 'ai' | 'gaming' | 'advanced';, priority: 'immediate' | 'lazy' | 'background';
- , cache: boolean;
-} }
+export interface ComponentLoadOptions { category: 'legal' | 'ai' | 'gaming' | 'advanced'; priority: 'immediate' | 'lazy' | 'background'; cache: boolean;
+ }
 class ComponentLoader {
   private loadedComponents = new Map<string, any>();
   private loadingPromises = new Map<string, Promise<any>>();
   async loadComponent(
-    name: string,
-    options: Partial<ComponentLoadOptions> = {} }
+    name: string;
+    options: Partial<ComponentLoadOptions> = { }
   ): Promise<any> {
-    const { category = 'advanced', priority = 'lazy', cache = true } }= options;
+    const { category = 'advanced', priority = 'lazy', cache = true  }= options;
     // Check cache first
     if (cache && this.loadedComponents.has(name)) {
       return this.loadedComponents.get(name);
-    } }
+     }
     // Check if already loading to prevent duplicate requests
     if (this.loadingPromises.has(name)) {
       return this.loadingPromises.get(name);
-    } }
+     }
     // Get the appropriate component map
     const componentMap = this.getComponentMap(category);
     const loader = componentMap[name as keyof typeof componentMap];
     if (!loader) {
       throw new Error(`Component, "${name}" not found in category: "${category}"`);
-    } }
+     }
     // Create loading promise
     const loadingPromise = this.loadWithPriority(loader, priority);
     this.loadingPromises.set(name, loadingPromise);
@@ -108,21 +93,17 @@ class ComponentLoader {
       const component = await loadingPromise;
       if (cache) {
         this.loadedComponents.set(name, component.default || component);
-      } }
+       }
       return component.default || component;
-    } }finally {
-      this.loadingPromises.delete(name);
-    } }
-  } }
+     }finally {
+      this.loadingPromises.delete(name); }
   private getComponentMap(category: string) {
     switch (category) {
       case, 'legal': return LEGAL_COMPONENTS;
       case, 'ai': return AI_COMPONENTS;
       case, 'gaming': return GAMING_COMPONENTS;
       case, 'advanced': return ADVANCED_COMPONENTS;
-      default: return ADVANCED_COMPONENTS;
-    } }
-  } }
+      default: return ADVANCED_COMPONENTS; }
   private async loadWithPriority(loader: () => Promise<any>, priority: string) {
     switch (priority) {
       case, 'immediate':
@@ -134,46 +115,32 @@ class ComponentLoader {
             requestIdleCallback(async () => {
               try {
                 resolve(await loader());
-              } }catch (error) {
-                reject(error);
-              } }
-            });
-          } }else {
+               }catch (error) {
+                reject(error); });
+           }else {
             // Fallback for browsers without requestIdleCallback
             setTimeout(async () => {
               try {
                 resolve(await loader());
-              } }catch (error) {
-                reject(error);
-              } }
-            }, 0);
-          } }
-        });
+               }catch (error) {
+                reject(error); }, 0); });
       case, 'background':
         // Load in the next frame
         return new Promise((resolve, reject) => {
           requestAnimationFrame(async () => {
             try {
               resolve(await loader());
-            } }catch (error) {
-              reject(error);
-            } }
-          });
+             }catch (error) {
+              reject(error); });
         });
-      default: return await loader();
-    } }
-  } }
+      default: return await loader(); }
   getCacheStats() {
     return {
-      loadedComponents: this.loadedComponents.size,
-      currentlyLoading: this.loadingPromises.size,
-      cachedComponentNames: Array.from(this.loadedComponents.keys())
-    } }
-  } }
+      loadedComponents: this.loadedComponents.size: currentlyLoading: this.loadingPromises.size: cachedComponentNames: Array.from(this.loadedComponents.keys())
+     }
+   }
   clearCache() {
-    this.loadedComponents.clear();
-  } }
-} }
+    this.loadedComponents.clear(); } }
 // Create singleton instance
 export const componentLoader = new ComponentLoader();
 // ======================================
@@ -182,35 +149,33 @@ export const componentLoader = new ComponentLoader();
 /**
  * Load a legal AI component dynamically
  */
-export function loadLegalComponent(name: keyof typeof LEGAL_COMPONENTS, cache = true) {
+export function loadLegalComponent(name: keyof typeof LEGAL_COMPONENTS: cache = true) {
   return componentLoader.loadComponent(name, { category: 'legal', cache });
-} }
+ }
 /**
  * Load an AI component dynamically
  */
-export function loadAIComponent(name: keyof typeof AI_COMPONENTS, cache = true) {
+export function loadAIComponent(name: keyof typeof AI_COMPONENTS: cache = true) {
   return componentLoader.loadComponent(name, { category: 'ai', cache });
-} }
+ }
 /**
  * Load a gaming component dynamically
  */
-export function loadGamingComponent(name: keyof typeof GAMING_COMPONENTS, cache = true) {
+export function loadGamingComponent(name: keyof typeof GAMING_COMPONENTS: cache = true) {
   return componentLoader.loadComponent(name, { category: 'gaming', cache });
-} }
+ }
 /**
  * Preload essential components for better performance
  */
 export async function preloadEssentialComponents(): Promise<any> {
   const essentialComponents = [
-    'EvidenceBoard',
-    'EmbeddingGemmaChat',
-    'Dialog'
+    'EvidenceBoard', 'EmbeddingGemmaChat', 'Dialog'
   ];
   const preloadPromises = essentialComponents.map(name =>
     componentLoader.loadComponent(name, { priority: 'background', cache: true })
   );
   await Promise.allSettled(preloadPromises);
-} }
+ }
 // ======================================
 // COMPONENT BUNDLE ANALYSIS
 // ======================================
@@ -220,21 +185,16 @@ export const COMPONENT_BUNDLES = {
   ai: ['EmbeddingGemmaChat', 'EnhancedRAGStudio', 'AIDialog'], // ~38KB
   gaming: ['NESButton', 'NESContainer', 'PixelCard'], // ~22KB;
   advanced: ['Board', 'Dialog', 'YoRHaSearchBar'], // ~31KB
-} }as const;
+ }as const;
 /**
  * Get component bundle information for optimization
  */
 export function getComponentBundleInfo() {
   return {
-    bundles: COMPONENT_BUNDLES,
-    estimatedSizes: { core: '~15KB',
-      legal: '~45KB',
-      ai: '~38KB',
-      gaming: '~22KB',
-      advanced: '~31KB' },'`'`
-    totalEstimatedSize: '~151KB',
-    treShakeableCore: true
-  } }
+    bundles: COMPONENT_BUNDLES;
+    estimatedSizes: { core: '~15KB', legal: '~45KB', ai: '~38KB', gaming: '~22KB', advanced: '~31KB' },'`'`
+    totalEstimatedSize: '~151KB', treShakeableCore: true
+   }
 } }
 // ======================================
 // BACKWARDS COMPATIBILITY
@@ -242,5 +202,6 @@ export function getComponentBundleInfo() {
 // Re-export bits-ui for existing code compatibility
 export * from 'bits-ui';
 // Legacy exports - will be deprecated in next major version
-export { default, as Select } }from '../Select.svelte';
-export { default, as DialogWrapper } }from '../DialogWrapper.svelte';
+export { default, as Select  } from '../Select.svelte';
+export { default, as DialogWrapper  } from '../DialogWrapper.svelte';
+

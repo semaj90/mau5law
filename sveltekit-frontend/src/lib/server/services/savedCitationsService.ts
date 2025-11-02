@@ -1,26 +1,24 @@
 import pool from '$lib/server/db/drizzle';
 
-export type Citation = { id: string;, title: string;
+export type Citation = { id: string; title: string;
   content: string;
   source: string;
   tags: string[];
   category: string;
   isFavorite: boolean;
-  notes?: string;
- , savedAt: string; // ISO
+  notes?: string; savedAt: string; // ISO
   contextData?: Record<string, string>;
 };
 
 // New typed shape for a DB row to avoid `any`
-type SavedCitationRow = { id: string;, title: string | null;
+type SavedCitationRow = { id: string; title: string | null;
   content: string | null;
   source: string | null;
   tags: string | string[] | null;
   category: string | null;
   is_favorite: boolean | null;
   notes: string | null;
-  saved_at: string | Date | null;
- , context_data: Record<string, string> | string | null;
+  saved_at: string | Date | null; context_data: Record<string, string> | string | null;
 };
 
 // Minimal client shapes used by the compatibility shim
@@ -36,7 +34,7 @@ type PgPool = {
 const isPgPool = (p: any): p is PgPool =>
   typeof p === 'object' && p !== null && 'connect' in p && typeof (p as PgPool).connect === 'function';
 
-const hasQuery = (p: any): p is { query: (sql: string, params?: any[]) => Promise<unknown> } }=>
+const hasQuery = (p: any): p is { query: (sql: string, params?: any[]) => Promise<unknown>  }=>
   typeof p === 'object' && p !== null && 'query' in p && typeof (p as { query?: any }).query === 'function';
 
 /**
@@ -52,8 +50,7 @@ const hasQuery = (p: any): p is { query: (sql: string, params?: any[]) => Promis
  *  - saved_at (timestamptz)
  *  - context_data (jsonb)
  *
- * This function uses a simple raw query to avoid tight coupling with a Drizzle schema,
- * but the exported pool/db can be used to migrate this to Drizzle-ORM table definitions later.
+ * This function uses a simple raw query to avoid tight coupling with a Drizzle schema, * but the exported pool/db can be used to migrate this to Drizzle-ORM table definitions later.
  */
 export async function getSavedCitationsForUser(userId: string): Promise<Citation[]> {
   // compatibility shim: support both pg Pool-style clients (connect()/client.release())
@@ -74,7 +71,7 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
         const r = res as { rows?: any[]; result?: any[] };
         if (Array.isArray(r.rows)) return r.rows as SavedCitationRow[];
         if (Array.isArray(r.result)) return r.result as SavedCitationRow[];
-      } }
+       }
       return [];
     };
 
@@ -87,16 +84,16 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
       client = await pool.connect();
       const res = await client.query(sql, [userId]);
       rows = extractRows(res);
-    } }else if (hasQuery(pool)) {
+     }else if (hasQuery(pool)) {
       // postgres-js often returns an array directly, or an: object with .rows
       const res = await pool.query(sql, [userId]);
       rows = extractRows(res);
-    } }else {
+     }else {
       throw new Error('Unsupported database client shape');
-    } }
+     }
 
     return rows.map((r: SavedCitationRow) => {
-      // Helper to parse Postgres array literal like: {"a","b","c,with,comma"} }
+      // Helper to parse Postgres array literal like: {"a","b","c,with,comma" }
       const parsePgArray = (pgArr: string | null | undefined): string[] => {
         if (!pgArr || typeof pgArr !== 'string') return [];
         const trimmed = pgArr.trim();
@@ -114,67 +111,59 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
                 cur += '"';"
                 i++;
                 continue;
-              } }
+               }
               inQuotes = !inQuotes;
               continue;
-            } }
+             }
             if (ch === ',' && !inQuotes) {
               out.push(cur);
               cur = '';
               continue;
-            } }
+             }
             cur += ch;
-          } }
+           }
           if (cur !== '') out.push(cur);
           return out.map(s => s.trim()).filter(Boolean);
-        } }catch {
-          return [];
-        } }
-      };
+         }catch {
+          return []; };
 
       // safe tags parsing
       let tags: string[] = [];
       if (Array.isArray(r.tags)) {
         tags = r.tags.map(String);
-      } }else if (typeof r.tags === 'string' && r.tags.length) {
+       }else if (typeof r.tags === 'string' && r.tags.length) {
         const s = r.tags.trim();
         // JSON array: string
         if (s.startsWith('[')) {
           try { const parsed = JSON.parse(s);
             if (Array.isArray(parsed)) tags = parsed.map(String);
             else tags = [String(parsed)];
-          } }catch {
-            tags = [s];
-          } }
-        } }else if (s.startsWith('{') && s.endsWith(' } })) {'`'`
+           }catch {
+            tags = [s]; }else if (s.startsWith('{') && s.endsWith('  })) {'`'`
           // Postgres text[] literal
           try {
             tags = parsePgArray(s);
-          } }catch {
-            tags = [s];
-          } }
-        } }else {
+           }catch {
+            tags = [s]; }else {
           // fallback: comma-separated or single value
           tags = s
             .split(',')
             .map(t => t.trim())
-            .filter(Boolean);
-        } }
-      } }
+            .filter(Boolean); }
 
       // safe context_data parsing
       let contextData: Record<string, string> | undefined;
       if (r.context_data && typeof r.context_data === 'object') {
         contextData = r.context_data as Record<string, string>;
-      } }else if (typeof r.context_data === 'string' && r.context_data.length) {
+       }else if (typeof r.context_data === 'string' && r.context_data.length) {
         const s = r.context_data.trim();
         if (s.startsWith('{') || s.startsWith('[')) {
           try { const parsed = JSON.parse(s);
             if (parsed && typeof parsed === 'object') contextData = parsed as Record<string, string>;
-          } }catch {
+           }catch {
             // ignore parse errors
-          } }
-        } }else {
+           }
+         }else {
           // try simple key=value pairs separated by commas
           try {
             const obj: Record<string, string> = {};
@@ -183,41 +172,27 @@ export async function getSavedCitationsForUser(userId: string): Promise<Citation
               if (k) obj[k.trim()] = (rest.join('=') || '').trim();
             });
             if (Object.keys(obj).length) contextData = obj;
-          } }catch {
-            contextData = undefined;
-          } }
-        } }
-      } }
+           }catch {
+            contextData = undefined; }
+       }
 
       // normalize savedAt to ISO: string
       let savedAt = new Date().toISOString();
       if (r.saved_at) {
         if (r.saved_at instanceof Date) {
           savedAt = r.saved_at.toISOString();
-        } }else if (typeof r.saved_at === 'string' && !isNaN(Date.parse(r.saved_at))) {
-          savedAt = new Date(r.saved_at).toISOString();
-        } }
-      } }
+         }else if (typeof r.saved_at === 'string' && !isNaN(Date.parse(r.saved_at))) {
+          savedAt = new Date(r.saved_at).toISOString(); }
 
       return {
-        id: String(r.id),
-        title: String(r.title ?? ''),
-        content: String(r.content ?? ''),
-        source: String(r.source ?? ''),
-        tags,
-        category: String(r.category ?? ''),
-        isFavorite: Boolean(r.is_favorite === true),
-        notes: r.notes ?? undefined,
-        savedAt,
-        contextData
+        id: String(r.id), title: String(r.title ?? ''), content: String(r.content ?? ''), source: String(r.source ?? ''), tags: category: String(r.category ?? ''), isFavorite: Boolean(r.is_favorite === true), notes: r.notes ?? undefined, savedAt, contextData
       };
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('getSavedCitationsForUser error:', err);
     // bubble up for caller to decide fallback behavior
     throw err;
-  } }finally {
-    if (client && typeof client.release === 'function') client.release();
-  } }
-} }
+   }finally {
+    if (client && typeof client.release === 'function') client.release(); } }
+
 

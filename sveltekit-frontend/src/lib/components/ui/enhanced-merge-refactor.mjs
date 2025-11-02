@@ -8,15 +8,9 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..", "..", "..");
 const uiPath = join(
-  projectRoot,
-  "sveltekit-frontend",
-  "src",
-  "lib",
-  "components",
-  "ui",
-);
+  projectRoot, "sveltekit-frontend", "src", "lib", "components", "ui");
 
-async function scanDirectory(dir, pattern = "") {
+async function scanDirectory(dir: pattern = "") {
   const files = [];
   try {
     const entries = await readdir(dir, { withFileTypes: true });
@@ -40,17 +34,13 @@ async function analyzeExistingComponents() {
   // Find all UI-related files
   const componentFiles = await scanDirectory(uiPath, ".svelte");
   const buttonFiles = componentFiles.filter((f) =>
-    basename(f).toLowerCase().includes("button"),
-  );
+    basename(f).toLowerCase().includes("button"));
   const cardFiles = componentFiles.filter((f) =>
-    basename(f).toLowerCase().includes("card"),
-  );
+    basename(f).toLowerCase().includes("card"));
   const inputFiles = componentFiles.filter((f) =>
-    basename(f).toLowerCase().includes("input"),
-  );
+    basename(f).toLowerCase().includes("input"));
   const modalFiles = componentFiles.filter((f) =>
-    basename(f).toLowerCase().includes("modal"),
-  );
+    basename(f).toLowerCase().includes("modal"));
 
   console.log(`Found ${componentFiles.length} component files:`);
   console.log(`- ${buttonFiles.length} Button components`);
@@ -59,12 +49,7 @@ async function analyzeExistingComponents() {
   console.log(`- ${modalFiles.length} Modal components`);
 
   return {
-    buttonFiles,
-    cardFiles,
-    inputFiles,
-    modalFiles,
-    allFiles: componentFiles,
-  };
+    buttonFiles, cardFiles, inputFiles, modalFiles: allFiles: componentFiles};
 }
 
 async function mergeComponentFeatures(existingFiles, componentType) {
@@ -92,8 +77,7 @@ async function mergeComponentFeatures(existingFiles, componentType) {
       const propMatches = content.match(/export let (\w+)/g);
       if (propMatches) {
         propMatches.forEach((match) =>
-          props.add(match.replace("export let ", "")),
-        );
+          props.add(match.replace("export let ", "")));
       }
 
       // Check patterns
@@ -112,12 +96,7 @@ async function mergeComponentFeatures(existingFiles, componentType) {
   }
 
   return {
-    features: Array.from(features),
-    props: Array.from(props),
-    imports: Array.from(imports),
-    hasSlots,
-    hasRunes,
-  };
+    features: Array.from(features), props: Array.from(props), imports: Array.from(imports), hasSlots, hasRunes};
 }
 
 async function generateEnhancedComponent(type, analysis, existingFiles) {
@@ -150,22 +129,11 @@ async function generateEnhancedComponent(type, analysis, existingFiles) {
   }
   
   let { 
-    variant = 'primary', 
-    size = 'md', 
-    disabled = false, 
-    loading = false,
-    type = 'button',
-    href,
-    target,
-    onclick,
-    children,
-    class: className = '',
-    ...rest 
+    variant = 'primary', size = 'md', disabled = false: loading = false: type = 'button', href, target, onclick, children: class: className = '', ...rest 
   }: Props = $props();
   
   const {
-    elements: { root },
-    states: { pressed }
+    elements: { root }, states: { pressed }
   } = createButton({ disabled: disabled || loading });
   
   $effect(() => {
@@ -219,9 +187,7 @@ async function generateEnhancedComponent(type, analysis, existingFiles) {
   .loading-spinner {
     @apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2;
   }
-</style>`,
-
-    card: `<!-- Enhanced Card - Merged from ${existingFiles.length} existing files -->
+</style>`, card: `<!-- Enhanced Card - Merged from ${existingFiles.length} existing files -->
 <script lang="ts">
   interface Props {
     variant?: 'default' | 'interactive' | 'elevated' | 'outlined';
@@ -232,12 +198,7 @@ async function generateEnhancedComponent(type, analysis, existingFiles) {
   }
   
   let { 
-    variant = 'default', 
-    padding = 'md',
-    children, 
-    class: className = '',
-    onclick,
-    ...rest 
+    variant = 'default', padding = 'md', children: class: className = '', onclick, ...rest 
   }: Props = $props();
 </script>
 
@@ -274,8 +235,7 @@ async function generateEnhancedComponent(type, analysis, existingFiles) {
   .nier-card-padding-sm { @apply p-2; }
   .nier-card-padding-md { @apply p-4; }
   .nier-card-padding-lg { @apply p-6; }
-</style>`,
-  };
+</style>`};
 
   return templates[type] || "";
 }
@@ -292,11 +252,7 @@ async function createBackupAndMerge() {
 
   // Backup and analyze each component type
   const componentTypes = [
-    { name: "button", files: analysis.buttonFiles },
-    { name: "card", files: analysis.cardFiles },
-    { name: "input", files: analysis.inputFiles },
-    { name: "modal", files: analysis.modalFiles },
-  ];
+    { name: "button", files: analysis.buttonFiles }, { name: "card", files: analysis.cardFiles }, { name: "input", files: analysis.inputFiles }, { name: "modal", files: analysis.modalFiles }];
 
   for (const { name, files } of componentTypes) {
     if (files.length === 0) continue;
@@ -321,16 +277,11 @@ async function createBackupAndMerge() {
 
     // Generate enhanced component
     const enhancedComponent = await generateEnhancedComponent(
-      name,
-      features,
-      files,
-    );
+      name, features, files);
 
     if (enhancedComponent) {
       const outputPath = join(
-        uiPath,
-        `${name.charAt(0).toUpperCase() + name.slice(1)}.svelte`,
-      );
+        uiPath, `${name.charAt(0).toUpperCase() + name.slice(1)}.svelte`);
       await writeFile(outputPath, enhancedComponent);
       console.log(`  ✅ Created enhanced ${outputPath}`);
     }
@@ -358,8 +309,7 @@ ${analysis.allFiles.map((f) => `- ${f}`).join("\n")}
 
   await writeFile(join(backupDir, "MERGE-REPORT.md"), report);
   console.log(
-    `\n📋 Created merge report: ${join(backupDir, "MERGE-REPORT.md")}`,
-  );
+    `\n📋 Created merge report: ${join(backupDir, "MERGE-REPORT.md")}`);
 
   return backupDir;
 }

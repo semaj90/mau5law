@@ -1,6 +1,6 @@
-export interface Route { name: string;, href: string;
+export interface Route { name: string; href: string;
   children?: Route[];
-} }
+ }
 
 // Dynamically get all +page.svelte files
 export function getRoutes(): Route[] {
@@ -16,12 +16,12 @@ export function getRoutes(): Route[] {
     const name = parts[parts.length - 1] || 'Home';
 
     routes.push({
-      name: name.charAt(0).toUpperCase() + name.slice(1),
-      href: href || '/'
+      name: name.charAt(0).toUpperCase() + name.slice(1), href: href || '/'
     });
   });
 
   // Optional: sort alphabetically
   return routes.sort((a, b) => a.name.localeCompare(b.name));
-} }
+ }
+
 

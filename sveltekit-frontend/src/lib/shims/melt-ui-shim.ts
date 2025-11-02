@@ -4,14 +4,11 @@
 // Generic creator that returns minimal state and actions
 function createPrimitive() {
   return {
-    open: false,
-    options: {} }as { [key: string]: any },
-    openModal: () => {},
-    closeModal: () => {},
-    toggle: () => {} }
-  } }as: any;
-} }
-export const melt = (..._args: any[]) => ({}) as: any;
+    open: false;
+    options: { }as { [key: string]: any }, openModal: () => {}, closeModal: () => {}, toggle: () => { }
+   }as: any;
+ }
+export const melt = (..._args: any[]) => ({}) as any;
 export const createDialog = (..._args: any[]) => createPrimitive();
 export const createPopover = (..._args: any[]) => createPrimitive();
 export const createDropdownMenu = (..._args: any[]) => createPrimitive();
@@ -22,15 +19,7 @@ export const createCombobox = (..._args: any[]) => createPrimitive();
 export const createToolbar = (..._args: any[]) => createPrimitive();
 export const createResizable = (..._args: any[]) => createPrimitive();
 export default {
-  melt,
-  createDialog,
-  createPopover,
-  createDropdownMenu,
-  createContextMenu,
-  createTooltip,
-  createSelect,
-  createCombobox,
-  createToolbar,
-  createResizable
+  melt, createDialog, createPopover, createDropdownMenu, createContextMenu, createTooltip, createSelect, createCombobox, createToolbar, createResizable
 };
+
 

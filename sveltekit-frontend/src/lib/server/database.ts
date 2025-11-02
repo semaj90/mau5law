@@ -4,55 +4,35 @@
   This file exists for backward compatibility with legacy imports.
 
   MIGRATION GUIDE:
-  -; OLD: import { db } }from '$lib/server/database'
-  - NEW: import { db } }from '$lib/server/db/index' (preferred)
+  -; OLD: import { db  } from '$lib/server/database'
+  - NEW: import { db  } from '$lib/server/db/index' (preferred)
 
   This ensures all code uses the same connection pool (pg.Pool with node-postgres adapter)
 */
 
 // Re-export canonical database connection (node-postgres with pg.Pool)
-export { db, sql, pool } }from './db/drizzle';
+export { db, sql, pool  } from './db/drizzle';
 export type DB = typeof import('./db/drizzle').db;
 
 // Re-export schema tables
 export * from './db/schema.js';
 
 // Legacy compatibility: Re-export commonly used tables
-import { pgTable, serial, text, timestamp, uuid, jsonb, real } }from 'drizzle-orm/pg-core';
-import { vector } }from 'pgvector/drizzle-orm';
+import { pgTable, serial, text, timestamp, uuid, jsonb, real  } from 'drizzle-orm/pg-core';
+import { vector  } from 'pgvector/drizzle-orm';
 
 // Database schemas for backward compatibility with existing routes
 // These should be imported from ./db/schema.js instead
 export const documents = pgTable('documents', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  filename: text('filename').notNull(),
-  content: text('content').notNull(),
-  originalContent: text('original_content'),
-  metadata: jsonb('metadata'),
-  confidence: real('confidence'),
-  legalAnalysis: jsonb('legal_analysis'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  id: uuid('id').primaryKey().defaultRandom(), filename: text('filename').notNull(), content: text('content').notNull(), originalContent: text('original_content'), metadata: jsonb('metadata'), confidence: real('confidence'), legalAnalysis: jsonb('legal_analysis'), createdAt: timestamp('created_at').defaultNow(), updatedAt: timestamp('updated_at').defaultNow()
 });
 
 export const embeddings = pgTable('legal_embeddings', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  documentId: uuid('document_id').references(() => documents.id),
-  content: text('content').notNull(),
-  embedding: vector('embedding', { dimensions: 384 }),
-  metadata: jsonb('metadata'),
-  model: text('model').default('nomic-embed-text'),
-  createdAt: timestamp('created_at').defaultNow()
+  id: uuid('id').primaryKey().defaultRandom(), documentId: uuid('document_id').references(() => documents.id), content: text('content').notNull(), embedding: vector('embedding', { dimensions: 384 }), metadata: jsonb('metadata'), model: text('model').default('nomic-embed-text'), createdAt: timestamp('created_at').defaultNow()
 });
 
 export const searchSessions = pgTable('search_sessions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  query: text('query').notNull(),
-  queryEmbedding: vector('query_embedding', { dimensions: 384 }),
-  results: jsonb('results'),
-  searchType: text('search_type').default('hybrid'),
-  resultCount: serial('result_count'),
-  createdAt: timestamp('created_at').defaultNow()
+  id: uuid('id').primaryKey().defaultRandom(), query: text('query').notNull(), queryEmbedding: vector('query_embedding', { dimensions: 384 }), results: jsonb('results'), searchType: text('search_type').default('hybrid'), resultCount: serial('result_count'), createdAt: timestamp('created_at').defaultNow()
 });
 
 // Initialize database with extensions
@@ -61,7 +41,7 @@ export async function initializeDatabase(): Promise<boolean> {
     console.log('[Database] Initializing database...');
 
     // Use the shared sql from drizzle
-    const { sql: dbSql } }= await import('./db/drizzle');
+    const { sql: dbSql  }= await import('./db/drizzle');
 
     // Create vector extension
     await dbSql`CREATE EXTENSION IF NOT EXISTS vector`;
@@ -90,21 +70,18 @@ export async function initializeDatabase(): Promise<boolean> {
 
     console.log('[Database] Database initialized successfully');
     return true;
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('[Database] Initialization failed:', error);
-    return false;
-  } }
-} }
+    return false; } }
 
 // Test database connection
 export async function testDatabaseConnection(): Promise<boolean> {
   try {
-    const { sql: dbSql } }= await import('./db/drizzle');
+    const { sql: dbSql  }= await import('./db/drizzle');
     const result = await dbSql`SELECT, 1 as test`;
     return Array.isArray(result) && result.length > 0;
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('[Database] Connection test failed:', error);
-    return false;
-  } }
-} }
+    return false; } }
+
 

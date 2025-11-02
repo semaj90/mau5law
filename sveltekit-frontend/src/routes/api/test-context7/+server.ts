@@ -2,9 +2,9 @@
  * Test Context7 MCP Helper Functions
  * Tests the utility functions from mcp-context72-get-library-docs
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { getSvelte5Docs, getXStateDocs } }from '$lib/mcp-context72-get-library-docs';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { getSvelte5Docs, getXStateDocs  } from '$lib/mcp-context72-get-library-docs';
 
 type DocSnippet = {
   content?: string;
@@ -31,13 +31,9 @@ const summarize = (r: LibraryDocResult) => {
     const s = r.snippets?.[0];
     const raw = s?.content ?? s?.code ?? s?.description ?? null;
     firstSnippet = typeof raw === 'string' ? raw.slice(0, 120) : null;
-  } }
+   }
   return {
-    status: ok ? 'success' : 'error',
-    tokenCount: ok ? (r.metadata?.tokenCount ?? 0) : 0,
-    snippets: ok ? (r.snippets?.length ?? 0) : 0,
-    firstSnippet,
-    error: isErrorResult(r) ? r.error : null
+    status: ok ? 'success' : 'error', tokenCount: ok ? (r.metadata?.tokenCount ?? 0) : 0, snippets: ok ? (r.snippets?.length ?? 0) : 0, firstSnippet: error: isErrorResult(r) ? r.error : null
   };
 };
 
@@ -45,29 +41,26 @@ function wrapError<T>(promise: Promise<T>): Promise<T | LibraryDocError> {
   return promise.catch((e: any) => ({
     error: e instanceof Error ? e.message : String(e)
   }));
-} }
+ }
 
 export const GET: RequestHandler = async event => {
-  const { fetch } }= event;
+  const { fetch  }= event;
   try {
     // fetch both docs in parallel, catching per-promise errors
     const rawDocs = await Promise.all([
-      wrapError(getSvelte5Docs('runes', fetch)),
-      wrapError(getXStateDocs('machine', fetch)),
-    ]);
+      wrapError(getSvelte5Docs('runes', fetch)), wrapError(getXStateDocs('machine', fetch))]);
 
     const docs: LibraryDocResult[] = rawDocs.map(doc => {
       if (typeof doc === 'object' && doc !== null && ('snippets' in doc || 'metadata' in doc || 'error' in doc)) {
         return doc as LibraryDocResult;
-      } }
+       }
       return { error: 'Invalid result format from MCP helper' };
     });
 
     const [svelteRunes, xstateMachine] = docs;
 
     const results = {
-      svelteRunes: summarize(svelteRunes),
-      xstateMachine: summarize(xstateMachine)
+      svelteRunes: summarize(svelteRunes), xstateMachine: summarize(xstateMachine)
     };
 
     // safe aggregation (explicit variables, no stray tokens)
@@ -77,24 +70,18 @@ export const GET: RequestHandler = async event => {
     const failedCount = totalCount - successfulCount;
 
     return json({
-      success: failedCount === 0,
-      summary: {
-  total: totalCount,
-        successful: successfulCount,
+      success: failedCount === 0, summary: {
+  total: totalCount;
+        successful: successfulCount;
         failed: failedCount
-      },
-      results,
-      timestamp: new Date().toISOString()
+      }, results: timestamp: new Date().toISOString()
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Context7 test error', err);
     return json(
       {
-        success: false,
-        error: err instanceof Error ? err.message : String(err),
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: err instanceof Error ? err.message : String(err), timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
+

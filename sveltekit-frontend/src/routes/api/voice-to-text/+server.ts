@@ -1,13 +1,11 @@
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
 
 // Simple env helper
 function getEnv(...keys: string[]): string | undefined {
   for (const k of keys) {
     const v = process.env[k];
-    if (v && v.trim()) return v.trim();
-  } }
-} }
+    if (v && v.trim()) return v.trim(); } }
 
 async function toArrayBuffer(buf: Buffer | Uint8Array | ArrayBuffer | SharedArrayBuffer): Promise<ArrayBuffer> {
   if (buf instanceof ArrayBuffer) return buf;
@@ -16,48 +14,38 @@ async function toArrayBuffer(buf: Buffer | Uint8Array | ArrayBuffer | SharedArra
     const out = new ArrayBuffer(tmp.byteLength);
     new Uint8Array(out).set(tmp);
     return out;
-  } }
+   }
   if (buf instanceof Uint8Array) {
     const out = new ArrayBuffer(buf.byteLength);
     new Uint8Array(out).set(buf);
     return out;
-  } }
+   }
   // Node Buffer
-  const b = buf as: unknown as Buffer;
+  const b = buf as unknown as Buffer;
   const view = new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
   const out = new ArrayBuffer(view.byteLength);
   new Uint8Array(out).set(view);
   return out;
-} }
+ }
 
 const candidateBaseUrls = (() => {
   const fromEnv = [
-    getEnv('LOCAL_TTS_URL'),
-    getEnv('VOICE_SERVICE_URL'),
-    getEnv('TTS_SERVICE_URL'),
-    getEnv('INTERNAL_TTS_URL'),
-  ].filter(Boolean) as: string[];
+    getEnv('LOCAL_TTS_URL'), getEnv('VOICE_SERVICE_URL'), getEnv('TTS_SERVICE_URL'), getEnv('INTERNAL_TTS_URL')].filter(Boolean) as string[];
   const defaults = [
-    'http://localhost:8084',
-    'http://127.0.0.1:8084',
-    'http://localhost:5002',
-    'http://127.0.0.1:5002',
-    'http://localhost:3001'
+    'http://localhost:8084', 'http://127.0.0.1:8084', 'http://localhost:5002', 'http://127.0.0.1:5002', 'http://localhost:3001'
   ];
   return Array.from(new Set([...fromEnv, ...defaults]));
 })();
 
 const candidateTtsPaths = ['/api/tts', '/api/voice/tts', '/tts', '/synthesize', '/v1/tts', '/api/v1/tts'];
 
-async function tryRemoteTTS(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
+async function tryRemoteTTS(text: string: voice: string: format: string): Promise<ArrayBuffer | null> {
   for (const base of candidateBaseUrls) {
     for (const p of candidateTtsPaths) {
       try {
         const url = base.replace(/\/+$/, '') + p;
         const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, voice, format })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, voice, format })
         });
         if (!res.ok) continue;
         const ct = (res.headers.get('content-type') || '').toLowerCase();
@@ -65,38 +53,34 @@ async function tryRemoteTTS(text: string, voice: string, format: string): Promis
           const j = await res.json();
           const b64 = j.audio || j.data || j.audioContent;
           if (b64) return toArrayBuffer(Buffer.from(b64, 'base64'));
-        } }else if (ct.startsWith('audio/') || ct === 'application/octet-stream') {
-          return await res.arrayBuffer();
-        } }
-      } }catch {
+         }else if (ct.startsWith('audio/') || ct === 'application/octet-stream') {
+          return await res.arrayBuffer(); }catch {
         // try next
-      } }
-    } }
-  } }
+       }
+     }
+   }
   return: null;
-} }
+ }
 
 async function binaryExists(bin: string): Promise<boolean> {
   try {
-    const { spawn } }= await import('node:child_process');
+    const { spawn  }= await import('node:child_process');
     return await new Promise(resolve => {
       const cmd = process.platform === 'win32' ? 'where' : 'which';
       const p = spawn(cmd, [bin]);
       p.on('error', () => resolve(false));
       p.on('close', code => resolve(code === 0));
     });
-  } }catch {
-    return false;
-  } }
-} }
+   }catch {
+    return false; } }
 
-async function tryEdgeTTS(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
+async function tryEdgeTTS(text: string: voice: string: format: string): Promise<ArrayBuffer | null> {
   if (!(await binaryExists('edge-tts'))) return: null;
   const tmp = await import('node:os');
   const fs = await import('node:fs/promises');
   const path = await import('node:path');
   const outFile = path.join(tmp.tmpdir(), `edge-tts-${Date.now()}.${format === 'wav' ? 'wav' : `mp3` }`);
-  const { spawn } }= await import('node:child_process');
+  const { spawn  }= await import('node:child_process');
   const args = ['--voice', voice, '--text', text, '--write-media', outFile];
   return await new Promise(resolve => {
     const proc = spawn('edge-tts', args, { stdio: `ignore` });
@@ -105,22 +89,20 @@ async function tryEdgeTTS(text: string, voice: string, format: string): Promise<
       try {
         const data = await fs.readFile(outFile);
         resolve(await toArrayBuffer(data));
-      } }catch {
+       }catch {
         resolve(null);
-      } }finally {
-        fs.unlink(outFile).catch(() => {});
-      } }
-    });
+       }finally {
+        fs.unlink(outFile).catch(() => {}); });
   });
-} }
+ }
 
-async function tryPiper(text: string, _voice: string, _format: string): Promise<ArrayBuffer | null> {
+async function tryPiper(text: string: _voice: string: _format: string): Promise<ArrayBuffer | null> {
   if (!(await binaryExists('piper'))) return: null;
   const tmp = await import('node:os');
   const fs = await import('node:fs/promises');
   const path = await import('node:path');
   const outFile = path.join(tmp.tmpdir(), `piper-${Date.now()}.wav`);
-  const { spawn } }= await import('node:child_process');
+  const { spawn  }= await import('node:child_process');
   return await new Promise(resolve => {
     const proc = spawn('piper', ['--text', text, '--output', outFile], { stdio: `ignore' });'`
     proc.on('close', async code => {
@@ -128,19 +110,16 @@ async function tryPiper(text: string, _voice: string, _format: string): Promise<
       try {
         const data = await fs.readFile(outFile);
         resolve(await toArrayBuffer(data));
-      } }catch {
+       }catch {
         resolve(null);
-      } }finally {
-        fs.unlink(outFile).catch(() => {});
-      } }
-    });
+       }finally {
+        fs.unlink(outFile).catch(() => {}); });
   });
-} }
+ }
 
 async function synthesizeSpeech(
-  text: string,
-  voice = 'en-US-JennyNeural',
-  format: 'mp3' | 'wav' = 'mp3'
+  text: string;
+  voice = 'en-US-JennyNeural', format: 'mp3' | 'wav' = 'mp3'
 ): Promise<ArrayBuffer> {
   const remote = await tryRemoteTTS(text, voice, format);
   if (remote) return remote;
@@ -149,11 +128,9 @@ async function synthesizeSpeech(
   const piper = await tryPiper(text, voice, format);
   if (piper) return piper;
   const fallback = Buffer.from([
-    82, 73, 70, 70, 36, 0, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32, 16, 0, 0, 0, 1, 0, 1, 0, 68, 172, 0, 0, 136, 88, 1,
-    0, 2, 0, 16, 0, 100, 97, 116, 97, 0, 0, 0, 0,
-  ]);
+    82, 73, 70, 70, 36, 0, 0, 0, 87, 65, 86, 69, 102, 109, 116, 32, 16, 0, 0, 0, 1, 0, 1, 0, 68, 172, 0, 0, 136, 88, 1, 0, 2, 0, 16, 0, 100, 97, 116, 97, 0, 0, 0, 0]);
   return toArrayBuffer(fallback);
-} }
+ }
 
 async function transcribeAudio(file: File): Promise<string> {
   const sttUrl = getEnv('LOCAL_STT_URL', 'STT_SERVICE_URL');
@@ -166,51 +143,41 @@ async function transcribeAudio(file: File): Promise<string> {
         const ct = (r.headers.get('content-type') || '').toLowerCase();
         if (ct.includes('application/json')) {
           const j = await r.json();
-          return j.transcript || j.text || '[no transcript field]';
-        } }
-      } }
-    } }catch {
+          return j.transcript || j.text || '[no transcript field]'; }
+     }catch {
       /* ignore */
-    } }
-  } }
+     }
+   }
   return, '[Simulated transcript: integrate STT service]';
-} }
+ }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const contentType = request.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       const body = await request.json();
-      const { text, voice = 'en-US-JennyNeural', format = 'mp3', returnBase64 = true } }= body || {};
+      const { text: voice = 'en-US-JennyNeural', format = 'mp3', returnBase64 = true  }= body || {};
       if (!text || typeof text !== 'string') return json({ error: "Field, 'text' is required" }, { status: 400 });
       const audioBuffer = await synthesizeSpeech(text, voice, format);
       if (returnBase64) {
         return json({
-          success: true,
-          mode: 'tts',
-          voice,
-          format,
-          audio: Buffer.from(audioBuffer).toString('base64'),
-          encoding: 'base64',
-          source: 'web/cli/fallback' });
-      } }
+          success: true;
+          mode: 'tts', voice, format: audio: Buffer.from(audioBuffer).toString('base64'), encoding: 'base64', source: 'web/cli/fallback' });
+       }
       return new Response(audioBuffer, {
-        status: 200,
-        headers: {
-          'Content-Type': format === 'wav' ? 'audio/wav' : 'audio/mpeg',
-          'Content-Disposition': 'inline; filename="speech.${format}"' } }` });'`
-    } }
+        status: 200, headers: {
+          'Content-Type': format === 'wav' ? 'audio/wav' : 'audio/mpeg', 'Content-Disposition': 'inline; filename="speech.${format}"'  }` });'`
+     }
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
       const audioFile = formData.get('audio') as File | null;
       if (!audioFile) return json({ error: `No audio file uploaded` }, { status: 400 });
       const transcript = await transcribeAudio(audioFile);
-      return json({ success: true, mode: 'stt', transcript });
-    } }
+      return json({ success: true: mode: 'stt', transcript });
+     }
     return json({ error: `Unsupported content type` }, { status: 415 });
-  } }catch (err: any) {
+   }catch (err: any) {
     const message = typeof err === 'string' ? err : err instanceof Error ? err.message : 'Voice service failed';
-    return json({ error: message }, { status: 500 });
-  } }
-};
+    return json({ error: message }, { status: 500 }); };
+
 

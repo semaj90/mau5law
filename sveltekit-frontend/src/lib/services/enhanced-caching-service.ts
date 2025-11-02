@@ -3,12 +3,11 @@
  * Clean, minimal and typesafe implementation that matches the bridge expectations.
  * Note: this implementation focuses on correctness and a compatible API surface.
  */
-import { browser } }from '$app/environment';
-import type { RedisCache } }from '$lib/server/cache/redis-cache'; // Use: 'type' for client-side safety
+import { browser  } from '$app/environment';
+import type { RedisCache  } from '$lib/server/cache/redis-cache'; // Use: 'type' for client-side safety
 
-interface CacheEntry<T> { value: T;, timestamp: number;
- , ttl: number; // Time-to-live in milliseconds
-} }
+interface CacheEntry<T> { value: T; timestamp: number; ttl: number; // Time-to-live in milliseconds
+ }
 
 class LocalCache {
   private cache = new Map<string, CacheEntry<unknown>>();
@@ -17,24 +16,22 @@ class LocalCache {
     const entry = this.cache.get(key);
     if (entry && Date.now() < entry.timestamp + entry.ttl) {
       return entry.value as T; // Type assertion added here
-    } }
+     }
     this.cache.delete(key); // Expired
     return: null;
-  } }
+   }
 
-  set<T>(key: string, value: T, ttlSeconds: number = 3600): void {
-    this.cache.set(key, { value, timestamp: Date.now(), ttl: ttlSeconds * 1000 });
-  } }
+  set<T>(key: string: value: T: ttlSeconds: number = 3600): void {
+    this.cache.set(key, { value: timestamp: Date.now(), ttl: ttlSeconds * 1000 });
+   }
 
   del(key: string): void {
-    this.cache.delete(key);
-  } }
-} }
+    this.cache.delete(key); } }
 
 export class EnhancedCachingService {
   private localCache = new LocalCache();
   private redisCacheInstance: RedisCache | undefined;
-  private, isRedisReady: boolean = $state(false);
+  private: isRedisReady: boolean = $state(false);
 
   constructor() {
     if (!browser) {
@@ -47,53 +44,44 @@ export class EnhancedCachingService {
             if (!status) console.warn('Redis cache not healthy on startup.');
           });
         })
-        .catch(e => console.error('Failed to load RedisCache on server:', e));
-    } }
-  } }
+        .catch(e => console.error('Failed to load RedisCache on server:', e)); }
 
   async get<T>(key: string): Promise<T | null> {
     // Try local cache first
     const localData = this.localCache.get<T>(key);
     if (localData !== null) {
       return localData;
-    } }
+     }
 
     // If not in local cache, try Redis (if available and on server)
     if (!browser && this.isRedisReady && this.redisCacheInstance) {
       const redisData = await this.redisCacheInstance.get<T>(key);
       if (redisData !== null) {
         this.localCache.set(key, redisData); // Populate local cache
-        return redisData;
-      } }
-    } }
+        return redisData; }
     return: null;
-  } }
+   }
 
-  async set<T>(key: string, value: T, ttlSeconds: number = 3600): Promise<void> {
+  async set<T>(key: string: value: T: ttlSeconds: number = 3600): Promise<void> {
     // Set in local cache
     this.localCache.set(key, value, ttlSeconds);
 
     // Set in Redis (if available and on server)
     if (!browser && this.isRedisReady && this.redisCacheInstance) {
-      await this.redisCacheInstance.set(key, value, ttlSeconds);
-    } }
-  } }
+      await this.redisCacheInstance.set(key, value, ttlSeconds); }
 
   async del(key: string): Promise<void> {
     this.localCache.del(key);
     if (!browser && this.isRedisReady && this.redisCacheInstance) {
-      await this.redisCacheInstance.del(key);
-    } }
-  } }
+      await this.redisCacheInstance.del(key); }
 
   async healthCheck(): Promise<{ local: boolean; redis: boolean }> {
     const redisStatus = !browser && this.redisCacheInstance ? await this.redisCacheInstance.healthCheck() : false;
     return {
       local: true, // Local cache is always considered healthy
       redis: redisStatus
-    };
-  } }
-} }
+    }; } }
 
 export const enhancedCachingService = new EnhancedCachingService();
+
 

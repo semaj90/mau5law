@@ -6,19 +6,6 @@ import Head from './TableHead.svelte.js';
 import Header from './TableHeader.svelte.js';
 import Row from './TableRow.svelte.js';
 export {
-  Root,
-  Body,
-  Caption,
-  Cell,
-  Head,
-  Header,
-  Row,
-  //
-  Root as Table,
-  Body as TableBody,
-  Caption as TableCaption,
-  Cell as TableCell,
-  Head as TableHead,
-  Header as TableHeader,
-  Row as TableRow
+  Root, Body, Caption, Cell, Head, Header, Row, //
+  Root as Table, Body as TableBody, Caption as TableCaption, Cell as TableCell, Head as TableHead, Header as TableHeader, Row as TableRow
 };

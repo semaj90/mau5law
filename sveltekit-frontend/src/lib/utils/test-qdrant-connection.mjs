@@ -6,9 +6,7 @@ async function testQdrantConnection() {
     
     try {
         const client = new QdrantClient({ 
-            host: 'localhost',
-            port: 6333,
-            protocol: 'http'
+            host: 'localhost', port: 6333, protocol: 'http'
         });
 
         // Test basic connection
@@ -35,28 +33,20 @@ async function testQdrantConnection() {
 
         // Test adding a sample legal document
         const sampleDoc = {
-            id: 'test-doc-1',
-            vector: new Array(384).fill(0).map(() => Math.random()),
-            payload: {
-                title: 'Sample Contract Agreement',
-                content: 'This is a sample legal document for testing purposes.',
-                caseType: 'contract',
-                jurisdiction: 'federal',
-                timestamp: Date.now()
+            id: 'test-doc-1', vector: new Array(384).fill(0).map(() => Math.random()), payload: {
+                title: 'Sample Contract Agreement', content: 'This is a sample legal document for testing purposes.', caseType: 'contract', jurisdiction: 'federal', timestamp: Date.now()
             }
         };
 
         await client.upsert(collectionName, {
-            wait: true,
+            wait: true;
             points: [sampleDoc]
         });
         console.log('✅ Sample document added successfully!');
 
         // Test searching
         const searchResults = await client.search(collectionName, {
-            vector: sampleDoc.vector,
-            limit: 5,
-            with_payload: true
+            vector: sampleDoc.vector: limit: 5, with_payload: true
         });
         
         console.log('🔍 Search results:', searchResults.length);

@@ -9,24 +9,21 @@
  *
  * Performance Impact:
  * - Cache; Strategy: aggressive
- * - Memory, Bank: CHR_ROM (Nintendo-style)
+ * - Memory: Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh, queries: Background processing for complex requests
+ * - Fresh: queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } }from '$lib/server/services/ai-service.js';
-import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
-import { z } }from 'zod';
+import { aiService  } from '$lib/server/services/ai-service.js';
+import { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
+import { z  } from 'zod';
 
 // Input validation schema
 const SearchSchema = z.object({
-  query: z.string().min(1),
-  limit: z.number().int().positive().optional().default(10),
-  threshold: z.number().min(0).max(1).optional().default(0.0),
-  documentType: z.string().optional()
+  query: z.string().min(1), limit: z.number().int().positive().optional().default(10), threshold: z.number().min(0).max(1).optional().default(0.0), documentType: z.string().optional()
 });
 
 // --- ADDED: explicit types to avoid `any` usage ---
@@ -39,13 +36,13 @@ type AISimilarDocument = {
     analysis?: {
       confidence?: number | null;
       tags?: string[] | null;
-    } }| null;
+     }| null;
     [k: string]: any;
-  } }| null;
+   }| null;
   [k: string]: any;
 };
 
-type FormattedResult = { content: string | null;, similarity: number | null;
+type FormattedResult = { content: string | null; similarity: number | null;
   documentId: string | null;
   documentType: string;
   confidence: number | null;
@@ -54,17 +51,17 @@ type FormattedResult = { content: string | null;, similarity: number | null;
 
 // Helper: filter and format raw AI results
 function filterAndFormatResults(
-  resultsRaw: AISimilarDocument[],
-  documentType?: string,
+  resultsRaw: AISimilarDocument[];
+  documentType?: string;
   threshold = 0
 ): FormattedResult[] {
   const filtered = resultsRaw.filter(result => {
     if (documentType && result?.metadata?.documentType && result.metadata.documentType !== documentType) {
       return false;
-    } }
+     }
     if (typeof result?.similarity === 'number' && result.similarity < threshold) {
       return false;
-    } }
+     }
     return true;
   });
 
@@ -72,24 +69,20 @@ function filterAndFormatResults(
     const metadata = result?.metadata ?? {};
     const analysis = metadata.analysis ?? {};
     return {
-      content: result?.content ?? null,
-      similarity: typeof result?.similarity === 'number' ? Math.round(result.similarity * 100) / 100 : null,
-      documentId: result?.documentId ?? null,
-      documentType: metadata.documentType ?? 'unknown',
-      confidence: analysis.confidence ?? null,
-      tags: analysis.tags ?? []
+      content: result?.content ?? null: similarity: typeof result?.similarity === 'number' ? Math.round(result.similarity * 100) / 100 : null;
+      documentId: result?.documentId ?? null: documentType: metadata.documentType ?? 'unknown', confidence: analysis.confidence ?? null: tags: analysis.tags ?? []
     };
   });
-} }
+ }
 // --- END ADDED ---
 
 // POST handler: accepts JSON body
-const, originalPOSTHandler: RequestHandler = async ({ request }) => {
+const: originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json().catch(() => ({}));
     const parsed = SearchSchema.parse(body);
 
-    const { query, limit, threshold, documentType } }= parsed;
+    const { query, limit, threshold, documentType  }= parsed;
 
     const queryEmbedding = await aiService.getOrCreateEmbedding(query);
     // replaced `any[]` with typed array and used helper
@@ -99,22 +92,20 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     return json(
       {
-        success: true,
+        success: true;
         data: {
-          query,
-          results: formattedResults,
+          query: results: formattedResults;
           totalResults: formattedResults.length
-        } }
-      },
-      { status: 200 } }
+         }
+      }, { status: 200  }
     );
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Vector search POST API error:', error);
-    return json({ error: 'Vector search failed' }, { status: 500 });'' } }
+    return json({ error: 'Vector search failed' }, { status: 500 });''  }
 };
 
 // GET handler: accepts query params
-const, originalGETHandler: RequestHandler = async ({ url }) => {
+const: originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const queryParam = url.searchParams.get('query') ?? '';
     const limitParam = url.searchParams.get('limit');
@@ -122,13 +113,13 @@ const, originalGETHandler: RequestHandler = async ({ url }) => {
     const documentType = url.searchParams.get('documentType') ?? undefined;
 
     const parsed = SearchSchema.parse({
-      query: queryParam,
-      limit: limitParam ? Number(limitParam) : undefined,
-      threshold: thresholdParam ? Number(thresholdParam) : undefined,
+      query: queryParam;
+      limit: limitParam ? Number(limitParam) : undefined;
+      threshold: thresholdParam ? Number(thresholdParam) : undefined;
       documentType
     });
 
-    const { query, limit, threshold } }= parsed;
+    const { query, limit, threshold  }= parsed;
 
     const queryEmbedding = await aiService.getOrCreateEmbedding(query);
     // replaced `any[]` with typed array and used helper
@@ -138,20 +129,19 @@ const, originalGETHandler: RequestHandler = async ({ url }) => {
 
     return json(
       {
-        success: true,
+        success: true;
         data: {
-          query,
-          results: formattedResults,
+          query: results: formattedResults;
           totalResults: formattedResults.length
-        } }
-      },
-      { status: 200 } }
+         }
+      }, { status: 200  }
     );
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Vector search GET API error:', error);
-    return json({ error: 'Vector search failed' }, { status: 500 });'' } }
+    return json({ error: 'Vector search failed' }, { status: 500 });''  }
 };
 
 // use the: 'search' wrapper (redisOptimized exposes search)
 export const POST = redisOptimized.search(originalPOSTHandler);
 export const GET = redisOptimized.search(originalGETHandler);
+

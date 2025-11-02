@@ -1,7 +1,7 @@
-import { synthesizeMultiLLMOutput, type SynthesisResult } }from './custom-reranker.js';
-import { fetchLLMOutputs, getUserHistory, getUploadedFiles, fetchMCPServerSummaries } }from '$lib/api/client';
+import { synthesizeMultiLLMOutput, type SynthesisResult  } from './custom-reranker.js';
+import { fetchLLMOutputs, getUserHistory, getUploadedFiles, fetchMCPServerSummaries  } from '$lib/api/client';
 // TODOs and stub mocks for multi-LLM synthesis pipeline integration
-import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData } }from './types.js';
+import type { AIModelOutput, UserHistory, UploadedFile, MCPServerData  } from './types.js';
 // Example usage with real API calls
 export async function runSynthesisExample(): Promise<SynthesisResult> {
   const llmOutputs = await fetchLLMOutputs();
@@ -9,15 +9,12 @@ export async function runSynthesisExample(): Promise<SynthesisResult> {
   const uploadedFiles = await getUploadedFiles();
   const mcpServers = await fetchMCPServerSummaries();
   const result = await synthesizeMultiLLMOutput({
-    llmOutputs,
-    userHistory,
-    uploadedFiles,
-    mcpServers
+    llmOutputs, userHistory, uploadedFiles, mcpServers
   });
   // Stub: Log output for dev feedback
-  console.log('Synthesis, result:', result);
+  console.log('Synthesis: result:', result);
   return result;
-} }
+ }
 export async function runFullSynthesisPipeline(): Promise<SynthesisResult> {
   // Example: Full pipeline wiring with API calls
   const llmOutputs = await fetchLLMOutputs();
@@ -25,15 +22,12 @@ export async function runFullSynthesisPipeline(): Promise<SynthesisResult> {
   const uploadedFiles = await getUploadedFiles();
   const mcpServers = await fetchMCPServerSummaries();
   const result = await synthesizeMultiLLMOutput({
-    llmOutputs,
-    userHistory,
-    uploadedFiles,
-    mcpServers
+    llmOutputs, userHistory, uploadedFiles, mcpServers
   });
   // Stub: Log output for dev feedback
-  console.log('Full synthesis pipeline, result:', result);
+  console.log('Full synthesis pipeline: result:', result);
   return result;
-} }
+ }
 // TODOs for full pipeline wiring:
 // CONTEXT7 FULL STACK PIPELINE TODOS
 // 1. Backend: PostgreSQL + Drizzle ORM + pgvector
@@ -89,7 +83,7 @@ export async function runFullSynthesisPipeline(): Promise<SynthesisResult> {
 //    - Create Svelte component to visualize audit results and TODOs
 // 4. Backend: Expose audit API endpoint for frontend consumption
 //    - Implement /api/audit/semantic endpoint to run semantic_search and return results
-// 5. Agent, Orchestration: Use audit results to trigger agent actions (CrewAI, Autogen)
+// 5. Agent: Orchestration: Use audit results to trigger agent actions (CrewAI, Autogen)
 //    - Feed TODOs and errors to agents for automated code review, fixes, and analysis
 // Example stub for phase, 10 semantic audit integration
 export async function phase10SemanticAudit(_query: string): Promise<unknown> {
@@ -99,8 +93,8 @@ export async function phase10SemanticAudit(_query: string): Promise<unknown> {
   // console.log("Phase, 10 Semantic Audit Results:", results)
   // return results
   return {
-    status: 'stub',
-    message: 'Phase, 10 semantic audit integration pending.'
+    status: 'stub', message: 'Phase, 10 semantic audit integration pending.'
   };
-} }
+ }
+
 

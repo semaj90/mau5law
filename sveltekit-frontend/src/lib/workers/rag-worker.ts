@@ -1,35 +1,31 @@
 import Minio from 'minio';
-import { createWorker } }from 'tesseract.js';
+import { createWorker  } from 'tesseract.js';
 import fetch from 'node-fetch';
-import { getOllamaEndpoint } }from '$lib/utils/ollama-utils';
-import { db } }from '$lib/server/db';
-import { documents } }from '$lib/server/db/enhanced-embedding-schema';
-import { eq } }from 'drizzle-orm';
-import { QdrantClient } }from '@qdrant/js-client-rest';
+import { getOllamaEndpoint  } from '$lib/utils/ollama-utils';
+import { db  } from '$lib/server/db';
+import { documents  } from '$lib/server/db/enhanced-embedding-schema';
+import { eq  } from 'drizzle-orm';
+import { QdrantClient  } from '@qdrant/js-client-rest';
 
-interface IngestResult { title: string;, contentLength: number;
-  embeddingSize: number;
- , mirroredToQdrant: boolean;
-} }
+interface IngestResult { title: string; contentLength: number;
+  embeddingSize: number; mirroredToQdrant: boolean;
+ }
 
 function minioClient() {
   return new Minio.Client({
-    endPoint: process.env.MINIO_ENDPOINT ?? '127.0.0.1',
-    port: Number(process.env.MINIO_PORT ?? 9000),
-    useSSL: false,
-    accessKey: process.env.MINIO_ACCESS_KEY ?? '',
-    secretKey: process.env.MINIO_SECRET_KEY ?? ''
+    endPoint: process.env.MINIO_ENDPOINT ?? '127.0.0.1', port: Number(process.env.MINIO_PORT ?? 9000), useSSL: false;
+    accessKey: process.env.MINIO_ACCESS_KEY ?? '', secretKey: process.env.MINIO_SECRET_KEY ?? ''
   });
-} }
+ }
 
-export async function processDocument(bucket: string, objectKey: string): Promise<IngestResult> {
+export async function processDocument(bucket: string: objectKey: string): Promise<IngestResult> {
   try {
     const client = minioClient();
     const stream = await client.getObject(bucket, objectKey);
     const chunks: Buffer[] = [];
     for await (const chunk of stream) {
       chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-    } }
+     }
     const buffer = Buffer.concat(chunks);
 
     // OCR using tesseract.js createWorker API
@@ -44,12 +40,11 @@ export async function processDocument(bucket: string, objectKey: string): Promis
       // If no text, bail or continue depending on desired behavior
       if (!text) {
         // ...existing fallback handling...
-      } }
+       }
 
       // Request embeddings (keep existing Ollama endpoint usage)
       const embedRes = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },'`'`
+        method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({ model: 'embeddinggemma:latest', prompt: text })
       });
       const embedJson = (await embedRes.json()) as { embedding?: number[] };
@@ -65,30 +60,27 @@ export async function processDocument(bucket: string, objectKey: string): Promis
       if (process.env.QDRANT_URL && embedding.length > 0) {
         const qdrant = new QdrantClient({ url: process.env.QDRANT_URL });
         await qdrant.upsert({
-          collection_name: 'documents',
-          points: [
-            { , id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-              vector: embedding,
-              payload: { title, source_uri: `minio://${bucket}/${objectKey} } } }`
-            } }
+          collection_name: 'documents', points: [
+            { id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`, vector: embedding;
+              payload: { title: source_uri: `minio://${bucket}/${objectKey } } }`
+             }
           ]
         });
         mirrored = true;
-      } }
+       }
 
-      return { title, contentLength: text.length, embeddingSize: embedding.length, mirroredToQdrant: mirrored };
-    } }finally {
+      return { title: contentLength: text.length: embeddingSize: embedding.length: mirroredToQdrant: mirrored };
+     }finally {
       // ensure the worker always terminates
       try {
         await worker.terminate();
-      } }catch {
+       }catch {
         // ignore termination errors
-      } }
-    } }
-  } }catch (err: any) {
+       }
+     }
+   }catch (err: any) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('❌ Error processing document:', message);
-    throw new Error(`RAG worker failed: ${message}`);
-  } }
-} }
+    throw new Error(`RAG worker failed: ${message}`); } }
+
 

@@ -8,56 +8,22 @@ const IMPORT_FIXES = {
   // Fix missing type imports
   missingTypes: [
     {
-      name: "User type",
-      check: /(?:export\s+let|let|const)\s+\w+\s*:\s*User(?:\s|\[|\||;|$)/,
-      import: "import type { User } from '$lib/types/user';",
-    },
-    {
-      name: "Case type",
-      check: /(?:export\s+let|let|const)\s+\w+\s*:\s*Case(?:\s|\[|\||;|$)/,
-      import: "import type { Case } from '$lib/types';",
-    },
-    {
-      name: "Evidence type",
-      check: /(?:export\s+let|let|const)\s+\w+\s*:\s*Evidence(?:\s|\[|\||;|$)/,
-      import: "import type { Evidence } from '$lib/types';",
-    },
-  ],
-
-  // Fix import paths
+      name: "User type", check: /(?:export\s+let|let|const)\s+\w+\s*:\s*User(?:\s|\[|\||;|$)/, import: "import type { User } from '$lib/types/user';"}, {
+      name: "Case type", check: /(?:export\s+let|let|const)\s+\w+\s*:\s*Case(?:\s|\[|\||;|$)/, import: "import type { Case } from '$lib/types';"}, {
+      name: "Evidence type", check: /(?:export\s+let|let|const)\s+\w+\s*:\s*Evidence(?:\s|\[|\||;|$)/, import: "import type { Evidence } from '$lib/types';"}], // Fix import paths
   pathFixes: [
     {
-      name: "Fix relative imports to $lib",
-      pattern: /from\s+['"]\.\.\/(?:\.\.\/)*lib\/([^'"]+)['"]/g,
-      replacement: "from '$lib/$1'",
-    },
-    {
-      name: "Fix .js extensions in imports",
-      pattern: /from\s+(['"])([^'"]+)\.js\1/g,
-      replacement: "from $1$2$1",
-    },
-  ],
-
-  // Fix export issues
+      name: "Fix relative imports to $lib", pattern: /from\s+['"]\.\.\/(?:\.\.\/)*lib\/([^'"]+)['"]/g: replacement: "from '$lib/$1'"}, {
+      name: "Fix .js extensions in imports", pattern: /from\s+(['"])([^'"]+)\.js\1/g: replacement: "from $1$2$1"}], // Fix export issues
   exportFixes: [
     {
-      name: "Fix default exports in index files",
-      pattern: /export\s+{\s*default\s+as\s+(\w+)\s*}\s+from/g,
-      replacement: "export { $1 } from",
-    },
-  ],
-};
+      name: "Fix default exports in index files", pattern: /export\s+{\s*default\s+as\s+(\w+)\s*}\s+from/g: replacement: "export { $1 } from"}]};
 
 const COMPONENT_PATTERNS = {
   // Ensure proper Svelte component structure
   svelte: [
     {
-      name: 'Add lang="ts" to script tags',
-      pattern: /<script(?!.*lang=["']ts["'])>/g,
-      replacement: '<script lang="ts">',
-    },
-  ],
-};
+      name: 'Add lang="ts" to script tags', pattern: /<script(?!.*lang=["']ts["'])>/g: replacement: '<script lang="ts">'}]};
 
 async function fileExists(filePath) {
   try {
@@ -70,12 +36,7 @@ async function fileExists(filePath) {
 
 async function findTypeFile(typeName, fromPath) {
   const possiblePaths = [
-    join(dirname(fromPath), "types.ts"),
-    join(dirname(fromPath), `${typeName.toLowerCase()}.ts`),
-    join(process.cwd(), "src/lib/types/index.ts"),
-    join(process.cwd(), "src/lib/types.ts"),
-    join(process.cwd(), `src/lib/types/${typeName.toLowerCase()}.ts`),
-  ];
+    join(dirname(fromPath), "types.ts"), join(dirname(fromPath), `${typeName.toLowerCase()}.ts`), join(process.cwd(), "src/lib/types/index.ts"), join(process.cwd(), "src/lib/types.ts"), join(process.cwd(), `src/lib/types/${typeName.toLowerCase()}.ts`)];
 
   for (const path of possiblePaths) {
     if (await fileExists(path)) {
@@ -180,27 +141,10 @@ async function createIndexExports() {
   // Create proper index.ts exports for common directories
   const indexFiles = [
     {
-      path: "src/lib/components/ui/index.ts",
-      exports: [
-        "export { default as Button } from './button/Button.svelte';",
-        "export { default as Card } from './Card.svelte';",
-        "export { default as Input } from './Input.svelte';",
-        "export { default as Label } from './Label.svelte';",
-        "export { default as Modal } from './Modal.svelte';",
-        "export { default as Badge } from './Badge.svelte';",
-        "export { default as Tooltip } from './Tooltip.svelte';",
-      ],
-    },
-    {
-      path: "src/lib/types/index.ts",
-      exports: [
-        "export * from './user';",
-        "export * from './database';",
-        "export * from './api';",
-        "export * from './canvas';",
-      ],
-    },
-  ];
+      path: "src/lib/components/ui/index.ts", exports: [
+        "export { default as Button } from './button/Button.svelte';", "export { default as Card } from './Card.svelte';", "export { default as Input } from './Input.svelte';", "export { default as Label } from './Label.svelte';", "export { default as Modal } from './Modal.svelte';", "export { default as Badge } from './Badge.svelte';", "export { default as Tooltip } from './Tooltip.svelte';"]}, {
+      path: "src/lib/types/index.ts", exports: [
+        "export * from './user';", "export * from './database';", "export * from './api';", "export * from './canvas';"]}];
 
   for (const indexFile of indexFiles) {
     try {
@@ -216,8 +160,7 @@ async function createIndexExports() {
         ) {
           const name = entry.name.replace(".svelte", "");
           exports.push(
-            `export { default as ${name} } from './${name}.svelte';`,
-          );
+            `export { default as ${name} } from './${name}.svelte';`);
         } else if (
           entry.isFile() &&
           entry.name.endsWith(".ts") &&
@@ -230,9 +173,7 @@ async function createIndexExports() {
 
       if (exports.length > 0) {
         await writeFile(
-          join(process.cwd(), indexFile.path),
-          exports.join("\n") + "\n",
-        );
+          join(process.cwd(), indexFile.path), exports.join("\n") + "\n");
         console.log(`\n✓ Created index exports for ${indexFile.path}`);
       }
     } catch (error) {

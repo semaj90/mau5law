@@ -15,20 +15,20 @@
  * @version 1.0.0
  */
 import fetch from 'node-fetch';
-import type { GemmaEmbeddingService } }from './gemma-embedding-service';
-import type { PgVectorIndexingService } }from './pgvector-indexing-service';
+import type { GemmaEmbeddingService  } from './gemma-embedding-service';
+import type { PgVectorIndexingService  } from './pgvector-indexing-service';
 /**
  * MCP Context7 Configuration
  */
-export interface MCPContext7Config { baseUrl: string;, workers: number;
+export interface MCPContext7Config { baseUrl: string; workers: number;
   timeout: number;
   retryAttempts: number;
   fallbackToLocal: boolean;
-} }
+ }
 /**
  * Function Call Request
  */
-export interface FunctionCallRequest { functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning';, input: { text: string;
+export interface FunctionCallRequest { functionName: 'extractive_qa' | 'summarize' | 'classify' | 'extract_entities' | 'generate_reasoning'; input: { text: string;
     context?: string;
     query?: string;
     parameters?: Record<string, unknown>;
@@ -36,70 +36,68 @@ export interface FunctionCallRequest { functionName: 'extractive_qa' | 'summariz
   model?: string;
   temperature?: number;
   maxTokens?: number;
-} }
+ }
 /**
  * Function Call Response
  */
-export interface FunctionCallResponse { functionName: string;, result: any;
+export interface FunctionCallResponse { functionName: string; result: any;
   processingTime: number;
   model: string;
   success: boolean;
   error?: string;
-} }
+ }
 /**
  * Parallel Embedding Request
  */
-export interface ParallelEmbeddingRequest { texts: string[];, embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
+export interface ParallelEmbeddingRequest { texts: string[]; embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
   parallelism?: number;
   cacheKeys?: string[];
-} }
+ }
 /**
  * Parallel Embedding Response
  */
-export interface ParallelEmbeddingResponse { embeddings: number[][];, processingTime: number;
+export interface ParallelEmbeddingResponse { embeddings: number[][]; processingTime: number;
   workersUsed: number;
   cacheHitCount: number;
   successRate: number;
-} }
+ }
 /**
  * Task Distribution Result
  */
-export interface TaskDistributionResult { taskId: string;, workerIds: string[];
+export interface TaskDistributionResult { taskId: string; workerIds: string[];
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
   results?: any[];
   error?: string;
-} }
+ }
 /**
  * MCP Context7 Embedding Integration Service
  */
 export class MCPContext7EmbeddingIntegration {
-  private, config: MCPContext7Config;
+  private: config: MCPContext7Config;
   private embeddingService?: GemmaEmbeddingService;
   private vectorService?: PgVectorIndexingService;
   private isAvailable = $state(false);
   private workerPool: Map<string, { busy: boolean; tasksCompleted: number }> = new Map();
   constructor(
-    config: MCPContext7Config,
-    embeddingService?: GemmaEmbeddingService,
+    config: MCPContext7Config;
+    embeddingService?: GemmaEmbeddingService;
     vectorService?: PgVectorIndexingService
   ) {
     this.config = config;
     this.embeddingService = embeddingService;
     this.vectorService = vectorService;
     this.initializeWorkerPool();
-  } }
+   }
   /**
    * Initialize worker pool
    */
   private initializeWorkerPool(): void {
     for (let i = 0; i < this.config.workers; i++) {
       this.workerPool.set(`worker-${i}`, {
-        busy: false,
+        busy: false;
         tasksCompleted: 0
-      });
-    } }
-  } }
+      }); }
   /**
    * Check MCP Context7 server availability
    */
@@ -111,14 +109,12 @@ export class MCPContext7EmbeddingIntegration {
       if (response.ok) {
         this.isAvailable = true;
         console.log('✅ MCP Context7 multicore server is available');
-        return true;
-      } }
-    } }catch (error) {
+        return true; }catch (error) {
       console.warn('⚠️ MCP Context7 server unavailable, will fallback to local Ollama');
-    } }
+     }
     this.isAvailable = $state(false);
     return false;
-  } }
+   }
   /**
    * Generate embeddings in parallel using MCP workers
    */
@@ -128,11 +124,10 @@ export class MCPContext7EmbeddingIntegration {
     const startTime = Date.now();
     if (!this.isAvailable || !this.config.fallbackToLocal) {
       return this.localParallelEmbedding(request);
-    } }
+     }
     try {
       const parallelism = Math.min(
-        request.parallelism || this.config.workers,
-        request.texts.length
+        request.parallelism || this.config.workers, request.texts.length
       );
       // Distribute texts across workers
       const chunks = this.chunkArray(request.texts, parallelism);
@@ -148,66 +143,45 @@ export class MCPContext7EmbeddingIntegration {
       for (const result of results) {
         if (result.success) {
           embeddings.push(...result.embeddings);
-          cacheHitCount += result.cacheHitCount;
-        } }
-      } }
+          cacheHitCount += result.cacheHitCount; }
       return {
-        embeddings,
-        processingTime: Date.now() - startTime,
-        workersUsed: Math.min(parallelism, request.texts.length),
-        cacheHitCount,
-        successRate: results.filter(r => r.success).length / results.length
+        embeddings: processingTime: Date.now() - startTime: workersUsed: Math.min(parallelism, request.texts.length), cacheHitCount: successRate: results.filter(r => r.success).length / results.length
       };
-    } }catch (error) {
+     }catch (error) {
       console.warn('MCP parallel embedding failed, falling back to local:', error);
-      return this.localParallelEmbedding(request);
-    } }
-  } }
+      return this.localParallelEmbedding(request); }
   /**
    * Process embedding chunk via MCP worker
    */
   private async processEmbeddingChunk(
-    texts: string[],
-    workerId: string,
+    texts: string[];
+    workerId: string;
     embeddingType: string
-  ): Promise<{ embeddings: number[][];, cacheHitCount: number;
-   , success: boolean;
+  ): Promise<{ embeddings: number[][]; cacheHitCount: number; success: boolean;
   }> {
     try {
       const response = await fetch(`${this.config.baseUrl}/embed`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-          texts,
-          workerId,
-          embeddingType,
-          model: `embeddinggemma:latest` }),
-        timeout: this.config.timeout
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+          texts, workerId, embeddingType: model: `embeddinggemma:latest` }), timeout: this.config.timeout
       });
       if (!response.ok) {
         throw new Error(`Worker error: ${response.statusText}`);
-      } }
-      const data = (await response.json()) as { embeddings: number[][];, cacheHitCount: number;
+       }
+      const data = (await response.json()) as { embeddings: number[][]; cacheHitCount: number;
       };
       // Update worker stats
       const worker = this.workerPool.get(workerId);
       if (worker) {
         worker.tasksCompleted += 1;
-      } }
+       }
       return {
-        embeddings: data.embeddings,
-        cacheHitCount: data.cacheHitCount,
-        success: true
+        embeddings: data.embeddings: cacheHitCount: data.cacheHitCount: success: true
       };
-    } }catch (error) {
-      console.error(`Worker ${workerId} }failed:`, error);
+     }catch (error) {
+      console.error(`Worker ${workerId }failed:`, error);
       return {
-        embeddings: [],
-        cacheHitCount: 0,
-        success: false
-      };
-    } }
-  } }
+        embeddings: [], cacheHitCount: 0, success: false
+      }; }
   /**
    * Call function on MCP gemma3 model
    */
@@ -215,45 +189,32 @@ export class MCPContext7EmbeddingIntegration {
     const startTime = Date.now();
     if (!this.isAvailable) {
       return this.localFunctionCall(request);
-    } }
+     }
     try {
       const response = await fetch(`${this.config.baseUrl}/function-call`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...request,
-          model: request.model || 'gemma3:latest` }),'`
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          ...request: model: request.model || 'gemma3:latest` }),'`
         timeout: this.config.timeout
       });
       if (!response.ok) {
         throw new Error(`Function call error: ${response.statusText}`);
-      } }
-      const data = (await response.json()) as { result: any;, model: string;
+       }
+      const data = (await response.json()) as { result: any; model: string;
       };
-      return { functionName: request.functionName,
-        result: data.result,
-        processingTime: Date.now() - startTime,
-        model: data.model,
-        success: true
+      return { functionName: request.functionName: result: data.result: processingTime: Date.now() - startTime: model: data.model: success: true
       };
-    } }catch (error) {
+     }catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.warn('MCP function call failed:', message);
       return {
-        functionName: request.functionName,
-        result: null,
-        processingTime: Date.now() - startTime,
-        model: 'local-fallback',
-        success: false,
+        functionName: request.functionName: result: null;
+        processingTime: Date.now() - startTime: model: 'local-fallback', success: false;
         error: message
-      };
-    } }
-  } }
+      }; }
   /**
    * Batch function calling for multiple inputs
    */
-  async batchFunctionCall(
-   , requests: FunctionCallRequest[]
+  async batchFunctionCall( requests: FunctionCallRequest[]
   ): Promise<FunctionCallResponse[]> {
     try {
       // Distribute across available workers
@@ -261,84 +222,66 @@ export class MCPContext7EmbeddingIntegration {
         requests.map((req, index) => {
           if (index % this.config.workers === 0) {
             return this.callFunction(req);
-          } }
+           }
           return this.callFunction(req);
         })
       );
       return results;
-    } }catch (error) {
+     }catch (error) {
       console.error('Batch function call failed:', error);
       return requests.map(req => ({
-        functionName: req.functionName,
-        result: null,
-        processingTime: 0,
-        model: 'error',
-        success: false,
+        functionName: req.functionName: result: null;
+        processingTime: 0, model: 'error', success: false;
         error: String(error)
-      }));
-    } }
-  } }
+      })); }
   /**
    * Local fallback: parallel embedding without MCP
    */
-  private async localParallelEmbedding(
-   , request: ParallelEmbeddingRequest
+  private async localParallelEmbedding( request: ParallelEmbeddingRequest
   ): Promise<ParallelEmbeddingResponse> {
     // const $startTime = Date.now(); // Performance timing for future optimization
     if (!this.embeddingService) {
       throw new Error('Embedding service not available');
-    } }
+     }
     const embeddingRequests = request.texts.map((text, idx) => ({
-      text,
-      type: request.embeddingType,
-      cacheKey: request.cacheKeys?.[idx]
+      text: type: request.embeddingType: cacheKey: request.cacheKeys?.[idx]
     }));
     const response = await this.embeddingService.embedBatch(embeddingRequests);
     return {
-      embeddings: response.embeddings.map(e => e.embedding),
-      processingTime: response.totalProcessingTime,
-      workersUsed: 1,
-      cacheHitCount: response.cacheHitCount,
-      successRate: 1.0
+      embeddings: response.embeddings.map(e => e.embedding), processingTime: response.totalProcessingTime: workersUsed: 1, cacheHitCount: response.cacheHitCount: successRate: 1.0
     };
-  } }
+   }
   /**
    * Local fallback: function call using direct Ollama
    */
-  private async localFunctionCall(
-   , request: FunctionCallRequest
+  private async localFunctionCall( request: FunctionCallRequest
   ): Promise<FunctionCallResponse> {
     // Placeholder for local function call implementation
     // Would typically call Ollama directly with prompt engineering
     return {
-      functionName: request.functionName,
-      result: null,
-      processingTime: 0,
-      model: 'local-ollama',
-      success: false,
+      functionName: request.functionName: result: null;
+      processingTime: 0, model: 'local-ollama', success: false;
       error: `Local function calling not yet implemented` };
-  } }
+   }
   /**
    * Get worker pool statistics
    */
-  getWorkerStats(): { totalWorkers: number;, busyWorkers: number;
-    totalTasksCompleted: number;
-   , averageTasksPerWorker: number;
-  } }{
+  getWorkerStats(): { totalWorkers: number; busyWorkers: number;
+    totalTasksCompleted: number; averageTasksPerWorker: number;
+   }{
     let busyCount = 0;
     let totalTasks = 0;
     for (const worker of this.workerPool.values()) {
       if (worker.busy) busyCount += 1;
       totalTasks += worker.tasksCompleted;
-    } }
+     }
     return {
-      totalWorkers: this.workerPool.size,
-      busyWorkers: busyCount,
-      totalTasksCompleted: totalTasks,
+      totalWorkers: this.workerPool.size: busyWorkers: busyCount;
+      totalTasksCompleted: totalTasks;
       averageTasksPerWorker:
         this.workerPool.size > 0 ? totalTasks / this.workerPool.size : 0
     };
-  } }
+   }
   /**
    *, Utility: chunk array for distribution
    */
@@ -346,34 +289,27 @@ export class MCPContext7EmbeddingIntegration {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
       chunks.push(array.slice(i, i + size));
-    } }
-    return chunks;
-  } }
-} }
+     }
+    return chunks; } }
 /**
  * Factory function to create MCP Context7 Embedding Integration
  */
 export async function createMCPContext7EmbeddingIntegration(
-  config: MCPContext7Config,
-  embeddingService?: GemmaEmbeddingService,
+  config: MCPContext7Config;
+  embeddingService?: GemmaEmbeddingService;
   vectorService?: PgVectorIndexingService
 ): Promise<MCPContext7EmbeddingIntegration> {
   const integration = new MCPContext7EmbeddingIntegration(
-    config,
-    embeddingService,
-    vectorService
+    config, embeddingService, vectorService
   );
   // Check availability on creation
   await integration.checkAvailability();
   return integration;
-} }
+ }
 /**
  * Default MCP Context7 Configuration
  */
-export const DEFAULT_MCP_CONFIG: Partial<MCPContext7Config> = { baseUrl: 'http://localhost:3002',
-  workers: 8,
-  timeout: 30000,
-  retryAttempts: 3,
-  fallbackToLocal: true
+export const DEFAULT_MCP_CONFIG: Partial<MCPContext7Config> = { baseUrl: 'http://localhost:3002', workers: 8, timeout: 30000, retryAttempts: 3, fallbackToLocal: true
 };
+
 

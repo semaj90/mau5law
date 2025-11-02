@@ -1,14 +1,14 @@
-import type { Document } }from '$lib/types';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
+import type { Document  } from '$lib/types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { query, documentId, sessionId } }= await request.json();
+    const { query, documentId, sessionId  }= await request.json();
 
     if (!query) {
       return json({ error: 'Query is required' }, { status: 400 });
-    } }
+     }
 
     // Create streaming response for RAG query processing
     const stream = new ReadableStream({
@@ -18,9 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
-  type: 'status',
-                message: 'Initializing RAG query processing...',
-                progress: 10
+  type: 'status', message: 'Initializing RAG query processing...', progress: 10
               })}\n\n`
             )
           );
@@ -29,9 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
-  type: 'status',
-                message: 'Performing vector similarity search...',
-                progress: 30
+  type: 'status', message: 'Performing vector similarity search...', progress: 30
               })}\n\n`
             )
           );
@@ -40,9 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
-  type: 'status',
-                message: 'Retrieving relevant documents...',
-                progress: 50
+  type: 'status', message: 'Retrieving relevant documents...', progress: 50
               })}\n\n`
             )
           );
@@ -51,9 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
-  type: 'status',
-                message: 'Augmenting context with retrieved documents...',
-                progress: 70
+  type: 'status', message: 'Augmenting context with retrieved documents...', progress: 70
               })}\n\n`
             )
           );
@@ -62,15 +54,13 @@ export const POST: RequestHandler = async ({ request }) => {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
-  type: 'status',
-                message: 'Generating AI response...',
-                progress: 90
+  type: 'status', message: 'Generating AI response...', progress: 90
               })}\n\n`
             )
           );
 
           // Simulate AI response streaming (in production, this would stream from Ollama/LLM)
-          const aiResponse = `Based on the legal documents analyzed, here's the comprehensive answer to your query: "${query}"\n\nKey, findings:\n• Relevant case law precedents identified\n• Contract clauses analyzed for compliance\n• Risk assessment completed\n• Recommendations provided\n\nThis analysis is based on ${Math.floor(Math.random() * 50) + 10} }relevant documents from your legal corpus.`;'
+          const aiResponse = `Based on the legal documents analyzed, here's the comprehensive answer to your query: "${query}"\n\nKey: findings:\n• Relevant case law precedents identified\n• Contract clauses analyzed for compliance\n• Risk assessment completed\n• Recommendations provided\n\nThis analysis is based on ${Math.floor(Math.random() * 50) + 10 }relevant documents from your legal corpus.`;'
 
           // Stream the AI response word by word
           const words = aiResponse.split(' ');
@@ -78,74 +68,54 @@ export const POST: RequestHandler = async ({ request }) => {
             controller.enqueue(
               new TextEncoder().encode(
                 `data: ${JSON.stringify({`
-  type: 'response',
-                  content: words[i] + ' ',
-                  isComplete: i === words.length - 1,
-                  progress: 90 + (i / words.length) * 10
+  type: 'response', content: words[i] + ' ', isComplete: i === words.length - 1, progress: 90 + (i / words.length) * 10
                 })}\n\n`
               )
             );
             // Add small delay to simulate streaming
             await new Promise(resolve => setTimeout(resolve, 50));
-          } }
+           }
 
           // Final completion message
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
-  type: 'complete',
-                message: 'RAG query processing completed successfully',
-                progress: 100,
-                metadata: {
-  documentsAnalyzed: Math.floor(Math.random() * 50) + 10,
-                  processingTime: Math.floor(Math.random() * 3000) + 1000,
-                  confidence: Math.floor(Math.random() * 20) + 80
-                } }
+  type: 'complete', message: 'RAG query processing completed successfully', progress: 100, metadata: {
+  documentsAnalyzed: Math.floor(Math.random() * 50) + 10, processingTime: Math.floor(Math.random() * 3000) + 1000, confidence: Math.floor(Math.random() * 20) + 80
+                 }
               })}\n\n`
             )
           );
 
           controller.close();
-        } }catch (error) {
+         }catch (error) {
           controller.enqueue(
             new TextEncoder().encode(
               `data: ${JSON.stringify({`
-  type: 'error',
-                message: `RAG processing; error: ${error instanceof Error ? error.message : `Unknown error` }`,'`'`
+  type: 'error', message: `RAG processing; error: ${error instanceof Error ? error.message : `Unknown error` }`,'`'`
                 error: true
               })}\n\n`
             )
           );
-          controller.close();
-        } }
-      } }
+          controller.close(); }
     });
 
     return new Response(stream, {
       headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type` } }`
+        'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type`  }`
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('RAG stream error:', error);
     return json(
       {
-        error: 'Failed to process RAG query stream',
-        details: error instanceof Error ? error.message : `Unknown error` },'`'`
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to process RAG query stream', details: error instanceof Error ? error.message : `Unknown error` },'`'`
+      { status: 500  }
+    ); };
 
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type' } }` });'`
+    status: 200, headers: {
+      'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type'  }` });'`
 };
+
 

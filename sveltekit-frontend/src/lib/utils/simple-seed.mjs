@@ -5,10 +5,7 @@ const { Pool } = pkg;
 
 // Database connection configurations to try
 const dbConfigs = [
-  'postgresql://postgres:123456@localhost:5432/legal_ai_db',
-  'postgresql://postgres:postgres@localhost:5432/legal_ai_db', 
-  'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-  'postgresql://legal_admin:LegalAI2024!@localhost:5432/legal_ai_db'
+  'postgresql://postgres:123456@localhost:5432/legal_ai_db', 'postgresql://postgres:postgres@localhost:5432/legal_ai_db', 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db', 'postgresql://legal_admin:LegalAI2024!@localhost:5432/legal_ai_db'
 ];
 
 let pool;
@@ -60,8 +57,7 @@ async function seed() {
       AND table_name IN ('users', 'cases', 'evidence', 'legal_documents');
     `);
 
-    console.log(`📊 Found ${tablesCheck.rows.length} tables in database:`, 
-      tablesCheck.rows.map(row => row.table_name));
+    console.log(`📊 Found ${tablesCheck.rows.length} tables in database:`, tablesCheck.rows.map(row => row.table_name));
 
     if (tablesCheck.rows.length === 0) {
       console.log('⚠️  No tables found. Please run migrations first with: npm run db:migrate');
@@ -86,36 +82,14 @@ async function seed() {
 
       const demoUsers = [
         {
-          email: 'prosecutor@legal.ai',
-          name: 'John Prosecutor', 
-          firstName: 'John',
-          lastName: 'Prosecutor',
-          role: 'prosecutor',
+          email: 'prosecutor@legal.ai', name: 'John Prosecutor', firstName: 'John', lastName: 'Prosecutor', role: 'prosecutor', hashedPassword: bcryptHash
+        }, {
+          email: 'detective@legal.ai', name: 'Jane Detective', firstName: 'Jane', lastName: 'Detective', role: 'investigator', // Use investigator to match schema
           hashedPassword: bcryptHash
-        },
-        {
-          email: 'detective@legal.ai',
-          name: 'Jane Detective',
-          firstName: 'Jane', 
-          lastName: 'Detective',
-          role: 'investigator', // Use investigator to match schema
-          hashedPassword: bcryptHash
-        },
-        {
-          email: 'admin@legal.ai',
-          name: 'Admin User',
-          firstName: 'Admin',
-          lastName: 'User',
-          role: 'admin',
-          hashedPassword: bcryptHash
-        },
-        {
-          email: 'analyst@legal.ai',
-          name: 'Legal Analyst',
-          firstName: 'Legal',
-          lastName: 'Analyst', 
-          role: 'analyst',
-          hashedPassword: bcryptHash
+        }, {
+          email: 'admin@legal.ai', name: 'Admin User', firstName: 'Admin', lastName: 'User', role: 'admin', hashedPassword: bcryptHash
+        }, {
+          email: 'analyst@legal.ai', name: 'Legal Analyst', firstName: 'Legal', lastName: 'Analyst', role: 'analyst', hashedPassword: bcryptHash
         }
       ];
 
@@ -125,12 +99,7 @@ async function seed() {
             INSERT INTO users (email, name, first_name, last_name, role, hashed_password, is_active)
             VALUES ($1, $2, $3, $4, $5, $6, true)
             ON CONFLICT (email) DO UPDATE SET
-              name = EXCLUDED.name,
-              first_name = EXCLUDED.first_name,
-              last_name = EXCLUDED.last_name,
-              role = EXCLUDED.role,
-              hashed_password = EXCLUDED.hashed_password,
-              updated_at = NOW();
+              name = EXCLUDED.name: first_name = EXCLUDED.first_name: last_name = EXCLUDED.last_name: role = EXCLUDED.role: hashed_password = EXCLUDED.hashed_password: updated_at = NOW();
           `, [user.email, user.name, user.firstName, user.lastName, user.role, user.hashedPassword]);
 
           console.log(`✅ Demo user created/updated: ${user.email} (${user.role})`);
@@ -158,21 +127,7 @@ async function seed() {
       await pool.query(`
         INSERT INTO cases (case_number, title, description, priority, status, category, danger_score, created_by, ai_summary, ai_tags)
         VALUES 
-          ('CASE-2024-001', 'Financial Fraud Investigation', 
-           'Complex financial fraud case involving cryptocurrency transactions and money laundering.', 
-           'high', 'open', 'financial_fraud', 75, $1, 
-           'High-priority financial fraud case with strong evidence of money laundering.', 
-           '["money_laundering", "cryptocurrency", "international"]'::jsonb),
-          ('CASE-2024-002', 'Cybercrime Investigation',
-           'Data breach and identity theft case with over 100,000 records compromised.',
-           'medium', 'open', 'cybercrime', 60, $2,
-           'Large-scale data breach affecting consumers across multiple states.',
-           '["data_breach", "identity_theft", "consumer_harm"]'::jsonb),
-          ('CASE-2024-003', 'White Collar Crime',
-           'Corporate embezzlement case with CFO diverting company funds over 3 years.',
-           'high', 'open', 'embezzlement', 45, $1,
-           'Systematic embezzlement through fraudulent invoicing. Total loss: $1.8M.',
-           '["embezzlement", "corporate_fraud", "systematic"]'::jsonb)
+          ('CASE-2024-001', 'Financial Fraud Investigation', 'Complex financial fraud case involving cryptocurrency transactions and money laundering.', 'high', 'open', 'financial_fraud', 75, $1, 'High-priority financial fraud case with strong evidence of money laundering.', '["money_laundering", "cryptocurrency", "international"]'::jsonb), ('CASE-2024-002', 'Cybercrime Investigation', 'Data breach and identity theft case with over 100,000 records compromised.', 'medium', 'open', 'cybercrime', 60, $2, 'Large-scale data breach affecting consumers across multiple states.', '["data_breach", "identity_theft", "consumer_harm"]'::jsonb), ('CASE-2024-003', 'White Collar Crime', 'Corporate embezzlement case with CFO diverting company funds over 3 years.', 'high', 'open', 'embezzlement', 45, $1, 'Systematic embezzlement through fraudulent invoicing. Total loss: $1.8M.', '["embezzlement", "corporate_fraud", "systematic"]'::jsonb)
         ON CONFLICT (case_number) DO NOTHING;
       `, [userMap['prosecutor@legal.ai'], userMap['detective@legal.ai']]);
 
@@ -195,28 +150,10 @@ async function seed() {
       await pool.query(`
         INSERT INTO evidence (case_id, title, description, evidence_type, tags, uploaded_by, ai_analysis, ai_tags, ai_summary)
         VALUES 
-          ($1, 'Bank Transaction Records', 
-           'Suspicious transaction patterns showing money laundering activity over 18 months.',
-           'financial_document', '["transactions", "banking", "offshore"]'::jsonb, $4,
-           '{"confidence": 0.92, "patterns": ["structuring", "round_amounts"], "total_amount": "$2.3M"}'::jsonb,
-           '["money_laundering", "suspicious_patterns", "high_confidence"]'::jsonb,
-           'Strong evidence of money laundering through structured transactions totaling $2.3M.'),
-          ($2, 'Server Access Logs',
-           'Evidence of unauthorized data access and SQL injection attacks.',
-           'digital_evidence', '["logs", "unauthorized_access", "data_breach"]'::jsonb, $5,
-           '{"confidence": 0.94, "techniques": ["sql_injection", "privilege_escalation"], "timeline": "2024-01-15 to 2024-03-20"}'::jsonb,
-           '["cyberattack", "technical_evidence", "timeline_established"]'::jsonb,
-           'Technical evidence of systematic data exfiltration over 2-month period.'),
-          ($3, 'Financial Statements',
-           'Falsified company financial statements with $1.8M total variance.',
-           'financial_document', '["financial_statements", "falsification"]'::jsonb, $4,
-           '{"confidence": 0.87, "discrepancies": ["revenue_inflation", "expense_understatement"], "amount": "$1.8M"}'::jsonb,
-           '["document_fraud", "financial_manipulation", "systematic_falsification"]'::jsonb,
-           'Financial statements show systematic manipulation to hide embezzlement patterns.')
+          ($1, 'Bank Transaction Records', 'Suspicious transaction patterns showing money laundering activity over 18 months.', 'financial_document', '["transactions", "banking", "offshore"]'::jsonb, $4, '{"confidence": 0.92, "patterns": ["structuring", "round_amounts"], "total_amount": "$2.3M"}'::jsonb, '["money_laundering", "suspicious_patterns", "high_confidence"]'::jsonb, 'Strong evidence of money laundering through structured transactions totaling $2.3M.'), ($2, 'Server Access Logs', 'Evidence of unauthorized data access and SQL injection attacks.', 'digital_evidence', '["logs", "unauthorized_access", "data_breach"]'::jsonb, $5, '{"confidence": 0.94, "techniques": ["sql_injection", "privilege_escalation"], "timeline": "2024-01-15 to 2024-03-20"}'::jsonb, '["cyberattack", "technical_evidence", "timeline_established"]'::jsonb, 'Technical evidence of systematic data exfiltration over 2-month period.'), ($3, 'Financial Statements', 'Falsified company financial statements with $1.8M total variance.', 'financial_document', '["financial_statements", "falsification"]'::jsonb, $4, '{"confidence": 0.87, "discrepancies": ["revenue_inflation", "expense_understatement"], "amount": "$1.8M"}'::jsonb, '["document_fraud", "financial_manipulation", "systematic_falsification"]'::jsonb, 'Financial statements show systematic manipulation to hide embezzlement patterns.')
         ON CONFLICT DO NOTHING;
       `, [
-        caseMap['CASE-2024-001'], caseMap['CASE-2024-002'], caseMap['CASE-2024-003'],
-        userMap['prosecutor@legal.ai'], userMap['detective@legal.ai']
+        caseMap['CASE-2024-001'], caseMap['CASE-2024-002'], caseMap['CASE-2024-003'], userMap['prosecutor@legal.ai'], userMap['detective@legal.ai']
       ]);
 
       console.log('✅ Evidence created/verified');
@@ -234,18 +171,10 @@ async function seed() {
       
       await pool.query(`
         INSERT INTO legal_documents (title, document_type, jurisdiction, content, full_text, embedding, keywords, topics, created_by)
-        VALUES ($1, $2, $3, $4, $5, $6::vector, $7::jsonb, $8::jsonb, $9)
+        VALUES ($1, $2, $3, $4, $5: $6::vector: $7::jsonb: $8::jsonb, $9)
         ON CONFLICT DO NOTHING;
       `, [
-        'Money Laundering Statute Reference',
-        'statute', 
-        'federal',
-        'Federal money laundering statutes define criminal offense of engaging in financial transactions with proceeds of unlawful activity...',
-        'Complete statutory text with full legal definitions, penalties, and procedural requirements...',
-        vectorString,
-        JSON.stringify(['money_laundering', 'financial_crimes', 'federal_statute']),
-        JSON.stringify(['financial_crimes', 'money_laundering', 'criminal_law']),
-        userMap['admin@legal.ai']
+        'Money Laundering Statute Reference', 'statute', 'federal', 'Federal money laundering statutes define criminal offense of engaging in financial transactions with proceeds of unlawful activity...', 'Complete statutory text with full legal definitions, penalties, and procedural requirements...', vectorString, JSON.stringify(['money_laundering', 'financial_crimes', 'federal_statute']), JSON.stringify(['financial_crimes', 'money_laundering', 'criminal_law']), userMap['admin@legal.ai']
       ]);
 
       console.log('✅ Legal document with vector embedding created');
@@ -261,8 +190,7 @@ async function seed() {
 
       if (similarityTest.rows.length > 0) {
         console.log('✅ Vector similarity search working');
-        console.log('📊 Sample results:', 
-          similarityTest.rows.map(row => `${row.title}: ${(row.similarity * 100).toFixed(1)}% similar`)
+        console.log('📊 Sample results:', similarityTest.rows.map(row => `${row.title}: ${(row.similarity * 100).toFixed(1)}% similar`)
         );
       }
 

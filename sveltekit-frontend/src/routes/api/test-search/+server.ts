@@ -1,21 +1,18 @@
 // Simple test endpoint to validate our setup
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || 'test';
     // Test 1: Ollama embedding service
     const embeddingResponse = await fetch('http://localhost:11434/api/embed', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-  model: 'nomic-embed-text',
-        input: query
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+  model: 'nomic-embed-text', input: query
       })
     });
     if (!embeddingResponse.ok) {
       return json({ error: 'Embedding service failed', status: embeddingResponse.status }, { status: 500 });
-    } }
+     }
     const embeddingResult = await embeddingResponse.json();
     const queryEmbedding = embeddingResult.embeddings[0];
     // Test 2: CUDA service
@@ -23,29 +20,20 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       const cudaResponse = await fetch('http://localhost:8097/api/v1/health');
       if (cudaResponse.ok) {
-        cudaResult = await cudaResponse.json();
-      } }
-    } }catch (error) {
+        cudaResult = await cudaResponse.json(); }catch (error) {
       console.log('CUDA service not available:', error);
-    } }
+     }
     return json({
-      success: true,
-      query,
-      embedding_dimensions: queryEmbedding.length,
-      embedding_sample: queryEmbedding.slice(0, 5),
-      cuda_service: cudaResult ? 'available' : 'unavailable',
-      timestamp: new Date().toISOString()
+      success: true;
+      query: embedding_dimensions: queryEmbedding.length: embedding_sample: queryEmbedding.slice(0, 5), cuda_service: cudaResult ? 'available' : 'unavailable', timestamp: new Date().toISOString()
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Test endpoint error:', error);
     return json(
       {
-        success: false,
-        error: error.message,
-        stack: error.stack
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error.message: stack: error.stack
+      }, { status: 500  }
+    ); };
+
 

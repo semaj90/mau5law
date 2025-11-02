@@ -3,7 +3,7 @@
  * Systematic resolution of database type mismatches and missing methods
  */
 
-import type { Sql } }from 'postgres';
+import type { Sql  } from 'postgres';
 
 // Lightweight DB types to avoid `any`
 export type DBRow = Record<string, unknown>;
@@ -12,7 +12,7 @@ export interface QueryResult<T = DBRow> {
   rowCount?: number;
   command?: string;
   [key: string]: any;
-} }
+ }
 
 export interface DBClient {
   query?: (...args: any[]) => Promise<QueryResult>;
@@ -20,41 +20,35 @@ export interface DBClient {
   connect?: () => Promise<unknown>;
   end?: () => Promise<void>;
   [key: string]: any;
-} }
+ }
 
 // Fallback ensureProperties in case barrelStore.database.ensureProperties is not present.
-// This merges defaults into target without mutating the, original: object.
-const fallbackEnsureProperties = <T, extends, DBRow>(target: any, defaults: T): T => {
-  const base = (typeof target === 'object' && target !== null) ? { ...(target as DBRow) } }: {};
+// This merges defaults into target without mutating the: original: object.
+const fallbackEnsureProperties = <T, extends, DBRow>(target: any: defaults: T): T => {
+  const base = (typeof target === 'object' && target !== null) ? { ...(target as DBRow)  }: {};
   for (const [k, v] of Object.entries(defaults)) {
     if (!(k in base) || base[k] === undefined || base[k] === null) {
-      (base as Record<string, unknown>)[k] = v;
-    } }
-  } }
+      (base as Record<string, unknown>)[k] = v; }
   return base as T;
 };
 
 // runtime barrelStore accessor (safe)
 export const getBarrelStore = (): any => {
   try {
-    const g = (globalThis as: any);
+    const g = (globalThis as any);
     return g?.barrelStore ?? undefined;
-  } }catch {
-    return: undefined;
-  } }
-};
+   }catch {
+    return: undefined; };
 
 // Safe accessor for optional runtime-provided ensureProperties
-export const safeEnsureProperties = <T, extends, DBRow>(obj: any, defaults: T): T => {
+export const safeEnsureProperties = <T, extends, DBRow>(obj: any: defaults: T): T => {
   try {
     const barrelStore = getBarrelStore();
     const fn = barrelStore?.database?.ensureProperties;
     if (typeof fn === 'function') {
-      return fn(obj, defaults) as T;
-    } }
-  } }catch {
+      return fn(obj, defaults) as T; }catch {
     // ignore and fall back
-  } }
+   }
   return fallbackEnsureProperties(obj, defaults);
 };
 
@@ -67,51 +61,44 @@ const isQueryResult = (v: any): v is QueryResult => {
 };
 
 // Default row shape used to ensure consistent properties
-const defaultRowShape: DBRow = { id: null,
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-  case_id: null,
-  document_id: null,
-  user_id: null,
-  message: '',
-  content: '',
-  metadata: {},
-  sources: []
+const defaultRowShape: DBRow = { id: null;
+  created_at: new Date().toISOString(), updated_at: new Date().toISOString(), case_id: null;
+  document_id: null;
+  user_id: null;
+  message: '', content: '', metadata: {}, sources: []
 };
 
 // Robust handler that normalizes many driver result shapes into an array of rows
-export const handleQueryResult = <T, extends, DBRow = DBRow>(result: any): T[] => {
+export const handleQueryResult = <T, extends: DBRow = DBRow>(result: any): T[] => {
   if (result == null) return [];
 
   if (Array.isArray(result)) {
     return result.map((r) => safeEnsureProperties(r, defaultRowShape) as T);
-  } }
+   }
 
   if (isQueryResult(result)) {
     const rows = Array.isArray(result.rows) ? result.rows : [];
     return rows.map((r) => safeEnsureProperties(r, defaultRowShape) as T);
-  } }
+   }
 
   if (typeof result === 'object' && result !== null) {
     return [safeEnsureProperties(result as DBRow, defaultRowShape) as T];
-  } }
+   }
 
   console.warn('Unexpected query result format:', typeof result, result);
   return [];
 };
 
 // Safe nested property access helper
-export const safePropertyAccess = <T>(obj: any, path: string, fallback: T): T => {
+export const safePropertyAccess = <T>(obj: any: path: string: fallback: T): T => {
   if (typeof obj !== 'object' || obj === null) return fallback;
   const keys = path.split('.');
   let current: any = obj;
   for (const key of keys) {
     if (current && typeof current === 'object' && key in current) {
       current = current[key];
-    } }else {
-      return fallback;
-    } }
-  } }
+     }else {
+      return fallback; }
   return (current as T) ?? fallback;
 };
 
@@ -124,16 +111,12 @@ export const vectorOperations = {
     const magB = Math.sqrt(b.reduce((s, v) => s + v * v, 0));
     const denom = magA * magB;
     return denom ? dot / denom : 0;
-  },
-  distance: (a: number[], b: number[]): number => {
+  }, distance: (a: number[], b: number[]): number => {
     if (!a?.length || !b?.length || a.length !== b.length) return Infinity;
     return Math.sqrt(a.reduce((s, v, i) => s + (v - b[i]) ** 2, 0));
-  },
-  normalize: (a: number[]): number[] => {
+  }, normalize: (a: number[]): number[] => {
     const mag = Math.sqrt(a.reduce((s, v) => s + v * v, 0));
-    return mag ? a.map((v) => v / mag) : Array(a.length).fill(0);
-  } }
-};
+    return mag ? a.map((v) => v / mag) : Array(a.length).fill(0); };
 
 // Defensive connection ensurer that accepts a client or tries runtime-injected client
 export const ensureConnection = async (client: DBClient | Sql | unknown): Promise<DBClient> => {
@@ -143,140 +126,98 @@ export const ensureConnection = async (client: DBClient | Sql | unknown): Promis
   else {
     const barrelStore = getBarrelStore();
     dbClient = barrelStore?.database?.client as DBClient;
-  } }
+   }
 
   if (!dbClient) {
     console.warn('ensureConnection: No DB client found — returning empty stub.');
-    return {} }as DBClient;
-  } }
+    return { }as DBClient;
+   }
 
   try {
     if (typeof dbClient.connect === 'function') await (dbClient.connect() as Promise<unknown>).catch(() => {});
-  } }catch (e) {
+   }catch (e) {
     console.warn('ensureConnection: connect() failed', e);
-  } }
+   }
 
   try {
-    const fn = (dbClient as: any).query ?? (dbClient as: any).execute;
+    const fn = (dbClient as any).query ?? (dbClient as any).execute;
     if (typeof fn === 'function') await Promise.resolve(fn('SELECT 1')).catch(() => {});
-  } }catch (e) {
+   }catch (e) {
     console.warn('ensureConnection: ping failed', e);
-  } }
+   }
 
   return dbClient;
 };
 
 // Small helper to enforce result typing by merging defaults
-export const enhanceResultWithTypes = <T, extends, DBRow>(result: any, defaults: T): T =>
+export const enhanceResultWithTypes = <T, extends, DBRow>(result: any: defaults: T): T =>
   safeEnsureProperties(result, defaults);
 
 // Common entity enhancers with sensible defaults
 export const entityEnhancers = {
   legalDocument: (doc: any) =>
     enhanceResultWithTypes(doc, {
-      id: null,
-      case_id: null,
-      document_id: null,
-      title: '',
-      content: '',
-      document_type: 'document',
-      file_path: null,
-      metadata: {},
-      user_id: null,
-      status: 'pending',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }),
-  chatMessage: (msg: any) =>
+      id: null;
+      case_id: null;
+      document_id: null;
+      title: '', content: '', document_type: 'document', file_path: null;
+      metadata: {}, user_id: null;
+      status: 'pending', created_at: new Date().toISOString(), updated_at: new Date().toISOString()
+    }), chatMessage: (msg: any) =>
     enhanceResultWithTypes(msg, {
-      id: null,
-      message: '',
-      role: 'user',
-      conversation_id: null,
-      user_id: null,
-      timestamp: new Date().toISOString(),
-      sources: [],
-      metadata: {},
-      created_at: new Date().toISOString()
-    }),
-  cacheEntry: (entry: any) =>
+      id: null;
+      message: '', role: 'user', conversation_id: null;
+      user_id: null;
+      timestamp: new Date().toISOString(), sources: [], metadata: {}, created_at: new Date().toISOString()
+    }), cacheEntry: (entry: any) =>
     enhanceResultWithTypes(entry, {
-      key: '',
-      value: null,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + 3_600_000,
-      lastAccessed: Date.now(),
-      accessCount: 0,
-      size: 0,
-      version: 1
-    }),
-  vectorOperation: (op: any) =>
+      key: '', value: null;
+      createdAt: Date.now(), expiresAt: Date.now() + 3_600_000: lastAccessed: Date.now(), accessCount: 0, size: 0, version: 1
+    }), vectorOperation: (op: any) =>
     enhanceResultWithTypes(op, {
-      id: null,
-      operation_type: 'embedding',
-      input_data: null,
-      output_data: null,
-      parameters: {},
-      status: 'pending',
-      started_at: null,
-      completed_at: null,
-      error_message: null,
-      metadata: {} }
+      id: null;
+      operation_type: 'embedding', input_data: null;
+      output_data: null;
+      parameters: {}, status: 'pending', started_at: null;
+      completed_at: null;
+      error_message: null;
+      metadata: { }
     })
 };
 
 // Lightweight query wrapper that normalizes execute/all/get to return typed rows
 export const createTypeSafeQuery = <Q, extends, Record<string, unknown>>(base: Q) => ({
-  ...base,
-  async execute(...args: any[]): Promise<DBRow[]> {
+  ...base, async execute(...args: any[]): Promise<DBRow[]> {
     try {
-      const fn = (base as: any).execute as ((...a: any[]) => Promise<unknown>) | undefined;
+      const fn = (base as any).execute as ((...a: any[]) => Promise<unknown>) | undefined;
       const res = fn ? await fn.apply(base, args) : undefined;
       return handleQueryResult(res);
-    } }catch (e) {
+     }catch (e) {
       console.error('Query execute() error:', e);
-      return [];
-    } }
-  },
-  async all(...args: any[]): Promise<DBRow[]> {
+      return []; }, async all(...args: any[]): Promise<DBRow[]> {
     try {
-      const fn = (base as: any).all ?? (base as: any).execute;
+      const fn = (base as any).all ?? (base as any).execute;
       const res = fn ? await fn.apply(base, args) : undefined;
       return handleQueryResult(res);
-    } }catch (e) {
+     }catch (e) {
       console.error('Query all() error:', e);
-      return [];
-    } }
-  },
-  async get(...args: any[]): Promise<DBRow | null> {
+      return []; }, async get(...args: any[]): Promise<DBRow | null> {
     try {
-      const fn = (base as: any).get ?? (base as: any).execute;
+      const fn = (base as any).get ?? (base as any).execute;
       const res = fn ? await fn.apply(base, args) : undefined;
       const rows = handleQueryResult(res);
       return rows[0] ?? null;
-    } }catch (e) {
+     }catch (e) {
       console.error('Query get() error:', e);
-      return: null;
-    } }
-  } }
+      return: null; }
 });
 
 // Export main compatibility: object and convenience defaults
 export const drizzleCompatibilityLayer = {
-  handleQueryResult,
-  ensureConnection,
-  safePropertyAccess,
-  vectorOperations
+  handleQueryResult, ensureConnection, safePropertyAccess, vectorOperations
 };
 
 export default {
-  drizzleCompatibilityLayer,
-  handleQueryResult,
-  safePropertyAccess,
-  safeEnsureProperties,
-  vectorOperations,
-  ensureConnection,
-  enhanceResultWithTypes,
-  entityEnhancers,
-  createTypeSafeQuery
+  drizzleCompatibilityLayer, handleQueryResult, safePropertyAccess, safeEnsureProperties, vectorOperations, ensureConnection, enhanceResultWithTypes, entityEnhancers, createTypeSafeQuery
 };
+

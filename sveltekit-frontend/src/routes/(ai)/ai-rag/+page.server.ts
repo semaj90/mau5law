@@ -1,4 +1,4 @@
-import type { PageServerLoad } }from './$types';
+import type { PageServerLoad  } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const user = locals.user;
@@ -6,37 +6,24 @@ export const load: PageServerLoad = async ({ locals }) => {
   // Return demo data if not authenticated
   if (!user?.id) {
     return {
-      documents: [],
-      recentQueries: [],
-      stats: { totalDocuments: 0,
-        totalQueries: 0,
-        avgResponseTime: 0
-      } }
+      documents: [], recentQueries: [], stats: { totalDocuments: 0, totalQueries: 0, avgResponseTime: 0
+       }
     };
-  } }
+   }
 
   try {
     // Fetch user's RAG documents and queries'
     // This would query your vectors table with pgvector
-    return { documents: [],
-      recentQueries: [],
-      stats: { totalDocuments: 0,
-        totalQueries: 0,
-        avgResponseTime: 0
-      } }
+    return { documents: [], recentQueries: [], stats: { totalDocuments: 0, totalQueries: 0, avgResponseTime: 0
+       }
     };
-  } }catch (error: any) {
+   }catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Failed to load RAG data:', errorMessage);
 
     return {
-      documents: [],
-      recentQueries: [],
-      stats: { totalDocuments: 0,
-        totalQueries: 0,
-        avgResponseTime: 0
-      } }
-    };
-  } }
-};
+      documents: [], recentQueries: [], stats: { totalDocuments: 0, totalQueries: 0, avgResponseTime: 0
+       }
+    }; };
+
 

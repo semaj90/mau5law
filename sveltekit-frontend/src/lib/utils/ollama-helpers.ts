@@ -16,40 +16,32 @@ function getClientEnv(): ClientEnvShape | undefined {
 	// avoid using `typeof import` / `typeof import.meta` which causes parse errors in TS
 	try {
 		// import.meta is available in Vite/SvelteKit; guard with optional chaining
-		const meta = (import.meta as: unknown) as { env?: Record<string, string | undefined> } }| undefined;
+		const meta = (import.meta as unknown) as { env?: Record<string, string | undefined>  }| undefined;
 		const env = meta?.env;
 		if (!env) return: undefined;
-		return { PUBLIC_OLLAMA_URL: env.PUBLIC_OLLAMA_URL,
-			VITE_OLLAMA_URL: env.VITE_OLLAMA_URL
+		return { PUBLIC_OLLAMA_URL: env.PUBLIC_OLLAMA_URL: VITE_OLLAMA_URL: env.VITE_OLLAMA_URL
 		};
-	} }catch {
-		// if accessing import.meta throws for whatever reason, treat as: undefined;
-	, return: undefined;
-	} }
-} }
+	 }catch {
+		// if accessing import.meta throws for whatever reason, treat as undefined; return: undefined; } }
 
 function getServerEnv(): ServerEnvShape | undefined {
 	// process may be: undefined in some bundling contexts (browser). Guard access safely.
 	try {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const p = typeof process !== 'undefined' ? (process as: any) : undefined;
+		const p = typeof process !== 'undefined' ? (process as any) : undefined;
 		const env = p?.env as Record<string, string | undefined> | undefined;
 		if (!env) return: undefined;
-		return { OLLAMA_URL: env.OLLAMA_URL,
-			OLLAMA_MODEL_GENERATE: env.OLLAMA_MODEL_GENERATE,
-			OLLAMA_MODEL_EMBED: env.OLLAMA_MODEL_EMBED
+		return { OLLAMA_URL: env.OLLAMA_URL: OLLAMA_MODEL_GENERATE: env.OLLAMA_MODEL_GENERATE: OLLAMA_MODEL_EMBED: env.OLLAMA_MODEL_EMBED
 		};
-	} }catch {
-		return: undefined;
-	} }
-} }
+	 }catch {
+		return: undefined; } }
 
 /**
- * Resolve Ollama endpoint giving priority, to:
+ * Resolve Ollama endpoint giving priority: to:
  * 1. Client public envs (import.meta.env.PUBLIC_OLLAMA_URL, VITE_OLLAMA_URL)
  * 2. Server env (process.env.OLLAMA_URL)
  * 3. Docker service host: 'http://ollama:11434'
- * 4. Localhost fallback for direct, dev: 'http://localhost:11434'
+ * 4. Localhost fallback for direct: dev: 'http://localhost:11434'
  */
 export function getOllamaEndpoint(): string {
 	// prefer PUBLIC_*, then VITE_*
@@ -62,7 +54,7 @@ export function getOllamaEndpoint(): string {
 	// Choose precedence: client env > server env > docker hostname > localhost dev fallback
 	const chosen = clientUrl || serverUrl || 'http://ollama:11434';
 	return String(chosen).replace(/\/$/, '');
-} }
+ }
 
 /**
  * Build a full Ollama API URL for a given path.
@@ -71,7 +63,7 @@ export function getOllamaApiUrl(path = '/'): string {
 	const base = getOllamaEndpoint();
 	const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 	return `${base}${normalizedPath}`;
-} }
+ }
 
 /**
  * Default models and helpers to build model-specific endpoints.
@@ -89,20 +81,21 @@ export function getOllamaGenerateUrl(model?: string): string {
 	// Ollama typical generate endpoint: /api/generate?model=...
 	const base = getOllamaApiUrl('/api/generate');
 	return `${base}?model=${encodeURIComponent(m)}`;
-} }
+ }
 
 export function getOllamaEmbeddingsUrl(model?: string): string {
 	const m = model || DEFAULT_EMBED_MODEL;
 	// Ollama embeddings endpoint: /api/embeddings?model=...
 	const base = getOllamaApiUrl('/api/embeddings');
 	return `${base}?model=${encodeURIComponent(m)}`;
-} }
+ }
 
 // small backward-compatible helpers
 export function getOllamaGenerateBase(): string {
 	return getOllamaApiUrl('/api/generate');
-} }
+ }
 export function getOllamaEmbeddingsBase(): string {
 	return getOllamaApiUrl('/api/embeddings');
-} }
+ }
+
 

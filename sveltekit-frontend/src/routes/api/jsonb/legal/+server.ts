@@ -1,21 +1,21 @@
-import type { Case } }from '$lib/types';
-import { cuidSchema } }from '$lib/server/z-schemas';
-import { redis } }from '$lib/server/redis-client';
-import type { RequestHandler } }from './$types';
+import type { Case  } from '$lib/types';
+import { cuidSchema  } from '$lib/server/z-schemas';
+import { redis  } from '$lib/server/redis-client';
+import type { RequestHandler  } from './$types';
 /*
  * JSONB Legal API Endpoints
  *
  * RESTful API for legal metadata operations using optimized JSONB schema.
  */
-import { json, type RequestEvent } }from '@sveltejs/kit';
-import { jsonbLegalService } }from '$lib/services/jsonb-legal-service.js';
-import { logger } }from '$lib/logging/structured-logger.js';
-import { z } }from 'zod';
-import { randomUUID } }from 'crypto';
-import { getRedis } }from '$lib/server/redis.js';
+import { json, type RequestEvent  } from '@sveltejs/kit';
+import { jsonbLegalService  } from '$lib/services/jsonb-legal-service.js';
+import { logger  } from '$lib/logging/structured-logger.js';
+import { z  } from 'zod';
+import { randomUUID  } from 'crypto';
+import { getRedis  } from '$lib/server/redis.js';
 
 // Define interface for the result of evidence chain verification
-interface EvidenceVerificationResult { isValid: boolean;, evidence: { caseId: string | null;, id: string;
+interface EvidenceVerificationResult { isValid: boolean; evidence: { caseId: string | null; id: string;
     metadata: any;
     embedding: number[] | null;
     createdAt: Date;
@@ -25,9 +25,9 @@ interface EvidenceVerificationResult { isValid: boolean;, evidence: { caseId: s
     evidenceType: string | null;
     relevanceScore: number | null;
     [key: string]: any;
-  } }| null;
+   }| null;
   chainValidation: Record<string, unknown> | null;
-} }
+ }
 
 // ============================================================================
 // API HANDLERS
@@ -39,98 +39,71 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
   try {
     const path = url.pathname.split('/').pop();
     await logger.logAPIRequest({
-      requestId,
-      method: 'GET',
-      endpoint: `/api/jsonb/legal/${path}`,
-      userAgent: request.headers.get('user-agent') || 'unknown',
-      ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-      headers: Object.fromEntries(request.headers.entries())
+      requestId: method: 'GET', endpoint: `/api/jsonb/legal/${path}`, userAgent: request.headers.get('user-agent') || 'unknown', ipAddress: request.headers.get('x-forwarded-for') || 'unknown', headers: Object.fromEntries(request.headers.entries())
     });
     switch (path) {
       case, 'analytics': {
         const analytics = await jsonbLegalService.getLegalAnalytics();
         const duration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 200,
-          responseSize: JSON.stringify(analytics).length,
-          processingTime: duration,
+          requestId: statusCode: 200, responseSize: JSON.stringify(analytics).length: processingTime: duration;
           success: true
         });
         return json({
-          success: true,
-          data: analytics,
+          success: true;
+          data: analytics;
           metadata: {
-            requestId,
-            processingTime: duration,
+            requestId: processingTime: duration;
             timestamp: new Date().toISOString()
-          } }
+           }
         });
-      } }
+       }
       case, 'performance': {
         const performance_metrics = await jsonbLegalService.getPerformanceMetrics();
         const perfDuration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 200,
-          responseSize: JSON.stringify(performance_metrics).length,
-          processingTime: perfDuration,
+          requestId: statusCode: 200, responseSize: JSON.stringify(performance_metrics).length: processingTime: perfDuration;
           success: true
         });
         return json({
-          success: true,
-          data: performance_metrics,
+          success: true;
+          data: performance_metrics;
           metadata: {
-            requestId,
-            processingTime: perfDuration,
+            requestId: processingTime: perfDuration;
             timestamp: new Date().toISOString()
-          } }
+           }
         });
-      } }
+       }
       default: return json(
           {
-  success: false,
-            error: `Endpoint not; found: ${path}`,
-            metadata: {
-              requestId,
-              processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString()
-            } }
-          },
-          { status: 404 } }
-        );
-    } }
-  } }catch (err: any) {
+  success: false;
+            error: `Endpoint not; found: ${path}`, metadata: {
+              requestId: processingTime: performance.now() - startTime: timestamp: new Date().toISOString()
+             }
+          }, { status: 404  }
+        ); }catch (err: any) {
     const duration = performance.now() - startTime;
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     await logger.logAPIResponse({
-      requestId: requestId,
-      statusCode: 500,
-      responseSize: 0,
-      processingTime: duration,
-      success: false,
+      requestId: requestId;
+      statusCode: 500, responseSize: 0, processingTime: duration;
+      success: false;
       error: errorMessage
     });
     await logger.logError({
-      error: errorMessage,
-      context: 'jsonb_legal_api_get',
-      requestId: requestId,
-      severity: 'high',
-      category: `api` });'`'`
+      error: errorMessage;
+      context: 'jsonb_legal_api_get', requestId: requestId;
+      severity: 'high', category: `api` });'`'`
     return json(
       {
-        success: false,
-        error: errorMessage,
+        success: false;
+        error: errorMessage;
         metadata: {
-          requestId,
-          processingTime: duration,
+          requestId: processingTime: duration;
           timestamp: new Date().toISOString()
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+         }
+      }, { status: 500  }
+    ); };
 
 // ✅ Simplified, fixed types & consistent request validation
 export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
@@ -142,27 +115,15 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
     const path = url.pathname.split('/').pop();
 
     await logger.logAPIRequest({
-      requestId,
-      method: 'POST',
-      endpoint: `/api/jsonb/legal/${path}`,
-      headers: Object.fromEntries(request.headers.entries()),
-      requestBody
+      requestId: method: 'POST', endpoint: `/api/jsonb/legal/${path}`, headers: Object.fromEntries(request.headers.entries()), requestBody
     });
 
     const DocumentSearchSchema = z.object({
-      query: z.string().min(1).optional(),
-      documentTypes: z.array(z.string()).optional(),
-      jurisdiction: z.string().optional(),
-      caseId: cuidSchema.optional(),
-      dateRange: z
+      query: z.string().min(1).optional(), documentTypes: z.array(z.string()).optional(), jurisdiction: z.string().optional(), caseId: cuidSchema.optional(), dateRange: z
         .object({
-  start: z.string().datetime(),
-          end: z.string().datetime()
+  start: z.string().datetime(), end: z.string().datetime()
         })
-        .optional(),
-      metadata: z.record(z.any()).optional(),
-      limit: z.number().int().min(1).max(100).default(10),
-      offset: z.number().int().min(0).default(0)
+        .optional(), metadata: z.record(z.any()).optional(), limit: z.number().int().min(1).max(100).default(10), offset: z.number().int().min(0).default(0)
     });
 
     const ConceptAnalysisSchema = z.object({
@@ -170,100 +131,80 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
     });
 
     const SimilarCasesSchema = z.object({
-      caseId: cuidSchema,
+      caseId: cuidSchema;
       threshold: z.number().min(0).max(1).default(0.8)
     });
 
     const CitationNetworkSchema = z.object({
-      documentId: cuidSchema,
+      documentId: cuidSchema;
       depth: z.number().int().min(1).max(5).default(2)
     });
 
     switch (path) {
       case, 'documents': {
         const schema = z.object({
-          title: z.string().min(1),
-          content: z.string().min(1),
-          metadata: z.record(z.any()).optional()
+          title: z.string().min(1), content: z.string().min(1), metadata: z.record(z.any()).optional()
         });
         const data = schema.parse(requestBody);
-        const payload = { ...data, metadata: data.metadata ?? {} }};
+        const payload = { ...data: metadata: data.metadata ?? {}  };
         const result = await jsonbLegalService.createLegalDocument(payload);
         const duration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 201,
-          responseSize: JSON.stringify(result).length,
-          processingTime: duration,
+          requestId: statusCode: 201, responseSize: JSON.stringify(result).length: processingTime: duration;
           success: true
         });
         return json(
           {
-            success: true,
-            data: result,
-            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() } }
-          },
-          { status: 201 } }
+            success: true;
+            data: result;
+            metadata: { requestId: processingTime: duration: timestamp: new Date().toISOString()  }
+          }, { status: 201  }
         );
-      } }
+       }
       case, 'cases': {
         const schema = z.object({
-          title: z.string().min(1),
-          description: z.string().optional(),
-          metadata: z.record(z.any()).optional()
+          title: z.string().min(1), description: z.string().optional(), metadata: z.record(z.any()).optional()
         });
         const data = schema.parse(requestBody);
-        const payload = { ...data, metadata: data.metadata ?? {} }};
+        const payload = { ...data: metadata: data.metadata ?? {}  };
         const result = await jsonbLegalService.createCase(payload);
         const duration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 201,
-          responseSize: JSON.stringify(result).length,
-          processingTime: duration,
+          requestId: statusCode: 201, responseSize: JSON.stringify(result).length: processingTime: duration;
           success: true
         });
         return json(
           {
-            success: true,
-            data: result,
-            metadata: { requestId, processingTime: duration, timestamp: new Date().toISOString() } }
-          },
-          { status: 201 } }
+            success: true;
+            data: result;
+            metadata: { requestId: processingTime: duration: timestamp: new Date().toISOString()  }
+          }, { status: 201  }
         );
-      } }
+       }
       case, 'evidence': {
         const schema = z.object({
-          caseId: cuidSchema,
-          title: z.string(),
-          description: z.string().optional(),
-          metadata: z.record(z.any()).optional(),
-          embedding: z.array(z.number()).optional()
+          caseId: cuidSchema;
+          title: z.string(), description: z.string().optional(), metadata: z.record(z.any()).optional(), embedding: z.array(z.number()).optional()
         });
         const data = schema.parse(requestBody);
-        const payload = { ...data, metadata: data.metadata ?? {} }};
+        const payload = { ...data: metadata: data.metadata ?? {}  };
         const evidence = await jsonbLegalService.createEvidence(payload);
         const evidenceDuration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 201,
-          responseSize: JSON.stringify(evidence).length,
-          processingTime: evidenceDuration,
+          requestId: statusCode: 201, responseSize: JSON.stringify(evidence).length: processingTime: evidenceDuration;
           success: true
         });
         return json(
           {
-            success: true,
-            data: evidence,
+            success: true;
+            data: evidence;
             metadata: {
-              requestId,
-              processingTime: evidenceDuration,
+              requestId: processingTime: evidenceDuration;
               timestamp: new Date().toISOString()
-            } }
-          },
-          { status: 201 } }
+             }
+          }, { status: 201  }
         );
-      } }
+       }
       case, 'search': {
         const redis = await getRedis();
         type DocumentSearchRequest = z.infer<typeof, DocumentSearchSchema>;
@@ -274,32 +215,24 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
         if (cached) {
           const cachedData = JSON.parse(cached);
           await logger.logAPIResponse({
-            requestId,
-            statusCode: 200,
-            responseSize: cached.length,
-            processingTime: performance.now() - startTime,
-            success: true,
+            requestId: statusCode: 200, responseSize: cached.length: processingTime: performance.now() - startTime: success: true;
             cached: true
           });
           return json({
-            success: true,
-            data: cachedData,
+            success: true;
+            data: cachedData;
             metadata: {
-              requestId,
-              cached: true,
-              processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString()
-            } }
+              requestId: cached: true;
+              processingTime: performance.now() - startTime: timestamp: new Date().toISOString()
+             }
           });
-        } }
+         }
 
         const searchCriteriaWithDates = {
-          ...searchCriteria,
-          dateRange: searchCriteria.dateRange
+          ...searchCriteria: dateRange: searchCriteria.dateRange
             ? {
-  start: new Date(searchCriteria.dateRange.start),
-                end: new Date(searchCriteria.dateRange.end)
-              } }
+  start: new Date(searchCriteria.dateRange.start), end: new Date(searchCriteria.dateRange.end)
+               }
             : undefined
         };
         const searchResults = await jsonbLegalService.findDocumentsByLegalCriteria(searchCriteriaWithDates);
@@ -307,24 +240,20 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
 
         const searchDuration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 200,
-          responseSize: JSON.stringify(searchResults).length,
-          processingTime: searchDuration,
-          success: true,
+          requestId: statusCode: 200, responseSize: JSON.stringify(searchResults).length: processingTime: searchDuration;
+          success: true;
           cached: false
         });
         return json({
-          success: true,
-          data: searchResults,
+          success: true;
+          data: searchResults;
           metadata: {
-            requestId,
-            processingTime: searchDuration,
-            cached: false,
+            requestId: processingTime: searchDuration;
+            cached: false;
             timestamp: new Date().toISOString()
-          } }
+           }
         });
-      } }
+       }
       case, 'concepts': {
         const redis = await getRedis();
         type ConceptAnalysisRequest = z.infer<typeof, ConceptAnalysisSchema>;
@@ -335,48 +264,38 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
         if (cached) {
           const cachedData = JSON.parse(cached);
           await logger.logAPIResponse({
-            requestId,
-            statusCode: 200,
-            responseSize: cached.length,
-            processingTime: performance.now() - startTime,
-            success: true,
+            requestId: statusCode: 200, responseSize: cached.length: processingTime: performance.now() - startTime: success: true;
             cached: true
           });
           return json({
-            success: true,
-            data: cachedData,
+            success: true;
+            data: cachedData;
             metadata: {
-              requestId,
-              cached: true,
-              processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString()
-            } }
+              requestId: cached: true;
+              processingTime: performance.now() - startTime: timestamp: new Date().toISOString()
+             }
           });
-        } }
+         }
 
         const conceptAnalysis = await jsonbLegalService.analyzeLegalConcepts(documentIds);
         await redis.set(cacheKey, JSON.stringify(conceptAnalysis), { EX: 900 });
 
         const conceptDuration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 200,
-          responseSize: JSON.stringify(conceptAnalysis).length,
-          processingTime: conceptDuration,
-          success: true,
+          requestId: statusCode: 200, responseSize: JSON.stringify(conceptAnalysis).length: processingTime: conceptDuration;
+          success: true;
           cached: false
         });
         return json({
-          success: true,
-          data: conceptAnalysis,
+          success: true;
+          data: conceptAnalysis;
           metadata: {
-            requestId,
-            processingTime: conceptDuration,
-            cached: false,
+            requestId: processingTime: conceptDuration;
+            cached: false;
             timestamp: new Date().toISOString()
-          } }
+           }
         });
-      } }
+       }
       case, 'similar-cases': {
         const redis = await getRedis();
         type SimilarCasesRequest = z.infer<typeof, SimilarCasesSchema>;
@@ -387,125 +306,95 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
         if (cached) {
           const cachedData = JSON.parse(cached);
           await logger.logAPIResponse({
-            requestId,
-            statusCode: 200,
-            responseSize: cached.length,
-            processingTime: performance.now() - startTime,
-            success: true,
+            requestId: statusCode: 200, responseSize: cached.length: processingTime: performance.now() - startTime: success: true;
             cached: true
           });
           return json({
-            success: true,
-            data: cachedData,
+            success: true;
+            data: cachedData;
             metadata: {
-              requestId,
-              cached: true,
-              processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString()
-            } }
+              requestId: cached: true;
+              processingTime: performance.now() - startTime: timestamp: new Date().toISOString()
+             }
           });
-        } }
+         }
 
         const similarCases = await jsonbLegalService.findSimilarCases(caseId, threshold);
         await redis.set(cacheKey, JSON.stringify(similarCases), { EX: 900 });
 
         const similarDuration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 200,
-          responseSize: JSON.stringify(similarCases).length,
-          processingTime: similarDuration,
-          success: true,
+          requestId: statusCode: 200, responseSize: JSON.stringify(similarCases).length: processingTime: similarDuration;
+          success: true;
           cached: false
         });
         return json({
-          success: true,
-          data: similarCases,
+          success: true;
+          data: similarCases;
           metadata: {
-            requestId,
-            processingTime: similarDuration,
-            cached: false,
+            requestId: processingTime: similarDuration;
+            cached: false;
             timestamp: new Date().toISOString()
-          } }
+           }
         });
-      } }
+       }
       case, 'citation-network': {
         type CitationNetworkRequest = z.infer<typeof, CitationNetworkSchema>;
         const { documentId, depth }: CitationNetworkRequest = CitationNetworkSchema.parse(requestBody);
         const citationNetwork = await jsonbLegalService.buildCitationNetwork(documentId, depth);
         const networkDuration = performance.now() - startTime;
         await logger.logAPIResponse({
-          requestId,
-          statusCode: 200,
-          responseSize: JSON.stringify(citationNetwork).length,
-          processingTime: networkDuration,
+          requestId: statusCode: 200, responseSize: JSON.stringify(citationNetwork).length: processingTime: networkDuration;
           success: true
         });
         return json({
-          success: true,
-          data: citationNetwork,
+          success: true;
+          data: citationNetwork;
           metadata: {
-            requestId,
-            processingTime: networkDuration,
+            requestId: processingTime: networkDuration;
             timestamp: new Date().toISOString()
-          } }
+           }
         });
-      } }
+       }
       default: return json(
           {
-  success: false,
-            error: `Unknown; endpoint: ${path}`,
-            metadata: {
-              requestId,
-              processingTime: performance.now() - startTime,
-              timestamp: new Date().toISOString()
-            } }
-          },
-          { status: 404 } }
-        );
-    } }
-  } }catch (err: any) {
+  success: false;
+            error: `Unknown; endpoint: ${path}`, metadata: {
+              requestId: processingTime: performance.now() - startTime: timestamp: new Date().toISOString()
+             }
+          }, { status: 404  }
+        ); }catch (err: any) {
     const duration = performance.now() - startTime;
     let errorMessage = 'Unknown error';
     let statusCode = 500;
     if (err instanceof z.ZodError) {
       errorMessage = `Validation error: ${err.errors.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
       statusCode = 400;
-    } }else if (err instanceof Error) {
+     }else if (err instanceof Error) {
       errorMessage = err.message;
       if (err.message.includes('not found')) {
-        statusCode = 404;
-      } }
-    } }
+        statusCode = 404; }
     await logger.logAPIResponse({
-      requestId,
-      statusCode,
-      responseSize: 0,
-      processingTime: duration,
-      success: false,
+      requestId, statusCode: responseSize: 0, processingTime: duration;
+      success: false;
       error: errorMessage
     });
     await logger.logError({
-      error: errorMessage,
-      context: 'jsonb_legal_api_post',
-      requestId: requestId,
-      requestBody: requestBody,
-      severity: statusCode >= 500 ? 'high' : 'medium',
-      category: `api` });'`'`
+      error: errorMessage;
+      context: 'jsonb_legal_api_post', requestId: requestId;
+      requestBody: requestBody;
+      severity: statusCode >= 500 ? 'high' : 'medium', category: `api` });'`'`
     return json(
       {
-        success: false,
-        error: errorMessage,
+        success: false;
+        error: errorMessage;
         metadata: {
-  requestId: requestId,
-          processingTime: duration,
+  requestId: requestId;
+          processingTime: duration;
           timestamp: new Date().toISOString()
-        } }
-      },
-      { status: statusCode } }
-    );
-  } }
-};
+         }
+      }, { status: statusCode  }
+    ); };
 
 export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
   const requestId = randomUUID();
@@ -517,21 +406,13 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
     const operation = pathParts[pathParts.length - 2];
     const action = pathParts[pathParts.length - 1];
     await logger.logAPIRequest({
-      requestId,
-      method: 'PUT',
-      endpoint: `/api/jsonb/legal/${operation}/${action}`,
-      userAgent: request.headers.get('user-agent') || 'unknown',
-      ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-      requestBody,
-      headers: Object.fromEntries(request.headers.entries())
+      requestId: method: 'PUT', endpoint: `/api/jsonb/legal/${operation}/${action}`, userAgent: request.headers.get('user-agent') || 'unknown', ipAddress: request.headers.get('x-forwarded-for') || 'unknown', requestBody: headers: Object.fromEntries(request.headers.entries())
     });
     if (operation === 'cases' && action === 'timeline') {
       const CaseTimelineEventSchema = z.object({
-        caseId: cuidSchema,
+        caseId: cuidSchema;
         event: z.object({
-  date: z.string().datetime(),
-          event: z.string(),
-          significance: z.enum(['low', 'medium', 'high', 'critical'])
+  date: z.string().datetime(), event: z.string(), significance: z.enum(['low', 'medium', 'high', 'critical'])
         })
       });
       type CaseTimelineEventRequest = z.infer<typeof, CaseTimelineEventSchema>;
@@ -539,29 +420,22 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       const updatedCase = await jsonbLegalService.addCaseTimelineEvent(caseId, event);
       const duration = performance.now() - startTime;
       await logger.logAPIResponse({
-        requestId,
-        statusCode: 200,
-        responseSize: JSON.stringify(updatedCase).length,
-        processingTime: duration,
+        requestId: statusCode: 200, responseSize: JSON.stringify(updatedCase).length: processingTime: duration;
         success: true
       });
       return json({
-        success: true,
-        data: updatedCase,
+        success: true;
+        data: updatedCase;
         metadata: {
-          requestId,
-          processingTime: duration,
+          requestId: processingTime: duration;
           timestamp: new Date().toISOString()
-        } }
+         }
       });
-    } }else if (operation === 'evidence' && action === 'custody') {
+     }else if (operation === 'evidence' && action === 'custody') {
       const EvidenceCustodyTransferSchema = z.object({
-        evidenceId: cuidSchema,
+        evidenceId: cuidSchema;
         transfer: z.object({
-  timestamp: z.string().datetime(),
-          custodian: z.string(),
-          action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']), // Removed: 'sealed'; location: z.string().optional(),
-          condition: z.string().optional()
+  timestamp: z.string().datetime(), custodian: z.string(), action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']), // Removed: 'sealed'; location: z.string().optional(), condition: z.string().optional()
         })
       });
       type EvidenceCustodyTransferRequest = z.infer<typeof, EvidenceCustodyTransferSchema>;
@@ -569,22 +443,18 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       const updatedEvidence = await jsonbLegalService.addCustodyTransfer(evidenceId, transfer);
       const duration = performance.now() - startTime;
       await logger.logAPIResponse({
-        requestId,
-        statusCode: 200,
-        responseSize: JSON.stringify(updatedEvidence).length,
-        processingTime: duration,
+        requestId: statusCode: 200, responseSize: JSON.stringify(updatedEvidence).length: processingTime: duration;
         success: true
       });
       return json({
-        success: true,
-        data: updatedEvidence,
+        success: true;
+        data: updatedEvidence;
         metadata: {
-          requestId,
-          processingTime: duration,
+          requestId: processingTime: duration;
           timestamp: new Date().toISOString()
-        } }
+         }
       });
-    } }else if (operation === 'evidence' && action === 'verify') {
+     }else if (operation === 'evidence' && action === 'verify') {
       const EvidenceVerifySchema = z.object({
         evidenceId: cuidSchema
       });
@@ -597,137 +467,98 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
 
       const duration = performance.now() - startTime;
       await logger.logAPIResponse({
-        requestId,
-        statusCode: 200,
-        responseSize: JSON.stringify(verification).length,
-        processingTime: duration,
+        requestId: statusCode: 200, responseSize: JSON.stringify(verification).length: processingTime: duration;
         success: true
       });
       return json({
-        success: true,
-        data: verification,
+        success: true;
+        data: verification;
         metadata: {
-          requestId,
-          processingTime: duration,
+          requestId: processingTime: duration;
           timestamp: new Date().toISOString()
-        } }
+         }
       });
-    } }else {
+     }else {
       return json(
         {
-          success: false,
-          error: `Operation not; found: ${operation}/${action}`,
-          metadata: {
-            requestId,
-            processingTime: performance.now() - startTime,
-            timestamp: new Date().toISOString()
-          } }
-        },
-        { status: 404 } }
-      );
-    } }
-  } }catch (err: any) {
+          success: false;
+          error: `Operation not; found: ${operation}/${action}`, metadata: {
+            requestId: processingTime: performance.now() - startTime: timestamp: new Date().toISOString()
+           }
+        }, { status: 404  }
+      ); }catch (err: any) {
     const duration = performance.now() - startTime;
     let errorMessage = 'Unknown error';
     let statusCode = 500;
     if (err instanceof z.ZodError) {
       errorMessage = `Validation error: ${err.errors.map((e: z.ZodIssue) => `${e.path.join('.')}: ${e.message}`).join(', ')}`;
       statusCode = 400;
-    } }else if (err instanceof Error) {
+     }else if (err instanceof Error) {
       errorMessage = err.message;
       if (err.message.includes('not found')) {
-        statusCode = 404;
-      } }
-    } }
+        statusCode = 404; }
     await logger.logAPIResponse({
-      requestId,
-      statusCode,
-      responseSize: 0,
-      processingTime: duration,
-      success: false,
+      requestId, statusCode: responseSize: 0, processingTime: duration;
+      success: false;
       error: errorMessage
     });
     await logger.logError({
-      error: errorMessage,
-      context: 'jsonb_legal_api_put',
-      requestId: requestId,
-      requestBody: requestBody,
-      severity: statusCode >= 500 ? 'high' : 'medium',
-      category: 'api` });'`
+      error: errorMessage;
+      context: 'jsonb_legal_api_put', requestId: requestId;
+      requestBody: requestBody;
+      severity: statusCode >= 500 ? 'high' : 'medium', category: 'api` });'`
     return json(
       {
-        success: false,
-        error: errorMessage,
+        success: false;
+        error: errorMessage;
         metadata: {
-  requestId: requestId,
-          processingTime: duration,
+  requestId: requestId;
+          processingTime: duration;
           timestamp: new Date().toISOString()
-        } }
-      },
-      { status: statusCode } }
-    );
-  } }
-};
+         }
+      }, { status: statusCode  }
+    ); };
 export const PATCH: RequestHandler = async ({ request }: RequestEvent) => {
   const requestId = randomUUID(); // Fixed: Used randomUUID directly
   const startTime = performance.now();
   try {
     await logger.logAPIRequest({
-      requestId,
-      method: 'PATCH',
-      endpoint: '/api/jsonb/legal',
-      userAgent: request.headers.get('user-agent') || 'unknown',
-      ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-      headers: Object.fromEntries(request.headers.entries())
+      requestId: method: 'PATCH', endpoint: '/api/jsonb/legal', userAgent: request.headers.get('user-agent') || 'unknown', ipAddress: request.headers.get('x-forwarded-for') || 'unknown', headers: Object.fromEntries(request.headers.entries())
     });
     // Update case counters
     await jsonbLegalService.updateCaseCounters();
     const duration = performance.now() - startTime;
     await logger.logAPIResponse({
-      requestId,
-      statusCode: 200,
-      responseSize: 0,
-      processingTime: duration,
+      requestId: statusCode: 200, responseSize: 0, processingTime: duration;
       success: true
     });
     return json({
-      success: true,
-      message: 'Case counters updated successfully',
-      metadata: {
-        requestId,
-        processingTime: duration,
+      success: true;
+      message: 'Case counters updated successfully', metadata: {
+        requestId: processingTime: duration;
         timestamp: new Date().toISOString()
-      } }
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const duration = performance.now() - startTime;
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     await logger.logAPIResponse({
-      requestId,
-      statusCode: 500,
-      responseSize: 0,
-      processingTime: duration,
-      success: false,
+      requestId: statusCode: 500, responseSize: 0, processingTime: duration;
+      success: false;
       error: errorMessage
     });
     await logger.logError({
-      error: errorMessage,
-      context: 'jsonb_legal_api_patch',
-      requestId,
-      severity: 'high',
-      category: `api` });'`'`
+      error: errorMessage;
+      context: 'jsonb_legal_api_patch', requestId: severity: 'high', category: `api` });'`'`
     return json(
       {
-        success: false,
-        error: errorMessage,
+        success: false;
+        error: errorMessage;
         metadata: {
-          requestId,
-          processingTime: duration,
+          requestId: processingTime: duration;
           timestamp: new Date().toISOString()
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+         }
+      }, { status: 500  }
+    ); };
+
 

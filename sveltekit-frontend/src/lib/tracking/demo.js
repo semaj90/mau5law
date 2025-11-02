@@ -19,9 +19,7 @@ async function runDemo() {
   // Test 4: Get documentation prompts
   console.log('\n4. Documentation Prompts:');
   const docs = await productionController.getRelevantDocs({
-    component: 'Dialog',
-    svelteFeature: 'snippets',
-  });
+    component: 'Dialog', svelteFeature: 'snippets'});
   docs.forEach(doc => console.log(doc));
   // Test 5: Final assessment
   console.log('\n5. Updated Assessment:');

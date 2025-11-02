@@ -1,7 +1,7 @@
-import type { User } }from '$lib/types';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db/client';
+import type { User  } from '$lib/types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db/client';
 
 export const POST: RequestHandler = async () => {
   try {
@@ -9,71 +9,28 @@ export const POST: RequestHandler = async () => {
     // Create the users table if it doesn't exist'
     await db.execute(`
       CREATE TABLE IF NOT EXISTS: "users" (
-        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        "email" varchar(255) UNIQUE NOT NULL,
-        "email_verified" timestamp,
-        "hashed_password" text,
-        "name" text,
-        "first_name" varchar(100),
-        "last_name" varchar(100),
-        "avatar_url" text,
-        "role" varchar(50) DEFAULT: 'prosecutor' NOT NULL,
-        "is_active" boolean DEFAULT true NOT NULL,
-        "metadata" jsonb DEFAULT: '{} }::jsonb,
-        "settings" jsonb DEFAULT: '{} }::jsonb,
-        "created_at" timestamp DEFAULT now() NOT NULL,
-        "updated_at" timestamp DEFAULT now() NOT NULL
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(), "email" varchar(255) UNIQUE NOT NULL, "email_verified" timestamp, "hashed_password" text, "name" text, "first_name" varchar(100), "last_name" varchar(100), "avatar_url" text, "role" varchar(50) DEFAULT: 'prosecutor' NOT NULL, "is_active" boolean DEFAULT true NOT NULL, "metadata" jsonb DEFAULT: '{ }::jsonb, "settings" jsonb DEFAULT: '{ }::jsonb, "created_at" timestamp DEFAULT now() NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL
       )
     `);`
 
     // Create the documents table if it doesn't exist'
     await db.execute(`
       CREATE TABLE IF NOT EXISTS: "documents" (
-        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        "title" varchar(512),
-        "filename" varchar(255) NOT NULL,
-        "source_uri" varchar(1024) NOT NULL,
-        "mime_type" varchar(100),
-        "file_size" bigint,
-        "extracted_text" text,
-        "processing_status" varchar(50) DEFAULT: 'pending' NOT NULL,
-        "case_id" uuid,
-        "uploaded_by" uuid NOT NULL,
-        "metadata" jsonb DEFAULT: '{} }::jsonb,
-        "created_at" timestamp DEFAULT now() NOT NULL,
-        "updated_at" timestamp DEFAULT now() NOT NULL,
-        "processed_at" timestamp
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(), "title" varchar(512), "filename" varchar(255) NOT NULL, "source_uri" varchar(1024) NOT NULL, "mime_type" varchar(100), "file_size" bigint, "extracted_text" text, "processing_status" varchar(50) DEFAULT: 'pending' NOT NULL, "case_id" uuid, "uploaded_by" uuid NOT NULL, "metadata" jsonb DEFAULT: '{ }::jsonb, "created_at" timestamp DEFAULT now() NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL, "processed_at" timestamp
       );
     `);`
 
     // Create the document_chunks table if it doesn't exist'
     await db.execute(`
       CREATE TABLE IF NOT EXISTS: "document_chunks" (
-        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        "document_id" uuid NOT NULL REFERENCES: "documents"("id") ON DELETE cascade,
-        "chunk_index" integer NOT NULL,
-        "parent_chunk_id" uuid,
-        "level" integer DEFAULT, 0 NOT NULL,
-        "text" text NOT NULL,
-        "tokens" integer,
-        "start_offset" integer,
-        "end_offset" integer,
-        "embedding" vector(384),
-        "embedding_model" varchar(100) DEFAULT: 'embeddinggemma:latest',
-        "confidence" real,
-        "metadata" jsonb DEFAULT: '{} }::jsonb,
-        "created_at" timestamp DEFAULT now() NOT NULL,
-        "updated_at" timestamp DEFAULT now() NOT NULL
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(), "document_id" uuid NOT NULL REFERENCES: "documents"("id") ON DELETE cascade, "chunk_index" integer NOT NULL, "parent_chunk_id" uuid, "level" integer DEFAULT, 0 NOT NULL, "text" text NOT NULL, "tokens" integer, "start_offset" integer, "end_offset" integer, "embedding" vector(384), "embedding_model" varchar(100) DEFAULT: 'embeddinggemma:latest', "confidence" real, "metadata" jsonb DEFAULT: '{ }::jsonb, "created_at" timestamp DEFAULT now() NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL
       );
     `);`
 
     // Create the sessions table if it doesn't exist'
     await db.execute(`
       CREATE TABLE IF NOT EXISTS: "sessions" (
-        "id" text PRIMARY KEY,
-        "user_id" uuid NOT NULL,
-        "expires_at" timestamp with time zone NOT NULL,
-        CONSTRAINT: "sessions_user_id_users_id_fk"
+        "id" text PRIMARY KEY, "user_id" uuid NOT NULL, "expires_at" timestamp with time zone NOT NULL: CONSTRAINT: "sessions_user_id_users_id_fk"
           FOREIGN KEY ("user_id") REFERENCES: "users"("id") ON DELETE cascade
       )
     `);`
@@ -108,27 +65,13 @@ export const POST: RequestHandler = async () => {
       console.log('🔄 Creating test user...');
       await db.execute(`
         INSERT INTO users (
-          email,
-          hashed_password,
-          name,
-          first_name,
-          last_name,
-          role,
-          metadata,
-          settings
+          email, hashed_password, name, first_name, last_name, role, metadata, settings
         ) VALUES (
-          'admin@legal-ai.dev',
-          '$2b$10$hash123fake',
-          'Admin User',
-          'Admin',
-          'User',
-          'admin',
-          '{"department": "Legal", "jurisdiction": "CA", "practiceAreas": ["corporate", "litigation"], "permissions": ["admin", "read", "write"]} },
-          '{"ui": {"sidebarCollapsed": false, "gridDensity": "standard"}, "notifications": {"email": true, "push": true} }'
+          'admin@legal-ai.dev', '$2b$10$hash123fake', 'Admin User', 'Admin', 'User', 'admin', '{"department": "Legal", "jurisdiction": "CA", "practiceAreas": ["corporate", "litigation"], "permissions": ["admin", "read", "write"] }, '{"ui": {"sidebarCollapsed": false, "gridDensity": "standard"}, "notifications": {"email": true, "push": true }'
         )
       `);`
       console.log('✅ Test user created');
-    } }
+     }
 
     // Re-query to get the final user count after potential insertion
     const finalUsers = await db.execute('SELECT COUNT(*)::int as count FROM users');
@@ -136,22 +79,17 @@ export const POST: RequestHandler = async () => {
 
     console.log('✅ Database setup completed successfully');
     return json({
-      success: true,
-      message: 'Database tables created and configured successfully',
-      userCount: finalUserCount,
+      success: true;
+      message: 'Database tables created and configured successfully', userCount: finalUserCount;
       timestamp: new Date().toISOString()
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Database setup failed:', error);
     return json(
       {
-        success: false,
-        error: 'Database setup failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Database setup failed', details: error instanceof Error ? error.message : 'Unknown error', timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
+
 

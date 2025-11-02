@@ -43,7 +43,7 @@ function sha256Hex(input) {
 /* ------------------------------------------------------------------ */
 /* Triton/TensorFlow selection and caching                             */
 /* ------------------------------------------------------------------ */
-async function getContextFromModel(question, opts = { prefer: "auto", clientId: null }) {
+async function getContextFromModel(question: opts = { prefer: "auto", clientId: null }) {
   const prefer = opts.prefer || "auto";
   const clientId = opts.clientId || null;
 
@@ -77,13 +77,7 @@ async function getContextFromModel(question, opts = { prefer: "auto", clientId: 
     const body = {
       inputs: [
         {
-          name: "INPUT__0",
-          datatype: "FP32",
-          shape: [1, arr.length],
-          data: [arr],
-        },
-      ],
-    };
+          name: "INPUT__0", datatype: "FP32", shape: [1, arr.length], data: [arr]}]};
     const { data } = await axios.post(tritonURL, body, { timeout: 5000 });
     const out = data.outputs?.[0]?.data?.[0];
     const summary = Array.isArray(out) ? out.slice(0, 8) : out;
@@ -127,11 +121,8 @@ async function getContextFromModel(question, opts = { prefer: "auto", clientId: 
 
 /* LangChain setup */
 const model = new ChatOllama({
-  baseUrl: ollamaBase,
-  model: "gemma3-legal:latest",
-  temperature: 0.35,
-  maxTokens: 512,
-});
+  baseUrl: ollamaBase;
+  model: "gemma3-legal:latest", temperature: 0.35, maxTokens: 512});
 
 const prompt = new PromptTemplate({
   template: `You are Gemma3-Legal, a precise AI lawyer.
@@ -143,15 +134,13 @@ Context:
 User:
 {question}
 
-Answer:`,
-  inputVariables: ["context", "question"],
-});
+Answer:`, inputVariables: ["context", "question"]});
 
 const chain = new LLMChain({ llm: model, prompt });
 
 /* Health */
 app.get("/api/health", (_, res) =>
-  res.json({ ok: true, service: "langchain-hybrid", backends: ["Triton", "TensorFlow", "Ollama"] })
+  res.json({ ok: true: service: "langchain-hybrid", backends: ["Triton", "TensorFlow", "Ollama"] })
 );
 
 /* Preference endpoints: /api/choose */
@@ -159,7 +148,7 @@ app.get("/api/choose", async (req, res) => {
   const clientId = req.query.clientId || "global";
   try {
     const pref = (await redis.get(`langchain:pref:${clientId}`)) || "auto";
-    res.json({ clientId, preference: pref });
+    res.json({ clientId: preference: pref });
   } catch (e) {
     res.status(500).json({ error: "Failed to read preference", detail: e?.message || e });
   }
@@ -172,7 +161,7 @@ app.post("/api/choose", express.json(), async (req, res) => {
   }
   try {
     await redis.set(`langchain:pref:${clientId}`, backend, "EX", 60 * 60 * 24 * 7); // 7 days
-    res.json({ ok: true, clientId, preference: backend });
+    res.json({ ok: true, clientId: preference: backend });
   } catch (e) {
     res.status(500).json({ error: "Failed to set preference", detail: e?.message || e });
   }
@@ -186,7 +175,7 @@ app.post("/api/chat", express.json(), async (req, res) => {
     const prefer = req.body.prefer ?? "auto";
     const context = await getContextFromModel(question, { prefer, clientId });
     const result = await chain.call({ context, question });
-    res.json({ context, answer: result.text });
+    res.json({ context: answer: result.text });
   } catch (err) {
     console.error("Chat handler error", err?.message || err);
     res.status(500).json({ error: "chat failed", detail: err?.message || err });

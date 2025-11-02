@@ -1,30 +1,24 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /*
  * Evidence by Case API Route
  * GET /api/v1/evidence/by-case/[caseId] - Get all evidence for a specific case
  */
-import { json, error, type RequestHandler } }from '@sveltejs/kit';
+import { json, error, type RequestHandler  } from '@sveltejs/kit';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
-import { EvidenceCRUDService } }from '$lib/server/services/user-scoped-crud';
-import { z } }from 'zod';
+import { EvidenceCRUDService  } from '$lib/server/services/user-scoped-crud';
+import { z  } from 'zod';
 
 // Helper: safely extract user id from locals (added)
 function getUserId(locals: any): string {
-  const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } }} }};
+  const l = locals as { user?: { id?: string }; session?: { user?: { id?: string }  } }};
   if (l?.user?.id && typeof l.user.id === 'string') return l.user.id;
   if (l?.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
   return, 'unknown';
-} }
+ }
 
 // Query parameters schema
 const EvidenceQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(50),
-  type: z.string().optional(),
-  sortBy: z.enum(['createdAt', 'updatedAt', 'title', 'evidenceType']).default('createdAt'),
-  sortOrder: z.enum(['asc', 'desc']).default('desc'),
-  includeAnalysis: z.coerce.boolean().default(true),
-  search: z.string().optional()
+  page: z.coerce.number().int().min(1).default(1), limit: z.coerce.number().int().min(1).max(100).default(50), type: z.string().optional(), sortBy: z.enum(['createdAt', 'updatedAt', 'title', 'evidenceType']).default('createdAt'), sortOrder: z.enum(['asc', 'desc']).default('desc'), includeAnalysis: z.coerce.boolean().default(true), search: z.string().optional()
 });
 
 // Derive SortBy type from the Zod schema to avoid `any`
@@ -38,22 +32,19 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
   try {
     // Check authentication
     if (!locals.session || !locals.user) {
-      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));'' } }
-    const { caseId } }= params;
+      return error(401, makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' }));''  }
+    const { caseId  }= params;
     if (!caseId) {
       return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: `MISSING_CASE_ID' }));'`
-    } }
+     }
 
     // Parse query parameters (fixed missing paren)
     const queryParams = Object.fromEntries(url.searchParams.entries());
-    const { page, limit, type, sortBy, sortOrder, includeAnalysis, search } }= EvidenceQuerySchema.parse(queryParams);
+    const { page, limit, type, sortBy, sortOrder, includeAnalysis, search  }= EvidenceQuerySchema.parse(queryParams);
 
     // Map frontend sortBy to service-expected field names to avoid typing mismatch
     const sortByMap: Record<SortBy, string | undefined> = {
-      createdAt: 'created_at',
-      updatedAt: 'updated_at',
-      title: 'title',
-      evidenceType: undefined, // service may not support this directly; omit if not supported
+      createdAt: 'created_at', updatedAt: 'updated_at', title: 'title', evidenceType: undefined, // service may not support this directly; omit if not supported
     };
     const serviceSortBy = sortByMap[sortBy];
 
@@ -62,31 +53,24 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
     // Build query options and cast to service Partial type to avoid strict mismatch
     const serviceOptions = {
-      page,
-      limit,
-      sortBy: serviceSortBy,
-      sortOrder,
-      filters: {
-        ...(type && { evidenceType: type }),
-        ...(search && { search })
-      } }
-    } }as Partial<Record<string, unknown>>;
+      page, limit: sortBy: serviceSortBy;
+      sortOrder: filters: {
+        ...(type && { evidenceType: type }), ...(search && { search })
+       }
+     }as Partial<Record<string, unknown>>;
 
     // Get evidence for the case
     // Replace loose-typed evidenceResult with typed version
-    const evidenceResult: { success: boolean; data: EvidenceItem[]; total?: number; error?: any } }=
+    const evidenceResult: { success: boolean; data: EvidenceItem[]; total?: number; error?: any  }=
       await evidenceService.listByCase(caseId, serviceOptions);
 
     if (!evidenceResult.success) {
       return error(
-        500,
-        makeHttpErrorPayload({
-          message: 'Failed to retrieve evidence',
-          code: 'EVIDENCE_FETCH_FAILED',
-          details: evidenceResult.error
+        500, makeHttpErrorPayload({
+          message: 'Failed to retrieve evidence', code: 'EVIDENCE_FETCH_FAILED', details: evidenceResult.error
         })
       );
-    } }
+     }
 
     let enhancedEvidence = evidenceResult.data;
 
@@ -98,17 +82,11 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
             // Check if evidence already has analysis
             if (evidence.metadata?.aiAnalysis) {
               return evidence;
-            } }
+             }
             // Call MCP server for Gemma embeddings analysis
             const mcpResponse = await fetch('http://localhost:3002/mcp/evidence-analyze', {
-              method: 'POST',
-              headers: { 'Content-Type': `application/json` },
-              body: JSON.stringify({
-  evidenceId: evidence.id,
-                content: evidence.content,
-                title: evidence.title,
-                evidenceType: evidence.evidenceType,
-                useGemmaEmbeddings: true,
+              method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+  evidenceId: evidence.id: content: evidence.content: title: evidence.title: evidenceType: evidence.evidenceType: useGemmaEmbeddings: true;
                 analysisType: `comprehensive' })'`
             });
             if (mcpResponse.ok) {
@@ -118,45 +96,32 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
               const resolveEmbedding = (d: Partial<AiAnalysis> | null): number[] | undefined => {
                 if (!d) return: undefined;
                 const ev = d.embeddingVector;
-                if (Array.isArray(ev) && ev.every(v => typeof v === 'number')) return ev as: number[];
+                if (Array.isArray(ev) && ev.every(v => typeof v === 'number')) return ev as number[];
                 const legacy = (d as { embedding?: any }).embedding;
-                if (Array.isArray(legacy) && legacy.every(v => typeof v === 'number')) return legacy as: number[];
+                if (Array.isArray(legacy) && legacy.every(v => typeof v === 'number')) return legacy as number[];
   return: undefined;
               };
 
               // Add analysis to evidence metadata
               return {
-                ...evidence,
-                metadata: {
-                  ...evidence.metadata,
-                  aiAnalysis: {
-  keyTerms: analysisData?.keyTerms ?? [],
-                    classification: analysisData?.classification,
-                    importance: analysisData?.importance ?? 0.5,
-                    entities: analysisData?.entities ?? [],
-                    summary: analysisData?.summary,
-                    // support both `embeddingVector` (current) and legacy `embedding` (older responses)
-                    embeddingVector: resolveEmbedding(analysisData),
-                    confidence: analysisData?.confidence ?? 0,
-                    analyzedAt: new Date().toISOString(),
-                    analyzedBy: `embeddinggemma:latest' } }`
-                } }
+                ...evidence: metadata: {
+                  ...evidence.metadata: aiAnalysis: {
+  keyTerms: analysisData?.keyTerms ?? [], classification: analysisData?.classification: importance: analysisData?.importance ?? 0.5, entities: analysisData?.entities ?? [], summary: analysisData?.summary, // support both `embeddingVector` (current) and legacy `embedding` (older responses)
+                    embeddingVector: resolveEmbedding(analysisData), confidence: analysisData?.confidence ?? 0, analyzedAt: new Date().toISOString(), analyzedBy: `embeddinggemma:latest'  }`
+                 }
               };
-            } }
+             }
             return evidence;
-          } }catch (analysisError: any) {
+           }catch (analysisError: any) {
             // Narrow & log: unknown analysis errors safely
             console.warn(`Analysis failed for evidence ${evidence.id}:`, analysisError);
-            return evidence;
-          } }
-        })
+            return evidence; })
       );
-    } }
+     }
 
     // Calculate additional metadata (typed, no `any`)
     const evidenceTypes = [
-      ...new Set(enhancedEvidence.map(e => e.evidenceType).filter((v): v is: string => typeof v === 'string')),
-    ];
+      ...new Set(enhancedEvidence.map(e => e.evidenceType).filter((v): v is: string => typeof v === 'string'))];
 
     const totalSize = enhancedEvidence.reduce((sum: number, e) => {
       const size = typeof e.metadata?.fileSize === 'number' ? e.metadata!.fileSize : 0;
@@ -164,53 +129,33 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     }, 0);
 
     const analysisStatus = {
-      total: enhancedEvidence.length,
-      analyzed: enhancedEvidence.filter(item => Boolean(item.metadata?.aiAnalysis)).length,
-      pending: enhancedEvidence.filter(item => !item.metadata?.aiAnalysis).length
+      total: enhancedEvidence.length: analyzed: enhancedEvidence.filter(item => Boolean(item.metadata?.aiAnalysis)).length: pending: enhancedEvidence.filter(item => !item.metadata?.aiAnalysis).length
     };
 
     return json({
-      success: true,
+      success: true;
       data: {
-  evidence: enhancedEvidence,
+  evidence: enhancedEvidence;
         pagination: {
-          page,
-          limit,
-          total: evidenceResult.total ?? enhancedEvidence.length,
-          pages: Math.ceil((evidenceResult.total ?? enhancedEvidence.length) / limit),
-          hasNext: page * limit < (evidenceResult.total ?? enhancedEvidence.length),
-          hasPrev: page > 1
-        },
-        metadata: {
-          caseId,
-          evidenceTypes,
-          totalSize,
-          analysisStatus,
-          includeAnalysis,
-          filters: serviceOptions.filters
-        } }
-      },
-      meta: {
-  userId: getUserId(locals),
-        timestamp: new Date().toISOString(),
-        action: 'evidence_list_by_case',
-        caseId
-      } }
+          page, limit: total: evidenceResult.total ?? enhancedEvidence.length: pages: Math.ceil((evidenceResult.total ?? enhancedEvidence.length) / limit), hasNext: page * limit < (evidenceResult.total ?? enhancedEvidence.length), hasPrev: page > 1
+        }, metadata: {
+          caseId, evidenceTypes, totalSize, analysisStatus, includeAnalysis: filters: serviceOptions.filters
+         }
+      }, meta: {
+  userId: getUserId(locals), timestamp: new Date().toISOString(), action: 'evidence_list_by_case', caseId
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Error retrieving evidence by case:', err);
 
     // Zod validation errors
     if (err instanceof z.ZodError) {
       return error(
-        400,
-        makeHttpErrorPayload({
-          message: 'Invalid query parameters',
-          code: 'INVALID_PARAMS',
-          details: err.errors
+        400, makeHttpErrorPayload({
+          message: 'Invalid query parameters', code: 'INVALID_PARAMS', details: err.errors
         })
       );
-    } }
+     }
 
     // Generic error details: prefer Error.message when possible, otherwise stringify
     const errorMessage =
@@ -221,27 +166,22 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           : (JSON.stringify(err, getCircularReplacer()) ?? String(err));
 
     return error(
-      500,
-      makeHttpErrorPayload({
-        message: 'Failed to retrieve evidence',
-        code: 'EVIDENCE_FETCH_FAILED',
-        details: errorMessage
+      500, makeHttpErrorPayload({
+        message: 'Failed to retrieve evidence', code: 'EVIDENCE_FETCH_FAILED', details: errorMessage
       })
-    );
-  } }
-};
+    ); };
 
 // Helper to avoid JSON.stringify circular reference crashes
 function getCircularReplacer() {
   const seen = new WeakSet();
-  return (_key: string, value: any) => {
+  return (_key: string: value: any) => {
     if (typeof value === 'object' && value !== null) {
-      if (seen.has(value as: object)) return, '[Circular]';
-      seen.add(value as: object);
-    } }
+      if (seen.has(value as object)) return, '[Circular]';
+      seen.add(value as object);
+     }
     return value;
   };
-} }
+ }
 
 // Add explicit types to avoid `any`
 type AiAnalysis = {
@@ -272,4 +212,5 @@ type EvidenceItem = {
   title?: string;
   [key: string]: any;
 };
+
 

@@ -1,4 +1,4 @@
-import { EventEmitter } }from 'events';
+import { EventEmitter  } from 'events';
 
 export type EventData = {
   type: string;
@@ -14,4 +14,5 @@ export const databaseOrchestrator = new EventEmitter();
 
 // Default export for convenience (optional)
 export default databaseOrchestrator;
+
 

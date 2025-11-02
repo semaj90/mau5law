@@ -4,19 +4,18 @@ interface ProcessEnv {
   NODE_ENV: string;
   BROWSER?: string;
   [key: string]: string | undefined;
-} }
+ }
 interface Process {
   env: ProcessEnv;
   browser?: boolean;
   version?: string;
   versions?: { node: string; [key: string]: string };
   cwd(): string;
-} }
+ }
 declare const process: Process;
 
 // Declare global functions or properties here
-// This declares nomicEmbedText as an optional function on the global scope,
-// resolving the TypeScript error without changing the runtime logic.
+// This declares nomicEmbedText as an optional function on the global scope, // resolving the TypeScript error without changing the runtime logic.
 declare const nomicEmbedText: ((text: string) => Promise<number[]>) | undefined;
 
 // See https://kit.svelte.dev/docs/types#app
@@ -24,7 +23,7 @@ declare const nomicEmbedText: ((text: string) => Promise<number[]>) | undefined;
 declare global {
   namespace App {
     interface Locals {
-      user?: { id: string;, email: string;
+      user?: { id: string; email: string;
         // Add other user properties as needed, e.g., roles, name
       };
       // Database client (Drizzle ORM)
@@ -35,11 +34,12 @@ declare global {
       rabbitmqChannel?: any | null;
       // Add other locals properties as needed
       [key: string]: any; // This index signature helps satisfy generic type checks
-    } }
-    // interface PageData {} }
-    // interface Error {} }
-    // interface Platform {} }
-  } }
+     }
+    // interface PageData { }
+    // interface Error { }
+    // interface Platform { }
+   }
 } }
 
 export {};
+

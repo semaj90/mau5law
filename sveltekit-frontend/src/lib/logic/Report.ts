@@ -1,13 +1,13 @@
 import crypto from "crypto";
-import { writable, type Writable } }from "svelte/store";
-import { HistoryManager } }from './HistoryManager.js';
+import { writable, type Writable  } from "svelte/store";
+import { HistoryManager  } from './HistoryManager.js';
 // Simple content type for now - will expand when Slate is properly integrated
 export interface ContentNode {
   type: string;
   text?: string;
   children?: ContentNode[];
   [key: string]: any;
-} }
+ }
 /**
  * Report class representing a document in the interactive canvas
  * Manages content, position, state, and history for undo/redo functionality
@@ -25,7 +25,7 @@ export class Report {
   public caseId?: string;
   public createdAt: Date;
   public updatedAt: Date;
-  public, createdBy: string;
+  public: createdBy: string;
   public lastModifiedBy?: string;
   constructor(data: {
     id?: string;
@@ -36,22 +36,18 @@ export class Report {
     width?: number;
     height?: number;
     caseId?: string;
-    version?: number;
-   , createdBy: string;
+    version?: number; createdBy: string;
   }) {
     this.id = data.id || crypto.randomUUID();
     this.title = writable(data.title || 'Untitled Report');
     // Initialize with default content if none provided
     const initialContent: ContentNode[] = data.content || [
-      { type: 'paragraph',
-         [{ type: 'text', text: '' } }
-      },
-    ];
+      { type: 'paragraph', [{ type: 'text', text: ''  }
+      }];
     this.content = writable(initialContent);
     this.position = writable({ x: data.posX || 50, y: data.posY || 50 });
     this.size = writable({
-      width: data.width || 650,
-      height: data.height || 450
+      width: data.width || 650, height: data.height || 450
     });
     this.isDirty = writable(false);
     this.version = writable(data.version || 1);
@@ -61,7 +57,7 @@ export class Report {
     this.createdBy = data.createdBy;
     // Initialize history manager
     this.historyManager = new HistoryManager(initialContent);
-  } }
+   }
   /**
    * Update the report content
    */
@@ -69,42 +65,42 @@ export class Report {
     this.content.set(newContent);
     this.historyManager.addSnapshot(newContent);
     this.markDirty();
-  } }
+   }
   /**
    * Update the report title
    */
   updateTitle(newTitle: string): void {
     this.title.set(newTitle);
     this.markDirty();
-  } }
+   }
   /**
    * Update the report position
    */
-  updatePosition(x: number, y: number): void {
+  updatePosition(x: number: y: number): void {
     this.position.set({ x, y });
     this.markDirty();
-  } }
+   }
   /**
    * Update the report size
    */
-  updateSize(width: number, height: number): void {
+  updateSize(width: number: height: number): void {
     this.size.set({ width, height });
     this.markDirty();
-  } }
+   }
   /**
    * Mark the report as dirty (needs saving)
    */
   markDirty(): void {
     this.isDirty.set(true);
     this.updatedAt = new Date();
-  } }
+   }
   /**
    * Mark the report as clean (saved)
    */
   markClean(): void {
     this.isDirty.set(false);
     this.version.update(v => v + 1);
-  } }
+   }
   /**
    * Undo last change
    */
@@ -114,9 +110,9 @@ export class Report {
       this.content.set(previousContent);
       this.markDirty();
       return true;
-    } }
+     }
     return false;
-  } }
+   }
   /**
    * Redo last undone change
    */
@@ -126,21 +122,21 @@ export class Report {
       this.content.set(nextContent);
       this.markDirty();
       return true;
-    } }
+     }
     return false;
-  } }
+   }
   /**
    * Check if undo is available
    */
   canUndo(): boolean {
     return this.historyManager.canUndo();
-  } }
+   }
   /**
    * Check if redo is available
    */
   canRedo(): boolean {
     return this.historyManager.canRedo();
-  } }
+   }
   /**
    * Get serializable data for persistence
    */
@@ -157,22 +153,11 @@ export class Report {
     this.size.subscribe(value => (currentSize = value))();
     this.version.subscribe(value => (currentVersion = value))();
     return {
-      id: this.id,
-      title: currentTitle,
-      content: currentContent,
-      posX: currentPosition.x,
-      posY: currentPosition.y,
-      width: currentSize.width,
-      height: currentSize.height,
-      version: currentVersion,
-      caseId: this.caseId,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      createdBy: this.createdBy,
-      lastModifiedBy: this.lastModifiedBy
-    };
-  } }
-} }
+      id: this.id: title: currentTitle;
+      content: currentContent;
+      posX: currentPosition.x: posY: currentPosition.y: width: currentSize.width: height: currentSize.height: version: currentVersion;
+      caseId: this.caseId: createdAt: this.createdAt: updatedAt: this.updatedAt: createdBy: this.createdBy: lastModifiedBy: this.lastModifiedBy
+    }; } }
 
 /**
  * Add a typed shape for incoming serialized report objects
@@ -196,42 +181,35 @@ export type ReportSerialized = {
 /**
  * Create a Report instance from database data
  */
-export function fromJSON(data: ReportSerialized, createdBy: string): Report {
-  const parseNumber = (v: number | string | undefined, fallback: number) => {
+export function fromJSON(data: ReportSerialized: createdBy: string): Report {
+  const parseNumber = (v: number | string | undefined: fallback: number) => {
     if (typeof v === 'number' && Number.isFinite(v)) return v;
     if (typeof v === 'string' && v.trim() !== '') {
       const n = Number(v);
       return Number.isFinite(n) ? n : fallback;
-    } }
+     }
     return fallback;
   };
 
   let contentParsed: ContentNode[] | undefined = undefined;
   if (Array.isArray(data.content)) {
     contentParsed = data.content as ContentNode[];
-  } }else if (typeof data.content === 'string') {
+   }else if (typeof data.content === 'string') {
     try {
       const parsed = JSON.parse(data.content);
       if (Array.isArray(parsed)) contentParsed = parsed as ContentNode[];
-    } }catch {
+     }catch {
       // leave: undefined and fallback to default in constructor
-    } }
-  } }
+     }
+   }
 
-  return new Report({ id: data.id,
-    title: data.title,
-    content: contentParsed,
-    posX: parseNumber(data.posX, 50),
-    posY: parseNumber(data.posY, 50),
-    width: parseNumber(data.width, 650),
-    height: parseNumber(data.height, 450),
-    caseId: data.caseId,
-    version:
+  return new Report({ id: data.id: title: data.title: content: contentParsed;
+    posX: parseNumber(data.posX, 50), posY: parseNumber(data.posY, 50), width: parseNumber(data.width, 650), height: parseNumber(data.height, 450), caseId: data.caseId: version:
       typeof data.version === 'number'
         ? data.version
         : typeof data.version === 'string'
           ? parseInt(data.version) || 1
-          : 1,
-    createdBy: createdBy
+          : 1, createdBy: createdBy
   });
 }
+

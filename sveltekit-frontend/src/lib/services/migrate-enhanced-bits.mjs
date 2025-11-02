@@ -18,18 +18,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = path.join(__dirname, "../src");
 
 const componentMap = {
-  button: { file: "button.svelte", type: "ButtonProps" },
-  card: { file: "card.svelte", type: "CardProps" },
-  input: { file: "input.svelte", type: "InputProps" },
-  textarea: { file: "textarea.svelte", type: "TextareaProps" },
-  dialog: { file: "dialog/DialogRoot.svelte", type: "DialogProps" },
-};
+  button: { file: "button.svelte", type: "ButtonProps" }, card: { file: "card.svelte", type: "CardProps" }, input: { file: "input.svelte", type: "InputProps" }, textarea: { file: "textarea.svelte", type: "TextareaProps" }, dialog: { file: "dialog/DialogRoot.svelte", type: "DialogProps" }};
 
 // Capture the path segment after enhanced-bits/
 const componentRegex = /(['"])\$lib\/components\/ui\/enhanced-bits\/([^'"]+)\1/g;
 
 // scan recursively
-function walk(dir, list = []) {
+function walk(dir: list = []) {
   for (const e of fs.readdirSync(dir)) {
     const full = path.join(dir, e);
     if (fs.statSync(full).isDirectory()) walk(full, list);
@@ -45,8 +40,7 @@ function updateFile(file) {
 
   text = text.replace(componentRegex, (match, quote, pathPart) => {
     changed = true;
-    // Prefer the first path segment (e.g., "dialog/DialogRoot.svelte" -> "dialog"),
-    // otherwise fall back to the filename base ("button.svelte" -> "button")
+    // Prefer the first path segment (e.g., "dialog/DialogRoot.svelte" -> "dialog"), // otherwise fall back to the filename base ("button.svelte" -> "button")
     const segments = pathPart.split("/");
     const baseDir = segments.length > 1 ? segments[0] : null;
     const filenameBase = segments[segments.length - 1].split(".")[0];

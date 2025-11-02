@@ -1,4 +1,4 @@
-import { writable } }from 'svelte/store';
+import { writable  } from 'svelte/store';
 
 export const liveReports = writable<any[]>([]);
 
@@ -9,12 +9,8 @@ export function connectReportsStream() {
     try {
       const data = JSON.parse(e.data);
       if (data.type === 'report-updated') {
-        liveReports.update((arr) => [data, ...arr].slice(0, 50));
-      } }
-    } }catch (err) {
-      console.error('SSE parse error', err);
-    } }
-  });
+        liveReports.update((arr) => [data, ...arr].slice(0, 50)); }catch (err) {
+      console.error('SSE parse error', err); });
 
   evtSource.onerror = (err) => {
     console.warn('SSE connection lost', err);
@@ -23,5 +19,6 @@ export function connectReportsStream() {
   };
 
   return evtSource;
-} }
+ }
+
 

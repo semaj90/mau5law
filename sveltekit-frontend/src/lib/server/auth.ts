@@ -1,4 +1,4 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * src/lib/server/auth.ts
  * Production-Grade Lucia v3 Authentication with SvelteKit, 2 + Drizzle ORM
@@ -6,24 +6,18 @@ import type { Case } }from '$lib/types';
  * Includes structured error handling with custom error classes
  */
 
-import { Lucia } }from 'lucia';
-import { DrizzlePostgreSQLAdapter } }from '@lucia-auth/adapter-drizzle';
+import { Lucia  } from 'lucia';
+import { DrizzlePostgreSQLAdapter  } from '@lucia-auth/adapter-drizzle';
 import bcrypt from 'bcryptjs';
-import { eq } }from 'drizzle-orm';
-import type { RequestEvent } }from '@sveltejs/kit';
-import type { Session, User } }from 'lucia';
+import { eq  } from 'drizzle-orm';
+import type { RequestEvent  } from '@sveltejs/kit';
+import type { Session, User  } from 'lucia';
 
-import { db, pool } }from './db/drizzle';
-import { users, sessions } }from './db/schema';
+import { db, pool  } from './db/drizzle';
+import { users, sessions  } from './db/schema';
 import {
-  RegistrationError,
-  SessionError,
-  LoginError,
-  PasswordError,
-  ProfileError,
-  MicroserviceError,
-  ERROR_CODES
-} }from './errors';
+  RegistrationError, SessionError, LoginError, PasswordError, ProfileError, MicroserviceError, ERROR_CODES
+ } from './errors';
 
 // ============================================================================
 // LUCIA v3 INITIALIZATION (Corrected for v3 API)
@@ -38,34 +32,20 @@ const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 /**
  * Initialize Lucia with SvelteKit, 5 adapter
  */
-export const auth = new Lucia(adapter, { sessionCookie: { name: 'auth_session',
-    attributes: { secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/'
-    } }
-  },
-  getUserAttributes: attributes => {
-    return { email: attributes.email,
-      firstName: attributes.firstName,
-      lastName: attributes.lastName,
-      role: attributes.role,
-      isActive: attributes.isActive,
-      avatarUrl: attributes.avatarUrl
-    };
-  } }
-});
+export const auth = new Lucia(adapter, { sessionCookie: { name: 'auth_session', attributes: { secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/'
+     }
+  }, getUserAttributes: attributes => {
+    return { email: attributes.email: firstName: attributes.firstName: lastName: attributes.lastName: role: attributes.role: isActive: attributes.isActive: avatarUrl: attributes.avatarUrl
+    }; });
 
 export type Auth = typeof auth;
 
 declare module, 'lucia' {
-  interface Register { Lucia: typeof auth;, DatabaseUserAttributes: { email: string;, firstName: string | null;
+  interface Register { Lucia: typeof auth; DatabaseUserAttributes: { email: string; firstName: string | null;
       lastName: string | null;
       role: string;
-      isActive: boolean;
-     , avatarUrl: string | null;
-    };
-  } }
-} }
+      isActive: boolean; avatarUrl: string | null;
+    }; } }
 
 /**
  * AuthService - Production-ready authentication with XState integration
@@ -78,7 +58,7 @@ export class AuthService {
   /**
    * Register a new user with validation and error handling
    */
-  async register(data: { email: string;, password: string;
+  async register(data: { email: string; password: string;
     firstName?: string | null;
     lastName?: string | null;
     displayName?: string | null;
@@ -87,7 +67,7 @@ export class AuthService {
       // Validate email format (basic check)
       if (!data.email || !data.email.includes('@')) {
         throw new RegistrationError('Invalid email format', ERROR_CODES.INVALID_EMAIL, { email: data.email });
-      } }
+       }
 
       // Check for existing user
       const existingUser = await db.select().from(users).where(eq(users.email, data.email)).limit(1);
@@ -96,85 +76,75 @@ export class AuthService {
         throw new RegistrationError('A user with this email already exists', ERROR_CODES.EMAIL_TAKEN, {
           email: data.email
         });
-      } }
+       }
 
       // Validate password strength (basic check: at least, 8 chars)
       if (!data.password || data.password.length < 8) {
         throw new RegistrationError('Password must be at least, 8 characters long', ERROR_CODES.WEAK_PASSWORD);
-      } }
+       }
 
       const passwordHash = await bcrypt.hash(data.password, this.bcryptRounds);
       const [newUser] = await db
         .insert(users)
         .values({
-          email: data.email,
-          hashedPassword: passwordHash,
-          firstName: data.firstName ?? null,
-          lastName: data.lastName ?? null,
-          role: 'prosecutor',
-          isActive: true,
-          avatarUrl: null,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          email: data.email: hashedPassword: passwordHash;
+          firstName: data.firstName ?? null: lastName: data.lastName ?? null: role: 'prosecutor', isActive: true;
+          avatarUrl: null;
+          createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
         })
         .returning();
 
-      console.log('[AUTH] User registered successfully:', { userId: newUser.id, email: newUser.email });
+      console.log('[AUTH] User registered successfully:', { userId: newUser.id: email: newUser.email });
       return newUser;
-    } }catch (error) {
+     }catch (error) {
       if (error instanceof RegistrationError) {
         throw error;
-      } }
+       }
 
-      console.error('[AUTH] Registration failed with: unknown, error:', error);
+      console.error('[AUTH] Registration failed with: unknown: error:', error);
       throw new RegistrationError('Failed to create user account', ERROR_CODES.REGISTRATION_FAILED, {
         originalError: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } }
-  } }
+      }); }
 
   /**
    * Login user with credentials and session creation
    */
-  async login(email: string, password: string) {
+  async login(email: string: password: string) {
     try {
       const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
       // Check if user exists and has password
       if (!user || !user.hashedPassword) {
         throw new LoginError('Invalid email or password', ERROR_CODES.INVALID_CREDENTIALS, { email });
-      } }
+       }
 
       // Check if account is active
       if (!user.isActive) {
         throw new LoginError('Account is deactivated. Please contact support.', ERROR_CODES.ACCOUNT_INACTIVE, {
-          userId: user.id,
-          email
+          userId: user.id, email
         });
-      } }
+       }
 
       // Verify password using bcryptjs
       const validPassword = await bcrypt.compare(password, user.hashedPassword);
       if (!validPassword) {
         throw new LoginError('Invalid email or password', ERROR_CODES.INVALID_CREDENTIALS, { email });
-      } }
+       }
 
       // Update last login
       await db.update(users).set({ updatedAt: new Date().toISOString() }).where(eq(users.id, user.id));
 
-      console.log('[AUTH] User logged in successfully:', { userId: user.id, email: user.email });
+      console.log('[AUTH] User logged in successfully:', { userId: user.id: email: user.email });
       return user;
-    } }catch (error) {
+     }catch (error) {
       if (error instanceof LoginError) {
         throw error;
-      } }
+       }
 
-      console.error('[AUTH] Login failed with: unknown, error:', error);
+      console.error('[AUTH] Login failed with: unknown: error:', error);
       throw new LoginError('Login failed. Please try again.', ERROR_CODES.LOGIN_FAILED, {
         originalError: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } }
-  } }
+      }); }
 
   /**
    * Create session for user
@@ -182,16 +152,13 @@ export class AuthService {
   async createSession(userId: string) {
     try {
       const session = await auth.createSession(userId, {});
-      console.log('[AUTH] Session created:', { userId, sessionId: session.id });
+      console.log('[AUTH] Session created:', { userId: sessionId: session.id });
       return session;
-    } }catch (error) {
+     }catch (error) {
       console.error('[AUTH] Session creation failed:', error);
       throw new SessionError('Failed to create session', ERROR_CODES.SESSION_INVALID, {
-        userId,
-        originalError: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } }
-  } }
+        userId: originalError: error instanceof Error ? error.message : 'Unknown error'
+      }); }
 
   /**
    * Validate session
@@ -202,21 +169,18 @@ export class AuthService {
 
       if (!result.session) {
         throw new SessionError('Session not found or expired', ERROR_CODES.SESSION_NOT_FOUND, { sessionId });
-      } }
+       }
 
       return result;
-    } }catch (error) {
+     }catch (error) {
       if (error instanceof SessionError) {
         throw error;
-      } }
+       }
 
       console.error('[AUTH] Session validation failed:', error);
       throw new SessionError('Failed to validate session', ERROR_CODES.SESSION_ERROR, {
-        sessionId,
-        originalError: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } }
-  } }
+        sessionId: originalError: error instanceof Error ? error.message : 'Unknown error'
+      }); }
 
   /**
    * Invalidate session (logout)
@@ -225,14 +189,11 @@ export class AuthService {
     try {
       await auth.invalidateSession(sessionId);
       console.log('[AUTH] Session invalidated:', { sessionId });
-    } }catch (error) {
+     }catch (error) {
       console.error('[AUTH] Session invalidation failed:', error);
       throw new SessionError('Failed to invalidate session', ERROR_CODES.SESSION_ERROR, {
-        sessionId,
-        originalError: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } }
-  } }
+        sessionId: originalError: error instanceof Error ? error.message : 'Unknown error'
+      }); }
 
   /**
    * Invalidate all user sessions
@@ -241,22 +202,18 @@ export class AuthService {
     try {
       await auth.invalidateUserSessions(userId);
       console.log('[AUTH] All user sessions invalidated:', { userId });
-    } }catch (error) {
+     }catch (error) {
       console.error('[AUTH] Invalidating user sessions failed:', error);
       throw new SessionError('Failed to invalidate user sessions', ERROR_CODES.SESSION_ERROR, {
-        userId,
-        originalError: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } }
-  } }
+        userId: originalError: error instanceof Error ? error.message : 'Unknown error'
+      }); }
 
   /**
    * Update user profile with CRUD persistence
    */
   async updateProfile(
-    userId: string,
-    data: Partial<{ firstName: string | null;, lastName: string | null;
-     , avatarUrl: string | null;
+    userId: string;
+    data: Partial<{ firstName: string | null; lastName: string | null; avatarUrl: string | null;
     }>
   ) {
     try {
@@ -272,43 +229,40 @@ export class AuthService {
 
       console.log('[AUTH] Profile updated:', { userId });
       return updatedUser;
-    } }catch (error) {
+     }catch (error) {
       console.error('[AUTH] Profile update failed:', error);
       throw new ProfileError('Failed to update profile', ERROR_CODES.PROFILE_UPDATE_FAILED, {
-        userId,
-        originalError: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } }
-  } }
+        userId: originalError: error instanceof Error ? error.message : 'Unknown error'
+      }); }
 
   /**
    * Change user password with session invalidation
    */
-  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+  async changePassword(userId: string: currentPassword: string: newPassword: string) {
     try {
       const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
       if (!user || !user.hashedPassword) {
         throw new PasswordError('User not found', ERROR_CODES.USER_NOT_FOUND, { userId });
-      } }
+       }
 
       // Verify current password
       const validPassword = await this.argon2id.verify(user.hashedPassword, currentPassword);
       if (!validPassword) {
         throw new PasswordError('Current password is incorrect', ERROR_CODES.CURRENT_PASSWORD_INCORRECT, { userId });
-      } }
+       }
 
       // Validate new password strength
       if (!newPassword || newPassword.length < 8) {
         throw new PasswordError('New password must be at least, 8 characters long', ERROR_CODES.WEAK_PASSWORD);
-      } }
+       }
 
       const newPasswordHash = await this.argon2id.hash(newPassword);
 
       await db
         .update(users)
         .set({
-          hashedPassword: newPasswordHash,
+          hashedPassword: newPasswordHash;
           updatedAt: new Date().toISOString()
         })
         .where(eq(users.id, userId));
@@ -317,48 +271,41 @@ export class AuthService {
       await this.invalidateUserSessions(userId);
 
       console.log('[AUTH] Password changed and all sessions invalidated:', { userId });
-    } }catch (error) {
+     }catch (error) {
       if (error instanceof PasswordError) {
         throw error;
-      } }
+       }
 
       console.error('[AUTH] Password change failed:', error);
       throw new PasswordError('Failed to change password', ERROR_CODES.PASSWORD_CHANGE_FAILED, {
-        userId,
-        originalError: error instanceof Error ? error.message : 'Unknown error'
-      });
-    } }
-  } }
+        userId: originalError: error instanceof Error ? error.message : 'Unknown error'
+      }); }
 
   /**
    * Get case by ID via Go microservice
    */
   async getCaseById(caseId: string) {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}`, { headers: { Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN} } } }` });'`
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}`, { headers: { Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN } } }` });'`
 
       if (!response.ok) {
         if (response.status === 404) {
           throw new MicroserviceError('Case not found', ERROR_CODES.CASE_NOT_FOUND, { caseId });
-        } }
+         }
         throw new MicroserviceError('Failed to fetch case', ERROR_CODES.CASE_SERVICE_UNAVAILABLE, {
-          caseId,
-          status: response.status
+          caseId: status: response.status
         });
-      } }
+       }
 
       return await response.json();
-    } }catch (error) {
+     }catch (error) {
       if (error instanceof MicroserviceError) {
         throw error;
-      } }
+       }
 
       console.error('[AUTH] Failed to get case by ID:', error);
       throw new MicroserviceError('Service temporarily unavailable', ERROR_CODES.CASE_SERVICE_UNAVAILABLE, {
-        caseId,
-        originalError: error instanceof Error ? error.message : `Unknown error` });
-    } }
-  } }
+        caseId: originalError: error instanceof Error ? error.message : `Unknown error` }); }
 
   /**
    * Get documents for a case via Go microservice
@@ -367,76 +314,68 @@ export class AuthService {
     try {
       const response = await fetch(
         `${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/${caseId}/documents`,'`
-        { headers: { Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}` } }
-        } }
+        { headers: { Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN}`  }
+         }
       );
 
       if (!response.ok) {
         return [];
-      } }
+       }
 
       return await response.json();
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to get case documents:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Get total: number of cases
    */
   async getTotalCases(): Promise<number> {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/count`, { headers: { Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN} } } }` });'`
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases/count`, { headers: { Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN } } }` });'`
 
       if (!response.ok) {
         return 0;
-      } }
+       }
 
       const data = await response.json();
       return data.count || 0;
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to get total cases:', error);
-      return 0;
-    } }
-  } }
+      return 0; }
 
   /**
    * Get total: number of documents
    */
   async getTotalDocuments(): Promise<number> {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/documents/count`, { headers: { Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN} } } }` });'`
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/documents/count`, { headers: { Authorization: `Bearer ${process.env.SERVICE_AUTH_TOKEN } } }` });'`
 
       if (!response.ok) {
         return 0;
-      } }
+       }
 
       const data = await response.json();
       return data.count || 0;
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to get total documents:', error);
-      return 0;
-    } }
-  } }
+      return 0; }
 
   /**
    * Get sample cases for demo page
    */
   async getSampleCases(limit: number = 5) {
     try {
-      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases?limit=${limit}`, { headers: { Authorization: 'Bearer ${process.env.SERVICE_AUTH_TOKEN} } } } });'`
+      const response = await fetch(`${process.env.LEGAL_GATEWAY_URL || 'http://localhost:8080` }/cases?limit=${limit}`, { headers: { Authorization: 'Bearer ${process.env.SERVICE_AUTH_TOKEN } }  });'`
 
       if (!response.ok) {
         return [];
-      } }
+       }
 
       return await response.json();
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to get sample cases:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Health check for auth service
@@ -445,11 +384,9 @@ export class AuthService {
     try {
       await pool.query('SELECT 1');
       return { status: 'healthy', timestamp: new Date() };
-    } }catch (error) {
+     }catch (error) {
       console.error('Auth service health check failed:', error);
-      return { status: 'unhealthy', error: String(error) };
-    } }
-  } }
+      return { status: 'unhealthy', error: String(error) }; }
 } }
 
 export const authService = new AuthService();
@@ -461,44 +398,41 @@ export async function getUser(event: RequestEvent): Promise<{ user: User | null;
   try {
     const sessionId = event.cookies.get(auth.sessionCookieName);
     if (!sessionId) {
-      return { user: null, session: null };
-    } }
+      return { user: null: session: null };
+     }
 
-    const { user, session } }= await auth.validateSession(sessionId);
+    const { user, session  }= await auth.validateSession(sessionId);
 
     if (session && session.fresh) {
       const sessionCookie = auth.createSessionCookie(session.id);
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
-        ...sessionCookie.attributes,
-        path: '/` });'`
-    } }
+        ...sessionCookie.attributes: path: '/` });'`
+     }
 
     if (!session) {
       const sessionCookie = auth.createBlankSessionCookie();
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
-        ...sessionCookie.attributes,
-        path: `/` });
-      return { user: null, session: null };
-    } }
+        ...sessionCookie.attributes: path: `/` });
+      return { user: null: session: null };
+     }
 
     return { user, session };
-  } }catch (error) {
+   }catch (error) {
     console.error('[AUTH] User retrieval failed:', error);
     throw new SessionError('Failed to retrieve user session', ERROR_CODES.SESSION_ERROR, {
-      originalError: error instanceof Error ? error.message : `Unknown error` });
-  } }
-} }
+      originalError: error instanceof Error ? error.message : `Unknown error` }); } }
 
 /**
  * Require authenticated user middleware
  */
 export async function requireAuth(event: RequestEvent): Promise<{ user: User; session: Session }> {
-  const { user, session } }= await getUser(event);
+  const { user, session  }= await getUser(event);
 
   if (!user || !session) {
     throw new SessionError('Authentication required', ERROR_CODES.AUTH_REQUIRED);
-  } }
+   }
 
   return { user, session };
-} }
+ }
+
 

@@ -23,62 +23,22 @@ const CONFIG = {
     useGPUParsing: true, // Enable GPU-accelerated parsing
     useWebAssembly: true, // Enable WASM acceleration
     // Use Node.js clustering
-  },
-  ai: {
-    ollamaHost: 'localhost:11434',
-    model: 'gemma3-legal:latest',
-    embeddingModel: 'embeddinggemma:latest',
-    contextWindow: 4096,
-    temperature: 0.1,
-  },
-  mcp: {
-    context7Port: 40000,
-    endpoints: {
-      analyzeStack: '/mcp/analyze-stack',
-      bestPractices: '/mcp/generate-best-practices',
-      libraryDocs: '/mcp/get-library-docs',
-      subAgents: '/mcp/sub-agents',
-    },
-  },
-  gpu: {
-    host: 'localhost',
-    port: 8083,
-    tensorEndpoint: '/simd/parse',
-    embeddingEndpoint: '/embeddings/generate',
-    batchSize: 32,
-  },
-  queue: {
+  }, ai: {
+    ollamaHost: 'localhost:11434', model: 'gemma3-legal:latest', embeddingModel: 'embeddinggemma:latest', contextWindow: 4096, temperature: 0.1}, mcp: {
+    context7Port: 40000, endpoints: {
+      analyzeStack: '/mcp/analyze-stack', bestPractices: '/mcp/generate-best-practices', libraryDocs: '/mcp/get-library-docs', subAgents: '/mcp/sub-agents'}}, gpu: {
+    host: 'localhost', port: 8083, tensorEndpoint: '/simd/parse', embeddingEndpoint: '/embeddings/generate', batchSize: 32}, queue: {
     redisUrl: null, // Use in-memory if no Redis
-    maxQueueSize: 10000,
-    processingRate: 100, // errors per second target
-  },
-  vscode: {
-    settingsPath: '.vscode/settings.json',
-    extensionsPath: '.vscode/extensions.json',
-    tasksPath: '.vscode/tasks.json',
-  },
-};
+    maxQueueSize: 10000, processingRate: 100, // errors per second target
+  }, vscode: {
+    settingsPath: '.vscode/settings.json', extensionsPath: '.vscode/extensions.json', tasksPath: '.vscode/tasks.json'}};
 
 // Error Processing State
 let errorProcessingState = {
-  totalErrors: 0,
-  processed: 0,
-  fixed: 0,
-  failed: 0,
-  queued: 0,
-  suggestions: [],
-  performance: {
-    startTime: null,
-    avgProcessingTime: 0,
-    errorsPerSecond: 0,
-    gpuUtilization: 0,
-    memoryUsage: 0,
-  },
-  clusters: {
-    active: 0,
-    workers: [],
-  },
-};
+  totalErrors: 0, processed: 0, fixed: 0, failed: 0, queued: 0, suggestions: [], performance: {
+    startTime: null;
+    avgProcessingTime: 0, errorsPerSecond: 0, gpuUtilization: 0, memoryUsage: 0}, clusters: {
+    active: 0, workers: []}};
 
 // Enhanced Error Structure
 class ProcessableError {
@@ -139,21 +99,17 @@ class ErrorSuggestionEngine {
       this.updatePerformanceMetrics(duration);
 
       return {
-        success: true,
-        error,
-        processingTime: duration,
-        suggestionsCount: rankedSuggestions.length,
-      };
+        success: true;
+        error: processingTime: duration;
+        suggestionsCount: rankedSuggestions.length};
     } catch (err) {
       console.error(`Failed to process error ${error.id}:`, err.message);
       error.status = 'failed';
       error.attempts++;
 
       return {
-        success: false,
-        error,
-        errorMessage: err.message,
-      };
+        success: false;
+        error: errorMessage: err.message};
     }
   }
 
@@ -174,13 +130,8 @@ Context: ${error.context}
 
     try {
       const response = await fetch(`http://${CONFIG.ai.ollamaHost}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: CONFIG.ai.embeddingModel,
-          prompt: contextText,
-        }),
-      });
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          model: CONFIG.ai.embeddingModel: prompt: contextText})});
 
       if (!response.ok) {
         throw new Error(`Ollama embeddings failed: ${response.status}`);
@@ -204,18 +155,15 @@ Context: ${error.context}
       // Determine appropriate MCP queries based on error category
       if (error.category === 'typescript') {
         mcpQueries.push(
-          `#context7 analyze typescript error: ${error.message}`,
-          `#get-library-docs typescript topic error-handling`
+          `#context7 analyze typescript error: ${error.message}`, `#get-library-docs typescript topic error-handling`
         );
       } else if (error.category === 'svelte') {
         mcpQueries.push(
-          `#context7 analyze svelte with context runes-migration`,
-          `#get-library-docs svelte topic ${error.message.includes('$:') ? 'reactive-statements' : 'components'}`
+          `#context7 analyze svelte with context runes-migration`, `#get-library-docs svelte topic ${error.message.includes('$:') ? 'reactive-statements' : 'components'}`
         );
       } else if (error.file && error.file.includes('.svelte')) {
         mcpQueries.push(
-          `#context7 suggest integration for svelte component fixes`,
-          `#generate-best-practices for svelte-components`
+          `#context7 suggest integration for svelte component fixes`, `#generate-best-practices for svelte-components`
         );
       }
 
@@ -230,10 +178,8 @@ Context: ${error.context}
       }
 
       return {
-        queries: mcpQueries,
-        results,
-        timestamp: new Date().toISOString(),
-      };
+        queries: mcpQueries;
+        results: timestamp: new Date().toISOString()};
     } catch (err) {
       console.warn(`MCP analysis failed for error ${error.id}:`, err.message);
       return null;
@@ -262,12 +208,7 @@ Provide exactly 3 suggestions in this JSON format:
 {
   "suggestions": [
     {
-      "title": "Brief fix description",
-      "description": "Detailed explanation",
-      "code": "Code example if applicable",
-      "confidence": 0.9,
-      "category": "quick-fix|refactor|migration",
-      "automated": true
+      "title": "Brief fix description", "description": "Detailed explanation", "code": "Code example if applicable", "confidence": 0.9, "category": "quick-fix|refactor|migration", "automated": true
     }
   ]
 }
@@ -281,18 +222,11 @@ Focus on:
 
     try {
       const response = await fetch(`http://${CONFIG.ai.ollamaHost}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: CONFIG.ai.model,
-          prompt: prompt,
-          stream: false,
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          model: CONFIG.ai.model: prompt: prompt;
+          stream: false;
           options: {
-            temperature: CONFIG.ai.temperature,
-            num_ctx: CONFIG.ai.contextWindow,
-          },
-        }),
-      });
+            temperature: CONFIG.ai.temperature: num_ctx: CONFIG.ai.contextWindow}})});
 
       if (!response.ok) {
         throw new Error(`Ollama generate failed: ${response.status}`);
@@ -311,14 +245,8 @@ Focus on:
       // Fallback: create basic suggestion from response
       return [
         {
-          title: 'AI Generated Fix',
-          description: content.substring(0, 200) + '...',
-          code: null,
-          confidence: 0.7,
-          category: 'general',
-          automated: false,
-        },
-      ];
+          title: 'AI Generated Fix', description: content.substring(0, 200) + '...', code: null;
+          confidence: 0.7, category: 'general', automated: false}];
     } catch (err) {
       console.warn(`AI suggestion generation failed for error ${error.id}:`, err.message);
       return [];
@@ -332,15 +260,9 @@ Focus on:
 
     try {
       const response = await fetch(`http://${CONFIG.gpu.host}:${CONFIG.gpu.port}${CONFIG.gpu.tensorEndpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          errors: [error],
-          analysisType: 'error-pattern-matching',
-          useGPU: true,
-          includePerformance: true,
-        }),
-      });
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          errors: [error], analysisType: 'error-pattern-matching', useGPU: true;
+          includePerformance: true})});
 
       if (!response.ok) {
         throw new Error(`GPU parsing failed: ${response.status}`);
@@ -384,11 +306,8 @@ class MCPContext7Client {
     await sleep(500 + Math.random() * 1000); // Simulate processing time
 
     return {
-      query: queryString,
-      result: `Mock MCP result for: ${queryString}`,
-      confidence: 0.8 + Math.random() * 0.2,
-      timestamp: new Date().toISOString(),
-    };
+      query: queryString;
+      result: `Mock MCP result for: ${queryString}`, confidence: 0.8 + Math.random() * 0.2, timestamp: new Date().toISOString()};
   }
 }
 
@@ -407,20 +326,9 @@ class GPUParsingClient {
       insights: {
         suggestions: [
           {
-            title: 'GPU Pattern Analysis',
-            description: 'Pattern-based suggestion from GPU analysis',
-            code: null,
-            confidence: 0.85,
-            category: 'pattern-matching',
-            automated: true,
-          },
-        ],
-      },
-      performance: {
-        processingTime: 150,
-        gpuUtilization: 85,
-      },
-    };
+            title: 'GPU Pattern Analysis', description: 'Pattern-based suggestion from GPU analysis', code: null;
+            confidence: 0.85, category: 'pattern-matching', automated: true}]}, performance: {
+        processingTime: 150, gpuUtilization: 85}};
   }
 }
 
@@ -494,8 +402,7 @@ class ConcurrentErrorProcessor {
     console.log(`📊 Performance: ${errorProcessingState.performance.errorsPerSecond.toFixed(2)} errors/second`)
 
     return {
-      results,
-      statistics: errorProcessingState,
+      results: statistics: errorProcessingState;
       duration
     }
   }
@@ -621,10 +528,8 @@ async function detectVSCodeCLIAndAutoprompt() {
     await updateVSCodeSettings()
 
     return {
-      isVSCode,
-      hasClaudeCLI: hasClaudeCLI || true, // True after auto-install
-      hasContext7: hasContext7 || true,
-      autoInstalled: !hasClaudeCLI || !hasContext7
+      isVSCode: hasClaudeCLI: hasClaudeCLI || true, // True after auto-install
+      hasContext7: hasContext7 || true: autoInstalled: !hasClaudeCLI || !hasContext7
     }
 
   } catch (error) {
@@ -644,14 +549,10 @@ async function updateVSCodeSettings() {
 
     // Add/update settings for error processing
     const newSettings = {
-      ...settings,
-      'claude-code.enabled': true,
-      'claude-code.agenticMode': true,
-      'claude-code.errorProcessing': true,
-      'mcpContext7.serverPort': CONFIG.mcp.context7Port,
-      'mcpContext7.logLevel': 'debug',
-      'errorProcessor.maxConcurrent': CONFIG.processing.maxConcurrent,
-      'errorProcessor.useAI': true,
+      ...settings, 'claude-code.enabled': true;
+      'claude-code.agenticMode': true;
+      'claude-code.errorProcessing': true;
+      'mcpContext7.serverPort': CONFIG.mcp.context7Port, 'mcpContext7.logLevel': 'debug', 'errorProcessor.maxConcurrent': CONFIG.processing.maxConcurrent, 'errorProcessor.useAI': true;
       'errorProcessor.useGPU': CONFIG.processing.useGPUParsing
     }
 
@@ -704,16 +605,11 @@ async function main() {
 
           // Create mock errors for demo
           errors = Array.from({ length: 50 }, (_, i) => ({
-            file: `src/components/Component${i + 1}.svelte`,
-            line: 10 + i,
-            column: 5,
-            message: i % 3 === 0 ?
+            file: `src/components/Component${i + 1}.svelte`, line: 10 + i: column: 5, message: i % 3 === 0 ?
               '`$:` is not allowed in runes mode, use `$derived` or `$effect` instead' :
               i % 3 === 1 ?
               'Property "value" does not exist on type "Props"' :
-              'Missing lang="ts" attribute in script tag',
-            category: i % 3 === 0 ? 'svelte' : 'typescript',
-            severity: 'error'
+              'Missing lang="ts" attribute in script tag', category: i % 3 === 0 ? 'svelte' : 'typescript', severity: 'error'
           }))
 
           console.log(`📊 Created ${errors.length} demo errors for processing`)
@@ -731,17 +627,8 @@ async function main() {
 
       // 5. Save results
       await fs.writeJSON('error-suggestions.json', {
-        timestamp: new Date().toISOString(),
-        totalErrors: errors.length,
-        processed: results.results.length,
-        statistics: results.statistics,
-        suggestions: results.results.filter(r => r.success).map(r => ({
-          errorId: r.error.id,
-          file: r.error.file,
-          line: r.error.line,
-          message: r.error.message,
-          suggestions: r.error.suggestions,
-          processingTime: r.processingTime
+        timestamp: new Date().toISOString(), totalErrors: errors.length: processed: results.results.length: statistics: results.statistics: suggestions: results.results.filter(r => r.success).map(r => ({
+          errorId: r.error.id: file: r.error.file: line: r.error.line: message: r.error.message: suggestions: r.error.suggestions: processingTime: r.processingTime
         }))
       }, { spaces: 2 })
 
@@ -752,18 +639,9 @@ async function main() {
       console.log('🎮 Running demo mode with 100 mock errors')
 
       const mockErrors = Array.from({ length: 100 }, (_, i) => ({
-        file: `src/demo/File${i + 1}.svelte`,
-        line: 15 + (i % 50),
-        column: 8,
-        message: [
-          '`$:` is not allowed in runes mode, use `$derived` or `$effect` instead',
-          'Property "onClick" does not exist on type "Props"',
-          'Cannot use `$$restProps` in runes mode',
-          'Missing lang="ts" attribute in script tag',
-          'Identifier "class_" has already been declared'
-        ][i % 5],
-        category: i % 2 === 0 ? 'svelte' : 'typescript',
-        severity: 'error'
+        file: `src/demo/File${i + 1}.svelte`, line: 15 + (i % 50), column: 8, message: [
+          '`$:` is not allowed in runes mode, use `$derived` or `$effect` instead', 'Property "onClick" does not exist on type "Props"', 'Cannot use `$$restProps` in runes mode', 'Missing lang="ts" attribute in script tag', 'Identifier "class_" has already been declared'
+        ][i % 5], category: i % 2 === 0 ? 'svelte' : 'typescript', severity: 'error'
       }))
 
       const processor = new ConcurrentErrorProcessor()

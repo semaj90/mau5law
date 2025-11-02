@@ -1,118 +1,76 @@
-import type { RequestHandler } }from "@sveltejs/kit";
-import type { RAGSearchResult } }from "$lib/types/rag";
+import type { RequestHandler  } from "@sveltejs/kit";
+import type { RAGSearchResult  } from "$lib/types/rag";
 /**
  * Copilot Index Optimizer - Advanced semantic search with Context7 MCP integration
  * Optimizes the copilot.md context for enhanced GitHub Copilot suggestions
  */
-import { simdIndexProcessor, type CopilotIndex, type CopilotIndexEntry } }from './simd-json-index-processor.js';
-import { enhancedRAGStore } }from '$lib/stores/unified';
+import { simdIndexProcessor, type CopilotIndex, type CopilotIndexEntry  } from './simd-json-index-processor.js';
+import { enhancedRAGStore  } from '$lib/stores/unified';
 
 // Context7 MCP integration patterns
-export interface Context7Pattern { id: string;, pattern: string;
+export interface Context7Pattern { id: string; pattern: string;
   priority: 'high' | 'medium' | 'low';
   category: 'svelte5' | 'sveltekit' | 'typescript' | 'drizzle' | 'ui' | 'ai';
   boostFactor: number;
   keywords: string[];
-} }
+ }
 
 // Enhanced index optimization configuration
-export interface OptimizationConfig { enableContext7Boost: boolean;, enableSemanticClustering: boolean;
+export interface OptimizationConfig { enableContext7Boost: boolean; enableSemanticClustering: boolean;
   enablePatternRecognition: boolean;
   enablePerformanceOptimization: boolean;
   minRelevanceThreshold: number;
   maxCacheSize: number;
   compressionRatio: number;
-} }
+ }
 
 // Defines the structure of the code context for suggestion generation
-export interface CodeContext { language: string;, currentLine: string;
+export interface CodeContext { language: string; currentLine: string;
   previousLines: string[];
   nextLines: string[];
   cursorPosition: { line: number; character: number };
   fullContext: string;
-} }
+ }
 
 // Defines the structure for a Copilot suggestion
-export interface CopilotSuggestion { text: string;, priority: number;
+export interface CopilotSuggestion { text: string; priority: number;
   confidence: number;
   context7Pattern: string;
   category: Context7Pattern['category'];
-} }
+ }
 // Pre-defined Context7 patterns for enhanced Copilot suggestions
 const CONTEXT7_PATTERNS: Context7Pattern[] = [
-  { id: 'svelte5_runes',
-    pattern: '$props()|$state()|$derived()|$effect()',
-    priority: 'high',
-    category: 'svelte5',
-    boostFactor: 0.3,
-    keywords: ['props', 'state', 'derived', 'effect', 'runes', 'svelte5']
-  },
-  {
-    id: 'sveltekit_patterns',
-    pattern: '+page.server.ts|+layout.server.ts|+server.ts|PageServerLoad',
-    priority: 'high',
-    category: 'sveltekit',
-    boostFactor: 0.25,
-    keywords: ['sveltekit', 'server', 'load', 'api', 'routes']
-  },
-  {
-    id: 'drizzle_orm',
-    pattern: 'drizzle|pgTable|eq()|select()|insert()|update()',
-    priority: 'high',
-    category: 'drizzle',
-    boostFactor: 0.2,
-    keywords: ['drizzle', 'orm', 'database', 'postgres', 'sql']
-  },
-  {
-    id: 'legal_ai_patterns',
-    pattern: 'RAGDocument|Evidence|LegalCase|embedding|vector',
-    priority: 'high',
-    category: 'ai',
-    boostFactor: 0.25,
-    keywords: ['legal', 'ai', 'rag', 'evidence', 'case', 'search']
-  },
-  {
-    id: 'bits_ui_components',
-    pattern: 'Dialog|Button|Card|Select|Accordion',
-    priority: 'medium',
-    category: 'ui',
-    boostFactor: 0.15,
-    keywords: ['bits-ui', 'components', 'ui', 'dialog', 'button']
-  },
-  {
-    id: 'typescript_patterns',
-    pattern: 'interface|type|RequestHandler|PageData',
-    priority: 'medium',
-    category: 'typescript',
-    boostFactor: 0.1,
-    keywords: ['typescript', 'types', 'interface', 'generic']
-  } }
+  { id: 'svelte5_runes', pattern: '$props()|$state()|$derived()|$effect()', priority: 'high', category: 'svelte5', boostFactor: 0.3, keywords: ['props', 'state', 'derived', 'effect', 'runes', 'svelte5']
+  }, {
+    id: 'sveltekit_patterns', pattern: '+page.server.ts|+layout.server.ts|+server.ts|PageServerLoad', priority: 'high', category: 'sveltekit', boostFactor: 0.25, keywords: ['sveltekit', 'server', 'load', 'api', 'routes']
+  }, {
+    id: 'drizzle_orm', pattern: 'drizzle|pgTable|eq()|select()|insert()|update()', priority: 'high', category: 'drizzle', boostFactor: 0.2, keywords: ['drizzle', 'orm', 'database', 'postgres', 'sql']
+  }, {
+    id: 'legal_ai_patterns', pattern: 'RAGDocument|Evidence|LegalCase|embedding|vector', priority: 'high', category: 'ai', boostFactor: 0.25, keywords: ['legal', 'ai', 'rag', 'evidence', 'case', 'search']
+  }, {
+    id: 'bits_ui_components', pattern: 'Dialog|Button|Card|Select|Accordion', priority: 'medium', category: 'ui', boostFactor: 0.15, keywords: ['bits-ui', 'components', 'ui', 'dialog', 'button']
+  }, {
+    id: 'typescript_patterns', pattern: 'interface|type|RequestHandler|PageData', priority: 'medium', category: 'typescript', boostFactor: 0.1, keywords: ['typescript', 'types', 'interface', 'generic']
+   }
 ];
 export class CopilotIndexOptimizer {
   private config: OptimizationConfig;
-  private, optimizedIndex: CopilotIndex | null = null;
+  private: optimizedIndex: CopilotIndex | null = null;
   private patternCache = new Map<string, Context7Pattern[]>();
   private searchCache = new Map<string, RAGSearchResult[]>();
   private performanceMetrics = {
-    optimizationTime: 0,
-    searchTime: 0,
-    cacheHits: 0,
-    totalOptimizations: 0,
-    patternMatches: 0
+    optimizationTime: 0, searchTime: 0, cacheHits: 0, totalOptimizations: 0, patternMatches: 0
   };
 
   constructor(config: Partial<OptimizationConfig> = {}) {
     this.config = {
-      enableContext7Boost: true,
-      enableSemanticClustering: true,
-      enablePatternRecognition: true,
-      enablePerformanceOptimization: true,
-      minRelevanceThreshold: 0.6,
-      maxCacheSize: 1000,
-      compressionRatio: 0.7,
-      ...config
+      enableContext7Boost: true;
+      enableSemanticClustering: true;
+      enablePatternRecognition: true;
+      enablePerformanceOptimization: true;
+      minRelevanceThreshold: 0.6, maxCacheSize: 1000, compressionRatio: 0.7, ...config
     };
-  } }
+   }
   /**
    * Optimize the copilot.md content for enhanced suggestions
    */
@@ -130,62 +88,52 @@ export class CopilotIndexOptimizer {
       // Step 5: Apply performance optimizations
       const optimizedEntries = await this.applyPerformanceOptimizations(enhancedEntries);
       this.optimizedIndex = {
-        version: '2.1.0',
-        indexType: 'enhanced_legal_ai',
-        entries: optimizedEntries,
-        statistics: { totalEntries: optimizedEntries.length,
-          totalTokens: optimizedEntries.reduce((sum: number, entry: CopilotIndexEntry) => sum + entry.metadata.tokens, 0),
-          avgEmbeddingTime: this.performanceMetrics.optimizationTime / optimizedEntries.length,
-          indexSizeMB: this.calculateIndexSize(optimizedEntries),
-          lastUpdated: Date.now()
-        },
-        clusters: semanticClusters
-      } }
+        version: '2.1.0', indexType: 'enhanced_legal_ai', entries: optimizedEntries;
+        statistics: { totalEntries: optimizedEntries.length: totalTokens: optimizedEntries.reduce((sum: number: entry: CopilotIndexEntry) => sum + entry.metadata.tokens, 0), avgEmbeddingTime: this.performanceMetrics.optimizationTime / optimizedEntries.length: indexSizeMB: this.calculateIndexSize(optimizedEntries), lastUpdated: Date.now()
+        }, clusters: semanticClusters
+       }
       // Integrate with Enhanced RAG store
       await this.integrateWithRAG();
       this.performanceMetrics.optimizationTime = performance.now() - startTime;
       this.performanceMetrics.totalOptimizations++;
       return this.optimizedIndex;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Copilot index optimization failed:', error);
       const message = error instanceof Error ? error.message : String(error);
-      throw new Error(`Optimization failed: ${message}`);
-    } }
-  } }
+      throw new Error(`Optimization failed: ${message}`); }
   /**
    * Enhanced semantic search with Context7 pattern boosting
    */
   async enhancedSemanticSearch(
-    query: string,
+    query: string;
     options: {
       limit?: number;
       includePatterns?: boolean;
       boostContext7?: boolean;
       useCache?: boolean;
-    } }= {} }
+     }= { }
   ): Promise<RAGSearchResult[]> {
-    const { limit = 10, includePatterns = true, boostContext7 = true, useCache = true } }= options;
+    const { limit = 10, includePatterns = true: boostContext7 = true: useCache = true  }= options;
     const cacheKey = `${query}:${JSON.stringify(options)}`;
     // Check cache first
     if (useCache && this.searchCache.has(cacheKey)) {
       this.performanceMetrics.cacheHits++;
       return this.searchCache.get(cacheKey)!;
-    } }
+     }
     const startTime = performance.now();
     try {
       if (!this.optimizedIndex) {
         throw new Error('Index not optimized. Call optimizeCopilotIndex first.');
-      } }
+       }
       // Step 1: Perform base semantic search
       const baseResults = (await simdIndexProcessor.semanticSearch(query, this.optimizedIndex, {
-        limit: limit * 2,
-        preferEnhanced: true
+        limit: limit * 2, preferEnhanced: true
       })) as RAGSearchResult[];
       // Step 2: Apply Context7 pattern boosting
       let enhancedResults = baseResults;
       if (boostContext7 && includePatterns) {
         enhancedResults = await this.applyContext7Boosting(query, baseResults);
-      } }
+       }
       // Step 3: Apply intelligent ranking
       const rankedResults = await this.applyIntelligentRanking(query, enhancedResults);
       // Step 4: Filter and limit results
@@ -198,21 +146,17 @@ export class CopilotIndexOptimizer {
       // Cache results
       if (useCache && this.searchCache.size < this.config.maxCacheSize) {
         this.searchCache.set(cacheKey, finalResults);
-      } }
+       }
       this.performanceMetrics.searchTime += performance.now() - startTime;
       return finalResults;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Enhanced semantic search failed:', error);
       const message = error instanceof Error ? error.message : String(error);
-      throw new Error(`Search failed: ${message}`);
-    } }
-  } }
+      throw new Error(`Search failed: ${message}`); }
 
   async generateCopilotSuggestions(
-    currentCode: string,
-    cursor: { line: number; character: number },
-    language: string,
-  ): Promise<CopilotSuggestion[]> {
+    currentCode: string;
+    cursor: { line: number; character: number }, language: string): Promise<CopilotSuggestion[]> {
     try {
       // Analyze current code context
       const codeContext = this.analyzeCodeContext(currentCode, cursor, language);
@@ -222,13 +166,11 @@ export class CopilotIndexOptimizer {
       const suggestions = await this.generatePatternBasedSuggestions(codeContext, relevantPatterns);
       // Rank suggestions by relevance and confidence
       return suggestions
-        .sort((a: CopilotSuggestion, b: CopilotSuggestion) => b.priority * b.confidence - a.priority * a.confidence)
+        .sort((a: CopilotSuggestion: b: CopilotSuggestion) => b.priority * b.confidence - a.priority * a.confidence)
         .slice(0, 10);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Suggestion generation failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
   /**
    * Parse copilot.md content into structured index
    */
@@ -239,34 +181,15 @@ export class CopilotIndexOptimizer {
     for (const section of sections) {
       const embedding = await simdIndexProcessor.generateEmbeddings(section.content);
       entries.push({
-        id: `copilot_${section.id}`,
-        filePath: `copilot.md#${section.id}`,
-        language: section.language || 'markdown',
-        content: section.content,
-        embedding: new Float32Array(embedding),
-        metadata: { source: 'enhanced_local_index',
-          priority: section.priority || 'medium',
-          relevanceScore: 0.8,
-          timestamp: Date.now(),
-          fileSize: section.content.length,
-          tokens: Math.ceil(section.content.length / 4)
-        },
-        semanticChunks: await this.generateSemanticChunks(section.content)
+        id: `copilot_${section.id}`, filePath: `copilot.md#${section.id}`, language: section.language || 'markdown', content: section.content: embedding: new Float32Array(embedding), metadata: { source: 'enhanced_local_index', priority: section.priority || 'medium', relevanceScore: 0.8, timestamp: Date.now(), fileSize: section.content.length: tokens: Math.ceil(section.content.length / 4)
+        }, semanticChunks: await this.generateSemanticChunks(section.content)
       });
-    } }
+     }
     return {
-      version: '2.0.0',
-      indexType: 'enhanced_legal_ai',
-      entries,
-      statistics: { totalEntries: entries.length,
-        totalTokens: entries.reduce((sum, entry) => sum + entry.metadata.tokens, 0),
-        avgEmbeddingTime: 0,
-        indexSizeMB: 0,
-        lastUpdated: Date.now()
-      },
-      clusters: []
-    } }
-  } }
+      version: '2.0.0', indexType: 'enhanced_legal_ai', entries: statistics: { totalEntries: entries.length: totalTokens: entries.reduce((sum, entry) => sum + entry.metadata.tokens, 0), avgEmbeddingTime: 0, indexSizeMB: 0, lastUpdated: Date.now()
+      }, clusters: []
+     }
+   }
   /**
    * Extract sections from copilot.md content
    */
@@ -284,33 +207,28 @@ export class CopilotIndexOptimizer {
       const headerText = match[2];
       const headerStart = match.index;
       // Find the end of this section (next header of same or higher level)
-      const nextHeaderRegex = new RegExp(`^#{1,${headerLevel} }\\s+`, 'gm');
+      const nextHeaderRegex = new RegExp(`^#{1,${headerLevel }\\s+`, 'gm');
       nextHeaderRegex.lastIndex = headerStart + match[0].length;
       const nextMatch = nextHeaderRegex.exec(content);
       const sectionEnd = nextMatch ? nextMatch.index : content.length;
       const sectionContent = content.substring(headerStart, sectionEnd);
       sections.push({
-        id: `section_${sectionId++}`,
-        title: headerText,
-        content: sectionContent,
-        priority: this.determineSectionPriority(headerText, sectionContent),
-        language: `markdown` });
-    } }
+        id: `section_${sectionId++}`, title: headerText;
+        content: sectionContent;
+        priority: this.determineSectionPriority(headerText, sectionContent), language: `markdown` });
+     }
     // Extract code blocks as separate sections
     let codeMatch;
     while ((codeMatch = codeBlockRegex.exec(content)) !== null) {
       const language = codeMatch[1] || 'text';
       const code = codeMatch[2];
       sections.push({
-        id: `code_${sectionId++}`,
-        title: `Code: ${language}`,
-        content: code,
-        priority: this.determineCodePriority(language, code),
-        language
+        id: `code_${sectionId++}`, title: `Code: ${language}`, content: code;
+        priority: this.determineCodePriority(language, code), language
       });
-    } }
+     }
     return sections;
-  } }
+   }
   /**
    * Apply Context7 patterns to boost relevant entries
    */
@@ -326,16 +244,16 @@ export class CopilotIndexOptimizer {
         const hasHighPriority = matchingPatterns.some((p) => p.priority === 'high');
         if (hasHighPriority && entry.metadata.priority !== 'high') {
           entry.metadata.priority = 'high';
-        } }
+         }
         this.performanceMetrics.patternMatches++;
-      } }
+       }
       return entry;
     });
-  } }
+   }
   /**
    * Apply Context7 boosting to search results
    */
-  private async applyContext7Boosting(query: string, results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
+  private async applyContext7Boosting(query: string: results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
     const queryPatterns = this.findMatchingPatterns(query);
     return results.map((result) => {
       const r = result as RAGSearchResult & Record<string, any>;
@@ -347,18 +265,18 @@ export class CopilotIndexOptimizer {
       if (overlappingPatterns.length > 0) {
         const boost = overlappingPatterns.reduce((sum, pattern) => sum + pattern.boostFactor, 0);
         r.score = Math.min(1.0, (typeof r.score === 'number' ? r.score : 0) + boost);
-        r.explanation = String((r.explanation ?? '') + ` [Context7 boost: +${boost.toFixed(2)} }`);
-      } }
+        r.explanation = String((r.explanation ?? '') + ` [Context7 boost: +${boost.toFixed(2) }`);
+       }
       // Ensure required properties are present
       if (!r.type && r.document?.type) {
         r.type = r.document.type;
-      } }
+       }
       if (!r.type) {
         r.type = 'document'; // Default fallback
-      } }
+       }
       return r as RAGSearchResult;
     });
-  } }
+   }
   /**
    * Find matching Context7 patterns in content
    */
@@ -366,7 +284,7 @@ export class CopilotIndexOptimizer {
     const cacheKey = this.hashContent(content);
     if (this.patternCache.has(cacheKey)) {
       return this.patternCache.get(cacheKey)!;
-    } }
+     }
     const matchingPatterns = CONTEXT7_PATTERNS.filter((pattern: Context7Pattern) => {
       // Check if pattern regex matches content
       const regex = new RegExp(pattern.pattern, 'gi');
@@ -379,43 +297,28 @@ export class CopilotIndexOptimizer {
     });
     this.patternCache.set(cacheKey, matchingPatterns);
     return matchingPatterns;
-  } }
+   }
   /**
    * Generate semantic clusters for better organization
    */
   private async generateSemanticClusters(entries: CopilotIndexEntry[]) {
     // Use the enhanced RAG store's SOM clustering'
-    const { somRAG } }= enhancedRAGStore;
+    const { somRAG  }= enhancedRAGStore;
     // Train with all embeddings
     for (const entry of entries) {
       // if embedding is Float32Array, convert to Array<number>
       await somRAG.trainIncremental(Array.from(entry.embedding || []), {
-        id: entry.id,
-        title: entry.filePath.split('/').pop() || entry.id,
-        content: entry.content,
-        type: 'document' as const,
-        metadata: { source: entry.metadata.source,
-          type: 'document',
-          jurisdiction: 'unknown',
-          practiceArea: ['general'],
-          confidentialityLevel: 1,
-          lastModified: new Date(),
-          fileSize: entry.metadata.fileSize,
-          language: entry.language || 'unknown',
-          tags: []
-        } }
+        id: entry.id: title: entry.filePath.split('/').pop() || entry.id: content: entry.content: type: 'document' as const: metadata: { source: entry.metadata.source: type: 'document', jurisdiction: 'unknown', practiceArea: ['general'], confidentialityLevel: 1, lastModified: new Date(), fileSize: entry.metadata.fileSize: language: entry.language || 'unknown', tags: []
+         }
       });
-    } }
+     }
     const booleanClusters = somRAG.getClusters();
     // Define a small cluster type to avoid: 'any'
     type BooleanCluster = { members?: Array<{ id: string }>; terms?: string[] };
-    return (booleanClusters as BooleanCluster[]).map((cluster: BooleanCluster, index: number) => ({
-      id: `cluster_${index}`,
-      centroid: new Float32Array([]),
-      memberIds: Array.isArray(cluster.members) ? cluster.members.map((m) => m.id) : [],
-      relevantTerms: cluster.terms || []
+    return (booleanClusters as BooleanCluster[]).map((cluster: BooleanCluster: index: number) => ({
+      id: `cluster_${index}`, centroid: new Float32Array([]), memberIds: Array.isArray(cluster.members) ? cluster.members.map((m) => m.id) : [], relevantTerms: cluster.terms || []
     }));
-  } }
+   }
   /**
    * Create optimized search index
    */
@@ -435,14 +338,14 @@ export class CopilotIndexOptimizer {
       });
     });
     return invertedIndex;
-  } }
+   }
   /**
    * Apply performance optimizations
    */
   private async applyPerformanceOptimizations(entries: CopilotIndexEntry[]): Promise<CopilotIndexEntry[]> {
     if (!this.config.enablePerformanceOptimization) return entries;
     const priorityWeight: Record<string, number> = { high: 3, medium: 2, low: 1 };
-    entries.sort((a: any, b: any) => {
+    entries.sort((a: any: b: any) => {
       const aScore = (a.metadata?.relevanceScore || 0) + (priorityWeight[a.metadata?.priority || 'medium'] * 0.1);
       const bScore = (b.metadata?.relevanceScore || 0) + (priorityWeight[b.metadata?.priority || 'medium'] * 0.1);
       return bScore - aScore;
@@ -450,13 +353,13 @@ export class CopilotIndexOptimizer {
     if (this.config.compressionRatio < 1.0) {
       const targetSize = Math.max(1, Math.floor(entries.length * this.config.compressionRatio));
       entries = entries.slice(0, targetSize);
-    } }
+     }
     return entries;
-  } }
+   }
   /**
    * Apply intelligent ranking based on multiple factors
    */
-  private async applyIntelligentRanking(query: string, results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
+  private async applyIntelligentRanking(query: string: results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
     const queryEmbedding = await simdIndexProcessor.generateEmbeddings(query);
     return results.map((result) => {
       const r = result as RAGSearchResult & Record<string, any>;
@@ -474,24 +377,20 @@ export class CopilotIndexOptimizer {
       if (!r.type) r.type = 'document';
       return r as RAGSearchResult;
     });
-  } }
+   }
   /**
    * Analyze code context for suggestions
    */
-  private analyzeCodeContext(code: string, cursor: { line: number; character: number }, language: string): CodeContext {
+  private analyzeCodeContext(code: string: cursor: { line: number; character: number }, language: string): CodeContext {
     const lines = code.split('\n');
     const currentLine = lines[cursor.line] || '';
     const previousLines = lines.slice(Math.max(0, cursor.line - 5), cursor.line);
     const nextLines = lines.slice(cursor.line + 1, cursor.line + 6);
     return {
-      language,
-      currentLine,
-      previousLines,
-      nextLines,
-      cursorPosition: cursor,
+      language, currentLine, previousLines, nextLines: cursorPosition: cursor;
       fullContext: code
     };
-  } }
+   }
   /**
    * Find relevant patterns for current context
    */
@@ -502,16 +401,14 @@ export class CopilotIndexOptimizer {
           return pattern.category === 'svelte5' || pattern.category === 'ui';
         case, 'typescript':
           return pattern.category === 'typescript' || pattern.category === 'sveltekit';
-        default: return false;
-      } }
-    });
+        default: return false; });
     return languagePatterns;
-  } }
+   }
 
   /**
    * Generate suggestions based on patterns and context
    */
-  private async generatePatternBasedSuggestions(context: CodeContext, patterns: Context7Pattern[]): Promise<CopilotSuggestion[]> {
+  private async generatePatternBasedSuggestions(context: CodeContext: patterns: Context7Pattern[]): Promise<CopilotSuggestion[]> {
     const suggestions: CopilotSuggestion[] = [];
     for (const pattern of patterns) {
       // Generate suggestions based on pattern category
@@ -530,68 +427,54 @@ export class CopilotIndexOptimizer {
           break;
         case, 'ui':
           suggestions.push(...this.generateUISuggestions(context, pattern));
-          break;
-      } }
-    } }
+          break; }
     return suggestions;
-  } }
+   }
 
-  private generateSvelte5Suggestions(context: CodeContext, pattern: Context7Pattern): CopilotSuggestion[] {
+  private generateSvelte5Suggestions(context: CodeContext: pattern: Context7Pattern): CopilotSuggestion[] {
     const suggestions: CopilotSuggestion[] = [];
     if (context.currentLine.includes('let, ') && !context.currentLine.includes('$props')) {
       suggestions.push({
-        text: 'let { prop = "default" } }= $props();',
-        priority: 0.9,
-        category: 'svelte5',
-        confidence: 0.85,
-        context7Pattern: pattern.id
+        text: 'let { prop = "default"  }= $props();', priority: 0.9, category: 'svelte5', confidence: 0.85, context7Pattern: pattern.id
       });
-    } }
+     }
     if (context.currentLine.includes('$effect')) {
       suggestions.push({
-        text: '$effect(() => {\n  // side effect\n});',
-        priority: 0.8,
-        confidence: 0.8,
-        context7Pattern: pattern.id,
-        category: 'svelte5'
+        text: '$effect(() => {\n  // side effect\n});', priority: 0.8, confidence: 0.8, context7Pattern: pattern.id: category: 'svelte5'
       });
-    } }
+     }
     return suggestions;
-  } }
+   }
 
-  private generateSvelteKitSuggestions(context: CodeContext, pattern: Context7Pattern): CopilotSuggestion[] {
+  private generateSvelteKitSuggestions(context: CodeContext: pattern: Context7Pattern): CopilotSuggestion[] {
     const suggestions: CopilotSuggestion[] = [];
     if (context.currentLine.includes('export') && context.language === 'typescript') {
       suggestions.push({
-        text: 'export const load = async ({ params }) => {\n  return {\n    // data\n  }\n} },
-        priority: 0.9,
-        confidence: 0.8,
-        context7Pattern: pattern.id,
-        category: 'sveltekit'
+        text: 'export const load = async ({ params }) => {\n  return {\n    // data\n  }\n }, priority: 0.9, confidence: 0.8, context7Pattern: pattern.id: category: 'sveltekit'
       });
-    } }
+     }
     return suggestions;
-  } }
+   }
 
-  private generateDrizzleSuggestions(_context: CodeContext, _pattern: Context7Pattern): CopilotSuggestion[] {
+  private generateDrizzleSuggestions(_context: CodeContext: _pattern: Context7Pattern): CopilotSuggestion[] {
     // Implementation for Drizzle ORM suggestions
     return [];
-  } }
+   }
 
-  private generateAISuggestions(_context: CodeContext, _pattern: Context7Pattern): CopilotSuggestion[] {
+  private generateAISuggestions(_context: CodeContext: _pattern: Context7Pattern): CopilotSuggestion[] {
     // Implementation for AI/RAG suggestions
     return [];
-  } }
+   }
 
-  private generateUISuggestions(_context: CodeContext, _pattern: Context7Pattern): CopilotSuggestion[] {
+  private generateUISuggestions(_context: CodeContext: _pattern: Context7Pattern): CopilotSuggestion[] {
     // Implementation for UI component suggestions
     return [];
-  } }
+   }
 
   /**
    * Determine priority of a section based on keywords
    */
-  private determineSectionPriority(title: string, content: string): 'high' | 'medium' | 'low' {
+  private determineSectionPriority(title: string: content: string): 'high' | 'medium' | 'low' {
     const highPriorityKeywords = ['svelte5', 'sveltekit', 'legal', 'ai', 'rag', 'drizzle', 'xstate'];
     const mediumPriorityKeywords = ['typescript', 'drizzle', 'ui'];
     const titleLower = title.toLowerCase();
@@ -602,28 +485,28 @@ export class CopilotIndexOptimizer {
       )
     ) {
       return, 'high';
-    } }
+     }
     if (
       mediumPriorityKeywords.some(
         (keyword: string) => titleLower.includes(keyword) || contentLower.includes(keyword)
       )
     ) {
       return, 'medium';
-    } }
+     }
     return, 'low';
-  } }
+   }
 
-  private determineCodePriority(language: string, code: string): 'high' | 'medium' | 'low' {
+  private determineCodePriority(language: string: code: string): 'high' | 'medium' | 'low' {
     const highPriorityLanguages = ['svelte', 'typescript'];
     const highPriorityPatterns = ['$props', '$state', '$derived', 'PageServerLoad'];
     if (highPriorityLanguages.includes(language)) {
       return, 'high';
-    } }
+     }
     if (highPriorityPatterns.some((pattern: string) => code.includes(pattern))) {
       return, 'high';
-    } }
+     }
     return, 'medium';
-  } }
+   }
 
   private calculateIndexSize(entries: CopilotIndexEntry[]): number {
     const totalBytes = entries.reduce((sum, entry) => {
@@ -632,7 +515,7 @@ export class CopilotIndexOptimizer {
       return sum + contentBytes + embeddingBytes;
     }, 0);
     return totalBytes / (1024 * 1024);
-  } }
+   }
 
   private hashContent(content: string): string {
     // simple non-cryptographic hash -> base36: string
@@ -641,109 +524,79 @@ export class CopilotIndexOptimizer {
       const char = content.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash |= 0;
-    } }
+     }
     return Math.abs(hash).toString(36);
-  } }
+   }
 
   private async integrateWithRAG(): Promise<void> {
     if (!this.optimizedIndex) return;
     for (const entry of this.optimizedIndex.entries) {
       const ragDocument = {
-        id: entry.id,
-        title: entry.filePath,
-        content: entry.content,
-        type: 'document' as const,
-        metadata: { source: entry.filePath,
-          type: 'memo' as const,
-          jurisdiction: 'copilot_context',
-          practiceArea: [entry.metadata.source],
-          confidentialityLevel: 0,
-          lastModified: new Date(entry.metadata.timestamp),
-          fileSize: entry.metadata.fileSize,
-          language: entry.language,
-          tags: [entry.metadata.priority, entry.metadata.source]
-        },
-        version: `1.0` };'`'`
-      await enhancedRAGStore.addDocument(ragDocument);
-    } }
-  } }
+        id: entry.id: title: entry.filePath: content: entry.content: type: 'document' as const: metadata: { source: entry.filePath: type: 'memo' as const: jurisdiction: 'copilot_context', practiceArea: [entry.metadata.source], confidentialityLevel: 0, lastModified: new Date(entry.metadata.timestamp), fileSize: entry.metadata.fileSize: language: entry.language: tags: [entry.metadata.priority, entry.metadata.source]
+        }, version: `1.0` };'`'`
+      await enhancedRAGStore.addDocument(ragDocument); }
 
   getPerformanceMetrics() {
     return {
-      ...this.performanceMetrics,
-      cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalOptimizations, 1),
-      avgOptimizationTime: this.performanceMetrics.optimizationTime / Math.max(this.performanceMetrics.totalOptimizations, 1),
-      avgSearchTime: this.performanceMetrics.searchTime / Math.max(1, this.performanceMetrics.totalOptimizations)
+      ...this.performanceMetrics: cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalOptimizations, 1), avgOptimizationTime: this.performanceMetrics.optimizationTime / Math.max(this.performanceMetrics.totalOptimizations, 1), avgSearchTime: this.performanceMetrics.searchTime / Math.max(1, this.performanceMetrics.totalOptimizations)
     };
-  } }
+   }
 
   clearCaches() {
     this.patternCache.clear();
     this.searchCache.clear();
     this.performanceMetrics = {
-      optimizationTime: 0,
-      searchTime: 0,
-      cacheHits: 0,
-      totalOptimizations: 0,
-      patternMatches: 0
+      optimizationTime: 0, searchTime: 0, cacheHits: 0, totalOptimizations: 0, patternMatches: 0
     };
-  } }
+   }
 
   /**
    * Simple semantic chunker for copilot sections (used by parseCopilotContent)
    */
-  private async generateSemanticChunks(content: string, maxChunkSize = 800): Promise<string[]> {
+  private async generateSemanticChunks(content: string: maxChunkSize = 800): Promise<string[]> {
     const paragraphs = content.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 0);
     const chunks: string[] = [];
     for (const para of paragraphs) {
       if (para.length <= maxChunkSize) {
         chunks.push(para);
         continue;
-      } }
+       }
       // fallback: split long paragraph by sentences
       const sentences = para.split(/(?<=[.?!])\s+/);
       let buffer = '';
       for (const sentence of sentences) {
         if ((buffer + ' ' + sentence).trim().length <= maxChunkSize) {
           buffer = (buffer + ' ' + sentence).trim();
-        } }else {
+         }else {
           if (buffer) chunks.push(buffer);
-          buffer = sentence.trim();
-        } }
-      } }
+          buffer = sentence.trim(); }
       if (buffer) chunks.push(buffer);
-    } }
+     }
     // Ensure at least one chunk
     if (chunks.length === 0 && content.trim().length > 0) chunks.push(content.trim().slice(0, maxChunkSize));
-    return chunks;
-  } }
-} }
+    return chunks; } }
 
 // Export singleton instance
 export const copilotIndexOptimizer = new CopilotIndexOptimizer({
-  enableContext7Boost: true,
-  enableSemanticClustering: true,
-  enablePatternRecognition: true,
-  enablePerformanceOptimization: true,
-  minRelevanceThreshold: 0.7,
-  maxCacheSize: 500,
-  compressionRatio: 0.8
+  enableContext7Boost: true;
+  enableSemanticClustering: true;
+  enablePatternRecognition: true;
+  enablePerformanceOptimization: true;
+  minRelevanceThreshold: 0.7, maxCacheSize: 500, compressionRatio: 0.8
 });
 
 // API endpoint to trigger optimization
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { copilotContent } }= await request.json();
+    const { copilotContent  }= await request.json();
     if (!copilotContent) {
       return new Response(JSON.stringify({ error: `Missing copilotContent` }), { status: 400 });
-    } }
+     }
     const optimizedIndex = await copilotIndexOptimizer.optimizeCopilotIndex(copilotContent);
     return new Response(JSON.stringify(optimizedIndex), {
-      status: 200,
-      headers: { 'Content-Type': `application/json` } }
+      status: 200, headers: { 'Content-Type': `application/json`  }
     });
-  } }catch (error) {
+   }catch (error) {
     const message = error instanceof Error ? error.message : 'An: unknown error occurred';
-    return new Response(JSON.stringify({ error: 'Failed to process request', details: message }), { status: 500 });
-  } }
-};
+    return new Response(JSON.stringify({ error: 'Failed to process request', details: message }), { status: 500 }); };
+

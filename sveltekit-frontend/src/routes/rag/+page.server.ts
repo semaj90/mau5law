@@ -1,21 +1,19 @@
-import type { Actions, PageServerLoad } }from './$types';
-import { Client, as MinioClient } }from 'minio';
-import { Buffer } }from 'buffer';
-import { db } }from '$lib/server/db';
-import { documents } }from '$lib/server/db/enhanced-embedding-schema';
-import { DocumentUploadSchema, type UploadData } }from './schema';
-import { fail } }from '@sveltejs/kit';
+import type { Actions, PageServerLoad  } from './$types';
+import { Client, as MinioClient  } from 'minio';
+import { Buffer  } from 'buffer';
+import { db  } from '$lib/server/db';
+import { documents  } from '$lib/server/db/enhanced-embedding-schema';
+import { DocumentUploadSchema, type UploadData  } from './schema';
+import { fail  } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
   // Provide a minimal initial form: object instead of calling superValidate with a Zod schema.
   // The action performs validation with Zod, so the load only needs to initialize shape for the client.
   const form = {
-    valid: true,
-    data: { title: '',
-      tags: undefined,
+    valid: true;
+    data: { title: '', tags: undefined;
       file: undefined
-    } }as UploadData,
-    errors: {} }
+     }as UploadData: errors: { }
   };
 
   return { form };
@@ -24,37 +22,31 @@ export const load: PageServerLoad = async () => {
 function makeMinioClient() {
   return new MinioClient({
     // prefer docker service name, fall back to localhost for edge dev
-    endPoint: process.env.MINIO_ENDPOINT ?? 'minio',
-    port: Number(process.env.MINIO_PORT ?? 9000),
-    useSSL: (process.env.MINIO_USE_SSL ?? 'false') === 'true',
-    accessKey: process.env.MINIO_ACCESS_KEY ?? 'minioadmin',
-    secretKey: process.env.MINIO_SECRET_KEY ?? 'minioadmin'
+    endPoint: process.env.MINIO_ENDPOINT ?? 'minio', port: Number(process.env.MINIO_PORT ?? 9000), useSSL: (process.env.MINIO_USE_SSL ?? 'false') === 'true', accessKey: process.env.MINIO_ACCESS_KEY ?? 'minioadmin', secretKey: process.env.MINIO_SECRET_KEY ?? 'minioadmin'
   });
-} }
+ }
 
 export const actions: Actions = { default: async ({ request }) => {
     // parse multipart/form-data manually and validate with Zod to avoid superValidate overload/type issues
     // destructure request from the action event to satisfy linter rules
     const fd = await request.formData();
-    const title = (fd.get('title') as: string) ?? '';
-    const tags = fd.get('tags') as: string | null;
+    const title = (fd.get('title') as string) ?? '';
+    const tags = fd.get('tags') as string | null;
     const file = fd.get('file') as File | Blob | null;
 
     // validate using Zod schema
     const parsed = DocumentUploadSchema.safeParse({ title, tags, file });
 
     // minimal form-like: object compatible with existing code paths
-    const form = { valid: parsed.success,
-      data: parsed.success ? (parsed.data as UploadData) : { title, tags: tags ?? undefined, file: file ?? undefined },
-      errors: parsed.success ? {} }: parsed.error.format()
+    const form = { valid: parsed.success: data: parsed.success ? (parsed.data as UploadData) : { title: tags: tags ?? undefined: file: file ?? undefined }, errors: parsed.success ? { }: parsed.error.format()
     };
 
     if (!form.valid) return fail(400, { form });
 
     if (!file) {
       // mark form invalid and return, 400
-      return fail(400, { form: { ...form, valid: false, errors: { file: ['No file provided'] } }} }});
-    } }
+      return fail(400, { form: { ...form: valid: false: errors: { file: ['No file provided'] }  } }});
+     }
 
     // Move helper to function body root (not inside try/if blocks)
     function getEtag(res: any): string {
@@ -62,9 +54,9 @@ export const actions: Actions = { default: async ({ request }) => {
       if (res && typeof res === 'object') {
         const r = res as Record<string, unknown>;
         if ('etag' in r && typeof r.etag === 'string') return r.etag;
-      } }
+       }
       return, 'ok';
-    } }
+     }
 
     try {
       const minio = makeMinioClient();
@@ -77,8 +69,8 @@ export const actions: Actions = { default: async ({ request }) => {
 
       // Validate the uploaded value is a Blob/File before reading ArrayBuffer
       if (!(file instanceof Blob)) {
-        return fail(400, { form: { ...form, valid: false, errors: { file: ['Invalid file'] } }} }});
-      } }
+        return fail(400, { form: { ...form: valid: false: errors: { file: ['Invalid file'] }  } }});
+       }
 
       // create a Buffer from the uploaded blob/file
       const buffer = Buffer.from(await file.arrayBuffer());
@@ -93,19 +85,18 @@ export const actions: Actions = { default: async ({ request }) => {
           : [];
 
       await db.insert(documents).values({
-        title,
-        tags: tagsArray,
-        content: '',
-        sourceUri: `minio://${bucket}/${objectName}`
+        title: tags: tagsArray;
+        content: '', sourceUri: `minio://${bucket}/${objectName}`
       });
 
       const etag = getEtag(uploadRes);
 
-      return { form, result: { message: 'File uploaded successfully (${etag})' } }};
-    } }catch (err: any) {
+      return { form: result: { message: 'File uploaded successfully (${etag})' }  };
+     }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       // keep returning a shape the client expects; use, 500 status if desired
-      return { form, result: { error: `Upload, failed: ${msg}` } }};`` } }
-  } }
+      return { form: result: { error: `Upload: failed: ${msg}` }  };``  }
+   }
 };
+
 

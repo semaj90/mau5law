@@ -4,12 +4,7 @@ import postgres from 'postgres';
 // Simplified database configuration for production
 // Environment variables with fallbacks
 const config = {
-  host: import.meta.env.POSTGRES_HOST || 'localhost',
-  port: parseInt(import.meta.env.POSTGRES_PORT || '5434'),
-  database: import.meta.env.POSTGRES_DB || 'legal_ai_db',
-  user: import.meta.env.POSTGRES_USER || 'legal_admin',
-  password: import.meta.env.POSTGRES_PASSWORD || '123456',
-};
+  host: import.meta.env.POSTGRES_HOST || 'localhost', port: parseInt(import.meta.env.POSTGRES_PORT || '5434'), database: import.meta.env.POSTGRES_DB || 'legal_ai_db', user: import.meta.env.POSTGRES_USER || 'legal_admin', password: import.meta.env.POSTGRES_PASSWORD || '123456'};
 // Connection string
 const connectionString =
   import.meta.env.DATABASE_URL ||
@@ -22,10 +17,7 @@ let sql;
 let db;
 try {
   sql = postgres(connectionString, {
-    max: 10,
-    idle_timeout: 20,
-    connect_timeout: 10,
-    onnotice: () => {}, // Suppress notices
+    max: 10, idle_timeout: 20, connect_timeout: 10, onnotice: () => {}, // Suppress notices
   });
   db = drizzle(sql);
   console.log('[Database] Connection initialized successfully');
@@ -33,9 +25,7 @@ try {
   console.error('[Database] Connection failed:', error.message);
   // Create mock db for development
   db = {
-    execute: async () => ({ rows: [] }),
-    insert: () => ({ values: () => ({ returning: () => [{ id: 'mock-id' }] }) }),
-  };
+    execute: async () => ({ rows: [] }), insert: () => ({ values: () => ({ returning: () => [{ id: 'mock-id' }] }) })};
 }
 // Table schemas (simplified)
 export const documents = 'documents'; // Table name as string for now
@@ -56,26 +46,12 @@ export async function initializeDatabase() {
     // Create tables
     await sql`
       CREATE TABLE IF NOT EXISTS documents (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        filename TEXT NOT NULL,
-        content TEXT NOT NULL,
-        original_content TEXT,
-        metadata JSONB,
-        confidence REAL,
-        legal_analysis JSONB,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(), filename TEXT NOT NULL, content TEXT NOT NULL, original_content TEXT, metadata JSONB, confidence REAL, legal_analysis JSONB, created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(), updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
       )
     `;
     await sql`
       CREATE TABLE IF NOT EXISTS legal_embeddings (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        document_id UUID,
-        content TEXT NOT NULL,
-        embedding VECTOR(768),
-        metadata JSONB,
-        model TEXT DEFAULT 'nomic-embed-text',
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(), document_id UUID, content TEXT NOT NULL, embedding VECTOR(768), metadata JSONB, model TEXT DEFAULT 'nomic-embed-text', created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
       )
     `;
     console.log('[Database] Tables created');

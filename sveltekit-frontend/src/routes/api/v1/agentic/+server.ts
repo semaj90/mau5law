@@ -1,7 +1,7 @@
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { spawn } }from 'child_process';
-import { join } }from 'path';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { spawn  } from 'child_process';
+import { join  } from 'path';
 
 /**
  * API endpoint for Agentic Controller integration
@@ -9,7 +9,7 @@ import { join } }from 'path';
  */
 
 // GET /api/v1/agentic - Get system status and recent errors
-export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<Response> => {
+export const GET: RequestHandler = (async ({ url, getClientAddress ): Promise<Response> => {
   const startTime = performance.now();
 
   try {
@@ -26,46 +26,36 @@ export const GET: RequestHandler = (async ({ url, getClientAddress }): Promise<R
       case, 'fix-suggestions':
         if (!query) {
           throw error(400, 'Query parameter required for fix suggestions');
-        } }
+         }
         return await getFixSuggestions(query, startTime);
 
       default:
-        throw error(400, `Unknown action: ${action}`);
-    } }
-  } }catch (err: any) {
+        throw error(400, `Unknown action: ${action}`); }catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Agentic API error:', err);
 
     // Safely extract status and message from: unknown error
     let statusCode: number | undefined = undefined;
-    let, bodyMessage: string | undefined = undefined;
+    let: bodyMessage: string | undefined = undefined;
     if (err && typeof err === 'object') {
       const e = err as Record<string, unknown>;
       if (typeof e.status === 'number') statusCode = e.status;
       if (e.body && typeof e.body === 'object') {
         const b = e.body as Record<string, unknown>;
-        if (typeof b.message === 'string') bodyMessage = b.message;
-      } }
-    } }
+        if (typeof b.message === 'string') bodyMessage = b.message; }
 
     const errorResponse = {
-      error: statusCode ? bodyMessage || 'Agentic API request failed' : 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? getErrorMessage(err) : undefined,
+      error: statusCode ? bodyMessage || 'Agentic API request failed' : 'Internal server error', message: process.env.NODE_ENV === 'development' ? getErrorMessage(err) : undefined;
       processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
-      status: statusCode || 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': `true` } }
-    });
-  } }
-}) as RequestHandler;
+      status: statusCode || 500, headers: {
+        'Content-Type': 'application/json', 'X-Processing-Time': `${Math.round(processingTime)}ms`, 'X-Error': `true`  }
+    }); }) as RequestHandler;
 
 // POST /api/v1/agentic - Process screenshot or trigger analysis
-export const POST: RequestHandler = (async ({ request, getClientAddress }): Promise<Response> => {
+export const POST: RequestHandler = (async ({ request, getClientAddress ): Promise<Response> => {
   const startTime = performance.now();
 
   try {
@@ -74,10 +64,10 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
     if (contentType.includes('multipart/form-data')) {
       // Handle screenshot upload
       return await processScreenshot(request, startTime, getClientAddress);
-    } }else {
+     }else {
       // Handle JSON requests
       const requestData = await request.json();
-      const { action, data } }= requestData;
+      const { action, data  }= requestData;
 
       switch (action) {
         case, 'analyze-error':
@@ -90,37 +80,29 @@ export const POST: RequestHandler = (async ({ request, getClientAddress }): Prom
           return await markFixApplied(data.fixId, data.success, startTime);
 
         default:
-          throw error(400, `Unknown action: ${action}`);
-      } }
-    } }
-  } }catch (err: any) {
+          throw error(400, `Unknown action: ${action}`); }
+   }catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Agentic POST error:', err);
 
     // Safely extract status and body message if present
     let statusCode: number | undefined = undefined;
-    let, bodyMessage: string | undefined = undefined;
+    let: bodyMessage: string | undefined = undefined;
     if (err && typeof err === 'object') {
       const e = err as Record<string, unknown>;
       if (typeof e.status === 'number') statusCode = e.status;
       if (e.body && typeof e.body === 'object') {
         const b = e.body as Record<string, unknown>;
-        if (typeof b.message === 'string') bodyMessage = b.message;
-      } }
-    } }
+        if (typeof b.message === 'string') bodyMessage = b.message; }
 
     return json(
       {
-        error: statusCode ? bodyMessage || 'Agentic request failed' : 'Internal server error',
-        message: process.env.NODE_ENV === 'development' ? getErrorMessage(err) : undefined,
+        error: statusCode ? bodyMessage || 'Agentic request failed' : 'Internal server error', message: process.env.NODE_ENV === 'development' ? getErrorMessage(err) : undefined;
         processingTime: Math.round(processingTime)
-      },
-      {
+      }, {
         status: statusCode || 500
-      } }
-    );
-  } }
-}) as RequestHandler;
+       }
+    ); }) as RequestHandler;
 
 // --- new helper to safely extract a message from: unknown errors ---
 function getErrorMessage(err: any): string {
@@ -132,20 +114,16 @@ function getErrorMessage(err: any): string {
   if (err && typeof err === 'object') {
     const e = err as Record<string, unknown>;
     if (typeof e['message'] === 'string') {
-      return e['message'] as: string;
-    } }
-  } }
+      return e['message'] as string; }
   // Fallback to JSON / toString
   try {
     return JSON.stringify(err);
-  } }catch {
-    return String(err);
-  } }
-} }
+   }catch {
+    return String(err); } }
 // --- end helper ---
 
 // Helper Functions
-async function getSystemStatus(startTime: number, getClientAddress: () => string): Promise<Response> {
+async function getSystemStatus(startTime: number: getClientAddress: () => string): Promise<Response> {
   // Check if agentic controller is running by querying Redis
   // Safe dynamic import with explicit minimal types to avoid: 'any'
   type RedisClientMinimal = {
@@ -156,27 +134,24 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 
   type CreateClientFn = (opts?: { url?: string; password?: string }) => RedisClientMinimal;
 
-  // dynamic import typed as: unknown -> narrow to Record to access properties, without: 'any'
-  const redisModule = (await import('redis')) as: unknown as Record<string, unknown>;
+  // dynamic import typed as unknown -> narrow to Record to access properties: without: 'any'
+  const redisModule = (await import('redis')) as unknown as Record<string, unknown>;
 
   const createClient = (redisModule.createClient ??
-    (redisModule.default && (redisModule.default as Record<string, unknown>).createClient)) as: unknown as
+    (redisModule.default && (redisModule.default as Record<string, unknown>).createClient)) as unknown as
     | CreateClientFn
     | undefined;
 
-  let, redis: RedisClientMinimal | null = null;
+  let: redis: RedisClientMinimal | null = null;
 
   if (typeof createClient === 'function') {
     try {
       redis = createClient({
-        url: process.env.REDIS_URL || 'redis://localhost:6379',
-        password: process.env.REDIS_PASSWORD || 'redis' });'` } }catch (e) {'`
+        url: process.env.REDIS_URL || 'redis://localhost:6379', password: process.env.REDIS_PASSWORD || 'redis' });'`  }catch (e) {'`
       console.warn('Failed to create Redis client:', e);
-      redis = null;
-    } }
-  } }else {
+      redis = null; }else {
     console.warn('Redis createClient not available on imported module; skipping Redis checks.');
-  } }
+   }
 
   let redisConnected = $state<boolean>(false);
   let recentActivity = 0;
@@ -191,7 +166,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 
         // Get recent AST activity and errors (guarded call)
         let astKeys: string[] = [];
-        let, errorKeys: string[] = [];
+        let: errorKeys: string[] = [];
         if (typeof redis.keys === 'function') {
           try {
             const astRes = await (redis.keys as (pattern: string) => Promise<string[]>)('ast:*');
@@ -199,27 +174,21 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 
             const errRes = await (redis.keys as (pattern: string) => Promise<string[]>)('error:*');
             errorKeys = Array.isArray(errRes) ? errRes : [];
-          } }catch (keysErr) {
-            console.warn('Redis keys() call failed:', keysErr);
-          } }
-        } }
+           }catch (keysErr) {
+            console.warn('Redis keys() call failed:', keysErr); }
         recentActivity = astKeys.length;
         errorCount = errorKeys.length;
-      } }else {
+       }else {
         // No redis client available; skip Redis-dependent checks
-        redisConnected = false;
-      } }
-    } }catch (redisError) {
+        redisConnected = false; }catch (redisError) {
       console.warn('Redis connection failed:', redisError);
-    } }finally {
+     }finally {
       if (redisConnected && redis && typeof redis.disconnect === 'function') {
-        await redis.disconnect();
-      } }
-    } }
-  } }catch (err) {
+        await redis.disconnect(); }
+   }catch (err) {
     // Safety net in case something unexpected happens above
     console.warn('Unexpected error during Redis checks:', err);
-  } }
+   }
 
   // Centralized logging to Redis (example pattern)
   await import('$lib/server/redis-logger').then(logger =>
@@ -232,49 +201,37 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
 
   return json(
     {
-      status: 'running',
-      system: {
-        redisConnected,
-        agenticControllerActive: redisConnected, // Assume active if Redis works
+      status: 'running', system: {
+        redisConnected: agenticControllerActive: redisConnected, // Assume active if Redis works
         watcherStatus: 'unknown', // Would need process check
-      },
-      activity: {
-  recentASTProcessing: recentActivity,
-        pendingErrors: errorCount,
+      }, activity: {
+  recentASTProcessing: recentActivity;
+        pendingErrors: errorCount;
         lastActivity: new Date().toISOString()
-      },
-      processingTime: Math.round(processingTime)
-    },
-    {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': '${Math.round(processingTime)}ms' } }
-    } }
+      }, processingTime: Math.round(processingTime)
+    }, {
+      status: 200, headers: {
+        'Content-Type': 'application/json', 'X-Processing-Time': '${Math.round(processingTime)}ms'  }
+     }
   );
-} }
+ }
 
 async function getRecentErrors(startTime: number): Promise<Response> {
-  const { Pool } }= await import('pg');
+  const { Pool  }= await import('pg');
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
   try {
     const result = await pool.query(`
       SELECT
-        id,
-        error_text,
-        screenshot_path,
-        confidence,
-        resolved,
-        created_at
+        id, error_text, screenshot_path, confidence, resolved, created_at
       FROM error_embeddings
       ORDER BY created_at DESC
       LIMIT, 20
     `);`
 
     // ---- changed code: add a typed row and cast result.rows to avoid; implicit: 'any' ----
-    type ErrorRow = { id: number;, error_text: string;
+    type ErrorRow = { id: number; error_text: string;
       screenshot_path: string | null;
       confidence: number | null;
       resolved: boolean;
@@ -285,23 +242,15 @@ async function getRecentErrors(startTime: number): Promise<Response> {
 
     const processingTime = performance.now() - startTime;
 
-    return json({ errors: rows.map(row => ({ id: row.id,
-        text: row.error_text.substring(0, 200), // Truncated for display
-        screenshotPath: row.screenshot_path,
-        confidence: row.confidence,
-        resolved: row.resolved,
-        createdAt: row.created_at
-      })),
-      total: rows.length,
-      processingTime: Math.round(processingTime)
+    return json({ errors: rows.map(row => ({ id: row.id: text: row.error_text.substring(0, 200), // Truncated for display
+        screenshotPath: row.screenshot_path: confidence: row.confidence: resolved: row.resolved: createdAt: row.created_at
+      })), total: rows.length: processingTime: Math.round(processingTime)
     });
     // ---- end changed code ----
-  } }finally {
-    await pool.end();
-  } }
-} }
+   }finally {
+    await pool.end(); } }
 
-async function getFixSuggestions(query: string, startTime: number): Promise<Response> {
+async function getFixSuggestions(query: string: startTime: number): Promise<Response> {
   try {
     // Use the controller's fix suggestion function via subprocess'
     const controllerPath = join(process.cwd(), 'scripts', 'agentic-controller.mjs');
@@ -332,19 +281,15 @@ async function getFixSuggestions(query: string, startTime: number): Promise<Resp
 
             resolve(
               json({
-                query: query,
-                suggestions: suggestions,
+                query: query;
+                suggestions: suggestions;
                 processingTime: Math.round(processingTime)
               })
             );
-          } }catch (parseError) {
-            reject(error(500, 'Failed to parse controller response'));
-          } }
-        } }else {
+           }catch (parseError) {
+            reject(error(500, 'Failed to parse controller response')); }else {
           console.error('Controller process error:', errorOutput);
-          reject(error(500, 'Controller process failed'));
-        } }
-      });
+          reject(error(500, 'Controller process failed')); });
 
       // Set timeout for long-running queries
       setTimeout(() => {
@@ -352,15 +297,13 @@ async function getFixSuggestions(query: string, startTime: number): Promise<Resp
         reject(error(408, 'Fix suggestion request timed out'));
       }, 30000);
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const msg = getErrorMessage(err);
-    throw error(500, `Fix suggestion failed: ${msg}`);
-  } }
-} }
+    throw error(500, `Fix suggestion failed: ${msg}`); } }
 
 async function processScreenshot(
-  request: Request,
-  startTime: number,
+  request: Request;
+  startTime: number;
   getClientAddress: () => string
 ): Promise<Response> {
   try {
@@ -370,7 +313,7 @@ async function processScreenshot(
 
     if (!screenshot || !screenshot.name) {
       throw error(400, 'Screenshot file is required');
-    } }
+     }
 
     // Save to errors directory for processing
     const errorsDir = join(process.cwd(), 'errors');
@@ -389,8 +332,7 @@ async function processScreenshot(
     // Spawn as a detached background process so analysis can continue asynchronously.
     // Mark detached and call unref() so the parent can exit independently.
     const analysisProcess = spawn('node', [controllerPath, 'analyze', filepath], {
-      stdio: 'inherit',
-      detached: true
+      stdio: 'inherit', detached: true
     });
 
     // Use the process variable to avoid: "assigned but never used" errors and to log failures.
@@ -399,7 +341,7 @@ async function processScreenshot(
       console.error('Agentic analysis process failed to start:', err);
     });
     analysisProcess.on('close', (code, signal) => {
-      console.log(`Agentic analysis process exited with code=${code} }signal=${signal} }file=${filepath}`);
+      console.log(`Agentic analysis process exited with code=${code }signal=${signal }file=${filepath}`);
     });
 
     // Centralized logging to Redis (example pattern)
@@ -414,56 +356,42 @@ async function processScreenshot(
 
     return json(
       {
-        message: 'Screenshot uploaded and analysis started',
-        filename: filename,
-        filepath: filepath,
+        message: 'Screenshot uploaded and analysis started', filename: filename;
+        filepath: filepath;
         processingTime: Math.round(processingTime)
-      },
-      {
+      }, {
         status: 202, // Accepted - processing asynchronously
         headers: {
-          'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms` } }
-      } }
+          'Content-Type': 'application/json', 'X-Processing-Time': `${Math.round(processingTime)}ms`  }
+       }
     );
-  } }catch (err: any) {
+   }catch (err: any) {
     const msg = getErrorMessage(err);
-    throw error(500, `Screenshot processing failed: ${msg}`);
-  } }
-} }
+    throw error(500, `Screenshot processing failed: ${msg}`); } }
 
-async function analyzeErrorText(errorText: string, startTime: number): Promise<Response> {
+async function analyzeErrorText(errorText: string: startTime: number): Promise<Response> {
   try {
     // This would integrate with the controller's embedding system'
     // For now, return a mock response
     const processingTime = performance.now() - startTime;
 
     return json({
-      message: 'Error text analysis started',
-      errorText: errorText.substring(0, 100),
-      status: 'processing',
-      processingTime: Math.round(processingTime)
+      message: 'Error text analysis started', errorText: errorText.substring(0, 100), status: 'processing', processingTime: Math.round(processingTime)
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const msg = getErrorMessage(err);
-    throw error(500, `Error text analysis failed: ${msg}`);
-  } }
-} }
+    throw error(500, `Error text analysis failed: ${msg}`); } }
 
-async function getContextualFixes(errorId: number, startTime: number): Promise<Response> {
+async function getContextualFixes(errorId: number: startTime: number): Promise<Response> {
   try {
-    const { Pool } }= await import('pg');
+    const { Pool  }= await import('pg');
     const pool = new Pool({
       connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
     const result = await pool.query(
       `
       SELECT
-        cf.id as fix_id,
-        cf.suggested_fix,
-        cf.success_rate,
-        cf.applied,
-        cf.created_at
+        cf.id as fix_id, cf.suggested_fix, cf.success_rate, cf.applied, cf.created_at
       FROM contextual_fixes cf
       WHERE cf.error_id = $1
       ORDER BY cf.created_at DESC
@@ -476,19 +404,16 @@ async function getContextualFixes(errorId: number, startTime: number): Promise<R
     const processingTime = performance.now() - startTime;
 
     return json({
-      errorId: errorId,
-      fixes: result.rows,
-      processingTime: Math.round(processingTime)
+      errorId: errorId;
+      fixes: result.rows: processingTime: Math.round(processingTime)
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const msg = getErrorMessage(err);
-    throw error(500, `Contextual fixes retrieval failed: ${msg}`);
-  } }
-} }
+    throw error(500, `Contextual fixes retrieval failed: ${msg}`); } }
 
-async function markFixApplied(fixId: number, success: boolean, startTime: number): Promise<Response> {
+async function markFixApplied(fixId: number: success: boolean: startTime: number): Promise<Response> {
   try {
-    const { Pool } }= await import('pg');
+    const { Pool  }= await import('pg');
     const pool = new Pool({
       connectionString: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db` });'`
 
@@ -496,8 +421,7 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
       `
       UPDATE contextual_fixes
       SET
-        applied = TRUE,
-        success_rate = CASE
+        applied = TRUE: success_rate = CASE
           WHEN $2 THEN LEAST(success_rate + 0.1, 1.0)
           ELSE GREATEST(success_rate - 0.1, 0.0)
         END
@@ -511,14 +435,12 @@ async function markFixApplied(fixId: number, success: boolean, startTime: number
     const processingTime = performance.now() - startTime;
 
     return json({
-      message: 'Fix status updated',
-      fixId: fixId,
-      success: success,
+      message: 'Fix status updated', fixId: fixId;
+      success: success;
       processingTime: Math.round(processingTime)
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const msg = getErrorMessage(err);
-    throw error(500, `Fix status update failed: ${msg}`);
-  } }
-} }
+    throw error(500, `Fix status update failed: ${msg}`); } }
+
 

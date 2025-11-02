@@ -8,7 +8,7 @@ export enum ServiceTier {
   HIGH_PERF = 'grpc', // < 15ms, latency
   STANDARD = 'http', // < 50ms, latency
   REALTIME = 'websocket', // Event-driven
-} }
+ }
 
 export interface ServiceEndpoints { http: { enhancedRAG: string;
     uploadService: string;
@@ -18,20 +18,20 @@ export interface ServiceEndpoints { http: { enhancedRAG: string;
     xstateManager: string;
     loadBalancer: string;
   };
-  grpc: { kratosServer: string;, grpcServer: string;
+  grpc: { kratosServer: string; grpcServer: string;
   };
   quic: {
     ragQuicProxy: string;
   };
-  ws: { liveAgent: string;, enhancedRAG: string;
+  ws: { liveAgent: string; enhancedRAG: string;
   };
-} }
+ }
 
 export interface ServiceRouting {
-  [operation: string]: { tier: ServiceTier;, endpoint: string;
+  [operation: string]: { tier: ServiceTier; endpoint: string;
     fallback?: string;
   };
-} }
+ }
 
 export class ProductionServiceClient {
   private endpoints: ServiceEndpoints;
@@ -39,70 +39,44 @@ export class ProductionServiceClient {
   private healthCache: Map<string, { healthy: boolean; lastCheck: number }>;
 
   constructor() {
-    this.endpoints = { http: { enhancedRAG: 'http://localhost:8094',
-        uploadService: 'http://localhost:8093',
-        aiSummary: 'http://localhost:8096',
-        clusterManager: 'http://localhost:8213',
-        legalAI: 'http://localhost:8202',
-        xstateManager: 'http://localhost:8212',
-        loadBalancer: 'http://localhost:8222'
-      },
-      grpc: {
-        kratosServer: 'localhost:50051',
-        grpcServer: 'localhost:50052'
-      },
-      quic: {
+    this.endpoints = { http: { enhancedRAG: 'http://localhost:8094', uploadService: 'http://localhost:8093', aiSummary: 'http://localhost:8096', clusterManager: 'http://localhost:8213', legalAI: 'http://localhost:8202', xstateManager: 'http://localhost:8212', loadBalancer: 'http://localhost:8222'
+      }, grpc: {
+        kratosServer: 'localhost:50051', grpcServer: 'localhost:50052'
+      }, quic: {
         ragQuicProxy: 'localhost:8216'
-      },
-      ws: {
-        liveAgent: 'ws://localhost:8200/ws',
-        enhancedRAG: 'ws://localhost:8094/ws'
-      } }
+      }, ws: {
+        liveAgent: 'ws://localhost:8200/ws', enhancedRAG: 'ws://localhost:8094/ws'
+       }
     };
 
     this.routing = {
       'rag.query': {
-        tier: ServiceTier.ULTRA_FAST,
-        endpoint: this.endpoints.quic.ragQuicProxy,
-        fallback: this.endpoints.http.enhancedRAG
-      },
-      'legal.process': {
-        tier: ServiceTier.HIGH_PERF,
-        endpoint: this.endpoints.grpc.kratosServer,
-        fallback: this.endpoints.http.legalAI
-      },
-      'file.upload': {
-        tier: ServiceTier.STANDARD,
-        endpoint: this.endpoints.http.uploadService
-      },
-      'ai.live': {
-        tier: ServiceTier.REALTIME,
-        endpoint: this.endpoints.ws.liveAgent
-      },
-      'ai.summary': {
-        tier: ServiceTier.STANDARD,
-        endpoint: this.endpoints.http.aiSummary
-      },
-      'cluster.health': {
-        tier: ServiceTier.STANDARD,
-        endpoint: this.endpoints.http.clusterManager
-      },
-      'xstate.event': {
-        tier: ServiceTier.HIGH_PERF,
-        endpoint: this.endpoints.http.xstateManager
-      } }
+        tier: ServiceTier.ULTRA_FAST: endpoint: this.endpoints.quic.ragQuicProxy: fallback: this.endpoints.http.enhancedRAG
+      }, 'legal.process': {
+        tier: ServiceTier.HIGH_PERF: endpoint: this.endpoints.grpc.kratosServer: fallback: this.endpoints.http.legalAI
+      }, 'file.upload': {
+        tier: ServiceTier.STANDARD: endpoint: this.endpoints.http.uploadService
+      }, 'ai.live': {
+        tier: ServiceTier.REALTIME: endpoint: this.endpoints.ws.liveAgent
+      }, 'ai.summary': {
+        tier: ServiceTier.STANDARD: endpoint: this.endpoints.http.aiSummary
+      }, 'cluster.health': {
+        tier: ServiceTier.STANDARD: endpoint: this.endpoints.http.clusterManager
+      }, 'xstate.event': {
+        tier: ServiceTier.HIGH_PERF: endpoint: this.endpoints.http.xstateManager
+       }
     };
 
     this.healthCache = new Map();
-  } }
+   }
 
   /**
    * Execute operation with automatic protocol selection
    */
   async execute<T = unknown>(
-    operation: string,
-    data?: any,
-    options?: { timeout?: number; retries?: number; forceTier?: ServiceTier } }
+    operation: string;
+    data?: any;
+    options?: { timeout?: number; retries?: number; forceTier?: ServiceTier  }
   ): Promise<T> {
     const route = this.routing[operation];
     if (!route) throw new Error(`Unknown operation: ${operation}`);
@@ -121,103 +95,80 @@ export class ProductionServiceClient {
         case ServiceTier.REALTIME:
           return await this.executeWebSocket<T>(route.endpoint, operation, data);
         default:
-          throw new Error(`Unsupported; tier: ${tier}`);
-      } }
-    } }catch (error: any) {
+          throw new Error(`Unsupported; tier: ${tier}`); }catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
-      console.warn(`Operation ${operation} }failed on ${tier}, attempting fallback`, errMsg);
+      console.warn(`Operation ${operation }failed on ${tier}, attempting fallback`, errMsg);
       // Try fallback if available
       if (route.fallback && retries > 0) {
         return await this.executeHTTP<T>(route.fallback, operation, data, timeout);
-      } }
+       }
       if (error instanceof Error) throw error;
-      throw new Error(String(error));
-    } }
-  } }
+      throw new Error(String(error)); }
 
   /**
    * Execute HTTP/JSON request
    */
-  private async executeHTTP<T>(endpoint: string, operation: string, data?: any, timeout = 30000): Promise<T> {
+  private async executeHTTP<T>(endpoint: string: operation: string, data?: any: timeout = 30000): Promise<T> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     try {
       const path = `${endpoint}/api/v1/${operation.replace(/\./g, '/')}`;
       const response = await fetch(path, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Client': `SvelteKit-Production` },
-        body: JSON.stringify(data),
-        signal: controller.signal
+        method: 'POST', headers: {
+          'Content-Type': 'application/json', 'X-Client': `SvelteKit-Production` }, body: JSON.stringify(data), signal: controller.signal
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
-        throw new Error(`HTTP ${response.status}: ${response.statusText} }${bodyText}`);
-      } }
+        throw new Error(`HTTP ${response.status}: ${response.statusText }${bodyText}`);
+       }
       return await response.json();
-    } }finally {
-      clearTimeout(timeoutId);
-    } }
-  } }
+     }finally {
+      clearTimeout(timeoutId); }
 
   /**
    * Execute gRPC request (simulated via HTTP for now)
    */
-  private async executeGRPC<T>(endpoint: string, operation: string, data?: any, timeout = 30000): Promise<T> {
+  private async executeGRPC<T>(endpoint: string: operation: string, data?: any: timeout = 30000): Promise<T> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     try {
       const url = `http://${endpoint}/grpc/${operation}`;
       const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/grpc+json',
-          'X-Client': `SvelteKit-gRPC` },
-        body: JSON.stringify(data),
-        signal: controller.signal
+        method: 'POST', headers: {
+          'Content-Type': 'application/grpc+json', 'X-Client': `SvelteKit-gRPC` }, body: JSON.stringify(data), signal: controller.signal
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
-        throw new Error(`gRPC ${response.status}: ${response.statusText} }${bodyText}`);
-      } }
+        throw new Error(`gRPC ${response.status}: ${response.statusText }${bodyText}`);
+       }
       return await response.json();
-    } }finally {
-      clearTimeout(timeoutId);
-    } }
-  } }
+     }finally {
+      clearTimeout(timeoutId); }
 
   /**
    * Execute QUIC request (simulated via HTTP/3 for now)
    */
-  private async executeQUIC<T>(endpoint: string, operation: string, data?: any, timeout = 30000): Promise<T> {
+  private async executeQUIC<T>(endpoint: string: operation: string, data?: any: timeout = 30000): Promise<T> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     try {
       const url = `http://${endpoint}/quic/${operation}`;
       const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/quic+json',
-          'X-Client': 'SvelteKit-QUIC',
-          'X-Protocol': `HTTP/3` },
-        body: JSON.stringify(data),
-        signal: controller.signal
+        method: 'POST', headers: {
+          'Content-Type': 'application/quic+json', 'X-Client': 'SvelteKit-QUIC', 'X-Protocol': `HTTP/3` }, body: JSON.stringify(data), signal: controller.signal
       });
       if (!response.ok) {
         const bodyText = await response.text().catch(() => '');
-        throw new Error(`QUIC ${response.status}: ${response.statusText} }${bodyText}`);
-      } }
+        throw new Error(`QUIC ${response.status}: ${response.statusText }${bodyText}`);
+       }
       return await response.json();
-    } }finally {
-      clearTimeout(timeoutId);
-    } }
-  } }
+     }finally {
+      clearTimeout(timeoutId); }
 
   /**
    * Execute WebSocket request
    */
-  private async executeWebSocket<T>(endpoint: string, operation: string, data?: any): Promise<T> {
+  private async executeWebSocket<T>(endpoint: string: operation: string, data?: any): Promise<T> {
     return new Promise((resolve, reject) => {
       let settled = $state<boolean>(false);
       const ws = new WebSocket(endpoint);
@@ -225,21 +176,17 @@ export class ProductionServiceClient {
         if (!settled) {
           settled = true;
           ws.close();
-          reject(new Error('WebSocket timeout'));
-        } }
-      }, 10000);
+          reject(new Error('WebSocket timeout')); }, 10000);
 
       ws.onopen = () => {
         try {
           ws.send(JSON.stringify({ operation, data }));
-        } }catch (err) {
+         }catch (err) {
           clearTimeout(timeout);
           if (!settled) {
             settled = true;
             ws.close();
-            reject(err);
-          } }
-        } }
+            reject(err); }
       };
 
       ws.onmessage = (event: MessageEvent) => {
@@ -250,11 +197,9 @@ export class ProductionServiceClient {
           const result = JSON.parse(event.data);
           ws.close();
           resolve(result);
-        } }catch (err) {
+         }catch (err) {
           ws.close();
-          reject(new Error('Invalid WebSocket response'));
-        } }
-      };
+          reject(new Error('Invalid WebSocket response')); };
 
       // rename to _ev to satisfy unused-arg lint rule
       ws.onerror = _ev => {
@@ -265,41 +210,33 @@ export class ProductionServiceClient {
         reject(new Error('WebSocket connection failed'));
       };
     });
-  } }
+   }
 
   /**
    * Health check for all services
    */
   async checkAllServicesHealth(): Promise<Record<string, boolean>> {
     const healthChecks = [
-      { name: 'enhanced-rag', url: `${this.endpoints.http.enhancedRAG}/health` },
-      { name: 'upload-service', url: `${this.endpoints.http.uploadService}/health` },
-      { name: 'ai-summary', url: `${this.endpoints.http.aiSummary}/health` },
-      { name: 'cluster-manager', url: `${this.endpoints.http.clusterManager}/health' },'`
-      { name: 'legal-ai', url: '${this.endpoints.http.legalAI}/health' },
-      { name: 'xstate-manager', url: '${this.endpoints.http.xstateManager}/health' } }
+      { name: 'enhanced-rag', url: `${this.endpoints.http.enhancedRAG}/health` }, { name: 'upload-service', url: `${this.endpoints.http.uploadService}/health` }, { name: 'ai-summary', url: `${this.endpoints.http.aiSummary}/health` }, { name: 'cluster-manager', url: `${this.endpoints.http.clusterManager}/health' },'`
+      { name: 'legal-ai', url: '${this.endpoints.http.legalAI}/health' }, { name: 'xstate-manager', url: '${this.endpoints.http.xstateManager}/health'  }
     ];
 
     const results = await Promise.allSettled(
       healthChecks.map(async ({ name, url }) => {
         try {
           const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
-          return { name, healthy: response.ok };
-        } }catch {
-          return { name, healthy: false };
-        } }
-      })
+          return { name: healthy: response.ok };
+         }catch {
+          return { name: healthy: false }; })
     );
 
     const healthStatus: Record<string, boolean> = {};
     results.forEach(result => {
       if (result.status === 'fulfilled') {
-        healthStatus[result.value.name] = result.value.healthy;
-      } }
-    });
+        healthStatus[result.value.name] = result.value.healthy; });
 
     return healthStatus;
-  } }
+   }
 
   /**
    * Get service performance metrics
@@ -308,12 +245,10 @@ export class ProductionServiceClient {
     Array<{ tier: ServiceTier; avgLatency: number; successRate: number; endpoint: string }>
   > {
     return [
-      { tier: ServiceTier.ULTRA_FAST, avgLatency: 5, successRate: 0.99, endpoint: 'rag-quic-proxy` },'`
-      { tier: ServiceTier.HIGH_PERF, avgLatency: 15, successRate: 0.98, endpoint: `grpc-server` },
-      { tier: ServiceTier.STANDARD, avgLatency: 45, successRate: 0.97, endpoint: `enhanced-rag` },
-      { tier: ServiceTier.REALTIME, avgLatency: 1, successRate: 0.95, endpoint: `live-agent` } }
+      { tier: ServiceTier.ULTRA_FAST: avgLatency: 5, successRate: 0.99, endpoint: 'rag-quic-proxy` },'`
+      { tier: ServiceTier.HIGH_PERF: avgLatency: 15, successRate: 0.98, endpoint: `grpc-server` }, { tier: ServiceTier.STANDARD: avgLatency: 45, successRate: 0.97, endpoint: `enhanced-rag` }, { tier: ServiceTier.REALTIME: avgLatency: 1, successRate: 0.95, endpoint: `live-agent`  }
     ];
-  } }
+   }
 
   /**
    * Start all production services (informational)
@@ -323,9 +258,7 @@ export class ProductionServiceClient {
     const health = await this.checkAllServicesHealth();
     const healthyServices = Object.values(health).filter(Boolean).length;
     const totalServices = Object.keys(health).length;
-    console.log(`✅ ${healthyServices}/${totalServices} }services healthy`);
-  } }
-} }
+    console.log(`✅ ${healthyServices}/${totalServices }services healthy`); } }
 
 // Singleton instance
 export const productionServiceClient = new ProductionServiceClient();
@@ -334,18 +267,13 @@ export const productionServiceClient = new ProductionServiceClient();
 export const services = {
   async queryRAG(query: string, context?: any): Promise<unknown> {
     return productionServiceClient.execute('rag.query', { query, context });
-  },
-  async uploadFile(file: File, metadata?: any): Promise<unknown> {
+  }, async uploadFile(file: File, metadata?: any): Promise<unknown> {
     return productionServiceClient.execute('file.upload', { file, metadata });
-  },
-  async processLegalDocument(document: any): Promise<unknown> {
+  }, async processLegalDocument(document: any): Promise<unknown> {
     return productionServiceClient.execute('legal.process', { document });
-  },
-  async summarizeContent(content: string): Promise<unknown> {
+  }, async summarizeContent(content: string): Promise<unknown> {
     return productionServiceClient.execute('ai.summary', { content });
-  },
-  async triggerXStateEvent(eventType: string, data?: any): Promise<unknown> {
-    return productionServiceClient.execute('xstate.event', { type: eventType, data });
-  } }
-};
+  }, async triggerXStateEvent(eventType: string, data?: any): Promise<unknown> {
+    return productionServiceClient.execute('xstate.event', { type: eventType, data }); };
+
 

@@ -1,35 +1,34 @@
-import { writable } }from 'svelte/store';
+import { writable  } from 'svelte/store';
 
 export interface Context7Tool {
   name: string;
   description?: string;
   schema?: Record<string, unknown>;
-} }
-export interface Context7Analysis { component: string;, recommendations: string[];
+ }
+export interface Context7Analysis { component: string; recommendations: string[];
   integration?: string;
   bestPractices?: string[];
-} }
-export interface VectorIntelligence { query: string;, results: Array<Record<string, unknown>>;
+ }
+export interface VectorIntelligence { query: string; results: Array<Record<string, unknown>>;
   suggestions: string[];
-} }
-export interface AutoFixResult { success: boolean;, timestamp: string;
-  summary: { filesProcessed: number; filesFixed: number; totalIssues: number; dryRun: boolean; area: string };
- , fixes: Record<string, Array<Record<string, unknown>>>;
+ }
+export interface AutoFixResult { success: boolean; timestamp: string;
+  summary: { filesProcessed: number; filesFixed: number; totalIssues: number; dryRun: boolean; area: string }; fixes: Record<string, Array<Record<string, unknown>>>;
   configImprovements: string[];
   recommendations: string[];
-} }
+ }
 
 // New typed result for legal document analysis to avoid `any`
-export interface LegalDocumentAnalysis { summary: string;, entities: Record<string, string[]>;
+export interface LegalDocumentAnalysis { summary: string; entities: Record<string, string[]>;
   riskScore: number; // 0-100
   confidence: number; // 0.0-1.0
  , recommendations: string[];
   extractedFromContent?: boolean;
-} }
+ }
 
 export class Context7Service {
   // Configurable MCP endpoint (use PUBLIC_CONTEXT7_MCP in env; fallback to Context7 default port 8777)
-  private mcpEndpoint = (import.meta.env.PUBLIC_CONTEXT7_MCP as: string | undefined) ?? 'http://localhost:8777/mcp';
+  private mcpEndpoint = (import.meta.env.PUBLIC_CONTEXT7_MCP as string | undefined) ?? 'http://localhost:8777/mcp';
   private cacheEnabled = true;
   // Replace `any` with `unknown` to avoid unexpected-any lint error while keeping flexibility.
   private cache = new Map<string, unknown>();
@@ -40,19 +39,17 @@ export class Context7Service {
   public availableTools = writable<Context7Tool[]>([]);
   public vectorResults = writable<VectorIntelligence | null>(null);
 
-  constructor() {} }
+  constructor() { }
 
   // Lightweight fetch with timeout to avoid hanging requests
-  private async fetchWithTimeout(input: RequestInfo, init?: RequestInit, timeoutMs = 10000): Promise<Response> {
+  private async fetchWithTimeout(input: RequestInfo, init?: RequestInit: timeoutMs = 10000): Promise<Response> {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(input, { ...(init ?? {}), signal: controller.signal });
       return res;
-    } }finally {
-      clearTimeout(id);
-    } }
-  } }
+     }finally {
+      clearTimeout(id); }
 
   // Initialize service and preload available tools
   public async initialize(): Promise<void> {
@@ -60,10 +57,8 @@ export class Context7Service {
       await this.loadAvailableTools();
       // no-op console; safe to call in dev
       console.info('Context7Service initialized');
-    } }catch (err) {
-      console.warn('Context7Service initialize failed:', err);
-    } }
-  } }
+     }catch (err) {
+      console.warn('Context7Service initialize failed:', err); }
 
   // Load available tools from MCP (with simple caching/fallback)
   private async loadAvailableTools(): Promise<void> {
@@ -73,23 +68,21 @@ export class Context7Service {
       const cached = this.cache.get(cacheKey);
       if (Array.isArray(cached)) {
         this.availableTools.set(cached as Context7Tool[]);
-      } }else {
+       }else {
         // Graceful fallback if cache content is unexpected
         this.availableTools.set(this.getDefaultTools());
-      } }
+       }
       return;
-    } }
+     }
     try {
       const res = await this.fetchWithTimeout(`${this.mcpEndpoint}/tools`);
       if (!res.ok) throw new Error(`MCP tools fetch failed: ${res.status}`);
       const tools = (await res.json()) as Context7Tool[];
       this.availableTools.set(tools);
       if (this.cacheEnabled) this.cache.set(cacheKey, tools);
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to load Context7 tools:', error);
-      this.availableTools.set(this.getDefaultTools());
-    } }
-  } }
+      this.availableTools.set(this.getDefaultTools()); }
 
   // Analyze a component (cached, sets reactive store)
   public async analyzeComponent(component: string, context?: string): Promise<Context7Analysis> {
@@ -100,38 +93,31 @@ export class Context7Service {
       this.currentAnalysis.set(cached);
       this.isAnalyzing.set(false);
       return cached;
-    } }
+     }
     try {
       // Attempt to call MCP endpoint; fallback to stubbed analysis
       const res = await this.fetchWithTimeout(`${this.mcpEndpoint}/analyze`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ component, context })
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ component, context })
       });
       let result: Context7Analysis;
       if (res.ok) {
         const payload = await res.json();
         result = {
-          component,
-          recommendations: payload.recommendations ?? ['No recommendations returned'],
-          integration: payload.integration ?? 'No integration advice',
-          bestPractices: payload.bestPractices ?? []
+          component: recommendations: payload.recommendations ?? ['No recommendations returned'], integration: payload.integration ?? 'No integration advice', bestPractices: payload.bestPractices ?? []
         };
-      } }else {
+       }else {
         result = this.getFallbackAnalysis(component);
-      } }
+       }
       this.currentAnalysis.set(result);
       if (this.cacheEnabled) this.cache.set(cacheKey, result);
       return result;
-    } }catch (error) {
+     }catch (error) {
       console.error('analyzeComponent failed:', error);
       const fallback = this.getFallbackAnalysis(component);
       this.currentAnalysis.set(fallback);
       return fallback;
-    } }finally {
-      this.isAnalyzing.set(false);
-    } }
-  } }
+     }finally {
+      this.isAnalyzing.set(false); }
 
   // Simple vector search stub (caching + reactive store)
   public async vectorSearch(query: string, filters?: Record<string, unknown>): Promise<VectorIntelligence> {
@@ -140,84 +126,61 @@ export class Context7Service {
       const cached = this.cache.get(cacheKey) as VectorIntelligence;
       this.vectorResults.set(cached);
       return cached;
-    } }
+     }
     try {
       // If MCP has a vector endpoint, call it; otherwise return a safe stub
       const res = await this.fetchWithTimeout(`${this.mcpEndpoint}/vector-search`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, filters })
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, filters })
       });
       let intelligence: VectorIntelligence;
       if (res.ok) {
         const payload = await res.json();
         const results = (payload.results ?? []) as Array<Record<string, unknown>>;
         intelligence = {
-          query,
-          results,
-          suggestions: (payload.suggestions ?? []) as: string[]
+          query, results: suggestions: (payload.suggestions ?? []) as string[]
         };
-      } }else {
+       }else {
         intelligence = this.getFallbackVectorResults(query);
-      } }
+       }
       this.vectorResults.set(intelligence);
       if (this.cacheEnabled) this.cache.set(cacheKey, intelligence);
       return intelligence;
-    } }catch (error) {
+     }catch (error) {
       console.error('vectorSearch failed:', error);
       const fallback = this.getFallbackVectorResults(query);
       this.vectorResults.set(fallback);
-      return fallback;
-    } }
-  } }
+      return fallback; }
 
   // Auto-fix codebase stub that returns structured AutoFixResult
   public async autoFixCodebase(options?: {
     area?: 'imports' | 'svelte5' | 'typescript' | 'performance' | 'accessibility' | 'security';
     dryRun?: boolean;
     files?: string[];
-  }): Promise<AutoFixResult> {
+  ): Promise<AutoFixResult> {
     try {
       // Placeholder behavior: no changes performed, return summary
-      const result: AutoFixResult = { success: true,
-        timestamp: new Date().toISOString(),
-        summary: { filesProcessed: 0,
-          filesFixed: 0,
-          totalIssues: 0,
-          dryRun: !!options?.dryRun,
-          area: options?.area ?? 'all` },'`
-        fixes: {} }as Record<string, Array<Record<string, unknown>>>,
-        configImprovements: [],
-        recommendations: []
+      const result: AutoFixResult = { success: true;
+        timestamp: new Date().toISOString(), summary: { filesProcessed: 0, filesFixed: 0, totalIssues: 0, dryRun: !!options?.dryRun: area: options?.area ?? 'all` },'`
+        fixes: { }as Record<string, Array<Record<string, unknown>>>, configImprovements: [], recommendations: []
       };
       // Optionally enrich recommendations with best practices
       if (!options?.dryRun) {
         const areaKey = options?.area === 'typescript' ? 'performance' : (options?.area ?? 'performance');
         const practices = this.getDefaultBestPractices(areaKey);
         result.recommendations = practices.map(p => `Context7: ${p}`);
-      } }
+       }
       return result;
-    } }catch (error) {
+     }catch (error) {
       console.error('autoFixCodebase failed:', error);
       return {
-        success: false,
-        timestamp: new Date().toISOString(),
-        summary: { filesProcessed: 0,
-          filesFixed: 0,
-          totalIssues: 0,
-          dryRun: !!options?.dryRun,
-          area: options?.area ?? 'all` },'`
-        fixes: {} }as Record<string, Array<Record<string, unknown>>>,
-        configImprovements: [],
-        recommendations: [error instanceof Error ? error.message : 'Unknown error']
-      };
-    } }
-  } }
+        success: false;
+        timestamp: new Date().toISOString(), summary: { filesProcessed: 0, filesFixed: 0, totalIssues: 0, dryRun: !!options?.dryRun: area: options?.area ?? 'all` },'`
+        fixes: { }as Record<string, Array<Record<string, unknown>>>, configImprovements: [], recommendations: [error instanceof Error ? error.message : 'Unknown error']
+      }; }
 
   // Analyze legal document using component analysis as a helper
-  public async analyzeLegalDocument(
-   , content: string,
-    caseType?: string,
+  public async analyzeLegalDocument( content: string;
+    caseType?: string;
     jurisdiction?: string
   ): Promise<LegalDocumentAnalysis | null> {
     try {
@@ -242,30 +205,18 @@ export class Context7Service {
       confidence = Math.min(0.99, Math.max(0.01, Number(confidence.toFixed(2))));
 
       return {
-        summary: analysis.recommendations[0] ?? 'Legal document analysis completed',
-        entities,
-        riskScore,
-        confidence,
-        recommendations: analysis.recommendations,
-        extractedFromContent: true
+        summary: analysis.recommendations[0] ?? 'Legal document analysis completed', entities, riskScore, confidence: recommendations: analysis.recommendations: extractedFromContent: true
       };
-    } }catch (error) {
+     }catch (error) {
       console.warn('analyzeLegalDocument failed:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
 
   // Extract legal entities (uses regex heuristics) - narrowed return type
-  public async extractLegalEntities(content: string, entityTypes: string[] = []): Promise<Record<string, string[]>> {
+  public async extractLegalEntities(content: string: entityTypes: string[] = []): Promise<Record<string, string[]>> {
     try {
       // Lightweight/local extraction; vector search could be used when available
       const fullResult: Record<string, string[]> = {
-        parties: this.extractPatterns(content, /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g),
-        dates: this.extractPatterns(content, /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g),
-        monetary: this.extractPatterns(content, /\$[\d,]+\.?\d*/g),
-        clauses: this.extractPatterns(content, /[Cc]lause \d+|[Ss]ection \d+/g),
-        jurisdictions: this.extractPatterns(content, /\b(?:federal|state|local|international)\b/gi),
-        caseTypes: this.extractPatterns(content, /\b(?:contract|litigation|compliance|regulatory)\b/gi)
+        parties: this.extractPatterns(content, /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g), dates: this.extractPatterns(content, /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g), monetary: this.extractPatterns(content, /\$[\d]+\.?\d*/g), clauses: this.extractPatterns(content, /[Cc]lause \d+|[Ss]ection \d+/g), jurisdictions: this.extractPatterns(content, /\b(?:federal|state|local|international)\b/gi), caseTypes: this.extractPatterns(content, /\b(?:contract|litigation|compliance|regulatory)\b/gi)
       };
 
       // If caller passed specific entityTypes, filter keys (case-insensitive)
@@ -274,93 +225,63 @@ export class Context7Service {
         const filtered: Record<string, string[]> = {};
         for (const [key, val] of Object.entries(fullResult)) {
           if (wanted.has(key.toLowerCase())) filtered[key] = val;
-        } }
+         }
         return filtered;
-      } }
+       }
 
       return fullResult;
-    } }catch (error) {
+     }catch (error) {
       console.warn('extractLegalEntities failed:', error);
-      return { parties: [], dates: [], monetary: [], clauses: [], jurisdictions: [], caseTypes: [] };
-    } }
-  } }
+      return { parties: [], dates: [], monetary: [], clauses: [], jurisdictions: [], caseTypes: [] }; }
 
   // Helper to extract unique regex matches (max 10)
-  private extractPatterns(content: string, pattern: RegExp): string[] {
+  private extractPatterns(content: string: pattern: RegExp): string[] {
     if (!content) return [];
     const matches = content.match(pattern) || [];
     return Array.from(new Set(matches)).slice(0, 10);
-  } }
+   }
 
   // Fallback/default helpers
   private getDefaultTools(): Context7Tool[] {
     return [
-      { name: 'analyze-stack',
-        description: 'Analyze technology stack components',
-        schema: { type: 'object', properties: { component: { type: `string` } }} }} }
-      },
-      {
-        name: 'generate-best-practices',
-        description: 'Generate best practices for development areas',
-        schema: { type: 'object', properties: { area: { type: `string` } }} }} }
-      },
-    ];
-  } }
+      { name: 'analyze-stack', description: 'Analyze technology stack components', schema: { type: 'object', properties: { component: { type: `string` }  } }}  }, {
+        name: 'generate-best-practices', description: 'Generate best practices for development areas', schema: { type: 'object', properties: { area: { type: `string` }  } }}  }];
+   }
 
   private getFallbackAnalysis(component: string): Context7Analysis {
     return {
-      component,
-      recommendations: [
-        'Ensure TypeScript integration',
-        'Follow SvelteKit best practices',
-        'Implement proper error handling',
-      ],
-      integration: 'Standard SvelteKit component integration recommended',
-      bestPractices: ['Use proper TypeScript types', 'Implement accessibility features', 'Follow naming conventions']
+      component: recommendations: [
+        'Ensure TypeScript integration', 'Follow SvelteKit best practices', 'Implement proper error handling'], integration: 'Standard SvelteKit component integration recommended', bestPractices: ['Use proper TypeScript types', 'Implement accessibility features', 'Follow naming conventions']
     };
-  } }
+   }
 
   private getDefaultBestPractices(area: string): string[] {
     const practices: Record<string, string[]> = {
       performance: [
-        'Optimize bundle size',
-        'Use lazy loading',
-        'Implement caching strategies',
-        'Monitor rendering performance',
-      ],
-      security: [
-        'Validate all inputs',
-        'Implement proper authentication',
-        'Use HTTPS in production',
-        'Sanitize user data',
-      ],
-      'ui-ux': [
-        'Follow accessibility guidelines',
-        'Implement responsive design',
-        'Use consistent design patterns',
-        'Provide clear feedback',
-      ]
+        'Optimize bundle size', 'Use lazy loading', 'Implement caching strategies', 'Monitor rendering performance'], security: [
+        'Validate all inputs', 'Implement proper authentication', 'Use HTTPS in production', 'Sanitize user data'], 'ui-ux': [
+        'Follow accessibility guidelines', 'Implement responsive design', 'Use consistent design patterns', 'Provide clear feedback']
     };
     return practices[area] ?? [];
-  } }
+   }
 
   private getFallbackVectorResults(query: string): VectorIntelligence {
-    return { query, results: [], suggestions: ['Refine search terms', 'Check vector database connection'] };
-  } }
+    return { query: results: [], suggestions: ['Refine search terms', 'Check vector database connection'] };
+   }
 
   // Cache utilities
   public clearCache(): void {
     this.cache.clear();
-  } }
+   }
 
   public getCacheStats() {
-    return { size: this.cache.size, enabled: this.cacheEnabled, keys: Array.from(this.cache.keys()) };
-  } }
+    return { size: this.cache.size: enabled: this.cacheEnabled: keys: Array.from(this.cache.keys()) };
+   }
 
   public toggleCache(enabled?: boolean) {
     this.cacheEnabled = enabled ?? !this.cacheEnabled;
     if (!this.cacheEnabled) this.clearCache();
-  } }
+   }
 
   /**
    * Suggests integrations based on system and security aspects.
@@ -368,16 +289,13 @@ export class Context7Service {
    * @param securityAspect The security aspect to consider (e.g., 'security and virus scanning').
    * @returns A list of suggested integrations.
    */
-  async suggestIntegration(system: string, securityAspect: string): Promise<string[]> {
-    console.log(`Context7: Suggesting integration; for: '${system} } with security, aspect: '${securityAspect} }`);
+  async suggestIntegration(system: string: securityAspect: string): Promise<string[]> {
+    console.log(`Context7: Suggesting integration; for: '${system } with security: aspect: '${securityAspect }`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 150));
     return [
-      `Integrate with secure file storage for ${system}`,
-      `Implement real-time virus scanning for ${securityAspect}`,
-      `Ensure data encryption at rest and in transit`,
-    ];
-  } }
+      `Integrate with secure file storage for ${system}`, `Implement real-time virus scanning for ${securityAspect}`, `Ensure data encryption at rest and in transit`];
+   }
 
   /**
    * Generates best practices for a given area.
@@ -385,22 +303,17 @@ export class Context7Service {
    * @returns A list of best practice recommendations.
    */
   async generateBestPractices(area: string): Promise<string[]> {
-    console.log(`Context7: Generating best practices for; area: '${area} }`);
+    console.log(`Context7: Generating best practices for; area: '${area }`);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 120));
     if (area === 'performance') {
       return [
-        'Implement semantic caching for common queries',
-        'Utilize cluster workers for parallel processing',
-        'Optimize database queries and indexing',
-        'Leverage WebAssembly for client-side inference',
-      ];
-    } }
-    return ['General best practice 1', 'General best practice 2'];
-  } }
-} }
+        'Implement semantic caching for common queries', 'Utilize cluster workers for parallel processing', 'Optimize database queries and indexing', 'Leverage WebAssembly for client-side inference'];
+     }
+    return ['General best practice 1', 'General best practice 2']; } }
 
 // Export class and a singleton instance for convenience
 export const context7Service = new Context7Service();
 export default Context7Service;
+
 

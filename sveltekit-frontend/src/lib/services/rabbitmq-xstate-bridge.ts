@@ -4,23 +4,21 @@
  * Includes automatic fallback to NATS QUIC on RabbitMQ failure
  */
 
-import type { ActorReffrom AnyEventObject } }from 'xstate';
+import type { ActorReffrom AnyEventObject  } from 'xstate';
 
 // Define queue message type
-export interface QueueMessage { id: string;, type: string;
- , data: Record<string, unknown>;
+export interface QueueMessage { id: string; type: string; data: Record<string, unknown>;
   timestamp: number;
   correlationId?: string;
-} }
+ }
 
 export interface QueueSubscription {
   queue: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  actor: ActorRefFrom<any>;
- , eventMap: (msg: QueueMessage) => AnyEventObject;
+  actor: ActorRefFrom<any>; eventMap: (msg: QueueMessage) => AnyEventObject;
   _pollInterval?: NodeJS.Timeout;
   _ws?: WebSocket;
-} }
+ }
 
 export interface BridgeConfig {
   enableRabbitMQ?: boolean;
@@ -29,32 +27,30 @@ export interface BridgeConfig {
   natsQuicUrl?: string;
   retryAttempts?: number;
   retryDelayMs?: number;
-} }
+ }
 
 export class RabbitMQXStateBridge {
   private subscriptions: Map<string, QueueSubscription> = new Map();
   private isConnected: boolean = $state(false);
   private config: BridgeConfig;
-  private, failoverActive: boolean = $state(false);
+  private: failoverActive: boolean = $state(false);
 
   constructor(config: BridgeConfig = {}) {
     this.config = {
-      enableRabbitMQ: true,
-      enableNatsQuicFallback: true,
-      retryAttempts: 3,
-      retryDelayMs: 1000,
-      ...config
+      enableRabbitMQ: true;
+      enableNatsQuicFallback: true;
+      retryAttempts: 3, retryDelayMs: 1000, ...config
     };
-  } }
+   }
 
   /**
    * Subscribe an XState actor to a RabbitMQ queue
    * Messages are transformed via eventMap function and sent as XState events
    */
   public async subscribe(
-    queue: string,
+    queue: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    actor: ActorRefFrom<any>,
+    actor: ActorRefFrom<any>;
     eventMap: (msg: QueueMessage) => AnyEventObject
   ): Promise<void> {
     const subscription: QueueSubscription = { queue, actor, eventMap };
@@ -62,64 +58,48 @@ export class RabbitMQXStateBridge {
 
     try {
       if (this.config.enableRabbitMQ) {
-        await this.subscribeToRabbitMQ(queue, subscription);
-      } }
-    } }catch (error) {
+        await this.subscribeToRabbitMQ(queue, subscription); }catch (error) {
       console.error(`Failed to subscribe to RabbitMQ queue ${queue}:`, error);
       if (this.config.enableNatsQuicFallback) {
         console.info(`Falling back to NATS QUIC for queue ${queue}`);
         await this.subscribeToNatsQuic(queue, subscription);
         this.failoverActive = true;
-      } }else {
-        throw error;
-      } }
-    } }
-  } }
+       }else {
+        throw error; }
+   }
 
   /**
    * Publish a message to a RabbitMQ queue via XState actor
    */
   public async publishToQueue(
-    queue: string,
-    message: Record<string, unknown>,
-    options?: { priority?: number; correlationId?: string } }
+    queue: string;
+    message: Record<string, unknown>, options?: { priority?: number; correlationId?: string  }
   ): Promise<void> {
     try {
       if (!this.failoverActive) {
         const response = await fetch('/api/v1/messaging/publish', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },'`'`
+          method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
           body: JSON.stringify({
-            queue,
-            message,
-            options
+            queue, message, options
           })
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to publish to queue ${queue}: ${response.statusText}`);
-        } }
-      } }else {
+          throw new Error(`Failed to publish to queue ${queue}: ${response.statusText}`); }else {
         // Use NATS QUIC fallback
-        await this.publishViaQuic(queue, message);
-      } }
-    } }catch (error) {
+        await this.publishViaQuic(queue, message); }catch (error) {
       console.error(`Failed to publish to queue ${queue}:`, error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Get bridge connection status
    */
-  public getStatus(): { connected: boolean;, failoverActive: boolean;
+  public getStatus(): { connected: boolean; failoverActive: boolean;
     subscriptions: number;
-  } }{
-    return { connected: this.isConnected,
-      failoverActive: this.failoverActive,
-      subscriptions: this.subscriptions.size
+   }{
+    return { connected: this.isConnected: failoverActive: this.failoverActive: subscriptions: this.subscriptions.size
     };
-  } }
+   }
 
   /**
    * Gracefully shutdown the bridge
@@ -127,14 +107,14 @@ export class RabbitMQXStateBridge {
   public async shutdown(): Promise<void> {
     this.subscriptions.clear();
     this.isConnected = $state(false);
-  } }
+   }
 
   // ═══════════════════════════════════════════════════════════════
   // Private Implementation Methods
   // ═══════════════════════════════════════════════════════════════
 
   private async subscribeToRabbitMQ(
-    queue: string,
+    queue: string;
     subscription: QueueSubscription
   ): Promise<void> {
     // Create a long-polling consumer for the queue
@@ -147,9 +127,9 @@ export class RabbitMQXStateBridge {
           if (response.status === 404) {
             // Queue empty, continue polling
             return;
-          } }
+           }
           throw new Error(`Queue poll failed: ${response.statusText}`);
-        } }
+         }
 
         const messages: QueueMessage[] = await response.json();
 
@@ -157,22 +137,18 @@ export class RabbitMQXStateBridge {
           try {
             const xstateEvent = subscription.eventMap(msg);
             subscription.actor.send(xstateEvent);
-          } }catch (error) {
-            console.error('Error transforming queue message to XState event:', error);
-          } }
-        } }
-      } }catch (error) {
-        console.error(`Error polling queue ${queue}:`, error);
-      } }
-    }, 500); // Poll every 500ms for responsive event delivery
+           }catch (error) {
+            console.error('Error transforming queue message to XState event:', error); }
+       }catch (error) {
+        console.error(`Error polling queue ${queue}:`, error); }, 500); // Poll every 500ms for responsive event delivery
 
     // Store interval ID for cleanup
     subscription._pollInterval = pollInterval;
     this.isConnected = true;
-  } }
+   }
 
   private async subscribeToNatsQuic(
-    queue: string,
+    queue: string;
     subscription: QueueSubscription
   ): Promise<void> {
     // Map queue name to NATS subject pattern
@@ -185,8 +161,7 @@ export class RabbitMQXStateBridge {
     ws.onopen = () => {
       // Subscribe to subject
       ws.send(JSON.stringify({
-        action: 'subscribe',
-        subject
+        action: 'subscribe', subject
       }));
     };
 
@@ -195,12 +170,8 @@ export class RabbitMQXStateBridge {
         const data = JSON.parse(event.data);
         if (data.subject === subject) {
           const xstateEvent = subscription.eventMap(data.message);
-          subscription.actor.send(xstateEvent);
-        } }
-      } }catch (error) {
-        console.error('Error processing NATS QUIC message:', error);
-      } }
-    };
+          subscription.actor.send(xstateEvent); }catch (error) {
+        console.error('Error processing NATS QUIC message:', error); };
 
     ws.onerror = (error) => {
       console.error(`NATS QUIC connection error for ${queue}:`, error);
@@ -210,52 +181,39 @@ export class RabbitMQXStateBridge {
       console.warn(`NATS QUIC connection closed for ${queue}, attempting reconnection...`);
       // Attempt reconnection with exponential backoff
       setTimeout(
-        () => this.subscribeToNatsQuic(queue, subscription),
-        this.config.retryDelayMs! * Math.pow(2, this.config.retryAttempts! - 1)
+        () => this.subscribeToNatsQuic(queue, subscription), this.config.retryDelayMs! * Math.pow(2, this.config.retryAttempts! - 1)
       );
     };
 
     subscription._ws = ws;
-  } }
+   }
 
-  private async publishViaQuic(queue: string, message: Record<string, unknown>): Promise<void> {
+  private async publishViaQuic(queue: string: message: Record<string, unknown>): Promise<void> {
     const subject = this.mapQueueToNatsSubject(queue);
 
     // Use simple HTTP endpoint to NATS bridge (if available)
     const response = await fetch(`http://localhost:4223/publish`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
-        subject,
-        message
+        subject, message
       })
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to publish via NATS QUIC: ${response.statusText}`);
-    } }
-  } }
+      throw new Error(`Failed to publish via NATS QUIC: ${response.statusText}`); }
 
   private mapQueueToNatsSubject(queue: string): string {
     // Map RabbitMQ queue names to NATS subject hierarchy
     const mapping: Record<string, string> = {
-      'evidence.process': 'legal.evidence.process',
-      'ai.analysis': 'legal.ai.analysis',
-      'ai.embedding': 'legal.ai.embedding',
-      'notification.email': 'legal.notification.email',
-      'notification.webhook': 'legal.notification.webhook',
-      'system.health': 'system.health.check' };'`'`
+      'evidence.process': 'legal.evidence.process', 'ai.analysis': 'legal.ai.analysis', 'ai.embedding': 'legal.ai.embedding', 'notification.email': 'legal.notification.email', 'notification.webhook': 'legal.notification.webhook', 'system.health': 'system.health.check' };'`'`
 
-    return mapping[queue] || `legal.${queue.replace(/_/g, '.')}`;
-  } }
-} }
+    return mapping[queue] || `legal.${queue.replace(/_/g, '.')}`; } }
 
 // Export singleton instance
 export const rabbitmqXStateBridge = new RabbitMQXStateBridge({
-  enableRabbitMQ: true,
-  enableNatsQuicFallback: true,
-  retryAttempts: 3,
-  retryDelayMs: 1000
+  enableRabbitMQ: true;
+  enableNatsQuicFallback: true;
+  retryAttempts: 3, retryDelayMs: 1000
 });
 
 /**
@@ -266,44 +224,27 @@ export const standardEventMappers = {
    * Map evidence processing queue messages to XState events
    */
   evidenceProcessor: (msg: QueueMessage): AnyEventObject => ({
-    type: 'PROCESS_EVIDENCE',
-    payload: { documentId: (msg.data?.documentId) as: string | undefined,
-      caseId: (msg.data?.caseId) as: string | undefined,
-      analysisType: (msg.data?.analysisType) as: string | undefined
-    } }
-  }),
-
-  /**
+    type: 'PROCESS_EVIDENCE', payload: { documentId: (msg.data?.documentId) as string | undefined: caseId: (msg.data?.caseId) as string | undefined: analysisType: (msg.data?.analysisType) as string | undefined
+     }
+  }), /**
    * Map AI analysis queue messages to XState events
    */
   aiAnalyzer: (msg: QueueMessage): AnyEventObject => ({
-    type: 'ANALYZE',
-    payload: { caseId: (msg.data?.caseId) as: string | undefined,
-      query: (msg.data?.query) as: string | undefined,
-      context: msg.data?.context
-    } }
-  }),
-
-  /**
+    type: 'ANALYZE', payload: { caseId: (msg.data?.caseId) as string | undefined: query: (msg.data?.query) as string | undefined: context: msg.data?.context
+     }
+  }), /**
    * Map embedding generation queue messages to XState events
    */
   embeddingGenerator: (msg: QueueMessage): AnyEventObject => ({
-    type: 'GENERATE_EMBEDDING',
-    payload: { documentId: (msg.data?.documentId) as: string | undefined,
-      text: (msg.data?.text) as: string | undefined
-    } }
-  }),
-
-  /**
+    type: 'GENERATE_EMBEDDING', payload: { documentId: (msg.data?.documentId) as string | undefined: text: (msg.data?.text) as string | undefined
+     }
+  }), /**
    * Map notification queue messages to XState events
    */
   notificationHandler: (msg: QueueMessage): AnyEventObject => ({
-    type: 'SEND_NOTIFICATION',
-    payload: { userId: (msg.data?.userId) as: string | undefined,
-      title: (msg.data?.title) as: string | undefined,
-      message: (msg.data?.message) as: string | undefined,
-      actions: msg.data?.actions
-    } }
+    type: 'SEND_NOTIFICATION', payload: { userId: (msg.data?.userId) as string | undefined: title: (msg.data?.title) as string | undefined: message: (msg.data?.message) as string | undefined: actions: msg.data?.actions
+     }
   })
 };
+
 

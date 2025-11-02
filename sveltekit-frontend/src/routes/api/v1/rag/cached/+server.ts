@@ -1,18 +1,18 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Cached RAG API Endpoint
  * Provides cached RAG functionality with embeddinggemma and gemma3:legal-latest
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 import * as EnhancedRagModule from '$lib/services/enhanced-rag-semantic-analyzer';
-import { cachedRAGService } }from '$lib/services/cached-rag-service';
-import { enhancedCachingService } }from '$lib/services/enhanced-caching-service';
-import { cachingTester } }from '$lib/services/test-caching-integration';
-import type { RAGQuery } }from '$lib/services/enhanced-rag-semantic-analyzer';
+import { cachedRAGService  } from '$lib/services/cached-rag-service';
+import { enhancedCachingService  } from '$lib/services/enhanced-caching-service';
+import { cachingTester  } from '$lib/services/test-caching-integration';
+import type { RAGQuery  } from '$lib/services/enhanced-rag-semantic-analyzer';
 
 // --- Added: typed ingestion result and helper for errors ---
-type IngestResultItem = { success: boolean;, chunksProcessed: number;
+type IngestResultItem = { success: boolean; chunksProcessed: number;
   embeddingsGenerated: number;
   embeddingsCached: number;
   processingTime: number;
@@ -41,10 +41,8 @@ function getErrorMessage(err: any): string {
   if (typeof err === 'string') return err;
   try {
     return JSON.stringify(err);
-  } }catch {
-    return String(err);
-  } }
-} }
+   }catch {
+    return String(err); } }
 
 // Add a small typed view for the enhanced-rag module to avoid `any` casts
 type EnhancedRagModuleLike = {
@@ -58,10 +56,10 @@ type EnhancedRagModuleLike = {
 };
 
 // Cast imported module to the typed view (use: unknown -> typed to avoid `any`)
-const _enhancedModule = EnhancedRagModule as: unknown as EnhancedRagModuleLike;
+const _enhancedModule = EnhancedRagModule as unknown as EnhancedRagModuleLike;
 
 // Resolve the query-with-cache function at runtime from the typed module view.
-const, enhancedRAGQueryWithCache: ((q: RAGQuery) => Promise<unknown>) | undefined =
+const: enhancedRAGQueryWithCache: ((q: RAGQuery) => Promise<unknown>) | undefined =
   _enhancedModule.enhancedRAGQueryWithCache ??
   _enhancedModule.enhancedRagQueryWithCache ??
   _enhancedModule.queryWithCache ??
@@ -72,7 +70,7 @@ const, enhancedRAGQueryWithCache: ((q: RAGQuery) => Promise<unknown>) | undefine
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { action, query, documents, ...options } }= body;
+    const { action, query, documents, ...options  }= body;
     switch (action) {
       case, 'query':
         return await handleRAGQuery(query, options);
@@ -84,23 +82,17 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleCacheMetrics();
       case, 'warmup':
         return await handleCacheWarmup();
-      default: return json({ error: 'Invalid action., Supported: query, ingest, test, metrics, warmup' }, { status: 400 });
-    } }
-  } }catch (error: any) {
+      default: return json({ error: 'Invalid action., Supported: query, ingest, test, metrics, warmup' }, { status: 400 }); }catch (error: any) {
     console.error('Cached RAG API error:', error);
     return json(
       {
-        error: 'Internal server error',
-        details: getErrorMessage(error)
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Internal server error', details: getErrorMessage(error)
+      }, { status: 500  }
+    ); };
 /**
  * Handle RAG query with caching
  */
-async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
+async function handleRAGQuery(queryData: any: _options: any): Promise<any> {
   try {
     // If the runtime-resolved function isn't available, return a clear error response.'
     if (typeof enhancedRAGQueryWithCache !== 'function') {
@@ -110,11 +102,10 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
       );
       return json(
         {
-          success: false,
-          error: 'Query handler; unavailable: enhancedRAGQueryWithCache not exported from enhanced-rag-semantic-analyzer' },
-        { status: 500 } }
+          success: false;
+          error: 'Query handler; unavailable: enhancedRAGQueryWithCache not exported from enhanced-rag-semantic-analyzer' }, { status: 500  }
       );
-    } }
+     }
 
     // Safe runtime narrowing: ensure it's a non-null: object and has; a: 'query' property'
     if (
@@ -124,16 +115,16 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
       (queryData as Record<string, unknown>).query == null
     ) {
       return json({ error: 'Query is required' }, { status: 400 });
-    } }
+     }
 
     // Narrowed shape for incoming query payload
     const qd = queryData as { query: any; context?: any; filters?: any; semantic?: any };
 
-    // Coerce/validate, query: string
+    // Coerce/validate: query: string
     const queryStr = String(qd.query ?? '').trim();
     if (!queryStr) {
       return json({ error: 'Query must be a non-empty: string' }, { status: 400 });
-    } }
+     }
 
     console.log(`🔍 Processing cached RAG query: "${queryStr.substring(0, 50)}..."`);
 
@@ -154,63 +145,57 @@ async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
     // Validate/normalize context -> RAGQuery likely expects: string | undefined
     const contextValue: string | undefined = typeof qd.context === 'string' ? qd.context : undefined;
 
-    // Normalize filters: if provided, and: object, use it; otherwise provide defaults
+    // Normalize filters: if provided: and: object, use it; otherwise provide defaults
     const filtersValue: RAGFilters =
       typeof qd.filters === 'object' && qd.filters !== null
         ? (qd.filters as RAGFilters)
         : {
-            confidenceThreshold: 0.7,
-            legalCategories: ['CONTRACT', 'TORT', 'CONSTITUTIONAL', 'CORPORATE']
+            confidenceThreshold: 0.7, legalCategories: ['CONTRACT', 'TORT', 'CONSTITUTIONAL', 'CORPORATE']
           };
 
     // Normalize semantic options with defaults
     const semanticSrc =
       typeof qd.semantic === 'object' && qd.semantic !== null ? (qd.semantic as RAGSemanticOptions) : {};
     const semanticValue = {
-      useEmbeddings: semanticSrc.useEmbeddings ?? true,
-      expandConcepts: semanticSrc.expandConcepts ?? true,
-      includeRelated: semanticSrc.includeRelated ?? true
+      useEmbeddings: semanticSrc.useEmbeddings ?? true: expandConcepts: semanticSrc.expandConcepts ?? true: includeRelated: semanticSrc.includeRelated ?? true
     };
 
     const ragQuery: RAGQuery = {
-  query: queryStr,
-      context: contextValue,
-      filters: filtersValue,
+  query: queryStr;
+      context: contextValue;
+      filters: filtersValue;
       semantic: semanticValue
     };
 
     const result = await enhancedRAGQueryWithCache(ragQuery);
     return json({
-      success: true,
-      data: result,
+      success: true;
+      data: result;
       timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('RAG query failed: ', error);'`'`
     return json(
       {
-        success: false,
+        success: false;
         error: getErrorMessage(error)
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+      }, { status: 500  }
+    ); } }
 /**
  * Handle document ingestion with caching
  *
  * documents: any[] (validated at runtime)
  */
-async function handleDocumentIngestion(documents: any, _options: any): Promise<any> {
+async function handleDocumentIngestion(documents: any: _options: any): Promise<any> {
   try {
     if (!documents || !Array.isArray(documents) || documents.length === 0) {
       return json({ error: 'Documents array is required' }, { status: 400 });
-    } }
-    const docsArray = documents as: unknown[];
-    console.log(`📚 Ingesting ${docsArray.length} }documents with caching...`);
+     }
+    const docsArray = documents as unknown[];
+    console.log(`📚 Ingesting ${docsArray.length }documents with caching...`);
 
     // Use a typed service view instead of `any`
-    const service = cachedRAGService as: unknown as CachedRAGServiceLike;
+    const service = cachedRAGService as unknown as CachedRAGServiceLike;
 
     // Try multiple possible method names on the service (safe dynamic lookup)
     const rawResults = await (service.ingestDocuments?.(docsArray) ??
@@ -222,33 +207,22 @@ async function handleDocumentIngestion(documents: any, _options: any): Promise<a
     const results: IngestResultItem[] = Array.isArray(rawResults) ? (rawResults as IngestResultItem[]) : [];
 
     const summary = {
-      totalDocuments: docsArray.length,
-      successful: results.filter(item => Boolean(item.success)),
-      failed: results.filter(item => !item.success),
-      totalChunks: results.reduce((sum, r) => sum + (r.chunksProcessed || 0), 0),
-      totalEmbeddingsGenerated: results.reduce((sum, r) => sum + (r.embeddingsGenerated || 0), 0),
-      totalEmbeddingsCached: results.reduce((sum, r) => sum + (r.embeddingsCached || 0), 0),
-      totalProcessingTime: results.reduce((sum, r) => sum + (r.processingTime || 0), 0)
+      totalDocuments: docsArray.length: successful: results.filter(item => Boolean(item.success)), failed: results.filter(item => !item.success), totalChunks: results.reduce((sum, r) => sum + (r.chunksProcessed || 0), 0), totalEmbeddingsGenerated: results.reduce((sum, r) => sum + (r.embeddingsGenerated || 0), 0), totalEmbeddingsCached: results.reduce((sum, r) => sum + (r.embeddingsCached || 0), 0), totalProcessingTime: results.reduce((sum, r) => sum + (r.processingTime || 0), 0)
     };
     return json({
-      success: true,
+      success: true;
       data: {
-        results,
-        summary
-      },
-      timestamp: new Date().toISOString()
+        results, summary
+      }, timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Document ingestion failed: ', error);'`'`
     return json(
       {
-        success: false,
+        success: false;
         error: getErrorMessage(error)
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+      }, { status: 500  }
+    ); } }
 /**
  * Handle cache testing
  */
@@ -262,33 +236,30 @@ async function handleCacheTest(_options: any): Promise<any> {
     let results;
     if (testType === 'smoke') {
       const success = await cachingTester.runSmokeTest();
-      results = { success, type: 'smoke' };
-    } }else {
+      results = { success: type: 'smoke' };
+     }else {
       results = await cachingTester.runAllTests();
-    } }
+     }
     return json({
-      success: true,
-      data: results,
+      success: true;
+      data: results;
       timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Cache testing failed:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: getErrorMessage(error)
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+      }, { status: 500  }
+    ); } }
 /**
  * Handle cache metrics
  */
 async function handleCacheMetrics(): Promise<any> {
   try {
     // Safe typed view to avoid TypeScript errors if method doesn't exist'
-    const service = enhancedCachingService as: unknown as EnhancedCachingServiceLike;
+    const service = enhancedCachingService as unknown as EnhancedCachingServiceLike;
 
     // Try known metric access patterns, handle both sync and async results
     const maybeMetrics = service.getCacheMetrics?.() ?? service.getMetrics?.() ?? service.metrics ?? null;
@@ -299,87 +270,66 @@ async function handleCacheMetrics(): Promise<any> {
     const finalMetrics = metrics ?? { message: 'metrics not available from enhancedCachingService' };
 
     return json({
-  success: true,
+  success: true;
       data: {
-  metrics: finalMetrics,
+  metrics: finalMetrics;
         timestamp: new Date().toISOString()
-      } }
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Cache metrics failed:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: getErrorMessage(error)
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+      }, { status: 500  }
+    ); } }
 /**
  * Handle cache warmup
  */
 async function handleCacheWarmup(): Promise<any> {
   try {
-    const service = cachedRAGService as: unknown as CachedRAGServiceLike;
+    const service = cachedRAGService as unknown as CachedRAGServiceLike;
     await service.warmupCacheWithLegalQueries?.();
     return json({
-      success: true,
+      success: true;
       data: {
-  message: 'Cache warmup completed successfully',
-        timestamp: new Date().toISOString()
-      } }
+  message: 'Cache warmup completed successfully', timestamp: new Date().toISOString()
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Cache warmup failed:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: getErrorMessage(error)
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+      }, { status: 500  }
+    ); } }
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
   try {
     switch (action) {
       case, 'status':
         return json({
-          success: true,
+          success: true;
           data: {
-  service: 'Cached RAG API',
-            status: 'active',
-            features: [
-              'Embedding caching with embeddinggemma',
-              'Query result caching',
-              'Response caching with gemma3:legal-latest',
-              'Batch document ingestion',
-              'Cache metrics and testing',
-              'PostgreSQL pgvector integration',
-            ],
-            timestamp: new Date().toISOString()
-          } }
+  service: 'Cached RAG API', status: 'active', features: [
+              'Embedding caching with embeddinggemma', 'Query result caching', 'Response caching with gemma3:legal-latest', 'Batch document ingestion', 'Cache metrics and testing', 'PostgreSQL pgvector integration'], timestamp: new Date().toISOString()
+           }
         });
       case, 'metrics':
         return await handleCacheMetrics();
       case, 'test': {
         // Braces added to avoid: "Unexpected lexical declaration in case block"
         const testType = url.searchParams.get('type') || 'smoke';
-        return await handleCacheTest({ type: testType }, as: unknown);
-      } }
-      default: return json({ error: 'Invalid action for GET request' }, { status: 400 });
-    } }
-  } }catch (error: any) {
+        return await handleCacheTest({ type: testType }, as unknown);
+       }
+      default: return json({ error: 'Invalid action for GET request' }, { status: 400 }); }catch (error: any) {
     console.error('Cached RAG API GET error:', error);
     return json(
       {
-        error: 'Internal server error',
-        details: getErrorMessage(error)
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Internal server error', details: getErrorMessage(error)
+      }, { status: 500  }
+    ); };
+
 

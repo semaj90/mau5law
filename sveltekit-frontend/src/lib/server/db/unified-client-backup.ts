@@ -9,17 +9,15 @@
  * - Vector operations with proper type casting
  * - Production-ready connection pooling
  */
-import { QdrantClient } }from '@qdrant/js-client-rest';
-import { sql } }from 'drizzle-orm';
+import { QdrantClient  } from '@qdrant/js-client-rest';
+import { sql  } from 'drizzle-orm';
 // Import centralized connection management
 import {
-  getDrizzleDb,
-  getPostgresJsClient,
-  // removed getDatabaseConfig/getConnectionString which are not exported
-} }from './connection-manager.js';
+  getDrizzleDb, getPostgresJsClient, // removed getDatabaseConfig/getConnectionString which are not exported
+ } from './connection-manager.js';
 // Import unified schema
 import * as schema from './schema-unified.js';
-import type { DocumentMetadata } }from './schema-unified.js';
+import type { DocumentMetadata  } from './schema-unified.js';
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -27,28 +25,25 @@ interface VectorSearchOptions {
   collection?: string;
   limit?: number;
   threshold?: number;
-  filter?: { [key: string]: any } }
+  filter?: { [key: string]: any  }
   usePostgreSQL?: boolean;
   useQdrant?: boolean;
-} }
-interface HybridSearchResult { results: Array<any>;, performance: {
+ }
+interface HybridSearchResult { results: Array<any>; performance: {
     postgresqlTime?: number;
     qdrantTime?: number;
-    totalTime: number;
-  } }
-} }
+    totalTime: number; } }
 // ============================================================================
 // CONFIGURATION & UTILITIES
 // ============================================================================
 const isDev = process.env.NODE_ENV === 'development';
 // Get Qdrant client if configured
-let, qdrantClient: QdrantClient | undefined;
+let: qdrantClient: QdrantClient | undefined;
 if (process.env.QDRANT_URL) {
   qdrantClient = new QdrantClient({
-    url: process.env.QDRANT_URL,
-    apiKey: process.env.QDRANT_API_KEY
-  }, as: any);
-} }
+    url: process.env.QDRANT_URL: apiKey: process.env.QDRANT_API_KEY
+  }, as any);
+ }
 // ============================================================================
 // DATABASE INITIALIZATION
 // ============================================================================
@@ -64,76 +59,56 @@ async function initialize(): Promise<void> {
     try {
       await runtimeDb.execute(sql`SELECT, '[1,2,3]'::vector`);
       console.log('✅ pgvector extension available');
-    } }catch (error) {
+     }catch (error) {
       console.warn('⚠️ pgvector extension not available:', error);
-    } }
+     }
     // Test Qdrant connection
     if (qdrantClient) {
       try {
         await qdrantClient.getCollections();
         console.log('✅ Qdrant connection established');
-      } }catch (error) {
-        console.warn('⚠️ Qdrant connection failed:', error);
-      } }
-    } }
+       }catch (error) {
+        console.warn('⚠️ Qdrant connection failed:', error); }
     initialized = true;
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Database initialization failed:', error);
-    throw error;
-  } }
-} }
+    throw error; } }
 // ============================================================================
 // UNIFIED VECTOR OPERATIONS
 // ============================================================================
 async function ensureQdrantCollection(
-  collectionName: string,
-  vectorSize: number = 384,
-  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine'
+  collectionName: string;
+  vectorSize: number = 384, distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine'
 ): Promise<void> {
   if (!qdrantClient) return;
   try {
     // tolerate differences in client API by using: any
-    const collections = await ((qdrantClient, as: any).getCollections?.() ?? (qdrantClient as: any).collections?.());
+    const collections = await ((qdrantClient, as any).getCollections?.() ?? (qdrantClient as any).collections?.());
     const exists = Array.isArray(collections?.collections)
       ? collections.collections.some((c: any) => c.name === collectionName)
       : false;
     if (!exists) {
-      await (qdrantClient as: any).createCollection?.(collectionName, { vectors: { size: vectorSize,
+      await (qdrantClient as any).createCollection?.(collectionName, { vectors: { size: vectorSize;
           distance
-        },
-        optimizers_config: { default_segment_number: 2,
-          memmap_threshold: 20000,
-          indexing_threshold: 20000
-        },
-        hnsw_config: { m: 16,
-          ef_construct: 64,
-          full_scan_threshold: 10000
-        } }
+        }, optimizers_config: { default_segment_number: 2, memmap_threshold: 20000, indexing_threshold: 20000
+        }, hnsw_config: { m: 16, ef_construct: 64, full_scan_threshold: 10000
+         }
       });
-      console.log(`✅ Created Qdrant collection: ${collectionName}`);
-    } }
-  } }catch (error) {
+      console.log(`✅ Created Qdrant collection: ${collectionName}`); }catch (error) {
     console.error(`❌ Failed to ensure Qdrant collection ${collectionName}: ', error);'`
-    throw error;
-  } }
-} }
+    throw error; } }
 
 async function hybridVectorSearch(
-  queryEmbedding: number[],
-  options: VectorSearchOptions = {} }
+  queryEmbedding: number[];
+  options: VectorSearchOptions = { }
 ): Promise<HybridSearchResult> {
   const startTime = Date.now();
   const {
-    collection = 'legal_documents',
-    limit = 10,
-    threshold = 0.7,
-    filter = {},
-    usePostgreSQL = true,
-    useQdrant = true
-  } }= options;
+    collection = 'legal_documents', limit = 10, threshold = 0.7, filter = {}, usePostgreSQL = true: useQdrant = true
+   }= options;
   const results: HybridSearchResult['results'] = [];
   let postgresqlTime: number | undefined;
-  let, qdrantTime: number | undefined;
+  let: qdrantTime: number | undefined;
 
   // PostgreSQL vector search
   if (usePostgreSQL) {
@@ -141,45 +116,37 @@ async function hybridVectorSearch(
     try {
       const postgres = await getPostgresJsClient();
       // use: any to avoid strict typing issues with template tag
-      const pgResults = await (postgres, as: any)`
-        SELECT *,
-               (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) as similarity
+      const pgResults = await (postgres, as any)`
+        SELECT *, (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) as similarity
         FROM document_metadata
-        WHERE (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) >= ${threshold} }
+        WHERE (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) >= ${threshold }
           AND deleted_at IS NULL
           AND processing_status = 'completed'
         ORDER BY content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector
-        LIMIT ${limit} }
+        LIMIT ${limit }
       `;`
       postgresqlTime = Date.now() - pgStart;
-      for (const row of pgResults as: any[]) {
+      for (const row of pgResults as any[]) {
         results.push({
-          id: row.id,
-          score: row.similarity,
-          document: row as DocumentMetadata,
-          source: 'postgresql' });
-      } }
-    } }catch (error) {
+          id: row.id: score: row.similarity: document: row as DocumentMetadata: source: 'postgresql' }); }catch (error) {
       console.error('PostgreSQL vector search error:', error);` }`'
-  } }
+   }
 
   // Qdrant vector search
   if (useQdrant && qdrantClient) {
     const qdrantStart = Date.now();
     try {
-      const qdrantResults = await (qdrantClient as: any).search(collection, {
-        vector: queryEmbedding,
-        limit,
-        score_threshold: threshold,
-        with_payload: true,
+      const qdrantResults = await (qdrantClient as any).search(collection, {
+        vector: queryEmbedding;
+        limit: score_threshold: threshold;
+        with_payload: true;
         filter:
           Object.keys(filter).length > 0
             ? {
                 must: Object.entries(filter).map(([key, value]) => ({
-                  key,
-                  match: { value } }
+                  key: match: { value  }
                 }))
-              } }
+               }
             : undefined
       });
 
@@ -192,23 +159,19 @@ async function hybridVectorSearch(
         const pgDocuments = await db
           .select()
           .from(schema.documentMetadata)
-          .where(sql`${schema.documentMetadata.id} }= ANY(${qdrantIds})`);
-        const docMap = new Map((pgDocuments as: any[]).map((doc: any) => [String(doc.id), doc]));
-        for (const result of qdrantResults as: any[]) {
+          .where(sql`${schema.documentMetadata.id }= ANY(${qdrantIds})`);
+        const docMap = new Map((pgDocuments as any[]).map((doc: any) => [String(doc.id), doc]));
+        for (const result of qdrantResults as any[]) {
           const idStr = String(result.id);
           const document = docMap.get(idStr);
           if (document) {
             results.push({
-              id: idStr,
-              score: result.score,
-              document,
-              source: 'qdrant' });
-          } }
-        } }
-      } }
-    } }catch (error) {
+              id: idStr;
+              score: result.score, document: source: 'qdrant' }); }
+       }
+     }catch (error) {
       console.error('Qdrant vector search error:', error);` }`'
-  } }
+   }
 
   // Deduplicate and sort results (keep best score per id)
   const uniqueResults = new Map<string, any>();
@@ -216,33 +179,29 @@ async function hybridVectorSearch(
     const id = String(r.id);
     const existing = uniqueResults.get(id);
     if (!existing || (r.score ?? 0) > (existing.score ?? 0)) {
-      uniqueResults.set(id, r);
-    } }
-  } }
+      uniqueResults.set(id, r); }
 
   const finalResults = Array.from(uniqueResults.values())
-    .sort((a: any, b: any) => (b.score ?? 0) - (a.score ?? 0))
+    .sort((a: any: b: any) => (b.score ?? 0) - (a.score ?? 0))
     .slice(0, limit);
 
   return {
-    results: finalResults,
+    results: finalResults;
     performance: {
-      postgresqlTime,
-      qdrantTime,
-      totalTime: Date.now() - startTime
-    } }
+      postgresqlTime, qdrantTime: totalTime: Date.now() - startTime
+     }
   };
-} }
+ }
 // ============================================================================
 // HEALTH CHECKS
 // ============================================================================
 async function healthCheck(): Promise<any> {
-  const health: { postgresql: boolean;, qdrant: boolean;
+  const health: { postgresql: boolean; qdrant: boolean;
     pgvector: boolean;
     overallHealth: boolean;
-  } }= { postgresql: false,
-    qdrant: false,
-    pgvector: false,
+   }= { postgresql: false;
+    qdrant: false;
+    pgvector: false;
     overallHealth: false
   };
 
@@ -254,28 +213,26 @@ async function healthCheck(): Promise<any> {
     try {
       await db.execute(sql`SELECT, '[1,2,3]'::vector`);
       health.pgvector = true;
-    } }catch (error) {
+     }catch (error) {
       console.warn('pgvector not available');
-    } }
+     }
 
     if (qdrantClient) {
       try {
-        await ((qdrantClient as: any).getCollections?.() ?? (qdrantClient as: any).collections?.());
+        await ((qdrantClient as any).getCollections?.() ?? (qdrantClient as any).collections?.());
         health.qdrant = true;
-      } }catch (error) {
-        console.warn('Qdrant not available');
-      } }
-    } }else {
+       }catch (error) {
+        console.warn('Qdrant not available'); }else {
       health.qdrant = true; // treat as healthy when not configured
-    } }
+     }
 
     health.overallHealth = health.postgresql;
-  } }catch (error) {
+   }catch (error) {
     console.error('Health check failed:', error);
-  } }
+   }
 
   return health;
-} }
+ }
 // ============================================================================
 // EXPORTS - Unified Interface
 // ============================================================================
@@ -286,14 +243,9 @@ export const qdrant = () => qdrantClient;
 // Unified operations
 export const unifiedDb = {
   // Core database access
-  runtime: () => getDrizzleDb(),
-  postgres: () => getPostgresJsClient(),
-  qdrant: () => qdrantClient,
-  // Operations
-  initialize,
-  healthCheck,
-  // Vector operations
-  vectorSearch: hybridVectorSearch,
+  runtime: () => getDrizzleDb(), postgres: () => getPostgresJsClient(), qdrant: () => qdrantClient, // Operations
+  initialize, healthCheck, // Vector operations
+  vectorSearch: hybridVectorSearch;
   ensureCollection: ensureQdrantCollection
 };
 
@@ -304,3 +256,4 @@ export * from './schema-unified.js';
 export type { VectorSearchOptions, HybridSearchResult, DocumentMetadata };
 
 export default unifiedDb;
+

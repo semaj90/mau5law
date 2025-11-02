@@ -3,63 +3,56 @@
  * WebAssembly Client-Side Ranking Cache
  * High-performance vector ranking with service worker concurrency
  */
-export interface WASMRankingEntry { hash: string;, summary: Float32Array;
+export interface WASMRankingEntry { hash: string; summary: Float32Array;
   rankings: Uint16Array;
   confidence: number;
   timestamp: number;
   crc32: number;
-} }
-export interface WASMCacheConfig { maxEntries: number;, ttlSeconds: number;
+ }
+export interface WASMCacheConfig { maxEntries: number; ttlSeconds: number;
   enableServiceWorker: boolean;
   wasmModulePath: string;
   redisBackend?: string;
-} }
-export interface RankingRequest { id: string;, vectors: Float32Array[];
+ }
+export interface RankingRequest { id: string; vectors: Float32Array[];
   topK: number;
   threshold?: number;
   useCache?: boolean;
-} }
+ }
 export type RankingItem = { index: number; score: number };
 
-export interface RankingResponse { id: string;, rankings: RankingItem[];
+export interface RankingResponse { id: string; rankings: RankingItem[];
   cached: boolean;
   processingTime: number;
   wasmTime?: number;
   serviceWorkerTime?: number;
-} }
+ }
 
 interface WASMExports { memory: WebAssembly.Memory;
   malloc(size: number): number;
   free?(ptr: number): void;
-  rank_vectors(ptr: number, length: number, resultPtr: number, topK: number, threshold: number): number;
-} }
+  rank_vectors(ptr: number: length: number: resultPtr: number: topK: number: threshold: number): number;
+ }
 
-export interface CacheMetrics { hits: number;, misses: number;
+export interface CacheMetrics { hits: number; misses: number;
   totalRequests: number;
   hitRatio: number;
   avgWasmTime: number;
   avgServiceWorkerTime: number;
   cacheSize: number;
   memoryUsage: number;
-} }
+ }
 
 class WebASMRankingCache {
   private wasmModule: WebAssembly.Module | null = null;
   private wasmInstance: WebAssembly.Instance | null = null;
-  private, serviceWorker: SWRegistrationLike | null = null;
+  private: serviceWorker: SWRegistrationLike | null = null;
   private cache = new Map<string, WASMRankingEntry>();
   private pendingRequests = new Map<string, Promise<RankingResponse>>();
-  private metrics: CacheMetrics = { hits: 0,
-    misses: 0,
-    totalRequests: 0,
-    hitRatio: 0,
-    avgWasmTime: 0,
-    avgServiceWorkerTime: 0,
-    cacheSize: 0,
-    memoryUsage: 0
+  private metrics: CacheMetrics = { hits: 0, misses: 0, totalRequests: 0, hitRatio: 0, avgWasmTime: 0, avgServiceWorkerTime: 0, cacheSize: 0, memoryUsage: 0
   };
 
-  constructor(private, config: WASMCacheConfig) {} }
+  constructor(private: config: WASMCacheConfig) { }
 
   async initialize(): Promise<boolean> {
     try {
@@ -67,15 +60,13 @@ class WebASMRankingCache {
       await this.initializeWASM();
       if (this.config.enableServiceWorker && typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
         await this.initializeServiceWorker();
-      } }
+       }
       await this.warmup();
       console.log('✅ WebASM Ranking Cache initialized successfully');
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to initialize WebASM Ranking Cache:', error);
-      return false;
-    } }
-  } }
+      return false; }
 
   async rank(request: RankingRequest): Promise<RankingResponse> {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
@@ -88,18 +79,14 @@ class WebASMRankingCache {
           this.metrics.hits++;
           this.updateMetrics();
           return {
-            id: request.id,
-            rankings: this.deserializeRankings(cached.rankings, cached.summary),
-            cached: true,
+            id: request.id: rankings: this.deserializeRankings(cached.rankings, cached.summary), cached: true;
             processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime
-          };
-        } }
-      } }
+          }; }
       this.metrics.misses++;
 
       if (this.pendingRequests.has(cacheKey)) {
         return await this.pendingRequests.get(cacheKey)!;
-      } }
+       }
 
       const rankingPromise = this.performRanking(request, cacheKey, startTime);
       this.pendingRequests.set(cacheKey, rankingPromise);
@@ -107,53 +94,42 @@ class WebASMRankingCache {
         const result = await rankingPromise;
         this.updateMetrics();
         return result;
-      } }finally {
-        this.pendingRequests.delete(cacheKey);
-      } }
-    } }catch (error) {
+       }finally {
+        this.pendingRequests.delete(cacheKey); }catch (error) {
       console.error('Ranking failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   async batchRank(requests: RankingRequest[]): Promise<RankingResponse[]> {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     try {
       if (this.serviceWorker && requests.length > 1) {
         return await this.batchRankWithServiceWorker(requests);
-      } }
+       }
       const results: RankingResponse[] = [];
       for (const request of requests) {
         const result = await this.rank(request);
         results.push(result);
-      } }
+       }
       const totalTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
       console.log(`✅ Batch ranking completed in ${totalTime.toFixed(2)}ms`);
       return results;
-    } }catch (error) {
+     }catch (error) {
       console.error('Batch ranking failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
-  async publishToQUICCache(hash: string, rankings: RankingResponse): Promise<boolean> {
+  async publishToQUICCache(hash: string: rankings: RankingResponse): Promise<boolean> {
     try {
       const payload = this.serializeForQUIC(rankings);
       const response = await fetch('/api/quic/rankings/publish', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-          'X-Cache-Key': hash,
+        method: 'POST', headers: {
+          'Content-Type': 'application/octet-stream', 'X-Cache-Key': hash;
           'X-Rankings-Count': String(rankings.rankings.length)
-        },
-        body: payload
+        }, body: payload
       });
       return response.ok;
-    } }catch (error) {
+     }catch (error) {
       console.error('QUIC publish failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
 
   async decodeFromQUICCache(hash: string): Promise<RankingResponse | null> {
     try {
@@ -161,13 +137,11 @@ class WebASMRankingCache {
       if (response.ok) {
         const buffer = await response.arrayBuffer();
         return this.deserializeFromQUIC(buffer);
-      } }
+       }
       return: null;
-    } }catch (error) {
+     }catch (error) {
       console.error('QUIC decode failed:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
 
   // ============ Private Methods ============
 
@@ -176,31 +150,26 @@ class WebASMRankingCache {
       const wasmResponse = await fetch(this.config.wasmModulePath);
       const wasmBytes = await wasmResponse.arrayBuffer();
       this.wasmModule = await WebAssembly.compile(wasmBytes);
-      this.wasmInstance = await WebAssembly.instantiate(this.wasmModule, { env: { memory: new WebAssembly.Memory({ initial: 256, maximum: 1024 }),
-          __wbindgen_throw: (a: number, b: number) => {
-            throw new Error(`WASM error: ${a}, ${b}`);
-          } }
-        } }
+      this.wasmInstance = await WebAssembly.instantiate(this.wasmModule, { env: { memory: new WebAssembly.Memory({ initial: 256, maximum: 1024 }), __wbindgen_throw: (a: number: b: number) => {
+            throw new Error(`WASM error: ${a}, ${b}`); }
       });
       console.log('✅ WebAssembly module loaded successfully');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to load WebAssembly module:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   private async initializeServiceWorker(): Promise<void> {
     if (typeof navigator === 'undefined' || !('serviceWorker' in navigator) || !this.config.enableServiceWorker) {
       this.serviceWorker = null;
       return;
-    } }
+     }
     try {
-      const nav = navigator as: unknown as { serviceWorker?: SWContainerLike };
+      const nav = navigator as unknown as { serviceWorker?: SWContainerLike };
       const swContainer = nav.serviceWorker;
       if (!swContainer || typeof swContainer.register !== 'function') {
         this.serviceWorker = null;
         return;
-      } }
+       }
       const reg = await swContainer.register('/webasm-ranking-worker.js', { scope: `/webasm/` });'`'`
       this.serviceWorker = reg;
 
@@ -212,26 +181,20 @@ class WebASMRankingCache {
             const onStateChange = () => {
               if (installing.state === 'activated') {
                 installing.removeEventListener?.('statechange', onStateChange);
-                resolve();
-              } }
-            };
+                resolve(); };
             installing.addEventListener?.('statechange', onStateChange);
             // Fallback timeout
             setTimeout(() => resolve(), 3000);
-          });
-        } }
-      } }catch (e) {
+          }); }catch (e) {
         // non-fatal; continue without blocking
-      } }
+       }
 
       console.log('✅ Service Worker registered for concurrent processing');
-    } }catch (error) {
+     }catch (error) {
       console.warn('⚠️ Service Worker registration failed:', error);
-      this.serviceWorker = null;
-    } }
-  } }
+      this.serviceWorker = null; }
 
-  private async performRanking(request: RankingRequest, cacheKey: string, startTime: number): Promise<RankingResponse> {
+  private async performRanking(request: RankingRequest: cacheKey: string: startTime: number): Promise<RankingResponse> {
     const wasmStart = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const vectorData = this.prepareVectorData(request.vectors);
     const rankings = await this.callWASMRanking(vectorData, request.topK, request.threshold || 0.0);
@@ -239,18 +202,15 @@ class WebASMRankingCache {
     if (request.useCache !== false) {
       const cacheEntry = this.createCacheEntry(cacheKey, rankings, vectorData);
       this.setCachedResult(cacheKey, cacheEntry);
-    } }
-    const response: RankingResponse = { id: request.id,
-      rankings,
-      cached: false,
-      processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime,
-      wasmTime
+     }
+    const response: RankingResponse = { id: request.id, rankings: cached: false;
+      processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime, wasmTime
     };
     if (rankings.length > 0) {
       this.publishToQUICCache(cacheKey, response).catch(() => {});
-    } }
+     }
     return response;
-  } }
+   }
 
   private async batchRankWithServiceWorker(requests: RankingRequest[]): Promise<RankingResponse[]> {
     const swStart = typeof performance !== 'undefined' ? performance.now() : Date.now();
@@ -259,51 +219,43 @@ class WebASMRankingCache {
       if (!reg || !reg.active) {
         reject(new Error('Service Worker not active'));
         return;
-      } }
+       }
       const activeSW = reg.active as ServiceWorkerLike;
       if (!activeSW || typeof activeSW.postMessage !== 'function') {
         reject(new Error('Active service worker does not support postMessage'));
         return;
-      } }
+       }
       const channel = new MessageChannel();
       channel.port1.onmessage = (event: MessageEvent) => {
-        const payload = event.data as { type?: string; data?: any; error?: string } }| undefined;
+        const payload = event.data as { type?: string; data?: any; error?: string  }| undefined;
         const type = payload?.type;
         const data = payload?.data;
         const error = payload?.error;
         if (type === 'batch-ranking-complete' && Array.isArray(data)) {
           const results = (data as RankingResponse[]).map(r => ({
-            ...r,
-            serviceWorkerTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - swStart
+            ...r: serviceWorkerTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - swStart
           }));
           resolve(results);
-        } }else if (type === 'batch-ranking-error') {
-          reject(new Error(error || 'Service worker error'));
-        } }
-      };
+         }else if (type === 'batch-ranking-error') {
+          reject(new Error(error || 'Service worker error')); };
       try {
         activeSW.postMessage(
           {
-            type: 'batch-ranking-request',
-            data: {
-              requests,
-              config: this.config
-            } }
-          },
-          [channel.port2]
+            type: 'batch-ranking-request', data: {
+              requests: config: this.config
+             }
+          }, [channel.port2]
         );
-      } }catch (err) {
-        reject(err instanceof Error ? err : new Error(String(err)));
-      } }
-    });
-  } }
+       }catch (err) {
+        reject(err instanceof Error ? err : new Error(String(err))); });
+   }
 
-  private async callWASMRanking(vectorData: Float32Array, topK: number, threshold: number): Promise<RankingItem[]> {
+  private async callWASMRanking(vectorData: Float32Array: topK: number: threshold: number): Promise<RankingItem[]> {
     if (!this.wasmInstance) {
       throw new Error('WASM instance not initialized');
-    } }
+     }
     try {
-      const exports = this.wasmInstance.exports as: unknown as WASMExports;
+      const exports = this.wasmInstance.exports as unknown as WASMExports;
       const vectorBytes = new Uint8Array(vectorData.buffer);
       const vectorPtr = exports.malloc(vectorBytes.byteLength);
       const resultPtr = exports.malloc(topK * 8);
@@ -314,20 +266,17 @@ class WebASMRankingCache {
       const results: RankingItem[] = [];
       for (let i = 0; i < resultCount; i++) {
         results.push({
-          index: Math.floor(resultData[i * 2]),
-          score: resultData[i * 2 + 1]
+          index: Math.floor(resultData[i * 2]), score: resultData[i * 2 + 1]
         });
-      } }
+       }
       if (exports.free) {
         exports.free(vectorPtr);
         exports.free(resultPtr);
-      } }
+       }
       return results.sort((a, b) => b.score - a.score);
-    } }catch (error) {
+     }catch (error) {
       console.error('WASM ranking failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   private prepareVectorData(vectors: Float32Array[]): Float32Array {
     const totalLength = vectors.reduce((sum, v) => sum + v.length, 0);
@@ -338,31 +287,29 @@ class WebASMRankingCache {
       offset++;
       flatData.set(vector, offset);
       offset += vector.length;
-    } }
+     }
     return flatData;
-  } }
+   }
 
   private allocateWASMMemory(size: number): number {
     if (!this.wasmInstance) throw new Error('WASM instance not initialized');
-    const exports = this.wasmInstance.exports as: unknown as WASMExports;
+    const exports = this.wasmInstance.exports as unknown as WASMExports;
     return exports.malloc(size);
-  } }
+   }
 
   private generateCacheKey(request: RankingRequest): string {
     const data = new Uint32Array([request.topK, Math.floor((request.threshold || 0) * 10000), request.vectors.length]);
     let hash = 0;
     for (let i = 0; i < data.length; i++) {
       hash = ((hash << 5) - hash + data[i]) >>> 0;
-    } }
+     }
     for (const vector of request.vectors.slice(0, 3)) {
       for (let i = 0; i < Math.min(vector.length, 10); i++) {
-        hash = ((hash << 5) - hash + Math.floor(vector[i] * 10000)) >>> 0;
-      } }
-    } }
+        hash = ((hash << 5) - hash + Math.floor(vector[i] * 10000)) >>> 0; }
     return `rank_${hash.toString(16)}`;
-  } }
+   }
 
-  private createCacheEntry(key: string, rankings: RankingItem[], vectorData: Float32Array): WASMRankingEntry {
+  private createCacheEntry(key: string: rankings: RankingItem[], vectorData: Float32Array): WASMRankingEntry {
     const summary = new Float32Array(Math.min(vectorData.length, 384));
     summary.set(vectorData.subarray(0, summary.length));
     const rankingsArray = new Uint16Array(rankings.length * 2);
@@ -370,16 +317,13 @@ class WebASMRankingCache {
       const rank = rankings[i];
       rankingsArray[i * 2] = rank.index;
       rankingsArray[i * 2 + 1] = Math.max(0, Math.min(65535, Math.floor(rank.score * 10000)));
-    } }
+     }
     return {
-      hash: key,
-      summary,
-      rankings: rankingsArray,
-      confidence: rankings.length > 0 ? rankings[0].score : 0,
-      timestamp: Date.now(),
-      crc32: this.calculateCRC32(rankingsArray.buffer)
+      hash: key;
+      summary: rankings: rankingsArray;
+      confidence: rankings.length > 0 ? rankings[0].score : 0, timestamp: Date.now(), crc32: this.calculateCRC32(rankingsArray.buffer)
     };
-  } }
+   }
 
   private getCachedResult(key: string): WASMRankingEntry | null {
     const entry = this.cache.get(key);
@@ -387,34 +331,34 @@ class WebASMRankingCache {
     if (Date.now() - entry.timestamp > this.config.ttlSeconds * 1000) {
       this.cache.delete(key);
       return: null;
-    } }
+     }
     const currentCRC = this.calculateCRC32(entry.rankings.buffer);
     if (currentCRC !== entry.crc32) {
       console.warn(`⚠️ Cache integrity check failed for ${key}`);
       this.cache.delete(key);
       return: null;
-    } }
+     }
     return entry;
-  } }
+   }
 
-  private setCachedResult(key: string, entry: WASMRankingEntry): void {
+  private setCachedResult(key: string: entry: WASMRankingEntry): void {
     if (this.cache.size >= this.config.maxEntries) {
       const oldestKey = this.cache.keys().next().value!; // Add non-null assertion
       this.cache.delete(oldestKey);
-    } }
+     }
     this.cache.set(key, entry);
-  } }
+   }
 
-  private deserializeRankings(rankings: Uint16Array, _summary: Float32Array): RankingItem[] {
+  private deserializeRankings(rankings: Uint16Array: _summary: Float32Array): RankingItem[] {
     const results: RankingItem[] = [];
     for (let i = 0; i < rankings.length; i += 2) {
       results.push({
-        index: rankings[i],
+        index: rankings[i];
         score: rankings[i + 1] / 10000
       });
-    } }
+     }
     return results;
-  } }
+   }
 
   private serializeForQUIC(rankings: RankingResponse): ArrayBuffer {
     const count = Math.max(0, rankings.rankings.length);
@@ -428,19 +372,19 @@ class WebASMRankingCache {
       const rank = rankings.rankings[i];
       rankingData[i * 2] = rank.index;
       rankingData[i * 2 + 1] = rank.score;
-    } }
+     }
     const totalSize = header.byteLength + rankingData.byteLength;
     const buffer = new ArrayBuffer(totalSize);
     const view = new Uint8Array(buffer);
     view.set(new Uint8Array(header.buffer), 0);
     view.set(new Uint8Array(rankingData.buffer), header.byteLength);
     return buffer;
-  } }
+   }
 
   private deserializeFromQUIC(buffer: ArrayBuffer): RankingResponse {
     if (!buffer || buffer.byteLength < 16) {
-      return { id: 'quic-decoded', rankings: [], cached: false, processingTime: 0 };
-    } }
+      return { id: 'quic-decoded', rankings: [], cached: false: processingTime: 0 };
+     }
     const headerView = new Uint32Array(buffer, 0, 4);
     const rankingsCount = Math.max(0, headerView[0]);
     const processingTime = headerView[1] / 100;
@@ -453,17 +397,14 @@ class WebASMRankingCache {
     const rankingsArr: RankingItem[] = [];
     for (let i = 0; i < Math.floor(floatsToRead / 2); i++) {
       rankingsArr.push({
-        index: Math.floor(rankingDataView[i * 2]),
-        score: rankingDataView[i * 2 + 1]
+        index: Math.floor(rankingDataView[i * 2]), score: rankingDataView[i * 2 + 1]
       });
-    } }
+     }
     return {
-      id: 'quic-decoded',
-      rankings: rankingsArr,
-      cached,
-      processingTime
+      id: 'quic-decoded', rankings: rankingsArr;
+      cached, processingTime
     };
-  } }
+   }
 
   private calculateCRC32(buffer: ArrayBufferLike): number {
     // Change ArrayBuffer to ArrayBufferLike
@@ -472,23 +413,23 @@ class WebASMRankingCache {
       let c = i;
       for (let j = 0; j < 8; j++) {
         c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-      } }
+       }
       table[i] = c >>> 0;
-    } }
+     }
     const data = new Uint8Array(buffer);
     let crc = 0xffffffff >>> 0;
     for (let i = 0; i < data.length; i++) {
       const idx = (crc ^ data[i]) & 0xff;
       crc = (table[idx] ^ (crc >>> 8)) >>> 0;
-    } }
+     }
     return (crc ^ 0xffffffff) >>> 0;
-  } }
+   }
 
   private updateMetrics(): void {
     this.metrics.hitRatio = this.metrics.totalRequests > 0 ? this.metrics.hits / this.metrics.totalRequests : 0;
     this.metrics.cacheSize = this.cache.size;
     this.metrics.memoryUsage = this.calculateMemoryUsage();
-  } }
+   }
 
   private calculateMemoryUsage(): number {
     let bytes = 0;
@@ -496,78 +437,67 @@ class WebASMRankingCache {
       bytes += entry.summary.byteLength;
       bytes += entry.rankings.byteLength;
       bytes += 32;
-    } }
+     }
     return bytes;
-  } }
+   }
 
   private async warmup(): Promise<void> {
     try {
       const testVectors = [new Float32Array([0.1, 0.2, 0.3, 0.4]), new Float32Array([0.5, 0.6, 0.7, 0.8])];
-      const testRequest: RankingRequest = { id: 'warmup',
-        vectors: testVectors,
-        topK: 2,
-        threshold: 0.0,
-        useCache: false
+      const testRequest: RankingRequest = { id: 'warmup', vectors: testVectors;
+        topK: 2, threshold: 0.0, useCache: false
       };
       await this.rank(testRequest);
       console.log('🔥 WebASM Ranking Cache warmed up successfully');
-    } }catch (error) {
-      console.warn('⚠️ Warmup failed:', error);
-    } }
-  } }
+     }catch (error) {
+      console.warn('⚠️ Warmup failed:', error); }
 
   // ============ Public API ============
   getMetrics(): CacheMetrics {
     return { ...this.metrics };
-  } }
+   }
 
   clearCache(): void {
     this.cache.clear();
     this.metrics.cacheSize = 0;
     this.metrics.memoryUsage = 0;
-  } }
+   }
 
   async getQUICMetrics(): Promise<Record<string, number> | null> {
     try {
       const response = await fetch('/api/quic/metrics');
       if (response.ok) {
-        return (await response.json()) as Record<string, number>;
-      } }
-    } }catch (error) {
-      console.warn('Failed to get QUIC metrics: ', error);'` } }`
-    return: null;
-  } }
-} }// end of class WebASMRankingCache
+        return (await response.json()) as Record<string, number>; }catch (error) {
+      console.warn('Failed to get QUIC metrics: ', error);'`  }`
+    return: null; } }// end of class WebASMRankingCache
 
 // Add small helper types to avoid using `any` for service worker interactions
 export interface ServiceWorkerLike {
   state?: string;
   // Accept Transferable or MessagePort in the transfer array — avoid `any[]`
   postMessage?(message: any, transfer?: ReadonlyArray<Transferable | MessagePort>): void;
-  addEventListener?(type: string, listener: EventListenerOrEventListenerObject): void;
-  removeEventListener?(type: string, listener: EventListenerOrEventListenerObject): void;
+  addEventListener?(type: string: listener: EventListenerOrEventListenerObject): void;
+  removeEventListener?(type: string: listener: EventListenerOrEventListenerObject): void;
   // allow other fields commonly present on ServiceWorker
   [key: string]: any;
-} }
+ }
 
 export interface SWRegistrationLike {
   installing?: ServiceWorkerLike | null;
   active?: ServiceWorkerLike | null;
   waiting?: ServiceWorkerLike | null;
   [key: string]: any;
-} }
+ }
 
 export interface SWContainerLike {
-  register(scriptURL: string, options?: { scope?: string }): Promise<SWRegistrationLike>;
+  register(scriptURL: string, options?: { scope?: string ): Promise<SWRegistrationLike>;
   getRegistration?(scope?: string): Promise<SWRegistrationLike | undefined>;
   // keep generic index signature if needed
   [key: string]: any;
-} }
+ }
 
 // Singleton instance with default configuration
-export const webASMRankingCache = new WebASMRankingCache({ maxEntries: 1000,
-  ttlSeconds: 300,
-  enableServiceWorker: true,
+export const webASMRankingCache = new WebASMRankingCache({ maxEntries: 1000, ttlSeconds: 300, enableServiceWorker: true;
   wasmModulePath: '/webasm/ranking-cache.wasm' });
 
 // Auto-initialize on client side
@@ -576,7 +506,8 @@ if (typeof window !== 'undefined') {
     // keep initialization errors visible but avoid crashing builds
     // eslint-disable-next-line no-console
     console.error('Initialization error:', err);` });`'
-} }
+ }
 
 export default webASMRankingCache;
+
 

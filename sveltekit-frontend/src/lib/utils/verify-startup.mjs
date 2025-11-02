@@ -17,34 +17,27 @@ console.log('🚀 YoRHa Legal AI Platform - Startup Verification\n');
 
 // Color codes for output
 const colors = {
-  green: '\x1b[32m',
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  reset: '\x1b[0m',
-  bold: '\x1b[1m'
+  green: '\x1b[32m', red: '\x1b[31m', yellow: '\x1b[33m', blue: '\x1b[34m', reset: '\x1b[0m', bold: '\x1b[1m'
 };
 
-function log(message, color = 'reset') {
+function log(message: color = 'reset') {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
-function checkService(name, host, port, protocol = 'http') {
+function checkService(name, host, port: protocol = 'http') {
   return new Promise((resolve) => {
     try {
       if (protocol === 'tcp') {
         // For TCP services like PostgreSQL and Redis
-        execSync(`powershell -Command "Test-NetConnection -ComputerName ${host} -Port ${port} -InformationLevel Quiet"`, 
-          { stdio: 'pipe', timeout: 5000 });
-        resolve({ name, status: 'online', host, port });
+        execSync(`powershell -Command "Test-NetConnection -ComputerName ${host} -Port ${port} -InformationLevel Quiet"`, { stdio: 'pipe', timeout: 5000 });
+        resolve({ name: status: 'online', host, port });
       } else {
         // For HTTP services
-        execSync(`curl -s --max-time 5 ${protocol}://${host}:${port} > nul 2>&1`, 
-          { stdio: 'pipe', timeout: 5000 });
-        resolve({ name, status: 'online', host, port });
+        execSync(`curl -s --max-time 5 ${protocol}://${host}:${port} > nul 2>&1`, { stdio: 'pipe', timeout: 5000 });
+        resolve({ name: status: 'online', host, port });
       }
     } catch (error) {
-      resolve({ name, status: 'offline', host, port, error: error.message });
+      resolve({ name: status: 'offline', host, port: error: error.message });
     }
   });
 }
@@ -57,11 +50,7 @@ async function verifyEnvironment() {
     const envContent = readFileSync(envPath, 'utf8');
     
     const requiredVars = [
-      'DATABASE_URL',
-      'POSTGRES_USER', 
-      'POSTGRES_PASSWORD',
-      'MINIO_HOST',
-      'REDIS_URL'
+      'DATABASE_URL', 'POSTGRES_USER', 'POSTGRES_PASSWORD', 'MINIO_HOST', 'REDIS_URL'
     ];
     
     const envLines = envContent.split('\n');
@@ -101,12 +90,7 @@ async function verifyServices() {
   log('\n🔍 Service Connectivity Check', 'blue');
   
   const services = [
-    { name: 'PostgreSQL', host: 'localhost', port: 5432, protocol: 'tcp' },
-    { name: 'Redis', host: 'localhost', port: 6379, protocol: 'tcp' },
-    { name: 'MinIO', host: 'localhost', port: 9000, protocol: 'http' },
-    { name: 'Ollama', host: 'localhost', port: 11434, protocol: 'http' },
-    { name: 'Qdrant', host: 'localhost', port: 6333, protocol: 'http' },
-    { name: 'Neo4j', host: 'localhost', port: 7474, protocol: 'http' }
+    { name: 'PostgreSQL', host: 'localhost', port: 5432, protocol: 'tcp' }, { name: 'Redis', host: 'localhost', port: 6379, protocol: 'tcp' }, { name: 'MinIO', host: 'localhost', port: 9000, protocol: 'http' }, { name: 'Ollama', host: 'localhost', port: 11434, protocol: 'http' }, { name: 'Qdrant', host: 'localhost', port: 6333, protocol: 'http' }, { name: 'Neo4j', host: 'localhost', port: 7474, protocol: 'http' }
   ];
   
   const results = await Promise.all(
@@ -124,7 +108,7 @@ async function verifyServices() {
   });
   
   log(`\n📊 Service Status: ${onlineCount}/${results.length} services online`);
-  return { online: onlineCount, total: results.length, results };
+  return { online: onlineCount: total: results.length, results };
 }
 
 async function verifyBuild() {
@@ -157,8 +141,7 @@ async function testDatabaseConnection() {
   try {
     // Try to connect to PostgreSQL using psql
     const testQuery = 'SELECT version(), current_database(), current_user';
-    const result = execSync(`psql postgresql://postgres:123456@localhost:5432/legal_ai_db -c "${testQuery}" -t`, 
-      { encoding: 'utf8', timeout: 10000 });
+    const result = execSync(`psql postgresql://postgres:123456@localhost:5432/legal_ai_db -c "${testQuery}" -t`, { encoding: 'utf8', timeout: 10000 });
     
     log('  ✅ PostgreSQL connection successful', 'green');
     log('  📋 Database info:', 'blue');
@@ -172,8 +155,7 @@ async function testDatabaseConnection() {
     
     // Test pgvector extension
     try {
-      const vectorCheck = execSync(`psql postgresql://postgres:123456@localhost:5432/legal_ai_db -c "SELECT EXISTS(SELECT 1 FROM pg_extension WHERE extname = 'vector') as pgvector_installed" -t`, 
-        { encoding: 'utf8', timeout: 5000 });
+      const vectorCheck = execSync(`psql postgresql://postgres:123456@localhost:5432/legal_ai_db -c "SELECT EXISTS(SELECT 1 FROM pg_extension WHERE extname = 'vector') as pgvector_installed" -t`, { encoding: 'utf8', timeout: 5000 });
       
       const hasVector = vectorCheck.trim().includes('t');
       if (hasVector) {
@@ -206,10 +188,7 @@ async function generateStartupReport() {
   log('\n📊 Overall System Status:', 'bold');
   
   const checks = [
-    { name: 'Environment Configuration', status: envOk },
-    { name: 'Build System', status: buildOk },
-    { name: 'Database Connection', status: dbOk },
-    { name: 'Core Services', status: serviceStatus.online >= 3 } // At least 3 services
+    { name: 'Environment Configuration', status: envOk }, { name: 'Build System', status: buildOk }, { name: 'Database Connection', status: dbOk }, { name: 'Core Services', status: serviceStatus.online >= 3 } // At least 3 services
   ];
   
   let passedChecks = 0;

@@ -5,9 +5,7 @@ async function testSimple() {
     console.log('🔗 Simple Qdrant test...');
     
     const client = new QdrantClient({ 
-        host: 'localhost',
-        port: 6333,
-        protocol: 'http'
+        host: 'localhost', port: 6333, protocol: 'http'
     });
 
     try {
@@ -25,8 +23,7 @@ async function testSimple() {
         console.log('Creating simple collection...');
         await client.createCollection(testCollection, {
             vectors: {
-                size: 384,
-                distance: 'Cosine'  
+                size: 384, distance: 'Cosine'  
             }
         });
         console.log('✅ Collection created');
@@ -34,24 +31,21 @@ async function testSimple() {
         // Test with minimal document
         console.log('Adding simple document...');
         const simpleDoc = {
-            id: 1,
-            vector: new Array(384).fill(0.1), // Simple non-random vector
+            id: 1, vector: new Array(384).fill(0.1), // Simple non-random vector
             payload: {
-                text: 'Hello world',
-                category: 'test'
+                text: 'Hello world', category: 'test'
             }
         };
 
         await client.upsert(testCollection, {
-            wait: true,
+            wait: true;
             points: [simpleDoc]
         });
         console.log('✅ Document added successfully!');
 
         // Verify the document
         const points = await client.scroll(testCollection, {
-            limit: 10,
-            with_payload: true,
+            limit: 10, with_payload: true;
             with_vector: false
         });
         

@@ -1,6 +1,6 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { db, testConnection } }from '$lib/server/db/client';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { db, testConnection  } from '$lib/server/db/client';
 
 export const GET: RequestHandler = async () => {
   try {
@@ -8,7 +8,7 @@ export const GET: RequestHandler = async () => {
     const isHealthy = await testConnection();
     if (!isHealthy) {
       return json({ error: 'Database connection failed', healthy: false }, { status: 503 });
-    } }
+     }
 
     // Try a simple query to verify schema access
     const result = await db.execute(
@@ -19,23 +19,17 @@ export const GET: RequestHandler = async () => {
 
     return json(
       {
-        healthy: true,
-        database: row?.current_database ?? 'unknown',
-        version: row?.version ?? 'unknown',
-        timestamp: row?.current_timestamp ?? new Date().toISOString(),
-        message: 'PostgreSQL connection successful` },'`
-      { status: 200 } }
+        healthy: true;
+        database: row?.current_database ?? 'unknown', version: row?.version ?? 'unknown', timestamp: row?.current_timestamp ?? new Date().toISOString(), message: 'PostgreSQL connection successful` },'`
+      { status: 200  }
     );
-  } }catch (error) {
+   }catch (error) {
     console.error('Database health check error:', error);
     return json(
       {
-        error: 'Database health check failed',
-        healthy: false,
+        error: 'Database health check failed', healthy: false;
         details: error instanceof Error ? error.message : String(error)
-      },
-      { status: 503 } }
-    );
-  } }
-};
+      }, { status: 503  }
+    ); };
+
 

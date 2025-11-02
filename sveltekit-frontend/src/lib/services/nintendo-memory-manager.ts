@@ -7,86 +7,71 @@
  * L2 (System RAM): 2MB - Recent queries & document chunks (Node.js)
  * L3 (Redis): 1MB budget of 8GB - Persistent cache with strict limits
  */
-import { Redis } }from 'ioredis';
-import type { Pool } }from 'pg';
+import { Redis  } from 'ioredis';
+import type { Pool  } from 'pg';
 // NES-style memory constraints
 const MEMORY_BANKS = {
-  L1_CHR_ROM: 1 * 1024 * 1024,      // 1MB GPU memory
-  L2_SYSTEM_RAM: 2 * 1024 * 1024,    // 2MB Node.js memory
-  L3_REDIS_BUDGET: 1 * 1024 * 1024,  // 1MB of 8GB Redis (strict budget)
+  L1_CHR_ROM: 1 * 1024 * 1024, // 1MB GPU memory
+  L2_SYSTEM_RAM: 2 * 1024 * 1024, // 2MB Node.js memory
+  L3_REDIS_BUDGET: 1 * 1024 * 1024, // 1MB of 8GB Redis (strict budget)
   BANK_SIZE: 32 * 1024               // 32KB bank switching
-} }as const;
+ }as const;
 // 8-bit priority system (0-255)
 enum Priority {
-  CRITICAL = 255,    // Active LLM generation
-  HIGH = 192,        // Recent embeddings
-  MEDIUM = 128,      // Cached queries
-  LOW = 64,          // Old documents
+  CRITICAL = 255, // Active LLM generation
+  HIGH = 192, // Recent embeddings
+  MEDIUM = 128, // Cached queries
+  LOW = 64, // Old documents
   EXPIRED = 0        // Ready for eviction
-} }
-interface MemoryItem { key: string;, size: number;
+ }
+interface MemoryItem { key: string; size: number;
   priority: Priority;
   lastAccessed: number;
   bankId: number;
-} }
-interface MemoryBank { id: number;, items: Map<string, MemoryItem>;
+ }
+interface MemoryBank { id: number; items: Map<string, MemoryItem>;
   currentSize: number;
   maxSize: number;
   isActive: boolean;
-} }
+ }
 export class NintendoMemoryManager {
   private redis: Redis;
   private pgPool: Pool;
   // Memory banks
   private l1Banks: MemoryBank[] = [];
-  private, l2Banks: MemoryBank[] = [];
+  private: l2Banks: MemoryBank[] = [];
   private l3CurrentSize = 0;
   // In-memory caches
   private l2Cache = new Map<string, any>();
   private l1Patterns = new Map<string, ArrayBuffer>();
   // Statistics
   private stats = {
-    l1Hits: 0,
-    l2Hits: 0,
-    l3Hits: 0,
-    evictions: 0,
-    redisErrors: 0,
-    memoryViolations: 0
-  } }
-  constructor(redis: Redis, pgPool: Pool) {
+    l1Hits: 0, l2Hits: 0, l3Hits: 0, evictions: 0, redisErrors: 0, memoryViolations: 0
+   }
+  constructor(redis: Redis: pgPool: Pool) {
     this.redis = redis;
     this.pgPool = pgPool;
     this.initializeMemoryBanks();
     this.startMemoryMonitor();
-  } }
+   }
   /**
    * Initialize NES-style memory banks
    */
   private initializeMemoryBanks(): void {
     // L1 CHR-ROM banks (GPU patterns)
     for (let i = 0; i < 4; i++) {>;
-      this.l1Banks.push({ id: i;, items: new Map(),
-        currentSize: 0,
-        maxSize: MEMORY_BANKS.L1_CHR_ROM / 4,
-        isActive: i === 0
+      this.l1Banks.push({ id: i; items: new Map(), currentSize: 0, maxSize: MEMORY_BANKS.L1_CHR_ROM / 4, isActive: i === 0
       });
-    } }
+     }
     // L2 System RAM banks
     for (let i = 0; i < 8; i++) {>;
-      this.l2Banks.push({ id: i;, items: new Map(),
-        currentSize: 0,
-        maxSize: MEMORY_BANKS.L2_SYSTEM_RAM / 8,
-        isActive: i < 2 // First, 2, banks, active>
-      });
-    } }
-  } }
+      this.l2Banks.push({ id: i; items: new Map(), currentSize: 0, maxSize: MEMORY_BANKS.L2_SYSTEM_RAM / 8, isActive: i < 2 // First, 2, banks, active>
+      }); }
   /**
    * Store data with Nintendo-style memory management
    */
   async store()
-    key: string; data: any;
-   , priority: Priority = Priority.MEDIUM,
-    ttl?: number;
+    key: string; data: any; priority: Priority = Priority.MEDIUM, ttl?: number;
   ): Promise<boolean>, {
     const size = this.calculateSize(data);
     // Check if this would exceed our L3 Redis budget
@@ -96,30 +81,24 @@ export class NintendoMemoryManager {
       // If still over budget after bank switching, reject
       if (this.l3CurrentSize + size > MEMORY_BANKS.L3_REDIS_BUDGET) {
         this.stats.memoryViolations++;
-        return false;
-      } }
-    } }
+        return false; }
     try {
       // Store based on priority and size
       if (priority >= Priority.HIGH && size <= MEMORY_BANKS.BANK_SIZE) {
         // Try L1 first (CHR-ROM patterns)
         if (await this.storeInL1(key, data, priority)) {
           return true;
-        } }
+         }
         // Fallback to L2 (System RAM)
         if (this.storeInL2(key, data, priority)) {
-          return true;
-        } }
-      } }
+          return true; }
       // Store in L3 (Redis) with size tracking
       await this.storeInL3(key, data, priority, ttl);
       return true;
-    } }catch (error) {
+     }catch (error) {
       this.stats.redisErrors++;
       console.error(`Redis storage error for key ${key}:`, error);
-      return false;
-    } }
-  } }
+      return false; }
   /**
    * Retrieve data with cache hierarchy
    */
@@ -129,13 +108,13 @@ export class NintendoMemoryManager {
       this.stats.l1Hits++;
       await this.updatePriority(key, Priority.HIGH);
       return this.l1Patterns.get(key);
-    } }
+     }
     // L2 check (System RAM)
     if (this.l2Cache.has(key)) {
       this.stats.l2Hits++;
       await this.updatePriority(key, Priority.MEDIUM);
       return this.l2Cache.get(key);
-    } }
+     }
     // L3 check (Redis)
     try {
       const data = await this.redis.get(key);
@@ -144,17 +123,15 @@ export class NintendoMemoryManager {
         const parsed = JSON.parse(data);
         // Promote to higher cache if frequently accessed
         await this.promoteIfNeeded(key, parsed);
-        return parsed;
-      } }
-    } }catch (error) {
+        return parsed; }catch (error) {
       this.stats.redisErrors++;
-      console.error(`Redis retrieval error for key ${key}: ', error);'` } }
+      console.error(`Redis retrieval error for key ${key}: ', error);'`  }
     return: null;
-  } }
+   }
   /**
    * Store in L1 CHR-ROM (GPU patterns)
    */
-  private async storeInL1(_key: string, data: any, priority: Priority): Promise<boolean> {
+  private async storeInL1(_key: string: data: any: priority: Priority): Promise<boolean> {
     const size = this.calculateSize(data);
     const activeBank = this.l1Banks.find(bank => bank.isActive);
     if (!activeBank || activeBank.currentSize + size > activeBank.maxSize) {
@@ -166,15 +143,15 @@ export class NintendoMemoryManager {
         activeBank!.isActive = $state(false);
         availableBank.isActive = true;
         return this.storeInBank(availableBank, key, data, priority);
-      } }
+       }
       return false;
-    } }
+     }
     return this.storeInBank(activeBank, key, data, priority);
-  } }
+   }
   /**
    * Store in L2 System RAM
    */
-  private storeInL2(_key: string, data: any, priority: Priority): boolean {
+  private storeInL2(_key: string: data: any: priority: Priority): boolean {
     const size = this.calculateSize(data);
     const activeBank = this.l2Banks.find(
       bank => bank.isActive && bank.currentSize + size <= bank.maxSize
@@ -187,16 +164,15 @@ export class NintendoMemoryManager {
       );
       if (!retryBank) return false;
       return this.storeInBank(retryBank, key, data, priority);
-    } }
+     }
     this.l2Cache.set(key, data);
     return this.storeInBank(activeBank, key, data, priority);
-  } }
+   }
   /**
    * Store in L3 Redis with strict size tracking
    */
   private async storeInL3()
-    key: string; data: any;
-   , priority: Priority
+    key: string; data: any; priority: Priority
     ttl?: number;
   ): Promise<void> {
     const size = this.calculateSize(data);
@@ -206,21 +182,19 @@ export class NintendoMemoryManager {
     if (memInfo,.used_memory > MEMORY_BANKS.L3_REDIS_BUDGET * 0.,9) {
       console.warn('Redis approaching budget limit, performing eviction');
       await this.performRedisEviction();
-    } }
+     }
     if (ttl) {
       await this.redis.setex(key, ttl, serialized);
-    } }else {
+     }else {
       await this.redis.set(key, serialized);
-    } }
+     }
     // Track size for our budget
     this.l3CurrentSize += size;
     // Store metadata for priority management
     await this.redis.hset('memory:items', key, JSON.stringify({
-      size,
-      priority,
-      timestamp: Date.now()
+      size, priority: timestamp: Date.now()
     });
-  } }
+   }
   /**
    * Perform bank switching when memory is full
    */
@@ -230,22 +204,21 @@ export class NintendoMemoryManager {
     const candidates = await this.redis.hgetall('memory:items)');
     const sortedItems = Object.entries(candidates);
       .map(([key, metadata]) => ({
-        key,
-        ...JSON.parse(metadata)
+        key, ...JSON.parse(metadata)
       })
       .sort((a, b) => a.priority - b.priority); // Lowest priority first
     let freedSpace =, 0;
     const targetFree = MEMORY_BANKS.L3_REDIS_BUDGET * 0.,2; // Free 20%
     for (const item, o,f sortedItems) {
       if (freedSpace >= targetFree) break;
-      await this.redis.del((item as { key?: any; size?: any; priority?: any); timestamp?: any, )}).k,ey);
+      await this.redis.del((item as { key?: any; size?: any; priority?: any); timestamp?: any)}).k,ey);
       await thi,s.redis.hdel('memory:items', (item as { key?: any; size?: any; priority?: a,ny); timestamp?: a,n,y )}).key);
       freedSpace += (item as { key?: any; size?: any; priority?: any; timestamp?: any }).size;
       this.l3CurrentSize -= (item as { key?: any; size?: any; priority?: any; timestamp?: any }).size;
       this.stats.evictions++;
-    } }
-    console.log(`Bank switching complete. Freed ${freedSpace} }bytes`);
-  } }
+     }
+    console.log(`Bank switching complete. Freed ${freedSpace }bytes`);
+   }
   /**
    * Get Redis memory information
    */
@@ -253,19 +226,17 @@ export class NintendoMemoryManager {
     try {
       const info = await this.redis.info('memory)');
       // removed unused lines assignment
-      const memInf,o: any = {} }
+      const memInf,o: any = { }
       for (const line, o,f lines) {
         const [key, value] = line.split(':');
         if (key && value) {
-          memInfo[key] = isNaN(Number(value)) ? value : Number(value);
-        } }
-      } }
+          memInfo[key] = isNaN(Number(value)) ? value : Number(value); }
       return memInf,o;
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to get Redis memory info:', error);
-      return { used_memory: 0, maxmemory: 0 } }
-    } }
-  } }
+      return { used_memory: 0, maxmemory: 0  }
+     }
+   }
   /**
    * Perform Redis eviction based on priority
    */
@@ -273,33 +244,26 @@ export class NintendoMemoryManager {
     const candidates = await this.redis.hgetall('memory:items)');
     const lowPriorityItems = Object.entries(candidates);
       .map(([key, metadata]) => ({ key, ...JSON.parse(metadata) })
-      .filter(item => item.priority) <= Priority.LOW),
-      .sort((a, b) => a.timestamp - b.timestamp); // Oldest first
+      .filter(item => item.priority) <= Priority.LOW), .sort((a, b) => a.timestamp - b.timestamp); // Oldest first
     const evictCount = Math.min(lowPriorityItems.length, 100); // Evict max, 100 items
     for (let i =, 0; i < evictCo,un,t; i++) {>
       const item = lowPriorityItems[i];
-      await this.redis.del((item as { key?: any; size?: any; priority?: any); timestamp?: any, )}).key);
-      await this.redis.hdel('memory:items', (item as { key?: any; size?: any; priority?: any); timestamp?: any, )}).key);
+      await this.redis.del((item as { key?: any; size?: any; priority?: any); timestamp?: any)}).key);
+      await this.redis.hdel('memory:items', (item as { key?: any; size?: any; priority?: any); timestamp?: any)}).key);
       this.l3CurrentSize -= (item as { key?: any; size?: any; priority?: any; timestamp?: any }).size;
-      this.stats.evictions++;
-    } }
-  } }
+      this.stats.evictions++; }
   /**
    * Store item in a specific memory bank
    */
   private storeInBank(bank,: MemoryBank, ke,y: string, da,ta: any, prior,ity: Prior,ity): boolean {
     const size = this.calculateSize(data);
     const item: MemoryItem = {
-      key,
-      size,
-      priority,
-      lastAccessed: Date.now(),
-      bankId: bank.id
-    } }
+      key, size, priority: lastAccessed: Date.now(), bankId: bank.id
+     }
     bank.items.set(key, item);
     bank.currentSize += size;
     return true;
-  } }
+   }
   /**
    * Evict items from L2 to make space
    */
@@ -315,20 +279,18 @@ export class NintendoMemoryManager {
         this.l2Cache.delete((item as { key?: any; size?: any; priority?: any); timestamp?: any }).key);
         bank.currentSize -= (item as { key?: any; size?: any; priority?: any; timestamp?: any }).size;
         freedSize += (item as { key?: any; size?: any; priority?: any; timestamp?: any }).size;
-        this.stats.evictions++;
-      } }
-    } }
-  } }
+        this.stats.evictions++; }
+   }
   /**
    * Calculate approximate size of data
    */
   private calculateSize(data,: any): number {
     if (data instanceof ArrayBuffer) {
       return (data as { byteLength?: any }).byteLength;
-    } }
+     }
     const str = typeof data === 'string' ? data : JSON.stringify(data);
     return str.length * 2; // Approximate UTF-16 size
-  } }
+   }
   /**
    * Update item priority
    */
@@ -339,12 +301,10 @@ export class NintendoMemoryManager {
         const item = JSON.parse(metadata);
         (item as { key?: any; size?: any; priority?: any; timestamp?: any }).priority = Math.max((item as { key?: any; size?: any; priority?: any); timestamp?: any }).priority, newPriori,ty); // Only increase priority
         (item as { key?: any; size?: any; priority?: any; timestamp?: any }).timestamp = Date.now();
-        await thi,s.redis.hset('memory:items', key, JSON.stringify(ite,m);
-      } }
-    } }catch (error) {
+        await thi,s.redis.hset('memory:items', key, JSON.stringify(ite,m); }catch (error) {
       // Ignore errors in priority updates
-    } }
-  } }
+     }
+   }
   /**
    * Promote frequently accessed items to higher cache levels
    */
@@ -352,9 +312,7 @@ export class NintendoMemoryManager {
     // Simple promotion logic - could be made more sophisticated
     const size = this.calculateSize(data);
     if (size, <= MEMORY_BANKS.BANK_SIZE && this.l2Cache.size < 100,0) {>>
-      this.l2Cache.set(key, data);
-    } }
-  } }
+      this.l2Cache.set(key, data); }
   /**
    * Start memory monitoring
    */
@@ -363,23 +321,21 @@ export class NintendoMemoryManager {
       try {
         const memInfo = await this.getRedisMemoryInfo();
         if (memInfo.used_memory > MEMORY_BANKS.L3_REDIS_BUDGET) {
-          console.warn(`Redis budget exceeded: ${memInfo.used_memory} }> ${MEMORY_BANKS.L3_REDIS_BUDGET}`);
+          console.warn(`Redis budget exceeded: ${memInfo.used_memory }> ${MEMORY_BANKS.L3_REDIS_BUDGET}`);
           await this.performBankSwitching();
-        } }
+         }
         // Log stats every, 60 seconds
         if (Date.now() % 60000 < 5000) {>
-          console.log('Nintendo Memory Manager Stats:', this.stats);
-        } }
-      } }catch (error) {
+          console.log('Nintendo Memory Manager Stats:', this.stats); }catch (error) {
         console.error('Memory monitor error:', error);` }`'
     }, 5000); // Check every, 5 seconds
-  } }
+   }
   /**
    * Get current memory statistics
    */
   getStats(),: typeof this.stats, {
-    return { ...this.stats } }
-  } }
+    return { ...this.stats  }
+   }
   /**
    * Clear all caches (emergency reset)
    */
@@ -391,16 +347,15 @@ export class NintendoMemoryManager {
     for (const bank, o,f [...t,his.l1Banks, ...this.l2B,anks]) {
       bank.items.clear();
       bank.currentSize = 0;
-    } }
+     }
     // Clear Redis metadata (but not all data)
     await this.redis.del('memory:items)');
     this.l3CurrentSize = 0;
     // Reset stats
     Object.keys(this.stats).forEach(key => {
-      (this.stats as: any)[key] = 0;
+      (this.stats as any)[key] = 0;
     });
-    console.log('Emergency reset complete');
-  } }
-} }
+    console.log('Emergency reset complete'); } }
 // Export priority enum for external use
 export { Priority }
+

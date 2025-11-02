@@ -1,4 +1,4 @@
-import type { PageServerLoad } }from './$types.js';
+import type { PageServerLoad  } from './$types.js';
 export const load: PageServerLoad = async ({ fetch }) => {
   try {
     const res = await fetch('/api/yorha/system/status');
@@ -6,32 +6,22 @@ export const load: PageServerLoad = async ({ fetch }) => {
     const multicoreStatus = { totalWorkers: 4, healthyWorkers: 4 };
     const graphData = generateSystemGraphData();
     return {
-      systemStatus,
-      multicoreStatus,
-      graphData,
-      initialLoad: true,
+      systemStatus, multicoreStatus, graphData: initialLoad: true;
       timestamp: new Date().toISOString()
     };
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Error loading dashboard data:', err);
     return {
-      systemStatus: generateMockSystemStatus(),
-      multicoreStatus: null,
-      graphData: generateSystemGraphData(),
-      initialLoad: false,
-      timestamp: new Date().toISOString(),
-      error: 'Failed to load system data'
-    };
-  } }
-};
+      systemStatus: generateMockSystemStatus(), multicoreStatus: null;
+      graphData: generateSystemGraphData(), initialLoad: false;
+      timestamp: new Date().toISOString(), error: 'Failed to load system data'
+    }; };
 function generateMockSystemStatus() {
-  return { database: { connected: true },
-    backend: { healthy: true },
-    frontend: { webGPUEnabled: true },
-    timestamp: new Date().toISOString()
+  return { database: { connected: true }, backend: { healthy: true }, frontend: { webGPUEnabled: true }, timestamp: new Date().toISOString()
   };
-} }
+ }
 function generateSystemGraphData() {
   return { nodes: [], edges: [] };
-} }
+ }
+
 

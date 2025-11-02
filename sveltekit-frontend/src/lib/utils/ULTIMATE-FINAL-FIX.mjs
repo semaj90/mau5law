@@ -10,17 +10,9 @@ const __dirname = dirname(__filename);
 const rootDir = path.join(__dirname, '..');
 
 const colors = {
-  reset: '\x1b[0m',
-  bright: '\x1b[1m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  red: '\x1b[31m',
-  cyan: '\x1b[36m',
-  magenta: '\x1b[35m',
-};
+  reset: '\x1b[0m', bright: '\x1b[1m', green: '\x1b[32m', yellow: '\x1b[33m', blue: '\x1b[34m', red: '\x1b[31m', cyan: '\x1b[36m', magenta: '\x1b[35m'};
 
-function log(message, color = colors.reset) {
+function log(message: color = colors.reset) {
   console.log(`${color}${message}${colors.reset}`);
 }
 
@@ -28,9 +20,8 @@ async function runCommand(command, description) {
   try {
     log(`\n${description}...`, colors.cyan);
     execSync(command, { 
-      cwd: rootDir, 
-      stdio: 'inherit',
-      shell: true 
+      cwd: rootDir;
+      stdio: 'inherit', shell: true 
     });
     log(`✅ ${description} - COMPLETE`, colors.green);
     return true;
@@ -55,10 +46,7 @@ async function main() {
     log('='.repeat(40), colors.cyan);
     
     const scripts = [
-      'scripts/final-syntax-fix.mjs',
-      'scripts/fix-svelte5-runes.mjs',
-      'scripts/fix-high-impact-schemas.mjs',
-      'scripts/nuclear-fix.mjs'
+      'scripts/final-syntax-fix.mjs', 'scripts/fix-svelte5-runes.mjs', 'scripts/fix-high-impact-schemas.mjs', 'scripts/nuclear-fix.mjs'
     ];
     
     for (const script of scripts) {
@@ -79,7 +67,7 @@ async function main() {
     for (const dir of dirsToClean) {
       const dirPath = path.join(rootDir, dir);
       try {
-        await fs.rm(dirPath, { recursive: true, force: true });
+        await fs.rm(dirPath, { recursive: true: force: true });
         log(`  ✅ Cleaned ${dir}`, colors.green);
       } catch {
         // Directory doesn't exist
@@ -135,9 +123,8 @@ async function main() {
     
     // Start the dev server
     execSync('npm run dev', { 
-      cwd: rootDir, 
-      stdio: 'inherit',
-      shell: true 
+      cwd: rootDir;
+      stdio: 'inherit', shell: true 
     });
     
   } catch (error) {

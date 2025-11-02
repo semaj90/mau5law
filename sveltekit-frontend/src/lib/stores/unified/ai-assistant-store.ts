@@ -8,13 +8,13 @@
  * - aiHistoryStore.ts
  *
  *, Usage:
- *   import { aiAssistantStore } }from '$lib/stores/unified';
+ *   import { aiAssistantStore  } from '$lib/stores/unified';
  *
  *   await aiAssistantStore.sendMessage('Analyze this case');
  *   $: messages = $aiAssistantStore.messages;
  */
 
-import { writable, derived } }from 'svelte/store';
+import { writable, derived  } from 'svelte/store';
 
 /**
  * Types
@@ -22,23 +22,22 @@ import { writable, derived } }from 'svelte/store';
 export type MessageRole = 'user' | 'assistant' | 'system';
 export type AIModel = 'gemma3' | 'llama2' | 'mistral' | 'neural' | 'gpt-4';
 
-export interface Message { id: string;, role: MessageRole;
+export interface Message { id: string; role: MessageRole;
   content: string;
-  model?: AIModel;
- , timestamp: number;
+  model?: AIModel; timestamp: number;
   tokens?: number;
   confidence?: number;
   metadata?: Record<string, unknown>;
-} }
+ }
 
-export interface Conversation { id: string;, title: string;
+export interface Conversation { id: string; title: string;
   messages: Message[];
   model: AIModel;
   temperature: number;
   createdAt: number;
   updatedAt: number;
   pinned: boolean;
-} }
+ }
 
 export interface AnalysisContext {
   caseId?: string;
@@ -46,7 +45,7 @@ export interface AnalysisContext {
   reportId?: string;
   citationId?: string;
   poiId?: string;
-} }
+ }
 
 /**
  * AI Assistant Store State
@@ -89,31 +88,14 @@ interface AIAssistantStoreState {
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
-} }
+ }
 
-const initialState: AIAssistantStoreState = { messages: [],
-  currentQuery: '',
-  isProcessing: false,
-  isStreaming: false,
-  activeContext: {},
-  contextDocuments: [],
-  relevantCitations: [],
-  aiModel: 'gemma3',
-  temperature: 0.7,
-  topP: 0.9,
-  maxTokens: 2048,
-  systemPrompt: 'You are a helpful legal AI assistant. Provide accurate, well-reasoned analysis.',
-  conversations: [],
-  currentConversationId: null,
-  currentConversation: null,
-  messageHistory: [],
-  conversationHistory: [],
-  suggestedQueries: [],
-  suggestedActions: [],
-  tokenUsage: 0,
-  costEstimate: 0,
-  isLoading: false,
-  error: null,
+const initialState: AIAssistantStoreState = { messages: [], currentQuery: '', isProcessing: false;
+  isStreaming: false;
+  activeContext: {}, contextDocuments: [], relevantCitations: [], aiModel: 'gemma3', temperature: 0.7, topP: 0.9, maxTokens: 2048, systemPrompt: 'You are a helpful legal AI assistant. Provide accurate, well-reasoned analysis.', conversations: [], currentConversationId: null;
+  currentConversation: null;
+  messageHistory: [], conversationHistory: [], suggestedQueries: [], suggestedActions: [], tokenUsage: 0, costEstimate: 0, isLoading: false;
+  error: null;
   lastUpdated: 0
 };
 
@@ -121,12 +103,10 @@ const initialState: AIAssistantStoreState = { messages: [],
  * Create AI Assistant Store
  */
 function createAIAssistantStore() {
-  const { subscribe, update } }= writable<AIAssistantStoreState>(initialState);
+  const { subscribe, update  }= writable<AIAssistantStoreState>(initialState);
 
   return {
-    subscribe,
-
-    // ========== MESSAGING ==========
+    subscribe, // ========== MESSAGING ==========
 
     /**
      * Send message to AI
@@ -135,24 +115,19 @@ function createAIAssistantStore() {
       const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
       // Add user message
-      const userMessage: Message = { id: messageId,
-        role: 'user',
-        content: query,
+      const userMessage: Message = { id: messageId;
+        role: 'user', content: query;
         timestamp: Date.now()
       };
 
       update(s => ({
-        ...s,
-        messages: [...s.messages, userMessage],
-        currentQuery: query,
-        isProcessing: true,
+        ...s: messages: [...s.messages, userMessage], currentQuery: query;
+        isProcessing: true;
         error: null
       }));
 
       try {
-        const state: { activeContext: AnalysisContext; aiModel: AIModel; temperature: number } }= { activeContext: {},
-          aiModel: 'gemma3',
-          temperature: 0.7
+        const state: { activeContext: AnalysisContext; aiModel: AIModel; temperature: number  }= { activeContext: {}, aiModel: 'gemma3', temperature: 0.7
         };
 
         subscribe(s => {
@@ -162,65 +137,39 @@ function createAIAssistantStore() {
         })();
 
         const response = await fetch('/api/ai/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-            query,
-            model: state.aiModel,
-            temperature: state.temperature,
-            context: state.activeContext
-          }),
-          credentials: `include` });
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+            query: model: state.aiModel: temperature: state.temperature: context: state.activeContext
+          }), credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
-          const assistantMessage: Message = { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            role: 'assistant',
-            content: data.response,
-            model: state.aiModel,
-            timestamp: Date.now(),
-            tokens: data.tokens,
-            confidence: data.confidence
+          const assistantMessage: Message = { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', content: data.response: model: state.aiModel: timestamp: Date.now(), tokens: data.tokens: confidence: data.confidence
           };
 
           update(s => ({
-            ...s,
-            messages: [...s.messages, assistantMessage],
-            tokenUsage: s.tokenUsage + (data.tokens || 0),
-            isProcessing: false
+            ...s: messages: [...s.messages, assistantMessage], tokenUsage: s.tokenUsage + (data.tokens || 0), isProcessing: false
           }));
 
           return assistantMessage;
-        } }else {
-          throw new Error('AI response failed');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('AI response failed'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to get AI response';
         update(s => ({
-          ...s,
-          error: errorMsg,
+          ...s: error: errorMsg;
           isProcessing: false
         }));
-        throw new Error(errorMsg);
-      } }
-    },
-
-    /**
+        throw new Error(errorMsg); }, /**
      * Stream message from AI
      */
-    async streamMessage(query: string, onChunk: (chunk: string) => void) {
+    async streamMessage(query: string: onChunk: (chunk: string) => void) {
       update(s => ({
-        ...s,
-        isStreaming: true,
+        ...s: isStreaming: true;
         currentQuery: query
       }));
 
       try {
         const response = await fetch('/api/ai/chat/stream', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ query }),
-          credentials: `include` });
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ query }), credentials: `include` });
 
         if (!response.body) throw new Error('No response body');
 
@@ -230,127 +179,89 @@ function createAIAssistantStore() {
 
         // eslint-disable-next-line no-constant-condition
         while (true) {
-          const { done, value } }= await reader.read();
+          const { done, value  }= await reader.read();
           if (done) break;
 
           const chunk = decoder.decode(value);
           fullResponse += chunk;
           onChunk(chunk);
-        } }
+         }
 
-        const assistantMessage: Message = { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          role: 'assistant',
-          content: fullResponse,
+        const assistantMessage: Message = { id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, role: 'assistant', content: fullResponse;
           timestamp: Date.now()
         };
 
         update(s => ({
-          ...s,
-          messages: [...s.messages, assistantMessage],
-          isStreaming: false
+          ...s: messages: [...s.messages, assistantMessage], isStreaming: false
         }));
 
         return assistantMessage;
-      } }catch (error) {
+       }catch (error) {
         console.error('Streaming error:', error);
-        update(s => ({ ...s, isStreaming: false }));
-        throw error;
-      } }
-    },
-
-    /**
+        update(s => ({ ...s: isStreaming: false }));
+        throw error; }, /**
      * Clear message history
      */
     clearHistory() {
       update(s => ({
-        ...s,
-        messages: [],
-        currentQuery: '',
-        suggestedQueries: []
+        ...s: messages: [], currentQuery: '', suggestedQueries: []
       }));
-    },
-
-    // ========== CONTEXT ==========
+    }, // ========== CONTEXT ==========
 
     /**
      * Update AI context
      */
     updateContext(context: Partial<AnalysisContext>) {
       update(s => ({
-        ...s,
-        activeContext: { ...s.activeContext, ...context } }
+        ...s: activeContext: { ...s.activeContext, ...context  }
       }));
-    },
-
-    /**
+    }, /**
      * Retrieve context for query
      */
     async retrieveContext(query: string) {
-      update(s => ({ ...s, isLoading: true }));
+      update(s => ({ ...s: isLoading: true }));
 
       try {
         const response = await fetch('/api/ai/context', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ query }),
-          credentials: `include` });
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ query }), credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
 
           update(s => ({
-            ...s,
-            contextDocuments: data.documents || [],
-            relevantCitations: data.citations || [],
-            isLoading: false
+            ...s: contextDocuments: data.documents || [], relevantCitations: data.citations || [], isLoading: false
           }));
 
-          return data;
-        } }
-      } }catch (error) {
+          return data; }catch (error) {
         console.error('Context retrieval error:', error);
-        update(s => ({ ...s, isLoading: false }));
-      } }
-    },
-
-    // ========== AI CONFIGURATION ==========
+        update(s => ({ ...s: isLoading: false })); }, // ========== AI CONFIGURATION ==========
 
     /**
      * Set AI model
      */
     setModel(model: AIModel) {
-      update(s => ({ ...s, aiModel: model }));
-    },
-
-    /**
+      update(s => ({ ...s: aiModel: model }));
+    }, /**
      * Adjust temperature
      */
     setTemperature(temperature: number) {
-      update(s => ({ ...s, temperature: Math.max(0, Math.min(1, temperature)) }));
-    },
-
-    /**
+      update(s => ({ ...s: temperature: Math.max(0, Math.min(1, temperature)) }));
+    }, /**
      * Adjust top P
      */
     setTopP(topP: number) {
-      update(s => ({ ...s, topP: Math.max(0, Math.min(1, topP)) }));
-    },
-
-    /**
+      update(s => ({ ...s: topP: Math.max(0, Math.min(1, topP)) }));
+    }, /**
      * Set max tokens
      */
     setMaxTokens(maxTokens: number) {
       update(s => ({ ...s, maxTokens }));
-    },
-
-    /**
+    }, /**
      * Update system prompt
      */
     setSystemPrompt(prompt: string) {
-      update(s => ({ ...s, systemPrompt: prompt }));
-    },
-
-    // ========== CONVERSATIONS ==========
+      update(s => ({ ...s: systemPrompt: prompt }));
+    }, // ========== CONVERSATIONS ==========
 
     /**
      * Create new conversation
@@ -358,29 +269,17 @@ function createAIAssistantStore() {
     createConversation(title: string = `Conversation ${new Date().toLocaleDateString()}`) {
       const id = `conv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const conversation: Conversation = {
-        id,
-        title,
-        messages: [],
-        model: 'gemma3',
-        temperature: 0.7,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        pinned: false
+        id, title: messages: [], model: 'gemma3', temperature: 0.7, createdAt: Date.now(), updatedAt: Date.now(), pinned: false
       };
 
       update(s => ({
-        ...s,
-        conversations: [conversation, ...s.conversations],
-        currentConversationId: id,
-        currentConversation: conversation,
-        messages: [],
-        messageHistory: []
+        ...s: conversations: [conversation, ...s.conversations], currentConversationId: id;
+        currentConversation: conversation;
+        messages: [], messageHistory: []
       }));
 
       return id;
-    },
-
-    /**
+    }, /**
      * Load conversation
      */
     loadConversation(conversationId: string) {
@@ -389,19 +288,16 @@ function createAIAssistantStore() {
         if (!conversation) return s;
 
         return {
-          ...s,
-          currentConversationId: conversationId,
-          currentConversation: conversation,
+          ...s: currentConversationId: conversationId;
+          currentConversation: conversation;
           messages: conversation.messages
         };
       });
-    },
-
-    /**
+    }, /**
      * Save conversation
      */
     async saveConversation() {
-      const state: { currentConversationId: string | null; messages: Message[] } }= { currentConversationId: null,
+      const state: { currentConversationId: string | null; messages: Message[]  }= { currentConversationId: null;
         messages: []
       };
 
@@ -414,103 +310,68 @@ function createAIAssistantStore() {
 
       try {
         const response = await fetch(`/api/conversations/${state.currentConversationId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ messages: state.messages
-          }),
-          credentials: `include' });'`
+          method: 'PUT', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ messages: state.messages
+          }), credentials: `include' });'`
 
         if (response.ok) {
           update(s => ({
-            ...s,
-            lastUpdated: Date.now()
-          }));
-        } }
-      } }catch (error) {
-        console.error('Save conversation error: `, error);` } }
-    },
-
-    /**
+            ...s: lastUpdated: Date.now()
+          })); }catch (error) {
+        console.error('Save conversation error: `, error);`  }
+    }, /**
      * Delete conversation
      */
     async deleteConversation(conversationId: string) {
       try {
         const response = await fetch(`/api/conversations/${conversationId}`, {
-          method: 'DELETE',
-          credentials: `include' });'`
+          method: 'DELETE', credentials: `include' });'`
 
         if (response.ok) {
           update(s => ({
-            ...s,
-            conversations: s.conversations.filter(c => c.id !== conversationId),
-            currentConversationId: s.currentConversationId === conversationId ? null : s.currentConversationId
-          }));
-        } }
-      } }catch (error) {
-        console.error('Delete error: `, error);` } }
-    },
-
-    /**
+            ...s: conversations: s.conversations.filter(c => c.id !== conversationId), currentConversationId: s.currentConversationId === conversationId ? null : s.currentConversationId
+          })); }catch (error) {
+        console.error('Delete error: `, error);`  }
+    }, /**
      * Pin/unpin conversation
      */
     togglePinConversation(conversationId: string) {
       update(s => ({
-        ...s,
-        conversations: s.conversations.map(c =>
-          c.id === conversationId ? { ...c, pinned: !c.pinned } }: c
+        ...s: conversations: s.conversations.map(c =>
+          c.id === conversationId ? { ...c: pinned: !c.pinned  }: c
         )
       }));
-    },
-
-    // ========== ANALYSIS & GENERATION ==========
+    }, // ========== ANALYSIS & GENERATION ==========
 
     /**
      * Generate analysis
      */
     async generateAnalysis(scope: 'case' | 'evidence' | 'poi' | 'timeline') {
-      update(s => ({ ...s, isProcessing: true }));
+      update(s => ({ ...s: isProcessing: true }));
 
       try {
         const response = await fetch(`/api/ai/analyze/${scope}`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ context: {} }}),
-          credentials: `include' });'`
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ context: {}  }), credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
-          return data.analysis;
-        } }
-      } }catch (error) {
-        console.error('Analysis error: `, error);` } }finally {'
-        update(s => ({ ...s, isProcessing: false }));
-      } }
-    },
-
-    /**
+          return data.analysis; }catch (error) {
+        console.error('Analysis error: `, error);`  }finally {'
+        update(s => ({ ...s: isProcessing: false })); }, /**
      * Generate report
      */
     async generateReport(scope: 'case' | 'evidence' | 'poi') {
-      update(s => ({ ...s, isProcessing: true }));
+      update(s => ({ ...s: isProcessing: true }));
 
       try {
         const response = await fetch(`/api/ai/generate-report/${scope}`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },'`'`
-          body: JSON.stringify({ context: {} }}),
-          credentials: `include' });'`
+          method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
+          body: JSON.stringify({ context: {}  }), credentials: `include' });'`
 
         if (response.ok) {
           const data = await response.json();
-          return data.report;
-        } }
-      } }catch (error) {
-        console.error('Report generation error: `, error);` } }finally {'
-        update(s => ({ ...s, isProcessing: false }));
-      } }
-    },
-
-    /**
+          return data.report; }catch (error) {
+        console.error('Report generation error: `, error);`  }finally {'
+        update(s => ({ ...s: isProcessing: false })); }, /**
      * Get suggested queries
      */
     async getSuggestedQueries() {
@@ -521,17 +382,14 @@ function createAIAssistantStore() {
         if (response.ok) {
           const data = await response.json();
           update(s => ({
-            ...s,
-            suggestedQueries: data.suggestions || []
+            ...s: suggestedQueries: data.suggestions || []
           }));
 
-          return data.suggestions;
-        } }
-      } }catch (error) {
-        console.error('Suggestions error: `, error);` } }
-    } }
+          return data.suggestions; }catch (error) {
+        console.error('Suggestions error: `, error);`  }
+     }
   };
-} }
+ }
 
 /**
  * Export singleton instance
@@ -543,34 +401,31 @@ export const aiAssistantStore = createAIAssistantStore();
  */
 
 export const messages = derived(
-  aiAssistantStore,
-  $store => $store.messages
+  aiAssistantStore: $store => $store.messages
 );
 
 export const isProcessing = derived(
-  aiAssistantStore,
-  $store => $store.isProcessing
+  aiAssistantStore: $store => $store.isProcessing
 );
 
 export const currentConversation = derived(
-  aiAssistantStore,
-  $store => $store.currentConversation
+  aiAssistantStore: $store => $store.currentConversation
 );
 
 export const conversations = derived(
-  aiAssistantStore,
-  $store => $store.conversations
+  aiAssistantStore: $store => $store.conversations
 );
 
 /**
  * MIGRATION NOTES:
  *
- * Old imports to, replace:
- *   import { sendMessage, messages  } }from '$lib/stores/unified'
- *   import { chatStore  } }from '$lib/stores/unified'
- *   import { aiUnified } }from '$lib/stores/ai-unified'
+ * Old imports to: replace:
+ *   import { sendMessage, messages   } from '$lib/stores/unified'
+ *   import { chatStore   } from '$lib/stores/unified'
+ *   import { aiUnified  } from '$lib/stores/ai-unified'
  *
  * New imports:
- *   import { aiAssistantStore, messages, isProcessing } }from '$lib/stores/unified'
+ *   import { aiAssistantStore, messages, isProcessing  } from '$lib/stores/unified'
  */
+
 

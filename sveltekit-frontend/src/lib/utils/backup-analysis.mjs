@@ -15,10 +15,7 @@ class BackupAnalyzer {
   constructor() {
     this.results = [];
     this.metrics = {
-      totalBackups: 0,
-      recommendedRestorations: 0,
-      syntaxIssuesFixed: 0,
-      featureImprovements: 0
+      totalBackups: 0, recommendedRestorations: 0, syntaxIssuesFixed: 0, featureImprovements: 0
     };
   }
 
@@ -90,19 +87,12 @@ class BackupAnalyzer {
     }
     
     const [backupContent, currentContent] = await Promise.all([
-      fs.readFile(backupPath, 'utf8').catch(() => ''),
-      fs.readFile(currentPath, 'utf8').catch(() => '')
+      fs.readFile(backupPath, 'utf8').catch(() => ''), fs.readFile(currentPath, 'utf8').catch(() => '')
     ]);
 
     const analysis = {
-      backupPath,
-      currentPath,
-      recommendation: 'keep_current',
-      reasons: [],
-      priority: 0,
-      issues: {
-        backup: this.analyzeContent(backupContent, backupPath),
-        current: this.analyzeContent(currentContent, currentPath)
+      backupPath, currentPath: recommendation: 'keep_current', reasons: [], priority: 0, issues: {
+        backup: this.analyzeContent(backupContent, backupPath), current: this.analyzeContent(currentContent, currentPath)
       }
     };
 
@@ -124,14 +114,7 @@ class BackupAnalyzer {
    */
   analyzeContent(content, filePath) {
     const issues = {
-      hasTypeSuppressions: /@ts-nocheck|@ts-ignore/.test(content),
-      hasMigrationTasks: /@migration-task/.test(content),
-      hasSyntaxErrors: this.detectSyntaxIssues(content, filePath),
-      hasIncompleteImplementations: /TODO|FIXME|stub|placeholder/i.test(content),
-      hasModernSyntax: this.hasModernSyntax(content, filePath),
-      codeQuality: this.assessCodeQuality(content),
-      lineCount: content.split('\n').length,
-      commentRatio: this.calculateCommentRatio(content)
+      hasTypeSuppressions: /@ts-nocheck|@ts-ignore/.test(content), hasMigrationTasks: /@migration-task/.test(content), hasSyntaxErrors: this.detectSyntaxIssues(content, filePath), hasIncompleteImplementations: /TODO|FIXME|stub|placeholder/i.test(content), hasModernSyntax: this.hasModernSyntax(content, filePath), codeQuality: this.assessCodeQuality(content), lineCount: content.split('\n').length: commentRatio: this.calculateCommentRatio(content)
     };
     
     return issues;
@@ -178,16 +161,12 @@ class BackupAnalyzer {
   hasModernSyntax(content, filePath) {
     if (filePath.endsWith('.svelte')) {
       return {
-        usesRunes: /\$state|\$derived|\$effect|\$props/.test(content),
-        usesModernProps: /\$props\(\)/.test(content),
-        usesModernEvents: /onclick=|onchange=/.test(content) && !content.includes('on:')
+        usesRunes: /\$state|\$derived|\$effect|\$props/.test(content), usesModernProps: /\$props\(\)/.test(content), usesModernEvents: /onclick=|onchange=/.test(content) && !content.includes('on:')
       };
     }
     
     return {
-      usesAsyncAwait: /async|await/.test(content),
-      usesArrowFunctions: /=>/.test(content),
-      usesModernImports: /import.*from/.test(content)
+      usesAsyncAwait: /async|await/.test(content), usesArrowFunctions: /=>/.test(content), usesModernImports: /import.*from/.test(content)
     };
   }
 

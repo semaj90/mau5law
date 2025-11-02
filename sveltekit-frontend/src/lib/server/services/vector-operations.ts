@@ -1,14 +1,14 @@
-import { OllamaEmbeddingService } }from './ollama-embeddings';
-import { upsertVector, searchVector } }from './qdrant-adapter';
-import { setEmbedding } }from './redis-adapter';
-import { saveJsonbDocument } }from './pg-jsonb';
-import { validateEmbedding, validatePositiveInt } }from '../utils/service-error';
+import { OllamaEmbeddingService  } from './ollama-embeddings';
+import { upsertVector, searchVector  } from './qdrant-adapter';
+import { setEmbedding  } from './redis-adapter';
+import { saveJsonbDocument  } from './pg-jsonb';
+import { validateEmbedding, validatePositiveInt  } from '../utils/service-error';
 
 /** see PRODUCTION TODO block above **/
 
 export async function storeDocumentWithEmbedding(
-  id: string,
-  text: string,
+  id: string;
+  text: string;
   metadata: Record<string, unknown>
 ): Promise<{ id: string; dim: number }> {
   try {
@@ -18,18 +18,15 @@ export async function storeDocumentWithEmbedding(
     // Persist to vector store and postgres JSONB first, then cache in Redis
     await Promise.all([
       upsertVector(id, embedding, metadata), // adapter handles Qdrant client shapes
-      saveJsonbDocument(id, metadata, embedding),
-    ]);
+      saveJsonbDocument(id, metadata, embedding)]);
 
     // Only cache after persistent writes succeed
     await setEmbedding(`embedding:${id}`, embedding); // adapter handles Redis shapes
 
-    return { id, dim: embedding.length };
-  } }catch (err) {
+    return { id: dim: embedding.length };
+   }catch (err) {
     // surface a clear error for callers
-    throw new Error(`storeDocumentWithEmbedding failed for id=${id}: ${err instanceof Error ? err.message : String(err)}`);
-  } }
-} }
+    throw new Error(`storeDocumentWithEmbedding failed for id=${id}: ${err instanceof Error ? err.message : String(err)}`); } }
 
 export async function findSimilarDocuments(query: number[], topK = 5): Promise<unknown> {
   validateEmbedding(query);
@@ -37,3 +34,4 @@ export async function findSimilarDocuments(query: number[], topK = 5): Promise<u
   // Forward the properly-validated query to the adapter
   return searchVector(query, limit); // adapter handles Qdrant client shapes
 }
+

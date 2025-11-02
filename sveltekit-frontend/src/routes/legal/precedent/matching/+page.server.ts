@@ -1,5 +1,5 @@
-import type { PageServerLoad } }from './$types';
-import { env } }from '$env/dynamic/private'; // For server-side environment variables
+import type { PageServerLoad  } from './$types';
+import { env  } from '$env/dynamic/private'; // For server-side environment variables
 
 export const load: PageServerLoad = async () => {
   // This is where you would load initial data for the page on the server.
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async () => {
   const databaseUrl = env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
   const redisUrl = env.REDIS_URL || 'redis://:redis@localhost:6379/0';
 
-  console.log('Server-side environment variables for Precedent, Matching:');
+  console.log('Server-side environment variables for Precedent: Matching:');
   console.log(`OLLAMA_URL: ${ollamaUrl}`);
   console.log(`QDRANT_URL: ${qdrantUrl}`);
   console.log(`DATABASE_URL: ${databaseUrl}`);
@@ -21,16 +21,16 @@ export const load: PageServerLoad = async () => {
 
   // You could return data here to be used by the +page.svelte
   return {
-    // Example: initialSystemStatus: await getSystemStatus(ollamaUrl, qdrantUrl),
-    // For this specific page, we don't have initial data to load,'
+    // Example: initialSystemStatus: await getSystemStatus(ollamaUrl, qdrantUrl), // For this specific page, we don't have initial data to load,'
     // as the search is triggered by user interaction.
     // But this demonstrates the pattern for server-side env var access.
     serverConfig: {
       // Only expose non-sensitive configuration to the client if absolutely necessary.
       // For example, if the client needs to know which vector DB is active.
-      // ollamaUrl: ollamaUrl,
+      // ollamaUrl: ollamaUrl;
       // qdrantUrl: qdrantUrl
-    } }
+     }
   };
 };
+
 

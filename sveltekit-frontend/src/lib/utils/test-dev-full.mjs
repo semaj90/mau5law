@@ -47,9 +47,7 @@ const testGoServicesBuild = async () => {
   
   // Check critical Go service binaries exist (from previous builds)
   const criticalServices = [
-    '../go-microservice/bin/enhanced-rag.exe',
-    '../go-microservice/bin/upload-service.exe',
-    '../go-microservice/bin/grpc-server.exe'
+    '../go-microservice/bin/enhanced-rag.exe', '../go-microservice/bin/upload-service.exe', '../go-microservice/bin/grpc-server.exe'
   ];
   
   let builtServices = 0;

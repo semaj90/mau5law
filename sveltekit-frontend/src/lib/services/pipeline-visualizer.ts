@@ -1,4 +1,4 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * 📊 Visual Pipeline Architecture Diagram
  * Shows complete flow: Redis → SIMD → GPU → Streaming → Storage
@@ -73,61 +73,33 @@ export const PIPELINE_ARCHITECTURE = `
 │                                                                                      │
 └──────────────────────────────────────────────────────────────────────────────────────┘
 `;`
-export const PERFORMANCE_METRICS = { simdJsonParsing: { speedup: '10x faster than native JSON.parse',
-    memoryUsage: '50% less memory allocation',
-    cpuUtilization: 'SIMD vectorized operations'
-  },
-  gpuProcessing: { rtx3060Optimization: { batchSize: 32,
-      tensorSlicing: 256,
-      vramEfficiency: '85% utilization',
-      cudaStreams: 4
-    },
-    concurrency: '4x parallel processing',
-    tensorSplicing: 'Multi-dimensional memory optimization'
-  },
-  streamingArrayLoop: { batchSize: 50,
-    nonBlocking: 'Incremental UI updates',
-    errorRecovery: `Graceful degradation` },'`'`
-  caching: { redis: 'Hot cache (15min TTL, gzip compressed)',
-    lokijs: 'Client IndexedDB (offline-first)',
-    fusejs: `In-memory fuzzy search (threshold 0.3)` },
-  storage: { minio: 'Large tensor blobs',
-    pgvector: '768-dim embeddings, cosine similarity',
-    postgresql: `Metadata, relationships, full-text search` } }
+export const PERFORMANCE_METRICS = { simdJsonParsing: { speedup: '10x faster than native JSON.parse', memoryUsage: '50% less memory allocation', cpuUtilization: 'SIMD vectorized operations'
+  }, gpuProcessing: { rtx3060Optimization: { batchSize: 32, tensorSlicing: 256, vramEfficiency: '85% utilization', cudaStreams: 4
+    }, concurrency: '4x parallel processing', tensorSplicing: 'Multi-dimensional memory optimization'
+  }, streamingArrayLoop: { batchSize: 50, nonBlocking: 'Incremental UI updates', errorRecovery: `Graceful degradation` },'`'`
+  caching: { redis: 'Hot cache (15min TTL, gzip compressed)', lokijs: 'Client IndexedDB (offline-first)', fusejs: `In-memory fuzzy search (threshold 0.3)` }, storage: { minio: 'Large tensor blobs', pgvector: '768-dim embeddings, cosine similarity', postgresql: `Metadata, relationships, full-text search`  }
 };
 export class PipelineVisualizer {
   static generateArchitectureDiagram(): string {
     return PIPELINE_ARCHITECTURE;
-  } }
+   }
   static getPerformanceMetrics() {
     return PERFORMANCE_METRICS;
-  } }
+   }
   static generateFlowDiagram(stepNumber: number): string {
     const steps = [
-      '📥 Input queries received',
-      '🔍 Redis cache check (compressed)',
-      '⚡ SIMD JSON parsing (10x faster)',
-      '📦 Chunking for GPU processing',
-      '🎮 CUDA tensor operations (RTX 3060)',
-      '🔪 Multi-dimensional tensor splicing',
-      '🔄 Streaming array loop processing',
-      '📱 LokiJS client storage (IndexedDB)',
-      '🔍 Fuse.js fuzzy search indexing',
-      '🌐 Service worker async routing',
-      '🗄️ Storage layer distribution',
-      '📊 Performance metrics collection',
-    ];
+      '📥 Input queries received', '🔍 Redis cache check (compressed)', '⚡ SIMD JSON parsing (10x faster)', '📦 Chunking for GPU processing', '🎮 CUDA tensor operations (RTX 3060)', '🔪 Multi-dimensional tensor splicing', '🔄 Streaming array loop processing', '📱 LokiJS client storage (IndexedDB)', '🔍 Fuse.js fuzzy search indexing', '🌐 Service worker async routing', '🗄️ Storage layer distribution', '📊 Performance metrics collection'];
     const currentStep = steps[stepNumber - 1] || 'Unknown step';
     const progress = Math.round((stepNumber / steps.length) * 100);
     return `;`
 ┌─ Pipeline Progress: \${progress}% ──────────────────────────────────────┐
 │                                                           │
-│ Current, Step: \${currentStep} }
+│ Current: Step: \${currentStep }
 │                                                           │
-│ [\${'█'.repeat(Math.floor(progress / 5))}\${'░'.repeat(20 - Math.floor(progress / 5))} } \${progress}%        │
+│ [\${'█'.repeat(Math.floor(progress / 5))}\${'░'.repeat(20 - Math.floor(progress / 5)) } \${progress}%        │
 │                                                           │
 └───────────────────────────────────────────────────────────┘
-  `;` } }
+  `;`  }
   static logPipelineMetrics(metrics: any): void {
     console.log('📊 Pipeline Performance Metrics:');
     console.log(`⏱️  Total processing time: ${metrics.processingTime.toFixed(2)}ms`);
@@ -136,7 +108,7 @@ export class PipelineVisualizer {
     console.log(`🎮 GPU accelerated: ${metrics.gpuAccelerated ? '✅' : `❌` }`);
     console.log(`⚡ SIMD optimized: ${metrics.simdOptimized ? '✅' : `❌` }`);
     console.log(`📊 Results processed: ${metrics.totalResults}`);
-  } }
+   }
   static generateTeamDocumentation(): string {
     return `;`
 # 🚀 Advanced SIMD + GPU Tensor Pipeline Documentation
@@ -202,8 +174,9 @@ const results = await advancedPipeline.searchProcessedTensors("legal contract)")
 - Processing time metrics
 - Error rate tracking
 - Queue depth monitoring
-  `;` } }
+  `;`  }
 } }
 // Export for documentation and debugging
 export { PipelineVisualizer };
+
 

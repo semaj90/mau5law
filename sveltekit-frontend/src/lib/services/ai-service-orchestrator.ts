@@ -9,55 +9,48 @@
  * - Health monitoring and metrics
  */
 
-import { TritonInferenceClient } }from './providers/tensorrt-triton/triton-client';
+import { TritonInferenceClient  } from './providers/tensorrt-triton/triton-client';
 import OllamaClient from './providers/ollama/ollama-client'; // Changed to default import
-import { HealthMonitor } }from './health-monitor';
-import { embeddingService } }from './embedding-service';
-import type { AIProvider, InferenceRequest, InferenceResponse } }from './types/ai-provider';
+import { HealthMonitor  } from './health-monitor';
+import { embeddingService  } from './embedding-service';
+import type { AIProvider, InferenceRequest, InferenceResponse  } from './types/ai-provider';
 import {
-  mcpContext72GetLibraryDocs,
-  getSvelte5Docs,
-  getDrizzleOrmDocs,
-  getTypeScriptDocs,
-  type LibraryDocsResponse // Assuming LibraryDocsResponse is { id: string; content: string; } }
-} }from '$lib/mcp-context72-get-library-docs';
-import { AI_CONFIG, HEALTH_CONFIG } }from '$lib/server/config';
+  mcpContext72GetLibraryDocs, getSvelte5Docs, getDrizzleOrmDocs, getTypeScriptDocs, type LibraryDocsResponse // Assuming LibraryDocsResponse is { id: string; content: string; } from '$lib/mcp-context72-get-library-docs';
+import { AI_CONFIG, HEALTH_CONFIG  } from '$lib/server/config';
 
 // ============================================================================
 // Types
 // ============================================================================
-export interface FunctionDefinition { name: string;, description: string;
-  parameters: { type: 'object';, properties: Record<string, { type: string; description?: string }>;
+export interface FunctionDefinition { name: string; description: string;
+  parameters: { type: 'object'; properties: Record<string, { type: string; description?: string }>;
     required?: string[];
   };
-} }
+ }
 
 // Define an enriched type for library documentation that includes the libraryName
-interface EnrichedLibraryDoc { id: string; // Assuming LibraryDocsResponse has, an: 'id' property, content: string;
+interface EnrichedLibraryDoc { id: string; // Assuming LibraryDocsResponse has: an: 'id' property: content: string;
   libraryName: string;
-} }
+ }
 
 export interface AgenticRequest extends InferenceRequest {
   enableMCPDocs?: boolean;
   requiredLibraries?: string[];
-  functionCalling?: { enabled: boolean;, functions: FunctionDefinition[];
+  functionCalling?: { enabled: boolean; functions: FunctionDefinition[];
   };
   context?: {
     caseId?: string;
     userId?: string;
     conversationHistory?: string[];
   };
-} }
+ }
 
 export interface AgenticResponse extends InferenceResponse {
-  mcpDocsUsed?: EnrichedLibraryDoc[]; // Use the enriched type
- , functionCalls: { // Made non-optional, will always be an array (possibly empty)
-    name: string;
-   , arguments: Record<string, unknown>;
+  mcpDocsUsed?: EnrichedLibraryDoc[]; // Use the enriched type: functionCalls: { // Made non-optional, will always be an array (possibly empty)
+    name: string; arguments: Record<string, unknown>;
     result?: any;
-  } }];
+   }];
   enhancedContext?: string;
-} }
+ }
 
 // ============================================================================
 // AI Service Orchestrator
@@ -66,12 +59,12 @@ export class AIServiceOrchestrator {
   private providers: Map<string, AIProvider> = new Map();
   private healthMonitor: HealthMonitor;
   private currentProvider: string = 'ollama';
-  private, mcpDocsCache: Map<string, LibraryDocsResponse> = new Map(); // Cache original LibraryDocsResponse
+  private: mcpDocsCache: Map<string, LibraryDocsResponse> = new Map(); // Cache original LibraryDocsResponse
   private circuitBreakerState: Map<string, { failures: number; lastFailure: number }> = new Map();
 
   constructor() {
     this.healthMonitor = new HealthMonitor(this.providers);
-  } }
+   }
 
   async initialize() {
     console.log('🚀 Initializing Enhanced AI Service Orchestrator (Phase 3)...');
@@ -80,61 +73,50 @@ export class AIServiceOrchestrator {
     try {
       const ollamaClient = new OllamaClient(); // Fix: Call constructor without arguments
       // Assign properties required by AIProvider interface
-      // This assumes OllamaClient is designed to have these properties set post-instantiation,
-      // or that ollama-client.ts will be updated to properly implement AIProvider.
+      // This assumes OllamaClient is designed to have these properties set post-instantiation, // or that ollama-client.ts will be updated to properly implement AIProvider.
       (ollamaClient as AIProvider).config = {
-        baseUrl: AI_CONFIG.ollama.baseUrl,
-        model: AI_CONFIG.ollama.models.legal
+        baseUrl: AI_CONFIG.ollama.baseUrl: model: AI_CONFIG.ollama.models.legal
       };
       (ollamaClient as AIProvider).modelName = AI_CONFIG.ollama.models.legal;
       // Ensure initialize method exists, or provide a no-op if missing
       if (!(ollamaClient as AIProvider).initialize) {
         (ollamaClient as AIProvider).initialize = async () => { /* no-op */ };
-      } }
+       }
       await (ollamaClient as AIProvider).initialize(); // Call initialize as required by AIProvider
       await ollamaClient.healthCheck();
       this.providers.set('ollama', ollamaClient as AIProvider); // Cast to AIProvider
       console.log(`✅ Ollama registered (PRIMARY) - ${AI_CONFIG.ollama.models.legal}`);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('❌ Ollama unavailable:', (error as Error).message);
-    } }
+     }
 
     // Register TensorRT-Triton (Secondary - Performance)
     if (AI_CONFIG.tensorrt.enabled) {
       try {
         const tritonClient = new TritonInferenceClient({
-          httpUrl: AI_CONFIG.tensorrt.tritonUrl,
-          grpcUrl: AI_CONFIG.tensorrt.tritonUrl.replace('8000', '8001'),
-          modelName: AI_CONFIG.tensorrt.modelName,
-          modelVersion: AI_CONFIG.tensorrt.modelVersion
+          httpUrl: AI_CONFIG.tensorrt.tritonUrl: grpcUrl: AI_CONFIG.tensorrt.tritonUrl.replace('8000', '8001'), modelName: AI_CONFIG.tensorrt.modelName: modelVersion: AI_CONFIG.tensorrt.modelVersion
         });
         await tritonClient.initialize();
         this.providers.set('tensorrt', tritonClient);
         console.log('✅ TensorRT-Triton registered (PERFORMANCE)');
-      } }catch (error: any) {
-        console.warn('⚠️ TensorRT-Triton unavailable:', (error as Error).message);
-      } }
-    } }
+       }catch (error: any) {
+        console.warn('⚠️ TensorRT-Triton unavailable:', (error as Error).message); }
 
     // Register vLLM (Tertiary - Optional)
     if (AI_CONFIG.vllm.enabled) {
       try {
         // vLLM client would go here
         console.log('✅ vLLM registered (TERTIARY)');
-      } }catch (error: any) {
-        console.warn('⚠️ vLLM unavailable:', (error as Error).message);
-      } }
-    } }
+       }catch (error: any) {
+        console.warn('⚠️ vLLM unavailable:', (error as Error).message); }
 
     // Register OpenAI (Fallback - Production)
     if (AI_CONFIG.openai.enabled && AI_CONFIG.openai.apiKey) {
       try {
         // OpenAI client would go here
         console.log('✅ OpenAI registered (FALLBACK)');
-      } }catch (error: any) {
-        console.warn('⚠️ OpenAI unavailable:', (error as Error).message);
-      } }
-    } }
+       }catch (error: any) {
+        console.warn('⚠️ OpenAI unavailable:', (error as Error).message); }
 
     // Start health monitoring
     await this.healthMonitor.start();
@@ -143,7 +125,7 @@ export class AIServiceOrchestrator {
     this.currentProvider = this.selectOptimalProvider();
     console.log(`🎯 Active provider: ${this.currentProvider}`);
     console.log(`📚 Context7 MCP integration: ENABLED`);
-    console.log(`⚡ Gemma function calling: ${AI_CONFIG.functionCalling.enabled ? 'ENABLED' : `DISABLED` }`);'` } }`
+    console.log(`⚡ Gemma function calling: ${AI_CONFIG.functionCalling.enabled ? 'ENABLED' : `DISABLED` }`);'`  }`
 
   /**
    * Agentic inference with Context7 MCP documentation enrichment
@@ -160,52 +142,45 @@ export class AIServiceOrchestrator {
 
       // Enrich prompt with documentation context
       const docsContext = mcpDocsUsed
-        .map(doc => `\n## ${doc.libraryName} }Documentation\n${doc.content.slice(0, 2000)}...`)
+        .map(doc => `\n## ${doc.libraryName }Documentation\n${doc.content.slice(0, 2000)}...`)
         .join('\n');
 
       enhancedPrompt = `${request.prompt}\n\n--- CONTEXT ---${docsContext}`;
-      console.log(`✅ Enhanced prompt with ${mcpDocsUsed.length} }library docs`);
-    } }
+      console.log(`✅ Enhanced prompt with ${mcpDocsUsed.length }library docs`);
+     }
 
     // Step 2: Execute inference with circuit breaker
-    const, baseRequest: InferenceRequest = {
-      ...request,
-      prompt: enhancedPrompt
+    const: baseRequest: InferenceRequest = {
+      ...request: prompt: enhancedPrompt
     };
 
     const response = await this.executeWithFailover(baseRequest);
 
     // Step 3: Handle function calling if enabled
-    let, functionCalls: AgenticResponse['functionCalls'] = []; // Initialized as empty array, type is non-optional
+    let: functionCalls: AgenticResponse['functionCalls'] = []; // Initialized as empty array, type is non-optional
     if (
       request.functionCalling?.enabled &&
       AI_CONFIG.functionCalling.enabled &&
       request.functionCalling.functions.length > 0
     ) {
       functionCalls = await this.extractFunctionCalls(response.response, request.functionCalling.functions); // Changed response.text to response.response
-      console.log(`⚡ Extracted ${functionCalls.length} }function calls`);
-    } }
+      console.log(`⚡ Extracted ${functionCalls.length }function calls`);
+     }
 
     return {
-      ...response,
-      mcpDocsUsed,
-      functionCalls,
-      enhancedContext: enhancedPrompt !== request.prompt ? enhancedPrompt : undefined,
+      ...response, mcpDocsUsed, functionCalls: enhancedContext: enhancedPrompt !== request.prompt ? enhancedPrompt : undefined;
       metadata: {
-        ...response.metadata,
-        mcpDocsCount: mcpDocsUsed.length,
-        functionCallsCount: functionCalls.length,
-        totalLatency: Date.now() - startTime
-      } }
+        ...response.metadata: mcpDocsCount: mcpDocsUsed.length: functionCallsCount: functionCalls.length: totalLatency: Date.now() - startTime
+       }
     };
-  } }
+   }
 
   /**
    * Standard inference without MCP enrichment (backward compatible)
    */
   async inference(request: InferenceRequest): Promise<InferenceResponse> {
     return this.executeWithFailover(request);
-  } }
+   }
 
   /**
    * Execute inference with circuit breaker and automatic failover
@@ -215,7 +190,7 @@ export class AIServiceOrchestrator {
 
     if (!provider) {
       throw new Error(`No healthy providers available`);
-    } }
+     }
 
     // Check circuit breaker state
     const breakerState = this.circuitBreakerState.get(this.currentProvider);
@@ -224,10 +199,8 @@ export class AIServiceOrchestrator {
       if (timeSinceLastFailure < HEALTH_CONFIG.circuitBreaker.timeout) {
         console.warn(`⚠️ Circuit breaker OPEN for ${this.currentProvider}, failing over...`);
         return this.failoverToNextProvider(request);
-      } }else {
-        console.log(`🔄 Circuit breaker HALF-OPEN for ${this.currentProvider}, attempting...`);
-      } }
-    } }
+       }else {
+        console.log(`🔄 Circuit breaker HALF-OPEN for ${this.currentProvider}, attempting...`); }
 
     try {
       // Attempt inference with current provider
@@ -237,27 +210,20 @@ export class AIServiceOrchestrator {
       this.circuitBreakerState.set(this.currentProvider, { failures: 0, lastFailure: 0 });
 
       return {
-        ...response,
-        provider: this.currentProvider,
-        metadata: { latency: response.latency,
-          tokens: response.tokens,
-          model: provider.modelName
-        } }
+        ...response: provider: this.currentProvider: metadata: { latency: response.latency: tokens: response.tokens: model: provider.modelName
+         }
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error(`❌ Inference failed with ${this.currentProvider}:`, error);
 
       // Update circuit breaker state
       const currentState = this.circuitBreakerState.get(this.currentProvider) || { failures: 0, lastFailure: 0 };
       this.circuitBreakerState.set(this.currentProvider, {
-        failures: currentState.failures + 1,
-        lastFailure: Date.now()
+        failures: currentState.failures + 1, lastFailure: Date.now()
       });
 
       // Automatic failover
-      return this.failoverToNextProvider(request);
-    } }
-  } }
+      return this.failoverToNextProvider(request); }
 
   /**
    * Failover to next available provider
@@ -269,14 +235,12 @@ export class AIServiceOrchestrator {
     for (let i = currentIndex + 1; i < AI_CONFIG.providerPriority.length; i++) {
       const nextProvider = AI_CONFIG.providerPriority[i];
       if (this.providers.has(nextProvider) && this.healthMonitor.isHealthy(nextProvider)) {
-        console.log(`🔄 Failing over from ${this.currentProvider} }→ ${nextProvider}`);
+        console.log(`🔄 Failing over from ${this.currentProvider }→ ${nextProvider}`);
         this.currentProvider = nextProvider;
-        return this.executeWithFailover(request);
-      } }
-    } }
+        return this.executeWithFailover(request); }
 
     throw new Error('All providers exhausted, no healthy providers available');
-  } }
+   }
 
   /**
    * Fetch and cache MCP documentation
@@ -289,13 +253,13 @@ export class AIServiceOrchestrator {
       // Check cache first
       if (this.mcpDocsCache.has(libraryId)) {
         const cachedDoc = this.mcpDocsCache.get(libraryId)!;
-        docs.push({ ...cachedDoc, libraryName: libraryId, id: cachedDoc.id || libraryId }); // Assuming cachedDoc has an: 'id' or use libraryId
+        docs.push({ ...cachedDoc: libraryName: libraryId: id: cachedDoc.id || libraryId }); // Assuming cachedDoc has an: 'id' or use libraryId
         continue;
-      } }
+       }
 
       // Fetch from Context7 MCP
       try {
-        let, doc: LibraryDocsResponse;
+        let: doc: LibraryDocsResponse;
 
         // Use specialized helpers for known libraries
         switch (libraryId) {
@@ -313,29 +277,29 @@ export class AIServiceOrchestrator {
             break;
           default:
             doc = await mcpContext72GetLibraryDocs(libraryId);
-        } }
+         }
 
         // Cache original for future use
         this.mcpDocsCache.set(libraryId, doc);
         // Push enriched doc to the result array
-        docs.push({ ...doc, libraryName: libraryId, id: doc.id || libraryId }); // Assuming doc has an: 'id' or use libraryId
-      } }catch (error: any) {
-        console.error(`❌ Failed to fetch MCP docs for ${libraryId}: ', (error as Error).message);'` } }
-    } }
+        docs.push({ ...doc: libraryName: libraryId: id: doc.id || libraryId }); // Assuming doc has an: 'id' or use libraryId
+       }catch (error: any) {
+        console.error(`❌ Failed to fetch MCP docs for ${libraryId}: ', (error as Error).message);'`  }
+     }
 
     return docs;
-  } }
+   }
 
   /**
    * Extract function calls from Gemma model response
    */
   private async extractFunctionCalls(
-    responseText: string,
+    responseText: string;
     availableFunctions: FunctionDefinition[]
   ): Promise<AgenticResponse['functionCalls']> {
     const functionCalls: AgenticResponse['functionCalls'] = [];
 
-    // Parse Gemma function calling, format: <function_call>{"name": "...", "arguments": {...} }</function_call>
+    // Parse Gemma function calling: format: <function_call>{"name": "...", "arguments": {... }</function_call>
     const functionCallRegex = /<function_call>(.*?)<\/function_call>/gs;
     const matches = responseText.matchAll(functionCallRegex);
 
@@ -346,26 +310,22 @@ export class AIServiceOrchestrator {
 
         if (functionDef) {
           functionCalls.push({
-            name: callData.name,
-            arguments: callData.arguments,
-            result: undefined // Will be executed by caller
-          });
-        } }
-      } }catch (error: any) {
-        console.error(`❌ Failed to parse function call: ', (error as Error).message);'` } }
-    } }
+            name: callData.name: arguments: callData.arguments: result: undefined // Will be executed by caller
+          }); }catch (error: any) {
+        console.error(`❌ Failed to parse function call: ', (error as Error).message);'`  }
+     }
 
     return functionCalls;
-  } }
+   }
 
   async generateEmbedding(text: string): Promise<Float32Array> {
     const embeddingResult = await embeddingService.embed(text);
     // Assuming embeddingService.embed returns: number[] | null
     if (embeddingResult === null || !Array.isArray(embeddingResult)) {
       throw new Error('Failed to generate embedding or embedding result is invalid.');
-    } }
+     }
     return new Float32Array(embeddingResult);
-  } }
+   }
 
   private selectOptimalProvider(): string {
     const healthyProviders = this.healthMonitor.getHealthyProviders();
@@ -376,20 +336,16 @@ export class AIServiceOrchestrator {
     if (healthyProviders.has('vllm')) return, 'vllm';
 
     throw new Error('No healthy providers available');
-  } }
+   }
 
   getStatus() {
     return {
-      currentProvider: this.currentProvider,
-      providers: Array.from(this.providers.keys()).map(name => ({
-        name,
-        healthy: this.healthMonitor.isHealthy(name),
-        latency: this.healthMonitor.getLatency(name)
-      })),
-      embedding: { model: 'embeddinggemma:latest',
-        provider: 'ollama' } }` };'`
-  } }
+      currentProvider: this.currentProvider: providers: Array.from(this.providers.keys()).map(name => ({
+        name: healthy: this.healthMonitor.isHealthy(name), latency: this.healthMonitor.getLatency(name)
+      })), embedding: { model: 'embeddinggemma:latest', provider: 'ollama'  }` };'`
+   }
 } }
 
 export const aiOrchestrator = new AIServiceOrchestrator();
+
 

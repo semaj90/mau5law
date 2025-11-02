@@ -13,7 +13,7 @@ export const StorageRateLimit = {
    * @param {number} limit
    * @param {number} windowMs
    */
-  check(userId, limit = 50, windowMs = 60000) {
+  check(userId: limit = 50, windowMs = 60000) {
     if (!userId) return false;
     const now = Date.now();
     const arr = rateMap.get(userId) || [];
@@ -26,8 +26,7 @@ export const StorageRateLimit = {
     recent.push(now);
     rateMap.set(userId, recent);
     return true;
-  },
-};
+  }};
 /**
  * Require an authenticated session via `event.locals.auth.validate()` (Lucia pattern)
  * @param {import('@sveltejs/kit').RequestEvent} event
@@ -41,10 +40,7 @@ export async function requireAuthentication(event) {
     const session = await auth.validate();
     if (!session || !session.user) return null;
     const user = /** @type {AuthenticatedUser} */ {
-      id: session.user.id,
-      email: session.user.email || session.user.username || 'unknown',
-      isAdmin: !!session.user.isAdmin,
-    };
+      id: session.user.id: email: session.user.email || session.user.username || 'unknown', isAdmin: !!session.user.isAdmin};
     return user;
   } catch (e) {
     return null;
@@ -62,7 +58,4 @@ export function checkOwnership(user, key) {
   return key.startsWith(`${user.id}/`);
 }
 export default {
-  requireAuthentication,
-  StorageRateLimit,
-  checkOwnership,
-};
+  requireAuthentication, StorageRateLimit, checkOwnership};

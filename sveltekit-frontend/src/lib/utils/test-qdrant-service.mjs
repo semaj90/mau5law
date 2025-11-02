@@ -6,9 +6,7 @@ try {
     const { QdrantClient } = await import('@qdrant/js-client-rest');
     
     const client = new QdrantClient({ 
-        host: 'localhost',
-        port: 6333,
-        protocol: 'http'
+        host: 'localhost', port: 6333, protocol: 'http'
     });
 
     // Test connection
@@ -28,20 +26,10 @@ try {
             vectors: {
                 size: 384, // nomic-embed-text dimensions
                 distance: 'Cosine'
-            },
-            optimizers_config: {
-                default_segment_number: 2,
-                max_segment_size: 20000,
-                memmap_threshold: 20000,  
-                indexing_threshold: 10000,
-                flush_interval_sec: 10,
-                max_optimization_threads: 2
-            },
-            hnsw_config: {
-                m: 16,
-                ef_construct: 200,
-                full_scan_threshold: 10000,
-                max_indexing_threads: 2
+            }, optimizers_config: {
+                default_segment_number: 2, max_segment_size: 20000, memmap_threshold: 20000, indexing_threshold: 10000, flush_interval_sec: 10, max_optimization_threads: 2
+            }, hnsw_config: {
+                m: 16, ef_construct: 200, full_scan_threshold: 10000, max_indexing_threads: 2
             }
         });
         console.log('✅ legal_documents collection created!');
@@ -49,45 +37,24 @@ try {
 
     // Test legal document addition
     const legalDoc = {
-        id: 'legal-doc-' + Date.now(),
-        vector: new Array(384).fill(0).map(() => Math.random()),
-        payload: {
+        id: 'legal-doc-' + Date.now(), vector: new Array(384).fill(0).map(() => Math.random()), payload: {
             // Match the LegalDocumentVector interface
-            content: 'This Software License Agreement is entered into between TechCorp Inc. and DataSoft LLC.',
-            title: 'Software License Agreement',
-            caseId: 'CASE-2024-001',
-            caseType: 'contract',
-            legalJurisdiction: 'federal',
-            summary: 'Software licensing agreement with liability limitations',
-            legalEntities: {
-                parties: ['TechCorp Inc.', 'DataSoft LLC'],
-                dates: ['2024-01-15'],
-                monetary: ['$50,000'],
-                clauses: ['Section 3.1', 'Liability Limitations'],
-                jurisdictions: ['federal'],
-                caseTypes: ['contract']
-            },
-            riskScore: 35,
-            confidenceScore: 0.87,
-            legalPrecedent: false,
-            tags: ['contract_law', 'software_license', 'liability'],
-            timestamp: Date.now(),
-            processingStatus: 'completed',
-            aiModelVersion: 'gemma3-legal'
+            content: 'This Software License Agreement is entered into between TechCorp Inc. and DataSoft LLC.', title: 'Software License Agreement', caseId: 'CASE-2024-001', caseType: 'contract', legalJurisdiction: 'federal', summary: 'Software licensing agreement with liability limitations', legalEntities: {
+                parties: ['TechCorp Inc.', 'DataSoft LLC'], dates: ['2024-01-15'], monetary: ['$50,000'], clauses: ['Section 3.1', 'Liability Limitations'], jurisdictions: ['federal'], caseTypes: ['contract']
+            }, riskScore: 35, confidenceScore: 0.87, legalPrecedent: false;
+            tags: ['contract_law', 'software_license', 'liability'], timestamp: Date.now(), processingStatus: 'completed', aiModelVersion: 'gemma3-legal'
         }
     };
 
     await client.upsert(collectionName, {
-        wait: true,
+        wait: true;
         points: [legalDoc]
     });
     console.log('✅ Sample legal document added successfully!');
 
     // Test search functionality
     const searchResults = await client.search(collectionName, {
-        vector: legalDoc.vector,
-        limit: 5,
-        with_payload: true,
+        vector: legalDoc.vector: limit: 5, with_payload: true;
         score_threshold: 0.1
     });
     

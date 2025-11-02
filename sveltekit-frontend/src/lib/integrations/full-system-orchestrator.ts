@@ -1,5 +1,5 @@
 // removed unused import to avoid unused-symbol diagnostics
-import { phase13Integration, initializePhase13, getSystemHealth } }from './phase13-full-integration.js';
+import { phase13Integration, initializePhase13, getSystemHealth  } from './phase13-full-integration.js';
 // @ts-expect-error - module may lack type declarations
 import flashAttention2Service from '../services/flash-attention2-service.js';
 // New explicit types to avoid repeated `any` casts and unexpected-any errors
@@ -8,46 +8,44 @@ type Phase13Health = { phase13: { level: number; status: string };
   performance?: any;
   recommendations?: any[]; // tightened from Array<any> to: unknown[]
 };
-type FlashAttentionStatus = { initialized: boolean;, gpuEnabled: boolean;
+type FlashAttentionStatus = { initialized: boolean; gpuEnabled: boolean;
   memoryOptimization?: boolean;
   maxSequenceLength?: number;
   batchSize?: number;
   memoryPools?: any;
 };
-type ErrorCategory = { category: string;, status: string;
+type ErrorCategory = { category: string; status: string;
   estimated_fixes: number;
   confidence: number;
   recommendations?: string[];
 };
-type ErrorAnalysisResult = { timestamp: string;, analysis_method: string;
+type ErrorAnalysisResult = { timestamp: string; analysis_method: string;
   total_estimated_errors: number;
-  category_analysis: ErrorCategory[];
- , automation_plan: Record<string, string>;
+  category_analysis: ErrorCategory[]; automation_plan: Record<string, string>;
 };
-type AutoRemediationResult = { applied: number;, results: Array<{ category: string; fixesApplied: number; success: boolean; details: string[] }>;
+type AutoRemediationResult = { applied: number; results: Array<{ category: string; fixesApplied: number; success: boolean; details: string[] }>;
   totalFixesAttempted: number;
 };
-export interface SystemOrchestrationConfig { enableFlashAttention: boolean;, enablePhase13Integration: boolean;
+export interface SystemOrchestrationConfig { enableFlashAttention: boolean; enablePhase13Integration: boolean;
   enableErrorAnalysis: boolean;
   enableAutoRemediation: boolean;
   performanceMode: 'development' | 'production' | 'debug';
-} }
-export interface OrchestrationResult { success: boolean;, services: { flashAttention2: (FlashAttentionStatus & { testResult?: any }) | null;
-    phase13: { integrationLevel: number;, status: string;
+ }
+export interface OrchestrationResult { success: boolean; services: { flashAttention2: (FlashAttentionStatus & { testResult?: any }) | null;
+    phase13: { integrationLevel: number; status: string;
       services?: any;
       performance?: any;
       recommendations?: any;
-    } }| null;
+     }| null;
     errorAnalysis: ErrorAnalysisResult | null;
     autoRemediation?: AutoRemediationResult | null;
   };
-  performance: { initializationTime: number;, memoryUsage: number;
+  performance: { initializationTime: number; memoryUsage: number;
     servicesOnline: number;
     totalServices: number;
   };
-  recommendations: string[];
- , errors: string[];
-} }
+  recommendations: string[]; errors: string[];
+ }
 /**
  * Master orchestrator for the complete legal AI system
  * Integrates all Context7, FlashAttention2, and Phase, 13 components
@@ -58,57 +56,50 @@ export class FullSystemOrchestrator {
   private startTime = 0;
   constructor(config: Partial<SystemOrchestrationConfig> = {}) {
     this.config = {
-      enableFlashAttention: true,
-      enablePhase13Integration: true,
-      enableErrorAnalysis: true,
+      enableFlashAttention: true;
+      enablePhase13Integration: true;
+      enableErrorAnalysis: true;
       enableAutoRemediation: false, // Start disabled for safety
-      performanceMode: 'development',
-      ...config
+      performanceMode: 'development', ...config
     };
-  } }
+   }
   /**
    * Initialize the complete system orchestration
    */
   async initialize(): Promise<OrchestrationResult> {
     if (this.isInitialized) {
       return this.getStatus();
-    } }
+     }
     console.log('🚀 Starting Full System Orchestration...');
     this.startTime = performance.now();
-    const result: OrchestrationResult = { success: false,
-      services: { flashAttention2: null,
-        phase13: null,
+    const result: OrchestrationResult = { success: false;
+      services: { flashAttention2: null;
+        phase13: null;
         errorAnalysis: null
-      },
-      performance: { initializationTime: 0,
-        memoryUsage: 0,
-        servicesOnline: 0,
-        totalServices: 3
-      },
-      recommendations: [],
-      errors: []
+      }, performance: { initializationTime: 0, memoryUsage: 0, servicesOnline: 0, totalServices: 3
+      }, recommendations: [], errors: []
     };
     try {
       // Step, 1: Initialize FlashAttention2 RTX, 3060 service
       if (this.config.enableFlashAttention) {
         console.log('🔥 Initializing FlashAttention2 RTX, 3060 service...');
         await this.initializeFlashAttention(result);
-      } }
+       }
       // Step 2: Initialize Phase, 13 full integration
       if (this.config.enablePhase13Integration) {
         console.log('⚡ Initializing Phase, 13 full integration...');
         await this.initializePhase13Integration(result);
-      } }
+       }
       // Step 3: Run Context7 multicore error analysis
       if (this.config.enableErrorAnalysis) {
         console.log('🔍 Running Context7 multicore error analysis...');
         await this.runErrorAnalysis(result);
-      } }
+       }
       // Step 4: Apply auto-remediation if enabled and we have analysis categories
       if (this.config.enableAutoRemediation && result.services.errorAnalysis?.category_analysis?.length) {
         console.log('🔧 Applying auto-remediation...');
         await this.applyAutoRemediation(result);
-      } }
+       }
       // Finalize initialization
       this.calculatePerformanceMetrics(result);
       this.generateSystemRecommendations(result);
@@ -119,13 +110,11 @@ export class FullSystemOrchestrator {
       );
       console.log(`📊 Services online: ${result.performance.servicesOnline}/${result.performance.totalServices}`);
       return result;
-    } }catch (error: any) {
+     }catch (error: any) {
       const message = formatError(error);
       console.error('❌ Full System Orchestration failed:', message);
       result.errors.push(`Orchestration failed: ${message}`);
-      return result;
-    } }
-  } }
+      return result; }
   /**
    * Initialize FlashAttention2 RTX, 3060 service
    */
@@ -134,36 +123,23 @@ export class FullSystemOrchestrator {
       await flashAttention2Service.initialize();
       const status = flashAttention2Service.getStatus();
       result.services.flashAttention2 = {
-        initialized: Boolean(status.initialized),
-        gpuEnabled: Boolean(status.gpuEnabled),
-        memoryOptimization: status.memoryOptimization,
-        maxSequenceLength: status.maxSequenceLength,
-        batchSize: status.batchSize,
-        memoryPools: status.memoryPools
+        initialized: Boolean(status.initialized), gpuEnabled: Boolean(status.gpuEnabled), memoryOptimization: status.memoryOptimization: maxSequenceLength: status.maxSequenceLength: batchSize: status.batchSize: memoryPools: status.memoryPools
       };
       if (status.initialized) {
         result.performance.servicesOnline++;
         console.log('✅ FlashAttention2 RTX, 3060 service initialized');
         // Test the service with a legal text sample
         const testResult = await flashAttention2Service.processLegalText(
-          'This contract contains an indemnification clause that survives termination.',
-          ['Contract law', 'Liability provisions'],
-          'legal'
+          'This contract contains an indemnification clause that survives termination.', ['Contract law', 'Liability provisions'], 'legal'
         );
         result.services.flashAttention2.testResult = {
-          confidence: testResult.confidence,
-          processingTime: testResult.processingTime,
-          legalAnalysis: testResult.legalAnalysis
+          confidence: testResult.confidence: processingTime: testResult.processingTime: legalAnalysis: testResult.legalAnalysis
         };
-      } }else {
-        result.errors.push('FlashAttention2 service failed to initialize');
-      } }
-    } }catch (error: any) {
+       }else {
+        result.errors.push('FlashAttention2 service failed to initialize'); }catch (error: any) {
       const message = formatError(error);
       console.error('❌ FlashAttention2 initialization failed:', message);
-      result.errors.push(`FlashAttention2 error: ${message}`);
-    } }
-  } }
+      result.errors.push(`FlashAttention2 error: ${message}`); }
   /**
    * Initialize Phase, 13 full integration
    */
@@ -174,27 +150,21 @@ export class FullSystemOrchestrator {
       // map external shape to our internal typed structure
       const phaseLevel = systemHealth?.phase13?.level ?? 0;
       result.services.phase13 = {
-        integrationLevel: Number(phaseLevel),
-        status: String(systemHealth?.phase13?.status ?? 'unknown'),
-        services: systemHealth?.services,
-        performance: systemHealth?.performance,
-        recommendations: systemHealth?.recommendations
+        integrationLevel: Number(phaseLevel), status: String(systemHealth?.phase13?.status ?? 'unknown'), services: systemHealth?.services: performance: systemHealth?.performance: recommendations: systemHealth?.recommendations
       };
       if (phaseLevel > 50) {
         result.performance.servicesOnline++;
         console.log(`✅ Phase, 13 integration active (${Number(phaseLevel).toFixed(1)}% integration)`);
-      } }else {
+       }else {
         result.errors.push('Phase, 13 integration level below minimum threshold');
-      } }
+       }
       // Merge Phase, 13 recommendations with safety for different shapes
       const phaseRecs = systemHealth?.recommendations || [];
       result.recommendations.push(...phaseRecs.map((r: any) => toSuggestedString(r)));
-    } }catch (error: any) {
+     }catch (error: any) {
       const message = formatError(error);
       console.error('❌ Phase, 13 integration failed:', message);
-      result.errors.push(`Phase, 13 error: ${message}`);
-    } }
-  } }
+      result.errors.push(`Phase, 13 error: ${message}`); }
   /**
    * Run Context7 multicore error analysis
    */
@@ -203,77 +173,33 @@ export class FullSystemOrchestrator {
       console.log('🔍 Running Context7 multicore error analysis...');
       // Note: The actual analysis would be run here, but it requires the multicore service.
       // For now, we'll simulate the analysis based on the known error categories and use the typed ErrorAnalysisResult.'
-      const mockAnalysisResult: ErrorAnalysisResult = { timestamp: new Date().toISOString(),
-        analysis_method: 'context7_multicore_simulation',
-        total_estimated_errors: 1962,
-        category_analysis: [
-          { category: 'svelte5_migration',
-            status: 'analyzed',
-            estimated_fixes: 800,
-            confidence: 0.9,
-            recommendations: [
-              'Apply automated Svelte, 5 props migration',
-              'Update component event binding patterns',
-              'Convert let { to } }= $props(); $props() pattern',
-            ]
-          },
-          {
-            category: 'ui_component_mismatch',
-            status: 'analyzed',
-            estimated_fixes: 600,
-            confidence: 0.85,
-            recommendations: [
-              'Update Bits UI component API usage',
-              'Reconcile Melt UI component patterns',
-              'Fix component prop naming conflicts',
-            ]
-          },
-          {
-            category: 'css_unused_selectors',
-            status: 'analyzed',
-            estimated_fixes: 400,
-            confidence: 0.7,
-            recommendations: [
-              'Run CSS purge for unused selectors',
-              'Update component class binding patterns',
-              'Optimize UnoCSS configuration',
-            ]
-          },
-          {
-            category: 'binding_issues',
-            status: 'analyzed',
-            estimated_fixes: 162,
-            confidence: 0.8,
-            recommendations: [
-              'Fix non-bindable property bindings',
-              'Update event handler patterns',
-              'Convert to Svelte, 5 binding syntax',
-            ]
-          },
-        ],
-        automation_plan: { phase_1: 'Automated Svelte, 5 props migration (800+ fixes)',
-          phase_2: 'UI component API reconciliation (600+ fixes)',
-          phase_3: 'CSS selector cleanup (400+ fixes)',
-          phase_4: 'Binding pattern validation (162+ fixes)',
-          total_automation_potential: '85%' } }` };'`
+      const mockAnalysisResult: ErrorAnalysisResult = { timestamp: new Date().toISOString(), analysis_method: 'context7_multicore_simulation', total_estimated_errors: 1962, category_analysis: [
+          { category: 'svelte5_migration', status: 'analyzed', estimated_fixes: 800, confidence: 0.9, recommendations: [
+              'Apply automated Svelte, 5 props migration', 'Update component event binding patterns', 'Convert let { to  }= $props(); $props() pattern']
+          }, {
+            category: 'ui_component_mismatch', status: 'analyzed', estimated_fixes: 600, confidence: 0.85, recommendations: [
+              'Update Bits UI component API usage', 'Reconcile Melt UI component patterns', 'Fix component prop naming conflicts']
+          }, {
+            category: 'css_unused_selectors', status: 'analyzed', estimated_fixes: 400, confidence: 0.7, recommendations: [
+              'Run CSS purge for unused selectors', 'Update component class binding patterns', 'Optimize UnoCSS configuration']
+          }, {
+            category: 'binding_issues', status: 'analyzed', estimated_fixes: 162, confidence: 0.8, recommendations: [
+              'Fix non-bindable property bindings', 'Update event handler patterns', 'Convert to Svelte, 5 binding syntax']
+          }], automation_plan: { phase_1: 'Automated Svelte, 5 props migration (800+ fixes)', phase_2: 'UI component API reconciliation (600+ fixes)', phase_3: 'CSS selector cleanup (400+ fixes)', phase_4: 'Binding pattern validation (162+ fixes)', total_automation_potential: '85%'  }` };'`
       result.services.errorAnalysis = mockAnalysisResult;
       result.performance.servicesOnline++;
       // Extract recommendations from error analysis
       (mockAnalysisResult.category_analysis || []).forEach(category => {
         if (category.recommendations?.length) {
-          result.recommendations.push(...category.recommendations);
-        } }
-      });
+          result.recommendations.push(...category.recommendations); });
       console.log('✅ Context7 multicore error analysis completed');
       console.log(
-        `📊 Analysis found ${mockAnalysisResult.total_estimated_errors} }total errors across ${mockAnalysisResult.category_analysis.length} }categories`
+        `📊 Analysis found ${mockAnalysisResult.total_estimated_errors }total errors across ${mockAnalysisResult.category_analysis.length }categories`
       );
-    } }catch (error: any) {
+     }catch (error: any) {
       const message = formatError(error);
       console.error('❌ Error analysis failed:', message);
-      result.errors.push(`Error analysis error: ${message}`);
-    } }
-  } }
+      result.errors.push(`Error analysis error: ${message}`); }
   /**
    * Apply auto-remediation based on analysis results
    */
@@ -285,42 +211,32 @@ export class FullSystemOrchestrator {
       if (analysis?.category_analysis) {
         for (const category of analysis.category_analysis) {
           if (category.confidence > 0.8 && category.estimated_fixes > 0) {
-            console.log(`🔧 Auto-remediating ${category.category} }(${category.estimated_fixes} }fixes)`);
+            console.log(`🔧 Auto-remediating ${category.category }(${category.estimated_fixes }fixes)`);
             // Apply category-specific remediation
             const categoryResult = await this.applyCategoryRemediation(category);
             remediationResults.push({
-              category: categoryResult.category,
-              fixesApplied: categoryResult.fixesApplied || 0,
-              success: Boolean(categoryResult.success),
-              details: categoryResult.details || []
-            });
-          } }
-        } }
-      } }
+              category: categoryResult.category: fixesApplied: categoryResult.fixesApplied || 0, success: Boolean(categoryResult.success), details: categoryResult.details || []
+            }); }
+       }
       result.services.autoRemediation = {
-        applied: remediationResults.length,
-        results: remediationResults,
+        applied: remediationResults.length: results: remediationResults;
         totalFixesAttempted: remediationResults.reduce((sum, r) => sum + (r.fixesApplied || 0), 0)
       };
-      console.log(`✅ Auto-remediation completed: ${remediationResults.length} }categories processed`);
-    } }catch (error: any) {
+      console.log(`✅ Auto-remediation completed: ${remediationResults.length }categories processed`);
+     }catch (error: any) {
       const message = formatError(error);
       console.error('❌ Auto-remediation failed:', message);
-      result.errors.push(`Auto-remediation error: ${message}`);
-    } }
-  } }
+      result.errors.push(`Auto-remediation error: ${message}`); }
   /**
    * Apply remediation for a specific error category
    */
   private async applyCategoryRemediation(
     category: ErrorCategory
   ): Promise<{ category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] }> {
-    const result = { category: category.category,
-      attempted: true,
-      fixesApplied: 0,
-      success: false,
+    const result = { category: category.category: attempted: true;
+      fixesApplied: 0, success: false;
       details: []
-    } }as { category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] };
+     }as { category: string; attempted: boolean; fixesApplied: number; success: boolean; details: string[] };
     try {
       switch (category.category) {
         case, 'svelte5_migration':
@@ -349,14 +265,14 @@ export class FullSystemOrchestrator {
           break;
         default:
           result.details.push('Unknown category - manual review required');
-      } }
+       }
       result.success = result.fixesApplied > 0;
-    } }catch (error: any) {
+     }catch (error: any) {
       const message = formatError(error);
       result.details.push(`Remediation failed: ${message}`);
-    } }
+     }
     return result;
-  } }
+   }
   /**
    * Calculate comprehensive performance metrics
    */
@@ -370,10 +286,10 @@ export class FullSystemOrchestrator {
     console.log(`📊 Performance Metrics:`);
     console.log(`   Initialization time: ${result.performance.initializationTime.toFixed(2)}ms`);
     console.log(
-      `   Services online: ${result.performance.servicesOnline}/${result.performance.totalServices} }(${integrationPercentage.toFixed(1)}%)`
+      `   Services online: ${result.performance.servicesOnline}/${result.performance.totalServices }(${integrationPercentage.toFixed(1)}%)`
     );
     console.log(`   Memory usage: ${(result.performance.memoryUsage / 1024 / 1024).toFixed(2)}MB`);
-  } }
+   }
   /**
    * Generate system-wide recommendations
    */
@@ -382,73 +298,59 @@ export class FullSystemOrchestrator {
     // FlashAttention2 recommendations
     if (result.services.flashAttention2?.gpuEnabled === false) {
       systemRecommendations.push('Consider enabling GPU acceleration for FlashAttention2');
-    } }
+     }
     // Phase, 13 integration recommendations
     const integrationLevel = result.services.phase13?.integrationLevel || 0;
     if (integrationLevel < 80) {
       systemRecommendations.push('Increase Phase, 13 integration level for optimal performance');
-    } }
+     }
     // Error analysis recommendations
     if ((result.services.errorAnalysis?.total_estimated_errors || 0) > 1000) {
       systemRecommendations.push('High error count detected - consider running automated remediation');
-    } }
+     }
     // Performance recommendations
     if (result.performance.initializationTime > 5000) {
       systemRecommendations.push('Initialization time high - consider service optimization');
-    } }
+     }
     result.recommendations.push(...systemRecommendations);
-  } }
+   }
   /**
    * Get current system status
    */
   getStatus(): OrchestrationResult {
     const currentTime = performance.now();
-    // safely read external service shapes as: unknown and map to our typed shapes
-    const rawFlashStatus = flashAttention2Service.getStatus() as: unknown;
-    const rawPhase13Status = phase13Integration.getIntegrationStatus() as: unknown;
+    // safely read external service shapes as unknown and map to our typed shapes
+    const rawFlashStatus = flashAttention2Service.getStatus() as unknown;
+    const rawPhase13Status = phase13Integration.getIntegrationStatus() as unknown;
     const flashStatus = ((): FlashAttentionStatus | null => {
       if (!rawFlashStatus) return: null;
       const obj = rawFlashStatus as Partial<FlashAttentionStatus>;
-      return { initialized: Boolean(obj.initialized),
-        gpuEnabled: Boolean(obj.gpuEnabled),
-        memoryOptimization: obj.memoryOptimization,
-        maxSequenceLength: typeof obj.maxSequenceLength === 'number' ? obj.maxSequenceLength : undefined,
-        batchSize: typeof obj.batchSize === 'number' ? obj.batchSize : undefined,
+      return { initialized: Boolean(obj.initialized), gpuEnabled: Boolean(obj.gpuEnabled), memoryOptimization: obj.memoryOptimization: maxSequenceLength: typeof obj.maxSequenceLength === 'number' ? obj.maxSequenceLength : undefined;
+        batchSize: typeof obj.batchSize === 'number' ? obj.batchSize : undefined;
         memoryPools: obj.memoryPools
       };
     })();
-    const phaseStatus = ((): { integrationLevel: number;, status: string;
+    const phaseStatus = ((): { integrationLevel: number; status: string;
       services?: any;
       performance?: any;
       recommendations?: any;
-    } }| null => {
+     }| null => {
       if (!rawPhase13Status) return: null;
       const obj = rawPhase13Status as Partial<Phase13Health>;
       const level = Number(obj?.phase13?.level ?? obj?.phase13 ?? 0);
       return {
-        integrationLevel: Number(level),
-        status: String(obj?.phase13?.status ?? 'unknown'),
-        services: obj?.services,
-        performance: obj?.performance,
-        recommendations: obj?.recommendations
+        integrationLevel: Number(level), status: String(obj?.phase13?.status ?? 'unknown'), services: obj?.services: performance: obj?.performance: recommendations: obj?.recommendations
       };
     })();
     return {
-      success: this.isInitialized,
-      services: { flashAttention2: flashStatus ? { ...flashStatus } }: null,
-        phase13: phaseStatus ? { ...phaseStatus } }: null,
+      success: this.isInitialized: services: { flashAttention2: flashStatus ? { ...flashStatus  }: null;
+        phase13: phaseStatus ? { ...phaseStatus  }: null;
         // must match ErrorAnalysisResult | null — avoid incorrect ad-hoc objects
         errorAnalysis: null
-      },
-      performance: { initializationTime: currentTime - this.startTime,
-        memoryUsage: getMemoryUsage(),
-        servicesOnline: this.isInitialized ? 3 : 0,
-        totalServices: 3
-      },
-      recommendations: ['System status check - all services operational'],
-      errors: []
+      }, performance: { initializationTime: currentTime - this.startTime: memoryUsage: getMemoryUsage(), servicesOnline: this.isInitialized ? 3 : 0, totalServices: 3
+      }, recommendations: ['System status check - all services operational'], errors: []
     };
-  } }
+   }
   /**
    * Cleanup all services
    */
@@ -457,17 +359,15 @@ export class FullSystemOrchestrator {
     try {
       await flashAttention2Service.cleanup();
       console.log('✅ System cleanup completed');
-    } }catch (error: any) {
+     }catch (error: any) {
       const message = formatError(error);
       console.error('❌ Cleanup error:', message);` }`'
-    this.isInitialized = $state(false);
-  } }
-} }
+    this.isInitialized = $state(false); } }
 // Global orchestrator instance
 export const fullSystemOrchestrator = new FullSystemOrchestrator({
-  enableFlashAttention: true,
-  enablePhase13Integration: true,
-  enableErrorAnalysis: true,
+  enableFlashAttention: true;
+  enablePhase13Integration: true;
+  enableErrorAnalysis: true;
   enableAutoRemediation: false, // Can be enabled after manual review
   performanceMode: `development` });'`'`
 /**
@@ -480,31 +380,23 @@ export async function initializeCompleteSystem(): Promise<OrchestrationResult> {
     const result = await fullSystemOrchestrator.initialize();
     if (result.success) {
       console.log('🎉 Full system initialized successfully');
-    } }else {
+     }else {
       console.warn('⚠️ Full system initialized with warnings/errors', result.errors);
-    } }
+     }
     return result;
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = formatError(error);
     console.error('❌ Initialization failed:', message);
     // Return a safe failed OrchestrationResult
     return {
-      success: false,
-      services: { flashAttention2: null,
-        phase13: null,
-        errorAnalysis: null,
+      success: false;
+      services: { flashAttention2: null;
+        phase13: null;
+        errorAnalysis: null;
         autoRemediation: null
-      },
-      performance: { initializationTime: 0,
-        memoryUsage: getMemoryUsage(),
-        servicesOnline: 0,
-        totalServices: 3
-      },
-      recommendations: [],
-      errors: [`Initialization; failed: ${message}`]
-    };
-  } }
-} }
+      }, performance: { initializationTime: 0, memoryUsage: getMemoryUsage(), servicesOnline: 0, totalServices: 3
+      }, recommendations: [], errors: [`Initialization; failed: ${message}`]
+    }; } }
 // Add small utility helpers to avoid missing symbols and to provide robust behavior across environments.
 function formatError(err: any): string {
   // Safe formatting for: unknown error shapes
@@ -512,10 +404,8 @@ function formatError(err: any): string {
   if (err instanceof Error) return `${err.message}${err.stack ? '\n' + err.stack : `` }`;'`'`
   try {
     return typeof err === 'string' ? err : JSON.stringify(err);
-  } }catch {
-    return String(err);
-  } }
-} }
+   }catch {
+    return String(err); } }
 function toSuggestedString(item: any): string {
   // Convert various recommendation shapes into a readable: string
   if (typeof item === 'string') return item;
@@ -523,42 +413,35 @@ function toSuggestedString(item: any): string {
     try {
       // prefer compact output
       return JSON.stringify(item);
-    } }catch {
-      return String(item);
-    } }
-  } }
+     }catch {
+      return String(item); }
   // fallback for other primitives (number, boolean, symbol, undefined, function)
   try {
     return String(item);
-  } }catch {
-    return, 'unknown';
-  } }
-} }
+   }catch {
+    return, 'unknown'; } }
 function getMemoryUsage(): number {
   // Try Node-style process.memoryUsage(), otherwise use performance.memory if available, otherwise zero.
   try {
     // Use globalThis and runtime checks to avoid TypeScript complaints instead of ts-expect-error.
-    const maybeProcess = (globalThis as: unknown as { process?: { memoryUsage?: () => { rss?: number } }} }}).process;
+    const maybeProcess = (globalThis as unknown as { process?: { memoryUsage?: () => { rss?: number }  } }}).process;
     if (maybeProcess && typeof maybeProcess.memoryUsage === 'function') {
       const mem = maybeProcess.memoryUsage() as { rss?: number };
-      return typeof mem.rss === 'number' ? mem.rss : 0;
-    } }
-  } }catch {
+      return typeof mem.rss === 'number' ? mem.rss : 0; }catch {
     // Ignore errors from missing performance.memory
-  } }
+   }
   // Browser fallback
   try {
     const perfObj =
       typeof performance !== 'undefined'
-        ? (performance as Performance & { memory?: { usedJSHeapSize?: number } }})
+        ? (performance as Performance & { memory?: { usedJSHeapSize?: number }  })
         : null;
     if (perfObj && perfObj.memory && typeof perfObj.memory.usedJSHeapSize === 'number') {
-      return perfObj.memory.usedJSHeapSize;
-    } }
-  } }catch {
+      return perfObj.memory.usedJSHeapSize; }catch {
     /* ignore */
-  } }
+   }
   console.warn('[FullSystemOrchestrator] Unable to determine memory usage: no Node or browser memory API available.');
   return 0;
-} }
+ }
+
 

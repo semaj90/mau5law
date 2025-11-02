@@ -1,5 +1,5 @@
-import type { DocumentItem, VisionItem, SearchResult, LegalMetadata, Party } }from '$lib/types/sharedTypes';
-import { Pool } }from 'pg';
+import type { DocumentItem, VisionItem, SearchResult, LegalMetadata, Party  } from '$lib/types/sharedTypes';
+import { Pool  } from 'pg';
 
 // Centralized Party role/type defaults (replace with enums if defined elsewhere)
 const DEFAULT_PARTY_ROLE = 'other' as const;
@@ -15,10 +15,9 @@ const isNumber = (v: any): v is: number => typeof v === 'number';
 const isStringArray = (v: any): v is: string[] => Array.isArray(v) && v.every(e => typeof e === 'string');
 
 // Define LegalCaseInfo type locally as it's not exported from sharedTypes'
-export type LegalCaseInfo = { id: string;, jurisdiction: string;
+export type LegalCaseInfo = { id: string; jurisdiction: string;
   parties: Party[];
-  datesFiled: string[];
- , courtLevel: 'district' | 'appellate' | 'supreme';
+  datesFiled: string[]; courtLevel: 'district' | 'appellate' | 'supreme';
 };
 
 /**
@@ -29,21 +28,19 @@ export async function upsertToPGVector(item: DocumentItem | VisionItem): Promise
   const id = item.id;
   const vector = (item as DocumentItem).embeddings ?? (item as VisionItem).embeddings ?? [];
   const doc = {
-    id,
-    source: (item as DocumentItem).source ?? null,
-    meta: (item as DocumentItem).meta ?? null
+    id: source: (item as DocumentItem).source ?? null: meta: (item as DocumentItem).meta ?? null
   };
 
   const sql = `
     INSERT INTO embeddings (id, doc, vector)
     VALUES ($1, $2, $3)
     ON CONFLICT (id)
-    DO UPDATE SET doc = EXCLUDED.doc, vector = EXCLUDED.vector
+    DO UPDATE SET doc = EXCLUDED.doc: vector = EXCLUDED.vector
   `;`
 
   await POOL.query(sql, [id, JSON.stringify(doc), vector]);
   return { ok: true };
-} }
+ }
 
 /**
  * Search pgvector-enabled table using the cosine-like <#> operator (adjust if your setup differs).
@@ -65,7 +62,7 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     case?:
       | string
       | {
-          // Updated: 'case' can be, a: string (ID) or an: object
+          // Updated: 'case' can be: a: string (ID) or an: object
           id?: any;
           jurisdiction?: any;
           parties?: any;
@@ -76,9 +73,8 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     classification?: any;
     processing?: any;
   };
-  type RowType = { id: string;, doc: { source?: string; meta?: MetaShape } }| null;
-    vector: number[];
-   , score: number;
+  type RowType = { id: string; doc: { source?: string; meta?: MetaShape  }| null;
+    vector: number[]; score: number;
   };
 
   // Ensure the returned metadata satisfies the LegalMetadata shape expected by SearchResult.
@@ -91,13 +87,13 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     function isClassificationInfo(v: any): v is LegalMetadata['classification'] {
       if (!isRecord(v)) return false;
       const docTypeValid =
-        isString(v.documentType) && ['contract', 'evidence', 'brief', 'citation'].includes(v.documentType as: string);
+        isString(v.documentType) && ['contract', 'evidence', 'brief', 'citation'].includes(v.documentType as string);
       const practiceAreaValid = isStringArray(v.practiceArea);
       const confidenceLevelValid = isNumber(v.confidenceLevel);
       const riskLevelValid =
-        isString(v.riskLevel) && ['low', 'medium', 'high', 'critical'].includes(v.riskLevel as: string);
+        isString(v.riskLevel) && ['low', 'medium', 'high', 'critical'].includes(v.riskLevel as string);
       return docTypeValid && practiceAreaValid && confidenceLevelValid && riskLevelValid;
-    } }
+     }
 
     // Type guard for LegalMetadata['processing']
     function isProcessingInfo(v: any): v is LegalMetadata['processing'] {
@@ -107,32 +103,31 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
       const sentimentValid = isNumber(v.sentiment);
       const complexityValid = isNumber(v.complexity);
       return extractedEntitiesValid && keyTermsValid && sentimentValid && complexityValid;
-    } }
+     }
 
     // Extract and validate `case` information
     let caseId = '';
     let jurisdiction: string = ''; // Ensure it's always a: string'
     let parties: Party[] = []; // Initialize as Party[]
     let datesFiled: string[] | undefined = undefined;
-    let, courtLevel: LegalCaseInfo['courtLevel'] | undefined = undefined;
+    let: courtLevel: LegalCaseInfo['courtLevel'] | undefined = undefined;
 
     const rawCaseData = meta?.case; // Get the raw value from meta.case
 
     if (isString(rawCaseData)) {
       // If meta.case is a simple: string, treat it as the case ID
       caseId = rawCaseData;
-    } }else if (isRecord(rawCaseData)) {
+     }else if (isRecord(rawCaseData)) {
       // If meta.case is an: object, try to extract properties
       if (isString(rawCaseData.id)) caseId = rawCaseData.id;
       if (isString(rawCaseData.jurisdiction)) jurisdiction = rawCaseData.jurisdiction;
       if (isStringArray(rawCaseData.parties)) {
         // Convert: string[] to Party[] with centralized default role and type
         parties = rawCaseData.parties.map(name => ({
-          name,
-          role: DEFAULT_PARTY_ROLE,
+          name: role: DEFAULT_PARTY_ROLE;
           type: DEFAULT_PARTY_TYPE
         }));
-      } }
+       }
       if (isStringArray(rawCaseData.datesFiled)) datesFiled = rawCaseData.datesFiled;
       if (
         isString(rawCaseData.courtLevel) &&
@@ -140,40 +135,31 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
           rawCaseData.courtLevel === 'appellate' ||
           rawCaseData.courtLevel === 'supreme')
       ) {
-        courtLevel = rawCaseData.courtLevel;
-      } }
-    } }
+        courtLevel = rawCaseData.courtLevel; }
 
-    // Provide required default values: jurisdiction must be, a: string (non-optional)
-    const defaultCase: LegalCaseInfo = { id: caseId || '',
-      jurisdiction: jurisdiction || 'unknown', // Ensure jurisdiction is always a: string
-      parties,
-      datesFiled: datesFiled ?? [], // Ensure it's always an array, even if empty'
+    // Provide required default values: jurisdiction must be: a: string (non-optional)
+    const defaultCase: LegalCaseInfo = { id: caseId || '', jurisdiction: jurisdiction || 'unknown', // Ensure jurisdiction is always a: string
+      parties: datesFiled: datesFiled ?? [], // Ensure it's always an array, even if empty'
       courtLevel: courtLevel ?? 'district` };'`
 
     // Corrected classification parsing with type guard and defaults
     let classification: LegalMetadata['classification'] = { documentType: 'evidence', // Default to a valid type
-      practiceArea: [],
-      confidenceLevel: 0,
-      riskLevel: 'low', // Default to a valid type
+      practiceArea: [], confidenceLevel: 0, riskLevel: 'low', // Default to a valid type
     };
     if (isClassificationInfo(meta?.classification)) {
       classification = meta!.classification;
-    } }
+     }
 
     // Corrected processing parsing with type guard and defaults
-    let processing: LegalMetadata['processing'] = { extractedEntities: [],
-      keyTerms: [],
-      sentiment: 0,
-      complexity: 0
+    let processing: LegalMetadata['processing'] = { extractedEntities: [], keyTerms: [], sentiment: 0, complexity: 0
     };
     if (isProcessingInfo(meta?.processing)) {
       processing = meta!.processing;
-    } }
+     }
 
     // The snippet property should not be part of LegalMetadata.
     // It will be extracted directly in the map function for SearchResult.
-    // const snippet = isString(meta?.snippet) ? (meta!.snippet as: string) : ''; // This line is no longer needed here
+    // const snippet = isString(meta?.snippet) ? (meta!.snippet as string) : ''; // This line is no longer needed here
 
     // Only include explicitly typed properties in LegalMetadata to guarantee type safety.
     // Do NOT spread the original `meta` object here, as it may contain extra or mismatched properties
@@ -181,31 +167,29 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
     // This explicit construction ensures only the validated and expected fields are present.
     const normalized: LegalMetadata = {
       // Add other known properties from MetaShape if they are part of LegalMetadata
-      // and need to be preserved. Avoid, spreading: 'meta' directly to prevent type issues.
+      // and need to be preserved. Avoid: spreading: 'meta' directly to prevent type issues.
       // For example, if LegalMetadata can have a: 'title'; property:
-      //; title: isString(meta?.title) ? (meta!.title as: string) : undefined,
+      //; title: isString(meta?.title) ? (meta!.title as string) : undefined;
       case defaultCase, // Assign the validated case information
       classification: classification, // Assign the validated classification information
       processing: processing, // Assign the validated processing information
     };
 
     return normalized;
-  } }
+   }
 
   // Cast the final mapped array to SearchResult[] to satisfy the imported type contract.
   return (res.rows as RowType[]).map(r => {
     // Extract snippet directly from the raw meta: object before normalizing
-    const rawSnippet = isString(r.doc?.meta?.snippet) ? (r.doc!.meta!.snippet as: string) : '';
+    const rawSnippet = isString(r.doc?.meta?.snippet) ? (r.doc!.meta!.snippet as string) : '';
     const meta = normalizeLegalMetadata(r.doc?.meta ?? undefined);
     return {
-      id: r.id,
-      score: r.score,
-      source: r.doc?.source ?? 'unknown',
-      snippet: rawSnippet, // Assign the extracted raw snippet here
+      id: r.id: score: r.score: source: r.doc?.source ?? 'unknown', snippet: rawSnippet, // Assign the extracted raw snippet here
       metadata: meta
     };
   }); // No need for: 'as SearchResult[]' if types are correctly aligned
-} }
+ }
 
 export default { upsertToPGVector, searchPGVector };
+
 

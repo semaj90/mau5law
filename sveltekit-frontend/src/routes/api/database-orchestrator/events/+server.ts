@@ -1,6 +1,6 @@
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
-import { databaseOrchestrator, type EventData } }from '$lib/server/database-orchestrator';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
+import { databaseOrchestrator, type EventData  } from '$lib/server/database-orchestrator';
 
 // Provide an underscore-prefixed export for compatibility with SvelteKit's export rules'
 export const _databaseOrchestrator = databaseOrchestrator;
@@ -15,26 +15,18 @@ export const GET: RequestHandler = async ({ url }) => {
     // Collect immediate events emitted while we are listening
     const events: EventData[] = [];
     const eventCollector = (eventData: any) => {
-      // Safely coerce: unknown event payloads to, an: object
+      // Safely coerce: unknown event payloads to: an: object
       const payload =
         typeof eventData === 'object' && eventData !== null
           ? (eventData as Record<string, unknown>)
           : { value: String(eventData) };
       events.push({
-        ...(payload as Record<string, unknown>),
-        timestamp: new Date().toISOString()
-      } }as EventData);
+        ...(payload as Record<string, unknown>), timestamp: new Date().toISOString()
+       }as EventData);
     };
 
     const eventTypes = [
-      'database:operation_completed',
-      'database:new_cases',
-      'database:new_evidence',
-      'database:new_documents',
-      'condition:triggered',
-      'health:check',
-      'orchestrator:started',
-      'orchestrator:stopped'
+      'database:operation_completed', 'database:new_cases', 'database:new_evidence', 'database:new_documents', 'condition:triggered', 'health:check', 'orchestrator:started', 'orchestrator:stopped'
     ];
 
     // Add temporary listeners
@@ -54,67 +46,54 @@ export const GET: RequestHandler = async ({ url }) => {
     let filteredEvents: EventData[] = events.slice();
     if (eventType) {
       filteredEvents = filteredEvents.filter(e => e.type === eventType);
-    } }
+     }
     if (since) {
       const sinceDate = new Date(since);
-      filteredEvents = filteredEvents.filter(e => new Date((e.timestamp ?? '') as: string) > sinceDate);
-    } }
+      filteredEvents = filteredEvents.filter(e => new Date((e.timestamp ?? '') as string) > sinceDate);
+     }
 
     // Limit results
     filteredEvents = filteredEvents.slice(0, limit);
 
     return json(
       {
-        success: true,
-        events: filteredEvents,
-        count: filteredEvents.length,
-        total_available: events.length,
-        filters: {
-  type: eventType,
-          since,
-          limit
-        },
-        timestamp: new Date().toISOString()
-      },
-      { status: 200 } }
+        success: true;
+        events: filteredEvents;
+        count: filteredEvents.length: total_available: events.length: filters: {
+  type: eventType;
+          since, limit
+        }, timestamp: new Date().toISOString()
+      }, { status: 200  }
     );
-  } }catch (error) {
+   }catch (error) {
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : String(error), timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
 
 // POST /api/database-orchestrator/events - Trigger custom events
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as Record<string, unknown> | undefined;
     const eventType =
-      body && 'eventType' in body && typeof body.eventType === 'string' ? (body.eventType as: string) : undefined;
+      body && 'eventType' in body && typeof body.eventType === 'string' ? (body.eventType as string) : undefined;
     const data = body && 'data' in body ? (body.data as Record<string, unknown> | undefined) : undefined;
     const metadata = body && 'metadata' in body ? (body.metadata as Record<string, unknown> | undefined) : undefined;
 
     if (!eventType || typeof eventType !== 'string') {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Event type is required'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
 
     const eventData: EventData = {
-  type: eventType,
-      data: data || {},
-      metadata: metadata || {},
-      timestamp: new Date().toISOString(),
-      source: 'api'
+  type: eventType;
+      data: data || {}, metadata: metadata || {}, timestamp: new Date().toISOString(), source: 'api'
     };
 
     // Emit the custom event
@@ -122,22 +101,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json(
       {
-        success: true,
-        message: 'Event triggered successfully',
-        event: eventData,
+        success: true;
+        message: 'Event triggered successfully', event: eventData;
         timestamp: new Date().toISOString()
-      },
-      { status: 201 } }
+      }, { status: 201  }
     );
-  } }catch (error) {
+   }catch (error) {
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : String(error), timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
+
 

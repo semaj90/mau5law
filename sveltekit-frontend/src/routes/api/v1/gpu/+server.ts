@@ -1,8 +1,8 @@
-import type { RequestHandler } }from './$types.js';
-import { json, error } }from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { json, error  } from '@sveltejs/kit';
 
 // New narrow types and helpers
-type GPURequestBody = { service: string;, operation: string;
+type GPURequestBody = { service: string; operation: string;
   data: number[];
   [key: string]: any;
 };
@@ -15,17 +15,15 @@ function isGPURequestBody(body: any): body is GPURequestBody {
   if (typeof obj.service !== 'string' || typeof obj.operation !== 'string') return false;
   if (!Array.isArray(obj.data) || obj.data.length === 0) return false;
   return obj.data.every(n => typeof n === 'number');
-} }
+ }
 
 function getErrorMessage(err: any): string {
   if (typeof err === 'string') return err;
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
-  } }catch {
-    return String(err);
-  } }
-} }
+   }catch {
+    return String(err); } }
 
 // Minimal GPU proxy stub: validates basic shape and returns a deterministic response.
 export const POST: RequestHandler = async ({ request }) => {
@@ -34,24 +32,21 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!isGPURequestBody(raw)) {
       const body: ErrorBody = { message: 'service, operation and non-empty numeric data array required' };
       return error(400, body);
-    } }
+     }
 
     const body = raw; // now typed as GPURequestBody
     // Return a stubbed GPU response
     return json({
-      success: true,
-      result: body.data.map(n => n * 1),
-      processing_ms: 5,
-      gpu_utilized: false
+      success: true;
+      result: body.data.map(n => n * 1), processing_ms: 5, gpu_utilized: false
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('GPU proxy error:', getErrorMessage(err));
     const body: ErrorBody = { message: 'GPU proxy failed', details: getErrorMessage(err) };
-    return error(500, body);
-  } }
-};
+    return error(500, body); };
 
 export const GET: RequestHandler = async () => {
   return json({ service: 'gpu-proxy-stub', status: 'ok', timestamp: new Date().toISOString() });
 };
+
 

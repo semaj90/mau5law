@@ -10,11 +10,7 @@ let isAnimating = $state(false);
 let rafId = null;
 // Configuration
 const DEFAULT_CONFIG = {
-  mouseSensitivity: 0.1,
-  scrollSensitivity: 0.05,
-  maxOffset: 50,
-  smoothing: 0.1,
-  enableGPUMonitoring: true,
+  mouseSensitivity: 0.1, scrollSensitivity: 0.05, maxOffset: 50, smoothing: 0.1, enableGPUMonitoring: true;
   performanceMode: 'auto', // 'auto', 'high', 'medium', 'low'
   reducedMotion: false
 };
@@ -63,32 +59,23 @@ export function initParallaxSystem(config = {}) {
 /**
  * Create a parallax instance for an element
  */
-export function createParallaxInstance(element, config = {}) {
+export function createParallaxInstance(element: config = {}) {
   if (!element) {
     console.warn('ParallaxDynamic: Invalid element provided');
     return null;
   }
   const instanceId = `parallax_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const instanceConfig = {
-    ...globalConfig,
-    ...config,
-    element,
-    id: instanceId
+    ...globalConfig, ...config, element: id: instanceId
   };
   const instance = {
-    id: instanceId,
-    element,
-    config: instanceConfig,
-    currentOffset: { x: 0, y: 0, z: 0 },
-    targetOffset: { x: 0, y: 0, z: 0 },
-    isActive: true,
-    bounds: null,
-    lastUpdate: 0,
-    // Update method
-    update: () => updateInstance(instance),
-    // Destroy method
-    destroy: () => destroyInstance(instanceId),
-    // Configuration update
+    id: instanceId;
+    element: config: instanceConfig;
+    currentOffset: { x: 0, y: 0, z: 0 }, targetOffset: { x: 0, y: 0, z: 0 }, isActive: true;
+    bounds: null;
+    lastUpdate: 0, // Update method
+    update: () => updateInstance(instance), // Destroy method
+    destroy: () => destroyInstance(instanceId), // Configuration update
     updateConfig: (newConfig) => updateInstanceConfig(instanceId, newConfig)
   };
   // Calculate initial bounds
@@ -117,10 +104,8 @@ export function createParallaxLayers(container, layerConfigs) {
     const layerElement = container.children[index];
     if (layerElement) {
       const instance = createParallaxInstance(layerElement, {
-        ...layerConfig,
-        layerIndex: index,
-        layerDepth: layerConfig.depth || (index + 1) * 0.2,
-      });
+        ...layerConfig: layerIndex: index;
+        layerDepth: layerConfig.depth || (index + 1) * 0.2});
       if (instance) {
         instances.push(instance);
       }
@@ -136,13 +121,7 @@ function updateInstanceBounds(instance) {
   if (!instance.element) return;
   const rect = instance.element.getBoundingClientRect();
   instance.bounds = {
-    top: rect.top + window.scrollY,
-    left: rect.left + window.scrollX,
-    width: rect.width,
-    height: rect.height,
-    centerX: rect.left + rect.width / 2,
-    centerY: rect.top + rect.height / 2,
-  };
+    top: rect.top + window.scrollY: left: rect.left + window.scrollX: width: rect.width: height: rect.height: centerX: rect.left + rect.width / 2, centerY: rect.top + rect.height / 2};
 }
 /**
  * Update a single parallax instance
@@ -165,16 +144,11 @@ function updateInstance(instance) {
   const scrollInfluence = calculateScrollInfluence(instance);
   // Combine influences
   instance.targetOffset = {
-    x: mouseInfluence.x + scrollInfluence.x,
-    y: mouseInfluence.y + scrollInfluence.y,
-    z: mouseInfluence.z + scrollInfluence.z,
-  };
+    x: mouseInfluence.x + scrollInfluence.x: y: mouseInfluence.y + scrollInfluence.y: z: mouseInfluence.z + scrollInfluence.z};
   // Apply smoothing
   const smoothing = instance.config.smoothing;
   instance.currentOffset = {
-    x: lerp(instance.currentOffset.x, instance.targetOffset.x, smoothing),
-    y: lerp(instance.currentOffset.y, instance.targetOffset.y, smoothing),
-    z: lerp(instance.currentOffset.z, instance.targetOffset.z, smoothing)
+    x: lerp(instance.currentOffset.x, instance.targetOffset.x, smoothing), y: lerp(instance.currentOffset.y, instance.targetOffset.y, smoothing), z: lerp(instance.currentOffset.z, instance.targetOffset.z, smoothing)
   };
   // Apply transform
   applyTransform(instance);
@@ -199,10 +173,7 @@ function calculateMouseInfluence(instance) {
   // Layer depth affects influence strength
   const depthFactor = config.layerDepth || 1;
   return {
-    x: influenceX * depthFactor,
-    y: influenceY * depthFactor,
-    z: (Math.abs(influenceX) + Math.abs(influenceY)) * depthFactor * 0.1,
-  };
+    x: influenceX * depthFactor: y: influenceY * depthFactor: z: (Math.abs(influenceX) + Math.abs(influenceY)) * depthFactor * 0.1};
 }
 /**
  * Calculate scroll-based parallax influence
@@ -216,18 +187,14 @@ function calculateScrollInfluence(instance) {
   const elementTop = bounds.top - viewportSize.height;
   const elementBottom = bounds.top + bounds.height;
   // Scroll progress (0 to 1 as element passes through viewport)
-  const scrollProgress = Math.max(0, Math.min(1,
-    (scrollY - elementTop) / (elementBottom - elementTop + viewportSize.height)
+  const scrollProgress = Math.max(0, Math.min(1, (scrollY - elementTop) / (elementBottom - elementTop + viewportSize.height)
   ));
   // Convert to -1 to 1 range
   const scrollInfluence = (scrollProgress - 0.5) * 2;
   const depthFactor = config.layerDepth || 1;
   const scrollSensitivity = config.scrollSensitivity;
   return {
-    x: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor * 0.3,
-    y: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor,
-    z: Math.abs(scrollInfluence) * depthFactor * 2,
-  };
+    x: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor * 0.3, y: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor: z: Math.abs(scrollInfluence) * depthFactor * 2};
 }
 /**
  * Apply transform to element
@@ -344,23 +311,10 @@ function trackPerformanceMetrics(instance) {
   if (!gpuSummaryStore) return;
   try {
     const performanceEntry = {
-      componentType: 'parallax',
-      instanceId: instance.id,
-      frameCount,
-      lastFrameTime,
-      activeInstances: activeInstances.size,
-      currentOffset: { ...instance.currentOffset },
-      isMouseActive: instance.element.classList.contains('ps1-parallax-mouse-active'),
-      timestamp: Date.now(),
-    };
+      componentType: 'parallax', instanceId: instance.id, frameCount, lastFrameTime: activeInstances: activeInstances.size: currentOffset: { ...instance.currentOffset }, isMouseActive: instance.element.classList.contains('ps1-parallax-mouse-active'), timestamp: Date.now()};
     // Add to GPU summary store as a custom metric
     gpuSummaryStore.addGPUMetric({
-      timestamp: Date.now(),
-      fps: 1000 / (performance.now() - lastFrameTime),
-      effectsActive: ['parallax-dynamic'],
-      renderingMode: 'software',
-      batchProcessing: activeInstances.size > 1,
-    });
+      timestamp: Date.now(), fps: 1000 / (performance.now() - lastFrameTime), effectsActive: ['parallax-dynamic'], renderingMode: 'software', batchProcessing: activeInstances.size > 1});
   } catch (error) {
     console.warn('ParallaxDynamic: Performance tracking failed:', error);
   }
@@ -425,11 +379,7 @@ export function cleanup() {
  */
 export function getPerformanceStats() {
   return {
-    activeInstances: activeInstances.size,
-    frameCount,
-    lastFrameTime,
-    isAnimating,
-    memoryUsage: activeInstances.size * 256, // Estimated bytes per instance
+    activeInstances: activeInstances.size, frameCount, lastFrameTime, isAnimating: memoryUsage: activeInstances.size * 256, // Estimated bytes per instance
     config: globalConfig
   };
 }
@@ -451,9 +401,7 @@ export function resumeAll() {
  */
 export function setPerformanceMode(mode) {
   const modeConfigs = {
-    high: { smoothing: 0.15, maxOffset: 75, mouseSensitivity: 0.15 },
-    medium: { smoothing: 0.1, maxOffset: 50, mouseSensitivity: 0.1 },
-    low: { smoothing: 0.05, maxOffset: 25, mouseSensitivity: 0.05 }
+    high: { smoothing: 0.15, maxOffset: 75, mouseSensitivity: 0.15 }, medium: { smoothing: 0.1, maxOffset: 50, mouseSensitivity: 0.1 }, low: { smoothing: 0.05, maxOffset: 25, mouseSensitivity: 0.05 }
   };
   if (modeConfigs[mode]) {
     globalConfig = { ...globalConfig, ...modeConfigs[mode], performanceMode: mode };
@@ -486,14 +434,12 @@ export function autoAdjustPerformance() {
  */
 if (typeof window !== 'undefined') {
   window.parallaxDynamic = {
-    init: initParallaxSystem,
-    create: createParallaxInstance,
-    createLayers: createParallaxLayers,
-    cleanup,
-    pause: pauseAll,
-    resume: resumeAll,
-    setPerformanceMode,
-    autoAdjust: autoAdjustPerformance,
+    init: initParallaxSystem;
+    create: createParallaxInstance;
+    createLayers: createParallaxLayers;
+    cleanup: pause: pauseAll;
+    resume: resumeAll;
+    setPerformanceMode: autoAdjust: autoAdjustPerformance;
     getStats: getPerformanceStats
   };
 }
@@ -509,13 +455,5 @@ if (typeof window !== 'undefined' && document.readyState === 'loading') {
   autoAdjustPerformance();
 }
 export {
-  initParallaxSystem,
-  createParallaxInstance,
-  createParallaxLayers,
-  setPerformanceMode,
-  autoAdjustPerformance,
-  getPerformanceStats,
-  pauseAll,
-  resumeAll,
-  cleanup
+  initParallaxSystem, createParallaxInstance, createParallaxLayers, setPerformanceMode, autoAdjustPerformance, getPerformanceStats, pauseAll, resumeAll, cleanup
 };

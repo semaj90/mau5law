@@ -1,4 +1,4 @@
-import type { HTMLButtonAttributes, HTMLAnchorAttributes } }from 'svelte/elements';
+import type { HTMLButtonAttributes, HTMLAnchorAttributes  } from 'svelte/elements';
 
 // Define the possible variants for the button
 export type ButtonVariant =
@@ -21,7 +21,7 @@ export interface ButtonProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   asChild?: boolean; // If true, renders the child component as a button
-} }
+ }
 
 // Define the type for a button element, extending HTMLButtonAttributes and ButtonProps
 export type Button = HTMLButtonAttributes & ButtonProps;
@@ -31,4 +31,5 @@ export type AnchorButton = HTMLAnchorAttributes & ButtonProps;
 
 // Union type for all possible button-like elements
 export type ButtonLike = Button | AnchorButton;
+
 

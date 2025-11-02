@@ -1,8 +1,7 @@
 /**
  * Vite Error Storage Schema with pgvector Integration
  *
- * Database schema for storing build errors, TypeScript diagnostics,
- * and their embeddings for similarity search and error tracking.
+ * Database schema for storing build errors, TypeScript diagnostics, * and their embeddings for similarity search and error tracking.
  *
  * Features:
  * - pgvector HNSW indexing for fast similarity search
@@ -13,10 +12,10 @@
  *
  * @module vite-error-schema
  */
-import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, serial } }from 'drizzle-orm/pg-core';
-import { vector } }from 'pgvector/drizzle-orm';
-import { sql } }from 'drizzle-orm';
-import type { ErrorMetadata, ErrorCategory } }from '$lib/services/mcp-simd-parser';
+import { pgTable, uuid, text, timestamp, integer, jsonb, boolean, serial  } from 'drizzle-orm/pg-core';
+import { vector  } from 'pgvector/drizzle-orm';
+import { sql  } from 'drizzle-orm';
+import type { ErrorMetadata, ErrorCategory  } from '$lib/services/mcp-simd-parser';
 /**
  * Vite/TypeScript errors with embeddings
  *
@@ -33,42 +32,24 @@ export const viteErrors = pgTable('vite_errors', {
   id: uuid('id')
     .default(sql`gen_random_uuid()`)
     .primaryKey()
-    .notNull(),
-  /** Error code (e.g., TS2304, TS1005) */
-  errorCode: text('error_code').notNull(),
-  /** Absolute file path where error occurred */
-  filePath: text('file_path').notNull(),
-  /** Line: number (1-indexed) */
-  line: integer('line').notNull(),
-  /** Column: number (1-indexed) */
-  column: integer('column').notNull(),
-  /** Human-readable error message */
-  message: text('message').notNull(),
-  /** Error severity level */
-  severity: text('severity').$type<'error' | 'warning' | 'info' | 'hint'>().notNull(),
-  /** Error category for classification */
-  category: text('category').$type<ErrorCategory>().notNull(),
-  /** Diagnostic source */
-  source: text('source').$type<'typescript' | 'svelte' | 'vite' | 'eslint' | 'custom'>().notNull(),
-  /** Raw diagnostic text */
-  rawText: text('raw_text').notNull(),
-  /** 768-dim embedding vector (Gemma embeddings) */
-  embedding: vector('embedding', { dimensions: 768 }),
-  /** Additional metadata (JSONB with GIN index) */
-  metadata: jsonb('metadata').$type<ErrorMetadataJSON>(),
-  /** Whether error is currently active in latest build */
-  isActive: boolean('is_active').default(true).notNull(),
-  /** Number of times this error has appeared */
-  occurrenceCount: integer('occurrence_count').default(1).notNull(),
-  /** First time this error was seen */
-  firstSeen: timestamp('first_seen', { mode: 'string' }).defaultNow().notNull(),
-  /** Last time this error was seen */
-  lastSeen: timestamp('last_seen', { mode: 'string' }).defaultNow().notNull(),
-  /** When error was resolved (null if still active) */
-  resolvedAt: timestamp('resolved_at', { mode: 'string' }),
-  /** Created timestamp */
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  /** Updated timestamp */
+    .notNull(), /** Error code (e.g., TS2304, TS1005) */
+  errorCode: text('error_code').notNull(), /** Absolute file path where error occurred */
+  filePath: text('file_path').notNull(), /** Line: number (1-indexed) */
+  line: integer('line').notNull(), /** Column: number (1-indexed) */
+  column: integer('column').notNull(), /** Human-readable error message */
+  message: text('message').notNull(), /** Error severity level */
+  severity: text('severity').$type<'error' | 'warning' | 'info' | 'hint'>().notNull(), /** Error category for classification */
+  category: text('category').$type<ErrorCategory>().notNull(), /** Diagnostic source */
+  source: text('source').$type<'typescript' | 'svelte' | 'vite' | 'eslint' | 'custom'>().notNull(), /** Raw diagnostic text */
+  rawText: text('raw_text').notNull(), /** 768-dim embedding vector (Gemma embeddings) */
+  embedding: vector('embedding', { dimensions: 768 }), /** Additional metadata (JSONB with GIN index) */
+  metadata: jsonb('metadata').$type<ErrorMetadataJSON>(), /** Whether error is currently active in latest build */
+  isActive: boolean('is_active').default(true).notNull(), /** Number of times this error has appeared */
+  occurrenceCount: integer('occurrence_count').default(1).notNull(), /** First time this error was seen */
+  firstSeen: timestamp('first_seen', { mode: 'string' }).defaultNow().notNull(), /** Last time this error was seen */
+  lastSeen: timestamp('last_seen', { mode: 'string' }).defaultNow().notNull(), /** When error was resolved (null if still active) */
+  resolvedAt: timestamp('resolved_at', { mode: 'string' }), /** Created timestamp */
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(), /** Updated timestamp */
   updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
@@ -82,8 +63,7 @@ export interface ErrorMetadataJSON {
   /** Stack trace if available */
   stackTrace?: string[];
   /** Build context */
-  buildContext?: { command: string;, duration: number;
-   , exitCode: number;
+  buildContext?: { command: string; duration: number; exitCode: number;
   };
   /** Similar error IDs */
   similarErrors?: string[];
@@ -91,7 +71,7 @@ export interface ErrorMetadataJSON {
   suggestions?: string[];
   /** Custom user notes */
   notes?: string;
-} }
+ }
 /**
  * Error clusters for grouping similar errors
  *
@@ -100,22 +80,14 @@ export interface ErrorMetadataJSON {
  */
 export const errorClusters = pgTable('error_clusters', {
   /** Primary key */
-  id: serial('id').primaryKey(),
-  /** Cluster name/label */
-  name: text('name').notNull(),
-  /** Cluster description */
-  description: text('description'),
-  /** Number of errors in this cluster */
-  errorCount: integer('error_count').default(0).notNull(),
-  /** Centroid vector for cluster (768-dim) */
-  centroid: vector('centroid', { dimensions: 768 }),
-  /** Cluster metadata */
-  metadata: jsonb('metadata').$type<ClusterMetadataJSON>(),
-  /** Whether cluster is currently active */
-  isActive: boolean('is_active').default(true).notNull(),
-  /** Created timestamp */
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  /** Updated timestamp */
+  id: serial('id').primaryKey(), /** Cluster name/label */
+  name: text('name').notNull(), /** Cluster description */
+  description: text('description'), /** Number of errors in this cluster */
+  errorCount: integer('error_count').default(0).notNull(), /** Centroid vector for cluster (768-dim) */
+  centroid: vector('centroid', { dimensions: 768 }), /** Cluster metadata */
+  metadata: jsonb('metadata').$type<ClusterMetadataJSON>(), /** Whether cluster is currently active */
+  isActive: boolean('is_active').default(true).notNull(), /** Created timestamp */
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(), /** Updated timestamp */
   updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
@@ -132,57 +104,41 @@ export interface ClusterMetadataJSON {
   density?: number;
   /** Clustering algorithm used */
   algorithm?: 'dbscan' | 'kmeans' | 'hierarchical';
-} }
+ }
 /**
  * Error cluster membership (many-to-many relationship)
  */
 export const errorClusterMembership = pgTable('error_cluster_membership', {
   /** Primary key */
-  id: serial('id').primaryKey(),
-  /** Error ID (foreign key) */
+  id: serial('id').primaryKey(), /** Error ID (foreign key) */
   errorId: uuid('error_id')
     .notNull()
-    .references(() => viteErrors.id, { onDelete: 'cascade' }),
-  /** Cluster ID (foreign key) */
+    .references(() => viteErrors.id, { onDelete: 'cascade' }), /** Cluster ID (foreign key) */
   clusterId: integer('cluster_id')
     .notNull()
-    .references(() => errorClusters.id, { onDelete: 'cascade' }),
-  /** Distance from cluster centroid (0-1) */
-  distance: integer('distance').notNull(),
-  /** Confidence score (0-1) */
-  confidence: integer('confidence').notNull(),
-  /** Created timestamp */
+    .references(() => errorClusters.id, { onDelete: 'cascade' }), /** Distance from cluster centroid (0-1) */
+  distance: integer('distance').notNull(), /** Confidence score (0-1) */
+  confidence: integer('confidence').notNull(), /** Created timestamp */
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
  * Error history tracking for evolution analysis
  *
- * Tracks how errors change over time, including error count,
- * types, and resolution patterns.
+ * Tracks how errors change over time, including error count, * types, and resolution patterns.
  */
 export const errorHistory = pgTable('error_history', {
   /** Primary key */
-  id: serial('id').primaryKey(),
-  /** Snapshot timestamp */
-  snapshotAt: timestamp('snapshot_at', { mode: 'string' }).defaultNow().notNull(),
-  /** Total error count at snapshot */
-  totalErrors: integer('total_errors').notNull(),
-  /** Error count by severity */
-  errorsBySeverity: jsonb('errors_by_severity').$type<Record<string, number>>(),
-  /** Error count by category */
-  errorsByCategory: jsonb('errors_by_category').$type<Record<string, number>>(),
-  /** Error count by source */
-  errorsBySource: jsonb('errors_by_source').$type<Record<string, number>>(),
-  /** Top, 10 error codes */
-  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string; count: number }>>(),
-  /** Top, 10 affected files */
-  topFiles: jsonb('top_files').$type<Array<{ path: string; count: number }>>(),
-  /** Build metadata */
-  buildMetadata: jsonb('build_metadata').$type<{ command: string;, duration: number;
-    exitCode: number;
-   , timestamp: string;
-  }>(),
-  /** Created timestamp */
+  id: serial('id').primaryKey(), /** Snapshot timestamp */
+  snapshotAt: timestamp('snapshot_at', { mode: 'string' }).defaultNow().notNull(), /** Total error count at snapshot */
+  totalErrors: integer('total_errors').notNull(), /** Error count by severity */
+  errorsBySeverity: jsonb('errors_by_severity').$type<Record<string, number>>(), /** Error count by category */
+  errorsByCategory: jsonb('errors_by_category').$type<Record<string, number>>(), /** Error count by source */
+  errorsBySource: jsonb('errors_by_source').$type<Record<string, number>>(), /** Top, 10 error codes */
+  topErrorCodes: jsonb('top_error_codes').$type<Array<{ code: string; count: number }>>(), /** Top, 10 affected files */
+  topFiles: jsonb('top_files').$type<Array<{ path: string; count: number }>>(), /** Build metadata */
+  buildMetadata: jsonb('build_metadata').$type<{ command: string; duration: number;
+    exitCode: number; timestamp: string;
+  }>(), /** Created timestamp */
   createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
@@ -193,22 +149,14 @@ export const errorHistory = pgTable('error_history', {
  */
 export const errorQueryCache = pgTable('error_query_cache', {
   /** Primary key */
-  id: serial('id').primaryKey(),
-  /** Query text */
-  queryText: text('query_text').notNull(),
-  /** Query embedding vector (768-dim) */
-  queryEmbedding: vector('query_embedding', { dimensions: 768 }),
-  /** Cached result error IDs */
-  resultIds: jsonb('result_ids').$type<string[]>(),
-  /** Cache hit count */
-  hitCount: integer('hit_count').default(0).notNull(),
-  /** Cache TTL (time-to-live) in seconds */
-  ttlSeconds: integer('ttl_seconds').default(3600).notNull(),
-  /** Cache expiration timestamp */
-  expiresAt: timestamp('expires_at', { mode: 'string' }).notNull(),
-  /** Created timestamp */
-  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
-  /** Updated timestamp */
+  id: serial('id').primaryKey(), /** Query text */
+  queryText: text('query_text').notNull(), /** Query embedding vector (768-dim) */
+  queryEmbedding: vector('query_embedding', { dimensions: 768 }), /** Cached result error IDs */
+  resultIds: jsonb('result_ids').$type<string[]>(), /** Cache hit count */
+  hitCount: integer('hit_count').default(0).notNull(), /** Cache TTL (time-to-live) in seconds */
+  ttlSeconds: integer('ttl_seconds').default(3600).notNull(), /** Cache expiration timestamp */
+  expiresAt: timestamp('expires_at', { mode: 'string' }).notNull(), /** Created timestamp */
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(), /** Updated timestamp */
   updatedAt: timestamp('updated_at', { mode: 'string' }).defaultNow().notNull()
 });
 /**
@@ -219,18 +167,15 @@ export const errorQueryCache = pgTable('error_query_cache', {
  */
 export const errorSimilarity = pgTable('error_similarity', {
   /** Primary key */
-  id: serial('id').primaryKey(),
-  /** First error ID */
+  id: serial('id').primaryKey(), /** First error ID */
   errorId1: uuid('error_id_1')
     .notNull()
     .references(() => viteErrors.id, { onDelete: `cascade` }),'`'`
   /** Second error ID */
   errorId2: uuid('error_id_2')
     .notNull()
-    .references(() => viteErrors.id, { onDelete: `cascade` }),
-  /** Cosine similarity score (0-1) */
-  similarity: integer('similarity').notNull(),
-  /** Computed timestamp */
+    .references(() => viteErrors.id, { onDelete: `cascade` }), /** Cosine similarity score (0-1) */
+  similarity: integer('similarity').notNull(), /** Computed timestamp */
   computedAt: timestamp('computed_at', { mode: `string` }).defaultNow().notNull()
 });
 // ============================================================================
@@ -288,4 +233,5 @@ export type NewErrorSimilarity = typeof errorSimilarity.$inferInsert;
  * USING hnsw (query_embedding vector_cosine_ops);
  * ```
  */
+
 

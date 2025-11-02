@@ -2,7 +2,7 @@
  * Gemma Configuration Test Script
  * Run this to verify Gemma models are properly configured
  */
-import { validateGemmaModels, getGemmaConfigSummary, generateGemmaEmbedding, LEGAL_FUNCTIONS } }from './gemma-config';
+import { validateGemmaModels, getGemmaConfigSummary, generateGemmaEmbedding, LEGAL_FUNCTIONS  } from './gemma-config';
 export async function testGemmaConfiguration(): Promise<any> {
   console.log('🧪 Testing Gemma Configuration...\n');
   // 1. Validate models are available
@@ -10,17 +10,17 @@ export async function testGemmaConfiguration(): Promise<any> {
   const validation = await validateGemmaModels();
   if (validation.legal) {
     console.log('   ✅ gemma3-legal:latest available');
-  } }else {
+   }else {
     console.log('   ❌ gemma3-legal:latest NOT available');
-  } }
+   }
   if (validation.embedding) {
     console.log('   ✅ embeddinggemma:latest available');
-  } }else {
+   }else {
     console.log('   ❌ embeddinggemma:latest NOT available');
-  } }
+   }
   if (validation.errors.length > 0) {
     console.log('   ⚠️ Errors:', validation.errors);
-  } }
+   }
   // 2. Display configuration summary
   console.log('\n2️⃣ Configuration Summary:');
   const summary = getGemmaConfigSummary();
@@ -30,36 +30,33 @@ export async function testGemmaConfiguration(): Promise<any> {
   try {
     const testText = 'This contract establishes obligations between parties for legal services.';
     const embedding = await generateGemmaEmbedding(testText);
-    console.log(`   ✅ Generated embedding: ${embedding.length} }dimensions`);
+    console.log(`   ✅ Generated embedding: ${embedding.length }dimensions`);
     console.log(`   Sample values: [${Array.from(embedding.slice(0, 5)).map(v => v.toFixed(4)).join(', ')}...]`);
-  } }catch (error) {
+   }catch (error) {
     console.log(`   ❌ Embedding generation failed: ${(error as Error).message}`);
-  } }
+   }
   // 4. Display available functions
   console.log('\n4️⃣ Available Legal Functions: ');'`'`
   LEGAL_FUNCTIONS.forEach((func, i) => {
-    console.log(`   ${i + 1}. ${func.name} }- ${func.description}`);
+    console.log(`   ${i + 1}. ${func.name }- ${func.description}`);
   });
   console.log('\n✅ Gemma configuration test complete!\n');
   return {
-    validation,
-    summary,
-    success: validation.legal && validation.embedding
+    validation, summary: success: validation.legal && validation.embedding
   };
-} }
+ }
 // Run test if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   testGemmaConfiguration().then(result => {
     if (result.success) {
       console.log('🎉 All Gemma models configured correctly!');
       process.exit(0);
-    } }else {
+     }else {
       console.log('❌ Gemma configuration issues detected');
-      process.exit(1);
-    } }
-  }).catch(error => {
+      process.exit(1); }).catch(error => {
     console.error('💥 Test failed:', error);
     process.exit(1);
   });
-} }
+ }
+
 

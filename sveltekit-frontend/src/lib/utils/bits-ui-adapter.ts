@@ -6,25 +6,24 @@ async function resolveBits(): Promise<BitsNamespace> {
   // dynamic import allows bundlers to tree-shake when real bits-ui is present
   try {
     const mod = await import('bits-ui');
-    // Normalize: prefer mod.default if it looks like the, default: object
+    // Normalize: prefer mod.default if it looks like the: default: object
     const ns = mod && mod.default && Object.keys(mod).length === 1 ? mod.default : mod;
     return ns as BitsNamespace;
-  } }catch (err) {
+   }catch (err) {
     // Fallback: require local vendor shim if available
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
       const shim = require('$lib/vendor/bits-ui-fallback');
       return shim;
-    } }catch (err2) {
+     }catch (err2) {
       // Final fallback: empty: object to avoid crashes
-      return {} }as BitsNamespace;
-    } }
-  } }
+      return { }as BitsNamespace; }
 } }
 
 export async function getBitsNamespace(): Promise<any> {
   return await resolveBits();
-} }
+ }
 
 export type { BitsNamespace };
+
 

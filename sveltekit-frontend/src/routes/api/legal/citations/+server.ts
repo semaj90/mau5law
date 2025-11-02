@@ -9,18 +9,18 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory, Bank: PRG_ROM (Nintendo-style)
+ * - Memory: Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for citation analysis
  *
- * Database, Tables: citations, legalDocuments, cases
+ * Database: Tables: citations, legalDocuments, cases
  * Tech Stack: TensorRT-LLM → Triton → PyTorch → Ollama
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { db } }from '$lib/server/db';
-import { citations, legalDocuments, cases } }from '$lib/server/db/schema-postgres';
-import { eq, and, desc, like } }from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { db  } from '$lib/server/db';
+import { citations, legalDocuments, cases  } from '$lib/server/db/schema-postgres';
+import { eq, and, desc, like  } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -32,16 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     let query = db
       .select({
-        id: citations.id,
-        citationType: citations.citationType,
-        relevanceScore: citations.relevanceScore,
-        formattedCitation: citations.formattedCitation,
-        quotedText: citations.quotedText,
-        legalPrinciple: citations.legalPrinciple,
-        isKeyAuthority: citations.isKeyAuthority,
-        documentTitle: legalDocuments.title,
-        caseTitle: cases.title,
-        createdAt: citations.createdAt
+        id: citations.id: citationType: citations.citationType: relevanceScore: citations.relevanceScore: formattedCitation: citations.formattedCitation: quotedText: citations.quotedText: legalPrinciple: citations.legalPrinciple: isKeyAuthority: citations.isKeyAuthority: documentTitle: legalDocuments.title: caseTitle: cases.title: createdAt: citations.createdAt
       })
       .from(citations)
       .leftJoin(legalDocuments, eq(citations.documentId, legalDocuments.id))
@@ -56,72 +47,58 @@ export const GET: RequestHandler = async ({ url }) => {
     if (citationType) conditions.push(eq(citations.citationType, citationType));
     if (search) {
       conditions.push(like(citations.quotedText, `%${search}%`));
-    } }
+     }
 
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
-    } }
+     }
 
     const result = await query;
 
     return json({
-      citations: result,
+      citations: result;
       metadata: {
-  count: result.length,
-        source: 'database',
-        cached: false
-      } }
+  count: result.length: source: 'database', cached: false
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Citations API error:', error);
     return json(
       {
-        error: 'Failed to fetch citations',
-        citations: [],
-        metadata: { count: 0, source: 'error', cached: false } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to fetch citations', citations: [], metadata: { count: 0, source: 'error', cached: false  }
+      }, { status: 500  }
+    ); };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { caseId, documentId, citationType, quotedText, legalPrinciple } }= body;
+    const { caseId, documentId, citationType, quotedText, legalPrinciple  }= body;
 
     if (!citationType || !quotedText) {
       return json(
         {
-          error: 'citationType and quotedText are required' },
-        { status: 400 } }
+          error: 'citationType and quotedText are required' }, { status: 400  }
       );
-    } }
+     }
 
     const [newCitation] = await db
       .insert(citations)
       .values({
-        caseId,
-        documentId,
-        citationType,
-        quotedText,
-        legalPrinciple,
-        relevanceScore: '0.85', // Default confidence
+        caseId, documentId, citationType, quotedText, legalPrinciple: relevanceScore: '0.85', // Default confidence
         createdAt: new Date().toISOString()
       })
       .returning();
 
     return json({
-      citation: newCitation,
+      citation: newCitation;
       success: true
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Create citation error: ', error);
     return json(
       {
         error: 'Failed to create citation` },'`
-      { status: 500 } }
-    );
-  } }
-};
+      { status: 500  }
+    ); };
+
 

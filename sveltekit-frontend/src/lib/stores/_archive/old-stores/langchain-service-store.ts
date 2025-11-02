@@ -1,51 +1,49 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * LangChain Service Logic Layer with Database Sync
  * Decoupled reactive store that handles complex LangChain/Ollama operations
  * with full database synchronization via REST API
  */
-import { writable, derived, type Readable } }from 'svelte/store';
-import { langExtractService } }from '$lib/services/langextract-ollama-service.js';
-import { browser } }from '$app/environment';
+import { writable, derived, type Readable  } from 'svelte/store';
+import { langExtractService  } from '$lib/services/langextract-ollama-service.js';
+import { browser  } from '$app/environment';
 // Simple state interfaces for UI consumption
-export interface LangChainState { isProcessing: boolean;, isAvailable: boolean;
+export interface LangChainState { isProcessing: boolean; isAvailable: boolean;
   error: string | null;
   models: string[];
-} }
-export interface DocumentProcessingState { isProcessing: boolean;, progress: number;
+ }
+export interface DocumentProcessingState { isProcessing: boolean; progress: number;
   result: ProcessedDocument | null;
   error: string | null;
   sessionId: string | null;
   documentId: string | null;
-} }
-export interface ProcessedDocument { id: string;, summary: string;
+ }
+export interface ProcessedDocument { id: string; summary: string;
   keyTerms: string[];
   entities: any[];
   contractTerms: any[];
   processingTime: number;
   cacheHit: boolean;
   sessionId: string;
-} }
-export interface ChatState { messages: Array<any>;, isTyping: boolean;
+ }
+export interface ChatState { messages: Array<any>; isTyping: boolean;
   error: string | null;
-} }
+ }
 // Internal reactive stores
-const langchainState = writable<LangChainState>({ isProcessing: false,
-  isAvailable: false,
-  error: null,
+const langchainState = writable<LangChainState>({ isProcessing: false;
+  isAvailable: false;
+  error: null;
   models: []
 });
 const documentProcessingState = writable<DocumentProcessingState>({
-  isProcessing: false,
-  progress: 0,
-  result: null,
-  error: null,
-  sessionId: null,
+  isProcessing: false;
+  progress: 0, result: null;
+  error: null;
+  sessionId: null;
   documentId: null
 });
 const chatState = writable<ChatState>({
-  messages: [],
-  isTyping: false,
+  messages: [], isTyping: false;
   error: null
 });
 /**
@@ -56,7 +54,7 @@ class LangChainServiceLogic {
   private initialized = $state(false);
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    langchainState.update(state => ({ ...state, isProcessing: true }));
+    langchainState.update(state => ({ ...state: isProcessing: true }));
     try {
       // Simple availability check - no complex callbacks
       const isAvailable = await langExtractService.isOllamaAvailable();
@@ -64,117 +62,87 @@ class LangChainServiceLogic {
       if (isAvailable) {
         try {
           models = await langExtractService.listAvailableModels();
-        } }catch (error) {
+         }catch (error) {
           console.warn('Could not fetch models:', error);
           // Continue with empty models array
-        } }
-      } }
+         }
+       }
       langchainState.set({
-        isProcessing: false,
-        isAvailable,
-        error: null,
+        isProcessing: false;
+        isAvailable: error: null;
         models
       });
       this.initialized = true;
-    } }catch (error) {
+     }catch (error) {
       langchainState.set({
-        isProcessing: false,
-        isAvailable: false,
-        error: error instanceof Error ? error.message : 'Initialization failed',
-        models: []
-      });
-    } }
-  } }
+        isProcessing: false;
+        isAvailable: false;
+        error: error instanceof Error ? error.message : 'Initialization failed', models: []
+      }); }
   async processDocument(
-    text: string,
-    documentType: 'contract' | 'case' | 'statute' | 'brief' = 'case',
-    practiceArea?: string,
+    text: string;
+    documentType: 'contract' | 'case' | 'statute' | 'brief' = 'case', practiceArea?: string;
     sessionId?: string
   ): Promise<void> {
     if (!browser) return; // Only run in browser
     documentProcessingState.update(state => ({
-      ...state,
-      isProcessing: true,
-      progress: 0,
-      error: null
+      ...state: isProcessing: true;
+      progress: 0, error: null
     }));
     try {
       // Step 1: Send request to API endpoint
-      documentProcessingState.update(state => ({ ...state, progress: 25 }));
+      documentProcessingState.update(state => ({ ...state: progress: 25 }));
       const response = await fetch('/api/legal-processing', {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          text,
-          documentType,
-          practiceArea,
-          sessionId
+        }, body: JSON.stringify({
+          text, documentType, practiceArea, sessionId
         })
       });
-      documentProcessingState.update(state => ({ ...state, progress: 75 }));
-      if (!(response as: any).ok) {
-        const errorData = await (response as: any).json().catch(() => ({}));
+      documentProcessingState.update(state => ({ ...state: progress: 75 }));
+      if (!(response as any).ok) {
+        const errorData = await (response as any).json().catch(() => ({}));
         throw new Error(
-          (errorData as: any).error || `HTTP ${(response as: any).status}: ${(response as: any).statusText}`
+          (errorData as any).error || `HTTP ${(response as any).status}: ${(response as any).statusText}`
         );
-      } }
-      const result: ProcessedDocument = await (response, as: any).json();
-      documentProcessingState.update(state => ({ ...state, progress: 100 }));
+       }
+      const result: ProcessedDocument = await (response, as any).json();
+      documentProcessingState.update(state => ({ ...state: progress: 100 }));
       // Update state with successful result
       documentProcessingState.set({
-        isProcessing: false,
-        progress: 100,
-        result,
-        error: null,
-        sessionId: (result as { sessionId?: any; id?: any }).sessionId,
-        documentId: (result as { sessionId?: any; id?: any }).id
+        isProcessing: false;
+        progress: 100, result: error: null;
+        sessionId: (result as { sessionId?: any; id?: any }).sessionId: documentId: (result as { sessionId?: any; id?: any }).id
       });
-    } }catch (error) {
+     }catch (error) {
       documentProcessingState.set({
-        isProcessing: false,
-        progress: 0,
-        result: null,
-        error: error instanceof Error ? error.message : 'Document processing failed',
-        sessionId: null,
+        isProcessing: false;
+        progress: 0, result: null;
+        error: error instanceof Error ? error.message : 'Document processing failed', sessionId: null;
         documentId: null
-      });
-    } }
-  } }
+      }); }
   async loadSession(sessionId: string): Promise<void> {
     if (!browser) return;
-    documentProcessingState.update(state => ({ ...state, isProcessing: true, error: null }));
+    documentProcessingState.update(state => ({ ...state: isProcessing: true: error: null }));
     try {
       // removed unused response assignment
       // NOTE: response variable removed earlier; if this function should fetch, add the fetch logic here.
       const sessionData: any = {};
       // Update state with session data (safe defaults used)
       documentProcessingState.update(state => ({
-        ...state,
-        isProcessing: false,
-        sessionId: sessionData.id,
-        // Convert session documents to a summary format
+        ...state: isProcessing: false;
+        sessionId: sessionData.id, // Convert session documents to a summary format
         result:
           sessionData.documents && sessionData.documents.length > 0
-            ? { id: sessionData.documents[0].id,
-                summary: `Session with ${sessionData.documents.length} }documents`,
-                keyTerms: sessionData.documents.flatMap((doc: any) => doc.keyTerms || []),
-                entities: [],
-                contractTerms: [],
-                processingTime: 0,
-                cacheHit: true,
+            ? { id: sessionData.documents[0].id: summary: `Session with ${sessionData.documents.length }documents`, keyTerms: sessionData.documents.flatMap((doc: any) => doc.keyTerms || []), entities: [], contractTerms: [], processingTime: 0, cacheHit: true;
                 sessionId: sessionData.id
-              } }
+               }
             : null
       }));
-    } }catch (error) {
+     }catch (error) {
       documentProcessingState.update(state => ({
-        ...state,
-        isProcessing: false,
-        error: error instanceof Error ? error.message : `Failed to load session` }));
-    } }
-  } }
+        ...state: isProcessing: false;
+        error: error instanceof Error ? error.message : `Failed to load session` })); }
   async deleteDocument(documentId: string): Promise<void> {
     if (!browser) return;
     try {
@@ -184,62 +152,51 @@ class LangChainServiceLogic {
         throw new Error(
           `Failed to delete document: ${(response as { ok?: any; json?: any; status?: any; statusText?: any; summary?: any }).statusText}`
         );
-      } }
+       }
       // Clear current result if it was the deleted document
       documentProcessingState.update(state => {
         if (state.result?.id === documentId) {
           return {
-            ...state,
-            result: null,
+            ...state: result: null;
             documentId: null
           };
-        } }
+         }
         return state;
       });
-    } }catch (error) {
+     }catch (error) {
       documentProcessingState.update(state => ({
-        ...state,
-        error: error instanceof Error ? error.message : 'Failed to delete document' }));'` } }`
-  } }
+        ...state: error: error instanceof Error ? error.message : 'Failed to delete document' }));'`  }`
+   }
   async sendChatMessage(message: string): Promise<void> {
     chatState.update(state => ({
-      ...state,
-      messages: [...state.messages, { role: 'user', content: message } },
-      isTyping: true,
+      ...state: messages: [...state.messages, { role: 'user', content: message  }, isTyping: true;
       error: null
     }));
     try {
       // Simple request - no complex callback managers
       // removed unused response assignment
       chatState.update(state => ({
-        ...state,
-        messages: [...state.messages, { role: 'assistant', content: `` } },
-        isTyping: false
+        ...state: messages: [...state.messages, { role: 'assistant', content: ``  }, isTyping: false
       }));
-    } }catch (error) {
+     }catch (error) {
       chatState.update(state => ({
-        ...state,
-        isTyping: false,
-        error: error instanceof Error ? error.message : 'Chat message failed' }));'` } }`
-  } }
+        ...state: isTyping: false;
+        error: error instanceof Error ? error.message : 'Chat message failed' }));'`  }`
+   }
   clearDocumentProcessing(): void {
     documentProcessingState.set({
-      isProcessing: false,
-      progress: 0,
-      result: null,
-      error: null,
-      sessionId: null,
+      isProcessing: false;
+      progress: 0, result: null;
+      error: null;
+      sessionId: null;
       documentId: null
     });
-  } }
+   }
   clearChat(): void {
     chatState.set({
-      messages: [],
-      isTyping: false,
+      messages: [], isTyping: false;
       error: null
-    });
-  } }
-} }
+    }); } }
 // Singleton service instance
 export const langchainServiceLogic = new LangChainServiceLogic();
 // Read-only stores for UI consumption
@@ -253,10 +210,10 @@ export const chatService: Readable<ChatState> = { subscribe: chatState.subscribe
 };
 // Derived computed states
 export const isLangChainReady = derived(
-  langchainService,
-  $service => $service.isAvailable && !$service.isProcessing && !$service.error
+  langchainService: $service => $service.isAvailable && !$service.isProcessing && !$service.error
 );
-export const availableModels = derived(langchainService, $service => $service.models);
+export const availableModels = derived(langchainService: $service => $service.models);
 // Auto-initialize on import
 langchainServiceLogic.initialize();
+
 

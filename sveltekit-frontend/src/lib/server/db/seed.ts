@@ -1,12 +1,10 @@
-import type { User } }from '$lib/types';
-import { db, pool } }from './drizzle';
-import { users, cases, evidence } }from './schema';
+import type { User  } from '$lib/types';
+import { db, pool  } from './drizzle';
+import { users, cases, evidence  } from './schema';
 import bcrypt from 'bcryptjs';
-import { eq } }from 'drizzle-orm';
+import { eq  } from 'drizzle-orm';
 // Sample embeddings (normally produced by an AI model)
-const sampleEmbeddings = { financial: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.1),
-  legal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.2),
-  criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3)
+const sampleEmbeddings = { financial: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.1), legal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.2), criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3)
 };
 async function seed(): Promise<any> {
   console.log('[seed] Starting database seed...');
@@ -15,42 +13,18 @@ async function seed(): Promise<any> {
     const passwordHash = await bcrypt.hash('password123', 12);
     const demoPasswordHash = await bcrypt.hash('demo123', 12);
     const seedUsers = [
-      { email: 'demo@legal-ai.local',
-        name: 'Demo User',
-        firstName: 'Demo',
-        lastName: 'User',
-        role: 'admin',
-        hashedPassword: demoPasswordHash,
+      { email: 'demo@legal-ai.local', name: 'Demo User', firstName: 'Demo', lastName: 'User', role: 'admin', hashedPassword: demoPasswordHash;
         isActive: true
-      },
-      {
-        email: 'prosecutor@legal.ai',
-        name: 'John Prosecutor',
-        firstName: 'John',
-        lastName: 'Prosecutor',
-        role: 'prosecutor',
-        hashedPassword: passwordHash,
+      }, {
+        email: 'prosecutor@legal.ai', name: 'John Prosecutor', firstName: 'John', lastName: 'Prosecutor', role: 'prosecutor', hashedPassword: passwordHash;
         isActive: true
-      },
-      {
-        email: 'detective@legal.ai',
-        name: 'Jane Detective',
-        firstName: 'Jane',
-        lastName: 'Detective',
-        role: 'detective',
-        hashedPassword: passwordHash,
+      }, {
+        email: 'detective@legal.ai', name: 'Jane Detective', firstName: 'Jane', lastName: 'Detective', role: 'detective', hashedPassword: passwordHash;
         isActive: true
-      },
-      {
-        email: 'admin@legal.ai',
-        name: 'Admin User',
-        firstName: 'Admin',
-        lastName: 'User',
-        role: 'admin',
-        hashedPassword: passwordHash,
+      }, {
+        email: 'admin@legal.ai', name: 'Admin User', firstName: 'Admin', lastName: 'User', role: 'admin', hashedPassword: passwordHash;
         isActive: true
-      },
-    ];
+      }];
     const insertedUsers: typeof seedUsers = [];
     for (const user of seedUsers) {
       try {
@@ -59,40 +33,23 @@ async function seed(): Promise<any> {
           const [created] = await db.insert(users).values(user).returning();
           insertedUsers.push(created);
           console.log(`  [seed] created user ${user.email}`);
-        } }else {
+         }else {
           const [updated] = await db
             .update(users)
             .set({
-              hashedPassword: user.hashedPassword,
-              firstName: user.firstName ?? existing[0].firstName,
-              lastName: user.lastName ?? existing[0].lastName,
-              name: user.name ?? existing[0].name,
-              role: user.role ?? existing[0].role,
-              isActive: user.isActive ?? existing[0].isActive,
-              updatedAt: new Date().toISOString()
+              hashedPassword: user.hashedPassword: firstName: user.firstName ?? existing[0].firstName: lastName: user.lastName ?? existing[0].lastName: name: user.name ?? existing[0].name: role: user.role ?? existing[0].role: isActive: user.isActive ?? existing[0].isActive: updatedAt: new Date().toISOString()
             })
             .where(eq(users.id, existing[0].id))
             .returning();
           insertedUsers.push(updated);
-          console.log(`  [seed] refreshed user ${user.email}`);
-        } }
-      } }catch (err) {
-        console.error(`  [seed] failed to upsert ${user.email}:`, err);
-      } }
-    } }
+          console.log(`  [seed] refreshed user ${user.email}`); }catch (err) {
+        console.error(`  [seed] failed to upsert ${user.email}:`, err); }
     console.log(`[seed] Users ready: ${insertedUsers.length}`);
     console.log('\n[seed] Database seed completed successfully.');
     console.log(
       [
         'Summary: ','`'`
-        `  users: ${insertedUsers.length}`,
-        '',
-        'Login Credentials:',
-        '  Demo        demo@legal-ai.local / demo123',
-        '  Prosecutor  prosecutor@legal.ai / password123',
-        '  Detective   detective@legal.ai / password123',
-        '  Admin       admin@legal.ai / password123',
-      ].join('\n')
+        `  users: ${insertedUsers.length}`, '', 'Login Credentials:', '  Demo        demo@legal-ai.local / demo123', '  Prosecutor  prosecutor@legal.ai / password123', '  Detective   detective@legal.ai / password123', '  Admin       admin@legal.ai / password123'].join('\n')
     );
     // Skip case/evidence bootstrap for now (schema still in flux)
     return;
@@ -103,41 +60,21 @@ async function seed(): Promise<any> {
     const insertedCases = await db
       .insert(cases)
       .values([
-        { title: 'Financial Fraud Investigation',
-          description:
-            'Complex financial fraud case involving multiple entities and cryptocurrency transactions.',
-          priority: 'high',
-          status: 'open',
-          category: 'financial_fraud',
-          dangerScore: 75,
-          createdBy: insertedUsers[0].id,
-          aiSummary:
-            'High-priority financial fraud case with strong evidence of laundering via shell companies.',
-          aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value']
-        },
-      ])
+        { title: 'Financial Fraud Investigation', description:
+            'Complex financial fraud case involving multiple entities and cryptocurrency transactions.', priority: 'high', status: 'open', category: 'financial_fraud', dangerScore: 75, createdBy: insertedUsers[0].id: aiSummary:
+            'High-priority financial fraud case with strong evidence of laundering via shell companies.', aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value']
+        }])
       .returning();
     console.log('[seed] Creating sample evidence...');
     await db.insert(evidence).values([
-      { caseId: insertedCases[0].id,
-        title: 'Bank Transaction Records',
-        description: 'Suspicious transaction patterns showing structured deposits.',
-        evidenceType: 'financial_document',
-        tags: ['transactions', 'banking', 'offshore'],
-        uploadedBy: insertedUsers[0].id,
-        aiSummary: 'Strong indicators of layering and placement activity.',
-        aiAnalysis: { confidence: 0.92, patterns: ['structuring', 'threshold_avoidance'] },
-        embedding: sampleEmbeddings.financial
-      },
-    ]);
-  } }catch (error) {
+      { caseId: insertedCases[0].id: title: 'Bank Transaction Records', description: 'Suspicious transaction patterns showing structured deposits.', evidenceType: 'financial_document', tags: ['transactions', 'banking', 'offshore'], uploadedBy: insertedUsers[0].id: aiSummary: 'Strong indicators of layering and placement activity.', aiAnalysis: { confidence: 0.92, patterns: ['structuring', 'threshold_avoidance'] }, embedding: sampleEmbeddings.financial
+      }]);
+   }catch (error) {
     console.error('[seed] fatal error:', error);
     throw error;
-  } }finally {
+   }finally {
     await pool.end();
-    console.log('[seed] Connection pool closed.');
-  } }
-} }
+    console.log('[seed] Connection pool closed.'); } }
 seed()
   .then(() => {
     console.log('[seed] completed');
@@ -148,4 +85,5 @@ seed()
     process.exit(1);
   });
 export { seed };
+
 

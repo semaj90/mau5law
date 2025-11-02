@@ -2,7 +2,7 @@
  * Database Health Check Utility
  * Validates actual PostgreSQL database connectivity
  */
-import { pool } }from './drizzle.js';
+import { pool  } from './drizzle.js';
 export async function validateDatabaseOnStartup(): Promise<any> {
   let client;
   try {
@@ -20,21 +20,20 @@ export async function validateDatabaseOnStartup(): Promise<any> {
       WHERE table_schema = 'public'
       AND table_type = 'BASE TABLE'
     `);`
-    console.log(`📋 Found ${tableCheck.rows[0].table_count} }tables in database`);
+    console.log(`📋 Found ${tableCheck.rows[0].table_count }tables in database`);
     return true;
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Database health check failed:', error.message);
     console.error('🔧 Please ensure PostgreSQL is running on localhost:5434');
-    console.error('📝 Connection: string:, postgresql://legal_admin:123456@localhost:5434/legal_ai_db');
+    console.error('📝 Connection: string: postgresql://legal_admin:123456@localhost:5434/legal_ai_db');
     return false;
-  } }finally {
+   }finally {
     // Always release the client back to the pool
     if (client) {
-      client.release();
-    } }
-  } }
+      client.release(); }
 } }
 export default {
   validateDatabaseOnStartup
 };
+
 

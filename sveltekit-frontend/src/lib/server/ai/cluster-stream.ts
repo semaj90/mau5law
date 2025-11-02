@@ -1,20 +1,18 @@
-import type { TransitionPrediction } }from './hmm-transition-predictor';
+import type { TransitionPrediction  } from './hmm-transition-predictor';
 type RawClusterEvent = { type: string; timestamp: number; payload: any };
 export type ClusterEvent =
-  | { type: 'som_bitmap';, userId: string;
+  | { type: 'som_bitmap'; userId: string;
       checksum: string;
-      palette: string;
-     , metadata: Record<string, unknown>;
+      palette: string; metadata: Record<string, unknown>;
       svg?: string;
       heatmapSample?: number[];
       timestamp: number;
-    } }
-  | { type: 'hmm_predictions';, predictions: TransitionPrediction[];
+     }
+  | { type: 'hmm_predictions'; predictions: TransitionPrediction[];
       context?: Record<string, unknown> | null;
       timestamp: number;
-    } }
-  | { type: 'cluster_assignment';, clusterId: string;
-     , neighbors: string[];
+     }
+  | { type: 'cluster_assignment'; clusterId: string; neighbors: string[];
       metadata?: Record<string, unknown>;
       timestamp: number;
     };
@@ -30,12 +28,10 @@ export function emitClusterEvent(event: ClusterEvent): void {
   Array.from(listeners).forEach((listener) => {
     try {
       listener(event);
-    } }catch (err) {
-      console.error('[ClusterStream] listener failed', err);
-    } }
-  });
-} }
-export function subscribeClusterEvents(listener: Listener, { replay = true } }= {}): () => void {
+     }catch (err) {
+      console.error('[ClusterStream] listener failed', err); });
+ }
+export function subscribeClusterEvents(listener: Listener, { replay = true  }= {): () => void {
   listeners.add(listener);
   if (replay) {
     // Replay using index-based iteration to avoid iterator requirements
@@ -43,47 +39,44 @@ export function subscribeClusterEvents(listener: Listener, { replay = true } }= 
       const ev = history[i];
       try {
         listener(ev);
-      } }catch (err) {
-        console.error('[ClusterStream] replay failed', err);
-      } }
-    } }
-  } }
+       }catch (err) {
+        console.error('[ClusterStream] replay failed', err); }
+   }
   return () => {
     listeners.delete(listener);
   };
-} }
+ }
 /**
  * Deprecated subscription wrapper that accepts RawClusterEvent callbacks.
  * Keeps backward compatibility by adapting ClusterEvent -> RawClusterEvent when invoking the callback.
  */
-export function subscribe(fn: (ev: RawClusterEvent) => void, replay = true) {
+export function subscribe(fn: (ev: RawClusterEvent) => void: replay = true) {
   console.warn('[ClusterStream] subscribe is deprecated. Use subscribeClusterEvents.');
   const wrapper: Listener = (ev) => {
     try {
-      fn({ type: ev.type, timestamp: ev.timestamp, payload: ev });
-    } }catch (err) {
-      console.error('[ClusterStream] deprecated subscriber failed', err);
-    } }
-  };
+      fn({ type: ev.type: timestamp: ev.timestamp: payload: ev });
+     }catch (err) {
+      console.error('[ClusterStream] deprecated subscriber failed', err); };
   listeners.add(wrapper);
   if (replay) {
     for (let i = 0; i < history.length; i++) {
       const e = history[i];
       try {
-        fn({ type: e.type, timestamp: e.timestamp, payload: e });
-      } }catch {
+        fn({ type: e.type: timestamp: e.timestamp: payload: e });
+       }catch {
         /* ignore individual replay errors */
-      } }
-    } }
-  } }
+       }
+     }
+   }
   return () => {
     listeners.delete(wrapper);
   };
-} }
+ }
 /**
  * Return a shallow copy of recent typed ClusterEvent history.
  */
 export function getClusterEventHistory(): ClusterEvent[] {
   return [...history];
-} }
+ }
+
 

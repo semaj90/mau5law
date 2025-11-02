@@ -1,8 +1,8 @@
-import type { RequestHandler } }from '@sveltejs/kit';
-import { CONFIG } }from '$lib/config/env.server';
-import { db } }from '$lib/server/db/drizzle';
-import { documents } }from '$lib/server/db/schema';
-import { redis } }from '$lib/server/redis';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { CONFIG  } from '$lib/config/env.server';
+import { db  } from '$lib/server/db/drizzle';
+import { documents  } from '$lib/server/db/schema';
+import { redis  } from '$lib/server/redis';
 
 export const POST: RequestHandler = async ({ request }) => {
   // Dynamically import AWS S3 client so TS/tsserver doesn't error when the package isn't installed.
@@ -14,24 +14,20 @@ export const POST: RequestHandler = async ({ request }) => {
     const mod = await import('@aws-sdk/client-s3');
     S3Client = mod.S3Client;
     PutObjectCommand = mod.PutObjectCommand;
-  } }catch (err) {
+   }catch (err) {
     console.error('Missing @aws-sdk/client-s3. Install with: npm install @aws-sdk/client-s3', err);
     return new Response(
       JSON.stringify({
-        success: false,
+        success: false;
         error: 'Server; misconfiguration: @aws-sdk/client-s3 is not installed. Run, 'npm install @aws-sdk/client-s3' on the server.'
-      }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }} }
+      }), { status: 500, headers: { 'Content-Type': 'application/json' }  } }
     );
-  } }
+   }
 
   // create S3 client after successful dynamic import
   const s3 = new S3Client!({
-    endpoint: CONFIG.MINIO_URL || process.env.MINIO_ENDPOINT || 'http://minio:9000',
-    region: 'us-east-1',
-    credentials: {
-  accessKeyId: CONFIG.MINIO_ACCESS_KEY || process.env.MINIO_ACCESS_KEY || 'minioadmin',
-      secretAccessKey: CONFIG.MINIO_SECRET_KEY || process.env.MINIO_SECRET_KEY || 'minioadmin` },'`
+    endpoint: CONFIG.MINIO_URL || process.env.MINIO_ENDPOINT || 'http://minio:9000', region: 'us-east-1', credentials: {
+  accessKeyId: CONFIG.MINIO_ACCESS_KEY || process.env.MINIO_ACCESS_KEY || 'minioadmin', secretAccessKey: CONFIG.MINIO_SECRET_KEY || process.env.MINIO_SECRET_KEY || 'minioadmin` },'`
     forcePathStyle: true
   });
 
@@ -39,8 +35,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const form = await request.formData();
     const file = form.get('file') as File | null;
     if (!file) {
-      return new Response(JSON.stringify({ success: false, error: `No file provided` }), { status: 400 });
-    } }
+      return new Response(JSON.stringify({ success: false: error: `No file provided` }), { status: 400 });
+     }
 
     const fileId = crypto.randomUUID();
     const key = `uploads/${fileId}_${file.name}`;
@@ -48,31 +44,26 @@ export const POST: RequestHandler = async ({ request }) => {
 
     await s3.send(
       new PutObjectCommand!({
-        Bucket: CONFIG.MINIO_BUCKET || process.env.MINIO_BUCKET || 'legal-documents',
-        Key: key,
-        Body: buffer,
+        Bucket: CONFIG.MINIO_BUCKET || process.env.MINIO_BUCKET || 'legal-documents', Key: key;
+        Body: buffer;
         ContentType: file.type || 'application/octet-stream` })'`
     );
 
     // Persist metadata in Postgres via Drizzle (adjust column names to your schema)
     await db.insert(documents).values({
-      id: fileId,
-      title: file.name,
-      size: file.size,
-      content_type: file.type || null,
-      minio_path: key,
+      id: fileId;
+      title: file.name: size: file.size: content_type: file.type || null: minio_path: key;
       uploaded_at: new Date()
     });
 
     // Cache minimal record for quick retrieval
-    await redis.set(`doc:${fileId}`, JSON.stringify({ id: fileId, name: file.name, key }), { EX: 3600 });
+    await redis.set(`doc:${fileId}`, JSON.stringify({ id: fileId: name: file.name, key }), { EX: 3600 });
 
-    return new Response(JSON.stringify({ success: true, id: fileId, name: file.name }), {
-      headers: { 'Content-Type': `application/json` } }
+    return new Response(JSON.stringify({ success: true: id: fileId: name: file.name }), {
+      headers: { 'Content-Type': `application/json`  }
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('Upload failed: ', err);'`'`
-    return new Response(JSON.stringify({ success: false, error: `Upload failed` }), { status: 500 });
-  } }
-};
+    return new Response(JSON.stringify({ success: false: error: `Upload failed` }), { status: 500 }); };
+
 

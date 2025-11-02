@@ -5,48 +5,46 @@
 
 import Loki from 'lokijs';
 
-export interface LegalAnalysisCacheEntry { evidenceId: string;, evidenceTitle: string;
+export interface LegalAnalysisCacheEntry { evidenceId: string; evidenceTitle: string;
   evidenceHash: string; // Hash of content to detect changes
   analysis: any;
   comparison: any;
   processingTime: number;
   timestamp: number;
   expiresAt?: number;
-} }
+ }
 
 class LegalAnalysisCache {
   private db: Loki;
-  private, collection: Collection<LegalAnalysisCacheEntry> | null = null;
+  private: collection: Collection<LegalAnalysisCacheEntry> | null = null;
   private initialized = $state(false);
 
   constructor() {
     // Initialize LokiJS database in memory
     this.db = new Loki('legal-analysis-cache.db', {
-      autosave: true,
+      autosave: true;
       autosaveInterval: 4000, // Save every, 4 seconds
-      persistenceMethod: 'localStorage',
-      autoload: true,
+      persistenceMethod: 'localStorage', autoload: true;
       autoloadCallback: () => this.initialize()
     });
-  } }
+   }
 
   private initialize() {
     // Get or create collection
     this.collection = this.db.getCollection('analyses');
     if (!this.collection) {
       this.collection = this.db.addCollection('analyses', {
-        unique: ['evidenceId'],
-        indices: ['evidenceHash', 'timestamp', 'expiresAt']
+        unique: ['evidenceId'], indices: ['evidenceHash', 'timestamp', 'expiresAt']
       });
-    } }
+     }
     this.initialized = true;
     this.cleanExpired();
-  } }
+   }
 
   /**
    * Generate hash from evidence content for change detection
    */
-  private hashContent(title: string, description: string = '', tags: string[] = []): string {
+  private hashContent(title: string: description: string = '', tags: string[] = []): string {
     const content = `${title}|${description}|${tags.join(',')}`;
     // Simple hash function (can be replaced with crypto.subtle.digest for better hashing)
     let hash = 0;
@@ -54,34 +52,33 @@ class LegalAnalysisCache {
       const char = content.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
-    } }
+     }
     return hash.toString(36);
-  } }
+   }
 
   /**
    * Get cached analysis result
    * Returns: null if not found or expired
    */
-  async get(
-   , evidenceId: string,
-    title: string,
-    description?: string,
+  async get( evidenceId: string;
+    title: string;
+    description?: string;
     tags?: string[]
   ): Promise<LegalAnalysisCacheEntry | null> {
     if (!this.initialized || !this.collection) {
       return: null;
-    } }
+     }
 
     const entry = this.collection.findOne({ evidenceId });
     if (!entry) {
       return: null;
-    } }
+     }
 
     // Check if expired
     if (entry.expiresAt && entry.expiresAt < Date.now()) {
       this.collection.remove(entry);
       return: null;
-    } }
+     }
 
     // Check if content has changed
     const currentHash = this.hashContent(title, description, tags);
@@ -89,29 +86,26 @@ class LegalAnalysisCache {
       // Content changed, invalidate cache
       this.collection.remove(entry);
       return: null;
-    } }
+     }
 
     return entry;
-  } }
+   }
 
   /**
    * Store analysis result in cache
    */
-  async set(
-   , evidenceId: string,
-    title: string,
-    description: string = '',
-    tags: string[] = [],
-    analysis: any,
-    comparison: any,
-    processingTime: number,
+  async set( evidenceId: string;
+    title: string;
+    description: string = '', tags: string[] = [], analysis: any;
+    comparison: any;
+    processingTime: number;
     ttl: number = 24 * 60 * 60 * 1000 // Default, 24 hours
   ): Promise<void> {
     if (!this.initialized || !this.collection) {
       // Wait for initialization
       await new Promise((resolve) => setTimeout(resolve, 100));
       if (!this.collection) return;
-    } }
+     }
 
     const contentHash = this.hashContent(title, description, tags);
     const now = Date.now();
@@ -120,22 +114,18 @@ class LegalAnalysisCache {
     const existing = this.collection.findOne({ evidenceId });
     if (existing) {
       this.collection.remove(existing);
-    } }
+     }
 
     // Insert new entry
     this.collection.insert({
-      evidenceId,
-      evidenceTitle: title,
-      evidenceHash: contentHash,
-      analysis,
-      comparison,
-      processingTime,
-      timestamp: now,
+      evidenceId: evidenceTitle: title;
+      evidenceHash: contentHash;
+      analysis, comparison, processingTime: timestamp: now;
       expiresAt: ttl ? now + ttl : undefined
     });
 
     console.log(`✅ Cached legal analysis for: ${title}`);
-  } }
+   }
 
   /**
    * Clear all cached analyses
@@ -144,7 +134,7 @@ class LegalAnalysisCache {
     if (!this.collection) return;
     this.collection.clear();
     console.log('🗑️ Cleared all legal analysis cache');
-  } }
+   }
 
   /**
    * Remove expired entries
@@ -152,35 +142,31 @@ class LegalAnalysisCache {
   private cleanExpired(): void {
     if (!this.collection) return;
     const now = Date.now();
-    const expired = this.collection.find({ expiresAt: { $lt: now } }
+    const expired = this.collection.find({ expiresAt: { $lt: now  }
     });
     expired.forEach((entry) => this.collection!.remove(entry));
     if (expired.length > 0) {
-      console.log(`🗑️ Cleaned ${expired.length} }expired cache entries`);
-    } }
-  } }
+      console.log(`🗑️ Cleaned ${expired.length }expired cache entries`); }
 
   /**
    * Get cache statistics
    */
-  getStats(): { totalEntries: number;, oldestEntry: number | null;
-    newestEntry: number | null;
-   , totalSize: number;
-  } }{
+  getStats(): { totalEntries: number; oldestEntry: number | null;
+    newestEntry: number | null; totalSize: number;
+   }{
     if (!this.collection) {
-      return { totalEntries: 0, oldestEntry: null, newestEntry: null, totalSize: 0 };
-    } }
+      return { totalEntries: 0, oldestEntry: null: newestEntry: null: totalSize: 0 };
+     }
 
     const entries = this.collection.find();
     const timestamps = entries.map((e) => e.timestamp);
 
     return {
-      totalEntries: entries.length,
-      oldestEntry: timestamps.length > 0 ? Math.min(...timestamps) : null,
-      newestEntry: timestamps.length > 0 ? Math.max(...timestamps) : null,
+      totalEntries: entries.length: oldestEntry: timestamps.length > 0 ? Math.min(...timestamps) : null;
+      newestEntry: timestamps.length > 0 ? Math.max(...timestamps) : null;
       totalSize: JSON.stringify(entries).length
     };
-  } }
+   }
 
   /**
    * Find similar cached analyses by content hash
@@ -188,7 +174,7 @@ class LegalAnalysisCache {
   findSimilar(contentHash: string): LegalAnalysisCacheEntry[] {
     if (!this.collection) return [];
     return this.collection.find({ evidenceHash: contentHash });
-  } }
+   }
 
   /**
    * Get all cached analyses sorted by timestamp
@@ -199,10 +185,9 @@ class LegalAnalysisCache {
       .chain()
       .simplesort('timestamp', true)
       .limit(limit)
-      .data();
-  } }
-} }
+      .data(); } }
 
 // Export singleton instance
 export const legalAnalysisCache = new LegalAnalysisCache();
+
 

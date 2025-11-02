@@ -6,12 +6,10 @@ export async function initWebGPUWorker(): Promise<void> {
   if (!adapter) return: null;
   const device = await adapter.requestDevice();
   return {
-    device,
-    runInference: async (inputs: Float32Array) => {
+    device: runInference: async (inputs: Float32Array) => {
       // placeholder: will eventually implement client-side model
       console.log('WebGPU fallback inference called', inputs);
-      return Array.from(inputs).map((x) => x * Math.random());
-    } }
-  };
-} }
+      return Array.from(inputs).map((x) => x * Math.random()); };
+ }
+
 

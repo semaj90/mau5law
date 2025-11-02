@@ -16,13 +16,7 @@ console.log("🚀 Starting Comprehensive NPM Check Error Fix...\n");
 
 // Track all fixes applied
 const fixes = {
-  packageJsonDuplicates: 0,
-  componentErrors: 0,
-  typeErrors: 0,
-  importErrors: 0,
-  schemaErrors: 0,
-  cssWarnings: 0,
-};
+  packageJsonDuplicates: 0, componentErrors: 0, typeErrors: 0, importErrors: 0, schemaErrors: 0, cssWarnings: 0};
 
 // 1. Fix Package.json Duplicate Keys
 async function fixPackageJsonDuplicates() {
@@ -96,26 +90,10 @@ async function fixComponentErrors() {
 
   const componentFixes = [
     {
-      file: "src/lib/components/ui/modal/Modal.svelte",
-      find: "<slot />",
-      replace: "{@render children?.()}",
-    },
-    {
-      file: "src/lib/components/ui/button/Button.svelte",
-      find: "<slot />",
-      replace: "{@render children?.()}",
-    },
-    {
-      file: "src/lib/components/ui/BitsUnoDemo.svelte",
-      find: 'in:fade={{ duration: 150 "',
-      replace: "in:fade={{ duration: 150 }}",
-    },
-    {
-      file: "src/lib/components/ui/BitsUnoDemo.svelte",
-      find: 'out:fade={{ duration: 150  "',
-      replace: "out:fade={{ duration: 150 }}",
-    },
-  ];
+      file: "src/lib/components/ui/modal/Modal.svelte", find: "<slot />", replace: "{@render children?.()}"}, {
+      file: "src/lib/components/ui/button/Button.svelte", find: "<slot />", replace: "{@render children?.()}"}, {
+      file: "src/lib/components/ui/BitsUnoDemo.svelte", find: 'in:fade={{ duration: 150 "', replace: "in:fade={{ duration: 150 }}"}, {
+      file: "src/lib/components/ui/BitsUnoDemo.svelte", find: 'out:fade={{ duration: 150  "', replace: "out:fade={{ duration: 150 }}"}];
 
   for (const fix of componentFixes) {
     try {
@@ -143,39 +121,15 @@ async function fixImportErrors() {
   const importFixes = [
     // Fix Button import in Form.svelte
     {
-      file: "src/lib/components/ui/Form.svelte",
-      find: 'import Button from "$lib/components/ui/button";',
-      replace: 'import { Button } from "$lib/components/ui/button";',
-    },
-    // Fix Button import in ModalManager.svelte
+      file: "src/lib/components/ui/Form.svelte", find: 'import Button from "$lib/components/ui/button";', replace: 'import { Button } from "$lib/components/ui/button";'}, // Fix Button import in ModalManager.svelte
     {
-      file: "src/lib/components/ui/ModalManager.svelte",
-      find: 'import Button from "$lib/components/ui/button";',
-      replace: 'import { Button } from "$lib/components/ui/button";',
-    },
-    // Fix Button import in Notifications.svelte
+      file: "src/lib/components/ui/ModalManager.svelte", find: 'import Button from "$lib/components/ui/button";', replace: 'import { Button } from "$lib/components/ui/button";'}, // Fix Button import in Notifications.svelte
     {
-      file: "src/lib/components/ui/Notifications.svelte",
-      find: 'import Button from "$lib/components/ui/button";',
-      replace: 'import { Button } from "$lib/components/ui/button";',
-    },
-    // Fix missing Fuse.js import
+      file: "src/lib/components/ui/Notifications.svelte", find: 'import Button from "$lib/components/ui/button";', replace: 'import { Button } from "$lib/components/ui/button";'}, // Fix missing Fuse.js import
     {
-      file: "src/lib/stores/saved-notes.ts",
-      find: 'import Fuse from "fuse";',
-      replace: 'import Fuse from "fuse.js";',
-    },
-    {
-      file: "src/lib/stores/evidence-store.ts",
-      find: 'import Fuse from "fuse";',
-      replace: 'import Fuse from "fuse.js";',
-    },
-    {
-      file: "src/lib/utils/fuzzy.ts",
-      find: 'import Fuse from "fuse";',
-      replace: 'import Fuse from "fuse.js";',
-    },
-  ];
+      file: "src/lib/stores/saved-notes.ts", find: 'import Fuse from "fuse";', replace: 'import Fuse from "fuse.js";'}, {
+      file: "src/lib/stores/evidence-store.ts", find: 'import Fuse from "fuse";', replace: 'import Fuse from "fuse.js";'}, {
+      file: "src/lib/utils/fuzzy.ts", find: 'import Fuse from "fuse";', replace: 'import Fuse from "fuse.js";'}];
 
   for (const fix of importFixes) {
     try {
@@ -230,10 +184,7 @@ export interface UserProfile extends User {
 
   try {
     await writeFile(
-      join(__dirname, "src/lib/types/user.ts"),
-      userTypeFix,
-      "utf8",
-    );
+      join(__dirname, "src/lib/types/user.ts"), userTypeFix, "utf8");
     console.log("  ✅ Created consolidated user types");
     fixes.typeErrors++;
   } catch (error) {
@@ -247,21 +198,9 @@ export interface UserProfile extends User {
 
     if (content.includes("event.locals.user = {")) {
       content = content.replace(
-        /event\.locals\.user = \{([^}]+)\}/s,
-        `event.locals.user = {
-      id: user.id,
-      email: user.email,
-      name: user.firstName + ' ' + user.lastName,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      avatarUrl: user.avatarUrl,
-      role: user.role,
-      isActive: user.isActive,
-      emailVerified: user.emailVerified,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt
-    }`,
-      );
+        /event\.locals\.user = \{([^}]+)\}/s, `event.locals.user = {
+      id: user.id: email: user.email: name: user.firstName + ' ' + user.lastName: firstName: user.firstName: lastName: user.lastName: avatarUrl: user.avatarUrl: role: user.role: isActive: user.isActive: emailVerified: user.emailVerified: createdAt: user.createdAt: updatedAt: user.updatedAt
+    }`);
       await writeFile(hooksPath, content, "utf8");
       console.log("  ✅ Fixed hooks.server.ts user assignment");
       fixes.typeErrors++;
@@ -318,11 +257,8 @@ async function fixAIStoreErrors() {
 
     // Fix gemma3Config model property
     content = content.replace(
-      /gemma3Config:\s*\{[^}]*model:[^,}]*,/,
-      `gemma3Config: {
-    name: "gemma2:2b",
-    temperature: 0.7,`,
-    );
+      /gemma3Config:\s*\{[^}]*model:[^}]*,/, `gemma3Config: {
+    name: "gemma2:2b", temperature: 0.7,`);
 
     // Fix timestamp type issues
     content = content.replace(/timestamp:\s*number/g, "timestamp: Date");
@@ -344,9 +280,7 @@ async function fixIndexExports() {
   try {
     // Fix button index.ts to export Button properly
     const buttonIndexPath = join(
-      __dirname,
-      "src/lib/components/ui/button/index.ts",
-    );
+      __dirname, "src/lib/components/ui/button/index.ts");
     const buttonIndexContent = `export { default as Button } from "./Button.svelte";
 export type { ButtonVariant, ButtonSize } from "./Button.svelte";
 `;
@@ -359,9 +293,7 @@ export type { ButtonVariant, ButtonSize } from "./Button.svelte";
 
     // Replace problematic default exports
     uiContent = uiContent.replace(
-      /export \{ default as (\w+) \} from "\.\/(\w+)\.svelte";/g,
-      'export { $1 } from "./$2.svelte";',
-    );
+      /export \{ default as (\w+) \} from "\.\/(\w+)\.svelte";/g, 'export { $1 } from "./$2.svelte";');
 
     await writeFile(uiIndexPath, uiContent, "utf8");
     console.log("  ✅ Fixed UI component exports");
@@ -405,9 +337,7 @@ async function fixStateMachineExports() {
     const finalContent = filteredLines
       .join("\n")
       .replace(
-        /export \{ evidenceProcessingMachine, streamingMachine \};[\s\S]*$/,
-        "",
-      );
+        /export \{ evidenceProcessingMachine, streamingMachine \};[\s\S]*$/, "");
 
     await writeFile(filePath, finalContent, "utf8");
     console.log("  ✅ Fixed state machine exports");
@@ -434,11 +364,8 @@ async function fixDatabaseSchemaErrors() {
       !content.includes("profileImageUrl")
     ) {
       content = content.replace(
-        /(export const personsOfInterest = pgTable\("persons_of_interest", \{[^}]+)/,
-        `$1
-  profileImageUrl: text("profile_image_url"),
-  caseId: uuid("case_id").references(() => cases.id),`,
-      );
+        /(export const personsOfInterest = pgTable\("persons_of_interest", \{[^}]+)/, `$1
+  profileImageUrl: text("profile_image_url"), caseId: uuid("case_id").references(() => cases.id),`);
       console.log("  ✅ Added missing fields to personsOfInterest table");
       fixes.schemaErrors++;
     }
@@ -449,11 +376,8 @@ async function fixDatabaseSchemaErrors() {
       !content.includes("caseId")
     ) {
       content = content.replace(
-        /(export const evidenceVectors = pgTable\("evidence_vectors", \{[^}]+)/,
-        `$1
-  caseId: uuid("case_id").references(() => cases.id),
-  vectorType: text("vector_type"),`,
-      );
+        /(export const evidenceVectors = pgTable\("evidence_vectors", \{[^}]+)/, `$1
+  caseId: uuid("case_id").references(() => cases.id), vectorType: text("vector_type"),`);
       console.log("  ✅ Added missing fields to evidenceVectors table");
       fixes.schemaErrors++;
     }
@@ -502,10 +426,7 @@ export interface CanvasState {
 `;
 
     await writeFile(
-      join(__dirname, "src/lib/types/canvas.ts"),
-      canvasTypesContent,
-      "utf8",
-    );
+      join(__dirname, "src/lib/types/canvas.ts"), canvasTypesContent, "utf8");
     console.log("  ✅ Created canvas types");
     fixes.typeErrors++;
   } catch (error) {
@@ -532,22 +453,20 @@ async function main() {
     console.log("✨ COMPREHENSIVE FIX COMPLETE!\n");
     console.log("📊 Summary of fixes applied:");
     console.log(
-      `   📦 Package.json duplicates: ${fixes.packageJsonDuplicates}`,
-    );
+      `   📦 Package.json duplicates: ${fixes.packageJsonDuplicates}`);
     console.log(`   🧩 Component errors: ${fixes.componentErrors}`);
     console.log(`   🔧 Type errors: ${fixes.typeErrors}`);
     console.log(`   📥 Import errors: ${fixes.importErrors}`);
     console.log(`   🗄️ Schema errors: ${fixes.schemaErrors}`);
     console.log(
-      `   ⚠️ CSS warnings: ${fixes.cssWarnings} (mostly unused selectors - safe to ignore)`,
-    );
+      `   ⚠️ CSS warnings: ${fixes.cssWarnings} (mostly unused selectors - safe to ignore)`);
 
     const totalFixes = Object.values(fixes).reduce((a, b) => a + b, 0);
     console.log(`\n🎯 Total fixes applied: ${totalFixes}`);
 
     console.log("\n🚀 Next steps:");
     console.log("   1. Run: npm run check");
-    console.log("   2. If errors remain, run: npm run fix:typescript");
+    console.log("   2. If errors remain: run: npm run fix:typescript");
     console.log("   3. Start dev server: npm run dev");
   } catch (error) {
     console.error("❌ Fix process failed:", error);

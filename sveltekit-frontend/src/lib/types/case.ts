@@ -1,7 +1,7 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 // Legal Case Management Types
 
-export interface LegalCase { id: string;, title: string;
+export interface LegalCase { id: string; title: string;
   description: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
   status: 'draft' | 'active' | 'under_review' | 'closed' | 'archived';
@@ -10,13 +10,12 @@ export interface LegalCase { id: string;, title: string;
   assignedLawyerId?: string;
   jurisdiction?: string;
   courtLevel?: 'district' | 'appellate' | 'supreme';
-  dateCreated: string | Date;
- , dateModified: string | Date;
+  dateCreated: string | Date; dateModified: string | Date;
   dueDate?: string | Date;
   estimatedHours?: number;
   actualHours?: number;
   metadata?: Record<string, unknown>;
-} }
+ }
 
 // Backwards-compatible alias for imports that expect `Case`
 export type Case = LegalCase;
@@ -26,8 +25,7 @@ export interface CaseForm {
   title: string;
   description: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
-  status: 'draft' | 'active' | 'under_review' | 'closed' | 'archived';
- , caseType: 'civil' | 'criminal' | 'corporate' | 'family' | 'immigration' | 'other';
+  status: 'draft' | 'active' | 'under_review' | 'closed' | 'archived'; caseType: 'civil' | 'criminal' | 'corporate' | 'family' | 'immigration' | 'other';
   clientId?: string;
   assignedLawyerId?: string;
   jurisdiction?: string;
@@ -38,7 +36,7 @@ export interface CaseForm {
   estimatedHours?: number;
   actualHours?: number;
   metadata?: Record<string, unknown>;
-} }
+ }
 export interface CaseFormValidationErrors {
   title?: string;
   description?: string;
@@ -47,27 +45,25 @@ export interface CaseFormValidationErrors {
   clientId?: string;
   jurisdiction?: string;
   [key: string]: string | undefined;
-} }
-export interface CaseFormState { data: CaseForm;, errors: CaseFormValidationErrors;
+ }
+export interface CaseFormState { data: CaseForm; errors: CaseFormValidationErrors;
   isSubmitting: boolean;
   isValid: boolean;
-  isDirty: boolean;
- , touchedFields: Set<keyof, CaseForm>;
-} }
+  isDirty: boolean; touchedFields: Set<keyof, CaseForm>;
+ }
 // Case Timeline and Events
-export interface TimelineEvent { id: string;, caseId: string;
+export interface TimelineEvent { id: string; caseId: string;
   type: 'filing' | 'hearing' | 'evidence_added' | 'document_received' | 'communication' | 'milestone' | 'deadline';
   title: string;
-  description?: string;
- , date: string | Date;
+  description?: string; date: string | Date;
   participants?: string[];
   documents?: string[];
   metadata?: Record<string, unknown>;
   createdBy: string;
   createdAt: string | Date;
-} }
+ }
 // Case Analytics and Metrics
-export interface CaseMetrics { caseId: string;, totalDocuments: number;
+export interface CaseMetrics { caseId: string; totalDocuments: number;
   totalEvidence: number;
   totalHours: number;
   timelineEvents: number;
@@ -76,44 +72,44 @@ export interface CaseMetrics { caseId: string;, totalDocuments: number;
   progressPercentage: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   confidenceScore: number;
-} }
+ }
 // Legal Context and Relationships
-export interface LegalContext { caseId: string;, precedents: LegalPrecedent[];
+export interface LegalContext { caseId: string; precedents: LegalPrecedent[];
   statutes: LegalStatute[];
   regulations: LegalRegulation[];
   jurisdiction: JurisdictionInfo;
   practiceArea: string[];
-} }
-export interface LegalPrecedent { id: string;, title: string;
+ }
+export interface LegalPrecedent { id: string; title: string;
   court: string;
   date: string | Date;
   citationKey: string;
   relevanceScore: number;
   summary: string;
   url?: string;
-} }
-export interface LegalStatute { id: string;, title: string;
+ }
+export interface LegalStatute { id: string; title: string;
   code: string;
   section: string;
   jurisdiction: string;
   effectiveDate: string | Date;
   summary: string;
   relevanceScore: number;
-} }
-export interface LegalRegulation { id: string;, title: string;
+ }
+export interface LegalRegulation { id: string; title: string;
   agency: string;
   cfr?: string;
   effectiveDate: string | Date;
   summary: string;
   relevanceScore: number;
-} }
-export interface JurisdictionInfo { name: string;, type: 'federal' | 'state' | 'local';
+ }
+export interface JurisdictionInfo { name: string; type: 'federal' | 'state' | 'local';
   code: string;
   courts: CourtInfo[];
-} }
-export interface CourtInfo { name: string;, level: 'trial' | 'appellate' | 'supreme';
- , jurisdiction: string;
+ }
+export interface CourtInfo { name: string; level: 'trial' | 'appellate' | 'supreme'; jurisdiction: string;
   address?: string;
   website?: string;
-} }
+ }
+
 

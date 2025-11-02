@@ -2,11 +2,11 @@
  * Galbert Service
  * Comprehensive NLP service integrating Legal-BERT, Gemma, RAG/KAG, OCR, and Redis caching
  */
-import { EventEmitter } }from "events";
-import { createClient, as createRedisClient } }from '$lib/server/cache/redis'; // Import Redis client
-import { enhancedVectorSearchService } }from '$lib/server/ai/enhanced-vector-search-service'; // Assuming this path
-import { createWorkerPool, getWorkerPool, type OcrPayload } }from '$lib/workers/legal-ai-worker-pool'; // Import worker pool
-import { AutoTokenizer } }from "@xenova/transformers"; // New import for tokenizer
+import { EventEmitter  } from "events";
+import { createClient, as createRedisClient  } from '$lib/server/cache/redis'; // Import Redis client
+import { enhancedVectorSearchService  } from '$lib/server/ai/enhanced-vector-search-service'; // Assuming this path
+import { createWorkerPool, getWorkerPool, type OcrPayload  } from '$lib/workers/legal-ai-worker-pool'; // Import worker pool
+import { AutoTokenizer  } from "@xenova/transformers"; // New import for tokenizer
 
 // Initialize Redis client
 const redisClient = createRedisClient();
@@ -14,78 +14,74 @@ const redisClient = createRedisClient();
 // Utility to get Ollama endpoint
 function getOllamaEndpoint(): string {
   return process.env.OLLAMA_URL || 'http://localhost:11434';
-} }
+ }
 
-interface ONNXModelConfig { modelPath: string;, providerOptions: {
+interface ONNXModelConfig { modelPath: string; providerOptions: {
     name: string;
     deviceType?: 'CPU' | 'GPU';
     deviceId?: number;
-  } }];
-  sessionOptions: { graphOptimizationLevel: 'basic' | 'extended' | 'all';, enableMemPattern: boolean;
+   }];
+  sessionOptions: { graphOptimizationLevel: 'basic' | 'extended' | 'all'; enableMemPattern: boolean;
     enableCpuMemArena: boolean;
     executionMode: 'sequential' | 'parallel';
     logSeverityLevel: number;
-  } }
-  inputSpec: { inputIds: { name: string; type: string; shape: number[] } }
-    attentionMask: { name: string; type: string; shape: number[] } }
-    tokenTypeIds?: { name: string; type: string; shape: number[] } }
-  } }
-  outputSpec: { lastHiddenState: { name: string; type: string; shape: number[] } }
-    poolerOutput?: { name: string; type: string; shape: number[] } }
-    logits?: { name: string; type: string; shape: number[] } }
-  } }
+   }
+  inputSpec: { inputIds: { name: string; type: string; shape: number[]  }
+    attentionMask: { name: string; type: string; shape: number[]  }
+    tokenTypeIds?: { name: string; type: string; shape: number[]  }
+   }
+  outputSpec: { lastHiddenState: { name: string; type: string; shape: number[]  }
+    poolerOutput?: { name: string; type: string; shape: number[]  }
+    logits?: { name: string; type: string; shape: number[]  }
+   }
 } }
 interface LegalEntityExtractionResult { entities: Array<{ text: string; label: string; confidence: number; start: number; end: number }>;
   processingTime: number;
   modelUsed: string;
-} }
+ }
 interface LegalClassificationResult { predictions: Array<{ label: string; confidence: number }>;
-  topPrediction: { label: string;, confidence: number;
+  topPrediction: { label: string; confidence: number;
   };
   processingTime: number;
   modelUsed: string;
-} }
-interface LegalEmbeddingResult { embeddings: number[];, dimensions: number;
-  processingTime: number;
- , modelUsed: string;
-} }
+ }
+interface LegalEmbeddingResult { embeddings: number[]; dimensions: number;
+  processingTime: number; modelUsed: string;
+ }
 
 type OnnxOutput = Record<string, { data: ArrayLike<number> }>;
-type TritonOutput = { name: string; data: ArrayLike<number> } }];
+type TritonOutput = { name: string; data: ArrayLike<number>  }];
 
 interface ModelInputs { input_ids: { data: ArrayLike<number> };
   attention_mask: { data: ArrayLike<number> };
   token_type_ids?: { data: ArrayLike<number> };
-} }
+ }
 
 // New interface for Gemma response
-interface GemmaResponse { response: string;, model: string;
+interface GemmaResponse { response: string; model: string;
   processingTime: number;
   cached: boolean;
-} }
+ }
 
 // New interface for Intent Result
-interface IntentResult { intent: string;, confidence: number;
-} }
+interface IntentResult { intent: string; confidence: number;
+ }
 
 // New interface for RAG context
-interface RAGContext { query: string;, documents: Array<{ id: string; text: string; score: number }>;
+interface RAGContext { query: string; documents: Array<{ id: string; text: string; score: number }>;
   graphData?: Array<Record<string, unknown>>; // Placeholder for KAG
   processingTime: number;
   cached: boolean;
-} }
+ }
 
 export class GalbertService extends EventEmitter {
   private modelConfig: ONNXModelConfig;
   private session: any = null; // ONNX InferenceSession
-  private, tokenizer: any = null;
+  private: tokenizer: any = null;
   private isInitialized = false; // Changed from $state(false)
   private ort: any = null; // Store ONNX Runtime instance
   private triton: any = null; // Store Triton client instance for TensorRT
-  private performanceMetrics = { totalInferences: 0,
-    averageLatency: 0,
-    successRate: 1.0,
-    lastUsed: new Date()
+  private performanceMetrics = { totalInferences: 0, averageLatency: 0, successRate: 1.0, lastUsed: new Date()
   };
 
   constructor() {
@@ -93,55 +89,31 @@ export class GalbertService extends EventEmitter {
     this.modelConfig = this.getDefaultConfig();
     // Ensure worker pool is initialized for OCR
     createWorkerPool();
-  } }
+   }
 
   /**
    * Get default ONNX configuration for Legal-BERT
    */
   private getDefaultConfig(): ONNXModelConfig {
     return {
-      modelPath: './models/legal-bert-onnx/model.onnx',
-      providerOptions: [
-        { name: 'CPUExecutionProvider',
-          deviceType: 'CPU'
-        },
-        // GPU provider as fallback if available
+      modelPath: './models/legal-bert-onnx/model.onnx', providerOptions: [
+        { name: 'CPUExecutionProvider', deviceType: 'CPU'
+        }, // GPU provider as fallback if available
         {
-          name: 'CUDAExecutionProvider',
-          deviceType: 'GPU',
-          deviceId: 0
-        },
-      ],
-      sessionOptions: { graphOptimizationLevel: 'all',
-        enableMemPattern: true,
-        enableCpuMemArena: true,
-        executionMode: 'parallel',
-        logSeverityLevel: 2, // Warning level
-      },
-      inputSpec: { inputIds: { name: 'input_ids',
-          type: 'int64',
-          shape: [-1, -1], // Dynamic batch and sequence length
-        },
-        attentionMask: { name: 'attention_mask',
-          type: 'int64',
-          shape: [-1, -1]
-        },
-        tokenTypeIds: { name: 'token_type_ids',
-          type: 'int64',
-          shape: [-1, -1]
-        } }
-      },
-      outputSpec: { lastHiddenState: { name: 'last_hidden_state',
-          type: 'float32',
-          shape: [-1, -1, 768], // [batch, sequence, hidden_size]
-        },
-        poolerOutput: { name: 'pooler_output',
-          type: 'float32',
-          shape: [-1, 768], // [batch, hidden_size]
-        } }
-      } }
+          name: 'CUDAExecutionProvider', deviceType: 'GPU', deviceId: 0
+        }], sessionOptions: { graphOptimizationLevel: 'all', enableMemPattern: true;
+        enableCpuMemArena: true;
+        executionMode: 'parallel', logSeverityLevel: 2, // Warning level
+      }, inputSpec: { inputIds: { name: 'input_ids', type: 'int64', shape: [-1, -1], // Dynamic batch and sequence length
+        }, attentionMask: { name: 'attention_mask', type: 'int64', shape: [-1, -1]
+        }, tokenTypeIds: { name: 'token_type_ids', type: 'int64', shape: [-1, -1]
+         }
+      }, outputSpec: { lastHiddenState: { name: 'last_hidden_state', type: 'float32', shape: [-1, -1, 768], // [batch, sequence, hidden_size]
+        }, poolerOutput: { name: 'pooler_output', type: 'float32', shape: [-1, 768], // [batch, hidden_size]
+         }
+       }
     };
-  } }
+   }
 
   /**
    * Initialize ONNX session and tokenizer
@@ -153,26 +125,23 @@ export class GalbertService extends EventEmitter {
       if (process.env.USE_TENSORRT === 'true') {
         this.triton = runtime; // runtime is the Triton client
         console.log('✅ Galbert Triton client initialized successfully');
-      } }else {
+       }else {
         this.ort = runtime; // runtime is onnxruntime-node/web
         // Create inference session for ONNX
         this.session = await this.ort.InferenceSession.create(this.modelConfig.modelPath, {
-          executionProviders: this.modelConfig.providerOptions.map(p => p.name),
-          ...this.modelConfig.sessionOptions
+          executionProviders: this.modelConfig.providerOptions.map(p => p.name), ...this.modelConfig.sessionOptions
         });
         console.log('✅ Galbert ONNX component initialized successfully');
         console.log('📊 Available providers:', this.session.inputNames, this.session.outputNames);
-      } }
+       }
 
       this.tokenizer = await this.initializeTokenizer();
       this.isInitialized = true;
-      this.emit('initialized', { session: this.session, tokenizer: this.tokenizer, triton: this.triton });
-    } }catch (error) {
+      this.emit('initialized', { session: this.session: tokenizer: this.tokenizer: triton: this.triton });
+     }catch (error) {
       console.error('❌ Failed to initialize Galbert component:', error);
       this.emit('error', { type: 'initialization', error });
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Load ONNX Runtime or Triton client with fallback handling
@@ -182,29 +151,27 @@ export class GalbertService extends EventEmitter {
       if (this.triton) return this.triton;
       try {
         // @ts-expect-error - triton-client may not have type declarations
-        const { InferenceServerClient } }= await import('triton-client');
+        const { InferenceServerClient  }= await import('triton-client');
         // Assuming Triton server is running on localhost:8001 for gRPC
         this.triton = new InferenceServerClient('localhost:8001', 'grpc');
         return this.triton;
-      } }catch (error) {
+       }catch (error) {
         console.error('Error loading Triton client, falling back to ONNX Runtime:', error);
         // Fallback to ONNX if Triton fails
         process.env.USE_TENSORRT = 'false'; // Disable Triton for this session
         return this.loadRuntime(); // Recurse to load ONNX
-      } }
-    } }else {
+       }
+     }else {
       if (this.ort) return this.ort;
       try {
         return await import('onnxruntime-node');
-      } }catch (error) {
+       }catch (error) {
         try {
           return await import('onnxruntime-web');
-        } }catch (webError) {
-          throw new Error('ONNX Runtime not available. Please install onnxruntime-node or onnxruntime-web');
-        } }
-      } }
-    } }
-  } }
+         }catch (webError) {
+          throw new Error('ONNX Runtime not available. Please install onnxruntime-node or onnxruntime-web'); }
+     }
+   }
 
   /**
    * Initialize tokenizer using @xenova/transformers
@@ -213,11 +180,9 @@ export class GalbertService extends EventEmitter {
     const tok = await AutoTokenizer.from_pretrained('nlpaueb/legal-bert-base-uncased');
     return {
       encode: (text: string) => tok(text), // AutoTokenizer returns an: object with input_ids, attention_mask, etc.
-      decode: (ids: number[]) => tok.decode(ids),
-      vocab_size: tok.vocab_size,
-      max_length: 512
+      decode: (ids: number[]) => tok.decode(ids), vocab_size: tok.vocab_size: max_length: 512
     };
-  } }
+   }
 
   /**
    * Utility to hash text for cache keys
@@ -228,7 +193,7 @@ export class GalbertService extends EventEmitter {
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  } }
+   }
 
   /**
    * Extract legal entities from text
@@ -237,7 +202,7 @@ export class GalbertService extends EventEmitter {
     const startTime = Date.now();
     if (!this.isInitialized) {
       await this.initialize();
-    } }
+     }
     try {
       // Tokenize input
       const tokens = this.tokenizer.encode(text);
@@ -248,31 +213,27 @@ export class GalbertService extends EventEmitter {
       if (process.env.USE_TENSORRT === 'true' && this.triton) {
         // For Triton, model name is required
         outputs = await this.triton.infer('legalbert_trt', inputs); // Assuming, 'legalbert_trt' is the model name
-      } }else if (this.session) {
+       }else if (this.session) {
         outputs = await this.session.run(inputs);
-      } }else {
+       }else {
         throw new Error('No inference session or Triton client available.');
-      } }
+       }
 
       // Process outputs for NER
       const entities = this.processNEROutputs(outputs, text, tokens);
       const processingTime = Date.now() - startTime;
       await this.updateMetrics(processingTime, true);
       const result: LegalEntityExtractionResult = {
-        entities,
-        processingTime,
-        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx'
+        entities, processingTime: modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx'
       };
       this.emit('entity-extraction-complete', result);
       return result;
-    } }catch (error) {
+     }catch (error) {
       const processingTime = Date.now() - startTime;
       await this.updateMetrics(processingTime, false);
       console.error('Legal entity extraction failed:', error);
       this.emit('error', { type: 'entity-extraction', error, text });
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Classify legal document type
@@ -281,7 +242,7 @@ export class GalbertService extends EventEmitter {
     const startTime = Date.now();
     if (!this.isInitialized) {
       await this.initialize();
-    } }
+     }
 
     const cacheKey = `langcache:classification:${await this.hashText(text)}`;
     const cachedResult = await redisClient.get(cacheKey);
@@ -290,9 +251,7 @@ export class GalbertService extends EventEmitter {
       const result = JSON.parse(cachedResult);
       await this.updateMetrics(Date.now() - startTime, true);
       return {
-        ...result,
-        processingTime: Date.now() - startTime,
-        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)' };'' } }
+        ...result: processingTime: Date.now() - startTime: modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)' };''  }
 
     try {
       // Tokenize input
@@ -303,33 +262,29 @@ export class GalbertService extends EventEmitter {
       let outputs: any;
       if (process.env.USE_TENSORRT === 'true' && this.triton) {
         outputs = await this.triton.infer('legalbert_trt', inputs);
-      } }else if (this.session) {
+       }else if (this.session) {
         outputs = await this.session.run(inputs);
-      } }else {
+       }else {
         throw new Error('No inference session or Triton client available.');
-      } }
+       }
 
       // Process outputs for classification
       const predictions = this.processClassificationOutputs(outputs);
       const processingTime = Date.now() - startTime;
       await this.updateMetrics(processingTime, true);
       const result: LegalClassificationResult = {
-        predictions,
-        topPrediction: predictions[0],
-        processingTime,
-        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx' };'`
+        predictions: topPrediction: predictions[0];
+        processingTime: modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx' };'`
 
       await redisClient.set(cacheKey, JSON.stringify(result), { EX: 3600 }); // Cache for, 1 hour
       this.emit('classification-complete', result);
       return result;
-    } }catch (error) {
+     }catch (error) {
       const processingTime = Date.now() - startTime;
       await this.updateMetrics(processingTime, false);
       console.error('Legal classification failed:', error);
       this.emit('error', { type: 'classification', error, text });
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Generate embeddings for legal text
@@ -338,7 +293,7 @@ export class GalbertService extends EventEmitter {
     const startTime = Date.now();
     if (!this.isInitialized) {
       await this.initialize();
-    } }
+     }
 
     const cacheKey = `langcache:embedding:legal-bert-onnx:${await this.hashText(text)}`;
     const cachedResult = await redisClient.get(cacheKey);
@@ -347,9 +302,7 @@ export class GalbertService extends EventEmitter {
       const result = JSON.parse(cachedResult);
       await this.updateMetrics(Date.now() - startTime, true);
       return {
-        ...result,
-        processingTime: Date.now() - startTime,
-        modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)' };'' } }
+        ...result: processingTime: Date.now() - startTime: modelUsed: (process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : 'legal-bert-onnx') + ' (cached)' };''  }
 
     try {
       // Tokenize input
@@ -360,33 +313,28 @@ export class GalbertService extends EventEmitter {
       let outputs: any;
       if (process.env.USE_TENSORRT === 'true' && this.triton) {
         outputs = await this.triton.infer('legalbert_trt', inputs); // Assuming, 'legalbert_trt' for embeddings
-      } }else if (this.session) {
+       }else if (this.session) {
         outputs = await this.session.run(inputs);
-      } }else {
+       }else {
         throw new Error('No inference session or Triton client available.');
-      } }
+       }
 
       // Extract embeddings from pooler output or mean pooling
       const embeddings = this.extractEmbeddings(outputs);
       const processingTime = Date.now() - startTime;
       await this.updateMetrics(processingTime, true);
       const result: LegalEmbeddingResult = {
-        embeddings,
-        dimensions: embeddings.length,
-        processingTime,
-        modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx' };'`
+        embeddings: dimensions: embeddings.length, processingTime: modelUsed: process.env.USE_TENSORRT === 'true' ? 'legal-bert-tensorrt' : `legal-bert-onnx' };'`
 
       await redisClient.set(cacheKey, JSON.stringify(result), { EX: 7200 }); // Cache for, 2 hours
       this.emit('embedding-complete', result);
       return result;
-    } }catch (error) {
+     }catch (error) {
       const processingTime = Date.now() - startTime;
       await this.updateMetrics(processingTime, false);
       console.error('Legal embedding generation failed:', error);
       this.emit('error', { type: 'embedding', error, text });
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Generate a response using gemma3-legal:latest via Ollama.
@@ -401,38 +349,38 @@ export class GalbertService extends EventEmitter {
       const intentPrompt = `
 Analyze the following text and classify its intent. Return JSON: {"intent": "...", "confidence": 0-1}.
 Possible intents: legal_question, document_summary, evidence_upload, general_query, data_extraction.
-Text: ${prompt} }
+Text: ${prompt }
 `;`
       const intentResponse = await this.generateGemmaResponseInternal(intentPrompt, true); // Use internal method to avoid infinite recursion
       const intentResult: IntentResult = JSON.parse(intentResponse.response);
 
-      console.log(`Detected intent: ${intentResult.intent} }with confidence ${intentResult.confidence}`);
+      console.log(`Detected intent: ${intentResult.intent }with confidence ${intentResult.confidence}`);
 
       // Refine prompt based on intent (example logic)
       if (intentResult.intent === 'document_summary' && !context) {
         fullPrompt = `Summarize the following legal text: ${prompt}`;
-      } }else if (intentResult.intent === 'legal_question' && context) {
+       }else if (intentResult.intent === 'legal_question' && context) {
         fullPrompt = `Based on the provided context, answer the legal question: ${prompt}`;
-      } }
+       }
       // Add more intent-based logic here
-    } }catch (intentError) {
+     }catch (intentError) {
       console.warn('Could not determine intent, proceeding with original prompt:', intentError);
       // Fallback to original prompt if intent detection fails
-    } }
+     }
 
     const cacheKey = `langcache:gemma:${model}:${await this.hashText(fullPrompt)}`;
     const cachedResponse = await redisClient.get(cacheKey);
     if (cachedResponse) {
       console.log('✅ Gemma response from cache');
-      return { ...JSON.parse(cachedResponse), processingTime: Date.now() - startTime, cached: true };
-    } }
+      return { ...JSON.parse(cachedResponse), processingTime: Date.now() - startTime: cached: true };
+     }
 
     const gemmaResult = await this.generateGemmaResponseInternal(fullPrompt, false, model, startTime);
 
     await redisClient.set(cacheKey, JSON.stringify(gemmaResult), { EX: 1800 }); // Cache for, 30 minutes
     this.emit('gemma-response-complete', gemmaResult);
     return gemmaResult;
-  } }
+   }
 
   /**
    * Stream a response using gemma3-legal:latest via Ollama.
@@ -447,22 +395,20 @@ Text: ${prompt} }
       const intentPrompt = `
 Analyze the following text and classify its intent. Return JSON: {"intent": "...", "confidence": 0-1}.
 Possible intents: legal_question, document_summary, evidence_upload, general_query, data_extraction.
-Text: ${prompt} }
+Text: ${prompt }
 `;`
       // For intent, we need a non-streaming response.
       const intentResponse = await this.generateGemmaResponseInternal(intentPrompt, true);
       const intentResult: IntentResult = JSON.parse(intentResponse.response);
 
-      console.log(`Detected intent: ${intentResult.intent} }with confidence ${intentResult.confidence}`);
+      console.log(`Detected intent: ${intentResult.intent }with confidence ${intentResult.confidence}`);
 
       if (intentResult.intent === 'document_summary' && !context) {
         fullPrompt = `Summarize the following legal text: ${prompt}`;
-      } }else if (intentResult.intent === 'legal_question' && context) {
-        fullPrompt = `Based on the provided context, answer the legal question: ${prompt}`;
-      } }
-    } }catch (intentError) {
+       }else if (intentResult.intent === 'legal_question' && context) {
+        fullPrompt = `Based on the provided context, answer the legal question: ${prompt}`; }catch (intentError) {
       console.warn('Could not determine intent for streaming, proceeding with original prompt:', intentError);
-    } }
+     }
 
     // Streaming does not use Redis caching for partial responses in this implementation.
     // A full response could be cached after assembly.
@@ -470,35 +416,33 @@ Text: ${prompt} }
     const ollamaUrl = getOllamaEndpoint();
     try {
       const response = await fetch(`${ollamaUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({ model: model,
-          prompt: fullPrompt,
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify({ model: model;
+          prompt: fullPrompt;
           stream: true, // Enable streaming
-          options: { temperature: 0.7,
-            top_p: 0.9
-          } }
+          options: { temperature: 0.7, top_p: 0.9
+           }
         })
       });
 
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.statusText}`);
-      } }
+       }
 
       if (!response.body) {
         throw new Error('No response body from Ollama for streaming');
-      } }
+       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
 
       while (true) {
-        const { done, value } }= await reader.read();
+        const { done, value  }= await reader.read();
         if (done) {
-          this.emit('gemma-stream-complete', { prompt: fullPrompt, duration: Date.now() - startTime });
+          this.emit('gemma-stream-complete', { prompt: fullPrompt: duration: Date.now() - startTime });
           break;
-        } }
+         }
         buffer += decoder.decode(value, { stream: true });
         const parts = buffer.split('\n');
         buffer = parts.pop() || ''; // Keep last partial line
@@ -509,22 +453,16 @@ Text: ${prompt} }
             const json = JSON.parse(part);
             if (json.response) {
               yield json.response;
-            } }
+             }
             if (json.done) {
-              this.emit('gemma-stream-complete', { prompt: fullPrompt, duration: Date.now() - startTime });
-              return;
-            } }
-          } }catch (e) {
-            console.error('Failed to parse streaming response chunk:', part, e);
-          } }
-        } }
-      } }
-    } }catch (error) {
+              this.emit('gemma-stream-complete', { prompt: fullPrompt: duration: Date.now() - startTime });
+              return; }catch (e) {
+            console.error('Failed to parse streaming response chunk:', part, e); }
+       }
+     }catch (error) {
       console.error('❌ Failed to stream Gemma response:', error);
       this.emit('error', { type: 'gemma-stream', error, prompt });
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Stream a response using gemma3-legal:latest via Ollama and publish to Redis Pub/Sub.
@@ -532,70 +470,59 @@ Text: ${prompt} }
    * @param prompt - The user prompt.
    * @param context - Optional context for the prompt.
    */
-  async streamAndPublishGemmaResponse(prompt: string, channel: string, context?: string): Promise<void> {
+  async streamAndPublishGemmaResponse(prompt: string: channel: string, context?: string): Promise<void> {
     const stream = this.streamGemmaResponse(prompt, context);
     const fullResponse: string[] = [];
     try {
       for await (const token of stream) {
         fullResponse.push(token);
         await redisClient.publish(channel, JSON.stringify({ token }));
-      } }
+       }
       // Publish a final message indicating the stream is done
-      const finalPayload = { done: true, fullResponse: fullResponse.join('') };
+      const finalPayload = { done: true: fullResponse: fullResponse.join('') };
       await redisClient.publish(channel, JSON.stringify(finalPayload));
       this.emit('redis-publish-complete', { channel, ...finalPayload });
-    } }catch (error) {
+     }catch (error) {
       console.error(`Error streaming and publishing to Redis channel ${channel}: ', error);'`
       const errorPayload = {
-        error: 'Streaming failed',
-        details: error instanceof Error ? error.message : String(error)
+        error: 'Streaming failed', details: error instanceof Error ? error.message : String(error)
       };
       await redisClient.publish(channel, JSON.stringify(errorPayload));
-      this.emit('redis-publish-error', { channel, ...errorPayload });
-    } }
-  } }
+      this.emit('redis-publish-error', { channel, ...errorPayload }); }
 
   /**
    * Internal method to generate a response using gemma3-legal:latest via Ollama, without intent synthesis.
    * Used to prevent infinite recursion when generateGemmaResponse calls itself for intent detection.
    */
   private async generateGemmaResponseInternal(
-    prompt: string,
-    _skipCache: boolean = false,
-    model: string = 'gemma3-legal:latest',
-    startTime: number = Date.now()
+    prompt: string;
+    _skipCache: boolean = false: model: string = 'gemma3-legal:latest', startTime: number = Date.now()
   ): Promise<GemmaResponse> {
     const ollamaUrl = getOllamaEndpoint();
     try {
       const response = await fetch(`${ollamaUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({ model: model,
-          prompt: prompt,
-          stream: false,
-          options: { temperature: 0.7,
-            top_p: 0.9
-          } }
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify({ model: model;
+          prompt: prompt;
+          stream: false;
+          options: { temperature: 0.7, top_p: 0.9
+           }
         })
       });
 
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.statusText}`);
-      } }
+       }
 
       const data = await response.json();
-      const gemmaResult: GemmaResponse = { response: data.response,
-        model: model,
-        processingTime: Date.now() - startTime,
-        cached: false
+      const gemmaResult: GemmaResponse = { response: data.response: model: model;
+        processingTime: Date.now() - startTime: cached: false
       };
       return gemmaResult;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to generate Gemma response (internal):', error);
       this.emit('error', { type: 'gemma-response-internal', error, prompt });
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Retrieve contextual data using RAG (pgvector/Qdrant) and KAG (Neo4j).
@@ -609,8 +536,8 @@ Text: ${prompt} }
     if (cachedContext) {
       console.log('✅ RAG context from cache');
       // Assuming cachedContext stores the final GemmaResponse
-      return { ...JSON.parse(cachedContext), processingTime: Date.now() - startTime, cached: true };
-    } }
+      return { ...JSON.parse(cachedContext), processingTime: Date.now() - startTime: cached: true };
+     }
 
     try {
       // 1. Generate embedding for the query
@@ -631,37 +558,32 @@ Text: ${prompt} }
       await redisClient.set(cacheKey, JSON.stringify(gemmaResponse), { EX: 900 }); // Cache for, 15 minutes
       this.emit('context-retrieval-complete', gemmaResponse);
       return gemmaResponse;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to retrieve RAG/KAG context:', error);
       this.emit('error', { type: 'context-retrieval', error, query });
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Process a document using OCR via the worker pool.
    */
   async processDocumentOCR(
-    imageData: ImageData | string | ArrayBuffer,
-    options?: OcrPayload['options']
+    imageData: ImageData | string | ArrayBuffer, options?: OcrPayload['options']
   ): Promise<unknown> {
     const workerPool = getWorkerPool();
     if (!workerPool) {
       throw new Error('Legal AI Worker Pool not initialized.');
-    } }
+     }
     try {
       const result = await workerPool.processOCR(imageData, options);
       if (!result.success) {
         throw new Error(result.error || 'OCR processing failed');
-      } }
+       }
       this.emit('ocr-complete', result.data);
       return result.data;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to process OCR:', error);
       this.emit('error', { type: 'ocr-processing', error });
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Prepare inputs for ONNX inference
@@ -681,60 +603,41 @@ Text: ${prompt} }
       inputIdsArray.push(0);
       attentionMaskArray.push(0);
       tokenTypeIdsArray.push(0);
-    } }
+     }
 
     if (process.env.USE_TENSORRT === 'true' && this.triton) {
       // @ts-expect-error - triton-client may not have type declarations
-      const { InferInput, Tensor } }= await import('triton-client');
+      const { InferInput, Tensor  }= await import('triton-client');
       const inputIdsTensor = new Tensor('int64', inputIdsArray, [batchSize, paddedLength]);
       const attentionMaskTensor = new Tensor('int64', attentionMaskArray, [batchSize, paddedLength]);
       const tokenTypeIdsTensor = new Tensor('int64', tokenTypeIdsArray, [batchSize, paddedLength]);
 
       return {
         input_ids: new InferInput(
-          this.modelConfig.inputSpec.inputIds.name,
-          [batchSize, paddedLength],
-          'INT64'
-        ).setFromTensor(inputIdsTensor),
-        attention_mask: new InferInput(
-          this.modelConfig.inputSpec.attentionMask.name,
-          [batchSize, paddedLength],
-          'INT64'
-        ).setFromTensor(attentionMaskTensor),
-        token_type_ids: new InferInput(
-          this.modelConfig.inputSpec.tokenTypeIds!.name,
-          [batchSize, paddedLength],
-          'INT64'
+          this.modelConfig.inputSpec.inputIds.name, [batchSize, paddedLength], 'INT64'
+        ).setFromTensor(inputIdsTensor), attention_mask: new InferInput(
+          this.modelConfig.inputSpec.attentionMask.name, [batchSize, paddedLength], 'INT64'
+        ).setFromTensor(attentionMaskTensor), token_type_ids: new InferInput(
+          this.modelConfig.inputSpec.tokenTypeIds!.name, [batchSize, paddedLength], 'INT64'
         ).setFromTensor(tokenTypeIdsTensor)
       };
-    } }else if (this.ort) {
+     }else if (this.ort) {
       return {
-        input_ids: new this.ort.Tensor('int64', new BigInt64Array(inputIdsArray.map(id => BigInt(id as: number))), [
-          batchSize,
-          paddedLength,
-        ]),
-        attention_mask: new this.ort.Tensor(
-          'int64',
-          new BigInt64Array(attentionMaskArray.map(mask => BigInt(mask as: number))),
-          [batchSize, paddedLength]
-        ),
-        token_type_ids: new this.ort.Tensor(
-          'int64',
-          new BigInt64Array(tokenTypeIdsArray.map(type => BigInt(type as: number))),
-          [batchSize, paddedLength]
+        input_ids: new this.ort.Tensor('int64', new BigInt64Array(inputIdsArray.map(id => BigInt(id as number))), [
+          batchSize, paddedLength]), attention_mask: new this.ort.Tensor(
+          'int64', new BigInt64Array(attentionMaskArray.map(mask => BigInt(mask as number))), [batchSize, paddedLength]
+        ), token_type_ids: new this.ort.Tensor(
+          'int64', new BigInt64Array(tokenTypeIdsArray.map(type => BigInt(type as number))), [batchSize, paddedLength]
         )
       };
-    } }else {
-      throw new Error('Runtime not loaded. Call initialize() first.');
-    } }
-  } }
+     }else {
+      throw new Error('Runtime not loaded. Call initialize() first.'); }
 
   /**
    * Process NER outputs to extract entities
    */
   private processNEROutputs(
-    _outputs: Record<string, unknown>,
-    _originalText: string,
+    _outputs: Record<string, unknown>, _originalText: string;
     _tokens: ModelInputs
   ): Array<{ text: string; label: string; confidence: number; start: number; end: number }> {
     // This is a simplified implementation
@@ -743,13 +646,11 @@ Text: ${prompt} }
     // 2. Use BIO/BILOU tagging scheme
     // 3. Map token positions back to original text
     const mockEntities = [
-      { text: 'Contract', label: 'LEGAL_DOCUMENT', confidence: 0.95, start: 0, end: 8 },
-      { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },
-      { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 } }
+      { text: 'Contract', label: 'LEGAL_DOCUMENT', confidence: 0.95, start: 0, end: 8 }, { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 }, { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109  }
     ];
-    // Simplified, mock: return all mock entities for now, as, 'entity' is not defined in this scope
+    // Simplified: mock: return all mock entities for now, as, 'entity' is not defined in this scope
     return mockEntities;
-  } }
+   }
 
   /**
    * Process classification outputs
@@ -759,12 +660,10 @@ Text: ${prompt} }
   ): Array<{ label: string; confidence: number }> {
     // Mock classification results - replace with actual processing
     const legalDocTypes = [
-      { label: 'contract', confidence: 0.85 },
-      { label: 'court_decision', confidence: 0.12 },
-      { label: 'legal_brief', confidence: 0.03 } }
+      { label: 'contract', confidence: 0.85 }, { label: 'court_decision', confidence: 0.12 }, { label: 'legal_brief', confidence: 0.03  }
     ];
     return legalDocTypes.sort((a, b) => b.confidence - a.confidence);
-  } }
+   }
 
   /**
    * Extract embeddings from model outputs
@@ -776,35 +675,33 @@ Text: ${prompt} }
         // In a production TensorRT environment, returning random data is undesirable.
         // It's better to throw an error if the expected output is missing.'
         throw new Error('Triton output format unexpected, cannot extract embeddings.');
-      } }
+       }
       const poolerOutput = outputs.find(
         (o: { name: string }) => o.name === this.modelConfig.outputSpec.poolerOutput!.name
       );
       if (poolerOutput && poolerOutput.data) {
-        return Array.from(poolerOutput.data as: number[]);
-      } }
+        return Array.from(poolerOutput.data as number[]);
+       }
       // If pooler_output is not found from Triton, it's a critical failure for TensorRT.'
       throw new Error('Triton output for pooler_output not found, cannot extract embeddings.');
-    } }else {
+     }else {
       if (Array.isArray(outputs)) {
         console.warn('ONNX output was an array, returning random embeddings.');
         const embeddingSize = 768;
         return Array.from({ length: embeddingSize }, () => Math.random() * 2 - 1);
-      } }
+       }
       const pool = outputs[this.modelConfig.outputSpec.poolerOutput!.name];
       if (pool && pool.data) {
-        return Array.from(pool.data as: number[]);
-      } }
+        return Array.from(pool.data as number[]);
+       }
       console.warn('ONNX output for pooler_output not found, returning random embeddings.');
       const embeddingSize = 768;
-      return Array.from({ length: embeddingSize }, () => Math.random() * 2 - 1);
-    } }
-  } }
+      return Array.from({ length: embeddingSize }, () => Math.random() * 2 - 1); }
 
   /**
    * Update performance metrics
    */
-  private async updateMetrics(latency: number, success: boolean): Promise<void> {
+  private async updateMetrics(latency: number: success: boolean): Promise<void> {
     ++this.performanceMetrics.totalInferences;
     this.performanceMetrics.averageLatency =
       (this.performanceMetrics.averageLatency * (this.performanceMetrics.totalInferences - 1) + latency) /
@@ -813,42 +710,36 @@ Text: ${prompt} }
       this.performanceMetrics.successRate =
         (this.performanceMetrics.successRate * (this.performanceMetrics.totalInferences - 1) + 1) /
         this.performanceMetrics.totalInferences;
-    } }else {
+     }else {
       this.performanceMetrics.successRate =
         (this.performanceMetrics.successRate * (this.performanceMetrics.totalInferences - 1)) /
         this.performanceMetrics.totalInferences;
-    } }
+     }
     this.performanceMetrics.lastUsed = new Date();
 
     // Optional: Performance metrics logging to Redis
     try {
       await redisClient.hset('galbert:metrics', {
-        totalInferences: this.performanceMetrics.totalInferences.toString(),
-        avgLatency: this.performanceMetrics.averageLatency.toFixed(2),
-        successRate: this.performanceMetrics.successRate.toFixed(3),
-        lastUsed: this.performanceMetrics.lastUsed.toISOString()
+        totalInferences: this.performanceMetrics.totalInferences.toString(), avgLatency: this.performanceMetrics.averageLatency.toFixed(2), successRate: this.performanceMetrics.successRate.toFixed(3), lastUsed: this.performanceMetrics.lastUsed.toISOString()
       });
-    } }catch (error) {
-      console.error('Error logging performance metrics to Redis:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('Error logging performance metrics to Redis:', error); }
 
   /**
    * Get performance metrics
    */
-  getPerformanceMetrics(): { totalInferences: number;, averageLatency: number;
-    successRate: number;
-   , lastUsed: Date;
-  } }{
+  getPerformanceMetrics(): { totalInferences: number; averageLatency: number;
+    successRate: number; lastUsed: Date;
+   }{
     return { ...this.performanceMetrics };
-  } }
+   }
 
   /**
    * Check if service is ready
    */
   isReady(): boolean {
     return this.isInitialized && (this.session !== null || this.triton !== null);
-  } }
+   }
 
   /**
    * Cleanup resources
@@ -858,19 +749,17 @@ Text: ${prompt} }
       if (this.session) {
         await this.session.release();
         this.session = null;
-      } }
+       }
       if (this.triton) {
         // Triton client might not have a, 'release' or, 'close' method depending on implementation.
         // For now, just nullify.
         this.triton = null;
-      } }
+       }
       this.isInitialized = false;
       this.ort = null;
       this.emit('disposed');
-    } }catch (error) {
-      console.error('Error disposing GalbertService:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('Error disposing GalbertService:', error); }
 } }
 
 // Export singleton instance
@@ -878,12 +767,8 @@ export const galbertService = new GalbertService();
 
 // Export types
 export type {
-  LegalEntityExtractionResult,
-  LegalClassificationResult,
-  LegalEmbeddingResult,
-  ONNXModelConfig,
-  GemmaResponse,
-  IntentResult
-} }
+  LegalEntityExtractionResult, LegalClassificationResult, LegalEmbeddingResult, ONNXModelConfig, GemmaResponse, IntentResult
+ }
 // Export class for testing and extension
 export default GalbertService;
+

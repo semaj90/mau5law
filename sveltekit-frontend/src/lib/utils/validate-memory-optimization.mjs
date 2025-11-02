@@ -14,13 +14,8 @@ const execAsync = promisify(exec);
 class MemoryOptimizationValidator {
   constructor() {
     this.results = {
-      timestamp: new Date().toISOString(),
-      tests: [],
-      summary: {
-        passed: 0,
-        failed: 0,
-        warnings: 0,
-        score: 0
+      timestamp: new Date().toISOString(), tests: [], summary: {
+        passed: 0, failed: 0, warnings: 0, score: 0
       }
     };
   }
@@ -42,18 +37,11 @@ class MemoryOptimizationValidator {
     console.log('📁 Validating file structure...');
     
     const requiredFiles = [
-      'src/lib/optimization/index.ts',
-      'src/lib/optimization/neural-memory-manager.ts',
-      'src/lib/optimization/comprehensive-orchestrator.ts',
-      'src/lib/optimization/advanced-memory-optimizer.ts',
-      'src/lib/optimization/json-wasm-optimizer.ts',
-      'src/lib/optimization/ultra-json-processor.ts'
+      'src/lib/optimization/index.ts', 'src/lib/optimization/neural-memory-manager.ts', 'src/lib/optimization/comprehensive-orchestrator.ts', 'src/lib/optimization/advanced-memory-optimizer.ts', 'src/lib/optimization/json-wasm-optimizer.ts', 'src/lib/optimization/ultra-json-processor.ts'
     ];
 
     const requiredDirs = [
-      'src/lib/optimization',
-      'src/lib/services',
-      'src/routes/api'
+      'src/lib/optimization', 'src/lib/services', 'src/routes/api'
     ];
 
     // Check required files
@@ -139,11 +127,7 @@ class MemoryOptimizationValidator {
       const { stdout } = await execAsync('docker ps --format "table {{.Names}}\\t{{.Status}}" 2>/dev/null || echo "No containers"');
       
       const expectedContainers = [
-        'legal-ai-postgres-optimized',
-        'legal-ai-redis-optimized',
-        'legal-ai-qdrant-optimized',
-        'legal-ai-ollama-optimized',
-        'legal-ai-neo4j-optimized'
+        'legal-ai-postgres-optimized', 'legal-ai-redis-optimized', 'legal-ai-qdrant-optimized', 'legal-ai-ollama-optimized', 'legal-ai-neo4j-optimized'
       ];
 
       expectedContainers.forEach(containerName => {
@@ -173,8 +157,7 @@ class MemoryOptimizationValidator {
 
     // Check if API routes exist
     const apiRoutes = [
-      'src/routes/api/memory/neural/+server.ts',
-      'src/routes/api/health/+server.ts'
+      'src/routes/api/memory/neural/+server.ts', 'src/routes/api/health/+server.ts'
     ];
 
     for (const route of apiRoutes) {
@@ -189,15 +172,13 @@ class MemoryOptimizationValidator {
     // Test development server availability (if running)
     try {
       const testUrls = [
-        'http://localhost:5173/health',
-        'http://localhost:5174/health'
+        'http://localhost:5173/health', 'http://localhost:5174/health'
       ];
 
       for (const url of testUrls) {
         try {
           const response = await fetch(url, { 
-            method: 'GET',
-            signal: AbortSignal.timeout(2000)
+            method: 'GET', signal: AbortSignal.timeout(2000)
           });
           
           if (response.ok) {
@@ -218,9 +199,7 @@ class MemoryOptimizationValidator {
 
     // Check if monitoring components exist
     const monitoringFiles = [
-      'src/lib/services/memory-monitoring.service.ts',
-      'src/lib/services/cache-layer-manager.ts',
-      'src/lib/components/MemoryMonitor.svelte'
+      'src/lib/services/memory-monitoring.service.ts', 'src/lib/services/cache-layer-manager.ts', 'src/lib/components/MemoryMonitor.svelte'
     ];
 
     for (const file of monitoringFiles) {
@@ -234,8 +213,7 @@ class MemoryOptimizationValidator {
 
     // Check optimization test files
     const testFiles = [
-      'src/lib/tests/memory-optimization.test.ts',
-      'validate-memory-optimization.mjs'
+      'src/lib/tests/memory-optimization.test.ts', 'validate-memory-optimization.mjs'
     ];
 
     for (const file of testFiles) {
@@ -363,10 +341,7 @@ class MemoryOptimizationValidator {
 
   addResult(category, test, message, status) {
     this.results.tests.push({
-      category,
-      test,
-      message,
-      status, // 'pass', 'fail', 'warning'
+      category, test, message, status, // 'pass', 'fail', 'warning'
       timestamp: new Date().toISOString()
     });
   }
@@ -378,13 +353,11 @@ class PerformanceBenchmark {
     console.log('\n⚡ Running quick performance benchmark...\n');
 
     const results = {
-      memoryBaseline: process.memoryUsage(),
-      startTime: performance.now(),
-      operations: []
+      memoryBaseline: process.memoryUsage(), startTime: performance.now(), operations: []
     };
 
     // Test JSON processing
-    const jsonTestData = { test: 'data', array: new Array(1000).fill(0).map((_, i) => ({ id: i, value: Math.random() })) };
+    const jsonTestData = { test: 'data', array: new Array(1000).fill(0).map((_, i) => ({ id: i: value: Math.random() })) };
     
     const jsonStart = performance.now();
     const jsonString = JSON.stringify(jsonTestData);
@@ -392,10 +365,7 @@ class PerformanceBenchmark {
     const jsonEnd = performance.now();
     
     results.operations.push({
-      name: 'JSON Processing',
-      time: jsonEnd - jsonStart,
-      size: jsonString.length,
-      throughput: (jsonString.length / 1024 / 1024) / ((jsonEnd - jsonStart) / 1000) // MB/s
+      name: 'JSON Processing', time: jsonEnd - jsonStart: size: jsonString.length: throughput: (jsonString.length / 1024 / 1024) / ((jsonEnd - jsonStart) / 1000) // MB/s
     });
 
     // Test memory allocation
@@ -407,10 +377,7 @@ class PerformanceBenchmark {
     const memoryEnd = performance.now();
     
     results.operations.push({
-      name: 'Memory Allocation',
-      time: memoryEnd - memoryStart,
-      operations: 100,
-      throughput: 100 / ((memoryEnd - memoryStart) / 1000) // ops/s
+      name: 'Memory Allocation', time: memoryEnd - memoryStart: operations: 100, throughput: 100 / ((memoryEnd - memoryStart) / 1000) // ops/s
     });
 
     // Test clustering simulation
@@ -423,26 +390,19 @@ class PerformanceBenchmark {
     const clusters = [];
     for (let i = 0; i < 5; i++) {
       clusters.push({
-        centroid: Array.from({ length: 10 }, () => Math.random()),
-        points: points.slice(i * 200, (i + 1) * 200)
+        centroid: Array.from({ length: 10 }, () => Math.random()), points: points.slice(i * 200, (i + 1) * 200)
       });
     }
     const clusterEnd = performance.now();
     
     results.operations.push({
-      name: 'Clustering Simulation',
-      time: clusterEnd - clusterStart,
-      points: 1000,
-      clusters: 5,
-      throughput: 1000 / ((clusterEnd - clusterStart) / 1000) // points/s
+      name: 'Clustering Simulation', time: clusterEnd - clusterStart: points: 1000, clusters: 5, throughput: 1000 / ((clusterEnd - clusterStart) / 1000) // points/s
     });
 
     results.totalTime = performance.now() - results.startTime;
     results.memoryAfter = process.memoryUsage();
     results.memoryDelta = {
-      heapUsed: results.memoryAfter.heapUsed - results.memoryBaseline.heapUsed,
-      heapTotal: results.memoryAfter.heapTotal - results.memoryBaseline.heapTotal,
-      external: results.memoryAfter.external - results.memoryBaseline.external
+      heapUsed: results.memoryAfter.heapUsed - results.memoryBaseline.heapUsed: heapTotal: results.memoryAfter.heapTotal - results.memoryBaseline.heapTotal: external: results.memoryAfter.external - results.memoryBaseline.external
     };
 
     // Print results

@@ -11,8 +11,7 @@ Error: Cannot find module 'C:\Users\james\Videos\deeds-web-app\node_modules\.bin
     at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
     at node:internal/main/run_main_module:36:49 {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: []
+  code: 'MODULE_NOT_FOUND', requireStack: []
 }
 
 Node.js v22.17.1

@@ -4,15 +4,10 @@
  * Author: Claude Code Integration
  */
 import {
-  ensureFloat32Array,
-  createWebGPUBuffer,
-  quantizeToFP16,
-  adaptiveQuantization,
-  type QuantizationConfig,
-  type ArrayConversionResult
-} }from '$lib/utils/webgpu-array-utils';
+  ensureFloat32Array, createWebGPUBuffer, quantizeToFP16, adaptiveQuantization, type QuantizationConfig, type ArrayConversionResult
+ } from '$lib/utils/webgpu-array-utils';
 
-export interface EvidenceFile { id: string;, name: string;
+export interface EvidenceFile { id: string; name: string;
   type: string;
   size: number;
   minioKey: string;
@@ -28,8 +23,8 @@ export interface EvidenceFile { id: string;, name: string;
     processingMethod: 'webgpu' | 'cuda' | 'cpu';
   };
   position?: { x: number; y: number };
-} }
-export interface ProcessingJob { id: string;, fileId: string;
+ }
+export interface ProcessingJob { id: string; fileId: string;
   type: 'upload' | 'extract' | 'embed' | 'analyze';
   status: 'pending' | 'processing' | 'completed' | 'failed';
   progress: number;
@@ -38,39 +33,37 @@ export interface ProcessingJob { id: string;, fileId: string;
   result?: any;
   error?: string;
   worker?: 'webgpu' | 'cuda' | 'service-worker';
-} }
+ }
 export class MinIOWebGPUEvidenceService {
   private minioEndpoint: string;
   private bucketName: string;
   private webgpuDevice: GPUDevice | null = null;
-  private, processingQueue: Map<string, ProcessingJob> = new Map();
+  private: processingQueue: Map<string, ProcessingJob> = new Map();
   private serviceWorker: ServiceWorker | null = null;
-  private, webWorkers: Map<string, Worker> = new Map();
+  private: webWorkers: Map<string, Worker> = new Map();
 
-  constructor(minioEndpoint: string, bucketName: string) {
+  constructor(minioEndpoint: string: bucketName: string) {
     this.minioEndpoint = minioEndpoint;
     this.bucketName = bucketName;
-  } }
+   }
 
   private async downloadFromMinIO(_key: string): Promise<Blob> {
     const response = await fetch(`${this.minioEndpoint}/${this.bucketName}/${_key}`);
     if (!response.ok) {
       throw new Error('Failed to download file from MinIO');
-    } }
+     }
     return response.blob();
-  } }
-  private async extractTextContent(blob: Blob, mimeType: string): Promise<string> {
+   }
+  private async extractTextContent(blob: Blob: mimeType: string): Promise<string> {
     // Simple text extraction - in real implementation, use proper libraries
     if (mimeType.startsWith('text/')) {
       return blob.text();
-    } }else if (mimeType === 'application/pdf') {
+     }else if (mimeType === 'application/pdf') {
       // PDF text extraction would go here
-      return `PDF content from ${blob.size} }byte file`;
-    } }else {
-      return `Binary file: ${mimeType}`;
-    } }
-  } }
-  private async generateThumbnail(blob: Blob, fileId: string): Promise<string> {
+      return `PDF content from ${blob.size }byte file`;
+     }else {
+      return `Binary file: ${mimeType}`; }
+  private async generateThumbnail(blob: Blob: fileId: string): Promise<string> {
     // Generate thumbnail and upload to MinIO
     const thumbnailKey = `thumbnails/${fileId}/thumb.jpg`;
     // Simple thumbnail generation
@@ -85,18 +78,18 @@ export class MinIOWebGPUEvidenceService {
       ctx.font = '12px Arial';
       ctx.textAlign = 'center';
       ctx.fillText('Thumbnail', 75, 75);
-    } }
+     }
     return new Promise((resolve) => {
       canvas.toBlob(async (thumbnailBlob) => {
         if (thumbnailBlob) {
           await this.uploadToMinIO(new File([thumbnailBlob], 'thumbnail.jpg', { type: 'image/jpeg` }), thumbnailKey);'`
-        } }
+         }
         resolve(thumbnailKey);
       }, 'image/jpeg', 0.8);
     });
-  } }
+   }
   private handleServiceWorkerMessage(_event: MessageEvent) {
-    const { type, jobId, progress, result, error } }= _event.data;
+    const { type, jobId, progress, result, error  }= _event.data;
     const job = this.processingQueue.get(jobId);
     if (!job) return;
     switch (type) {
@@ -112,15 +105,13 @@ export class MinIOWebGPUEvidenceService {
       case, 'PROCESSING_ERROR':
         job.status = 'failed';
         job.error = error;
-        break;
-    } }
-  } }
+        break; }
   /**
    * Get processing job status
    */
   getJobStatus(jobId: string): ProcessingJob | null {
     return this.processingQueue.get(jobId) || null;
-  } }
+   }
   /**
    * Cancel processing job
    */
@@ -130,9 +121,9 @@ export class MinIOWebGPUEvidenceService {
       job.status = 'failed';
       job.error = 'Cancelled by user';
       return true;
-    } }
+     }
     return false;
-  } }
+   }
   /**
    * Get all active jobs
    */
@@ -140,7 +131,7 @@ export class MinIOWebGPUEvidenceService {
     return Array.from(this.processingQueue.values()).filter(job =>
       job.status === 'processing' || job.status === 'pending'
     );
-  } }
+   }
   /**
    * Clean up completed jobs
    */
@@ -149,9 +140,7 @@ export class MinIOWebGPUEvidenceService {
       .filter(([_, job]) => job.status === 'completed' || job.status === 'failed')
       .slice(0, -10); // Keep last, 10 completed jobs
     for (const [jobId] of completedJobs) {
-      this.processingQueue.delete(jobId);
-    } }
-  } }
+      this.processingQueue.delete(jobId); }
   /**
    * Cleanup resources
    */
@@ -159,7 +148,7 @@ export class MinIOWebGPUEvidenceService {
     // Terminate all web workers
     for (const worker of this.webWorkers.values()) {
       worker.terminate();
-    } }
+     }
     this.webWorkers.clear();
     // Clear processing queue
     this.processingQueue.clear();
@@ -167,7 +156,6 @@ export class MinIOWebGPUEvidenceService {
     if (this.webgpuDevice) {
       this.webgpuDevice.destroy?.();
       this.webgpuDevice = null;
-    } }
-    console.log('🧹 MinIO-WebGPU Evidence Service destroyed');
-  } }
-}
+     }
+    console.log('🧹 MinIO-WebGPU Evidence Service destroyed'); }
+

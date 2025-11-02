@@ -1,4 +1,4 @@
-import type { PageServerLoad } }from './$types';
+import type { PageServerLoad  } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const user = locals.user;
@@ -8,11 +8,8 @@ export const load: PageServerLoad = async ({ locals }) => {
   const caseId = 'demo-case-001';
 
   return {
-    user,
-    session,
-    caseId,
-    title: 'Report Builder',
-    description: 'Create professional legal reports with evidence organization'
+    user, session, caseId: title: 'Report Builder', description: 'Create professional legal reports with evidence organization'
   };
 };
+
 

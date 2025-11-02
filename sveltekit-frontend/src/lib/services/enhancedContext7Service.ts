@@ -1,27 +1,27 @@
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
-import type { LegalEntities } }from './legalRAGEngine.js';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
+import type { LegalEntities  } from './legalRAGEngine.js';
 /**
  * Enhanced Context7 Service with Legal AI Integration
  * Connects to Context7 MCP Server and provides legal-specific functionality
  */
 
-export interface LegalAnalysisResult { riskLevel: 'Low' | 'Medium' | 'High';, riskScore: number;
+export interface LegalAnalysisResult { riskLevel: 'Low' | 'Medium' | 'High'; riskScore: number;
   keyFindings: string[];
-  complianceStatus: { gdpr: 'Compliant' | 'Under Review' | 'Not Applicable';, contractLaw: 'Requires Review' | 'N/A';
+  complianceStatus: { gdpr: 'Compliant' | 'Under Review' | 'Not Applicable'; contractLaw: 'Requires Review' | 'N/A';
     liability: 'High Priority Review Needed' | 'Standard Processing';
   };
   recommendedActions: string[];
   integrationNotes: string[];
-} }
+ }
 
-export interface ComplianceReport { framework: string;, evidenceCount: number;
+export interface ComplianceReport { framework: string; evidenceCount: number;
   regulationCount: number;
   complianceScore: number;
   status: 'Compliant' | 'Partially Compliant' | 'Non-Compliant';
   riskLevel: 'Low' | 'Medium' | 'High';
   remediationRequired: boolean;
-} }
+ }
 
 export interface LegalPrecedent {
   case: string;
@@ -29,10 +29,10 @@ export interface LegalPrecedent {
   year: string;
   jurisdiction: string;
   summary: string;
-} }
+ }
 
 export class EnhancedContext7Service {
-  private, mcpEndpoint: string;
+  private: mcpEndpoint: string;
   private apiKey?: string;
 
   constructor(mcpEndpoint?: string, apiKey?: string) {
@@ -42,107 +42,88 @@ export class EnhancedContext7Service {
       (typeof process !== 'undefined' && (process.env.CONTEXT7_URL || process.env.CONTEXT7_MCP_URL)) ||
       'http://localhost:8777';
     this.apiKey = apiKey || (typeof process !== 'undefined' ? process.env.CONTEXT7_API_KEY : undefined);
-  } }
+   }
 
   /**
    * Analyze legal document using Context7 MCP server
    */
   async analyzeLegalDocument(
-    content: string,
-    caseType: 'contract' | 'litigation' | 'compliance',
-    jurisdiction = 'federal'
+    content: string;
+    caseType: 'contract' | 'litigation' | 'compliance', jurisdiction = 'federal'
   ): Promise<LegalAnalysisResult> {
     try {
       const response = await this.callMCPTool('analyze-legal-document', {
-        content,
-        caseType,
-        jurisdiction
+        content, caseType, jurisdiction
       });
       return this.parseLegalAnalysis(response);
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 legal document analysis failed:', msg);
-      throw new Error(`Legal document analysis failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Legal document analysis failed: ${msg}`); }
 
   /**
    * Generate compliance report using Context7 MCP
    */
   async generateComplianceReport(
-    evidence: string[],
-    regulations: string[],
+    evidence: string[];
+    regulations: string[];
     framework = 'General'
   ): Promise<ComplianceReport> {
     try {
       const response = await this.callMCPTool('generate-compliance-report', {
-        evidence,
-        regulations,
-        framework
+        evidence, regulations, framework
       });
       return this.parseComplianceReport(response, framework);
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 compliance report generation failed:', msg);
-      throw new Error(`Compliance report generation failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Compliance report generation failed: ${msg}`); }
 
   /**
    * Suggest legal precedents using Context7 MCP
    */
   async suggestLegalPrecedents(
-    query: string,
-    jurisdiction = 'federal',
-    caseType = 'general'
+    query: string;
+    jurisdiction = 'federal', caseType = 'general'
   ): Promise<LegalPrecedent[]> {
     try {
       const response = await this.callMCPTool('suggest-legal-precedents', {
-        query,
-        jurisdiction,
-        caseType
+        query, jurisdiction, caseType
       });
       return this.parseLegalPrecedents(response);
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 legal precedent suggestion failed:', msg);
-      throw new Error(`Legal precedent suggestion failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Legal precedent suggestion failed: ${msg}`); }
 
   /**
    * Extract legal entities using Context7 MCP
    */
   async extractLegalEntities(
-    content: string,
+    content: string;
     entityTypes = ['parties', 'dates', 'monetary', 'clauses']
   ): Promise<LegalEntities> {
     try {
       const response = await this.callMCPTool('extract-legal-entities', {
-        content,
-        entityTypes
+        content, entityTypes
       });
       return this.parseLegalEntities(response);
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 legal entity extraction failed:', msg);
-      throw new Error(`Legal entity extraction failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Legal entity extraction failed: ${msg}`); }
 
   /**
    * Analyze technology stack for legal AI context
    */
-  async analyzeStack(component: string, context = 'legal-ai'): Promise<string> {
+  async analyzeStack(component: string: context = 'legal-ai'): Promise<string> {
     try {
       const response = await this.callMCPTool('analyze-stack', { component, context });
-      return (response && ((response as Record<string, unknown>).text ?? response)) as: string;
-    } }catch (error: any) {
+      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 stack analysis failed:', msg);
-      throw new Error(`Stack analysis failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Stack analysis failed: ${msg}`); }
 
   /**
    * Generate best practices for legal AI development
@@ -150,13 +131,11 @@ export class EnhancedContext7Service {
   async generateBestPractices(area: string): Promise<string> {
     try {
       const response = await this.callMCPTool('generate-best-practices', { area });
-      return (response && ((response as Record<string, unknown>).text ?? response)) as: string;
-    } }catch (error: any) {
+      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 best practices generation failed:', msg);
-      throw new Error(`Best practices generation failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Best practices generation failed: ${msg}`); }
 
   /**
    * Suggest integration patterns for new legal AI features
@@ -164,19 +143,17 @@ export class EnhancedContext7Service {
   async suggestIntegration(feature: string, requirements?: string): Promise<string> {
     try {
       const response = await this.callMCPTool('suggest-integration', { feature, requirements });
-      return (response && ((response as Record<string, unknown>).text ?? response)) as: string;
-    } }catch (error: any) {
+      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Context7 integration suggestion failed:', msg);
-      throw new Error(`Integration suggestion failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Integration suggestion failed: ${msg}`); }
 
   /**
    * Enhanced legal orchestration using existing copilotOrchestrator patterns
    */
   async orchestrateLegalAnalysis(
-    prompt: string,
+    prompt: string;
     options: {
       useSemanticSearch?: boolean;
       useMemory?: boolean;
@@ -184,24 +161,19 @@ export class EnhancedContext7Service {
       legalDomain?: string;
       jurisdiction?: string;
       complianceFramework?: string;
-    } }= {} }
+     }= { }
   ): Promise<unknown> {
     try {
       const analysis = await this.analyzeLegalDocument(prompt, 'contract', options.jurisdiction ?? 'federal');
       const precedentMatches = await this.suggestLegalPrecedents(prompt, options.jurisdiction ?? 'federal');
       const orchestrationResult = {
-        analysis,
-        complianceScore: 85,
-        riskAssessment: { level: 'Medium', score: 60 },
-        precedentMatches
+        analysis: complianceScore: 85, riskAssessment: { level: 'Medium', score: 60 }, precedentMatches
       };
       return orchestrationResult;
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Legal orchestration failed:', msg);
-      throw new Error(`Legal orchestration failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Legal orchestration failed: ${msg}`); }
 
   /**
    * Call Context7 MCP server tool using HTTP POST.
@@ -219,35 +191,30 @@ export class EnhancedContext7Service {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     if (controller) {
       timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-    } }
+     }
 
     try {
       const res = await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(args ?? {}),
-        signal: controller?.signal
+        method: 'POST', headers: body: JSON.stringify(args ?? {}), signal: controller?.signal
       });
 
       if (!res.ok) {
         const bodyText = await res.text().catch(() => `<no, body>`);
         throw new Error(`Context7 MCP error ${res.status}: ${bodyText}`);
-      } }
+       }
 
       const contentType = res.headers.get('content-type') ?? '';
       if (contentType.includes('application/json')) {
         return await res.json();
-      } }
+       }
       return await res.text();
-    } }catch (err: any) {
+     }catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       console.warn(`Context7 remote call failed for: "${toolName}", falling back to local simulate. Error: ', message);'`
       // forward typed args to simulation helper(s)
       return await this.simulateMCPCall(toolName, args ?? {});
-    } }finally {
-      if (timeoutId) clearTimeout(timeoutId);
-    } }
-  } }
+     }finally {
+      if (timeoutId) clearTimeout(timeoutId); }
 
   // small helper to centralize endpoint resolution (used by constructor & tests)
   private getMcpEndpoint(): string {
@@ -256,7 +223,7 @@ export class EnhancedContext7Service {
       (typeof process !== 'undefined' && (process.env.CONTEXT7_URL || process.env.CONTEXT7_MCP_URL)) ||
       'http://localhost:8777'
     );
-  } }
+   }
 
   /**
    * Parse legal analysis response from MCP server
@@ -266,61 +233,49 @@ export class EnhancedContext7Service {
       typeof response === 'string'
         ? response
         : response && typeof (response as Record<string, unknown>).text === 'string'
-          ? ((response as Record<string, unknown>).text as: string)
+          ? ((response as Record<string, unknown>).text as string)
           : '';
     const riskScoreParsed = parseInt(this.extractValue(text, 'Risk Score', '60'), 10);
     const riskScore = Number.isNaN(riskScoreParsed) ? 60 : riskScoreParsed;
     const riskLevelRaw = this.extractValue(text, 'Overall Risk Level', 'Medium');
     const riskLevel = ['Low', 'Medium', 'High'].includes(riskLevelRaw)
-      ? (riskLevelRaw as: 'Low' | 'Medium' | 'High')
+      ? (riskLevelRaw as 'Low' | 'Medium' | 'High')
       : 'Medium';
 
-    const normalizeCompliance = (val: string, fallback: string) => {
+    const normalizeCompliance = (val: string: fallback: string) => {
       if (!val) return fallback;
       return val;
     };
 
     return {
-      riskLevel,
-      riskScore,
-      keyFindings: this.extractList(text, 'Key Findings'),
-      complianceStatus: { gdpr: normalizeCompliance(this.extractValue(text, 'GDPR Compliance', 'Not Applicable'), 'Not Applicable') as
+      riskLevel, riskScore: keyFindings: this.extractList(text, 'Key Findings'), complianceStatus: { gdpr: normalizeCompliance(this.extractValue(text, 'GDPR Compliance', 'Not Applicable'), 'Not Applicable') as
           | 'Compliant'
           | 'Under Review'
-          | 'Not Applicable',
-        contractLaw: normalizeCompliance(this.extractValue(text, 'Contract Law', 'N/A'), 'N/A') as
+          | 'Not Applicable', contractLaw: normalizeCompliance(this.extractValue(text, 'Contract Law', 'N/A'), 'N/A') as
           | 'Requires Review'
-          | 'N/A',
-        liability: normalizeCompliance(
-          this.extractValue(text, 'Liability Assessment', 'Standard Processing'),
-          'Standard Processing'
-        ) as: 'High Priority Review Needed' | 'Standard Processing' },'`'`
-      recommendedActions: this.extractList(text, 'Recommended Actions'),
-      integrationNotes: this.extractList(text, 'Integration Notes')
+          | 'N/A', liability: normalizeCompliance(
+          this.extractValue(text, 'Liability Assessment', 'Standard Processing'), 'Standard Processing'
+        ) as 'High Priority Review Needed' | 'Standard Processing' },'`'`
+      recommendedActions: this.extractList(text, 'Recommended Actions'), integrationNotes: this.extractList(text, 'Integration Notes')
     };
-  } }
+   }
 
   /**
    * Parse compliance report response
    */
-  private parseComplianceReport(response: any, framework: string): ComplianceReport {
+  private parseComplianceReport(response: any: framework: string): ComplianceReport {
     const text =
       typeof response === 'string'
         ? response
         : response && typeof (response as Record<string, unknown>).text === 'string'
-          ? ((response as Record<string, unknown>).text as: string)
+          ? ((response as Record<string, unknown>).text as string)
           : '';
     const score = parseInt(this.extractValue(text, 'Compliance Score', '75'), 10) || 75;
     return {
-      framework,
-      evidenceCount: parseInt(this.extractValue(text, 'Evidence Items Analyzed', '0'), 10) || 0,
-      regulationCount: parseInt(this.extractValue(text, 'Applicable Regulations', '0'), 10) || 0,
-      complianceScore: score,
-      status: score > 80 ? 'Compliant' : score > 60 ? 'Partially Compliant' : 'Non-Compliant',
-      riskLevel: score > 80 ? 'Low' : score > 60 ? 'Medium' : 'High',
-      remediationRequired: score < 80
+      framework: evidenceCount: parseInt(this.extractValue(text, 'Evidence Items Analyzed', '0'), 10) || 0, regulationCount: parseInt(this.extractValue(text, 'Applicable Regulations', '0'), 10) || 0, complianceScore: score;
+      status: score > 80 ? 'Compliant' : score > 60 ? 'Partially Compliant' : 'Non-Compliant', riskLevel: score > 80 ? 'Low' : score > 60 ? 'Medium' : 'High', remediationRequired: score < 80
     };
-  } }
+   }
 
   /**
    * Parse legal precedents response
@@ -330,7 +285,7 @@ export class EnhancedContext7Service {
       typeof response === 'string'
         ? response
         : response && typeof (response as Record<string, unknown>).text === 'string'
-          ? ((response as Record<string, unknown>).text as: string)
+          ? ((response as Record<string, unknown>).text as string)
           : '';
     if (!text) return [];
     const sections = text.split('###').slice(1);
@@ -344,14 +299,10 @@ export class EnhancedContext7Service {
       const jurisdiction = this.extractValue(section, 'Jurisdiction', 'federal');
       const year = this.extractValue(section, 'Year', '') || (jurisdiction === 'federal' ? '2023' : '2023');
       return {
-        case title.replace(/\([^)]*\)/, '').trim(),
-        relevance,
-        year,
-        jurisdiction,
-        summary: this.extractValue(section, 'Summary', 'No summary available')
+        case title.replace(/\([^)]*\)/, '').trim(), relevance, year, jurisdiction: summary: this.extractValue(section, 'Summary', 'No summary available')
       };
     });
-  } }
+   }
 
   /**
    * Parse legal entities response
@@ -361,32 +312,27 @@ export class EnhancedContext7Service {
       typeof response === 'string'
         ? response
         : response && typeof (response as Record<string, unknown>).text === 'string'
-          ? ((response as Record<string, unknown>).text as: string)
+          ? ((response as Record<string, unknown>).text as string)
           : '';
     return {
-      parties: this.extractEntityList(text, 'Parties'),
-      dates: this.extractEntityList(text, 'Dates'),
-      monetary: this.extractEntityList(text, 'Monetary Amounts'),
-      clauses: this.extractEntityList(text, 'Legal Clauses'),
-      jurisdictions: this.extractEntityList(text, 'Jurisdictions'),
-      caseTypes: this.extractEntityList(text, 'Case Types')
-    } }as LegalEntities;
-  } }
+      parties: this.extractEntityList(text, 'Parties'), dates: this.extractEntityList(text, 'Dates'), monetary: this.extractEntityList(text, 'Monetary Amounts'), clauses: this.extractEntityList(text, 'Legal Clauses'), jurisdictions: this.extractEntityList(text, 'Jurisdictions'), caseTypes: this.extractEntityList(text, 'Case Types')
+     }as LegalEntities;
+   }
 
   /**
    * Helper method to extract values from markdown-like text
    */
-  private extractValue(text: string, key: string, defaultValue = ''): string {
+  private extractValue(text: string: key: string: defaultValue = ''): string {
     if (!text) return defaultValue;
     const regex = new RegExp(`\\*?\\*?${this.escapeRegex(key)}\\*?\\*?[:\\s-]*([^\\n]*)`, 'i');
     const match = text.match(regex);
     return match?.[1]?.trim() || defaultValue;
-  } }
+   }
 
   /**
    * Helper method to extract lists from markdown-like sections
    */
-  private extractList(text: string, sectionName: string): string[] {
+  private extractList(text: string: sectionName: string): string[] {
     if (!text) return [];
     const sectionRegex = new RegExp(`##?\\s*${this.escapeRegex(sectionName)}([\\s\\S]*?)(?=##?\\s|$)`, 'i');
     const sectionMatch = text.match(sectionRegex);
@@ -404,30 +350,30 @@ export class EnhancedContext7Service {
           .replace(/^\\-\\s*/, '')
           .trim()
       );
-    } }
+     }
     return listItems.map((item: string) =>
       item
         .replace(/^-+\\s*/, '')
         .replace(/^\\s*-\\s*/, '')
         .trim()
     );
-  } }
+   }
 
   /**
    * Helper to extract simple entity lists under headings
    */
-  private extractEntityList(text: string, entityType: string): string[] {
+  private extractEntityList(text: string: entityType: string): string[] {
     if (!text) return [];
     const sectionRegex = new RegExp(`###?\\s*${this.escapeRegex(entityType)}([\\s\\S]*?)(?=###?\\s|$)`, 'i');
     const sectionMatch = text.match(sectionRegex);
     if (!sectionMatch) return [];
     const listItems = sectionMatch[1].match(/^-+\\s*(.*)$/gm) || [];
     return listItems.map((i: string) => i.replace(/^-+\\s*/, '').trim());
-  } }
+   }
 
   private escapeRegex(s: string): string {
-    return s.replace(/[-\\/\\^$*+?.()|[\\]{} }/g, '\\\\$&');
-  } }
+    return s.replace(/[-\\/\\^$*+?.()|[\\]{ }/g, '\\\\$&');
+   }
 
   /**
    * Simulation methods for development (remove/replace in production)
@@ -439,35 +385,35 @@ export class EnhancedContext7Service {
     return {
       text: '# Legal Document Analysis'
 ## Risk Assessment
-- **Overall Risk Level**: ${riskScore > 70 ? 'High' : 'Medium' } }`'`
+- **Overall Risk Level**: ${riskScore > 70 ? 'High' : 'Medium'  }`'`
 - **Risk Score**: ${riskScore}/100
 ## Key Findings
 - Contract terms identified
-${hasLiability ? '- Liability clauses present' : `- Standard contract language' } }`
+${hasLiability ? '- Liability clauses present' : `- Standard contract language'  }`
 ## GDPR Compliance
 - **GDPR Compliance**: Under Review
 - **Contract Law**: Requires Review
-- **Liability Assessment**: ${hasLiability ? 'High Priority Review Needed' : `Standard Processing` } }
+- **Liability Assessment**: ${hasLiability ? 'High Priority Review Needed' : `Standard Processing`  }
 ## Recommended Actions
 - Legal review recommended
 - Compliance verification needed
 ## Integration Notes
 - Integrate with evidence pipeline`
     };
-  } }
+   }
 
   private simulateComplianceReport(args: Record<string, unknown>): any {
-    const evidence = Array.isArray(args?.evidence) ? (args.evidence as: unknown[]) : [];
-    const regulations = Array.isArray(args?.regulations) ? (args.regulations as: unknown[]) : [];
+    const evidence = Array.isArray(args?.evidence) ? (args.evidence as unknown[]) : [];
+    const regulations = Array.isArray(args?.regulations) ? (args.regulations as unknown[]) : [];
     const score = Math.min(100, evidence.length * 10 + 50);
     return {
       text: `# Compliance Report`
 ## Executive Summary
-- **Evidence Items Analyzed**: ${evidence.length} }
-- **Applicable Regulations**: ${regulations.length} }
+- **Evidence Items Analyzed**: ${evidence.length }
+- **Applicable Regulations**: ${regulations.length }
 - **Compliance Score**: ${score}`
     };
-  } }
+   }
 
   private simulateLegalPrecedents(_: Record<string, unknown>): any {
     return {
@@ -476,7 +422,7 @@ ${hasLiability ? '- Liability clauses present' : `- Standard contract language' 
 - **Relevance Score**: 85%
 - **Jurisdiction**: federal
 - **Summary**: Relevant legal precedent for contract disputes` };`
-  } }
+   }
 
   private simulateLegalEntities(_: Record<string, unknown>): any {
     return {
@@ -489,12 +435,11 @@ ${hasLiability ? '- Liability clauses present' : `- Standard contract language' 
 ### Monetary Amounts (1)
 - $50,000
 ### Legal Clauses (1)
-- Section 3.1` };' } }`
+- Section 3.1` };'  }`
 
   // add small helper for safe coercion if needed elsewhere
-  private toSafeString(value: any, fallback = ''): string {
+  private toSafeString(value: any: fallback = ''): string {
     if (typeof value === 'string') return value;
     if (typeof value === 'number') return String(value);
-    return fallback;
-  } }
-}
+    return fallback; }
+

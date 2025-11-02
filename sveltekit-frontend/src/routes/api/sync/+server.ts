@@ -2,8 +2,8 @@
  * API Sync & Wire-up Endpoints
  * RESTful endpoints for neural topology mock data synchronization
  */
-import { json } }from '@sveltejs/kit'
-import type { RequestHandler } }from '@sveltejs/kit'
+import { json  } from '@sveltejs/kit'
+import type { RequestHandler  } from '@sveltejs/kit'
 // Replace fragile named imports with a namespace import and safe fallbacks
 import * as syncModule from '$lib/server/sync/mock-api-sync-simple'
 
@@ -11,49 +11,43 @@ import * as syncModule from '$lib/server/sync/mock-api-sync-simple'
 type SyncOrchestrator = {
   performHealthCheck: () => Promise<Record<string, unknown>>
   performFullSync: () => Promise<Record<string, unknown>>
-} }
+ }
 
 type DatabaseSync = {
   syncMockLegalDocuments: () => Promise<Record<string, unknown>>
   syncQLoRATrainingData: () => Promise<Record<string, unknown>>
   syncPredictiveAssetCache: () => Promise<Record<string, unknown>>
-} }
+ }
 
 type VectorSearch = {
   performSimilaritySearch: (embedding: any, limit?: number, threshold?: number) => Promise<unknown[]>
-} }
+ }
 
 type MockDataGenerators = { generateMockLegalDocuments: (count: number) => Promise<unknown[]> | unknown[]; generateMockQLoRAStates: (count: number) => Promise<unknown[]> | unknown[]; generateMockAssetPredictions: (count: number) => Promise<unknown[]> | unknown[]; generateMockEmbeddingShards: (count: number) => Promise<unknown[]> | unknown[]; generateMockCHRManifests: (count: number) => Promise<unknown[]> | unknown[]
-} }
+ }
 
 type SyncModule = {
   syncOrchestrator?: SyncOrchestrator
   databaseSync?: DatabaseSync
   vectorSearch?: VectorSearch
   mockDataGenerators?: MockDataGenerators
-} }
+ }
 
 // safe cast from imported namespace to the typed module
-const importedSyncModule = (syncModule as: unknown) as SyncModule
+const importedSyncModule = (syncModule as unknown) as SyncModule
 
 const syncOrchestrator: SyncOrchestrator = importedSyncModule.syncOrchestrator ?? { performHealthCheck: async () => ({ status: `unknown` }),'`'`
   performFullSync: async () => ({ success: false })
-} }
-const databaseSync: DatabaseSync = importedSyncModule.databaseSync ?? { syncMockLegalDocuments: async () => ({ success: false }),
-  syncQLoRATrainingData: async () => ({ success: false }),
-  syncPredictiveAssetCache: async () => ({ success: false })
-} }
+ }
+const databaseSync: DatabaseSync = importedSyncModule.databaseSync ?? { syncMockLegalDocuments: async () => ({ success: false }), syncQLoRATrainingData: async () => ({ success: false }), syncPredictiveAssetCache: async () => ({ success: false })
+ }
 const vectorSearch: VectorSearch = importedSyncModule.vectorSearch ?? {
   performSimilaritySearch: async () => []
-} }
+ }
 const mockDataGenerators: MockDataGenerators = importedSyncModule.mockDataGenerators ?? {
   // rename unused param to _n to satisfy lint rule for unused args
-  generateMockLegalDocuments: async (_n: number) => [],
-  generateMockQLoRAStates: (_n: number) => [],
-  generateMockAssetPredictions: (_n: number) => [],
-  generateMockEmbeddingShards: (_n: number) => [],
-  generateMockCHRManifests: (_n: number) => []
-} }
+  generateMockLegalDocuments: async (_n: number) => [], generateMockQLoRAStates: (_n: number) => [], generateMockAssetPredictions: (_n: number) => [], generateMockEmbeddingShards: (_n: number) => [], generateMockCHRManifests: (_n: number) => []
+ }
 
 // GET /api/sync - Health check and status
 export const GET: RequestHandler = async ({ url }) => {
@@ -64,81 +58,59 @@ export const GET: RequestHandler = async ({ url }) => {
       case, 'health': {
         const healthCheck = await syncOrchestrator.performHealthCheck();
         return json({
-          status: 'ok',
-          system: 'Neural Topology Mock API Sync',
-          version: '1.0.0',
-          health: healthCheck,
+          status: 'ok', system: 'Neural Topology Mock API Sync', version: '1.0.0', health: healthCheck;
           endpoints: {
-  sync: '/api/sync?action=full',
-            search: '/api/sync/search',
-            generate: '/api/sync/generate',
-            qloraSamples: `/api/sync/qlora-samples` },
-          timestamp: new Date().toISOString()
+  sync: '/api/sync?action=full', search: '/api/sync/search', generate: '/api/sync/generate', qloraSamples: `/api/sync/qlora-samples` }, timestamp: new Date().toISOString()
         });
-      } }
+       }
       case, 'full': {
         const fullSync = await syncOrchestrator.performFullSync();
         return json({
-          action: 'full_sync',
-          result: fullSync,
-          message: 'Neural topology mock data synchronized successfully',
-          timestamp: new Date().toISOString()
+          action: 'full_sync', result: fullSync;
+          message: 'Neural topology mock data synchronized successfully', timestamp: new Date().toISOString()
         });
-      } }
+       }
       case, 'legal-docs': {
         const docSync = await databaseSync.syncMockLegalDocuments();
         return json({
-          action: 'legal_documents_sync',
-          result: docSync,
+          action: 'legal_documents_sync', result: docSync;
           timestamp: new Date().toISOString()
         });
-      } }
+       }
       case, 'qlora': {
         const qloraSync = await databaseSync.syncQLoRATrainingData();
         return json({
-          action: 'qlora_sync',
-          result: qloraSync,
+          action: 'qlora_sync', result: qloraSync;
           timestamp: new Date().toISOString()
         });
-      } }
+       }
       case, 'cache': {
         const cacheSync = await databaseSync.syncPredictiveAssetCache();
         return json({
-          action: 'predictive_cache_sync',
-          result: cacheSync,
+          action: 'predictive_cache_sync', result: cacheSync;
           timestamp: new Date().toISOString()
         });
-      } }
+       }
       default: {
         return json(
           {
-  error: 'Unknown action',
-            availableActions: ['status', 'health', 'full', 'legal-docs', 'qlora', 'cache'],
-            timestamp: new Date().toISOString()
-          },
-          { status: 400 } }
-        );
-      } }
-    } }
-  } }catch (error: any) {
+  error: 'Unknown action', availableActions: ['status', 'health', 'full', 'legal-docs', 'qlora', 'cache'], timestamp: new Date().toISOString()
+          }, { status: 400  }
+        ); }
+   }catch (error: any) {
     // avoid `as: any` casts; narrow error safely
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Sync API error:', message);
     return json(
       {
-        error: 'Sync operation failed',
-        message,
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Sync operation failed', message: timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
 // POST /api/sync - Manual sync operations
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { action, params = {} }} }= body ?? {};
+    const { action: params = {}  } }= body ?? {};
     // use: unknown-based params and guard when reading values
     const paramsObj = params as Record<string, unknown>;
     switch (action) {
@@ -149,20 +121,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
         if (rawEmbedding == null) {
           return json({ error: 'queryEmbedding required for vector search' }, { status: 400 });
-        } }
+         }
 
         const limit = typeof rawLimit === 'number' ? rawLimit : 5;
         const threshold = typeof rawThreshold === 'number' ? rawThreshold : 0.7;
 
         const searchResults = await vectorSearch.performSimilaritySearch(rawEmbedding, limit, threshold);
         return json({
-          action: 'vector_search',
-          results: searchResults,
-          count: Array.isArray(searchResults) ? searchResults.length : 0,
-          params: { limit, threshold },
-          timestamp: new Date().toISOString()
+          action: 'vector_search', results: searchResults;
+          count: Array.isArray(searchResults) ? searchResults.length : 0, params: { limit, threshold }, timestamp: new Date().toISOString()
         });
-      } }
+       }
       case, 'generate_mock_data': {
         const type = typeof paramsObj.type === 'string' ? paramsObj.type : undefined;
         const count = typeof paramsObj.count === 'number' ? paramsObj.count : 10;
@@ -184,17 +153,14 @@ export const POST: RequestHandler = async ({ request }) => {
           case, 'chr_manifests':
             mockData = mockDataGenerators.generateMockCHRManifests(count);
             break;
-          default: return json({ error: 'Unknown mock data type' }, { status: 400 });'` } }`
+          default: return json({ error: 'Unknown mock data type' }, { status: 400 });'`  }`
         // normalize to array in case generator returned a promise or a sync array
         const resolvedData = await Promise.resolve(mockData);
         return json({
-          action: 'generate_mock_data',
-          type,
-          data: resolvedData,
-          count: Array.isArray(resolvedData) ? resolvedData.length : 0,
-          timestamp: new Date().toISOString()
+          action: 'generate_mock_data', type: data: resolvedData;
+          count: Array.isArray(resolvedData) ? resolvedData.length : 0, timestamp: new Date().toISOString()
         });
-      } }
+       }
       case, 'bulk_sync': {
         const typesArr: string[] = Array.isArray(paramsObj.types)
           ? paramsObj.types
@@ -213,35 +179,25 @@ export const POST: RequestHandler = async ({ request }) => {
               bulkResults[syncType] = await databaseSync.syncPredictiveAssetCache();
               break;
             default:
-              bulkResults[syncType] = { error: 'unsupported sync type' };'` } }`
-        } }
+              bulkResults[syncType] = { error: 'unsupported sync type' };'`  }`
+         }
         return json({
-  action: 'bulk_sync',
-          results: bulkResults,
+  action: 'bulk_sync', results: bulkResults;
           timestamp: new Date().toISOString()
         });
-      } }
+       }
       default: {
         return json(
           {
-  error: 'Unknown POST action',
-            availableActions: ['vector_search', 'generate_mock_data', 'bulk_sync'],
-            timestamp: new Date().toISOString()
-          },
-          { status: 400 } }
-        );
-      } }
-    } }
-  } }catch (error: any) {
+  error: 'Unknown POST action', availableActions: ['vector_search', 'generate_mock_data', 'bulk_sync'], timestamp: new Date().toISOString()
+          }, { status: 400  }
+        ); }
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('❌ Sync POST API error:', message);
     return json(
       {
-        error: 'POST operation failed',
-        message,
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'POST operation failed', message: timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
+

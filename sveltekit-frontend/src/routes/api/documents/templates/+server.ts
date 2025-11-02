@@ -1,15 +1,13 @@
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 
 // Document templates with pre-filled content
-const documentTemplates = { brief: { title: 'Criminal Case Brief',
-    content: `# Criminal Case Brief`
+const documentTemplates = { brief: { title: 'Criminal Case Brief', content: `# Criminal Case Brief`
 ## Case Overview
 [Case Name] v. [Defendant Name]
-Case, Number: [Case Number],
-Court: [Court Name]; Date: [Date]
+Case: Number: [Case Number], Court: [Court Name]; Date: [Date]
 ## Facts
 [Describe the factual background of the case, including what allegedly happened, when, where, and involving whom]
 ## Legal Issues
@@ -26,13 +24,9 @@ Court: [Court Name]; Date: [Date]
 ## Citations
 [List all legal authorities cited in the brief]
 `,`
-    documentType: 'brief',
-    tags: ['brief', 'criminal', 'template'],
-    citations: []
-  },
-  motion: {
-  title: 'Motion to [Action]',
-    content: `# Motion to [Action]`
+    documentType: 'brief', tags: ['brief', 'criminal', 'template'], citations: []
+  }, motion: {
+  title: 'Motion to [Action]', content: `# Motion to [Action]`
 ## Introduction
 [Defendant/Plaintiff] respectfully moves this Court to [specific action requested] on the grounds that [brief reason].
 ## Statement of Facts
@@ -46,19 +40,14 @@ Court: [Court Name]; Date: [Date]
 [Apply the law to the facts of this case]
 ## Conclusion
 For the foregoing reasons, [Defendant/Plaintiff] respectfully requests that this Court [specific relief requested].
-Respectfully submitted,
-[Attorney Name]
+Respectfully submitted, [Attorney Name]
 [Attorney Title]
 [Bar Number]
 [Contact Information]
 `,`
-    documentType: 'motion',
-    tags: ['motion', 'template'],
-    citations: []
-  },
-  contract: {
-  title: 'Legal Contract',
-    content: `# [Contract Title]`
+    documentType: 'motion', tags: ['motion', 'template'], citations: []
+  }, contract: {
+  title: 'Legal Contract', content: `# [Contract Title]`
 **Parties:** This agreement is entered into between [Party, 1 Name] ("[Party, 1 Short Name]") and [Party, 2 Name] ("[Party, 2 Short Name]").
 **Date:** [Date]
 ## Terms and Conditions
@@ -87,17 +76,12 @@ Signature: _________________________; Date: __________
 **[Party, 2 Name]**
 Signature: _________________________; Date: __________
 `,`
-    documentType: 'contract',
-    tags: ['contract', 'template'],
-    citations: []
-  },
-  evidence: {
-  title: 'Evidence Analysis Report',
-    content: `# Evidence Analysis Report`
+    documentType: 'contract', tags: ['contract', 'template'], citations: []
+  }, evidence: {
+  title: 'Evidence Analysis Report', content: `# Evidence Analysis Report`
 ## Case Information
 Case Number: [Case Number]
-Date of, Analysis: [Date],
-Analyst: [Analyst Name]
+Date of: Analysis: [Date], Analyst: [Analyst Name]
 ## Executive Summary
 [Brief overview of the evidence and key findings]
 ## Evidence Inventory
@@ -119,15 +103,11 @@ Analyst: [Analyst Name]
 [Provide recommendations for further investigation or action]
 ## Appendices
 - Appendix A: [Supporting documentation]
-- Appendix, B: [Additional materials]
+- Appendix: B: [Additional materials]
 `,`
-    documentType: 'evidence',
-    tags: ['evidence', 'analysis', 'template'],
-    citations: []
-  },
-  memo: {
-  title: 'Legal Memorandum',
-    content: `# Legal Memorandum`
+    documentType: 'evidence', tags: ['evidence', 'analysis', 'template'], citations: []
+  }, memo: {
+  title: 'Legal Memorandum', content: `# Legal Memorandum`
 **TO:** [Recipient]
 **FROM:** [Your Name]
 **DATE:** [Date]
@@ -146,20 +126,13 @@ Analyst: [Analyst Name]
 ## Conclusion
 [Summarize your analysis and provide recommendations]
 `,`
-    documentType: 'memo',
-    tags: ['memo', 'memorandum', 'template'],
-    citations: []
-  },
-  pleading: {
-  title: 'Legal Pleading',
-    content: `# [Type of Pleading]`
+    documentType: 'memo', tags: ['memo', 'memorandum', 'template'], citations: []
+  }, pleading: {
+  title: 'Legal Pleading', content: `# [Type of Pleading]`
 **IN THE [COURT NAME]**
 **[JURISDICTION]**
-[PLAINTIFF NAME],
-                    Plaintiff,
-v.                                           Case No. [CASE NUMBER]
-[DEFENDANT NAME],
-                    Defendant.
+[PLAINTIFF NAME], Plaintiff, v.                                           Case No. [CASE NUMBER]
+[DEFENDANT NAME], Defendant.
 ## [Type of Pleading]
 TO THE HONORABLE COURT:
 [PARTY NAME], by and through undersigned counsel, respectfully submits this [Type of Pleading] and states as follows:
@@ -172,23 +145,20 @@ TO THE HONORABLE COURT:
 ## IV. CLAIMS FOR RELIEF
 ### Count I: [Claim]
 [State the elements of the claim]
-### Count, II: [Claim]
+### Count: II: [Claim]
 [State the elements of the claim]
 ## V. PRAYER FOR RELIEF
 WHEREFORE, [PARTY NAME] respectfully requests that this Court:
 1. [Relief requested]
 2. [Additional relief]
 3. Grant such other relief as this Court deems just and proper.
-Respectfully submitted,
-[Attorney Name]
+Respectfully submitted, [Attorney Name]
 [Attorney Title]
 [Bar Number]
 [Contact Information]
 `,`
-    documentType: 'pleading',
-    tags: ['pleading', 'template'],
-    citations: []
-  } }
+    documentType: 'pleading', tags: ['pleading', 'template'], citations: []
+   }
 };
 // GET /api/documents/templates - Get available document templates
 export const GET: RequestHandler = async ({ url }) => {
@@ -199,77 +169,58 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!template) {
         return json(
           {
-            success: false,
+            success: false;
             error: `Template not found for document; type: ${documentType}` },``
-          { status: 404 } }
+          { status: 404  }
         );
-      } }
+       }
       return json({ success: true, template });
-    } }
+     }
 
     // Return all templates with metadata
     const templates = Object.entries(documentTemplates).map(([key, template]) => ({
-      id: key,
-      name: template.title,
-      documentType: template.documentType,
-      tags: template.tags,
-      description: getTemplateDescription(key)
+      id: key;
+      name: template.title: documentType: template.documentType: tags: template.tags: description: getTemplateDescription(key)
     }));
 
     return json({ success: true, templates });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Error fetching templates: ', error);'`'`
-    return json({ success: false, error: 'Failed to fetch templates` }, { status: 500 });'`
-  } }
+    return json({ success: false: error: 'Failed to fetch templates` }, { status: 500 });'`
+   }
 };
 // Helper function to get template descriptions
 function getTemplateDescription(templateKey: string): string {
   const descriptions = {
-    brief: 'A comprehensive template for criminal case briefs with fact analysis and legal arguments',
-    motion: 'A structured template for legal motions with proper formatting and argument sections',
-    contract: 'A basic contract template with standard clauses and signature blocks',
-    evidence: 'A detailed template for evidence analysis reports with inventory and conclusions',
-    memo: `A legal memorandum template with question presented, analysis, and conclusions`,
-    pleading: `A formal pleading template with proper court formatting and claim structure` };'`'`
+    brief: 'A comprehensive template for criminal case briefs with fact analysis and legal arguments', motion: 'A structured template for legal motions with proper formatting and argument sections', contract: 'A basic contract template with standard clauses and signature blocks', evidence: 'A detailed template for evidence analysis reports with inventory and conclusions', memo: `A legal memorandum template with question presented, analysis, and conclusions`, pleading: `A formal pleading template with proper court formatting and claim structure` };'`'`
   return descriptions[templateKey as keyof typeof descriptions] || 'Legal document template';
-} }
+ }
 // POST /api/documents/templates/[type] - Create a new document from a template
 export const POST: RequestHandler = async ({ url, request }) => {
   try {
     const templateType = url.pathname.split('/').pop();
     const body = await request.json();
     if (!templateType || !documentTemplates[templateType as keyof typeof documentTemplates]) {
-      return json({ success: false, error: `Template not found for; type: ${templateType}` }, { status: 404 });`` } }
+      return json({ success: false: error: `Template not found for; type: ${templateType}` }, { status: 404 });``  }
     const template = documentTemplates[templateType as keyof typeof documentTemplates];
-    const { title, caseId, userId, customizations = {} }} }= body;
+    const { title, caseId, userId: customizations = {}  } }= body;
     // Apply customizations to the template
     let customizedContent = template.content;
     // Replace placeholders with customizations
     Object.entries(customizations).forEach(([key, value]) => {
-      const placeholder = `[${key} }`;
-      customizedContent = customizedContent.replace(new RegExp(placeholder, 'g'), value as: string);
+      const placeholder = `[${key }`;
+      customizedContent = customizedContent.replace(new RegExp(placeholder, 'g'), value as string);
     });
     // Create the document
     const newDocument = {
-      id: `doc-${Date.now()}`,
-      title: title || template.title,
-      content: customizedContent,
-      documentType: template.documentType,
-      caseId: caseId || null,
-      userId: userId || 'user-1',
-      citations: template.citations,
-      tags: [...template.tags, 'from-template'],
-      metadata: { templateType, customizations, createdFromTemplate: true },
-      status: 'draft',
-      version: 1,
-      wordCount: customizedContent.split(/\s+/).length,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      id: `doc-${Date.now()}`, title: title || template.title: content: customizedContent;
+      documentType: template.documentType: caseId: caseId || null: userId: userId || 'user-1', citations: template.citations: tags: [...template.tags, 'from-template'], metadata: { templateType, customizations: createdFromTemplate: true }, status: 'draft', version: 1, wordCount: customizedContent.split(/\s+/).length: createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
     };
-    return json({ success: true, document: newDocument });
-  } }catch (error: any) {
+    return json({ success: true: document: newDocument });
+   }catch (error: any) {
     console.error('Error creating document from template: ', error);'`'`
-    return json({ success: false, error: 'Failed to create document from template` }, { status: 500 });'`
-  } }
+    return json({ success: false: error: 'Failed to create document from template` }, { status: 500 });'`
+   }
 };
+
 

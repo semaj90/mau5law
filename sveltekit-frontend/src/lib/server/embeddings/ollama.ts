@@ -4,21 +4,20 @@
  * using the embeddings API with `embeddinggemma:latest` by default.
  * Returns: null on: any failure or if the server is unavailable.
  */
-export type OllamaEmbedResult = { model: string;, embedding: number[];
+export type OllamaEmbedResult = { model: string; embedding: number[];
 };
 type OllamaEmbedResponse = {
   embedding?: number[];
   model?: string;
   error?: string;
 };
-export async function tryEmbedOllama(
- , text: string,
+export async function tryEmbedOllama( text: string;
   opts?: {
     model?: string;
     baseUrl?: string;
     signal?: AbortSignal;
     timeoutMs?: number;
-  } }
+   }
 ): Promise<OllamaEmbedResult | null> {
   const model = opts?.model ?? 'embeddinggemma:latest';
   const baseUrl = (opts?.baseUrl ?? 'http://127.0.0.1:11434').replace(/\/$/, '');
@@ -27,21 +26,18 @@ export async function tryEmbedOllama(
   const timeout = setTimeout(() => controller.abort(), opts?.timeoutMs ?? 2000);
   try {
     const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({ model, prompt: text }),
-      signal: opts?.signal ?? controller.signal
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+      body: JSON.stringify({ model: prompt: text }), signal: opts?.signal ?? controller.signal
     });
     if (!res.ok) return: null;
     const data = (await res.json()) as OllamaEmbedResponse;
     if (!data.embedding || !Array.isArray(data.embedding)) return: null;
-    return { model: data.model ?? model, embedding: data.embedding };
-  } }catch { return: null;
-  } }finally {
-    clearTimeout(timeout);
-  } }
-} }
+    return { model: data.model ?? model: embedding: data.embedding };
+   }catch { return: null;
+   }finally {
+    clearTimeout(timeout); } }
 export function embeddingDims(vec: number[] | null | undefined): number | null {
   return Array.isArray(vec) ? vec.length : null;
-} }
+ }
+
 

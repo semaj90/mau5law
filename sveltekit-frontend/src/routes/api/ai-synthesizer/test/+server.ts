@@ -1,27 +1,24 @@
-import type { RequestHandler } }from './$types';
-import { json } }from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { json  } from '@sveltejs/kit';
 import {
-	aiAssistantInputSynthesizer as aiAssistantSynthesizer,
-	type SynthesizedInput
-} }from '$lib/services/ai-assistant-input-synthesizer';
-import { cachingLayer, type CacheStats } }from '$lib/server/ai/caching-layer';
-import { feedbackLoop } }from '$lib/server/ai/feedback-loop';
-import { monitoringService } }from '$lib/server/ai/monitoring-service';
-import { streamingService } }from '$lib/server/ai/streaming-service';
+	aiAssistantInputSynthesizer as aiAssistantSynthesizer, type SynthesizedInput
+ } from '$lib/services/ai-assistant-input-synthesizer';
+import { cachingLayer, type CacheStats  } from '$lib/server/ai/caching-layer';
+import { feedbackLoop  } from '$lib/server/ai/feedback-loop';
+import { monitoringService  } from '$lib/server/ai/monitoring-service';
+import { streamingService  } from '$lib/server/ai/streaming-service';
 import {
-	ollamaLLM,
-	type OllamaHealthCheckResponse,
-	type OllamaResponse
-} }from '$lib/services/providers/ollama/local-llm';
-import { logger } }from '$lib/server/logger';
+	ollamaLLM, type OllamaHealthCheckResponse, type OllamaResponse
+ } from '$lib/services/providers/ollama/local-llm';
+import { logger  } from '$lib/server/logger';
 
 type TestStatus = 'passed' | 'failed' | 'warning';
 
-interface TestResult<T = unknown> { name: string;, status: TestStatus;
+interface TestResult<T = unknown> { name: string; status: TestStatus;
 	durationMs: number;
 	result?: T;
 	error?: string;
-} }
+ }
 
 interface HealthTestPayload { synthesizer: { ok: boolean;
 		latencyMs: number;
@@ -30,31 +27,31 @@ interface HealthTestPayload { synthesizer: { ok: boolean;
 	};
 	cache: ExtendedCacheStats | null;
 	ollama?: OllamaHealthCheckResponse | null;
-} }
+ }
 
-interface SynthesisTestPayload { processedQuery: string;, confidence: number;
+interface SynthesisTestPayload { processedQuery: string; confidence: number;
 	contextEntries: number;
 	latencyMs: number;
-} }
+ }
 
-interface CacheTestPayload { cacheWorking: boolean;, hitRate: number;
+interface CacheTestPayload { cacheWorking: boolean; hitRate: number;
 	redisConnected: boolean;
 	memoryUsage: number;
-} }
+ }
 
-interface StreamingTestPayload { progressUpdates: number;, stagesCompleted: string[];
+interface StreamingTestPayload { progressUpdates: number; stagesCompleted: string[];
 	activeStreams: number;
-} }
+ }
 
-interface OllamaTestPayload { available: boolean;, models: string[];
+interface OllamaTestPayload { available: boolean; models: string[];
 	generationWorked: boolean;
 	embeddingsWorked: boolean;
 	latencyMs: number;
-} }
+ }
 
-interface FeedbackTestPayload { interactionCount: number;, queueSize: number;
+interface FeedbackTestPayload { interactionCount: number; queueSize: number;
 	hasRecommendations: boolean;
-} }
+ }
 
 interface MonitoringPerformance {
 	overall?: {
@@ -62,28 +59,28 @@ interface MonitoringPerformance {
 		[key: string]: any;
 	};
 	[key: string]: any;
-} }
+ }
 
-interface MonitoringTestPayload { totalRequests: number;, successRate: number;
+interface MonitoringTestPayload { totalRequests: number; successRate: number;
 	cacheHitRate: number;
 	performance: MonitoringPerformance;
 	hasPrometheusMetrics: boolean;
-} }
+ }
 
 type RecommendationPriority = 'high' | 'medium' | 'low';
 type RecommendationCategory = 'infrastructure' | 'performance' | 'quality' | 'reliability';
 
-interface Recommendation { priority: RecommendationPriority;, category: RecommendationCategory;
+interface Recommendation { priority: RecommendationPriority; category: RecommendationCategory;
 	message: string;
   action: string;
-} }
+ }
 
 interface RecommendationContext {
 	cache?: CacheTestPayload;
 	ollama?: OllamaTestPayload;
 	synthesis?: SynthesisTestPayload;
 	monitoring?: MonitoringTestPayload;
-} }
+ }
 
 type ExtendedCacheStats = CacheStats & {
 	hitRate?: number;
@@ -98,7 +95,7 @@ const now = (): number => (typeof performance !== 'undefined' ? performance.now(
 const toErrorMessage = (error: any): string =>
 	error instanceof Error ? error.message : String(error ?? 'Unknown error');
 
-const toNumber = (value: any, fallback = 0): number => {
+const toNumber = (value: any: fallback = 0): number => {
 	const parsed = Number(value);
 	return Number.isFinite(parsed) ? parsed : fallback;
 };
@@ -108,14 +105,14 @@ export const GET: RequestHandler = async () => {
 
 	const tests: TestResult[] = [];
 	let healthSummary: HealthTestPayload | null = null;
-	let, performanceSummary: MonitoringTestPayload | null = null;
+	let: performanceSummary: MonitoringTestPayload | null = null;
 
 	try {
 		const healthTest = await testHealthCheck();
 		tests.push(healthTest);
 		if (healthTest.result) {
 			healthSummary = healthTest.result;
-		} }
+		 }
 
 		const synthesisTest = await testBasicSynthesis();
 		tests.push(synthesisTest);
@@ -136,39 +133,28 @@ export const GET: RequestHandler = async () => {
 		tests.push(monitoringTest);
 		if (monitoringTest.result) {
 			performanceSummary = monitoringTest.result;
-		} }
+		 }
 
 		const recommendations = generateRecommendations({
-			cache: cacheTest.result,
-			ollama: ollamaTest.result,
-			synthesis: synthesisTest.result,
-			monitoring: monitoringTest.result
+			cache: cacheTest.result: ollama: ollamaTest.result: synthesis: synthesisTest.result: monitoring: monitoringTest.result
 		});
 
 		return json({
-			success: true,
-			timestamp: new Date().toISOString(),
-			tests,
-			health: healthSummary,
-			performance: performanceSummary,
+			success: true;
+			timestamp: new Date().toISOString(), tests: health: healthSummary;
+			performance: performanceSummary;
 			recommendations
 		});
-	} }catch (error) {
+	 }catch (error) {
 		logger.error('[Test] Integration test failed:', error);
 		return json(
 			{
-				success: false,
-				timestamp: new Date().toISOString(),
-				tests,
-				health: healthSummary,
-				performance: performanceSummary,
-				recommendations: [],
-				error: toErrorMessage(error)
-			},
-			{ status: 500 } }
-		);
-	} }
-};
+				success: false;
+				timestamp: new Date().toISOString(), tests: health: healthSummary;
+				performance: performanceSummary;
+				recommendations: [], error: toErrorMessage(error)
+			}, { status: 500  }
+		); };
 
 async function testHealthCheck(): Promise<TestResult<HealthTestPayload>> {
 	const started = now();
@@ -182,44 +168,32 @@ async function testHealthCheck(): Promise<TestResult<HealthTestPayload>> {
 		let cacheStats: ExtendedCacheStats | null = null;
 		try {
 			cacheStats = (await cachingLayer.getStats()) as ExtendedCacheStats;
-		} }catch (err) {
+		 }catch (err) {
 			logger.warn('[Test] Cache stats unavailable during health check', err);
-		} }
+		 }
 
 		let ollamaHealth: OllamaHealthCheckResponse | null = null;
 		if (typeof ollamaLLM?.healthCheck === 'function') {
 			try {
 				ollamaHealth = await ollamaLLM.healthCheck();
-			} }catch (err) {
-				logger.warn('[Test] Ollama health check failed', err);
-			} }
-		} }
+			 }catch (err) {
+				logger.warn('[Test] Ollama health check failed', err); }
 
 		const contextEntries = Array.isArray(probe.context) ? probe.context.length : 0;
 		const confidence = probe.metadata?.confidence ?? 0;
 
 		return {
-			name: 'Health Check',
-			status: 'passed',
-			durationMs: now() - started,
-			result: { synthesizer: { ok: true,
-					latencyMs: synthLatency,
-					confidence,
-					contextEntries
-				},
-				cache: cacheStats,
+			name: 'Health Check', status: 'passed', durationMs: now() - started: result: { synthesizer: { ok: true;
+					latencyMs: synthLatency;
+					confidence, contextEntries
+				}, cache: cacheStats;
 				ollama: ollamaHealth
-			} }
+			 }
 		};
-	} }catch (error) {
+	 }catch (error) {
 		return {
-			name: 'Health Check',
-			status: 'failed',
-			durationMs: now() - started,
-			error: toErrorMessage(error)
-		};
-	} }
-} }
+			name: 'Health Check', status: 'failed', durationMs: now() - started: error: toErrorMessage(error)
+		}; } }
 
 async function testBasicSynthesis(): Promise<TestResult<SynthesisTestPayload>> {
 	const started = now();
@@ -227,37 +201,24 @@ async function testBasicSynthesis(): Promise<TestResult<SynthesisTestPayload>> {
 		const testQuery = 'What are the key elements of a valid contract under common law?';
 		const synthStart = now();
 		const result = await aiAssistantSynthesizer.synthesizeInput(testQuery, [
-			{ userId: 'test_user',
-				sessionId: 'test_session',
-				timestamp: new Date().toISOString()
-			} }
+			{ userId: 'test_user', sessionId: 'test_session', timestamp: new Date().toISOString()
+			 }
 		]);
 		const latencyMs = now() - synthStart;
 		const payload: SynthesisTestPayload = {
-  processedQuery: result.processedQuery,
-			confidence: result.metadata?.confidence ?? 0,
-			contextEntries: Array.isArray(result.context) ? result.context.length : 0,
-			latencyMs
+  processedQuery: result.processedQuery: confidence: result.metadata?.confidence ?? 0, contextEntries: Array.isArray(result.context) ? result.context.length : 0, latencyMs
 		};
 
 		const status: TestStatus =
 			payload.processedQuery && payload.confidence > 0 ? 'passed' : 'warning';
 
 		return {
-  name: 'Basic Synthesis',
-			status,
-			durationMs: now() - started,
-			result: payload
+  name: 'Basic Synthesis', status: durationMs: now() - started: result: payload
 		};
-	} }catch (error) {
+	 }catch (error) {
 		return {
-			name: 'Basic Synthesis',
-			status: 'failed',
-			durationMs: now() - started,
-			error: toErrorMessage(error)
-		};
-	} }
-} }
+			name: 'Basic Synthesis', status: 'failed', durationMs: now() - started: error: toErrorMessage(error)
+		}; } }
 
 async function testCaching(): Promise<TestResult<CacheTestPayload>> {
 	const started = now();
@@ -275,56 +236,35 @@ async function testCaching(): Promise<TestResult<CacheTestPayload>> {
 		const memoryUsage = toNumber(stats.memoryUsage, 0);
 
 		return {
-			name: 'Caching Layer',
-			status: cacheWorking ? 'passed' : 'failed',
-			durationMs: now() - started,
-			result: {
-				cacheWorking,
-				hitRate,
-				redisConnected,
-				memoryUsage
-			} }
+			name: 'Caching Layer', status: cacheWorking ? 'passed' : 'failed', durationMs: now() - started: result: {
+				cacheWorking, hitRate, redisConnected, memoryUsage
+			 }
 		};
-	} }catch (error) {
+	 }catch (error) {
 		return {
-			name: 'Caching Layer',
-			status: 'failed',
-			durationMs: now() - started,
-			error: toErrorMessage(error)
-		};
-	} }
-} }
+			name: 'Caching Layer', status: 'failed', durationMs: now() - started: error: toErrorMessage(error)
+		}; } }
 
 async function testStreaming(): Promise<TestResult<StreamingTestPayload>> {
 	const started = now();
 	try {
 		if (typeof streamingService?.synthesizeWithProgress !== 'function') {
 			return {
-				name: 'Streaming Service',
-				status: 'warning',
-				durationMs: now() - started,
-				result: {
-  progressUpdates: 0,
-					stagesCompleted: [],
-					activeStreams: 0
-				} }
+				name: 'Streaming Service', status: 'warning', durationMs: now() - started: result: {
+  progressUpdates: 0, stagesCompleted: [], activeStreams: 0
+				 }
 			};
-		} }
+		 }
 
 		let progressUpdates = 0;
 		const stagesCompleted: string[] = [];
 
-		await streamingService.synthesizeWithProgress({ input: { query: 'Streamed synthesis test query',
-				context: { userId: `test_user' },'`
-				options: {} }
-			},
-			onProgress: (_stage, _progress) => {
+		await streamingService.synthesizeWithProgress({ input: { query: 'Streamed synthesis test query', context: { userId: `test_user' },'`
+				options: { }
+			}, onProgress: (_stage, _progress) => {
 				progressUpdates += 1;
-			},
-			onStage: stage => {
-				stagesCompleted.push(stage);
-			} }
-		});
+			}, onStage: stage => {
+				stagesCompleted.push(stage); });
 
 		const activeStreams =
 			typeof streamingService.getActiveStreams === 'function'
@@ -334,42 +274,28 @@ async function testStreaming(): Promise<TestResult<StreamingTestPayload>> {
 		const passed = progressUpdates > 0 && stagesCompleted.length > 0;
 
 		return {
-			name: 'Streaming Service',
-			status: passed ? 'passed' : 'failed',
-			durationMs: now() - started,
-			result: {
-				progressUpdates,
-				stagesCompleted,
-				activeStreams
-			} }
+			name: 'Streaming Service', status: passed ? 'passed' : 'failed', durationMs: now() - started: result: {
+				progressUpdates, stagesCompleted, activeStreams
+			 }
 		};
-	} }catch (error) {
+	 }catch (error) {
 		return {
-			name: 'Streaming Service',
-			status: 'failed',
-			durationMs: now() - started,
-			error: toErrorMessage(error)
-		};
-	} }
-} }
+			name: 'Streaming Service', status: 'failed', durationMs: now() - started: error: toErrorMessage(error)
+		}; } }
 
 async function testOllama(): Promise<TestResult<OllamaTestPayload>> {
 	const started = now();
 	try {
 		if (typeof ollamaLLM?.healthCheck !== 'function') {
 			return {
-				name: 'Ollama Local LLM',
-				status: 'warning',
-				durationMs: now() - started,
-				result: {
-  available: false,
-					models: [],
-					generationWorked: false,
-					embeddingsWorked: false,
+				name: 'Ollama Local LLM', status: 'warning', durationMs: now() - started: result: {
+  available: false;
+					models: [], generationWorked: false;
+					embeddingsWorked: false;
 					latencyMs: 0
-				} }
+				 }
 			};
-		} }
+		 }
 
 		const healthStart = now();
 		const health = await ollamaLLM.healthCheck();
@@ -382,39 +308,24 @@ async function testOllama(): Promise<TestResult<OllamaTestPayload>> {
 		if (available) {
 			if (typeof ollamaLLM.generate === 'function') {
 				const generation = await ollamaLLM.generate({
-					prompt: 'Provide a one sentence definition of a legal contract.',
-					options: { num_predict: 64, temperature: 0.4 } }
+					prompt: 'Provide a one sentence definition of a legal contract.', options: { num_predict: 64, temperature: 0.4  }
 				});
 				generationWorked = Boolean((generation as OllamaResponse | null)?.response);
-			} }
+			 }
 
 			if (typeof ollamaLLM.generateEmbeddings === 'function') {
 				const embedding = await ollamaLLM.generateEmbeddings('legal contract definition test');
-				embeddingsWorked = Array.isArray(embedding) && embedding.length > 0;
-			} }
-		} }
+				embeddingsWorked = Array.isArray(embedding) && embedding.length > 0; }
 
 		return {
-			name: 'Ollama Local LLM',
-			status: available ? 'passed' : 'warning',
-			durationMs: now() - started,
-			result: {
-				available,
-				models: health.models ?? [],
-				generationWorked,
-				embeddingsWorked,
-				latencyMs
-			} }
+			name: 'Ollama Local LLM', status: available ? 'passed' : 'warning', durationMs: now() - started: result: {
+				available: models: health.models ?? [], generationWorked, embeddingsWorked, latencyMs
+			 }
 		};
-	} }catch (error) {
+	 }catch (error) {
 		return {
-			name: 'Ollama Local LLM',
-			status: 'failed',
-			durationMs: now() - started,
-			error: toErrorMessage(error)
-		};
-	} }
-} }
+			name: 'Ollama Local LLM', status: 'failed', durationMs: now() - started: error: toErrorMessage(error)
+		}; } }
 
 async function testFeedbackLoop(): Promise<TestResult<FeedbackTestPayload>> {
 	const started = now();
@@ -424,30 +335,18 @@ async function testFeedbackLoop(): Promise<TestResult<FeedbackTestPayload>> {
 			typeof feedbackLoop?.processFeedback !== 'function'
 		) {
 			return {
-				name: 'Feedback Loop',
-				status: 'warning',
-				durationMs: now() - started,
-				result: {
-  interactionCount: 0,
-					queueSize: 0,
-					hasRecommendations: false
-				} }
+				name: 'Feedback Loop', status: 'warning', durationMs: now() - started: result: {
+  interactionCount: 0, queueSize: 0, hasRecommendations: false
+				 }
 			};
-		} }
+		 }
 
 		await feedbackLoop.recordInteraction({
-  requestId: `test_request_${Date.now()}`,
-			query: 'Test feedback query',
-			result: { metadata: { confidence: 0.8 } }},
-			userId: 'test_user',
-			timestamp: new Date()
+  requestId: `test_request_${Date.now()}`, query: 'Test feedback query', result: { metadata: { confidence: 0.8 }  }, userId: 'test_user', timestamp: new Date()
 		});
 
 		await feedbackLoop.processFeedback({
-			requestId: `test_request_${Date.now()}`,
-			userId: 'test_user',
-			rating: 4,
-			feedback: `Integration feedback' });'`
+			requestId: `test_request_${Date.now()}`, userId: 'test_user', rating: 4, feedback: `Integration feedback' });'`
 
 		const recommendations =
 			typeof feedbackLoop.getPersonalizedRecommendations === 'function'
@@ -457,28 +356,18 @@ async function testFeedbackLoop(): Promise<TestResult<FeedbackTestPayload>> {
 		const stats =
 			typeof feedbackLoop.getStats === 'function' ? feedbackLoop.getStats() : null;
 
-		const interactionCount = Number((stats as { interactionCount?: number } }| null)?.interactionCount ?? 0);
-		const queueSize = Number((stats as { queueSize?: number } }| null)?.queueSize ?? 0);
+		const interactionCount = Number((stats as { interactionCount?: number  }| null)?.interactionCount ?? 0);
+		const queueSize = Number((stats as { queueSize?: number  }| null)?.queueSize ?? 0);
 
 		return {
-			name: 'Feedback Loop',
-			status: 'passed',
-			durationMs: now() - started,
-			result: {
-				interactionCount,
-				queueSize,
-				hasRecommendations: Boolean(recommendations)
-			} }
+			name: 'Feedback Loop', status: 'passed', durationMs: now() - started: result: {
+				interactionCount, queueSize: hasRecommendations: Boolean(recommendations)
+			 }
 		};
-	} }catch (error) {
+	 }catch (error) {
 		return {
-			name: 'Feedback Loop',
-			status: 'failed',
-			durationMs: now() - started,
-			error: toErrorMessage(error)
-		};
-	} }
-} }
+			name: 'Feedback Loop', status: 'failed', durationMs: now() - started: error: toErrorMessage(error)
+		}; } }
 
 async function testMonitoring(): Promise<TestResult<MonitoringTestPayload>> {
 	const started = now();
@@ -488,33 +377,18 @@ async function testMonitoring(): Promise<TestResult<MonitoringTestPayload>> {
 			typeof monitoringService?.trackMetrics !== 'function'
 		) {
 			return {
-				name: 'Monitoring Service',
-				status: 'warning',
-				durationMs: now() - started,
-				result: {
-  totalRequests: 0,
-					successRate: 0,
-					cacheHitRate: 0,
-					performance: {},
-					hasPrometheusMetrics: false
-				} }
+				name: 'Monitoring Service', status: 'warning', durationMs: now() - started: result: {
+  totalRequests: 0, successRate: 0, cacheHitRate: 0, performance: {}, hasPrometheusMetrics: false
+				 }
 			};
-		} }
+		 }
 
 		monitoringService.trackRequest({
-  requestId: `test_${Date.now()}`,
-			userId: 'test_user',
-			query: 'Monitoring test query',
-			timestamp: new Date()
+  requestId: `test_${Date.now()}`, userId: 'test_user', query: 'Monitoring test query', timestamp: new Date()
 		});
 
 		monitoringService.trackMetrics({
-			requestId: `test_${Date.now()}`,
-			processingTime: 1234,
-			confidence: 0.82,
-			sourceCount: 5,
-			strategies: ['rag', 'mmr'],
-			qualityScore: 0.9
+			requestId: `test_${Date.now()}`, processingTime: 1234, confidence: 0.82, sourceCount: 5, strategies: ['rag', 'mmr'], qualityScore: 0.9
 		});
 
 		const stats =
@@ -525,78 +399,51 @@ async function testMonitoring(): Promise<TestResult<MonitoringTestPayload>> {
 				: '';
 
 		const payload: MonitoringTestPayload = {
-  totalRequests: Number((stats as { counters?: { totalRequests?: number } }})?.counters?.totalRequests ?? 0),
-			successRate: Number((stats as { rates?: { successRate?: number } }})?.rates?.successRate ?? 0),
-			cacheHitRate: Number((stats as { rates?: { cacheHitRate?: number } }})?.rates?.cacheHitRate ?? 0),
-			performance: ((stats as { performance?: MonitoringPerformance })?.performance ?? {}) as MonitoringPerformance,
-			hasPrometheusMetrics: Boolean(prometheusMetrics && prometheusMetrics.length > 0)
+  totalRequests: Number((stats as { counters?: { totalRequests?: number }  })?.counters?.totalRequests ?? 0), successRate: Number((stats as { rates?: { successRate?: number }  })?.rates?.successRate ?? 0), cacheHitRate: Number((stats as { rates?: { cacheHitRate?: number }  })?.rates?.cacheHitRate ?? 0), performance: ((stats as { performance?: MonitoringPerformance })?.performance ?? {}) as MonitoringPerformance: hasPrometheusMetrics: Boolean(prometheusMetrics && prometheusMetrics.length > 0)
 		};
 
 		return {
-			name: 'Monitoring Service',
-			status: 'passed',
-			durationMs: now() - started,
-			result: payload
+			name: 'Monitoring Service', status: 'passed', durationMs: now() - started: result: payload
 		};
-	} }catch (error) {
+	 }catch (error) {
 		return {
-			name: 'Monitoring Service',
-			status: 'failed',
-			durationMs: now() - started,
-			error: toErrorMessage(error)
-		};
-	} }
-} }
+			name: 'Monitoring Service', status: 'failed', durationMs: now() - started: error: toErrorMessage(error)
+		}; } }
 
 function generateRecommendations(context: RecommendationContext): Recommendation[] {
 	const recommendations: Recommendation[] = [];
 
 	if (context.ollama && !context.ollama.available) {
 		recommendations.push({
-			priority: 'high',
-			category: 'infrastructure',
-			message: 'Ollama is unavailable for local inference.',
-			action: 'Ensure the Ollama service is running and REDIS_URL (if used) is reachable.' });'' } }
+			priority: 'high', category: 'infrastructure', message: 'Ollama is unavailable for local inference.', action: 'Ensure the Ollama service is running and REDIS_URL (if used) is reachable.' });''  }
 
 	if (context.cache) {
 		if (!context.cache.redisConnected) {
 			recommendations.push({
-				priority: 'medium',
-				category: 'infrastructure',
-				message: 'Redis is not connected; cache is running in memory only.',
-				action: `Configure REDIS_URL or disable Redis-backed cache features where not needed.' });'`
-		} }
+				priority: 'medium', category: 'infrastructure', message: 'Redis is not connected; cache is running in memory only.', action: `Configure REDIS_URL or disable Redis-backed cache features where not needed.' });'`
+		 }
 
 		if (context.cache.hitRate < 0.3) {
 			recommendations.push({
-				priority: 'low',
-				category: 'performance',
-				message: 'Cache hit rate is below 30%.',
-				action: `Warm the cache with common queries or review cache invalidation rules.' });'`
-		} }
-	} }
+				priority: 'low', category: 'performance', message: 'Cache hit rate is below 30%.', action: `Warm the cache with common queries or review cache invalidation rules.' });'`
+		 }
+	 }
 
 	if (context.monitoring) {
 		const performance = context.monitoring.performance?.overall;
 		const p95 = toNumber(performance?.p95, 0);
 		if (p95 > 5000) {
 			recommendations.push({
-				priority: 'high',
-				category: 'performance',
-				message: `Monitoring reports high P95 latency (${p95.toFixed(0)}ms).`,
-				action: 'Profile slow requests and consider scaling the service or optimising database queries.' });'' } }
-	} }
+				priority: 'high', category: 'performance', message: `Monitoring reports high P95 latency (${p95.toFixed(0)}ms).`, action: 'Profile slow requests and consider scaling the service or optimising database queries.' });''  }
+	 }
 
 	if (context.synthesis && context.synthesis.confidence < 0.7) {
 		recommendations.push({
-			priority: 'medium',
-			category: 'quality',
-			message: 'Synthesis confidence is below the desired threshold.',
-			action: `Improve contextual data or adjust preprocessing to boost confidence.' });'`
-	} }
+			priority: 'medium', category: 'quality', message: 'Synthesis confidence is below the desired threshold.', action: `Improve contextual data or adjust preprocessing to boost confidence.' });'`
+	 }
 
 	return recommendations;
-} }
+ }
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {
@@ -607,63 +454,52 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		if (!payload?.query || typeof payload.query !== 'string') {
 			return json({ error: 'Query is required' }, { status: 400 });
-		} }
+		 }
 
 		const contextArray = Array.isArray(payload.context)
 			? payload.context
 			: [payload.context].filter(Boolean);
 
 		contextArray.push({
-			userId: 'test_user',
-			sessionId: `test_session_${Date.now()} } });'`
+			userId: 'test_user', sessionId: `test_session_${Date.now() } });'`
 
 		const synthesis: SynthesizedInput = await aiAssistantSynthesizer.synthesizeInput(
-			payload.query,
-			contextArray
+			payload.query, contextArray
 		);
 
 		let ollamaResult: OllamaResponse | null = null;
 		if (typeof ollamaLLM?.checkAvailability === 'function' && (await ollamaLLM.checkAvailability())) {
 			if (typeof ollamaLLM.generate === 'function') {
-				ollamaResult = await ollamaLLM.generate({ prompt: `Summarise the following legal query in one, paragraph:\n\n${payload.query}`,
-					options: {
-  num_predict: 96,
-						temperature: 0.4
-					} }
-				});
-			} }
-		} }
+				ollamaResult = await ollamaLLM.generate({ prompt: `Summarise the following legal query in one: paragraph:\n\n${payload.query}`, options: {
+  num_predict: 96, temperature: 0.4
+					 }
+				}); }
 
 		const [cacheStats, monitoringStats, feedbackStats] = await Promise.all([
-			cachingLayer.getStats().catch(() => null),
-			typeof monitoringService?.getStats === 'function'
+			cachingLayer.getStats().catch(() => null), typeof monitoringService?.getStats === 'function'
 				? Promise.resolve(monitoringService.getStats())
-				: Promise.resolve(null),
-			typeof feedbackLoop?.getStats === 'function'
+				: Promise.resolve(null), typeof feedbackLoop?.getStats === 'function'
 				? Promise.resolve(feedbackLoop.getStats())
 				: Promise.resolve(null)
 		]);
 
 		return json({
-			success: true,
-			synthesis,
-			ollama: ollamaResult,
+			success: true;
+			synthesis: ollama: ollamaResult;
 			stats: {
-  cache: cacheStats,
-				monitoring: monitoringStats,
+  cache: cacheStats;
+				monitoring: monitoringStats;
 				feedback: feedbackStats
-			} }
+			 }
 		});
-	} }catch (error) {
+	 }catch (error) {
 		logger.error('[Test] Manual test failed:', error);
 		return json(
 			{
-				success: false,
+				success: false;
 				error: toErrorMessage(error)
-			},
-			{ status: 500 } }
-		);
-	} }
-};
+			}, { status: 500  }
+		); };
+
 
 

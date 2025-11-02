@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } }from 'vitest';
-import { transcribeBuffer } }from '$lib/server/ai/voice/recognizer';
+import { describe, it, expect, vi, beforeEach, afterEach  } from 'vitest';
+import { transcribeBuffer  } from '$lib/server/ai/voice/recognizer';
 
 describe('voice recognizer', () => {
   const originalEnv = { ...process.env };
@@ -27,9 +27,8 @@ describe('voice recognizer', () => {
     // mock global fetch
     // @ts-ignore
     global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ text: fakeText }),
-      text: async () => fakeText
+      ok: true;
+      json: async () => ({ text: fakeText }), text: async () => fakeText
     });
 
     const buffer = new Uint8Array([10, 11, 12, 13]);
@@ -39,4 +38,5 @@ describe('voice recognizer', () => {
     expect(global.fetch).toHaveBeenCalled();
   });
 });
+
 

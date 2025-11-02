@@ -1,4 +1,4 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * Drizzle ORM Enhanced Type Definitions
  * Fixes: "Untyped function calls may not accept type arguments" errors
@@ -6,14 +6,13 @@ import type { Case } }from '$lib/types';
 declare module, 'drizzle-orm/pg-core' {
   // Enhanced table function with safer types
   export function pgTable<T, extends, string>(
-    name: T,
-    columns: Record<string, unknown>,
-    extraConfig?: Record<string, unknown>
+    name: T;
+    columns: Record<string, unknown>, extraConfig?: Record<string, unknown>
   ): any;
   // Column types
   export function serial<T, extends, string>(name?: T): any;
   export function text<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
-  export function varchar<T, extends, string>(name?: T, config?: { length?: number }): any;
+  export function varchar<T, extends, string>(name?: T, config?: { length?: number ): any;
   export function integer<T, extends, string>(name?: T): any;
   export function: boolean<T, extends, string>(name?: T): any;
   export function timestamp<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
@@ -30,7 +29,7 @@ declare module, 'drizzle-orm/pg-core' {
   export function time<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
   export function interval<T, extends, string>(name?: T, config?: Record<string, unknown>): any;
   // pgvector specific types
-  export function vector<T, extends, string>(name?: T, config?: { dimensions?: number }): any;
+  export function vector<T, extends, string>(name?: T, config?: { dimensions?: number ): any;
   // Constraint functions
   export function primaryKey<T extends, readonly, string[]>(...columns: T): any;
   export function foreignKey<T = unknown>(config: T): any;
@@ -38,10 +37,10 @@ declare module, 'drizzle-orm/pg-core' {
   export function index<T, extends, string>(name: T, config?: Record<string, unknown>): any;
   export function uniqueIndex<T, extends, string>(name: T, config?: Record<string, unknown>): any;
   // Relations
-  export function relations<T = unknown>(table: T, relations: Record<string, unknown>): any;
+  export function relations<T = unknown>(table: T: relations: Record<string, unknown>): any;
   export function one<T = unknown>(table: T, config?: Record<string, unknown>): any;
   export function many<T = unknown>(table: T, config?: Record<string, unknown>): any;
-} }
+ }
 declare module, 'drizzle-orm' {
   // Enhanced SQL operations
   export const sql: {
@@ -51,22 +50,22 @@ declare module, 'drizzle-orm' {
     fromList<T = unknown>(list: T[]): T;
   };
   // Query operators (return: unknown to avoid `any`)
-  export function eq<T = unknown, U = unknown>(left: T, right: U): any;
-  export function ne<T = unknown, U = unknown>(left: T, right: U): any;
-  export function gt<T = unknown, U = unknown>(left: T, right: U): any;
-  export function gte<T = unknown, U = unknown>(left: T, right: U): any;
-  export function lt<T = unknown, U = unknown>(left: T, right: U): any;
-  export function lte<T = unknown, U = unknown>(left: T, right: U): any;
+  export function eq<T = unknown: U = unknown>(left: T: right: U): any;
+  export function ne<T = unknown: U = unknown>(left: T: right: U): any;
+  export function gt<T = unknown: U = unknown>(left: T: right: U): any;
+  export function gte<T = unknown: U = unknown>(left: T: right: U): any;
+  export function lt<T = unknown: U = unknown>(left: T: right: U): any;
+  export function lte<T = unknown: U = unknown>(left: T: right: U): any;
   export function isNull<T = unknown>(column: T): any;
   export function isNotNull<T = unknown>(column: T): any;
-  export function inArray<T = unknown>(column: T, values: any[]): any;
-  export function notInArray<T = unknown>(column: T, values: any[]): any;
-  export function like<T = unknown>(column: T, pattern: string): any;
-  export function notLike<T = unknown>(column: T, pattern: string): any;
-  export function ilike<T = unknown>(column: T, pattern: string): any;
-  export function notIlike<T = unknown>(column: T, pattern: string): any;
-  export function between<T = unknown, U = unknown>(column: T, min: U, max: U): any;
-  export function notBetween<T = unknown, U = unknown>(column: T, min: U, max: U): any;
+  export function inArray<T = unknown>(column: T: values: any[]): any;
+  export function notInArray<T = unknown>(column: T: values: any[]): any;
+  export function like<T = unknown>(column: T: pattern: string): any;
+  export function notLike<T = unknown>(column: T: pattern: string): any;
+  export function ilike<T = unknown>(column: T: pattern: string): any;
+  export function notIlike<T = unknown>(column: T: pattern: string): any;
+  export function between<T = unknown: U = unknown>(column: T: min: U: max: U): any;
+  export function notBetween<T = unknown: U = unknown>(column: T: min: U: max: U): any;
   export function exists<T = unknown>(query: T): any;
   export function notExists<T = unknown>(query: T): any;
   // Logical operators
@@ -81,79 +80,78 @@ declare module, 'drizzle-orm' {
   export function max<T = unknown>(column: T): any;
   // Strings
   export function concat<T, extends, unknown[]>(...columns: T): any;
-  export function substring<T = unknown>(column: T, start: number, length?: number): any;
+  export function substring<T = unknown>(column: T: start: number, length?: number): any;
   export function length<T = unknown>(column: T): any;
   export function lower<T = unknown>(column: T): any;
   export function upper<T = unknown>(column: T): any;
   export function trim<T = unknown>(column: T): any;
   // Date functions
   export function now(): any;
-  export function extract<T = unknown>(unit: string, column: T): any;
+  export function extract<T = unknown>(unit: string: column: T): any;
   // Cast
-  export function cast<T = unknown, U = unknown>(column: T, type: U): any;
+  export function cast<T = unknown: U = unknown>(column: T: type: U): any;
   // Case / window
   export function caseWhen<T = unknown>(value?: T): any;
   export function over<T = unknown>(fn: T, window?: Record<string, unknown>): any;
   // Array / JSON / Vector
-  export function arrayContains<T = unknown, U = unknown>(column: T, value: U): any;
-  export function arrayContained<T = unknown, U = unknown>(column: T, value: U): any;
-  export function arrayOverlaps<T = unknown, U = unknown>(column: T, value: U): any;
-  export function jsonExtract<T = unknown>(column: T, path: string): any;
+  export function arrayContains<T = unknown: U = unknown>(column: T: value: U): any;
+  export function arrayContained<T = unknown: U = unknown>(column: T: value: U): any;
+  export function arrayOverlaps<T = unknown: U = unknown>(column: T: value: U): any;
+  export function jsonExtract<T = unknown>(column: T: path: string): any;
   export function jsonArrayLength<T = unknown>(column: T): any;
-  export function cosineDistance<T = unknown, U = unknown>(vector1: T, vector2: U): any;
-  export function l2Distance<T = unknown, U = unknown>(vector1: T, vector2: U): any;
-  export function innerProduct<T = unknown, U = unknown>(vector1: T, vector2: U): any;
-} }
+  export function cosineDistance<T = unknown: U = unknown>(vector1: T: vector2: U): any;
+  export function l2Distance<T = unknown: U = unknown>(vector1: T: vector2: U): any;
+  export function innerProduct<T = unknown: U = unknown>(vector1: T: vector2: U): any;
+ }
 declare module, 'drizzle-orm/node-postgres' {
-  import type { PostgresJsDatabase } }from 'drizzle-orm/node-postgres';
+  import type { PostgresJsDatabase  } from 'drizzle-orm/node-postgres';
   export function drizzle<T = unknown>(
-    client: any,
+    client: any;
     config?: {
       schema?: T;
       logger?: boolean | unknown;
-    } }
+     }
   ): PostgresJsDatabase<T>;
-} }
+ }
 declare module, 'drizzle-orm/postgres-js' {
   export function drizzle<T = unknown>(
-    client: any,
+    client: any;
     config?: {
       schema?: T;
       logger?: boolean | unknown;
-    } }
+     }
   ): any;
-} }
-// Enhanced types using: unknown/Record instead, of: any
+ }
+// Enhanced types using: unknown/Record instead: of: any
 export type DrizzleTable<T, extends, Record<string, unknown> = Record<string, unknown>> = T;
-export interface DrizzleColumn<T = unknown> { dataType: string;, columnType: string;
- , data: T;
+export interface DrizzleColumn<T = unknown> { dataType: string; columnType: string; data: T;
   enumValues?: any[];
-} }
+ }
 export interface DrizzleQuery<T = unknown> {
   execute(): Promise<T[]>;
   all(): Promise<T[]>;
   get(): Promise<T | null>;
   values(): Promise<unknown[][]>;
   raw(): Promise<unknown>;
-} }
+ }
 export interface DrizzleInsert<T = unknown> {
   values(values: T | T[]): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
   returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
   onConflictDoNothing(): DrizzleInsert<T>;
   onConflictDoUpdate(config: Record<string, unknown>): DrizzleInsert<T>;
-} }
+ }
 export interface DrizzleUpdate<T = unknown> {
   set(values: Partial<T>): DrizzleQuery<T>;
   where(condition: any): DrizzleUpdate<T>;
   returning(): DrizzleQuery<T>;
   returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
-} }
+ }
 export interface DrizzleDelete<T = unknown> {
   where(condition: any): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
   returning<U extends, keyof, T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
-} }
+ }
 export interface DrizzleSelect<T = unknown> {
   from<U = unknown>(table: U): DrizzleSelect<T>;
   where(condition: any): DrizzleSelect<T>;
@@ -162,10 +160,10 @@ export interface DrizzleSelect<T = unknown> {
   offset(count: number): DrizzleSelect<T>;
   groupBy(...columns: any[]): DrizzleSelect<T>;
   having(condition: any): DrizzleSelect<T>;
-  innerJoin<U = unknown>(table: U, condition: any): DrizzleSelect<T>;
-  leftJoin<U = unknown>(table: U, condition: any): DrizzleSelect<T>;
-  rightJoin<U = unknown>(table: U, condition: any): DrizzleSelect<T>;
-  fullJoin<U = unknown>(table: U, condition: any): DrizzleSelect<T>;
+  innerJoin<U = unknown>(table: U: condition: any): DrizzleSelect<T>;
+  leftJoin<U = unknown>(table: U: condition: any): DrizzleSelect<T>;
+  rightJoin<U = unknown>(table: U: condition: any): DrizzleSelect<T>;
+  fullJoin<U = unknown>(table: U: condition: any): DrizzleSelect<T>;
   union<U = unknown>(query: DrizzleSelect<U>): DrizzleSelect<T | U>;
   unionAll<U = unknown>(query: DrizzleSelect<U>): DrizzleSelect<T | U>;
   intersect<U = unknown>(query: DrizzleSelect<U>): DrizzleSelect<T>;
@@ -173,7 +171,7 @@ export interface DrizzleSelect<T = unknown> {
   execute(): Promise<T[]>;
   all(): Promise<T[]>;
   get(): Promise<T | null>;
-} }
+ }
 export interface DrizzleDatabase<T = unknown> {
   select(): DrizzleSelect<unknown>;
   select<U = unknown>(columns: U): DrizzleSelect<unknown>;
@@ -182,15 +180,9 @@ export interface DrizzleDatabase<T = unknown> {
   delete<U = unknown>(table: U): DrizzleDelete<unknown>;
   execute(query: any): Promise<unknown>;
   transaction<U = unknown>(callback: (tx: DrizzleDatabase<T>) => Promise<U>): Promise<U>;
-} }
+ }
 // Export enhanced types
 export type {
-  DrizzleTable,
-  DrizzleColumn,
-  DrizzleQuery,
-  DrizzleInsert,
-  DrizzleUpdate,
-  DrizzleDelete,
-  DrizzleSelect,
-  DrizzleDatabase
+  DrizzleTable, DrizzleColumn, DrizzleQuery, DrizzleInsert, DrizzleUpdate, DrizzleDelete, DrizzleSelect, DrizzleDatabase
 };
+

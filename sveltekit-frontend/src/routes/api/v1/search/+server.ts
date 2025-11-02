@@ -1,9 +1,9 @@
-import { json } }from '@sveltejs/kit';
-import { orchestrator } }from '$lib/services/unified-legal-orchestrator';
-import { qdrant } }from '$lib/server/vector/qdrant-manager';
-import { db, vectorSearch } }from '$lib/server/database/connection';
-import { natsQuicSearchService } }from '$lib/server/search/nats-quic-search-service';
-import type { RequestHandler } }from './$types.js';
+import { json  } from '@sveltejs/kit';
+import { orchestrator  } from '$lib/services/unified-legal-orchestrator';
+import { qdrant  } from '$lib/server/vector/qdrant-manager';
+import { db, vectorSearch  } from '$lib/server/database/connection';
+import { natsQuicSearchService  } from '$lib/server/search/nats-quic-search-service';
+import type { RequestHandler  } from './$types.js';
 
 type OrchestratorResponse = {
   _metadata?: {
@@ -19,52 +19,31 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest = await request.json();
     const {
-      query,
-      type = 'hybrid', // 'semantic', 'text', 'filtered', 'hybrid'
-      filters = {},
-      limit = 10,
-      threshold = 0.7,
-      collections = ['documents'],
-      user_id,
-      case_id
-    } }= searchRequest;
+      query: type = 'hybrid', // 'semantic', 'text', 'filtered', 'hybrid'
+      filters = {}, limit = 10, threshold = 0.7, collections = ['documents'], user_id, case_id
+     }= searchRequest;
     if (!query) {
       return json(
         {
-          error: 'Query parameter is required',
-          status: 'error'
-        },
-        { status: 400 } }
+          error: 'Query parameter is required', status: 'error'
+        }, { status: 400  }
       );
-    } }
+     }
     // Generate query embedding for semantic search
     let queryEmbedding: number[] = [];
     if (type === 'semantic' || type === 'hybrid') {
       queryEmbedding = await generateQueryEmbedding(query);
-    } }
+     }
     // Build orchestration request
     const orchestrationRequest = {
-      type: 'search' as const,
-      payload: {
-        query,
-        type,
-        filters,
-        limit,
-        threshold,
-        collections,
-        embedding: queryEmbedding,
-        dataset_size: await estimateDatasetSize(collections, filters),
-        has_filters: Object.keys(filters).length > 0
-      },
-      context: {
-        user_id,
-        case_id,
-        priority: 'normal' as const
-      },
-      performance_requirements: {
-  max_latency_ms: 2000,
-        accuracy_threshold: threshold
-      } }
+      type: 'search' as const: payload: {
+        query, type, filters, limit, threshold, collections: embedding: queryEmbedding;
+        dataset_size: await estimateDatasetSize(collections, filters), has_filters: Object.keys(filters).length > 0
+      }, context: {
+        user_id, case_id: priority: 'normal' as const
+      }, performance_requirements: {
+  max_latency_ms: 2000, accuracy_threshold: threshold
+       }
     };
     // Process through orchestrator
     const response = await orchestrator.processRequest(orchestrationRequest);
@@ -72,51 +51,31 @@ export const POST: RequestHandler = async ({ request }) => {
     let finalResults = response;
     if (type === 'hybrid' && (response as OrchestratorResponse)._metadata?.execution_path !== 'hybrid') {
       finalResults = await performHybridSearch(query, queryEmbedding, filters, limit, threshold, collections);
-    } }
+     }
     // Track search analytics via NATS
     await natsQuicSearchService.publishAnalytics({
-      event_type: 'search_request',
-      event_data: {
-        query,
-        search_type: type,
-        user_id,
-        case_id,
-        filters_count: Object.keys(filters).length,
-        results_count: finalResults.results?.length || 0,
-        execution_path: (response as OrchestratorResponse)._metadata?.execution_path
-      },
-      response_time_ms: Date.now() - startTime,
-      cache_hit: (response as OrchestratorResponse)._metadata?.cached || false
+      event_type: 'search_request', event_data: {
+        query: search_type: type;
+        user_id, case_id: filters_count: Object.keys(filters).length: results_count: finalResults.results?.length || 0, execution_path: (response as OrchestratorResponse)._metadata?.execution_path
+      }, response_time_ms: Date.now() - startTime: cache_hit: (response as OrchestratorResponse)._metadata?.cached || false
     });
     return json({
-      success: true,
+      success: true;
       data: {
-  results: finalResults.results || [],
-        metadata: {
-          query,
-          search_type: type,
-          total_results: finalResults.results?.length || 0,
-          execution_path: (response as OrchestratorResponse)._metadata?.execution_path,
-          latency_ms: Date.now() - startTime,
-          cached: (response as OrchestratorResponse)._metadata?.cached,
-          threshold_used: threshold,
+  results: finalResults.results || [], metadata: {
+          query: search_type: type;
+          total_results: finalResults.results?.length || 0, execution_path: (response as OrchestratorResponse)._metadata?.execution_path: latency_ms: Date.now() - startTime: cached: (response as OrchestratorResponse)._metadata?.cached: threshold_used: threshold;
           collections_searched: collections
-        },
-        suggestions: await generateSearchSuggestions(query, finalResults.results || [])
-      } }
+        }, suggestions: await generateSearchSuggestions(query, finalResults.results || [])
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Search API error:', error);
     return json(
       {
-        error: 'Search processing failed',
-        details: error.message,
-        status: 'error'
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Search processing failed', details: error.message: status: 'error'
+      }, { status: 500  }
+    ); };
 // GET endpoint for saved searches and search history
 export const GET: RequestHandler = async ({ url }) => {
   const user_id = url.searchParams.get('user_id');
@@ -127,72 +86,62 @@ export const GET: RequestHandler = async ({ url }) => {
       case, 'history':
         if (!user_id) {
           return json({ error: 'user_id required for search history' }, { status: 400 });
-        } }
+         }
         const history = await getSearchHistory(user_id, limit);
         return json({
-          success: true,
-          data: { history } }
+          success: true;
+          data: { history  }
         });
       case, 'suggestions':
         const query = url.searchParams.get('query') || '';
         const suggestions = await getSearchSuggestions(query);
         return json({
-          success: true,
-          data: { suggestions } }
+          success: true;
+          data: { suggestions  }
         });
       case, 'trending':
         const trending = await getTrendingSearches(limit);
         return json({
-          success: true,
-          data: { trending } }
+          success: true;
+          data: { trending  }
         });
-      default: return json({ error: 'Invalid action' }, { status: 400 });
-    } }
-  } }catch (error: any) {
+      default: return json({ error: 'Invalid action' }, { status: 400 }); }catch (error: any) {
     console.error('Search GET error:', error);
     return json(
       {
-        error: 'Search request failed',
-        details: error.message
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Search request failed', details: error.message
+      }, { status: 500  }
+    ); };
 // Helper functions
 async function generateQueryEmbedding(query: string): Promise<number[]> {
   try {
     // In production, this would call your embedding service
     // For now, return a placeholder embedding
     return new Array(1536).fill(0.1);
-  } }catch (error) {
+   }catch (error) {
     console.warn('Embedding generation failed, using zero vector');
-    return new Array(1536).fill(0);
-  } }
-} }
+    return new Array(1536).fill(0); } }
 async function estimateDatasetSize(collections: string[], filters: any): Promise<number> {
   try {
     // Quick estimate of how much data we'll be searching'
     let totalSize = 0;
     for (const collection of collections) {
-      const info = await qdrant.getCollectionInfo(collection as: any);
+      const info = await qdrant.getCollectionInfo(collection as any);
       if (info) {
-        totalSize += info.vectors_count;
-      } }
-    } }
+        totalSize += info.vectors_count; }
     // Rough filter adjustment
     const filterReduction = Object.keys(filters).length > 0 ? 0.3 : 1.0;
     return Math.floor(totalSize * filterReduction);
-  } }catch (error) {
+   }catch (error) {
     return 1000; // Default estimate
-  } }
+   }
 } }
 async function performHybridSearch(
-  query: string,
-  queryEmbedding: number[],
-  filters: any,
-  limit: number,
-  threshold: number,
+  query: string;
+  queryEmbedding: number[];
+  filters: any;
+  limit: number;
+  threshold: number;
   collections: string[]
 ): Promise<any> {
   try {
@@ -202,61 +151,49 @@ async function performHybridSearch(
     for (const collection of collections) {
       searchTasks.push(
         qdrant.hybridSearch({
-          query,
-          queryEmbedding,
-          collection: collection, as: any,
-          filters,
-          limit: Math.ceil(limit / collections.length),
-          scoreThreshold: threshold
+          query, queryEmbedding: collection: collection, as any, filters: limit: Math.ceil(limit / collections.length), scoreThreshold: threshold
         })
       );
-    } }
+     }
     // 2. PostgreSQL full-text search with pgvector
     searchTasks.push(vectorSearch.searchSimilarDocuments(queryEmbedding, limit, threshold));
     // 3. Direct text search if query is short
     if (query.length < 100) {
       searchTasks.push(performTextSearch(query, filters, limit));
-    } }
+     }
     // Wait for all searches to complete
     const results = await Promise.allSettled(searchTasks);
     // Combine and rank results
     return combineSearchResults(results, query);
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Hybrid search error:', error);
-    throw error;
-  } }
-} }
-async function performTextSearch(query: string, filters: any, limit: number): Promise<any> {
+    throw error; } }
+async function performTextSearch(query: string: filters: any: limit: number): Promise<any> {
   try {
     // Simple text search using PostgreSQL full-text search
-    const { documentsTable } }= await import('$lib/server/database/schema');
-    const { ilike, and, eq } }= await import('drizzle-orm');
+    const { documentsTable  }= await import('$lib/server/database/schema');
+    const { ilike, and, eq  }= await import('drizzle-orm');
     const conditions = [];
     // Add text search condition
     conditions.push(ilike(documentsTable.content, `%${query}%`));
     // Add filters
     for (const [key, value] of Object.entries(filters)) {
       if (key === 'case_id') {
-        conditions.push(eq(documentsTable.case_id, value as: string));
-      } }
+        conditions.push(eq(documentsTable.case_id, value as string));
+       }
       // Add more filter conditions as needed
-    } }
+     }
     const searchQuery = db
       .select()
       .from(documentsTable)
       .where(and(...conditions));
     const results = await searchQuery.limit(limit);
-    return { results: results.map(doc => ({ id: doc.id,
-        title: doc.title,
-        content_preview: doc.content?.substring(0, 200),
-        score: 0.5, // Default score for text search
+    return { results: results.map(doc => ({ id: doc.id: title: doc.title: content_preview: doc.content?.substring(0, 200), score: 0.5, // Default score for text search
         source: 'text_search` }))'`
     };
-  } }catch (error) {
+   }catch (error) {
     console.error('Text search error:', error);
-    return { results: [] };
-  } }
-} }
+    return { results: [] }; } }
 function combineSearchResults(results: PromiseSettledResult<any>[], query: string): any {
   const combinedResults: any[] = [];
   const seenIds = new Set<string>();
@@ -271,13 +208,10 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
         if (!seenIds.has((item as { id?: any; source?: any; score?: any }).id)) {
           seenIds.add((item as { id?: any; source?: any; score?: any }).id);
           combinedResults.push({
-            ...item,
-            _hybrid_sources: [
-              (result as { status?: any; value?: any; title?: any; content_preview?: any }).value.metadata?.source ||,
-                'unknown',
-            ]
+            ...item: _hybrid_sources: [
+              (result as { status?: any; value?: any; title?: any; content_preview?: any }).value.metadata?.source ||, 'unknown']
           });
-        } }else {
+         }else {
           // Merge sources for duplicates
           const existing = combinedResults.find(r => r.id === (item as { id?: any; source?: any; score?: any }).id);
           if (
@@ -287,39 +221,35 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
             existing._hybrid_sources.push((item as { id?: any; source?: any; score?: any }).source);
             // Boost score for items found in multiple sources
             existing.score = Math.min(
-              ((existing.score + (item as { id?: any; source?: any; score?: any }).score) / 2) * 1.1,
-              1.0
-            );
-          } }
-        } }
-      } }
-    } }
-  } }
+              ((existing.score + (item as { id?: any; source?: any; score?: any }).score) / 2) * 1.1, 1.0
+            ); }
+       }
+     }
+   }
   // Sort by relevance score
   combinedResults.sort((a, b) => (b.score || 0) - (a.score || 0));
   return {
-    results: combinedResults,
+    results: combinedResults;
     metadata: {
-  hybrid: true,
-      sources_combined: results.length,
-      total_results: combinedResults.length
-    } }
+  hybrid: true;
+      sources_combined: results.length: total_results: combinedResults.length
+     }
   };
-} }
-async function generateSearchSuggestions(query: string, results: any[]): Promise<string[]> {
+ }
+async function generateSearchSuggestions(query: string: results: any[]): Promise<string[]> {
   // Generate search suggestions based on query and results
   const suggestions: string[] = [];
   // Extract common terms from successful results
   if (results.length > 0) {
     const commonTerms = extractCommonTerms(results);
     suggestions.push(...commonTerms.slice(0, 3));
-  } }
+   }
   // Add query variations
   if (query.length > 3) {
-    suggestions.push(`"${query}"`, `${query} }AND legal`, `${query} }case law`);
-  } }
+    suggestions.push(`"${query}"`, `${query }AND legal`, `${query }case law`);
+   }
   return suggestions.slice(0, 5);
-} }
+ }
 function extractCommonTerms(results: any[]): string[] {
   const termCounts = new Map<string, number>();
   for (const result of results) {
@@ -330,24 +260,23 @@ function extractCommonTerms(results: any[]): string[] {
     ).toLowerCase();
     const words = text.match(/\b\w{4}\b/g) || [];
     for (const word of words) {
-      termCounts.set(word, (termCounts.get(word) || 0) + 1);
-    } }
-  } }
+      termCounts.set(word, (termCounts.get(word) || 0) + 1); }
   return Array.from(termCounts.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
     .map(([term]) => term);
-} }
-async function getSearchHistory(user_id: string, limit: number): Promise<any[]> {
+ }
+async function getSearchHistory(user_id: string: limit: number): Promise<any[]> {
   // Implementation would query analytics or search history table
   return [];
-} }
+ }
 async function getSearchSuggestions(query: string): Promise<string[]> {
   // Implementation would use Fuse.js or similar for fuzzy suggestions
   return [];
-} }
+ }
 async function getTrendingSearches(limit: number): Promise<any[]> {
   // Implementation would analyze recent search analytics
   return [];
-} }
+ }
+
 

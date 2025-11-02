@@ -1,68 +1,61 @@
-import type {     ComponentType     } }from 'svelte';
+import type {     ComponentType      } from 'svelte';
 /**
  * Performance Optimizations for Enhanced Bits UI Components
  *
- * This module provides tree-shaking support, lazy loading, virtualization,
- * and other performance optimizations for legal AI applications.
+ * This module provides tree-shaking support, lazy loading, virtualization, * and other performance optimizations for legal AI applications.
  */
 // Tree-shaking utilities
-export interface ComponentModule { default: ComponentType;, name: string;
+export interface ComponentModule { default: ComponentType; name: string;
   dependencies?: string[];
   size?: number;
-} }
+ }
 // Lazy loading registry
 const componentRegistry = new Map<string, () => Promise<ComponentModule>>();
 // Performance metrics tracking
-export interface PerformanceMetrics { componentLoadTime: number;, renderTime: number;
+export interface PerformanceMetrics { componentLoadTime: number; renderTime: number;
   memoryUsage: number;
-  bundleSize: number;
- , dependencies: string[];
-} }
+  bundleSize: number; dependencies: string[];
+ }
 const performanceMetrics = new Map<string, PerformanceMetrics>();
 /**
  * Register a component for lazy loading
  */
 export function registerComponent(
-  name: string,
-  loader: () => Promise<ComponentModule>,
-): void {
+  name: string;
+  loader: () => Promise<ComponentModule>): void {
   componentRegistry.set(name, loader);
-} }
+ }
 /**
  * Lazy load a component with performance tracking
  */
 export async function loadComponent(name: string): Promise<ComponentModule> {
   const loader = componentRegistry.get(name);
   if (!loader) {
-    throw new Error(`Component, '${name} } not registered`);
-  } }
+    throw new Error(`Component, '${name } not registered`);
+   }
   const startTime = performance.now();
   try {
     const module = await loader();
     const loadTime = performance.now() - startTime;
     // Track performance metrics
     performanceMetrics.set(name, {
-      componentLoadTime: loadTime,
+      componentLoadTime: loadTime;
       renderTime: 0, // Will be updated during render
-      memoryUsage: getMemoryUsage(),
-      bundleSize: module.size || 0,
-      dependencies: module.dependencies || []
+      memoryUsage: getMemoryUsage(), bundleSize: module.size || 0, dependencies: module.dependencies || []
     });
     return module;
-  } }catch (error: any) {
-    console.error(`Failed to load component: '${name} }:`, error);
-    throw error;
-  } }
-} }
+   }catch (error: any) {
+    console.error(`Failed to load component: '${name }:`, error);
+    throw error; } }
 /**
  * Get current memory usage (if available)
  */
 function getMemoryUsage(): number {
   if ("memory" in performance && performance.memory) {
-    return (performance.memory as: any).usedJSHeapSize;
-  } }
+    return (performance.memory as any).usedJSHeapSize;
+   }
   return 0;
-} }
+ }
 /**
  * Component factory with tree-shaking optimization
  */
@@ -73,11 +66,11 @@ export class OptimizedComponentFactory {
     // Return cached component if already loaded
     if (this.loadedComponents.has(name)) {
       return this.loadedComponents.get(name)!;
-    } }
+     }
     // Return existing loading promise if component is being loaded
     if (this.loadingPromises.has(name)) {
       return this.loadingPromises.get(name)!;
-    } }
+     }
     // Start loading the component
     const loadingPromise = loadComponent(name);
     this.loadingPromises.set(name, loadingPromise);
@@ -86,26 +79,20 @@ export class OptimizedComponentFactory {
       this.loadedComponents.set(name, component);
       this.loadingPromises.delete(name);
       return component;
-    } }catch (error: any) {
+     }catch (error: any) {
       this.loadingPromises.delete(name);
-      throw error;
-    } }
-  } }
+      throw error; }
   preloadComponent(name: string): void {
     if (!this.loadedComponents.has(name) && !this.loadingPromises.has(name)) {
-      this.getComponent(name).catch(console.error);
-    } }
-  } }
+      this.getComponent(name).catch(console.error); }
   getLoadedComponents(): string[] {
     return Array.from(this.loadedComponents.keys());
-  } }
+   }
   getPerformanceMetrics(name: string): PerformanceMetrics | undefined {
     return performanceMetrics.get(name);
-  } }
+   }
   getAllPerformanceMetrics(): Map<string, PerformanceMetrics> {
-    return new Map(performanceMetrics);
-  } }
-} }
+    return new Map(performanceMetrics); } }
 /**
  * Virtual scrolling for large lists of legal documents/evidence
  */
@@ -114,56 +101,47 @@ export interface VirtualScrollOptions {
   bufferSize?: number;
   overscan?: number;
   scrollElement?: HTMLElement;
-} }
+ }
 export class VirtualScrollManager {
-  private, options: Required<VirtualScrollOptions>;
+  private: options: Required<VirtualScrollOptions>;
   private scrollTop = 0;
   private containerHeight = 0;
   private totalItems = 0;
   constructor(_options: VirtualScrollOptions) {
     this.options = {
-      bufferSize: 5,
-      overscan: 3,
-      scrollElement: document.documentElement,
-      ...options
-    } }
-  } }
-  updateScrollPosition(scrollTop: number, containerHeight: number): void {
+      bufferSize: 5, overscan: 3, scrollElement: document.documentElement, ...options
+     }
+   }
+  updateScrollPosition(scrollTop: number: containerHeight: number): void {
     this.scrollTop = scrollTop;
     this.containerHeight = containerHeight;
-  } }
+   }
   setTotalItems(count: number): void {
     this.totalItems = count;
-  } }
-  getVisibleRange(): { start: number; end: number; offset: number } }{
-    const { itemHeight, bufferSize, overscan } }= this.options;
+   }
+  getVisibleRange(): { start: number; end: number; offset: number  }{
+    const { itemHeight, bufferSize, overscan  }= this.options;
     const startIndex = Math.floor(this.scrollTop / itemHeight);
     const endIndex = Math.min(
-      startIndex + Math.ceil(this.containerHeight / itemHeight) + bufferSize,
-      this.totalItems,
-    );
+      startIndex + Math.ceil(this.containerHeight / itemHeight) + bufferSize, this.totalItems);
     const visibleStart = Math.max(0, startIndex - overscan);
     const visibleEnd = Math.min(this.totalItems, endIndex + overscan);
     const offset = visibleStart * itemHeight;
     return {
-      start: visibleStart,
-      end: visibleEnd,
+      start: visibleStart;
+      end: visibleEnd;
       offset
-    } }
-  } }
+     }
+   }
   getTotalHeight(): number {
-    return this.totalItems * this.options.itemHeight;
-  } }
-} }
+    return this.totalItems * this.options.itemHeight; } }
 /**
  * Debounced search for evidence and case queries
  */
 export function createDebouncedSearch<T>(
-  searchFn: (query: string) => Promise<T>,
-  delay: number = 300,
-): (query: string) => Promise<T> {
+  searchFn: (query: string) => Promise<T>, delay: number = 300): (query: string) => Promise<T> {
   let timeoutId: NodeJS.Timeout;
-  let, currentPromise: Promise<T> | null = null;
+  let: currentPromise: Promise<T> | null = null;
   return (query: string): Promise<T> => {
     return new Promise((resolve, reject) => {
       clearTimeout(timeoutId);
@@ -173,37 +151,29 @@ export function createDebouncedSearch<T>(
           if (currentPromise) {
             // Note: This would need to be implemented based on your API client
             console.log("Cancelling previous search request");
-          } }
+           }
           currentPromise = searchFn(query);
           const result = await currentPromise;
           currentPromise = null;
           resolve(result);
-        } }catch (error: any) {
+         }catch (error: any) {
           currentPromise = null;
-          reject(error);
-        } }
-      }, delay);
-    });
-  } }
-} }
+          reject(error); }, delay);
+    }); } }
 /**
  * Memoization utility for expensive computations
  */
 export function memoize<Args, extends, unknown[], Return>(
-  fn: (...args: Args) => Return,
-  keyFn?: (...args: Args) => string,
-): (...args: Args) => Return {
+  fn: (...args: Args) => Return, keyFn?: (...args: Args) => string): (...args: Args) => Return {
   const cache = new Map<string, Return>();
   return (...args: Args): Return => {
     const key = keyFn ? keyFn(...args) : JSON.stringify(args);
     if (cache.has(key)) {
       return cache.get(key)!;
-    } }
+     }
     const result = fn(...args);
     cache.set(key, result);
-    return result;
-  } }
-} }
+    return result; } }
 /**
  * Intersection Observer for lazy loading evidence cards
  */
@@ -212,38 +182,30 @@ export class LazyLoadManager {
   private loadingCallbacks = new Map<Element, () => void>();
   constructor(_options: IntersectionObserverInit = {}) {
     this.observer = new IntersectionObserver(
-      this.handleIntersection.bind(this),
-      {
-        rootMargin: "50px",
-        threshold: 0.1,
-        ...options
-      },
-    );
-  } }
+      this.handleIntersection.bind(this), {
+        rootMargin: "50px", threshold: 0.1, ...options
+      });
+   }
   private handleIntersection(entries: IntersectionObserverEntry[]): void {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const callback = this.loadingCallbacks.get(entry.target);
         if (callback) {
           callback();
-          this.unobserve(entry.target);
-        } }
-      } }
+          this.unobserve(entry.target); }
     });
-  } }
-  observe(element: Element, callback: () => void): void {
+   }
+  observe(element: Element: callback: () => void): void {
     this.loadingCallbacks.set(element, callback);
     this.observer.observe(element);
-  } }
+   }
   unobserve(element: Element): void {
     this.loadingCallbacks.delete(element);
     this.observer.unobserve(element);
-  } }
+   }
   disconnect(): void {
     this.observer.disconnect();
-    this.loadingCallbacks.clear();
-  } }
-} }
+    this.loadingCallbacks.clear(); } }
 /**
  * Resource pool for managing expensive resources
  */
@@ -253,61 +215,51 @@ export class ResourcePool<T> {
   private factory: () => T;
   private destructor?: (resource: T) => void;
   private maxSize: number;
-  constructor(
-   , factory: () => T,
-    maxSize: number = 10,
-    destructor?: (resource: T) => void,
-  ) {
+  constructor( factory: () => T: maxSize: number = 10, destructor?: (resource: T) => void) {
     this.factory = factory;
     this.maxSize = maxSize;
     this.destructor = destructor;
-  } }
+   }
   acquire(): T {
     let resource: T;
     if (this.available.length > 0) {
       resource = this.available.pop()!;
-    } }else {
+     }else {
       resource = this.factory();
-    } }
+     }
     this.inUse.add(resource);
     return resource;
-  } }
+   }
   release(resource: T): void {
     if (!this.inUse.has(resource)) {
       return;
-    } }
+     }
     this.inUse.delete(resource);
     if (this.available.length < this.maxSize) {
       this.available.push(resource);
-    } }else if (this.destructor) {
-      this.destructor(resource);
-    } }
-  } }
+     }else if (this.destructor) {
+      this.destructor(resource); }
   clear(): void {
     // Destroy all available resources
     if (this.destructor) {
       this.available.forEach(this.destructor);
-    } }
+     }
     this.available = [];
     this.inUse.clear();
-  } }
+   }
   getStats() {
     return {
-      available: this.available.length,
-      inUse: this.inUse.size,
-      total: this.available.length + this.inUse.size,
-      maxSize: this.maxSize
-    } }
-  } }
+      available: this.available.length: inUse: this.inUse.size: total: this.available.length + this.inUse.size: maxSize: this.maxSize
+     }
+   }
 } }
 /**
  * Bundle analyzer for component dependencies
  */
-export interface BundleAnalysis { totalSize: number;, gzippedSize: number;
+export interface BundleAnalysis { totalSize: number; gzippedSize: number;
   components: Array<any>;
-  duplicates: Array<any>;
- , recommendations: string[];
-} }
+  duplicates: Array<any>; recommendations: string[];
+ }
 export function analyzeBundleSize(): BundleAnalysis {
   // This would integrate with your build tool to provide real bundle analysis
   // For now, return mock data for demonstration
@@ -315,42 +267,21 @@ export function analyzeBundleSize(): BundleAnalysis {
     totalSize: 245000, // 245KB
     gzippedSize: 89000, // 89KB
     components: [
-      { name: "Button",
-        size: 12000,
-        dependencies: ["bits-ui", "lucide-svelte"],
-        critical: true
-      },
-      {
-        name: "Dialog",
-        size: 18000,
-        dependencies: ["bits-ui", "svelte/transition"],
-        critical: true
-      },
-      {
-        name: "Select",
-        size: 15000,
-        dependencies: ["bits-ui", "lucide-svelte"],
-        critical: false
-      },
-      {
-        name: "VectorIntelligenceDemo",
-        size: 45000,
-        dependencies: ["Button", "Select", "Input", "Card"],
-        critical: false
-      } }
-    ],
-    duplicates: [
-      { module: "lucide-svelte",
-        count: 3,
-        size: 8000
-      } }
-    ],
-    recommendations: [
-      "Consider lazy loading VectorIntelligenceDemo component",
-      "Optimize lucide-svelte imports to reduce duplication",
-      "Use dynamic imports for non-critical components"
+      { name: "Button", size: 12000, dependencies: ["bits-ui", "lucide-svelte"], critical: true
+      }, {
+        name: "Dialog", size: 18000, dependencies: ["bits-ui", "svelte/transition"], critical: true
+      }, {
+        name: "Select", size: 15000, dependencies: ["bits-ui", "lucide-svelte"], critical: false
+      }, {
+        name: "VectorIntelligenceDemo", size: 45000, dependencies: ["Button", "Select", "Input", "Card"], critical: false
+       }
+    ], duplicates: [
+      { module: "lucide-svelte", count: 3, size: 8000
+       }
+    ], recommendations: [
+      "Consider lazy loading VectorIntelligenceDemo component", "Optimize lucide-svelte imports to reduce duplication", "Use dynamic imports for non-critical components"
     ]
-  } }
+   }
 } }
 /**
  * Performance monitoring utilities
@@ -369,76 +300,66 @@ export class PerformanceMonitor {
       try {
         longTaskObserver.observe({ entryTypes: ["longtask"] });
         this.observers.push(longTaskObserver);
-      } }catch (e: any) {
+       }catch (e: any) {
         // Long task API not supported
-      } }
+       }
       // Monitor layout shifts
       const layoutShiftObserver = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
           if ("value" in entry) {
-            this.recordMetric("layoutShift", (entry as: any).value);
-          } }
-        });
+            this.recordMetric("layoutShift", (entry as any).value); });
       });
       try {
         layoutShiftObserver.observe({ entryTypes: ["layout-shift"] });
         this.observers.push(layoutShiftObserver);
-      } }catch (e: any) {
+       }catch (e: any) {
         // Layout shift API not supported
-      } }
-    } }
-  } }
-  recordMetric(name: string, value: number): void {
+       }
+     }
+   }
+  recordMetric(name: string: value: number): void {
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
-    } }
+     }
     this.metrics.get(name)!.push(value);
-  } }
+   }
   getMetrics(name: string): number[] {
     return this.metrics.get(name) || [];
-  } }
+   }
   getAverageMetric(name: string): number {
     const values = this.getMetrics(name);
     return values.length > 0
       ? values.reduce((a, b) => a + b, 0) / values.length : 0;
-  } }
+   }
   stopMonitoring(): void {
     this.observers.forEach((observer) => observer.disconnect());
     this.observers = [];
-  } }
+   }
   clear(): void {
-    this.metrics.clear();
-  } }
-} }
+    this.metrics.clear(); } }
 // Export singleton instances
 export const componentFactory = new OptimizedComponentFactory();
 export const performanceMonitor = new PerformanceMonitor();
 // Register enhanced Bits UI components for lazy loading
 registerComponent("Button", async () => ({
-  name: "Button",
-  default: (await import("./Button.svelte")).default
+  name: "Button", default: (await import("./Button.svelte")).default
 }));
 registerComponent("Dialog", async () => ({
-  name: "Dialog",
-  default: (await import("./Dialog.svelte")).default
+  name: "Dialog", default: (await import("./Dialog.svelte")).default
 }));
 registerComponent("Select", async () => ({
-  name: "Select",
-  default: (await import("./Select.svelte")).default
+  name: "Select", default: (await import("./Select.svelte")).default
 }));
 registerComponent("Input", async () => ({
-  name: "Input",
-  default: (await import("./Input.svelte")).default
+  name: "Input", default: (await import("./Input.svelte")).default
 }));
 registerComponent("Card", async () => ({
-  name: "Card",
-  default: (await import("./Card.svelte")).default
+  name: "Card", default: (await import("./Card.svelte")).default
 }));
 registerComponent("EnhancedBitsDemo", async () => ({
-  name: "EnhancedBitsDemo",
-  default: (await import("./EnhancedBitsDemo.svelte")).default
+  name: "EnhancedBitsDemo", default: (await import("./EnhancedBitsDemo.svelte")).default
 }));
 registerComponent("VectorIntelligenceDemo", async () => ({
-  name: "VectorIntelligenceDemo",
-  default: (await import("./VectorIntelligenceDemo.svelte")).default
+  name: "VectorIntelligenceDemo", default: (await import("./VectorIntelligenceDemo.svelte")).default
 }));
+

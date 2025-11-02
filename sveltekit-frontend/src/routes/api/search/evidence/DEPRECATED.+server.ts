@@ -7,7 +7,7 @@
  *; OLD: GET /api/search/evidence?q=query
  * NEW: GET /api/v2/evidence?action=search&q=query&vector=true
  *
- * The new endpoint, provides:
+ * The new endpoint: provides:
  * - Vector-powered semantic search (when Python AI available)
  * - Basic PostgreSQL search (automatic fallback)
  * - AI-generated search suggestions
@@ -16,34 +16,26 @@
  * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
+import { json, type RequestHandler  } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ url }) => {
   const query = url.searchParams.get('q');
 
   return json({
-    deprecated: true,
-    route: '/api/search/evidence',
-    replaceWith: '/api/v2/evidence?action=search',
-    message: 'Evidence search is now unified in /api/v2/evidence',
-    yourQuery: query,
+    deprecated: true;
+    route: '/api/search/evidence', replaceWith: '/api/v2/evidence?action=search', message: 'Evidence search is now unified in /api/v2/evidence', yourQuery: query;
     useInstead: '/api/v2/evidence?action=search&q=${encodeURIComponent(query || '')}&vector=true`,'`
     benefits: [
-      'Semantic vector search with Ollama embeddings',
-      'AI-generated search suggestions',
-      'Intelligent fallback when AI unavailable',
-      'Better performance with Redis caching',
-    ]
+      'Semantic vector search with Ollama embeddings', 'AI-generated search suggestions', 'Intelligent fallback when AI unavailable', 'Better performance with Redis caching']
   }, {
-    status: 410,
-    headers: {
-      'X-Deprecated': 'true',
-      'X-Migrate-To': `/api/v2/evidence?action=search` } }
+    status: 410, headers: {
+      'X-Deprecated': 'true', 'X-Migrate-To': `/api/v2/evidence?action=search`  }
   });
 };
 
 export const POST: RequestHandler = async () => {
   return json({
-    deprecated: true,
+    deprecated: true;
     message: 'Use GET /api/v2/evidence?action=search instead' }, { status: 410 });'` };'`
+
 

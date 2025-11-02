@@ -8,20 +8,11 @@ const HealthCheckResponse = function (obj) {
 };
 const healthProto = {
   Health: {
-    serviceName: 'grpc.health.v1.Health',
-    methods: {
+    serviceName: 'grpc.health.v1.Health', methods: {
       Check: {
-        path: '/grpc.health.v1.Health/Check',
-        requestStream: false
+        path: '/grpc.health.v1.Health/Check', requestStream: false
         responseStream: false
-        requestSerialize: () => Buffer.alloc(0),
-        requestDeserialize: () => new HealthCheckRequest(),
-        responseSerialize: () => Buffer.alloc(0),
-        responseDeserialize: (buffer) => new HealthCheckResponse({ raw: buffer }),
-      },
-    },
-  },
-};
+        requestSerialize: () => Buffer.alloc(0), requestDeserialize: () => new HealthCheckRequest(), responseSerialize: () => Buffer.alloc(0), responseDeserialize: (buffer) => new HealthCheckResponse({ raw: buffer })}}}};
 export async function checkGrpcHealth({ host = 'localhost', port = 8084 } = {}, timeoutMs = 2000) {
   return new Promise((resolve) => {
     // removed unused target assignment
@@ -32,11 +23,7 @@ export async function checkGrpcHealth({ host = 'localhost', port = 8084 } = {}, 
       const request = new HealthCheckRequest();
       const method = healthProto.Health.methods.Check;
       client.makeUnaryRequest(
-        method.path,
-        method.requestSerialize,
-        method.responseDeserialize,
-        request,
-        (e) => {
+        method.path, method.requestSerialize, method.responseDeserialize, request, (e) => {
           if (e) return resolve(false);
           resolve(true);
         }

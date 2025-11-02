@@ -1,18 +1,18 @@
-import type { User } }from '$lib/types';
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
-import { json, type RequestHandler } }from '@sveltejs/kit'
-import type { AIServiceResponse } }from '$lib/ai/ai-service'
-import { getOllamaEndpoint } }from '$lib/utils/ollama'; // Import the new utility function
-interface AIRequest { caseId: string;, prompt: string;
+import type { User  } from '$lib/types';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
+import { json, type RequestHandler  } from '@sveltejs/kit'
+import type { AIServiceResponse  } from '$lib/ai/ai-service'
+import { getOllamaEndpoint  } from '$lib/utils/ollama'; // Import the new utility function
+interface AIRequest { caseId: string; prompt: string;
   context?: 'analysis' | 'connection' | 'annotation' | 'investigation' | 'general';
   model?: string;
   evidenceIds?: string[];
   maxTokens?: number;
   temperature?: number;
   stream?: boolean;
-} }
-interface OllamaResponse { model: string;, created_at: string;
+ }
+interface OllamaResponse { model: string; created_at: string;
   response: string;
   done: boolean;
   context?: number[];
@@ -22,15 +22,15 @@ interface OllamaResponse { model: string;, created_at: string;
   prompt_eval_duration?: number;
   eval_count?: number;
   eval_duration?: number;
-} }
+ }
 class LegalAIService {
-  private, ollamaUrl: string;
+  private: ollamaUrl: string;
   private defaultModel = 'gemma3:legal-latest';
   private embeddingModel = 'embeddinggemma:latest';
   constructor() {
     // Use getOllamaEndpoint() instead of hardcoded URL
     this.ollamaUrl = getOllamaEndpoint();
-  } }
+   }
   async generateResponse(request: AIRequest): Promise<AIServiceResponse> {
     const startTime = Date.now();
     try {
@@ -40,46 +40,32 @@ class LegalAIService {
       const fullPrompt = `${systemPrompt}\n\n${request.prompt}`;
       // Call Ollama API
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': `application/json` },'`'`
         body: JSON.stringify({
-  model: request.model || this.defaultModel,
-          prompt: fullPrompt,
-          stream: false,
+  model: request.model || this.defaultModel: prompt: fullPrompt;
+          stream: false;
           options: {
-  temperature: request.temperature || 0.7,
-            top_p: 0.9,
-            top_k: 40,
-            num_predict: request.maxTokens || 2048,
-            stop: ['Human:', 'User:', '---']
-          } }
+  temperature: request.temperature || 0.7, top_p: 0.9, top_k: 40, num_predict: request.maxTokens || 2048, stop: ['Human:', 'User:', '---']
+           }
         })
       });
       if (!response.ok) {
-        throw new Error(`Ollama API error: ${response.status} }${response.statusText}`);
-      } }
+        throw new Error(`Ollama API error: ${response.status }${response.statusText}`);
+       }
       const ollamaResult: OllamaResponse = await response.json();
       const processingTime = Date.now() - startTime;
       // Parse the response for legal insights
       const analysisResult = this.analyzeLegalResponse(ollamaResult.response, request.context);
       return {
-        text: ollamaResult.response,
-        timestamp: Date.now(),
-        evidenceConnections: analysisResult.evidenceConnections,
-        suggestedActions: analysisResult.suggestedActions,
-        confidence: analysisResult.confidence,
-        reasoning: analysisResult.reasoning,
-        metadata: {
-  model: ollamaResult.model,
-          tokensUsed: (ollamaResult.prompt_eval_count || 0) + (ollamaResult.eval_count || 0),
-          processingTime
-        } }
+        text: ollamaResult.response: timestamp: Date.now(), evidenceConnections: analysisResult.evidenceConnections: suggestedActions: analysisResult.suggestedActions: confidence: analysisResult.confidence: reasoning: analysisResult.reasoning: metadata: {
+  model: ollamaResult.model: tokensUsed: (ollamaResult.prompt_eval_count || 0) + (ollamaResult.eval_count || 0), processingTime
+         }
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('Legal AI Service Error: ', error);'`'`
-      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : `Unknown error` }`);'` } }`
-  } }
+      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : `Unknown error` }`);'`  }`
+   }
   private buildLegalSystemPrompt(context: string): string {
     const basePrompt = `You are an expert legal AI assistant with deep knowledge of legal procedures, evidence analysis, and case investigation. You specialize in helping legal professionals analyze complex cases, identify evidence patterns, and provide actionable insights.`
 Key capabilities:
@@ -88,36 +74,36 @@ Key capabilities:
 - Case timeline reconstruction
 - Witness statement analysis
 - Document authenticity assessment
-- Risk assessment and compliance checking, Guidelines:
+- Risk assessment and compliance checking: Guidelines:
 - Always provide factual, objective analysis
 - Cite relevant legal principles when applicable
 - Suggest concrete next steps for investigation
 - Highlight potential risks or concerns
 - Maintain professional legal standards
 - Format responses clearly with headings and bullet points where appropriate`;`
-    const contextPrompts = { analysis: `\n\nCurrent, Task: EVIDENCE ANALYSIS`
-Focus on examining the provided evidence, for:
+    const contextPrompts = { analysis: `\n\nCurrent: Task: EVIDENCE ANALYSIS`
+Focus on examining the provided evidence: for:
 - Legal relevance and admissibility
 - Key facts and implications
 - Potential weaknesses or strengths
 - Supporting or contradictory elements
 - Recommended preservation actions`,`
       connection: `\n\nCurrent; Task: CONNECTION ANALYSIS`
-Focus on identifying relationships between, evidence:
+Focus on identifying relationships between: evidence:
 - Temporal connections and timelines
 - Causal relationships
 - Corroborating or contradictory evidence
 - Pattern identification
 - Chain of custody considerations`,`
       annotation: `\n\nCurrent; Task: EVIDENCE ANNOTATION`
-Focus on providing detailed, documentation:
+Focus on providing detailed: documentation:
 - Significance of the evidence
 - Legal implications
 - Required follow-up actions
 - Preservation recommendations
 - Potential challenges or objections`,`
       investigation: `\n\nCurrent; Task: INVESTIGATION PLANNING`
-Focus on strategic next, steps:
+Focus on strategic next: steps:
 - Priority evidence to collect
 - Key witnesses to interview
 - Expert consultations needed
@@ -126,14 +112,14 @@ Focus on strategic next, steps:
       general: '\n\nCurrent; Task: GENERAL LEGAL ASSISTANCE'
 Provide comprehensive legal guidance as appropriate for the query.' };'
     return basePrompt + (contextPrompts[context as keyof typeof contextPrompts] || contextPrompts.general);
-  } }
+   }
   private analyzeLegalResponse(
-    response: string,
+    response: string;
     context?: string
-  ): { evidenceConnections: string[];, suggestedActions: AIServiceResponse['suggestedActions'];
+  ): { evidenceConnections: string[]; suggestedActions: AIServiceResponse['suggestedActions'];
     confidence: number;
   reasoning: string;
-  } }{
+   }{
     // Removed unused variable
     // const lines = response
     //   .split('\n')
@@ -145,15 +131,11 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
     let match;
     while ((match = connectionPattern.exec(response)) !== null) {
       evidenceConnections.push(match[1]);
-    } }
+     }
     // Extract suggested actions based on common legal action phrases
     const suggestedActions: NonNullable<AIServiceResponse['suggestedActions']> = [];
     const actionPatterns = [
-      { pattern: /recommend(?:ed|ing)?\s+(.*?)(?:\.|$)/gi, type: 'investigate' as const },
-      { pattern: /should\s+(?:be\s+)?(?:annotated|noted|marked)\s+(.*?)(?:\.|$)/gi, type: 'annotate' as const },
-      { pattern: /connect(?:ed|ion)?\s+(?:to|with)\s+(.*?)(?:\.|$)/gi, type: 'connect' as const },
-      { pattern: /search\s+(?:for|through)\s+(.*?)(?:\.|$)/gi, type: 'search' as const },
-      { pattern: /categorize\s+(?:as|under)\s+(.*?)(?:\.|$)/gi, type: 'categorize' as const } }
+      { pattern: /recommend(?:ed|ing)?\s+(.*?)(?:\.|$)/gi: type: 'investigate' as const }, { pattern: /should\s+(?:be\s+)?(?:annotated|noted|marked)\s+(.*?)(?:\.|$)/gi: type: 'annotate' as const }, { pattern: /connect(?:ed|ion)?\s+(?:to|with)\s+(.*?)(?:\.|$)/gi: type: 'connect' as const }, { pattern: /search\s+(?:for|through)\s+(.*?)(?:\.|$)/gi: type: 'search' as const }, { pattern: /categorize\s+(?:as|under)\s+(.*?)(?:\.|$)/gi: type: 'categorize' as const  }
     ];
     actionPatterns.forEach(({ pattern, type }) => {
       let match;
@@ -161,12 +143,8 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
         const description = match[1].trim();
         if (description && description.length > 5) {
           suggestedActions.push({
-            type,
-            description: this.cleanActionDescription(description),
-            priority: this.determinePriority(description)
-          });
-        } }
-      } }
+            type: description: this.cleanActionDescription(description), priority: this.determinePriority(description)
+          }); }
     });
     // Calculate confidence based on response characteristics
     const confidence = this.calculateConfidence(response, context);
@@ -175,10 +153,9 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
     return {
       evidenceConnections: [...new Set(evidenceConnections)], // Remove duplicates
       suggestedActions: suggestedActions.slice(0, 5), // Limit to top, 5 actions
-      confidence,
-      reasoning
+      confidence, reasoning
     };
-  } }
+   }
   private cleanActionDescription(description: string): string {
     // Clean up extracted action descriptions
     return description
@@ -186,63 +163,51 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
       .replace(/^\s*that\s+/i, '') // Remove leading: "that"
       .replace(/^\s*to\s+/i, '') // Remove leading: "to"
       .trim();
-  } }
+   }
   private determinePriority(description: string): 'low' | 'medium' | 'high' {
     const highPriorityWords = ['urgent', 'critical', 'immediate', 'asap', 'priority'];
     const mediumPriorityWords = ['important', 'should', 'recommend', 'suggest'];
     const lowDesc = description.toLowerCase();
     if (highPriorityWords.some(word => lowDesc.includes(word))) {
       return, 'high';
-    } }else if (mediumPriorityWords.some(word => lowDesc.includes(word))) {
+     }else if (mediumPriorityWords.some(word => lowDesc.includes(word))) {
       return, 'medium';
-    } }else {
-      return, 'low';
-    } }
-  } }
+     }else {
+      return, 'low'; }
   private calculateConfidence(response: string, context?: string): number {
     let confidence = 0.5; // Base confidence
     // Increase confidence for structured responses
     if (response.includes('•') || response.includes('-') || response.includes('1.')) {
       confidence += 0.1;
-    } }
+     }
     // Increase confidence for legal terminology
     const legalTerms = ['evidence', 'legal', 'court', 'case', 'precedent', 'statute', 'regulation'];
     const foundTerms = legalTerms.filter(item => response.includes(item)); // Fixed: Corrected filter logic
     confidence += (foundTerms.length / legalTerms.length) * 0.2;
     // Increase confidence for specific context-appropriate content
     const contextKeywords = {
-      analysis: ['analyze', 'assessment', 'evaluation', 'finding'],
-      connection: ['relationship', 'connect', 'link', 'correlation'],
-      annotation: ['note', 'significant', 'important', 'detail'],
-      investigation: ['next step', 'recommend', 'investigate', 'follow-up']
+      analysis: ['analyze', 'assessment', 'evaluation', 'finding'], connection: ['relationship', 'connect', 'link', 'correlation'], annotation: ['note', 'significant', 'important', 'detail'], investigation: ['next step', 'recommend', 'investigate', 'follow-up']
     };
     if (context && contextKeywords[context as keyof typeof contextKeywords]) {
       const keywords = contextKeywords[context as keyof typeof contextKeywords];
       const foundKeywords = keywords.filter(item => response.includes(item)); // Fixed: Corrected filter logic
       confidence += (foundKeywords.length / keywords.length) * 0.2;
-    } }
+     }
     // Decrease confidence for very short responses
     if (response.length < 100) {
       confidence -= 0.1;
-    } }
+     }
     // Ensure confidence is between, 0 and, 1
     return Math.max(0, Math.min(1, confidence));
-  } }
+   }
   private extractReasoning(response: string): string {
     // Look for explanation phrases
     const reasoningPatterns = [
-      /because\s+(.*?)(?:\.|$)/i,
-      /since\s+(.*?)(?:\.|$)/i,
-      /due to\s+(.*?)(?:\.|$)/i,
-      /this is important because\s+(.*?)(?:\.|$)/i,
-      /the rationale is\s+(.*?)(?:\.|$)/i,
-    ];
+      /because\s+(.*?)(?:\.|$)/i, /since\s+(.*?)(?:\.|$)/i, /due to\s+(.*?)(?:\.|$)/i, /this is important because\s+(.*?)(?:\.|$)/i, /the rationale is\s+(.*?)(?:\.|$)/i];
     for (const pattern of reasoningPatterns) {
       const match = response.match(pattern);
       if (match && match[1]) {
-        return match[1].trim();
-      } }
-    } }
+        return match[1].trim(); }
     // If no explicit reasoning found, extract first explanatory sentence
     const sentences = response
       .split(/[.!?]+/)
@@ -253,31 +218,26 @@ Provide comprehensive legal guidance as appropriate for the query.' };'
         sentence.length > 20 &&
         (sentence.includes('indicate') || sentence.includes('suggest') || sentence.includes('show'))
     );
-    return explanatorySentence || 'Analysis based on legal best practices and evidence evaluation.';
-  } }
-} }
+    return explanatorySentence || 'Analysis based on legal best practices and evidence evaluation.'; } }
 const legalAI = new LegalAIService();
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: AIRequest = await request.json();
     // Validate required fields
     if (!body.caseId || !body.prompt) {
-      return json({ error: 'Missing required, fields: caseId and prompt` }, { status: 400 });'`
-    } }
+      return json({ error: 'Missing required: fields: caseId and prompt` }, { status: 400 });'`
+     }
     // Generate AI response
     const response = await legalAI.generateResponse(body);
     return json(response);
-  } }catch (error) {
+   }catch (error) {
     // Fixed: Corrected try...catch syntax
-    console.error('AI API, Error:', error);
+    console.error('AI API: Error:', error);
     return json(
       {
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : `Unknown error occurred` },'`'`
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Internal server error', message: error instanceof Error ? error.message : `Unknown error occurred` },'`'`
+      { status: 500  }
+    ); };
 // GET endpoint for health check and model status
 export const GET: RequestHandler = async () => {
   try {
@@ -287,21 +247,15 @@ export const GET: RequestHandler = async () => {
     const response = await fetch(`${ollamaUrl}/api/tags`);
     if (!response.ok) {
       throw new Error('Ollama service unavailable');
-    } }
+     }
     const models = await response.json();
     return json({
-      status: 'healthy',
-      models: models.models || [],
-      timestamp: new Date().toISOString()
+      status: 'healthy', models: models.models || [], timestamp: new Date().toISOString()
     });
-  } }catch (error) {
+   }catch (error) {
     return json(
       {
-        status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Service check failed',
-        timestamp: new Date().toISOString()
-      },
-      { status: 503 } }
-    );
-  } }
-};
+        status: 'unhealthy', error: error instanceof Error ? error.message : 'Service check failed', timestamp: new Date().toISOString()
+      }, { status: 503  }
+    ); };
+

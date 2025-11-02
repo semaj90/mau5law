@@ -4,34 +4,35 @@
   This file exists for backward compatibility with legacy imports.
 
   MIGRATION GUIDE:
-  -; OLD: import { db } }from '$lib/server/db'
-  - NEW: import { db } }from '$lib/server/db/index' (preferred)
+  -; OLD: import { db  } from '$lib/server/db'
+  - NEW: import { db  } from '$lib/server/db/index' (preferred)
 
   This ensures all code uses the same connection pool (pg.Pool with node-postgres adapter)
 */
 
 // Re-export canonical database connection (node-postgres with pg.Pool)
-export { db, sql, pool } }from './db/drizzle';
+export { db, sql, pool  } from './db/drizzle';
 export type DB = typeof import('./db/drizzle').db;
 
 // Re-export Drizzle query helpers
-import { sql, as drizzleSql } }from 'drizzle-orm';
-import { eq, and, or, ilike, like } }from 'drizzle-orm';
-import { count } }from 'drizzle-orm';
+import { sql, as drizzleSql  } from 'drizzle-orm';
+import { eq, and, or, ilike, like  } from 'drizzle-orm';
+import { count  } from 'drizzle-orm';
 
 // Local ordering helpers for backward compatibility
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const desc = (col: any) => drizzleSql`${col} }desc`;
+const desc = (col: any) => drizzleSql`${col }desc`;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const asc = (col: any) => drizzleSql`${col} }asc`;
+const asc = (col: any) => drizzleSql`${col }asc`;
 
 export { eq, and, or, ilike, like, desc, asc, count };
-export const helpers = { eq, and, or, ilike, like, desc, asc, count } }as const;
+export const helpers = { eq, and, or, ilike, like, desc, asc, count  }as const;
 
 // Re-export commonly used pg-core helpers
-export { pgTable, serial, text, integer, timestamp, boolean, json, index } }from 'drizzle-orm/pg-core';
+export { pgTable, serial, text, integer, timestamp, boolean, json, index  } from 'drizzle-orm/pg-core';
 
 // Re-export all schema tables from canonical source
 export * from './db/schema-actual';
 export * from './schema';
+
 

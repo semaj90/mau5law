@@ -2,31 +2,27 @@
  * Postgres/pgvector Semantic Search Service
  * Provides embedding-based semantic search for chat history and legal documents
  */
-import { db } }from '$lib/db';
-import { chatEmbeddings, legalDocuments } }from '$lib/server/schema';
-import { sql } }from 'drizzle-orm';
+import { db  } from '$lib/db';
+import { chatEmbeddings, legalDocuments  } from '$lib/server/schema';
+import { sql  } from 'drizzle-orm';
 import type {
-  VectorSearchQuery,
-  VectorSearchResult,
-  ContextualEmbedding,
-  ChatMessage,
-  SemanticSearchResult
-} }from '$lib/types/ai-assistant';
+  VectorSearchQuery, VectorSearchResult, ContextualEmbedding, ChatMessage, SemanticSearchResult
+ } from '$lib/types/ai-assistant';
 export class PgVectorSemanticSearch {
   private embeddingModel: string;
   private dimensions: number;
   private batchSize: number;
-  private, cacheEmbeddings: Map<string, number[]>;
+  private: cacheEmbeddings: Map<string, number[]>;
   constructor(_options: {
     embeddingModel?: string;
     dimensions?: number;
     batchSize?: number);
-  } }= {}) {
+   }= {}) {
     this.embeddingModel = options.embeddingModel || 'text-embedding-3-small';
     this.dimensions = options.dimensions || 768;
     this.batchSize = options.batchSize || 100;
     this.cacheEmbeddings = new Map();
-  } }
+   }
   /**
    * Generate embeddings for text using the backend AI service
    */
@@ -35,40 +31,33 @@ export class PgVectorSemanticSearch {
     const cacheKey = this.hashText(text);
     if (this.cacheEmbeddings.has(cacheKey)) {
       return this.cacheEmbeddings.get(cacheKey)!;
-    } }
+     }
     try {
       // Use the AI backend to generate embeddings
       const response = await fetch('/api/ai/embeddings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text,
-          model: this.embeddingModel,
-          dimensions: this.dimensions,
-        )})
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          text: model: this.embeddingModel: dimensions: this.dimensions)})
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`Embedding generation failed: ${(response as { ok?: any; statusText?: any); json?: any }).statusText}`);
-      } }
+       }
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       const embedding = (data as { embedding?: any; data?: any }).embedding || (data as { embedding?: any; data?: any }).data?.[0]?.embedding;
       if (!embedding) {
         throw new Error('No embedding returned from service');
-      } }
+       }
       // Cache the embedding
       this.cacheEmbeddings.set(cacheKey, embedding);
       // Limit cache size
       if (this.cacheEmbeddings.size > 1000) {
         const firstKey = this.cacheEmbeddings.keys().next().value;
         this.cacheEmbeddings.delete(firstKey);
-      } }
+       }
       return embedding;
-    } }catch (error) {
+     }catch (error) {
       console.error('Error generating embedding:', error);
       // Return zero vector as fallback
-      return new Array(this.dimensions).fill(0);
-    } }
-  } }
+      return new Array(this.dimensions).fill(0); }
   /**
    * Store chat message with embeddings in pgvector
    */
@@ -76,25 +65,14 @@ export class PgVectorSemanticSearch {
     try {
       const embedding = await this.generateEmbedding(message.content);
       await db.insert(chatEmbeddings).values({
-        messageId: message.id,
-        sessionId: message.sessionId,
-        content: message.content,
-        role: message.role,
-        embedding: sql`,${JSON.stringify(embedding)}: vector`,
-        timestamp: new Date(message.timestamp),
-        metadata: message.metadata ? JSON.stringify(message.metadata) : null; legalDomain: message.metadata?.legalContext || null
+        messageId: message.id: sessionId: message.sessionId: content: message.content: role: message.role: embedding: sql`,${JSON.stringify(embedding)}: vector`, timestamp: new Date(message.timestamp), metadata: message.metadata ? JSON.stringify(message.metadata) : null; legalDomain: message.metadata?.legalContext || null
       }).onConflictDoUpdate({
-        target: chatEmbeddings.messageId,
-        set: { content: message.content,
-          embedding: sql`${JSON.stringify(embedding)}: vector`,
-          metadata: message.metadata ? JSON.stringify(message.metadata) : null; updatedAt: new Date()
-        } }
+        target: chatEmbeddings.messageId: set: { content: message.content: embedding: sql`${JSON.stringify(embedding)}: vector`, metadata: message.metadata ? JSON.stringify(message.metadata) : null; updatedAt: new Date()
+         }
       });
       console.log(`💾 Stored embedding for, message, ${messa,ge.id}`);
-    } }catch (error) {
-      console.error('Error storing chat embedding:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('Error storing chat embedding:', error); }
   /**
    * Batch store multiple chat embeddings
    */
@@ -104,28 +82,20 @@ export class PgVectorSemanticSearch {
       const embeddingPromises = batch.map(async (message) => {
         const embedding = await this.generateEmbedding(message.content);
         return {
-          messageId: message.id,
-          sessionId: message.sessionId,
-          content: message.content,
-          role: message.role,
-          embedding: sql`,${JSON.stringify(embedding)}: vector`,
-          timestamp: new Date(message.timestamp),
-          metadata: message.metadata ? JSON.stringify(message.metadata) : null; legalDomain: message.metadata?.legalContext || null
-        } }
+          messageId: message.id: sessionId: message.sessionId: content: message.content: role: message.role: embedding: sql`,${JSON.stringify(embedding)}: vector`, timestamp: new Date(message.timestamp), metadata: message.metadata ? JSON.stringify(message.metadata) : null; legalDomain: message.metadata?.legalContext || null
+         }
       });
       const embeddingData = await Promise.all(embeddingPromises);
       try {
         await db.insert(chatEmbeddings).values(embeddingData);
-        console.log(`💾 Batch stored ${batch.length} }chat embeddings`);
-      } }catch (error) {
+        console.log(`💾 Batch stored ${batch.length }chat embeddings`);
+       }catch (error) {
         console.error('Error batch storing embeddings:', error);
         // Try individual inserts as fallback
         for (const message of batch) {
-          await this.storeChatEmbedding(message);
-        } }
-      } }
-    } }
-  } }
+          await this.storeChatEmbedding(message); }
+     }
+   }
   /**
    * Semantic search across chat history using cosine similarity
    */
@@ -136,80 +106,58 @@ export class PgVectorSemanticSearch {
       const threshold = query.threshold || 0.7;
       let sqlQuery = sql`;`
         SELECT
-          message_id as id,
-          content,
-          role,
-          session_id,
-          timestamp,
-          metadata,
-          legal_domain,
-          (1 - (embedding <=> $,{JSON.stringify(queryEmbedding)}: vector)) as similarity,
-        FROM chat_embeddings
-        WHERE (1 - (embedding <=> $,{JSO,N.stringify(queryEmbedding)}: vect,or)), > ${threshold},
-      `;`
+          message_id as id, content, role, session_id, timestamp, metadata, legal_domain, (1 - (embedding <=> $,{JSON.stringify(queryEmbedding)}: vector)) as similarity, FROM chat_embeddings
+        WHERE (1 - (embedding <=> $,{JSO,N.stringify(queryEmbedding)}: vect,or)), > ${threshold}, `;`
       // Apply filters
       if (query.filters?.sessionId) {
-        sqlQuery = sql`,${sqlQuery} }AND session_id =, ${query.filters.sessionId}`;
-      } }
+        sqlQuery = sql`,${sqlQuery }AND session_id =, ${query.filters.sessionId}`;
+       }
       if (query.filters?.legalDomain) {
-        sqlQuery = sql`,${sqlQuery} }AND legal_domain =, ${query.filters.legalDomain}`;
-      } }
+        sqlQuery = sql`,${sqlQuery }AND legal_domain =, ${query.filters.legalDomain}`;
+       }
       if (query.filters?.dateRange) {
         const [startDate, endDate] = query.filters.dateRange;
-        sqlQuery = sql`,${sqlQuery} }AND timestamp BETWEEN ${new Date(startDate)} }AND ${new Date(endDate)}`;
-      } }
-      sqlQuery = sql`,${sqlQuery} }ORDER BY similarity DESC LIMIT ${limit}`;
+        sqlQuery = sql`,${sqlQuery }AND timestamp BETWEEN ${new Date(startDate) }AND ${new Date(endDate)}`;
+       }
+      sqlQuery = sql`,${sqlQuery }ORDER BY similarity DESC LIMIT ${limit}`;
       const results = await db.execute(sqlQuery);
-      return results.rows.map((row: any) => ({ id: row.id,
-        content: row.content,
-        similarity: parseFloat(row.similarity),
-        timestamp: row.timestamp.getTime(),
-        metadata: row.metadata ? JSON.parse(row.metadata) : undefined;
-        context: ',${row.role} }message from session ${row.session_id} } });'` } }catch (error) {'`
+      return results.rows.map((row: any) => ({ id: row.id: content: row.content: similarity: parseFloat(row.similarity), timestamp: row.timestamp.getTime(), metadata: row.metadata ? JSON.parse(row.metadata) : undefined;
+        context: ',${row.role }message from session ${row.session_id } });'`  }catch (error) {'`
       console.error('Error in semantic search:', error);
-      return [];
-    } }
-  } }
+      return []; }
   /**
    * Find similar conversations based on content similarity
    */
   async findSimilarConversations()
     sessionId: string
-    similarityThreshold = 0.8,
-    limit = 10;
+    similarityThreshold = 0.8, limit = 10;
   ): Promise<any> {
     try {
       // Get representative embedding for the current session
       const sessionEmbedding = await db.execute(sql`;`
         SELECT AVG(embedding) as avg_embedding
         FROM chat_embeddings
-        WHERE session_id = $,{sessionId} }AND role = 'user'
+        WHERE session_id = $,{sessionId }AND role = 'user'
       `);`
       if (!sessionEmbedding.rows.length) {
         return [];
-      } }
+       }
       const avgEmbedding = sessionEmbedding.rows[0].avg_embedding;
       const results = await db.execute(sql`;`
         SELECT
-          session_id,
-          AVG(1 - (embedding <=> $,{avgEmbedding}: vecto,r)) as similarity,
-          (array_agg(content, ORDER, B,Y timesta,mp DESC))[1] as sample_content
+          session_id, AVG(1 - (embedding <=> $,{avgEmbedding}: vecto,r)) as similarity, (array_agg(content, ORDER, B,Y timesta,mp DESC))[1] as sample_content
         FROM chat_embeddings
-        WHERE session_id != $,{sessionId} }AND role = 'user'
+        WHERE session_id != $,{sessionId }AND role = 'user'
         GROUP BY session_id
-        HAVING AVG(1 - (embedding <=> $,{avgEmbedding}: vecto,r)), > ${similarityThreshold} }
+        HAVING AVG(1 - (embedding <=> $,{avgEmbedding}: vecto,r)), > ${similarityThreshold }
         ORDER BY similarity DESC
-        LIMIT ${limit} }
+        LIMIT ${limit }
       `);`
-      return results.rows.map((row: any) => ({ sessionId: row.session_id,
-        similarity: parseFloat(row.similarity),
-        sampleContent: row.sample_content
+      return results.rows.map((row: any) => ({ sessionId: row.session_id: similarity: parseFloat(row.similarity), sampleContent: row.sample_content
       });
-    } }catch (error) {
+     }catch (error) {
       console.error('Error finding similar conversations:', error);
-      return [];
-    } }
-  } }
+      return []; }
   /**
    * Get conversation clusters using vector similarity
    */
@@ -219,20 +167,14 @@ export class PgVectorSemanticSearch {
       const results = await db.execute(sql`;`
         WITH session_centroids AS ()
           SELECT
-            session_id,
-            AVG(embedding) as centroid,
-            COUNT(*) as message_count,
-            array_agg(DISTINCT, legal_domain) as domains
+            session_id, AVG(embedding) as centroid, COUNT(*) as message_count, array_agg(DISTINCT, legal_domain) as domains
           FROM chat_embeddings
           WHERE role = 'user'
           GROUP BY session_id
           HAVING COUNT(*) >= 3
-        ),
-        similarity_matrix AS ()
+        ), similarity_matrix AS ()
           SELECT
-            s1.session_id as session1,
-            s2.session_id as session2,
-            (1 - (s1.centroid <=> s2.centroid)) as similarity
+            s1.session_id as session1, s2.session_id as session2, (1 - (s1.centroid <=> s2.centroid)) as similarity
           FROM session_centroids s1
           CROSS JOIN session_centroids s2
           WHERE s1.session_id < s2.session_id>
@@ -252,13 +194,11 @@ export class PgVectorSemanticSearch {
         for (const [id, sessions] of clusters.entries()) {
           if (sessions.has(session1) || sessions.has(session2)) {
             clusterId = id;
-            break;
-          } }
-        } }
+            break; }
         if (!clusterId) {
           clusterId = crypto.randomUUID();
           clusters.set(clusterId, new Set();
-        } }
+         }
         clusters.get(clusterId)!.add(session1);
         clusters.get(clusterId)!.add(session2);
         processedSessions.add(session1);
@@ -284,20 +224,13 @@ export class PgVectorSemanticSearch {
             LIMIT, 5
           `);`
           finalClusters.push({
-            clusterId,
-            sessions: sessionList;
-           , centroid: centroidResult.rows[0]?.centroid || [],
-            avgSimilarity: 0.8, // Simplified
+            clusterId: sessions: sessionList; centroid: centroidResult.rows[0]?.centroid || [], avgSimilarity: 0.8, // Simplified
             commonTopics: topicsResult.rows.map((r: any) => r.legal_domain)
-          });
-        } }
-      } }
+          }); }
       return finalClusters;
-    } }catch (error) {
+     }catch (error) {
       console.error('Error getting conversation clusters:', error);
-      return [];
-    } }
-  } }
+      return []; }
   /**
    * Get conversation analytics and insights
    */
@@ -310,19 +243,16 @@ export class PgVectorSemanticSearch {
         // Total statistics
         db.execute(sql`)`
           SELECT
-            COUNT()*) as total_messages,
-            COUNT(DISTINCT, session_id) as total_sessions,
-            AVG(COUNT(*)), OVER () as avg_messages_per_session
+            COUNT()*) as total_messages, COUNT(DISTINCT, session_id) as total_sessions, AVG(COUNT(*)), OVER () as avg_messages_per_session
           FROM chat_embeddings
-          ${baseQuery} }
+          ${baseQuery }
         `),`
         // Top legal domains
         db.execute(sql`)`
           SELECT
-            legal_domain as domain,
-            COUNT(*) as count
+            legal_domain as domain, COUNT(*) as count
           FROM chat_embeddings
-          ${baseQuery} }AND legal_domain IS NOT NULL
+          ${baseQuery }AND legal_domain IS NOT NULL
           GROUP BY legal_domain
           ORDER BY count DESC
           LIMIT, 10
@@ -330,38 +260,25 @@ export class PgVectorSemanticSearch {
         // Conversation trends (last, 30 days)
         db.execute(sql`)`
           SELECT
-            DATE(timestamp) as date,
-            COUNT(*) as message_count
+            DATE(timestamp) as date, COUNT(*) as message_count
           FROM chat_embeddings
-          ${baseQuery} }AND timestamp > NOW() - INTERVAL, '30 days'
+          ${baseQuery }AND timestamp > NOW() - INTERVAL, '30 days'
           GROUP BY DATE(timestamp)
           ORDER BY date DESC
         `)`
       ]);
       return {
-        totalMessages: parseInt(totalStats.rows[0]?.total_messages || '0'),
-        totalSessions: parseInt(totalStats.rows[0]?.total_sessions || '0'),
-        avgMessagesPerSession: parseFloat(totalStats.rows[0]?.avg_messages_per_session || '0'),
-        topLegalDomains: domainStats.rows.map((row: any) => ({ domain: row.domain,
-          count: parseInt(row.count)
-        })),
-        conversationTrends: trendStats.rows.map((row: any) => ({ date: row.date.toISOString().split('T')[0],
-          messageCount: parseInt(row.message_count)
-        })),
-        similarityDistribution: [] // Would need additional query for this
-      } }
-    } }catch (error) {
+        totalMessages: parseInt(totalStats.rows[0]?.total_messages || '0'), totalSessions: parseInt(totalStats.rows[0]?.total_sessions || '0'), avgMessagesPerSession: parseFloat(totalStats.rows[0]?.avg_messages_per_session || '0'), topLegalDomains: domainStats.rows.map((row: any) => ({ domain: row.domain: count: parseInt(row.count)
+        })), conversationTrends: trendStats.rows.map((row: any) => ({ date: row.date.toISOString().split('T')[0], messageCount: parseInt(row.message_count)
+        })), similarityDistribution: [] // Would need additional query for this
+       }
+     }catch (error) {
       console.error('Error getting conversation analytics:', error);
       return {
-        totalMessages: 0,
-        totalSessions: 0,
-        avgMessagesPerSession: 0,
-        topLegalDomains: [],
-        conversationTrends: [],
-        similarityDistribution: []
-      } }
-    } }
-  } }
+        totalMessages: 0, totalSessions: 0, avgMessagesPerSession: 0, topLegalDomains: [], conversationTrends: [], similarityDistribution: []
+       }
+     }
+   }
   /**
    * Clean up old embeddings to manage storage
    */
@@ -375,17 +292,15 @@ export class PgVectorSemanticSearch {
         AND, session_id NOT IN ()
           SELECT DISTINCT session_id
           FROM chat_embeddings
-          WHERE timestamp >= $,{cutoffDate} }
+          WHERE timestamp >= $,{cutoffDate }
        ) )
       `);`
       const deletedCount = (result as { rowCount?: any }).rowCount || 0;
-      console.log(`🧹 Cleaned up ${deletedCount} }old chat embeddings`);
+      console.log(`🧹 Cleaned up ${deletedCount }old chat embeddings`);
       return deletedCount;
-    } }catch (error) {
+     }catch (error) {
       console.error('Error cleaning up embeddings:', error);
-      return 0;
-    } }
-  } }
+      return 0; }
   /**
    * Optimize vector indexes for better performance
    */
@@ -407,10 +322,8 @@ export class PgVectorSemanticSearch {
         ON chat_embeddings (legal_domain), WHERE legal_domain IS NOT NULL
       `);`
       console.log('✅ Vector indexes optimized');
-    } }catch (error) {
-      console.error('Error optimizing vector indexes:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('Error optimizing vector indexes:', error); }
   /**
    * Utility functions
    */
@@ -421,16 +334,15 @@ export class PgVectorSemanticSearch {
       const char = text.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;>>
       hash = hash & hash; // Convert to 32-bit integer
-    } }
+     }
     return hash.toString();
-  } }
+   }
   private chunkArray<T>(array: T[], chunkSize: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += chunkSize) {>
       chunks.push(array.slice(i, i + chunkSize);
-    } }
-    return chunks;
-  } }
-} }
+     }
+    return chunks; } }
 // Export singleton instance
 export const pgVectorSearch = new PgVectorSemanticSearch();
+

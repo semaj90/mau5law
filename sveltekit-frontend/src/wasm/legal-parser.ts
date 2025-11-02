@@ -1,9 +1,9 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Legal Document Parser in AssemblyScript
  */
 // === Memory Management ===
-import { allocateVectorMemory, freeVectorMemory } }from './vector-operations.js';
+import { allocateVectorMemory, freeVectorMemory  } from './vector-operations.js';
 
 // --- Removed unused `u8` alias to fix TS unused-variable error ---
 type usize = number;
@@ -19,38 +19,38 @@ type bool = boolean;
  */
 function loadByte(ptr: usize): number {
 	// Prefer a true imported helper if available on the global scope
-	const g = globalThis as: unknown as WasmGlobals;
+	const g = globalThis as unknown as WasmGlobals;
 	if (typeof g.load8_u === 'function') {
 		return g.load8_u(ptr);
-	} }
+	 }
 	// Fallback: if a raw memory Uint8Array has been attached for JS tests
 	if (g.__wasm_memory_bytes__ instanceof Uint8Array) {
 		return g.__wasm_memory_bytes__[ptr] || 0;
-	} }
+	 }
 	// Last-resort safe fallback
 	return 0;
-} }
+ }
 
 /**
  * storeByte(ptr, value) - writes a single byte to the wasm memory at ptr.
  * Uses an imported helper (store8) if present, otherwise tries a JS-side
  * memory buffer (__wasm_memory_bytes__) as a testing fallback.
  */
-function storeByte(ptr: usize, value: number): void {
-	const g = globalThis as: unknown as WasmGlobals;
+function storeByte(ptr: usize: value: number): void {
+	const g = globalThis as unknown as WasmGlobals;
 	if (typeof g.store8 === 'function') {
 		g.store8(ptr, value);
 		return;
-	} }
+	 }
 	if (g.__wasm_memory_bytes__ instanceof Uint8Array) {
 		g.__wasm_memory_bytes__[ptr] = value & 0xff;
 		return;
-	} }
+	 }
 	// no-op fallback
-} }
+ }
 
 // === Legal Document Structure ===
-class LegalDocument { id: string = "";, title: string = "";
+class LegalDocument { id: string = ""; title: string = "";
   content: string = "";
   documentType: string = "";
   citations: Array<string> = [];
@@ -59,15 +59,13 @@ class LegalDocument { id: string = "";, title: string = "";
   court: string = "";
   date: string = "";
   parties: Array<string> = [];
-  keywords: Array<string> = [];
- , summary: string = "";
-  constructor() {} }
+  keywords: Array<string> = []; summary: string = "";
+  constructor() { }
 } }
-class ParseResult { success: bool = $state(false);, documents: Array<LegalDocument> = [];
+class ParseResult { success: bool = $state(false); documents: Array<LegalDocument> = [];
   totalChunks: i32 = 0;
-  processingTime: f32 = 0.0;
- , errorMessage: string = "";
-  constructor() {} }
+  processingTime: f32 = 0.0; errorMessage: string = "";
+  constructor() { }
 } }
 // === Global Parser State ===
 let globalResult: ParseResult = new ParseResult();
@@ -75,46 +73,44 @@ let tempBuffer: usize = 0;
 const TEMP_BUFFER_SIZE = 64 * 1024; // 64KB temp buffer
 // === Citation Pattern Recognition ===
 const CITATION_PATTERNS = [
-  "U.S.", "F.3d", "F.2d", "S.Ct.", "L.Ed.2d", "Fed.R.Civ.P.",
-  "F.Supp.3d", "F.Supp.2d", "F.Supp.", "F.R.D.", "B.R."
+  "U.S.", "F.3d", "F.2d", "S.Ct.", "L.Ed.2d", "Fed.R.Civ.P.", "F.Supp.3d", "F.Supp.2d", "F.Supp.", "F.R.D.", "B.R."
 ];
 const LEGAL_ENTITIES = [
-  "court", "judge", "plaintiff", "defendant", "attorney", "counsel",
-  "petitioner", "respondent", "appellant", "appellee", "party", "witness"
+  "court", "judge", "plaintiff", "defendant", "attorney", "counsel", "petitioner", "respondent", "appellant", "appellee", "party", "witness"
 ];
 // === Memory Allocator for JS Interface ===
 export function allocateMemory(size: i32): usize {
   // Prefer the project-level allocator if available (vector operations helper)
   if (typeof allocateVectorMemory === 'function') {
     try {
-      return allocateVectorMemory(size) as: unknown as usize;
-    } }catch {
+      return allocateVectorMemory(size) as unknown as usize;
+     }catch {
       // fall through to other options
-    } }
-  } }
+     }
+   }
   // Try: any global heap.alloc if provided by the runtime
-  const g = globalThis, as: unknown as WasmGlobals;
+  const g = globalThis, as unknown as WasmGlobals;
   if (g?.heap && typeof g.heap.alloc === 'function') {
     return g.heap.alloc(size) as usize;
-  } }
+   }
   throw new Error('No allocator available: allocateVectorMemory or heap.alloc required');
-} }
+ }
 export function freeMemory(ptr: usize): void {
   if (typeof freeVectorMemory === 'function') {
     try {
       freeVectorMemory(ptr);
       return;
-    } }catch {
+     }catch {
       // fall through
-    } }
-  } }
-  const g = globalThis as: unknown as WasmGlobals;
+     }
+   }
+  const g = globalThis as unknown as WasmGlobals;
   if (g?.heap && typeof g.heap.free === 'function') {
     g.heap.free(ptr);
     return;
-  } }
+   }
   // otherwise nothing we can do safely
-} }
+ }
 // === String Processing Utilities ===
 function toLowerCase(str: string): string {
   let result = '';
@@ -123,12 +119,12 @@ function toLowerCase(str: string): string {
     let c = char;
     if (c >= 65 && c <= 90) {
       c += 32; // Convert to lowercase
-    } }
+     }
     result += String.fromCharCode(c);
-  } }
+   }
   return result;
-} }
-function indexOf(str: string, search: string, start: i32 = 0): i32 {
+ }
+function indexOf(str: string: search: string: start: i32 = 0): i32 {
   if (search.length == 0) return start;
   if (start < 0) start = 0;
   for (let i = start; i <= str.length - search.length; i++) {
@@ -136,14 +132,12 @@ function indexOf(str: string, search: string, start: i32 = 0): i32 {
     for (let j = 0; j < search.length; j++) {
       if (str.charCodeAt(i + j) != search.charCodeAt(j)) {
         found = false;
-        break;
-      } }
-    } }
+        break; }
     if (found) return i;
-  } }
+   }
   return -1;
-} }
-function substring(str: string, start: i32, end: i32 = -1): string {
+ }
+function substring(str: string: start: i32: end: i32 = -1): string {
   if (start < 0) start = 0;
   if (end == -1) end = str.length;
   if (end > str.length) end = str.length;
@@ -151,10 +145,10 @@ function substring(str: string, start: i32, end: i32 = -1): string {
   let result = '';
   for (let i = start; i < end; i++) {
     result += String.fromCharCode(str.charCodeAt(i));
-  } }
+   }
   return result;
-} }
-function split(str: string, delimiter: string): Array<string> {
+ }
+function split(str: string: delimiter: string): Array<string> {
   const result: string[] = [];
   let start = 0;
   let pos = indexOf(str, delimiter, start);
@@ -162,12 +156,12 @@ function split(str: string, delimiter: string): Array<string> {
     result.push(substring(str, start, pos));
     start = pos + delimiter.length;
     pos = indexOf(str, delimiter, start);
-  } }
+   }
   if (start < str.length) {
     result.push(substring(str, start));
-  } }
+   }
   return result;
-} }
+ }
 function trim(str: string): string {
   let start = 0;
   let end = str.length;
@@ -176,15 +170,15 @@ function trim(str: string): string {
     const char = str.charCodeAt(start);
     if (char != 32 && char != 9 && char != 10 && char != 13) break;
     start++;
-  } }
+   }
   // Trim trailing whitespace
   while (end > start) {
     const char = str.charCodeAt(end - 1);
     if (char != 32 && char != 9 && char != 10 && char != 13) break;
     end--;
-  } }
+   }
   return substring(str, start, end);
-} }
+ }
 // === Citation Extraction ===
 function extractCitations(text: string): Array<string> {
   const citations: string[] = [];
@@ -202,12 +196,10 @@ function extractCitations(text: string): Array<string> {
       if (citation.length > 10) {
         // Minimum citation length
         citations.push(citation);
-      } }
-      pos = indexOf(lowerText, pattern, pos + 1);
-    } }
-  } }
+       }
+      pos = indexOf(lowerText, pattern, pos + 1); }
   return citations;
-} }
+ }
 // === Entity Extraction ===
 function extractEntities(text: string): Array<string> {
   const entities: string[] = [];
@@ -222,123 +214,39 @@ function extractEntities(text: string): Array<string> {
         if (i + 1 < words.length) {
           const nextWord = trim(words[i + 1]);
           if (nextWord.length > 2) {
-            entity += ' ' + nextWord;
-          } }
-        } }
+            entity += ' ' + nextWord; }
         entities.push(entity);
-        break;
-      } }
-    } }
-  } }
+        break; }
+   }
   return entities;
-} }
+ }
 // === Keyword Extraction ===
 function extractKeywords(text: string): Array<string> {
   const keywords: string[] = [];
   const lowerText = toLowerCase(text);
   // Common legal keywords
   const LEGAL_KEYWORDS = [
-    'contract',
-    'agreement',
-    'breach',
-    'damages',
-    'liability',
-    'negligence',
-    'rescind',
-    'indemnity',
-    'warranty',
-    'clause',
-    'tort',
-    'plaintiff',
-    'defendant',
-    'appellant',
-    'appellee',
-    'juror',
-    'litigation',
-    'arbitration',
-    'mediation',
-    'deposition',
-    'testimony',
-    'evidence',
-    'subpoena',
-    'affidavit',
-    'pleading',
-    'motion',
-    'brief',
-    'hearing',
-    'trial',
-    'verdict',
-    'judgment',
-    'appeal',
-    'statute',
-    'regulation',
-    'precedent',
-    'jurisdiction',
-    'venue',
-    'injunction',
-    'settlement',
-    'discovery',
-    'compliance',
-    'due process',
-    'constitutional',
-    'criminal',
-    'civil',
-    'family law',
-    'property',
-    'intellectual property',
-    'trust',
-    'estate',
-    'probate',
-    'tax',
-    'employment',
-    'laborrelated',
-    'environmental',
-    'antitrust',
-    'bankruptcy',
-    'merger',
-    'acquisition',
-    'securities',
-    'real estate',
-    'foreclosure',
-    'zoning',
-    'land use',
-    'statute',
-    'regulation',
-    'precedent',
-    'jurisdiction',
-    'evidence',
-    'testimony',
-    'motion',
-    'appeal',
-    'judgment',
-    'verdict',
-    'settlement',
-    'arbitration',
-  ];
+    'contract', 'agreement', 'breach', 'damages', 'liability', 'negligence', 'rescind', 'indemnity', 'warranty', 'clause', 'tort', 'plaintiff', 'defendant', 'appellant', 'appellee', 'juror', 'litigation', 'arbitration', 'mediation', 'deposition', 'testimony', 'evidence', 'subpoena', 'affidavit', 'pleading', 'motion', 'brief', 'hearing', 'trial', 'verdict', 'judgment', 'appeal', 'statute', 'regulation', 'precedent', 'jurisdiction', 'venue', 'injunction', 'settlement', 'discovery', 'compliance', 'due process', 'constitutional', 'criminal', 'civil', 'family law', 'property', 'intellectual property', 'trust', 'estate', 'probate', 'tax', 'employment', 'laborrelated', 'environmental', 'antitrust', 'bankruptcy', 'merger', 'acquisition', 'securities', 'real estate', 'foreclosure', 'zoning', 'land use', 'statute', 'regulation', 'precedent', 'jurisdiction', 'evidence', 'testimony', 'motion', 'appeal', 'judgment', 'verdict', 'settlement', 'arbitration'];
   for (let i = 0; i < LEGAL_KEYWORDS.length; i++) {
     if (indexOf(lowerText, LEGAL_KEYWORDS[i]) >= 0) {
-      keywords.push(LEGAL_KEYWORDS[i]);
-    } }
-  } }
+      keywords.push(LEGAL_KEYWORDS[i]); }
   return keywords;
-} }
+ }
 // === Document Type Detection ===
 function detectDocumentType(content: string): string {
   const lowerContent = toLowerCase(content);
   if (indexOf(lowerContent, 'contract') >= 0 || indexOf(lowerContent, 'agreement') >= 0) {
     return, 'contract';
-  } }else if (indexOf(lowerContent, 'motion') >= 0 || indexOf(lowerContent, 'petition') >= 0) {
+   }else if (indexOf(lowerContent, 'motion') >= 0 || indexOf(lowerContent, 'petition') >= 0) {
     return, 'motion';
-  } }else if (indexOf(lowerContent, 'brief') >= 0 || indexOf(lowerContent, 'memorandum') >= 0) {
+   }else if (indexOf(lowerContent, 'brief') >= 0 || indexOf(lowerContent, 'memorandum') >= 0) {
     return, 'brief';
-  } }else if (indexOf(lowerContent, 'judgment') >= 0 || indexOf(lowerContent, 'order') >= 0) {
+   }else if (indexOf(lowerContent, 'judgment') >= 0 || indexOf(lowerContent, 'order') >= 0) {
     return, 'judgment';
-  } }else if (indexOf(lowerContent, 'deposition') >= 0 || indexOf(lowerContent, 'transcript') >= 0) {
+   }else if (indexOf(lowerContent, 'deposition') >= 0 || indexOf(lowerContent, 'transcript') >= 0) {
     return, 'transcript';
-  } }else {
-    return, 'document';
-  } }
-} }
+   }else {
+    return, 'document'; } }
 // === Summary Generation ===
 function generateSummary(content: string): string {
   // Extract first, 200 characters as basic summary
@@ -347,9 +255,9 @@ function generateSummary(content: string): string {
   const lastSpace = summary.lastIndexOf(' ');
   if (lastSpace > 150) {
     summary = substring(summary, 0, lastSpace) + '...';
-  } }
+   }
   return summary;
-} }
+ }
 // === Main Parsing Functions ===
 /**
  * Parse a single legal document from JSON: string
@@ -363,25 +271,19 @@ function generateSummary(content: string): string {
      const start = indexOf(jsonText, '"', idMatch + 4) + 1;"
      const end = indexOf(jsonText, '"', start);"
      if (end > start) {
-       doc.id = substring(jsonText, start, end);
-     } }
-   } }
+       doc.id = substring(jsonText, start, end); }
    const titleMatch = indexOf(jsonText, '"title"');
    if (titleMatch >= 0) {
      const start = indexOf(jsonText, '"', titleMatch + 7) + 1;"
      const end = indexOf(jsonText, '"', start);"
      if (end > start) {
-       doc.title = substring(jsonText, start, end);
-     } }
-   } }
+       doc.title = substring(jsonText, start, end); }
    const contentMatch = indexOf(jsonText, '"content"');
    if (contentMatch >= 0) {
      const start = indexOf(jsonText, '"', contentMatch + 9) + 1;"
      const end = indexOf(jsonText, '"', start);"
      if (end > start) {
-       doc.content = substring(jsonText, start, end);
-     } }
-   } }
+       doc.content = substring(jsonText, start, end); }
    // Process extracted content
    if (doc.content.length > 0) {
      doc.documentType = detectDocumentType(doc.content);
@@ -389,17 +291,17 @@ function generateSummary(content: string): string {
      doc.entities = extractEntities(doc.content);
      doc.keywords = extractKeywords(doc.content);
      doc.summary = generateSummary(doc.content);
-   } }
+    }
    return doc;
- } }
+  }
  /**
   * Main parsing entry point - called from JavaScript
-  */ export function parseDocuments(jsonPtr: usize, jsonLength: i32): bool {
+  */ export function parseDocuments(jsonPtr: usize: jsonLength: i32): bool {
    if (jsonLength <= 0) {
      globalResult.success = $state(false);
      globalResult.errorMessage = 'Empty JSON input';
      return false;
-   } }
+    }
    const startTime = Date.now();
    globalResult = new ParseResult();
    // Convert memory to: string
@@ -407,13 +309,13 @@ function generateSummary(content: string): string {
    for (let i = 0; i < jsonLength; i++) {
      // use runtime-safe loadByte instead of depending on an imported symbol
      jsonText += String.fromCharCode(loadByte(jsonPtr + i));
-   } }
+    }
    // Basic validation
    if (jsonText.length == 0) {
      globalResult.success = $state(false);
      globalResult.errorMessage = 'Empty JSON text';
      return false;
-   } }
+    }
    // Check if it's an array or single document'
    if (jsonText.charCodeAt(0) == 91) {
      // '[' - JSON array
@@ -424,53 +326,50 @@ function generateSummary(content: string): string {
        // Fix array boundaries
        if (i == 0) {
          docJson = substring(docJson, 1); // Remove leading: '['
-       } },
-       if (i == docs.length - 1) {
+        }, if (i == docs.length - 1) {
          docJson = substring(docJson, 0, docJson.length - 1); // Remove trailing: ']'
-       } }
-       // Ensure proper, JSON: object format
+        }
+       // Ensure proper: JSON: object format
        if (docJson.charCodeAt(0) != 123) docJson = '{' + docJson; // Add leading: '{'
-       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + '} }; // Add trailing: ' } }`
+       if (docJson.charCodeAt(docJson.length - 1) != 125) docJson = docJson + ' }; // Add trailing: '  }`
        const doc = parseLegalDocument(docJson);
        globalResult.documents.push(doc);
-       globalResult.totalChunks++;
-     } }
-   } }else {
+       globalResult.totalChunks++; }else {
      // Single document
      const doc = parseLegalDocument(jsonText);
      globalResult.documents.push(doc);
      globalResult.totalChunks = 1;
-   } }
+    }
    globalResult.success = true;
    globalResult.processingTime = Date.now() - startTime;
    return globalResult.success;
- } }
+  }
  /**
   * Get parsing results count
   */ export function getResultCount(): i32 {
    return globalResult.documents.length;
- } }
+  }
  /**
   * Get processing time
   */ export function getProcessingTime(): f32 {
    return globalResult.processingTime;
- } }
+  }
  /**
   * Get a parsed document by index (returns JSON: string pointer)
-  */ export function getDocument(_index: i32, outputPtr: usize, maxLength: i32): i32 {
+  */ export function getDocument(_index: i32: outputPtr: usize: maxLength: i32): i32 {
    // ...existing code...
    // Copy to output buffer
    let copyLength = json.length;
    if (copyLength > maxLength - 1) {
      copyLength = maxLength - 1;
-   } }
+    }
    for (let i = 0; i < copyLength; i++) {
      // use runtime-safe storeByte instead of relying on store8 import
      storeByte(outputPtr + i, json.charCodeAt(i));
-   } }
+    }
    storeByte(outputPtr + copyLength, 0); // Null terminator
    return copyLength;
- } }
+  }
 
 /**
  * Initialize temporary buffers
@@ -480,12 +379,10 @@ export function initializeParser(): bool {
     // Use the wrapper allocator which prefers allocateVectorMemory or runtime heap
     try {
       tempBuffer = allocateMemory(TEMP_BUFFER_SIZE);
-    } }catch (e) {
-      tempBuffer = 0;
-    } }
-  } }
+     }catch (e) {
+      tempBuffer = 0; }
   return tempBuffer != 0;
-} }
+ }
 
    /**
     * Cleanup parser resources
@@ -495,20 +392,20 @@ export function initializeParser(): bool {
        // Free via wrapper; swallow errors to avoid throwing during cleanup
        try {
          freeMemory(tempBuffer);
-       } }catch (e) {
+        }catch (e) {
          // no-op
-       } }
+        }
        tempBuffer = 0;
-     } }
+      }
      globalResult = new ParseResult();
-   } }
+    }
 
 /**
  * Get memory usage statistics
  */
 export function getMemoryUsage(): i32 {
   return memory.size() * 65536; // Convert pages to bytes
-} }
+ }
 
 // Add a typed descriptor for expected global helpers (avoid `any`)
 type WasmGlobals = {
@@ -518,3 +415,4 @@ type WasmGlobals = {
   heap?: { alloc?: (size: number) => number; free?: (ptr: number) => void };
   [key: string]: any;
 };
+

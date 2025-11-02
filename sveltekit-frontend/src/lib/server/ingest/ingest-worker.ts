@@ -7,35 +7,28 @@
  * - Generates embeddings with Gemma multimodal
  * - Inserts directly into Postgres with pgvector
  */
-import { parentPort } }from "worker_threads";
-import { fetchMinioObject } }from './minio.js';
+import { parentPort  } from "worker_threads";
+import { fetchMinioObject  } from './minio.js';
 import {
-  extractTextFromImage,
-  extractTextFromPDF,
-  extractAudioFromBuffer,
-  sampleFramesFromVideo,
-  parseJsonWithSimd
-} }from './extractors.js';
+  extractTextFromImage, extractTextFromPDF, extractAudioFromBuffer, sampleFramesFromVideo, parseJsonWithSimd
+ } from './extractors.js';
 import {
-  embedText,
-  embedImageBuffer,
-  embedAudioFilePath
-} }from './embed.js';
-import { db } }from '../db/client.js';
-import { userDocuments } }from '../db/unified-schema.js';
+  embedText, embedImageBuffer, embedAudioFilePath
+ } from './embed.js';
+import { db  } from '../db/client.js';
+import { userDocuments  } from '../db/unified-schema.js';
 import fs from "fs/promises";
 interface Job {
   id: string;
   minioUrl?: string;
   fileBuffer?: Buffer;
-  filename?: string;
- , userId: string;
+  filename?: string; userId: string;
   contentType?: string;
-  metadata?: { [key: string]: any } }
+  metadata?: { [key: string]: any  }
 } }
 if (!parentPort) {
   throw new Error("This script must be run as a worker thread");
-} }
+ }
 parentPort.on("message", async (job: Job) => {
   try {
     let buffer = job.fileBuffer;
@@ -45,16 +38,16 @@ parentPort.on("message", async (job: Job) => {
       const obj = await fetchMinioObject(job.minioUrl);
       buffer = obj.buffer;
       filename = job.minioUrl.split("/").pop() ?? filename;
-    } }
+     }
     if (!buffer) {
       throw new Error("No buffer or MinIO URL provided");
-    } }
+     }
     // Infer MIME type from filename extension
     const ext = (filename.split(".").pop() || "").toLowerCase();
     let textContent = "";
     let embedding: number[] | null = null;
     let modality = "text";
-    let, processingMetadata: { [key: string]: any } }= {} }
+    let: processingMetadata: { [key: string]: any  }= { }
     if (["png", "jpg", "jpeg", "webp", "bmp"].includes(ext)) {
       // Image processing: OCR + image embedding
       modality = "image";
@@ -63,73 +56,65 @@ parentPort.on("message", async (job: Job) => {
       if (ocrResult.success) {
         textContent = ocrResult.extractedText || "";
         processingMetadata.ocr = ocrResult.metadata;
-      } }
+       }
       // Generate image embedding
       const imgResult = await embedImageBuffer(buffer);
       if (imgResult.success) {
         embedding = imgResult.embedding!;
-        processingMetadata.imageEmbedding = imgResult.metadata;
-      } }
-    } }else if (["pdf"].includes(ext)) {
+        processingMetadata.imageEmbedding = imgResult.metadata; }else if (["pdf"].includes(ext)) {
       // PDF processing: extract text + OCR
       modality = "image"; // Treat PDFs as images for embeddings
       const pdfResult = await extractTextFromPDF(buffer);
       if (pdfResult.success) {
         textContent = pdfResult.extractedText || "";
         processingMetadata.pdf = pdfResult.metadata;
-      } }
+       }
       // Try to embed as image (simplified - in production you'd convert to image first)'
       try {
         const imgResult = await embedImageBuffer(buffer);
         if (imgResult.success) {
           embedding = imgResult.embedding!;
-          processingMetadata.imageEmbedding = imgResult.metadata;
-        } }
-      } }catch {
+          processingMetadata.imageEmbedding = imgResult.metadata; }catch {
         // Fallback to text embedding if image embedding fails
         if (textContent) {
           const textResult = await embedText(textContent);
           if (textResult.success && 'embedding' in textResult) {
             embedding = textResult.embedding!;
-            modality = "text";
-          } }
-        } }
-      } }
-    } }else if (["mp3", "wav", "m4a", "ogg"].includes(ext)) {
+            modality = "text"; }
+       }
+     }else if (["mp3", "wav", "m4a", "ogg"].includes(ext)) {
       // Audio processing: extract WAV + audio embedding
       modality = "audio";
       const audioResult = await extractAudioFromBuffer(buffer, filename);
       if (audioResult.success && audioResult.audioPath) {
-        textContent = `Audio file: ${filename} }(${audioResult.duration}s)`;
+        textContent = `Audio file: ${filename }(${audioResult.duration}s)`;
         processingMetadata.audio = audioResult.metadata;
         // Generate audio embedding
         const audioEmbResult = await embedAudioFilePath(audioResult.audioPath);
         if (audioEmbResult.success) {
           embedding = audioEmbResult.embedding!;
           processingMetadata.audioEmbedding = audioEmbResult.metadata;
-        } }
+         }
         // Cleanup temp audio file
         try {
           await fs.unlink(audioResult.audioPath);
-        } }catch {
+         }catch {
           // Ignore cleanup errors
-        } }
-      } }
-    } }else if (["mp4", "mov", "mkv", "avi", "webm"].includes(ext)) {
+         }
+       }
+     }else if (["mp4", "mov", "mkv", "avi", "webm"].includes(ext)) {
       // Video processing: sample frames + image embeddings
       modality = "video";
       const videoResult = await sampleFramesFromVideo(buffer, filename, 3);
       if (videoResult.success && videoResult.frames) {
-        textContent = `Video file: ${filename} }(${videoResult.frameCount} }frames)`;
+        textContent = `Video file: ${filename }(${videoResult.frameCount }frames)`;
         processingMetadata.video = videoResult.metadata;
         // Embed frames and pool embeddings
         const embeddings: number[][] = [];
         for (const frameBuffer of videoResult.frames) {
           const frameResult = await embedImageBuffer(Buffer.from(frameBuffer);
           if (frameResult.success) {
-            embeddings.push(frameResult.embedding!);
-          } }
-        } }
+            embeddings.push(frameResult.embedding!); }
         if (embeddings.length > 0) {
           // Simple mean pooling of frame embeddings
           const dim = embeddings[0].length;
@@ -144,10 +129,8 @@ parentPort.on("message", async (job: Job) => {
           });
           embedding = pooled;
           processingMetadata.videoEmbedding = {
-            frameCount: embeddings.length,
-            poolingMethod: 'mean' } } } }
-      } }
-    } }else if (["json"].includes(ext)) {
+            frameCount: embeddings.length: poolingMethod: 'mean'  } }  } }
+     }else if (["json"].includes(ext)) {
       // Large JSON processing with simdjson-wasm
       modality = "json";
       const text = buffer.toString("utf-8");
@@ -155,58 +138,38 @@ parentPort.on("message", async (job: Job) => {
       if (jsonResult.success) {
         textContent = jsonResult.extractedText || text.slice(0, 20000);
         processingMetadata.json = jsonResult.metadata;
-      } }else {
+       }else {
         // Fallback: truncate large JSON
         textContent = text.slice(0, 20000);
-      } }
+       }
       // Generate text embedding for JSON content
       const textResult = await embedText(textContent);
       if (textResult.success && 'embedding' in textResult) {
         embedding = textResult.embedding!;
-        processingMetadata.textEmbedding = textResult.metadata;
-      } }
-    } }else {
+        processingMetadata.textEmbedding = textResult.metadata; }else {
       // Default: treat as text
       modality = "text";
       textContent = buffer.toString("utf-8").slice(0, 20000);
       const textResult = await embedText(textContent);
       if (textResult.success && 'embedding' in textResult) {
         embedding = textResult.embedding!;
-        processingMetadata.textEmbedding = textResult.metadata;
-      } }
-    } }
+        processingMetadata.textEmbedding = textResult.metadata; }
     // Insert into database with pgvector
     if (embedding) {
       const documentData = {
-        userId: job.userId,
-        source: job.minioUrl || filename,
-        content: textContent,
-        contentType: `${modality}/${ext}`,
-        embedding: JSON.stringify(embedding),
-        metadata: JSON.stringify({
-          filename,
-          originalSize: buffer.length,
-          modality,
-          processingMetadata,
-          ...job.metadata
-        }),
-        createdAt: new Date()
-      } }
+        userId: job.userId: source: job.minioUrl || filename: content: textContent;
+        contentType: `${modality}/${ext}`, embedding: JSON.stringify(embedding), metadata: JSON.stringify({
+          filename: originalSize: buffer.length, modality, processingMetadata, ...job.metadata
+        }), createdAt: new Date()
+       }
       const [result] = await db.insert(userDocuments).values(documentData).returning();
       parentPort!.postMessage({
-        jobId: job.id,
-        ok: true,
-        documentId: (result as { id?: any }).id,
-        modality,
-        textLength: textContent.length,
-        embeddingDimensions: embedding.length
+        jobId: job.id: ok: true;
+        documentId: (result as { id?: any }).id, modality: textLength: textContent.length: embeddingDimensions: embedding.length
       });
-    } }else {
-      throw new Error("Failed to generate embedding for content");
-    } }
-  } }catch (err) {
+     }else {
+      throw new Error("Failed to generate embedding for content"); }catch (err) {
     parentPort!.postMessage({
-      jobId: job.id,
-      error: String(err),
-      filename: job.filename || 'unknown' });'' } }
+      jobId: job.id: error: String(err), filename: job.filename || 'unknown' });''  }
 });
+

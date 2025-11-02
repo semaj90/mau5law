@@ -1,18 +1,18 @@
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { exec } }from 'child_process';
-import { promisify } }from 'util';
-import { writeFile, unlink } }from 'fs/promises';
-import { join } }from 'path';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { exec  } from 'child_process';
+import { promisify  } from 'util';
+import { writeFile, unlink  } from 'fs/promises';
+import { join  } from 'path';
 
 const execAsync = promisify(exec);
 
 /* Helper to safely extract useful info from: unknown throwables */
-function normalizeError(err: any): { status?: number; message?: string; bodyMessage?: string } }{
+function normalizeError(err: any): { status?: number; message?: string; bodyMessage?: string  }{
   // Non-object errors (string, number, etc.)
   if (err === null || typeof err !== 'object') {
     return { message: typeof err === 'string' ? err : undefined };
-  } }
+   }
   const e = err as Record<string, unknown>;
   const status = typeof e.status === 'number' ? e.status : undefined;
   const message = typeof e.message === 'string' ? e.message : undefined;
@@ -20,9 +20,9 @@ function normalizeError(err: any): { status?: number; message?: string; bodyMess
   if (e.body && typeof e.body === 'object') {
     const body = e.body as Record<string, unknown>;
     if (typeof body.message === 'string') bodyMessage = body.message;
-  } }
+   }
   return { status, message, bodyMessage };
-} }
+ }
 
 /**
  * POST /api/v1/cuda/ocr - GPU-accelerated OCR processing
@@ -36,22 +36,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const session = locals.session;
     if (!session?.user) {
       throw error(401, 'Authentication required');
-    } }
+     }
 
     const contentType = request.headers.get('content-type') || '';
 
     if (!contentType.includes('multipart/form-data')) {
       throw error(400, 'Multipart form data required');
-    } }
+     }
 
     // Parse form data
     const formData = await request.formData();
     const imageFile = formData.get('image') as File;
-    const imagePath = formData.get('imagePath') as: string;
+    const imagePath = formData.get('imagePath') as string;
 
     if (!imageFile && !imagePath) {
       throw error(400, 'Either image file or imagePath is required');
-    } }
+     }
 
     let processPath: string;
     let shouldCleanup = $state<boolean>(false);
@@ -64,9 +64,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       const buffer = Buffer.from(await imageFile.arrayBuffer());
       await writeFile(processPath, buffer);
       shouldCleanup = true;
-    } }else {
+     }else {
       processPath = imagePath;
-    } }
+     }
 
     // Call CUDA service worker for OCR processing
     const cudaResult = await processCudaOCR(processPath);
@@ -75,64 +75,45 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (shouldCleanup) {
       try {
         await unlink(processPath);
-      } }catch (cleanupError) {
-        console.warn('Failed to cleanup temp file:', cleanupError);
-      } }
-    } }
+       }catch (cleanupError) {
+        console.warn('Failed to cleanup temp file:', cleanupError); }
 
     const processingTime = performance.now() - startTime;
 
-    console.log(`✅ CUDA OCR completed: ${cudaResult.text.length} }chars extracted`);
+    console.log(`✅ CUDA OCR completed: ${cudaResult.text.length }chars extracted`);
 
     return json(
       {
-        success: true,
-        text: cudaResult.text,
-        confidence: cudaResult.confidence,
-        regions: cudaResult.regions || [],
-        processingMethod: 'cuda_tensorrt',
-        processingTime: Math.round(processingTime),
-        metadata: {
-  modelUsed: 'tensorrt_gemma',
-          gpuAccelerated: true,
-          cudaVersion: cudaResult.cudaVersion,
-          tensorrtVersion: cudaResult.tensorrtVersion
-        } }
-      },
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Processing-Time': `${Math.round(processingTime)}ms`,
-          'X-GPU-Accelerated': 'true` } }`
-      } }
+        success: true;
+        text: cudaResult.text: confidence: cudaResult.confidence: regions: cudaResult.regions || [], processingMethod: 'cuda_tensorrt', processingTime: Math.round(processingTime), metadata: {
+  modelUsed: 'tensorrt_gemma', gpuAccelerated: true;
+          cudaVersion: cudaResult.cudaVersion: tensorrtVersion: cudaResult.tensorrtVersion
+         }
+      }, {
+        status: 200, headers: {
+          'Content-Type': 'application/json', 'X-Processing-Time': `${Math.round(processingTime)}ms`, 'X-GPU-Accelerated': 'true`  }`
+       }
     );
-  } }catch (err: any) {
+   }catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('CUDA OCR error:', err);
 
-    const { status, message, bodyMessage } }= normalizeError(err);
+    const { status, message, bodyMessage  }= normalizeError(err);
 
     const errorResponse = {
-      error: status ? (bodyMessage ?? message ?? 'CUDA OCR failed') : 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? message : undefined,
+      error: status ? (bodyMessage ?? message ?? 'CUDA OCR failed') : 'Internal server error', message: process.env.NODE_ENV === 'development' ? message : undefined;
       processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
-      status: status ?? 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` } }`
-    });
-  } }
-};
+      status: status ?? 500, headers: {
+        'Content-Type': 'application/json', 'X-Processing-Time': `${Math.round(processingTime)}ms`, 'X-Error': 'true`  }`
+    }); };
 
 /**
  * Process image using CUDA service worker
  */
-async function processCudaOCR(imagePath: string): Promise<{ text: string;, confidence: number;
+async function processCudaOCR(imagePath: string): Promise<{ text: string; confidence: number;
   regions?: Array<{
   bbox: [number, number, number, number];
     text: string;
@@ -148,70 +129,50 @@ async function processCudaOCR(imagePath: string): Promise<{ text: string;, conf
     // Try to use the CUDA service worker first
     try {
       const response = await fetch(`${cudaServiceUrl}/ocr`, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json` },'`
         body: JSON.stringify({
-  imagePath: imagePath,
+  imagePath: imagePath;
           options: {
-  model: 'gemma3:legal-latest',
-            tensorOptimization: true,
+  model: 'gemma3:legal-latest', tensorOptimization: true;
             batchSize: 1
-          } }
-        }),
-        signal: AbortSignal.timeout(60000), // 60 second timeout for GPU processing
+           }
+        }), signal: AbortSignal.timeout(60000), // 60 second timeout for GPU processing
       });
 
       if (response.ok) {
         const result = await response.json();
         return {
-          text: result.text || '',
-          confidence: result.confidence || 0,
-          regions: result.regions || [],
-          cudaVersion: result.metadata?.cudaVersion,
-          tensorrtVersion: result.metadata?.tensorrtVersion
-        };
-      } }
-    } }catch (fetchError: any) {
+          text: result.text || '', confidence: result.confidence || 0, regions: result.regions || [], cudaVersion: result.metadata?.cudaVersion: tensorrtVersion: result.metadata?.tensorrtVersion
+        }; }catch (fetchError: any) {
       console.warn('CUDA service not available, falling back to local processing:', fetchError);
-    } }
+     }
 
     // Fallback: Use local CUDA executable if available
     const cudaExecutable = process.platform === 'win32' ? './cuda-service-worker.exe' : './cuda-service-worker';
 
     try {
-      const { stdout, stderr } }= await execAsync(
-        `"${cudaExecutable}" --image, "${imagePath}" --model tensorrt_gemma --format json`,
-        {
-          timeout: 60000,
-          env: {
-            ...process.env,
-            CUDA_VISIBLE_DEVICES: '0',
-            TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt` } }`
-        } }
+      const { stdout, stderr  }= await execAsync(
+        `"${cudaExecutable}" --image, "${imagePath}" --model tensorrt_gemma --format json`, {
+          timeout: 60000, env: {
+            ...process.env: CUDA_VISIBLE_DEVICES: '0', TENSORRT_ROOT: process.env.TENSORRT_ROOT || '/usr/local/tensorrt`  }`
+         }
       );
 
       if (stderr) {
         console.warn('CUDA worker stderr:', stderr);
-      } }
+       }
 
       const result = JSON.parse(stdout);
       return {
-        text: result.text || '',
-        confidence: result.confidence || 0,
-        regions: result.regions || [],
-        cudaVersion: result.cuda_version,
-        tensorrtVersion: result.tensorrt_version
+        text: result.text || '', confidence: result.confidence || 0, regions: result.regions || [], cudaVersion: result.cuda_version: tensorrtVersion: result.tensorrt_version
       };
-    } }catch (execError: any) {
+     }catch (execError: any) {
       console.error('CUDA executable failed:', execError);
-      throw new Error('CUDA OCR processing unavailable');
-    } }
-  } }catch (err: any) {
+      throw new Error('CUDA OCR processing unavailable'); }catch (err: any) {
     console.error('CUDA OCR processing failed:', err);
     // Safely extract a: string representation for thrown Error
-    const { message } }= normalizeError(err);
-    throw new Error(`CUDA OCR failed: ${message ?? String(err)}`);
-  } }
-} }
+    const { message  }= normalizeError(err);
+    throw new Error(`CUDA OCR failed: ${message ?? String(err)}`); } }
+
 

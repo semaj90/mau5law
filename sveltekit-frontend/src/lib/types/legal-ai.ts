@@ -1,7 +1,7 @@
 /**
  * TypeScript definitions for N64-Inspired Legal AI Integration
  */
-export interface LegalDocument { id: string;, title: string;
+export interface LegalDocument { id: string; title: string;
   content: string;
   metadata: {
     caseId?: string;
@@ -14,8 +14,8 @@ export interface LegalDocument { id: string;, title: string;
   };
   embeddings?: Float32Array;
   processed?: boolean;
-} }
-export interface ProcessingStage { name: string;, duration: number;
+ }
+export interface ProcessingStage { name: string; duration: number;
   compressionRatio?: number;
   outputSize?: number;
   texturesGenerated?: number;
@@ -25,36 +25,37 @@ export interface ProcessingStage { name: string;, duration: number;
   cacheHitRate?: number;
   componentsGenerated?: number;
   nesStyled?: boolean;
-} }
-export interface ProcessingPipeline { documentId: string;, stages: ProcessingStage[];
+ }
+export interface ProcessingPipeline { documentId: string; stages: ProcessingStage[];
   totalTime: number;
   compressionAchieved: number;
   cacheHits: number;
-} }
+ }
 export interface CacheHierarchy {
   l1: Map<string, unknown>; // Browser memory cache
   l2: Map<string, unknown>; // CHR-ROM patterns
   l3: Map<string, unknown>; // Palace cache
   getTotalHits: () => number;
-} }
-export interface N64VisualizationState { documentId: string;, lodLevel: 0 | 1 | 2 | 3; // N64-inspired LOD levels
+ }
+export interface N64VisualizationState { documentId: string; lodLevel: 0 | 1 | 2 | 3; // N64-inspired LOD levels
   webgpuEnabled: boolean;
   texturesLoaded: number;
-  performanceMetrics: { frameRate: number;, memoryUsage: number;
+  performanceMetrics: { frameRate: number; memoryUsage: number;
     cacheHitRate: number;
     compressionRatio: number;
   };
-} }
-export interface EnhancedBitsComponent { name: string;, type: 'Button' | 'Card' | 'Dialog' | 'Input' | 'Label' | 'Alert';
+ }
+export interface EnhancedBitsComponent { name: string; type: 'Button' | 'Card' | 'Dialog' | 'Input' | 'Label' | 'Alert';
   nesStyled: boolean;
   svelte5Compatible: boolean;
   properties: Record<string, unknown>;
-} }
-export interface SimdTileResult { tiles: Uint8Array[];, compressionRatio: number;
+ }
+export interface SimdTileResult { tiles: Uint8Array[]; compressionRatio: number;
   processingTime: number;
   simdOptimized: boolean;
-} }
-export interface YoRHaMipmapResult { textures: GPUTexture[];, mipmapLevels: number;
+ }
+export interface YoRHaMipmapResult { textures: GPUTexture[]; mipmapLevels: number;
   rtxOptimized: boolean;
   streamingEnabled: boolean;
 }
+

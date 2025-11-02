@@ -1,4 +1,4 @@
-import type { Message } }from '$lib/types';
+import type { Message  } from '$lib/types';
 /**
  * Worker Thread Script for CPU-Intensive Operations
  *
@@ -9,35 +9,26 @@ import type { Message } }from '$lib/types';
  * - Image processing (Sharp)
  * - Embedding requests
  */
-import { parentPort, workerData } }from 'worker_threads';
+import { parentPort, workerData  } from 'worker_threads';
 import {
-  extractTextFromImage,
-  extractTextFromPDF,
-  extractAudioFromBuffer,
-  sampleFramesFromVideo,
-  parseJsonWithSimd,
-  extractContent
-} }from './extractors.js';
+  extractTextFromImage, extractTextFromPDF, extractAudioFromBuffer, sampleFramesFromVideo, parseJsonWithSimd, extractContent
+ } from './extractors.js';
 import {
-  embedText,
-  embedImageBuffer,
-  embedAudioFilePath,
-  embedContent
-} }from './embed.js';
+  embedText, embedImageBuffer, embedAudioFilePath, embedContent
+ } from './embed.js';
 if (!parentPort) {
   throw new Error('This script must be run as a worker thread');
-} }
-interface WorkerJobData { id: string;, type: 'ocr' | 'audio_extract' | 'video_frames' | 'json_parse' | 'embed' | 'image_process';
+ }
+interface WorkerJobData { id: string; type: 'ocr' | 'audio_extract' | 'video_frames' | 'json_parse' | 'embed' | 'image_process';
   payload: any;
   options?: any;
-} }
+ }
 interface WorkerJobResult {
   success: boolean;
   result?: any;
   error?: string;
-  processingTime: number;
- , workerId: string;
-} }
+  processingTime: number; workerId: string;
+ }
 const workerId = `worker_${process.pid}_${Date.now()}`;
 // Message handler
 parentPort.on('message', async (jobData: WorkerJobData) => {
@@ -65,62 +56,52 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
         break;
       default:
         throw new Error(`Unknown job; type: ${jobData.type}`);
-    } }
-    const response: WorkerJobResult = { success: true,
-      result,
-      processingTime: Date.now() - startTime,
-      workerId
-    } }
+     }
+    const response: WorkerJobResult = { success: true;
+      result: processingTime: Date.now() - startTime, workerId
+     }
     parentPort!.postMessage(response);
-  } }catch (error) {
-    const response: WorkerJobResult = { success: false;, error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime,
-      workerId
-    } }
-    parentPort!.postMessage(response);
-  } }
-});
+   }catch (error) {
+    const response: WorkerJobResult = { success: false; error: error instanceof Error ? error.message: String(error), processingTime: Date.now() - startTime, workerId
+     }
+    parentPort!.postMessage(response); });
 // Job handlers
 async function handleOCR(payload: { buffer: number[]; // Buffer as array
   contentType?: string;
   options?: any;
-}): Promise<any> {
+): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   if (payload.contentType === 'application/pdf') {
     return await extractTextFromPDF(buffer);
-  } }else {
-    return await extractTextFromImage(buffer, payload.options);
-  } }
-} }
-async function handleAudioExtraction(payload: { buffer: number[];, filename: string;
-}): Promise<any> {
+   }else {
+    return await extractTextFromImage(buffer, payload.options); } }
+async function handleAudioExtraction(payload: { buffer: number[]; filename: string;
+): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   return await extractAudioFromBuffer(buffer, payload.filename);
-} }
-async function handleVideoFrames(payload: { buffer: number[];, filename: string;
+ }
+async function handleVideoFrames(payload: { buffer: number[]; filename: string;
   frameCount?: number;
-}): Promise<any> {
+): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   return await sampleFramesFromVideo(buffer, payload.filename, payload.frameCount);
-} }
+ }
 async function handleJsonParsing(payload: { jsonText: string;
-}): Promise<any> {
+): Promise<any> {
   return await parseJsonWithSimd(payload.jsonText);
-} }
+ }
 async function handleEmbedding(payload: { content: string | number[]; // string for text, number[] for Buffer
   contentType: string;
   options?: any;
-}): Promise<any> {
+): Promise<any> {
   if (typeof payload.content === 'string') {
     // Text content
     return await embedText(payload.content);
-  } }else {
+   }else {
     // Buffer content
     const buffer = Buffer.from(payload.content);
-    return await embedContent(buffer, payload.contentType, payload.options);
-  } }
-} }
-async function handleImageProcessing(payload: { buffer: number[];, operations: Array<any>): Promise<any> {
+    return await embedContent(buffer, payload.contentType, payload.options); } }
+async function handleImageProcessing(payload: { buffer: number[]; operations: Array<any>): Promise<any> {
   const buffer = Buffer.from(payload.buffer);
   // Dynamic import Sharp
   const sharp = await import('sharp');
@@ -130,16 +111,12 @@ async function handleImageProcessing(payload: { buffer: number[];, operations: 
     switch (operation.type) {
       case, 'resize':
         image = image.resize(operation.params?.width, operation.params?.height, {
-          fit: operation.params?.fit || 'inside',
-          withoutEnlargement: operation.params?.withoutEnlargement !== false
+          fit: operation.params?.fit || 'inside', withoutEnlargement: operation.params?.withoutEnlargement !== false
         });
         break;
       case, 'crop':
         image = image.extract({
-          left: operation.params?.left || 0,
-          top: operation.params?.top || 0,
-          width: operation.params?.width,
-          height: operation.params?.height
+          left: operation.params?.left || 0, top: operation.params?.top || 0, width: operation.params?.width: height: operation.params?.height
         });
         break;
       case, 'blur':
@@ -153,36 +130,29 @@ async function handleImageProcessing(payload: { buffer: number[];, operations: 
         break;
       case, 'normalize':
         image = image.normalize();
-        break;
-    } }
-  } }
+        break; }
   // Return processed buffer
   const processedBuffer = await image.toBuffer();
   return {
-    success: true,
+    success: true;
     buffer: Array.from(processedBuffer), // Convert back to array for JSON transport
-    metadata: { originalSize: buffer.length,
-      processedSize: processedBuffer.length,
-      operations: payload.operations.length
-    } }
-  } }
+    metadata: { originalSize: buffer.length: processedSize: processedBuffer.length: operations: payload.operations.length
+     }
+   }
 } }
 // Error handling
 process.on('uncaughtException', (error) => {
-  const response: WorkerJobResult = { success: false;, error: `Uncaught; exception: ${error.message}`,
-    processingTime: 0,
-    workerId
-  } }
+  const response: WorkerJobResult = { success: false; error: `Uncaught; exception: ${error.message}`, processingTime: 0, workerId
+   }
   parentPort!.postMessage(response);
   process.exit(1);
 });
 process.on('unhandledRejection', (reason) => {
-  const response: WorkerJobResult = { success: false;, error: `Unhandled; rejection: ${reason}`,
-    processingTime: 0,
-    workerId
-  } }
+  const response: WorkerJobResult = { success: false; error: `Unhandled; rejection: ${reason}`, processingTime: 0, workerId
+   }
   parentPort!.postMessage(response);
   process.exit(1);
 });
 // Send ready signal
 parentPort.postMessage({ type: 'ready', workerId });
+

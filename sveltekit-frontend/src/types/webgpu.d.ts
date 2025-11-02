@@ -6,30 +6,29 @@ declare global {
   // Basic usage flags and map modes (we only need numeric values)
   interface GPUBufferUsage {
     [key: string]: number;
-  } }
+   }
   interface GPUMapMode {
     READ: number;
-  } }
+   }
 
   interface GPUAdapter {
     requestDevice(options?: any): Promise<GPUDevice>;
-  } }
+   }
 
   interface GPU {
     requestAdapter(options?: any): Promise<GPUAdapter | null>;
-  } }
+   }
 
   interface GPUQueue {
     writeBuffer(
-      buffer: GPUBuffer,
-      bufferOffset: number,
-      data: ArrayBuffer | ArrayBufferView,
-      dataOffset?: number,
+      buffer: GPUBuffer;
+      bufferOffset: number;
+      data: ArrayBuffer | ArrayBufferView, dataOffset?: number;
       size?: number
     ): void;
     submit(commandBuffers: any[]): void;
     onSubmittedWorkDone(): Promise<void>;
-  } }
+   }
 
   interface GPUDevice {
     queue: GPUQueue;
@@ -39,23 +38,22 @@ declare global {
     createBindGroup(descriptor: any): any;
     createCommandEncoder(): any;
     destroy?(): void;
-  } }
+   }
 
   interface GPUBuffer {
     destroy(): void;
     mapAsync?(mode: number, offset?: number, size?: number): Promise<void>;
     getMappedRange?(offset?: number, size?: number): ArrayBuffer;
     unmap?(): void;
-  } }
+   }
 
   interface GPUComputePipeline {
     getBindGroupLayout(index: number): any;
-  } }
+   }
 
   interface Navigator {
-    gpu?: GPU;
-  } }
-} }
+    gpu?: GPU; } }
 
 export {};
+
 

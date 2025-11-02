@@ -1,25 +1,22 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * 🌉 Hybrid RAG + SIMD Pipeline Bridge
  *
  * Connects the RAG Knowledge Pipeline with Advanced SIMD Pipeline
  * Enables seamless flow: Redis → SIMD → RAG → Gemma → Ranking
  *
- * Integration, Points:
+ * Integration: Points:
  * - SIMD Pipeline (advanced-simd-pipeline.ts:52) - 384-dim tensors
  * - RAG Pipeline (rag-knowledge-pipeline.ts) - Embed → Summarize → Index → Rank
  * - MCP Multi-core Server (mcp-multicore-server.mjs) - Worker distribution
  */
 
-import { advancedPipeline } }from './advanced-simd-pipeline';
-import type { StreamingResult, PipelineExecutionResult } }from './advanced-simd-pipeline';
-import { ragKnowledgePipeline } }from './rag-knowledge-pipeline';
+import { advancedPipeline  } from './advanced-simd-pipeline';
+import type { StreamingResult, PipelineExecutionResult  } from './advanced-simd-pipeline';
+import { ragKnowledgePipeline  } from './rag-knowledge-pipeline';
 import type {
-  RAGDocument,
-  RAGPipelineResult,
-  RankedDocument,
-  SynthesisRankingConfig
-} }from './rag-knowledge-pipeline';
+  RAGDocument, RAGPipelineResult, RankedDocument, SynthesisRankingConfig
+ } from './rag-knowledge-pipeline';
 
 // ============================================================================
 // Hybrid Pipeline Configuration
@@ -32,7 +29,7 @@ export interface HybridPipelineConfig {
   };
 
   // RAG Configuration
-  rag: { embeddingModel: 'embeddinggemma:latest';, synthesisModel: 'gemma3:legal-latest';
+  rag: { embeddingModel: 'embeddinggemma:latest'; synthesisModel: 'gemma3:legal-latest';
     enableFunctionCalling: boolean;
     cacheResults: boolean;
   };
@@ -41,54 +38,41 @@ export interface HybridPipelineConfig {
   ranking: SynthesisRankingConfig;
 
   // MCP Integration
-  mcp: { enableMulticore: boolean;, workerCount: number;
+  mcp: { enableMulticore: boolean; workerCount: number;
     distributeLoad: boolean;
   };
-} }
+ }
 
-export interface HybridPipelineResult { simdResults: PipelineExecutionResult;, ragResults: RAGPipelineResult;
+export interface HybridPipelineResult { simdResults: PipelineExecutionResult; ragResults: RAGPipelineResult;
   finalDocuments: RankedDocument[];
-  performance: { simdTime: number;, ragTime: number;
+  performance: { simdTime: number; ragTime: number;
     totalTime: number;
     throughput: number; // docs per second
   };
-  metadata: { cacheHits: number;, gpuAccelerated: boolean;
+  metadata: { cacheHits: number; gpuAccelerated: boolean;
     workersUsed: number;
   };
-} }
+ }
 
 // ============================================================================
 // Hybrid RAG + SIMD Pipeline Bridge
 // ============================================================================
 
 export class HybridRAGSIMDBridge {
-  private defaultConfig: HybridPipelineConfig = { simd: { chunkSize: 128,
-      gpuBatchSize: 32,
-      tensorDimensions: 384,
-      enableCompression: true
-    },
-    rag: { embeddingModel: 'embeddinggemma:latest',
-      synthesisModel: 'gemma3:legal-latest',
-      enableFunctionCalling: true,
+  private defaultConfig: HybridPipelineConfig = { simd: { chunkSize: 128, gpuBatchSize: 32, tensorDimensions: 384, enableCompression: true
+    }, rag: { embeddingModel: 'embeddinggemma:latest', synthesisModel: 'gemma3:legal-latest', enableFunctionCalling: true;
       cacheResults: true
-    },
-    ranking: { weights: { relevance: 0.5,
-        keywords: 0.3,
-        synthesis: 0.2
-      },
-      keywordExtractor: 'hybrid',
-      enableGemmaFunctionCalling: true,
+    }, ranking: { weights: { relevance: 0.5, keywords: 0.3, synthesis: 0.2
+      }, keywordExtractor: 'hybrid', enableGemmaFunctionCalling: true;
       cacheResults: true
-    },
-    mcp: { enableMulticore: true,
-      workerCount: 4,
-      distributeLoad: true
-    } }
+    }, mcp: { enableMulticore: true;
+      workerCount: 4, distributeLoad: true
+     }
   };
 
-  constructor(private, config: Partial<HybridPipelineConfig> = {}) {
+  constructor(private: config: Partial<HybridPipelineConfig> = {}) {
     this.config = { ...this.defaultConfig, ...config };
-  } }
+   }
 
   // ==========================================================================
   // WORKFLOW 1: Redis → SIMD → RAG (Full Pipeline)
@@ -101,10 +85,9 @@ export class HybridRAGSIMDBridge {
    * 3. Convert SIMD results to RAG documents
    * 4. RAG pipeline: Embed → Summarize → Index → Rank
    */
-  async executeFullPipeline(
-   , redisCacheKey: string,
-    query: string,
-    config: Partial<HybridPipelineConfig> = {} }
+  async executeFullPipeline( redisCacheKey: string;
+    query: string;
+    config: Partial<HybridPipelineConfig> = { }
   ): Promise<HybridPipelineResult> {
     const startTime = performance.now();
     const finalConfig = { ...this.defaultConfig, ...config };
@@ -112,7 +95,7 @@ export class HybridRAGSIMDBridge {
     console.log('🌉 Starting Hybrid RAG + SIMD Pipeline');
     console.log(`   Redis Key: ${redisCacheKey}`);
     console.log(`   Query: "${query}"`);
-    console.log(`   Config: SIMD=${finalConfig.simd.tensorDimensions}D, RAG=${finalConfig.rag.embeddingModel}`);
+    console.log(`   Config: SIMD=${finalConfig.simd.tensorDimensions}D: RAG=${finalConfig.rag.embeddingModel}`);
 
     // ========================================================================
     // STAGE 1: SIMD Pipeline (Redis → GPU Tensors)
@@ -125,7 +108,7 @@ export class HybridRAGSIMDBridge {
 
     const simdTime = performance.now() - simdStartTime;
 
-    console.log(`✅ SIMD Complete: ${simdResults.totalResults} }results, ${simdTime.toFixed(2)}ms`);
+    console.log(`✅ SIMD Complete: ${simdResults.totalResults }results, ${simdTime.toFixed(2)}ms`);
 
     // ========================================================================
     // STAGE 2: Convert SIMD Results to RAG Documents
@@ -135,7 +118,7 @@ export class HybridRAGSIMDBridge {
 
     const ragDocuments = await this.convertSIMDToRAG(simdResults, redisCacheKey);
 
-    console.log(`✅ Converted ${ragDocuments.length} }SIMD results to RAG documents`);
+    console.log(`✅ Converted ${ragDocuments.length }SIMD results to RAG documents`);
 
     // ========================================================================
     // STAGE 3: RAG Pipeline (Embed → Summarize → Index → Rank)
@@ -145,14 +128,12 @@ export class HybridRAGSIMDBridge {
     const ragStartTime = performance.now();
 
     const ragResults = await ragKnowledgePipeline.executePipeline(
-      ragDocuments,
-      query,
-      finalConfig.ranking
+      ragDocuments, query, finalConfig.ranking
     );
 
     const ragTime = performance.now() - ragStartTime;
 
-    console.log(`✅ RAG Complete: ${ragResults.documents.length} }ranked documents, ${ragTime.toFixed(2)}ms`);
+    console.log(`✅ RAG Complete: ${ragResults.documents.length }ranked documents, ${ragTime.toFixed(2)}ms`);
 
     // ========================================================================
     // STAGE 4: Performance Metrics
@@ -165,25 +146,16 @@ export class HybridRAGSIMDBridge {
     console.log(`   - SIMD Time: ${simdTime.toFixed(2)}ms`);
     console.log(`   - RAG Time: ${ragTime.toFixed(2)}ms`);
     console.log(`   - Total Time: ${totalTime.toFixed(2)}ms`);
-    console.log(`   - Throughput: ${throughput.toFixed(2)} }docs/sec`);
+    console.log(`   - Throughput: ${throughput.toFixed(2) }docs/sec`);
     console.log(`   - GPU Accelerated: ${simdResults.gpuAccelerated}`);
 
     return {
-      simdResults,
-      ragResults,
-      finalDocuments: ragResults.documents,
-      performance: {
-        simdTime,
-        ragTime,
-        totalTime,
-        throughput
-      },
-      metadata: { cacheHits: ragResults.cacheHits,
-        gpuAccelerated: simdResults.gpuAccelerated,
-        workersUsed: finalConfig.mcp.workerCount
-      } }
+      simdResults, ragResults: finalDocuments: ragResults.documents: performance: {
+        simdTime, ragTime, totalTime, throughput
+      }, metadata: { cacheHits: ragResults.cacheHits: gpuAccelerated: simdResults.gpuAccelerated: workersUsed: finalConfig.mcp.workerCount
+       }
     };
-  } }
+   }
 
   // ==========================================================================
   // WORKFLOW, 2: Direct Documents → RAG (No SIMD)
@@ -194,9 +166,9 @@ export class HybridRAGSIMDBridge {
    * Use case New uploads, manual processing
    */
   async processDirectDocuments(
-    documents: RAGDocument[],
-    query: string,
-    config: Partial<HybridPipelineConfig> = {} }
+    documents: RAGDocument[];
+    query: string;
+    config: Partial<HybridPipelineConfig> = { }
   ): Promise<RAGPipelineResult> {
     const finalConfig = { ...this.defaultConfig, ...config };
 
@@ -205,11 +177,9 @@ export class HybridRAGSIMDBridge {
     console.log(`   Query: "${query}"`);
 
     return await ragKnowledgePipeline.executePipeline(
-      documents,
-      query,
-      finalConfig.ranking
+      documents, query, finalConfig.ranking
     );
-  } }
+   }
 
   // ==========================================================================
   // WORKFLOW 3: Search Existing Knowledge Base
@@ -219,10 +189,8 @@ export class HybridRAGSIMDBridge {
    * Search existing RAG knowledge base
    * Use case Query existing indexed documents
    */
-  async searchKnowledgeBase(
-   , query: string,
-    limit = 20,
-    config: Partial<HybridPipelineConfig> = {} }
+  async searchKnowledgeBase( query: string;
+    limit = 20, config: Partial<HybridPipelineConfig> = { }
   ): Promise<RankedDocument[]> {
     const finalConfig = { ...this.defaultConfig, ...config };
 
@@ -231,7 +199,7 @@ export class HybridRAGSIMDBridge {
     console.log(`   Limit: ${limit}`);
 
     return await ragKnowledgePipeline.search(query, limit, finalConfig.ranking);
-  } }
+   }
 
   // ==========================================================================
   // Helper: Convert SIMD Results to RAG Documents
@@ -241,7 +209,7 @@ export class HybridRAGSIMDBridge {
    * Convert SIMD pipeline results (StreamingResult[]) to RAG documents
    */
   private async convertSIMDToRAG(
-    simdResults: PipelineExecutionResult,
+    simdResults: PipelineExecutionResult;
     sourceKey: string
   ): Promise<RAGDocument[]> {
     // Note: SIMD pipeline doesn't return individual results, only metrics'
@@ -255,21 +223,14 @@ export class HybridRAGSIMDBridge {
     // Simulate document extraction from SIMD results
     for (let i = 0; i < Math.min(simdResults.totalResults, 100); i++) {
       documents.push({
-        id: `simd_${sourceKey}_${i}`,
-        content: `SIMD processed document ${i} }from ${sourceKey}`,
-        title: `Document ${i}`,
-        source: `redis:${sourceKey}`,
-        createdAt: new Date(),
-        metadata: { simdChunk: i,
-          totalChunks: simdResults.chunksProcessed,
-          tensorSlices: simdResults.tensorSlices,
-          gpuAccelerated: simdResults.gpuAccelerated
-        } }
+        id: `simd_${sourceKey}_${i}`, content: `SIMD processed document ${i } from ${sourceKey}`, title: `Document ${i}`, source: `redis:${sourceKey}`, createdAt: new Date(), metadata: { simdChunk: i;
+          totalChunks: simdResults.chunksProcessed: tensorSlices: simdResults.tensorSlices: gpuAccelerated: simdResults.gpuAccelerated
+         }
       });
-    } }
+     }
 
     return documents;
-  } }
+   }
 
   // ==========================================================================
   // Helper: Get Pipeline Status
@@ -282,16 +243,14 @@ export class HybridRAGSIMDBridge {
     rag: { available: boolean; embeddingModel: string };
     mcp: { available: boolean; workers: number };
   }> {
-    return { simd: { available: true,
+    return { simd: { available: true;
         tensorDimensions: this.config.simd?.tensorDimensions || 384
-      },
-      rag: { available: true,
+      }, rag: { available: true;
         embeddingModel: this.config.rag?.embeddingModel || 'embeddinggemma:latest` },'`
-      mcp: { available: this.config.mcp?.enableMulticore || false,
-        workers: this.config.mcp?.workerCount || 4
-      } }
+      mcp: { available: this.config.mcp?.enableMulticore || false: workers: this.config.mcp?.workerCount || 4
+       }
     };
-  } }
+   }
 
   // ==========================================================================
   // Helper: Batch Processing with MCP Workers
@@ -300,16 +259,15 @@ export class HybridRAGSIMDBridge {
   /**
    * Process large document batches using MCP multi-core workers
    */
-  async processBatchWithMCP(
-   , documents: RAGDocument[],
-    query: string,
+  async processBatchWithMCP( documents: RAGDocument[];
+    query: string;
     batchSize = 50
   ): Promise<RankedDocument[]> {
     if (!this.config.mcp?.enableMulticore) {
       console.warn('⚠️ MCP multicore disabled, falling back to sequential processing');
       const result = await this.processDirectDocuments(documents, query);
       return result.documents;
-    } }
+     }
 
     console.log('🔧 Processing batch with MCP workers');
     console.log(`   Total documents: ${documents.length}`);
@@ -319,18 +277,16 @@ export class HybridRAGSIMDBridge {
     const batches: RAGDocument[][] = [];
     for (let i = 0; i < documents.length; i += batchSize) {
       batches.push(documents.slice(i, i + batchSize));
-    } }
+     }
 
-    console.log(`   Created ${batches.length} }batches`);
+    console.log(`   Created ${batches.length }batches`);
 
     // Process batches in parallel (simulated MCP worker distribution)
     const results = await Promise.all(
       batches.map(async (batch, index) => {
-        console.log(`   📦 Worker processing batch ${index + 1}/${batches.length} }(${batch.length} }docs)`);
+        console.log(`   📦 Worker processing batch ${index + 1}/${batches.length }(${batch.length }docs)`);
         const result = await ragKnowledgePipeline.executePipeline(
-          batch,
-          query,
-          this.config.ranking
+          batch, query, this.config.ranking
         );
         return result.documents;
       })
@@ -339,12 +295,10 @@ export class HybridRAGSIMDBridge {
     // Merge and re-rank all results
     const allDocuments = results.flat();
 
-    console.log(`✅ MCP batch processing complete: ${allDocuments.length} }documents`);
+    console.log(`✅ MCP batch processing complete: ${allDocuments.length }documents`);
 
     // Re-rank merged results
-    return allDocuments.sort((a, b) => b.combinedScore - a.combinedScore);
-  } }
-} }
+    return allDocuments.sort((a, b) => b.combinedScore - a.combinedScore); } }
 
 // Export singleton with default configuration
 export const hybridBridge = new HybridRAGSIMDBridge();
@@ -354,14 +308,13 @@ export const hybridBridge = new HybridRAGSIMDBridge();
  *
  * // 1. Full hybrid pipeline (Redis → SIMD → RAG)
  * const result = await hybridBridge.executeFullPipeline(
- *   'legal_documents_cache',
- *   'employment contract termination'
+ *   'legal_documents_cache', *   'employment contract termination'
  * );
- * console.log(`Top result: ${result.finalDocuments[0].title} }(score: ${result.finalDocuments[0].combinedScore})`);
+ * console.log(`Top result: ${result.finalDocuments[0].title }(score: ${result.finalDocuments[0].combinedScore})`);
  *
  * // 2. Direct document processing
  * const documents = [
- *   { id: 'doc1', content: '...', title: 'Contract A', source: 'upload', createdAt: new Date() } }
+ *   { id: 'doc1', content: '...', title: 'Contract A', source: 'upload', createdAt: new Date()  }
  * ];
  * const directResult = await hybridBridge.processDirectDocuments(documents, 'liability clause');
  *
@@ -375,12 +328,12 @@ export const hybridBridge = new HybridRAGSIMDBridge();
  * // 5. Custom configuration
  * const customBridge = new HybridRAGSIMDBridge({
  *   ranking: {
- *    , weights: { relevance: 0.7, keywords: 0.2, synthesis: 0.1 } }
- *   },
- *   mcp: {
- *    , enableMulticore: true,
+ *    , weights: { relevance: 0.7, keywords: 0.2, synthesis: 0.1  }
+ *   }, *   mcp: {
+ *    , enableMulticore: true;
  *     workerCount: 8
- *   } }
+ *    }
  * });
  */
+
 

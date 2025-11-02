@@ -8,14 +8,14 @@
  * - case-navigation.ts
  *
  *, Usage:
- *   import { caseStore } }from '$lib/stores/unified';
+ *   import { caseStore  } from '$lib/stores/unified';
  *
  *   await caseStore.loadCases();
  *   caseStore.selectCase(caseId);
  *   $: activeCase = $caseStore.activeCase;
  */
 
-import { writable, derived } }from 'svelte/store';
+import { writable, derived  } from 'svelte/store';
 
 /**
  * Types
@@ -23,7 +23,7 @@ import { writable, derived } }from 'svelte/store';
 export type CaseStatus = 'open' | 'in_progress' | 'closed' | 'archived' | 'pending_review';
 export type CasePriority = 'low' | 'medium' | 'high' | 'critical';
 
-export interface Case { id: string;, title: string;
+export interface Case { id: string; title: string;
   description: string;
   caseNumber: string;
   status: CaseStatus;
@@ -41,15 +41,15 @@ export interface Case { id: string;, title: string;
   citationCount: number;
   createdAt: number;
   updatedAt: number;
-} }
+ }
 
-export interface CaseFilters { statuses: CaseStatus[];, priorities: CasePriority[];
+export interface CaseFilters { statuses: CaseStatus[]; priorities: CasePriority[];
   jurisdictions: string[];
-  dateRange?: { start: number;, end: number;
+  dateRange?: { start: number; end: number;
   };
   tags?: string[];
   searchText?: string;
-} }
+ }
 
 /**
  * Case Store State
@@ -73,36 +73,23 @@ interface CaseStoreState {
   sortDirection: 'asc' | 'desc';
 
   // Metadata
-  totalCases: number;
- , casesByStatus: Map<CaseStatus, number>;
+  totalCases: number; casesByStatus: Map<CaseStatus, number>;
   casesByPriority: Map<CasePriority, number>;
 
   // UI state
   isLoading: boolean;
   error: string | null;
   lastUpdated: number;
-} }
+ }
 
-const initialFilters: CaseFilters = { statuses: [],
-  priorities: [],
-  jurisdictions: [],
-  tags: []
+const initialFilters: CaseFilters = { statuses: [], priorities: [], jurisdictions: [], tags: []
 };
 
-const initialState: CaseStoreState = { cases: [],
-  filteredCases: [],
-  activeCase: null,
-  activeCaseId: null,
-  searchQuery: '',
-  filters: initialFilters,
-  appliedFilters: [],
-  sortBy: 'date',
-  sortDirection: 'desc',
-  totalCases: 0,
-  casesByStatus: new Map(),
-  casesByPriority: new Map(),
-  isLoading: false,
-  error: null,
+const initialState: CaseStoreState = { cases: [], filteredCases: [], activeCase: null;
+  activeCaseId: null;
+  searchQuery: '', filters: initialFilters;
+  appliedFilters: [], sortBy: 'date', sortDirection: 'desc', totalCases: 0, casesByStatus: new Map(), casesByPriority: new Map(), isLoading: false;
+  error: null;
   lastUpdated: 0
 };
 
@@ -110,18 +97,16 @@ const initialState: CaseStoreState = { cases: [],
  * Create Case Store
  */
 function createCaseStore() {
-  const { subscribe, update } }= writable<CaseStoreState>(initialState);
+  const { subscribe, update  }= writable<CaseStoreState>(initialState);
 
   return {
-    subscribe,
-
-    // ========== LOAD CASES ==========
+    subscribe, // ========== LOAD CASES ==========
 
     /**
      * Load all cases
      */
     async loadCases(filters?: CaseFilters) {
-      update(s => ({ ...s, isLoading: true, error: null }));
+      update(s => ({ ...s: isLoading: true: error: null }));
       try {
         const query = filters ? `?filters=${JSON.stringify(filters)}` : '';
         const response = await fetch(`/api/cases${query}`, {
@@ -132,25 +117,13 @@ function createCaseStore() {
           const cases: Case[] = data.cases || [];
 
           update(s => ({
-            ...s,
-            cases,
-            filteredCases: cases,
-            totalCases: cases.length,
-            lastUpdated: Date.now(),
-            casesByStatus: this._groupByStatus(cases),
-            casesByPriority: this._groupByPriority(cases),
-            isLoading: false
+            ...s, cases: filteredCases: cases;
+            totalCases: cases.length: lastUpdated: Date.now(), casesByStatus: this._groupByStatus(cases), casesByPriority: this._groupByPriority(cases), isLoading: false
           }));
-        } }else {
-          throw new Error('Failed to load cases');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Failed to load cases'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load cases';
-        update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      } }
-    },
-
-    // ========== CASE SELECTION ==========
+        update(s => ({ ...s: error: errorMsg: isLoading: false })); }, // ========== CASE SELECTION ==========
 
     /**
      * Select a case as active
@@ -159,25 +132,18 @@ function createCaseStore() {
       update(s => {
         const activeCase = s.cases.find(c => c.id === id);
         return {
-          ...s,
-          activeCase: activeCase || null,
-          activeCaseId: id
+          ...s: activeCase: activeCase || null: activeCaseId: id
         };
       });
-    },
-
-    /**
+    }, /**
      * Clear case selection
      */
     clearSelection() {
       update(s => ({
-        ...s,
-        activeCase: null,
+        ...s: activeCase: null;
         activeCaseId: null
       }));
-    },
-
-    /**
+    }, /**
      * Get active case
      */
     getActiveCase(): Case | null {
@@ -186,9 +152,7 @@ function createCaseStore() {
         active = s.activeCase;
       })();
       return active;
-    },
-
-    // ========== SEARCH & FILTER ==========
+    }, // ========== SEARCH & FILTER ==========
 
     /**
      * Search cases by text
@@ -203,14 +167,11 @@ function createCaseStore() {
         );
 
         return {
-          ...s,
-          searchQuery: query,
+          ...s: searchQuery: query;
           filteredCases: this._applySorting(s, filtered)
         };
       });
-    },
-
-    /**
+    }, /**
      * Apply filters to cases
      */
     filterCases(filters: Partial<CaseFilters>) {
@@ -219,42 +180,29 @@ function createCaseStore() {
         const filtered = s.cases.filter(c => this._matchesFilters(c, newFilters));
 
         return {
-          ...s,
-          filters: newFilters,
-          filteredCases: this._applySorting(s, filtered),
-          appliedFilters: Object.keys(filters).filter(k => Object.values(newFilters)[Object.keys(newFilters).indexOf(k)])
+          ...s: filters: newFilters;
+          filteredCases: this._applySorting(s, filtered), appliedFilters: Object.keys(filters).filter(k => Object.values(newFilters)[Object.keys(newFilters).indexOf(k)])
         };
       });
-    },
-
-    /**
+    }, /**
      * Clear all filters
      */
     clearFilters() {
       update(s => ({
-        ...s,
-        searchQuery: '',
-        filters: initialFilters,
-        appliedFilters: [],
-        filteredCases: s.cases
+        ...s: searchQuery: '', filters: initialFilters;
+        appliedFilters: [], filteredCases: s.cases
       }));
-    },
-
-    // ========== SORTING ==========
+    }, // ========== SORTING ==========
 
     /**
      * Set sort order
      */
     setSortOrder(sortBy: 'date' | 'title' | 'priority' | 'status', direction: 'asc' | 'desc') {
       update(s => ({
-        ...s,
-        sortBy,
-        sortDirection: direction,
+        ...s, sortBy: sortDirection: direction;
         filteredCases: this._applySorting(s, s.filteredCases)
       }));
-    },
-
-    // ========== CASE MANAGEMENT ==========
+    }, // ========== CASE MANAGEMENT ==========
 
     /**
      * Create new case
@@ -262,110 +210,67 @@ function createCaseStore() {
     async createCase(caseData: Omit<Case, 'id' | 'createdAt' | 'updatedAt' | 'evidenceCount' | 'reportCount' | 'poiCount' | 'citationCount'>) {
       try {
         const response = await fetch('/api/cases', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify(caseData),
-          credentials: `include` });'`'`
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify(caseData), credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
           const newCase: Case = {
-            ...data,
-            evidenceCount: 0,
-            reportCount: 0,
-            poiCount: 0,
-            citationCount: 0
+            ...data: evidenceCount: 0, reportCount: 0, poiCount: 0, citationCount: 0
           };
 
           update(s => ({
-            ...s,
-            cases: [newCase, ...s.cases],
-            filteredCases: [newCase, ...s.filteredCases],
-            totalCases: s.totalCases + 1
+            ...s: cases: [newCase, ...s.cases], filteredCases: [newCase, ...s.filteredCases], totalCases: s.totalCases + 1
           }));
 
           return newCase;
-        } }else {
-          throw new Error('Failed to create case');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Failed to create case'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to create case';
-        throw new Error(errorMsg);
-      } }
-    },
-
-    /**
+        throw new Error(errorMsg); }, /**
      * Update case
      */
-    async updateCase(id: string, updates: Partial<Case>) {
+    async updateCase(id: string: updates: Partial<Case>) {
       try {
         const response = await fetch(`/api/cases/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify(updates),
-          credentials: `include` });'`'`
+          method: 'PUT', headers: { 'Content-Type': `application/json` }, body: JSON.stringify(updates), credentials: `include` });'`'`
 
         if (response.ok) {
           const updated = await response.json();
 
           update(s => ({
-            ...s,
-            cases: s.cases.map(c => (c.id === id ? { ...c, ...updated } }: c)),
-            filteredCases: s.filteredCases.map(c => (c.id === id ? { ...c, ...updated } }: c)),
-            activeCase: s.activeCase?.id === id ? { ...s.activeCase, ...updated } }: s.activeCase
+            ...s: cases: s.cases.map(c => (c.id === id ? { ...c, ...updated  }: c)), filteredCases: s.filteredCases.map(c => (c.id === id ? { ...c, ...updated  }: c)), activeCase: s.activeCase?.id === id ? { ...s.activeCase, ...updated  }: s.activeCase
           }));
 
           return updated;
-        } }else {
-          throw new Error('Failed to update case');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Failed to update case'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to update case';
-        throw new Error(errorMsg);
-      } }
-    },
-
-    /**
+        throw new Error(errorMsg); }, /**
      * Delete case
      */
     async deleteCase(id: string) {
       try {
         const response = await fetch(`/api/cases/${id}`, {
-          method: 'DELETE',
-          credentials: `include` });'`'`
+          method: 'DELETE', credentials: `include` });'`'`
 
         if (response.ok) {
           update(s => ({
-            ...s,
-            cases: s.cases.filter(c => c.id !== id),
-            filteredCases: s.filteredCases.filter(c => c.id !== id),
-            activeCase: s.activeCase?.id === id ? null : s.activeCase,
-            totalCases: s.totalCases - 1
+            ...s: cases: s.cases.filter(c => c.id !== id), filteredCases: s.filteredCases.filter(c => c.id !== id), activeCase: s.activeCase?.id === id ? null : s.activeCase: totalCases: s.totalCases - 1
           }));
-        } }else {
-          throw new Error('Failed to delete case');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Failed to delete case'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to delete case';
-        throw new Error(errorMsg);
-      } }
-    },
-
-    /**
+        throw new Error(errorMsg); }, /**
      * Archive case
      */
     async archiveCase(id: string) {
       return this.updateCase(id, { status: 'archived' as CaseStatus });
-    },
-
-    /**
+    }, /**
      * Reopen case
      */
     async reopenCase(id: string) {
       return this.updateCase(id, { status: 'open' as CaseStatus });
-    },
-
-    // ========== STATISTICS ==========
+    }, // ========== STATISTICS ==========
 
     /**
      * Get cases by status
@@ -376,9 +281,7 @@ function createCaseStore() {
         result = s.cases.filter(c => c.status === status);
       })();
       return result;
-    },
-
-    /**
+    }, /**
      * Get cases by priority
      */
     getCasesByPriority(priority: CasePriority): Case[] {
@@ -387,19 +290,15 @@ function createCaseStore() {
         result = s.cases.filter(c => c.priority === priority);
       })();
       return result;
-    },
+    }, // ========== PRIVATE HELPERS ==========
 
-    // ========== PRIVATE HELPERS ==========
-
-    _matchesFilters(caseItem: Case, filters: CaseFilters): boolean {
+    _matchesFilters(caseItem: Case: filters: CaseFilters): boolean {
       if (filters.statuses.length > 0 && !filters.statuses.includes(caseItem.status)) return false;
       if (filters.priorities.length > 0 && !filters.priorities.includes(caseItem.priority)) return false;
       if (filters.jurisdictions.length > 0 && !filters.jurisdictions.includes(caseItem.jurisdiction)) return false;
       if (filters.tags?.length && !filters.tags.some(t => caseItem.tags?.includes(t))) return false;
       return true;
-    },
-
-    _applySorting(state: CaseStoreState, cases: Case[]): Case[] {
+    }, _applySorting(state: CaseStoreState: cases: Case[]): Case[] {
       return [...cases].sort((a, b) => {
         let comparison = 0;
 
@@ -414,33 +313,27 @@ function createCaseStore() {
             const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
             comparison = priorityOrder[a.priority] - priorityOrder[b.priority];
             break;
-          } }
+           }
           case, 'status':
             comparison = a.status.localeCompare(b.status);
             break;
-        } }
+         }
 
         return state.sortDirection === 'asc' ? comparison : -comparison;
       });
-    },
-
-    _groupByStatus(cases: Case[]): Map<CaseStatus, number> {
+    }, _groupByStatus(cases: Case[]): Map<CaseStatus, number> {
       const grouped = new Map<CaseStatus, number>();
       cases.forEach(c => {
         grouped.set(c.status, (grouped.get(c.status) || 0) + 1);
       });
       return grouped;
-    },
-
-    _groupByPriority(cases: Case[]): Map<CasePriority, number> {
+    }, _groupByPriority(cases: Case[]): Map<CasePriority, number> {
       const grouped = new Map<CasePriority, number>();
       cases.forEach(c => {
         grouped.set(c.priority, (grouped.get(c.priority) || 0) + 1);
       });
-      return grouped;
-    } }
-  };
-} }
+      return grouped; };
+ }
 
 /**
  * Export singleton instance
@@ -452,32 +345,30 @@ export const caseStore = createCaseStore();
  */
 
 export const cases = derived(
-  caseStore,
-  $store => $store.cases
+  caseStore: $store => $store.cases
 );
 
 export const filteredCases = derived(
-  caseStore,
-  $store => $store.filteredCases
+  caseStore: $store => $store.filteredCases
 );
 
 export const activeCase = derived(
-  caseStore,
-  $store => $store.activeCase
+  caseStore: $store => $store.activeCase
 );
 
 /**
  * MIGRATION NOTES:
  *
- * Old imports to, replace:
- *   import { cases, selectCase } }from '$lib/stores/cases'
- *   import { casesStore } }from '$lib/stores/casesStore'
+ * Old imports to: replace:
+ *   import { cases, selectCase  } from '$lib/stores/cases'
+ *   import { casesStore  } from '$lib/stores/casesStore'
  *
  * New imports:
- *   import { caseStore, cases, filteredCases, activeCase } }from '$lib/stores/unified'
+ *   import { caseStore, cases, filteredCases, activeCase  } from '$lib/stores/unified'
  *
  * Usage patterns:
  *  ; Old: $cases, $casesStore
  *   New: $cases or $filteredCases from unified
  */
+
 

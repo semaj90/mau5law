@@ -18,23 +18,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC_DIR = path.join(__dirname, "..", "..", "src"); // Corrected path to go up two levels then into 'src'
 
 const componentMap = {
-  button: { file: "button.svelte", type: "ButtonProps" },
-  card: { file: "card.svelte", type: "CardProps" },
-  input: { file: "input.svelte", type: "InputProps" },
-  textarea: { file: "textarea.svelte", type: "TextareaProps" },
-  dialog: { file: "dialog/DialogRoot.svelte", type: "DialogProps" },
-  // Add other common Bits-UI components and their types here as needed
-  // e.g., checkbox: { file: "checkbox.svelte", type: "CheckboxProps" },
-  //       select: { file: "select/SelectRoot.svelte", type: "SelectProps" },
-  //       switch: { file: "switch.svelte", type: "SwitchProps" },
-  //       label: { file: "label.svelte", type: "LabelProps" },
-};
+  button: { file: "button.svelte", type: "ButtonProps" }, card: { file: "card.svelte", type: "CardProps" }, input: { file: "input.svelte", type: "InputProps" }, textarea: { file: "textarea.svelte", type: "TextareaProps" }, dialog: { file: "dialog/DialogRoot.svelte", type: "DialogProps" }, // Add other common Bits-UI components and their types here as needed
+  // e.g., checkbox: { file: "checkbox.svelte", type: "CheckboxProps" }, //       select: { file: "select/SelectRoot.svelte", type: "SelectProps" }, //       switch: { file: "switch.svelte", type: "SwitchProps" }, //       label: { file: "label.svelte", type: "LabelProps" }};
 
 const componentRegex = /(['"])\$lib\/components\/ui\/enhanced-bits\/([^'"]+)\1/g;
 const bitsUiTypeImportRegex = /import type \{([^}]+)\} from ['"]@bits-ui\/types['"];?\n?/g;
 
 // scan recursively
-function walk(dir, list = []) {
+function walk(dir: list = []) {
   for (const e of fs.readdirSync(dir)) {
     const full = path.join(dir, e);
     if (fs.statSync(full).isDirectory()) walk(full, list);

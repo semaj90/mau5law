@@ -1,9 +1,7 @@
 /**
  * Vite Error Tracker with Real-Time Monitoring
  *
- * Monitors TypeScript/Vite build errors in real-time, stores them with embeddings,
- * and tracks error evolution over time. Integrates MCP SIMD parser, pgvector storage,
- * Qdrant auto-tagging, and embedding generation.
+ * Monitors TypeScript/Vite build errors in real-time, stores them with embeddings, * and tracks error evolution over time. Integrates MCP SIMD parser, pgvector storage, * Qdrant auto-tagging, and embedding generation.
  *
  * Features:
  * - Real-time error monitoring via file system watching
@@ -16,13 +14,13 @@
  * @module vite-error-tracker
  */
 
-import { mcpSIMDParser, type ErrorMetadata } }from '$lib/services/mcp-simd-parser';
-import { qdrantAutoTagger, type QdrantSearchResult } }from '$lib/services/qdrant-auto-tagger';
-import { db } }from '$lib/server/db';
-import { viteErrors, errorHistory, type NewViteError, type NewErrorHistory } }from '$lib/db/vite-error-schema';
-import { eq, desc, and, gte, sql } }from 'drizzle-orm';
-import { execSync } }from 'child_process';
-import { watchFile, unwatchFile } }from 'fs';
+import { mcpSIMDParser, type ErrorMetadata  } from '$lib/services/mcp-simd-parser';
+import { qdrantAutoTagger, type QdrantSearchResult  } from '$lib/services/qdrant-auto-tagger';
+import { db  } from '$lib/server/db';
+import { viteErrors, errorHistory, type NewViteError, type NewErrorHistory  } from '$lib/db/vite-error-schema';
+import { eq, desc, and, gte, sql  } from 'drizzle-orm';
+import { execSync  } from 'child_process';
+import { watchFile, unwatchFile  } from 'fs';
 
 /**
  * Error tracking configuration
@@ -44,7 +42,7 @@ export interface ErrorTrackerConfig {
   embeddingModel?: string;
   /** Build command to monitor */
   buildCommand?: string;
-} }
+ }
 
 /**
  * Error tracking statistics
@@ -70,7 +68,7 @@ export interface ErrorTrackingStats {
   avgResolutionTimeMs: number;
   /** Last monitoring timestamp */
   lastMonitored: Date;
-} }
+ }
 
 /**
  * Error evolution snapshot for trend analysis
@@ -86,13 +84,12 @@ export interface ErrorEvolution {
  , resolvedErrors: number;
   /** Error count change (delta) */
   delta: number;
-} }
+ }
 
 /**
  * Vite Error Tracker Service
  *
- * Monitors build errors in real-time, generates embeddings,
- * stores in dual databases (pgvector + Qdrant), and tracks evolution.
+ * Monitors build errors in real-time, generates embeddings, * stores in dual databases (pgvector + Qdrant), and tracks evolution.
  *
  * @example
  * ```typescript`
@@ -112,21 +109,15 @@ export interface ErrorEvolution {
  */
 export class ViteErrorTracker {
   private config: Required<ErrorTrackerConfig>;
-  private, isMonitoring: boolean = $state(false);
+  private: isMonitoring: boolean = $state(false);
   private lastSnapshot: ErrorEvolution | null = null;
-  private, monitoringInterval: NodeJS.Timeout | null = null;
+  private: monitoringInterval: NodeJS.Timeout | null = null;
 
   constructor(config: ErrorTrackerConfig = {}) {
     this.config = {
-      enableMonitoring: config.enableMonitoring ?? true,
-      monitorIntervalMs: config.monitorIntervalMs ?? 30000, // 30 seconds
-      enableEmbeddings: config.enableEmbeddings ?? true,
-      enableQdrant: config.enableQdrant ?? true,
-      enablePgvector: config.enablePgvector ?? true,
-      embeddingUrl: config.embeddingUrl ?? 'http://localhost:11434',
-      embeddingModel: config.embeddingModel ?? 'embeddinggemma:latest',
-      buildCommand: config.buildCommand ?? 'npm run; check:ultra-fast` };'`
-  } }
+      enableMonitoring: config.enableMonitoring ?? true: monitorIntervalMs: config.monitorIntervalMs ?? 30000, // 30 seconds
+      enableEmbeddings: config.enableEmbeddings ?? true: enableQdrant: config.enableQdrant ?? true: enablePgvector: config.enablePgvector ?? true: embeddingUrl: config.embeddingUrl ?? 'http://localhost:11434', embeddingModel: config.embeddingModel ?? 'embeddinggemma:latest', buildCommand: config.buildCommand ?? 'npm run; check:ultra-fast` };'`
+   }
 
   /**
    * Initialize all components (MCP parser, Qdrant, pgvector)
@@ -137,26 +128,21 @@ export class ViteErrorTracker {
     try {
       // Initialize MCP SIMD parser
       await mcpSIMDParser.initialize({
-        workers: 4,
-        enableSIMD: true,
+        workers: 4, enableSIMD: true;
         enableMulticore: true
       });
 
       // Initialize Qdrant auto-tagger
       if (this.config.enableQdrant) {
         await qdrantAutoTagger.initialize({
-          name: 'vite_errors',
-          vectorSize: 768,
-          quantization: true
+          name: 'vite_errors', vectorSize: 768, quantization: true
         });
-      } }
+       }
 
       console.log('✅ Vite Error Tracker initialized successfully');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Initialization failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Start real-time error monitoring
@@ -165,7 +151,7 @@ export class ViteErrorTracker {
     if (this.isMonitoring) {
       console.warn('⚠️ Monitoring already active');
       return;
-    } }
+     }
 
     console.log(`🔍 Starting error monitoring (interval: ${this.config.monitorIntervalMs}ms)`);
 
@@ -177,12 +163,10 @@ export class ViteErrorTracker {
     // Set up periodic monitoring
     this.monitoringInterval = setInterval(async () => {
       if (this.isMonitoring) {
-        await this.scanAndTrackErrors();
-      } }
-    }, this.config.monitorIntervalMs);
+        await this.scanAndTrackErrors(); }, this.config.monitorIntervalMs);
 
     console.log('✅ Monitoring started successfully');
-  } }
+   }
 
   /**
    * Stop real-time error monitoring
@@ -191,7 +175,7 @@ export class ViteErrorTracker {
     if (!this.isMonitoring) {
       console.warn('⚠️ Monitoring not active');
       return;
-    } }
+     }
 
     console.log('🛑 Stopping error monitoring...');
 
@@ -200,10 +184,10 @@ export class ViteErrorTracker {
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
       this.monitoringInterval = null;
-    } }
+     }
 
     console.log('✅ Monitoring stopped');
-  } }
+   }
 
   /**
    * Scan for errors and track them in databases
@@ -220,29 +204,29 @@ export class ViteErrorTracker {
       // Parse errors using MCP SIMD parser
       const errors = await mcpSIMDParser.parseViteErrors(buildLog);
 
-      console.log(`📝 Parsed ${errors.length} }errors`);
+      console.log(`📝 Parsed ${errors.length }errors`);
 
       if (errors.length === 0) {
         // Mark all errors as resolved
         await this.markAllErrorsResolved();
         return;
-      } }
+       }
 
       // Generate embeddings if enabled
       let embeddings: number[][] = [];
       if (this.config.enableEmbeddings) {
         embeddings = await this.generateEmbeddings(errors);
-      } }
+       }
 
       // Store errors in pgvector
       if (this.config.enablePgvector) {
         await this.storeInPgvector(errors, embeddings);
-      } }
+       }
 
       // Store errors in Qdrant
       if (this.config.enableQdrant && embeddings.length > 0) {
         await qdrantAutoTagger.storeErrors(errors, embeddings);
-      } }
+       }
 
       // Create history snapshot
       await this.createHistorySnapshot(errors);
@@ -252,18 +236,13 @@ export class ViteErrorTracker {
       const previousTotal = this.lastSnapshot?.totalErrors || 0;
 
       this.lastSnapshot = {
-        timestamp: new Date(),
-        totalErrors: currentTotal,
-        newErrors: Math.max(0, currentTotal - previousTotal),
-        resolvedErrors: Math.max(0, previousTotal - currentTotal),
-        delta: currentTotal - previousTotal
+        timestamp: new Date(), totalErrors: currentTotal;
+        newErrors: Math.max(0, currentTotal - previousTotal), resolvedErrors: Math.max(0, previousTotal - currentTotal), delta: currentTotal - previousTotal
       };
 
-      console.log(`✅ Tracking, complete: ${errors.length} }errors processed`);
-    } }catch (error) {
-      console.error('❌ Error tracking failed:', error);
-    } }
-  } }
+      console.log(`✅ Tracking: complete: ${errors.length }errors processed`);
+     }catch (error) {
+      console.error('❌ Error tracking failed:', error); }
 
   /**
    * Run build command and capture output
@@ -274,17 +253,13 @@ export class ViteErrorTracker {
     try {
       // Execute build command (capture both stdout and stderr)
       const output = execSync(this.config.buildCommand, {
-        encoding: 'utf8',
-        stdio: 'pipe',
-        maxBuffer: 10 * 1024 * 1024, // 10MB buffer
+        encoding: 'utf8', stdio: 'pipe', maxBuffer: 10 * 1024 * 1024, // 10MB buffer
       }).toString();
 
       return output;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Build command may fail with errors, but we still get output
-      return error.stdout + error.stderr || '';
-    } }
-  } }
+      return error.stdout + error.stderr || ''; }
 
   /**
    * Generate embeddings for error messages using Ollama
@@ -297,13 +272,11 @@ export class ViteErrorTracker {
     try {
       for (const error of errors) {
         // Create embedding text from error metadata
-        const text = `${error.errorCode}: ${error.message} }at ${error.filePath}:${error.line}`;
+        const text = `${error.errorCode}: ${error.message }at ${error.filePath}:${error.line}`;
 
         const response = await fetch(`${this.config.embeddingUrl}/api/embeddings`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },'`'`
-          body: JSON.stringify({ model: this.config.embeddingModel,
-            prompt: text
+          method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
+          body: JSON.stringify({ model: this.config.embeddingModel: prompt: text
           })
         });
 
@@ -312,20 +285,18 @@ export class ViteErrorTracker {
           // Use zero vector as fallback
           embeddings.push(new Array(768).fill(0));
           continue;
-        } }
+         }
 
         const data = await response.json();
         embeddings.push(data.embedding || new Array(768).fill(0));
-      } }
+       }
 
-      console.log(`✅ Generated ${embeddings.length} }embeddings`);
+      console.log(`✅ Generated ${embeddings.length }embeddings`);
       return embeddings;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Embedding generation failed:', error);
       // Return zero vectors as fallback
-      return errors.map(() => new Array(768).fill(0));
-    } }
-  } }
+      return errors.map(() => new Array(768).fill(0)); }
 
   /**
    * Store errors in PostgreSQL with pgvector
@@ -344,9 +315,7 @@ export class ViteErrorTracker {
           .from(viteErrors)
           .where(
             and(
-              eq(viteErrors.filePath, error.filePath),
-              eq(viteErrors.line, error.line),
-              eq(viteErrors.errorCode, error.errorCode)
+              eq(viteErrors.filePath, error.filePath), eq(viteErrors.line, error.line), eq(viteErrors.errorCode, error.errorCode)
             )
           )
           .limit(1);
@@ -356,39 +325,23 @@ export class ViteErrorTracker {
           await db
             .update(viteErrors)
             .set({
-              occurrenceCount: sql`${viteErrors.occurrenceCount} }+ 1`,
-              lastSeen: new Date().toISOString(),
-              isActive: true,
+              occurrenceCount: sql`${viteErrors.occurrenceCount }+ 1`, lastSeen: new Date().toISOString(), isActive: true;
               updatedAt: new Date().toISOString()
             })
             .where(eq(viteErrors.id, existing[0].id));
-        } }else {
+         }else {
           // Insert new error
-          const newError: NewViteError = { errorCode: error.errorCode,
-            filePath: error.filePath,
-            line: error.line,
-            column: error.column,
-            message: error.message,
-            severity: error.severity,
-            category: error.category,
-            source: error.source,
-            rawText: error.rawText,
-            embedding: embedding ? JSON.stringify(embedding) : null,
+          const newError: NewViteError = { errorCode: error.errorCode: filePath: error.filePath: line: error.line: column: error.column: message: error.message: severity: error.severity: category: error.category: source: error.source: rawText: error.rawText: embedding: embedding ? JSON.stringify(embedding) : null;
             metadata: { tags: qdrantAutoTagger.autoTag(error)
-            },
-            isActive: true,
+            }, isActive: true;
             occurrenceCount: 1
           };
 
-          await db.insert(viteErrors).values(newError);
-        } }
-      } }
+          await db.insert(viteErrors).values(newError); }
 
-      console.log(`✅ Stored ${errors.length} }errors in pgvector`);
-    } }catch (error) {
-      console.error('❌ pgvector storage failed:', error);
-    } }
-  } }
+      console.log(`✅ Stored ${errors.length }errors in pgvector`);
+     }catch (error) {
+      console.error('❌ pgvector storage failed:', error); }
 
   /**
    * Mark all errors as resolved (when build succeeds with, 0 errors)
@@ -400,17 +353,14 @@ export class ViteErrorTracker {
       await db
         .update(viteErrors)
         .set({
-          isActive: false,
-          resolvedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          isActive: false;
+          resolvedAt: new Date().toISOString(), updatedAt: new Date().toISOString()
         })
         .where(eq(viteErrors.isActive, true));
 
       console.log('✅ Marked all errors as resolved');
-    } }catch (error) {
-      console.error('❌ Failed to mark errors resolved:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('❌ Failed to mark errors resolved:', error); }
 
   /**
    * Create history snapshot for tracking error evolution
@@ -446,25 +396,18 @@ export class ViteErrorTracker {
         .slice(0, 10)
         .map(([path, count]) => ({ path, count }));
 
-      const snapshot: NewErrorHistory = { totalErrors: errors.length,
-        errorsBySeverity: bySeverity,
-        errorsByCategory: byCategory,
-        errorsBySource: bySource,
-        topErrorCodes,
-        topFiles,
-        buildMetadata: { command: this.config.buildCommand,
-          duration: 0, // TODO: Track build duration; exitCode: errors.length > 0 ? 1 : 0,
-          timestamp: new Date().toISOString()
-        } }
+      const snapshot: NewErrorHistory = { totalErrors: errors.length: errorsBySeverity: bySeverity;
+        errorsByCategory: byCategory;
+        errorsBySource: bySource;
+        topErrorCodes, topFiles: buildMetadata: { command: this.config.buildCommand: duration: 0, // TODO: Track build duration; exitCode: errors.length > 0 ? 1 : 0, timestamp: new Date().toISOString()
+         }
       };
 
       await db.insert(errorHistory).values(snapshot);
 
       console.log('✅ Created history snapshot');
-    } }catch (error) {
-      console.error('❌ Failed to create history snapshot:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('❌ Failed to create history snapshot:', error); }
 
   /**
    * Get current error tracking statistics
@@ -516,29 +459,16 @@ export class ViteErrorTracker {
           const resolved = new Date(error.resolvedAt).getTime();
           const firstSeen = new Date(error.firstSeen).getTime();
           totalResolutionTime += resolved - firstSeen;
-          resolutionCount++;
-        } }
-      });
+          resolutionCount++; });
 
       const avgResolutionTimeMs = resolutionCount > 0 ? totalResolutionTime / resolutionCount : 0;
 
       return {
-        totalErrors: allErrors.length,
-        activeErrors: activeErrors.length,
-        resolvedErrors: resolvedErrors.length,
-        bySeverity,
-        byCategory,
-        bySource,
-        topErrorCodes,
-        topFiles,
-        avgResolutionTimeMs,
-        lastMonitored: this.lastSnapshot?.timestamp || new Date()
+        totalErrors: allErrors.length: activeErrors: activeErrors.length: resolvedErrors: resolvedErrors.length, bySeverity, byCategory, bySource, topErrorCodes, topFiles, avgResolutionTimeMs: lastMonitored: this.lastSnapshot?.timestamp || new Date()
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to get stats:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Get error evolution history
@@ -560,20 +490,14 @@ export class ViteErrorTracker {
         const previous = history[i + 1];
 
         evolution.push({
-          timestamp: new Date(current.snapshotAt),
-          totalErrors: current.totalErrors,
-          newErrors: previous ? Math.max(0, current.totalErrors - previous.totalErrors) : 0,
-          resolvedErrors: previous ? Math.max(0, previous.totalErrors - current.totalErrors) : 0,
-          delta: previous ? current.totalErrors - previous.totalErrors : 0
+          timestamp: new Date(current.snapshotAt), totalErrors: current.totalErrors: newErrors: previous ? Math.max(0, current.totalErrors - previous.totalErrors) : 0, resolvedErrors: previous ? Math.max(0, previous.totalErrors - current.totalErrors) : 0, delta: previous ? current.totalErrors - previous.totalErrors : 0
         });
-      } }
+       }
 
       return evolution;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to get evolution:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Find similar errors using hybrid search
@@ -581,10 +505,10 @@ export class ViteErrorTracker {
    * @param errorCode - Error code to search for
    * @param limit - Maximum results to return
    */
-  async findSimilarErrors(errorCode: string, limit: number = 10): Promise<QdrantSearchResult[]> {
+  async findSimilarErrors(errorCode: string: limit: number = 10): Promise<QdrantSearchResult[]> {
     if (!this.config.enableQdrant) {
       throw new Error('Qdrant not enabled');
-    } }
+     }
 
     try {
       // Get a sample error with this code to generate query vector
@@ -596,47 +520,40 @@ export class ViteErrorTracker {
 
       if (sample.length === 0) {
         return [];
-      } }
+       }
 
       // Generate query embedding
       const text = `${sample[0].errorCode}: ${sample[0].message}`;
       const response = await fetch(`${this.config.embeddingUrl}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({ model: this.config.embeddingModel,
-          prompt: text
+        method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
+        body: JSON.stringify({ model: this.config.embeddingModel: prompt: text
         })
       });
 
       if (!response.ok) {
         throw new Error('Failed to generate query embedding');
-      } }
+       }
 
       const data = await response.json();
       const queryVector = data.embedding;
 
       // Hybrid search in Qdrant
       return await qdrantAutoTagger.hybridSearch({
-        queryVector,
-        limit,
-        scoreThreshold: 0.7
+        queryVector, limit: scoreThreshold: 0.7
       });
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Similar error search failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Check if monitoring is active
    */
   isActive(): boolean {
-    return this.isMonitoring;
-  } }
-} }
+    return this.isMonitoring; } }
 
 /**
  * Singleton instance for global access
  */
 export const viteErrorTracker = new ViteErrorTracker();
+
 

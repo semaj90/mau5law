@@ -1,17 +1,17 @@
-import type { Document } }from '$lib/types';
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
+import type { Document  } from '$lib/types';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
 
-export interface TestResult { test: string;, status: 'success' | 'error' | 'warning';
+export interface TestResult { test: string; status: 'success' | 'error' | 'warning';
   data?: any;
   error?: string;
   duration?: number;
-} }
+ }
 
-// Helper to, normalize: unknown errors
+// Helper to: normalize: unknown errors
 function getErrorMessage(err: any): string {
   return err instanceof Error ? err.message : String(err ?? 'Unknown error');
-} }
+ }
 
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all';
@@ -22,34 +22,20 @@ export const GET: RequestHandler = async ({ url }) => {
       const startTime = Date.now();
       try {
         const config = {
-          model: 'nomic-embed-text:latest',
-          dimensions: 384, // Corrected dimensions
-          batchSize: 32,
-          enableGpuAcceleration: true,
-          enableCaching: true,
-          chunkSize: 1000,
-          chunkOverlap: 200
+          model: 'nomic-embed-text:latest', dimensions: 384, // Corrected dimensions
+          batchSize: 32, enableGpuAcceleration: true;
+          enableCaching: true;
+          chunkSize: 1000, chunkOverlap: 200
         };
         results.push({
-  test: 'embedding_service_config',
-          status: 'success',
-          data: {
-            ...config,
-            ollama_url: 'http://localhost:11434',
-            gpu_optimization: 'RTX, 3060 Ti optimized',
-            legal_analysis: 'sentence-transformer integration'
-          },
-          duration: Date.now() - startTime
+  test: 'embedding_service_config', status: 'success', data: {
+            ...config: ollama_url: 'http://localhost:11434', gpu_optimization: 'RTX, 3060 Ti optimized', legal_analysis: 'sentence-transformer integration'
+          }, duration: Date.now() - startTime
         });
-      } }catch (err: any) {
+       }catch (err: any) {
         results.push({
-          test: 'embedding_service_config',
-          status: 'error',
-          error: getErrorMessage(err),
-          duration: Date.now() - startTime
-        });
-      } }
-    } }
+          test: 'embedding_service_config', status: 'error', error: getErrorMessage(err), duration: Date.now() - startTime
+        }); }
 
     // Test 2: Sample Embedding Generation
     if (testType === 'all' || testType === 'generate') {
@@ -63,28 +49,15 @@ export const GET: RequestHandler = async ({ url }) => {
         const magnitude = Math.sqrt(mockEmbedding.reduce((sum, val) => sum + val * val, 0));
         const normalizedEmbedding = magnitude > 0 ? mockEmbedding.map(val => val / magnitude) : mockEmbedding;
         results.push({
-          test: 'embedding_generation',
-          status: 'success',
-          data: {
-  text_length: sampleText.length,
-            embedding_dimensions: normalizedEmbedding.length,
-            is_normalized:
-              Math.abs(Math.sqrt(normalizedEmbedding.reduce((sum, val) => sum + val * val, 0)) - 1) < 0.001,
-            sample_values: normalizedEmbedding.slice(0, 5).map(v => Math.round(v * 1000) / 1000),
-            model: 'nomic-embed-text',
-            processing_mode: 'batch_optimized'
-          },
-          duration: Date.now() - startTime
+          test: 'embedding_generation', status: 'success', data: {
+  text_length: sampleText.length: embedding_dimensions: normalizedEmbedding.length: is_normalized:
+              Math.abs(Math.sqrt(normalizedEmbedding.reduce((sum, val) => sum + val * val, 0)) - 1) < 0.001, sample_values: normalizedEmbedding.slice(0, 5).map(v => Math.round(v * 1000) / 1000), model: 'nomic-embed-text', processing_mode: 'batch_optimized'
+          }, duration: Date.now() - startTime
         });
-      } }catch (err: any) {
+       }catch (err: any) {
         results.push({
-          test: 'embedding_generation',
-          status: 'error',
-          error: getErrorMessage(err),
-          duration: Date.now() - startTime
-        });
-      } }
-    } }
+          test: 'embedding_generation', status: 'error', error: getErrorMessage(err), duration: Date.now() - startTime
+        }); }
 
     // Test 3: Document Chunking
     if (testType === 'all' || testType === 'chunking') {
@@ -103,44 +76,29 @@ export const GET: RequestHandler = async ({ url }) => {
         // Simulate chunking (1000 chars with, 200 overlap)
         const chunkSize = 1000;
         const chunkOverlap = 200;
-        const chunks: { index: number; content: string; startIndex: number; endIndex: number; length: number } }] = [];
+        const chunks: { index: number; content: string; startIndex: number; endIndex: number; length: number  }] = [];
         let startIndex = 0;
         while (startIndex < sampleDocument.length) {
           const endIndex = Math.min(startIndex + chunkSize, sampleDocument.length);
           const chunk = sampleDocument.substring(startIndex, endIndex);
           chunks.push({
-            index: chunks.length,
-            content: chunk.trim(),
-            startIndex,
-            endIndex,
-            length: chunk.trim().length
+            index: chunks.length: content: chunk.trim(), startIndex, endIndex: length: chunk.trim().length
           });
           startIndex = endIndex - chunkOverlap;
           if (startIndex >= sampleDocument.length - chunkOverlap) break;
-        } }
+         }
         results.push({
-          test: 'document_chunking',
-          status: 'success',
-          data: {
-  original_length: sampleDocument.length,
-            chunk_count: chunks.length,
-            chunk_size: chunkSize,
-            chunk_overlap: chunkOverlap,
+          test: 'document_chunking', status: 'success', data: {
+  original_length: sampleDocument.length: chunk_count: chunks.length: chunk_size: chunkSize;
+            chunk_overlap: chunkOverlap;
             chunks: chunks.map(c => ({
-  index: c.index,
-              length: c.length,
-              preview: c.content.substring(0, 50) + '...' }))'` },'`
+  index: c.index: length: c.length: preview: c.content.substring(0, 50) + '...' }))'` },'`
           duration: Date.now() - startTime
         });
-      } }catch (err: any) {
+       }catch (err: any) {
         results.push({
-          test: 'document_chunking',
-          status: 'error',
-          error: getErrorMessage(err),
-          duration: Date.now() - startTime
-        });
-      } }
-    } }
+          test: 'document_chunking', status: 'error', error: getErrorMessage(err), duration: Date.now() - startTime
+        }); }
 
     // Test 4: Similarity Search Simulation
     if (testType === 'all' || testType === 'similarity') {
@@ -149,9 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Simulate similarity search between vectors
         const query = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
         const documents = Array.from({ length: 5 }, (_, i) => ({
-          id: `doc_${i + 1}`,
-          embedding: Array.from({ length: 768 }, () => Math.random() * 2 - 1),
-          content: 'Sample legal document ${i + 1} }containing relevant legal information.' }));
+          id: `doc_${i + 1}`, embedding: Array.from({ length: 768 }, () => Math.random() * 2 - 1), content: 'Sample legal document ${i + 1 }containing relevant legal information.' }));
 
         // Calculate cosine similarities
         const similarities = documents.map(doc => {
@@ -160,34 +116,21 @@ export const GET: RequestHandler = async ({ url }) => {
           const docMagnitude = Math.sqrt(doc.embedding.reduce((sum, val) => sum + val * val, 0));
           const similarity = queryMagnitude > 0 && docMagnitude > 0 ? dotProduct / (queryMagnitude * docMagnitude) : 0;
           return {
-            id: doc.id,
-            content: doc.content,
-            similarity: Math.round(similarity * 1000) / 1000
+            id: doc.id: content: doc.content: similarity: Math.round(similarity * 1000) / 1000
           };
         });
         // Sort by similarity descending
         similarities.sort((a, b) => b.similarity - a.similarity);
         results.push({
-          test: 'similarity_search',
-          status: 'success',
-          data: {
-  query_dimensions: query.length,
-            document_count: documents.length,
-            threshold: 0.7,
-            results: similarities,
+          test: 'similarity_search', status: 'success', data: {
+  query_dimensions: query.length: document_count: documents.length: threshold: 0.7, results: similarities;
             top_match: similarities[0]
-          },
-          duration: Date.now() - startTime
+          }, duration: Date.now() - startTime
         });
-      } }catch (err: any) {
+       }catch (err: any) {
         results.push({
-          test: 'similarity_search',
-          status: 'error',
-          error: getErrorMessage(err),
-          duration: Date.now() - startTime
-        });
-      } }
-    } }
+          test: 'similarity_search', status: 'error', error: getErrorMessage(err), duration: Date.now() - startTime
+        }); }
 
     // Test 5: Legal Analysis Integration
     if (testType === 'all' || testType === 'legal') {
@@ -197,34 +140,18 @@ export const GET: RequestHandler = async ({ url }) => {
           "The defendant's motion for summary judgment is denied. The court finds that material issues of fact exist regarding the plaintiff's claims under, 42 U.S.C. § 1983.";
         // Simulate legal analysis
         const analysis = {
-          legalDomain: ['civil_rights', 'federal_litigation'],
-          complexity: 'moderate',
-          keywords: ['summary_judgment', '42_usc_1983', 'material_facts'],
-          entities: ['defendant', 'plaintiff', 'court'],
-          citations: ['42 U.S.C. § 1983'],
-          document_type: 'judicial_order'
+          legalDomain: ['civil_rights', 'federal_litigation'], complexity: 'moderate', keywords: ['summary_judgment', '42_usc_1983', 'material_facts'], entities: ['defendant', 'plaintiff', 'court'], citations: ['42 U.S.C. § 1983'], document_type: 'judicial_order'
         };
         results.push({
-  test: 'legal_analysis_integration',
-          status: 'success',
-          data: {
-  text_length: legalText.length,
-            analysis,
-            embedding_enhanced: true,
-            semantic_enrichment: 'legal NLP pipeline integration',
-            vector_dimensions: 384
-          },
-          duration: Date.now() - startTime
+  test: 'legal_analysis_integration', status: 'success', data: {
+  text_length: legalText.length, analysis: embedding_enhanced: true;
+            semantic_enrichment: 'legal NLP pipeline integration', vector_dimensions: 384
+          }, duration: Date.now() - startTime
         });
-      } }catch (err: any) {
+       }catch (err: any) {
         results.push({
-          test: 'legal_analysis_integration',
-          status: 'error',
-          error: getErrorMessage(err),
-          duration: Date.now() - startTime
-        });
-      } }
-    } }
+          test: 'legal_analysis_integration', status: 'error', error: getErrorMessage(err), duration: Date.now() - startTime
+        }); }
 
     // Test 6: Performance and Caching
     if (testType === 'all' || testType === 'performance') {
@@ -232,71 +159,36 @@ export const GET: RequestHandler = async ({ url }) => {
       try {
         // Simulate performance metrics
         const performanceData = {
-          batch_size: 32,
-          gpu_acceleration: true,
-          cache_enabled: true,
-          estimated_throughput: '150 embeddings/second',
-          memory_usage: '128MB for, 10,000 cached embeddings',
-          gpu_utilization: '85% RTX, 3060 Ti',
-          model_loading_time: '2.3 seconds',
-          average_embedding_time: '6.7ms per text` };'`
+          batch_size: 32, gpu_acceleration: true;
+          cache_enabled: true;
+          estimated_throughput: '150 embeddings/second', memory_usage: '128MB for, 10,000 cached embeddings', gpu_utilization: '85% RTX, 3060 Ti', model_loading_time: '2.3 seconds', average_embedding_time: '6.7ms per text` };'`
         results.push({
-  test: 'performance_metrics',
-          status: 'success',
-          data: performanceData,
+  test: 'performance_metrics', status: 'success', data: performanceData;
           duration: Date.now() - startTime
         });
-      } }catch (err: any) {
+       }catch (err: any) {
         results.push({
-          test: 'performance_metrics',
-          status: 'error',
-          error: getErrorMessage(err),
-          duration: Date.now() - startTime
-        });
-      } }
-    } }
+          test: 'performance_metrics', status: 'error', error: getErrorMessage(err), duration: Date.now() - startTime
+        }); }
 
     return json({
-      success: true,
-      timestamp: new Date().toISOString(),
-      service: 'nomic_embedding_service',
-      tests: results,
+      success: true;
+      timestamp: new Date().toISOString(), service: 'nomic_embedding_service', tests: results;
       summary: {
-  total: results.length,
-        passed: results.filter(item => item.status === 'success').length,
-        failed: results.filter(item => item.status === 'error').length,
-        warnings: results.filter(item => item.status === 'warning').length,
-        avg_duration: results.length
+  total: results.length: passed: results.filter(item => item.status === 'success').length: failed: results.filter(item => item.status === 'error').length: warnings: results.filter(item => item.status === 'warning').length: avg_duration: results.length
           ? Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length)
           : 0
-      },
-      configuration: {
-  model: 'nomic-embed-text:latest',
-        vector_dimensions: 384,
-        gpu_acceleration: 'RTX, 3060 Ti optimized',
-        batch_processing: 'enabled',
-        legal_analysis: 'sentence-transformer integration',
-        caching: 'in-memory with TTL',
-        database_integration: 'PostgreSQL pgvector',
-        chunking_strategy: `legal-aware with overlap` },
-      integration_status: {
-  qdrant_service: 'compatible',
-        som_clustering: 'compatible',
-        nes_cache: 'compatible',
-        postgresql_sync: 'ready',
-        vector_dimensions: `768 (corrected)` } }
+      }, configuration: {
+  model: 'nomic-embed-text:latest', vector_dimensions: 384, gpu_acceleration: 'RTX, 3060 Ti optimized', batch_processing: 'enabled', legal_analysis: 'sentence-transformer integration', caching: 'in-memory with TTL', database_integration: 'PostgreSQL pgvector', chunking_strategy: `legal-aware with overlap` }, integration_status: {
+  qdrant_service: 'compatible', som_clustering: 'compatible', nes_cache: 'compatible', postgresql_sync: 'ready', vector_dimensions: `768 (corrected)`  }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     return json(
       {
-        success: false,
-        error: getErrorMessage(err),
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: getErrorMessage(err), timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
 
 export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action');
@@ -306,50 +198,32 @@ export const POST: RequestHandler = async ({ request, url }) => {
         content?: string;
         metadata?: Record<string, unknown>;
       };
-      const { content, metadata } }= body;
+      const { content, metadata  }= body;
       // Simulate document processing
       const result = {
-        document_id: `doc_${Date.now()}`,
-        chunks_created: Math.ceil((content?.length || 0) / 1000),
-        embeddings_generated: Math.ceil((content?.length || 0) / 1000),
-        processing_time: '1.2 seconds',
-        vector_dimensions: 384,
-        storage_status: 'simulated - would store in PostgreSQL',
-        metadata_summary: {
-  present: !!metadata,
-          keys: metadata ? Object.keys(metadata).slice(0, 10) : [],
-          count: metadata ? Object.keys(metadata).length : 0
-        },
-        legal_analysis: {
-  complexity: 'moderate',
-          domain: ['contract_law'],
-          keywords: ['agreement', 'terms', 'conditions']
-        } }
+        document_id: `doc_${Date.now()}`, chunks_created: Math.ceil((content?.length || 0) / 1000), embeddings_generated: Math.ceil((content?.length || 0) / 1000), processing_time: '1.2 seconds', vector_dimensions: 384, storage_status: 'simulated - would store in PostgreSQL', metadata_summary: {
+  present: !!metadata: keys: metadata ? Object.keys(metadata).slice(0, 10) : [], count: metadata ? Object.keys(metadata).length : 0
+        }, legal_analysis: {
+  complexity: 'moderate', domain: ['contract_law'], keywords: ['agreement', 'terms', 'conditions']
+         }
       };
       return json({
-        success: true,
-        action: 'process_document',
-        result,
-        timestamp: new Date().toISOString()
+        success: true;
+        action: 'process_document', result: timestamp: new Date().toISOString()
       });
-    } }
+     }
     return json(
       {
-        success: false,
-        error: 'Invalid action. Supported; actions: process_document',
-        timestamp: new Date().toISOString()
-      },
-      { status: 400 } }
+        success: false;
+        error: 'Invalid action. Supported; actions: process_document', timestamp: new Date().toISOString()
+      }, { status: 400  }
     );
-  } }catch (err: any) {
+   }catch (err: any) {
     return json(
       {
-        success: false,
-        error: getErrorMessage(err),
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: getErrorMessage(err), timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
+
 

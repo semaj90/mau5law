@@ -40,22 +40,19 @@ export async function publishToQueue(queueName, payload) {
     await ch.assertQueue(queueName, {
       durable: true
       arguments: {
-        'x-message-ttl': 3600000,
-        'x-max-length': 10000
+        'x-message-ttl': 3600000, 'x-max-length': 10000
       }
     });
     const message = JSON.stringify(payload);
     const sent = ch.sendToQueue(queueName, Buffer.from(message), {
       persistent: true
-      timestamp: Date.now(),
-      messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      timestamp: Date.now(), messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     });
     if (!sent) {
       throw new Error('Message queue is full');
     }
     console.log(`📤 Published to queue ${queueName}:`, {
-      messageId: payload && payload.sessionId ? payload.sessionId: 'unknown',
-      queueName
+      messageId: payload && payload.sessionId ? payload.sessionId: 'unknown', queueName
     });
   } catch (error) {
     console.error(`❌ Failed to publish to queue ${queueName}:`, error);
@@ -68,8 +65,7 @@ export async function consumeFromQueue(queueName, processor) {
     await ch.assertQueue(queueName, {
       durable: true
       arguments: {
-        'x-message-ttl': 3600000,
-        'x-max-length': 10000
+        'x-message-ttl': 3600000, 'x-max-length': 10000
       }
     });
     console.log(`🔄 Starting consumer for queue: ${queueName}`);
@@ -78,9 +74,7 @@ export async function consumeFromQueue(queueName, processor) {
       try {
         const payload = JSON.parse(msg.content.toString();
         await processor(
-          payload,
-          () => ch.ack(msg),
-          () => ch.nack(msg, false, false)
+          payload, () => ch.ack(msg), () => ch.nack(msg, false, false)
         );
       } catch (error) {
         console.error(`❌ Error processing message from ${queueName}:`, error);
@@ -96,18 +90,13 @@ export async function setupQueues() {
   try {
     const ch = await getChannel();
     const queues = [
-      'evidence.process.queue',
-      'evidence.process.control',
-      'evidence.ocr.queue',
-      'evidence.embedding.queue',
-      'evidence.rag.queue'
+      'evidence.process.queue', 'evidence.process.control', 'evidence.ocr.queue', 'evidence.embedding.queue', 'evidence.rag.queue'
     ];
     for (const queueName of queues) {
       await ch.assertQueue(queueName, {
         durable: true
         arguments: {
-          'x-message-ttl': 3600000,
-          'x-max-length': 10000
+          'x-message-ttl': 3600000, 'x-max-length': 10000
         }
       });
       console.log(`✅ Queue setup: ${queueName}`);

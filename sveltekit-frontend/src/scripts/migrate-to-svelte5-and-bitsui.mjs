@@ -25,7 +25,7 @@ const REACTIVE_EFFECT_REGEX = /^\s*:\s*(.+);/gm; // For $: console.log(var);
 const SLOT_REGEX = /<slot\s*(?:name="([a-zA-Z_$][0-9a-zA-Z_$]*)")?\s*\/?>/g;
 
 // scan recursively
-function walk(dir, list = []) {
+function walk(dir: list = []) {
   for (const e of fs.readdirSync(dir)) {
     const full = path.join(dir, e);
     if (fs.statSync(full).isDirectory()) walk(full, list);

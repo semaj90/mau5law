@@ -1,24 +1,23 @@
-import type { User } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { User  } from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Unified Vector Orchestrator - Complete Integration Hub
- * Wires together all vector systems: WebGPU SOM, WebAssembly RAG, PageRank,
- * Glyph Diffusion, Neo4j, MinIO, Redis, PostgreSQL, Qdrant, RabbitMQ, Fuse.js, Lokijs
+ * Wires together all vector systems: WebGPU SOM, WebAssembly RAG, PageRank, * Glyph Diffusion, Neo4j, MinIO, Redis, PostgreSQL, Qdrant, RabbitMQ, Fuse.js, Lokijs
  *
  * NEW: 512-dim; embeddinggemma:latest with Hybrid Vector Search (Qdrant + PostgreSQL)
  */
-import { vectorService } }from '$lib/server/vector/vectorService';
-import { webgpuSOMCache } }from './webgpu-som-enhanced-cache.js';
-import { glyphDiffusionService } }from './glyph-diffusion-service.js';
-import { createEnhancedRAGEngine, type RAGResult } }from './enhanced-rag-pagerank.js';
-import { LegalRecommendationEngine, as RecommendationEngine } }from './recommendation-engine.js';
+import { vectorService  } from '$lib/server/vector/vectorService';
+import { webgpuSOMCache  } from './webgpu-som-enhanced-cache.js';
+import { glyphDiffusionService  } from './glyph-diffusion-service.js';
+import { createEnhancedRAGEngine, type RAGResult  } from './enhanced-rag-pagerank.js';
+import { LegalRecommendationEngine, as RecommendationEngine  } from './recommendation-engine.js';
 import * as neo4jServiceImport from './neo4jGraphService.js';
-import { db } }from '$lib/server/db';
-import { redis } }from '$lib/server/redis';
-import type { MinIOUploadResult } }from '$lib/types/minio';
-import { hybridVectorSearch } }from './hybrid-vector-search';
-import { ragIngestionService } }from './rag-ingestion-pipeline';
-import { publishToQueue } }from '$lib/server/rabbitmq';
+import { db  } from '$lib/server/db';
+import { redis  } from '$lib/server/redis';
+import type { MinIOUploadResult  } from '$lib/types/minio';
+import { hybridVectorSearch  } from './hybrid-vector-search';
+import { ragIngestionService  } from './rag-ingestion-pipeline';
+import { publishToQueue  } from '$lib/server/rabbitmq';
 import Fuse from 'fuse.js';
 import Loki from 'lokijs';
 
@@ -51,12 +50,12 @@ export type GlyphResult = {
   data?: string;
 };
 
-export type Recommendation = { id: string;, confidence: number;
+export type Recommendation = { id: string; confidence: number;
 };
 
 export type GraphData = Record<string, unknown>;
 
-export interface UnifiedVectorRequest { type: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest';, payload: {
+export interface UnifiedVectorRequest { type: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest'; payload: {
     text?: string;
     documents?: Document[];
     query?: string;
@@ -74,9 +73,9 @@ export interface UnifiedVectorRequest { type: 'analyze' | 'search' | 'recommend'
       documentTypes?: string[];
     };
   };
-} }
+ }
 
-export interface UnifiedVectorResponse { success: boolean;, type: string;
+export interface UnifiedVectorResponse { success: boolean; type: string;
   results: {
     vectorResults?: VectorResult[];
     ragResults?: RAGResult[];
@@ -93,44 +92,44 @@ export interface UnifiedVectorResponse { success: boolean;, type: string;
     mergedResults?: VectorResult[];
     visualGlyphs?: GlyphResult[];
   };
-  metadata: { componentsUsed: string[];, performance: Record<string, number>;
+  metadata: { componentsUsed: string[]; performance: Record<string, number>;
     errors?: string[];
   };
-} }
+ }
 
 /* New external service interfaces (minimal surface) */
 interface UltraJSONParser {
   parse(s: string): any;
   stringify(v: any): string;
-} }
+ }
 
 interface WasmClusteringService {
   initialize(): Promise<void>;
   isInitialized(): boolean;
-  processEnhanced(opts: { documents: Document[];, operation: string;
+  processEnhanced(opts: { documents: Document[]; operation: string;
     userId?: string;
     batchSize?: number;
-  }): Promise<unknown>;
+  ): Promise<unknown>;
   shutdown(): Promise<void>;
-} }
+ }
 
 interface NESBridgeLike {
   getStats?: () => Record<string, unknown> | Promise<Record<string, unknown>>;
   getCacheStats?: () => number | Record<string, unknown>;
   cache?: Record<string, unknown>;
-} }
+ }
 
 interface OllamaEmbeddingsService {
   embed?: (text: string | string[]) => Promise<number[][]>;
   generateCompletion?: (opts: { prompt: string; maxTokens?: number; temperature?: number }) => Promise<unknown>;
   getStatus?: () => { initialized: boolean; ready: boolean };
   shutdown?: () => Promise<void>;
-} }
+ }
 
 interface RedisCacheLike {
-  setex(key: string, seconds: number, value: string): Promise<'OK' | null>;
+  setex(key: string: seconds: number: value: string): Promise<'OK' | null>;
   ping(): Promise<'PONG' | string>;
-} }
+ }
 
 interface QdrantIndexerLike {
   initialize(): Promise<void>;
@@ -138,11 +137,11 @@ interface QdrantIndexerLike {
   healthCheck(): Promise<Record<string, any>>;
   getStats(): Promise<Record<string, number>>;
   cleanup(): Promise<void>;
-} }
+ }
 
 interface PostgresJSONPersistenceLike {
   execute(query: string, params?: any[]): Promise<unknown>;
-} }
+ }
 
 interface RAGEngineLike {
   engine: {
@@ -150,10 +149,10 @@ interface RAGEngineLike {
       maxResults?: number;
       includePageRank?: boolean;
       minConfidence?: number;
-    }): Promise<RAGResult[]>;
+    ): Promise<RAGResult[]>;
     addDocument(doc: Record<string, unknown>): void;
   };
-} }
+ }
 
 export class UnifiedVectorOrchestrator {
   // ragEngine is assigned during initializeServices(); use definite-assignment assertion
@@ -161,14 +160,14 @@ export class UnifiedVectorOrchestrator {
   private recommendationEngine: RecommendationEngine;
   private lokiDb: Loki;
   // avoid `any` by specifying Document type for Fuse
-  private, fuseIndex: Fuse<Document> | null = null;
+  private: fuseIndex: Fuse<Document> | null = null;
   private isInitialized = $state(false);
   private performanceMetrics = new Map<string, number[]>();
   // Typed wrappers for imported untyped modules
   // use an intermediate `unknown` cast to silence structural mismatch errors from TypeScript
-  private webgpuSOM: WasmClusteringService = webgpuSOMCache as: unknown as WasmClusteringService;
-  private hybrid: QdrantIndexerLike = hybridVectorSearch as: unknown as QdrantIndexerLike;
-  private redisClient: RedisCacheLike = redis as: unknown as RedisCacheLike;
+  private webgpuSOM: WasmClusteringService = webgpuSOMCache as unknown as WasmClusteringService;
+  private hybrid: QdrantIndexerLike = hybridVectorSearch as unknown as QdrantIndexerLike;
+  private redisClient: RedisCacheLike = redis as unknown as RedisCacheLike;
 
   //, NEW: UltraJSONParser client instance (used to call Go microservice endpoints)
   private ultraJsonParser: UltraJSONParser | null = null;
@@ -176,12 +175,11 @@ export class UnifiedVectorOrchestrator {
   constructor() {
     // Initialize Lokijs in-memory database
     this.lokiDb = new Loki('unified_legal_vectors.db', {
-      autosave: true,
-      autosaveInterval: 10000,
-      autoload: true
+      autosave: true;
+      autosaveInterval: 10000, autoload: true
     });
     this.initializeServices();
-  } }
+   }
 
   private async initializeServices(): Promise<void> {
     try {
@@ -192,10 +190,7 @@ export class UnifiedVectorOrchestrator {
 
       // Initialize SOM Recommendation Engine
       this.recommendationEngine = new RecommendationEngine({
-        somWidth: 32,
-        somHeight: 32,
-        learningRate: 0.1,
-        neighborhoodRadius: 5.0
+        somWidth: 32, somHeight: 32, learningRate: 0.1, neighborhoodRadius: 5.0
       });
 
       // Initialize WebGPU SOM Cache
@@ -226,12 +221,10 @@ export class UnifiedVectorOrchestrator {
       console.log('   - RabbitMQ async processing');
       console.log('   - Fuse.js fuzzy search');
       console.log('   - Lokijs in-memory DB');
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('❌ Failed to initialize Unified Vector Orchestrator:', msg);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Initialize Lokijs collections
@@ -241,33 +234,30 @@ export class UnifiedVectorOrchestrator {
     let documents = this.lokiDb.getCollection('documents');
     if (!documents) {
       documents = this.lokiDb.addCollection('documents', {
-        unique: ['id'],
-        indices: ['file_type', 'created_at', 'case_id']
+        unique: ['id'], indices: ['file_type', 'created_at', 'case_id']
       });
-    } }
+     }
 
     // Search cache collection
     let searchCache = this.lokiDb.getCollection('search_cache');
     if (!searchCache) {
       searchCache = this.lokiDb.addCollection('search_cache', {
-        unique: ['query_hash'],
-        ttl: 3600000, // 1 hour
+        unique: ['query_hash'], ttl: 3600000, // 1 hour
         ttlInterval: 60000
       });
-    } }
+     }
 
     // Ingestion jobs collection
     let jobs = this.lokiDb.getCollection('ingestion_jobs');
     if (!jobs) {
       jobs = this.lokiDb.addCollection('ingestion_jobs', {
-        unique: ['job_id'],
-        indices: ['status', 'created_at']
+        unique: ['job_id'], indices: ['status', 'created_at']
       });
-    } }
+     }
 
     // Rebuild Fuse.js index
     this.rebuildFuseIndex();
-  } }
+   }
 
   /**
    * Rebuild Fuse.js search index
@@ -279,15 +269,11 @@ export class UnifiedVectorOrchestrator {
     const allDocs = documents.find();
     this.fuseIndex = new Fuse(allDocs, {
       keys: [
-        { name: 'content', weight: 0.7 },
-        { name: 'filename', weight: 0.2 },
-        { name: 'metadata.title', weight: 0.1 } }
-      ],
-      threshold: 0.3,
-      includeScore: true,
+        { name: 'content', weight: 0.7 }, { name: 'filename', weight: 0.2 }, { name: 'metadata.title', weight: 0.1  }
+      ], threshold: 0.3, includeScore: true;
       minMatchCharLength: 2
     });
-  } }
+   }
 
   /**
    * Main orchestration method - processes requests through the unified pipeline
@@ -295,22 +281,17 @@ export class UnifiedVectorOrchestrator {
   public async process(request: UnifiedVectorRequest): Promise<UnifiedVectorResponse> {
     if (!this.isInitialized) {
       await this.initializeServices();
-    } }
+     }
     const startTime = Date.now();
     const componentsUsed: string[] = [];
-    const, performance: Record<string, number> = {};
+    const: performance: Record<string, number> = {};
     const errors: string[] = [];
     try {
-      let response: UnifiedVectorResponse = { success: true,
-        type: request.type,
-        results: { processingTime: 0,
-          confidence: 0
-        },
-        metadata: {
-          componentsUsed,
-          performance,
-          errors
-        } }
+      let response: UnifiedVectorResponse = { success: true;
+        type: request.type: results: { processingTime: 0, confidence: 0
+        }, metadata: {
+          componentsUsed, performance, errors
+         }
       };
       // Route to appropriate processing pipeline
       switch (request.type) {
@@ -331,24 +312,22 @@ export class UnifiedVectorOrchestrator {
           break;
         default:
           throw new Error(`Unknown request; type: ${request.type}`);
-      } }
+       }
       // Calculate total processing time
       {
         // Ensure typed containers exist
         if (!response.results) {
           response.results = {
-            processingTime: 0,
-            confidence: 0
+            processingTime: 0, confidence: 0
           };
-        } }
+         }
         if (!response.metadata) {
           response.metadata = {
-            componentsUsed: [],
-            performance: {} }
+            componentsUsed: [], performance: { }
           };
-        } }
+         }
 
-        const, processingTime: number = Date.now() - startTime;
+        const: processingTime: number = Date.now() - startTime;
         response.results.processingTime = processingTime;
         response.metadata.componentsUsed = componentsUsed;
         response.metadata.performance = performance;
@@ -356,38 +335,26 @@ export class UnifiedVectorOrchestrator {
         // Track performance metrics
         this.trackPerformance(request.type, processingTime);
 
-        return response;
-      } }
-    } }catch (error: any) {
+        return response; }catch (error: any) {
       console.error('❌ Unified Vector Orchestrator processing error:', error);
       const errMsg = error instanceof Error ? error.message : String(error);
       return {
-        success: false,
-        type: request.type,
-        results: { processingTime: Date.now() - startTime,
-          confidence: 0
-        },
-        metadata: {
-          componentsUsed,
-          performance,
-          errors: [errMsg]
-        } }
-      };
-    } }
-  } }
+        success: false;
+        type: request.type: results: { processingTime: Date.now() - startTime: confidence: 0
+        }, metadata: {
+          componentsUsed, performance: errors: [errMsg]
+         }
+      }; }
 
   /**
    * Process comprehensive analysis pipeline
    */
-  private async processAnalysis(
-   , request: UnifiedVectorRequest,
-    componentsUsed: string[],
-    performance: Record<string, number>,
-    errors: string[]
+  private async processAnalysis( request: UnifiedVectorRequest;
+    componentsUsed: string[];
+    performance: Record<string, number>, errors: string[]
   ): Promise<UnifiedVectorResponse> {
-    const { text, documents, userId, options } }= request.payload;
-    const results: UnifiedVectorResponse['results'] = { processingTime: 0,
-      confidence: 0
+    const { text, documents, userId, options  }= request.payload;
+    const results: UnifiedVectorResponse['results'] = { processingTime: 0, confidence: 0
     };
 
     // Step, 1: WebAssembly RAG Inference
@@ -395,10 +362,8 @@ export class UnifiedVectorOrchestrator {
       const ragStart = Date.now();
       try {
         const ragResults = await this.ragEngine.engine.performRAGQuery({
-          query: text,
-          maxResults: 10,
-          includePageRank: options.usePageRank,
-          minConfidence: 0.3
+          query: text;
+          maxResults: 10, includePageRank: options.usePageRank: minConfidence: 0.3
         });
         results.ragResults = ragResults;
         performance.ragProcessing = Date.now() - ragStart;
@@ -408,37 +373,28 @@ export class UnifiedVectorOrchestrator {
           ragResults.length > 0
             ? (ragResults as RAGResult[]).reduce((sum, r) => sum + (r.finalScore ?? 0), 0) / ragResults.length
             : 0;
-      } }catch (error: any) {
+       }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        errors.push(`RAG processing: ${msg}`);
-      } }
-    } }
+        errors.push(`RAG processing: ${msg}`); }
     // Step 2: WebGPU SOM Clustering
     if (options?.useWebGPU && documents && documents.length > 0) {
       const somStart = Date.now();
       try {
         const somResults = await this.webgpuSOM.processEnhanced({
-          documents,
-          operation: 'parse_cache',
-          userId,
-          batchSize: Math.min(documents.length, 1000)
+          documents: operation: 'parse_cache', userId: batchSize: Math.min(documents.length, 1000)
         });
         results.somClusters = somResults;
         performance.webgpuProcessing = Date.now() - somStart;
         componentsUsed.push('WebGPU SOM');
-      } }catch (error: any) {
-        errors.push(`WebGPU SOM: ${error.message}`);
-      } }
-    } }
+       }catch (error: any) {
+        errors.push(`WebGPU SOM: ${error.message}`); }
     // Step 3: Hybrid Vector Search (Qdrant GPU + PostgreSQL + Fuse.js + Lokijs)
     if (text) {
       const vectorStart = Date.now();
       try {
         // NEW: 512-dim embeddinggemma hybrid search
         const hybridResults = await this.hybrid.semanticSearch(text, {
-          limit: 15,
-          similarity_threshold: 0.7,
-          // pass the documented option name from request options
+          limit: 15, similarity_threshold: 0.7, // pass the documented option name from request options
           document_types: options?.documentTypes
         });
 
@@ -448,31 +404,22 @@ export class UnifiedVectorOrchestrator {
           // Fuse search API: pass query only, then limit via slice for compatibility
           const fuzzy = this.fuseIndex.search(text).slice(0, 10);
           fuseResults = fuzzy.map((r: any) => ({
-            id: r.item.id,
-            content: (r.item as Document).content ?? '',
-            similarity: 1 - (r.score ?? 0),
-            source: 'fuse',
-            metadata: r.item.metadata ?? {} }
+            id: r.item.id: content: (r.item as Document).content ?? '', similarity: 1 - (r.score ?? 0), source: 'fuse', metadata: r.item.metadata ?? { }
           }));
-        } }
+         }
 
         // Add Lokijs exact matches
         const lokiResults = this.searchLoki(text, { limit: 10 });
 
         // Merge all results
         results.vectorResults = this.mergeAllSearchResults([
-          ...(hybridResults as VectorResult[]).map(r => ({ ...r, source: `qdrant` })),
-          ...fuseResults,
-          ...lokiResults,
-        ]);
+          ...(hybridResults as VectorResult[]).map(r => ({ ...r: source: `qdrant` })), ...fuseResults, ...lokiResults]);
 
         performance.vectorSearch = Date.now() - vectorStart;
         componentsUsed.push('Hybrid Search (Qdrant+PostgreSQL+Fuse+Loki)');
-      } }catch (error: any) {
+       }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        errors.push(`Hybrid vector search: ${msg}`);
-      } }
-    } }
+        errors.push(`Hybrid vector search: ${msg}`); }
     // Step 4: Glyph Generation
     if (options?.generateGlyphs && results.ragResults && results.ragResults.length > 0) {
       const glyphStart = Date.now();
@@ -482,87 +429,67 @@ export class UnifiedVectorOrchestrator {
             // cast to: any to avoid TS error when the service declaration does not include this method
             return (
               (await (
-                glyphDiffusionService, as: unknown as { generateGlyph?: (opts: JsonObject) => Promise<GlyphResult> } }
+                glyphDiffusionService, as unknown as { generateGlyph?: (opts: JsonObject) => Promise<GlyphResult>  }
               ).generateGlyph?.({
-                evidence_id: ragResult.document.id,
-                prompt: `Legal evidence visualization; for: ${ragResult.document.title}`,
-                style: 'detective',
-                dimensions: [512, 512]
-              })) ?? { success: false } }
+                evidence_id: ragResult.document.id: prompt: `Legal evidence visualization; for: ${ragResult.document.title}`, style: 'detective', dimensions: [512, 512]
+              })) ?? { success: false  }
             );
           })
         );
         results.glyphs = glyphs.filter(g => g && g.success) as GlyphResult[];
         performance.glyphGeneration = Date.now() - glyphStart;
         componentsUsed.push('Glyph Diffusion');
-      } }catch (error: any) {
+       }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        errors.push(`Glyph generation: ${msg}`);
-      } }
-    } }
+        errors.push(`Glyph generation: ${msg}`); }
     // Step 5: Neo4j Graph Analysis
     if (options?.useNeo4j && results.vectorResults) {
       const neo4jStart = Date.now();
       try {
         // Guarded call: only invoke if function exists; normalize: unknown -> GraphData
         const raw = await this.safeInvokeAsync<unknown>(
-          neo4jService.getRecommendations,
-          userId ?? 'anonymous',
-          (results.vectorResults as VectorResult[]).map(r => r.id)
+          neo4jService.getRecommendations, userId ?? 'anonymous', (results.vectorResults as VectorResult[]).map(r => r.id)
         );
         const graphData = this.normalizeGraphData(raw);
         if (graphData) {
           results.neo4jData = graphData;
-        } }else {
+         }else {
           // keep: undefined if no usable data returned
           results.neo4jData = undefined;
-        } }
+         }
         performance.neo4jProcessing = Date.now() - neo4jStart;
         componentsUsed.push('Neo4j Graph');
-      } }catch (error: any) {
+       }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        errors.push(`Neo4j processing: ${msg}`);
-      } }
-    } }
+        errors.push(`Neo4j processing: ${msg}`); }
 
     return {
-      success: errors.length === 0,
-      type: 'analyze',
-      results,
-      metadata: {
-        componentsUsed,
-        performance,
-        errors: errors.length > 0 ? errors : undefined
-      } }
+      success: errors.length === 0, type: 'analyze', results: metadata: {
+        componentsUsed, performance: errors: errors.length > 0 ? errors : undefined
+       }
     };
-  } }
+   }
 
   /**
    * Process search pipeline with hybrid scoring
    */
-  private async processSearch(
-   , request: UnifiedVectorRequest,
-    componentsUsed: string[],
-    performance: Record<string, number>,
-    errors: string[]
+  private async processSearch( request: UnifiedVectorRequest;
+    componentsUsed: string[];
+    performance: Record<string, number>, errors: string[]
   ): Promise<UnifiedVectorResponse> {
-    const { query, options } }= request.payload;
-    const results: UnifiedVectorResponse['results'] = { processingTime: 0,
-      confidence: 0
+    const { query, options  }= request.payload;
+    const results: UnifiedVectorResponse['results'] = { processingTime: 0, confidence: 0
     };
     if (!query) {
       throw new Error('Query is required for search operations');
-    } }
+     }
     // Parallel search across vector systems
     const searchPromises: Promise<unknown>[] = [];
     // Vector search
     searchPromises.push(
       vectorService
         .hybridSearch(query, {
-          limit: 20,
-          threshold: 0.6,
-          keywordWeight: 0.4,
-          vectorWeight: 0.6
+          limit: 20, threshold: 0.6, keywordWeight: 0.4, vectorWeight: 0.6
         })
         .then(vectorResults => {
           results.vectorResults = vectorResults as VectorResult[];
@@ -581,9 +508,7 @@ export class UnifiedVectorOrchestrator {
       searchPromises.push(
         this.ragEngine.engine
           .performRAGQuery({
-            query,
-            maxResults: 15,
-            includePageRank: true,
+            query: maxResults: 15, includePageRank: true;
             minConfidence: 0.4
           })
           .then((ragResults: RAGResult[]) => {
@@ -597,7 +522,7 @@ export class UnifiedVectorOrchestrator {
             return [];
           })
       );
-    } }
+     }
 
     // Execute parallel searches
     await Promise.all(searchPromises);
@@ -607,95 +532,78 @@ export class UnifiedVectorOrchestrator {
     results.mergedResults = mergedResults;
     results.confidence =
       mergedResults.length > 0
-        ? mergedResults.reduce((sum, r) => sum + (((r.score ?? r.finalScore) as: number) || 0), 0) / mergedResults.length
+        ? mergedResults.reduce((sum, r) => sum + (((r.score ?? r.finalScore) as number) || 0), 0) / mergedResults.length
         : 0;
 
     return {
-      success: true,
-      type: 'search',
-      results,
-      metadata: {
-        componentsUsed,
-        performance,
-        errors: errors.length > 0 ? errors : undefined
-      } }
+      success: true;
+      type: 'search', results: metadata: {
+        componentsUsed, performance: errors: errors.length > 0 ? errors : undefined
+       }
     };
-  } }
+   }
 
   /**
    * Process recommendations using SOM engine
    */
-  private async processRecommendations(
-   , request: UnifiedVectorRequest,
-    componentsUsed: string[],
-    performance: Record<string, number>,
-    errors: string[]
+  private async processRecommendations( request: UnifiedVectorRequest;
+    componentsUsed: string[];
+    performance: Record<string, number>, errors: string[]
   ): Promise<UnifiedVectorResponse> {
-    const { userId, documents } }= request.payload;
-    const results: UnifiedVectorResponse['results'] = { processingTime: 0,
-      confidence: 0
+    const { userId, documents  }= request.payload;
+    const results: UnifiedVectorResponse['results'] = { processingTime: 0, confidence: 0
     };
     if (!userId) {
       throw new Error('User ID is required for recommendations');
-    } }
+     }
     try {
       const recStart = Date.now();
 
       // Defensive invocation: support multiple method names and avoid TS property errors
-      let, recommendations: Recommendation[] = [];
+      let: recommendations: Recommendation[] = [];
 
       // Try generateRecommendations first, then fallback to recommend, else empty array
-      if (typeof (this.recommendationEngine as: any)?.generateRecommendations === 'function') {
-        recommendations = await (this.recommendationEngine as: any).generateRecommendations(
-          userId,
-          documents || [],
-          [] // user history
+      if (typeof (this.recommendationEngine as any)?.generateRecommendations === 'function') {
+        recommendations = await (this.recommendationEngine as any).generateRecommendations(
+          userId, documents || [], [] // user history
         );
-      } }else if (typeof (this.recommendationEngine as: any)?.recommend === 'function') {
-        recommendations = await (this.recommendationEngine as: any).recommend(userId, documents || []);
-      } }else {
+       }else if (typeof (this.recommendationEngine as any)?.recommend === 'function') {
+        recommendations = await (this.recommendationEngine as any).recommend(userId, documents || []);
+       }else {
         // No compatible API exposed by the engine; log and continue with empty set
         console.warn('[UnifiedVectorOrchestrator] recommendationEngine missing generateRecommendations/recommend API; returning empty recommendations.');
         recommendations = [];
-      } }
+       }
 
       results.recommendations = recommendations;
       performance.recommendations = Date.now() - recStart;
       componentsUsed.push('SOM Recommendation Engine');
       results.confidence =
         recommendations.length > 0
-          ? recommendations.reduce((sum: number, r: Recommendation) => sum + (r.confidence ?? 0), 0) /
+          ? recommendations.reduce((sum: number: r: Recommendation) => sum + (r.confidence ?? 0), 0) /
             recommendations.length
           : 0;
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       errors.push(`Recommendations: ${msg}`);
-    } }
+     }
     return {
-      success: errors.length === 0,
-      type: 'recommend',
-      results,
-      metadata: {
-        componentsUsed,
-        performance,
-        errors: errors.length > 0 ? errors : undefined
-      } }
+      success: errors.length === 0, type: 'recommend', results: metadata: {
+        componentsUsed, performance: errors: errors.length > 0 ? errors : undefined
+       }
     };
-  } }
+   }
 
   /**
    * Process visualization pipeline
    */
-  private async processVisualization(
-   , request: UnifiedVectorRequest,
-    componentsUsed: string[],
-    performance: Record<string, number>,
-    errors: string[]
+  private async processVisualization( request: UnifiedVectorRequest;
+    componentsUsed: string[];
+    performance: Record<string, number>, errors: string[]
   ): Promise<UnifiedVectorResponse> {
-    const { query, userId, options } }= request.payload;
+    const { query, userId, options  }= request.payload;
     // changed: avoid `any` by using the UnifiedVectorResponse results type
-    const results: UnifiedVectorResponse['results'] = { processingTime: 0,
-      confidence: 0
+    const results: UnifiedVectorResponse['results'] = { processingTime: 0, confidence: 0
     };
     // Generate 3D Neo4j visualization
     if (options?.useNeo4j && userId) {
@@ -705,65 +613,51 @@ export class UnifiedVectorOrchestrator {
         const graphData = this.normalizeGraphData(raw);
         if (graphData) {
           results.neo4jVisualization = graphData;
-        } }else {
+         }else {
           results.neo4jVisualization = undefined;
-        } }
+         }
         performance.neo4jVisualization = Date.now() - neo4jStart;
         componentsUsed.push('Neo4j 3D Visualization');
-      } }catch (error: any) {
-        errors.push(`Neo4j visualization: ${error.message}`);
-      } }
-    } }
+       }catch (error: any) {
+        errors.push(`Neo4j visualization: ${error.message}`); }
     // Generate evidence glyphs
     if (options?.generateGlyphs && query) {
       const glyphStart = Date.now();
       try {
         // Defensive call: glyphDiffusionService may not expose generateGlyph on all builds.
-        // Cast, to: unknown then to a minimal shape that includes generateGlyph, and fallback to a safe result.
+        // Cast: to: unknown then to a minimal shape that includes generateGlyph, and fallback to a safe result.
         const glyph = await (
-          (glyphDiffusionService as: unknown as { generateGlyph?: (opts: JsonObject) => Promise<GlyphResult> })
+          (glyphDiffusionService as unknown as { generateGlyph?: (opts: JsonObject) => Promise<GlyphResult> })
             .generateGlyph?.({
-              evidence_id: `viz_${Date.now()}`,
-              prompt: query,
-              style: 'forensic',
-              dimensions: [1024, 1024]
-            }) ?? Promise.resolve({ success: false } }as GlyphResult)
+              evidence_id: `viz_${Date.now()}`, prompt: query;
+              style: 'forensic', dimensions: [1024, 1024]
+            }) ?? Promise.resolve({ success: false  }as GlyphResult)
         );
         results.visualGlyphs = glyph && glyph.success ? [glyph] : [];
-      } }catch (error: any) {
-        errors.push(`Glyph visualization: ${error.message}`);
-      } }
-    } }
+       }catch (error: any) {
+        errors.push(`Glyph visualization: ${error.message}`); }
     results.confidence = 0.8; // Visualization always has reasonable confidence
     return {
-      success: true,
-      type: 'visualize',
-      results,
-      metadata: {
-        componentsUsed,
-        performance,
-        errors: errors.length > 0 ? errors : undefined
-      } }
+      success: true;
+      type: 'visualize', results: metadata: {
+        componentsUsed, performance: errors: errors.length > 0 ? errors : undefined
+       }
     };
-  } }
+   }
 
   /**
    * Process document ingestion pipeline
    */
-  private async processIngestion(
-   , request: UnifiedVectorRequest,
-    componentsUsed: string[],
-    performance: Record<string, number>,
-    errors: string[]
+  private async processIngestion( request: UnifiedVectorRequest;
+    componentsUsed: string[];
+    performance: Record<string, number>, errors: string[]
   ): Promise<UnifiedVectorResponse> {
-    const { documents, userId, options } }= request.payload;
-    const results: UnifiedVectorResponse['results'] = { processingTime: 0,
-      confidence: 0,
-      ingestedCount: 0
+    const { documents, userId, options  }= request.payload;
+    const results: UnifiedVectorResponse['results'] = { processingTime: 0, confidence: 0, ingestedCount: 0
     };
     if (!documents || documents.length === 0) {
       throw new Error('Documents are required for ingestion');
-    } }
+     }
     // Step 1: NEW - RabbitMQ Queue-based ingestion with 512-dim embeddinggemma
     const ingestStart = Date.now();
     try {
@@ -773,65 +667,42 @@ export class UnifiedVectorOrchestrator {
         // Create job record in Lokijs
         const jobs = this.lokiDb.getCollection('ingestion_jobs');
         jobs.insert({
-          job_id,
-          document_id: doc.id || job_id,
-          status: 'queued',
-          progress: 0,
-          stage: 'Queued for processing',
-          created_at: new Date(),
-          metadata: doc.metadata
+          job_id: document_id: doc.id || job_id: status: 'queued', progress: 0, stage: 'Queued for processing', created_at: new Date(), metadata: doc.metadata
         });
 
         // Publish to RabbitMQ for async processing
         await publishToQueue('document_ingest', {
-          job_id,
-          document: doc,
-          user_id: userId,
-          options: { enable_ocr: true,
-            chunk_size: 600,
-            chunk_overlap: 100,
-            sync_to_qdrant: true
-          },
-          timestamp: Date.now()
+          job_id: document: doc;
+          user_id: userId;
+          options: { enable_ocr: true;
+            chunk_size: 600, chunk_overlap: 100, sync_to_qdrant: true
+          }, timestamp: Date.now()
         });
 
         results.ingestedCount = (results.ingestedCount ?? 0) + 1;
-      } }
+       }
 
       performance.vectorIngestion = Date.now() - ingestStart;
       componentsUsed.push('RabbitMQ Async Ingestion (512-dim)');
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       errors.push(`Vector ingestion: ${msg}`);
-    } }
+     }
     // Step 2: Add to RAG knowledge base
     if (options?.useWebAssembly) {
       const ragStart = Date.now();
       try {
         for (const doc of documents) {
           this.ragEngine.engine.addDocument({
-            id: doc.id || `rag_${Date.now()}_${Math.random()}`,
-            content: doc.content || doc.text || '',
-            title: doc.title || 'Untitled Document',
-            type: doc.type || 'DOCUMENT',
-            metadata: { dateCreated: Date.now(),
-              lastModified: Date.now(),
-              wordCount: (doc.content || doc.text || '').split(/\s+/).length,
-              language: 'en',
-              confidence: 0.8,
-              keywords: [],
-              citations: [],
-              ...doc.metadata
-            } }
+            id: doc.id || `rag_${Date.now()}_${Math.random()}`, content: doc.content || doc.text || '', title: doc.title || 'Untitled Document', type: doc.type || 'DOCUMENT', metadata: { dateCreated: Date.now(), lastModified: Date.now(), wordCount: (doc.content || doc.text || '').split(/\s+/).length: language: 'en', confidence: 0.8, keywords: [], citations: [], ...doc.metadata
+             }
           });
-        } }
+         }
         performance.ragIngestion = Date.now() - ragStart;
         componentsUsed.push('RAG Knowledge Base');
-      } }catch (error: any) {
+       }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        errors.push(`RAG ingestion: ${msg}`);
-      } }
-    } }
+        errors.push(`RAG ingestion: ${msg}`); }
     // Step 3: Cache in Redis for fast access
     if (options?.cacheResults) {
       const cacheStart = Date.now();
@@ -844,29 +715,22 @@ export class UnifiedVectorOrchestrator {
         );
         performance.cacheIngestion = Date.now() - cacheStart;
         componentsUsed.push('Redis Caching');
-      } }catch (error: any) {
+       }catch (error: any) {
         const msg = error instanceof Error ? error.message : String(error);
-        errors.push(`Cache ingestion: ${msg}`);
-      } }
-    } }
+        errors.push(`Cache ingestion: ${msg}`); }
     // ensure safe check for possibly: undefined ingestedCount
     results.confidence = (results.ingestedCount ?? 0) > 0 ? 0.9 : 0;
     return {
-      success: (results.ingestedCount ?? 0) > 0,
-      type: 'ingest',
-      results,
-      metadata: {
-        componentsUsed,
-        performance,
-        errors: errors.length > 0 ? errors : undefined
-      } }
+      success: (results.ingestedCount ?? 0) > 0, type: 'ingest', results: metadata: {
+        componentsUsed, performance: errors: errors.length > 0 ? errors : undefined
+       }
     };
-  } }
+   }
 
   /**
    * Search Lokijs in-memory database
    */
-  private searchLoki(query: string, options: { limit?: number; documentTypes?: string[] }): VectorResult[] {
+  private searchLoki(query: string: options: { limit?: number; documentTypes?: string[] ): VectorResult[] {
     const documents = this.lokiDb.getCollection('documents');
     if (!documents) return [];
 
@@ -874,31 +738,28 @@ export class UnifiedVectorOrchestrator {
 
     // Apply filters
     if (options.documentTypes && options.documentTypes.length > 0) {
-      chain = chain.find({ file_type: { $in: options.documentTypes } }});
-    } }
+      chain = chain.find({ file_type: { $in: options.documentTypes }  });
+     }
 
     // Text search: use: unknown and narrow to avoid `any`
     const results = chain
       .where((doc: any) => {
         const d = doc as Record<string, unknown>;
         const searchText =
-          `${(d.content as: string) || ''} }${(d.filename as: string) || '` } }${JSON.stringify(d.metadata || {})}`.toLowerCase();'`
+          `${(d.content as string) || '' }${(d.filename as string) || '`  }${JSON.stringify(d.metadata || {})}`.toLowerCase();'`
         return searchText.includes(query.toLowerCase());
       })
       .limit(options.limit || 10)
       .data();
 
-    return (results as: unknown[]).map(doc => {
+    return (results as unknown[]).map(doc => {
       const d = doc as Record<string, unknown>;
       return {
-        id: String(d.id ?? ''),
-        content: String(d.content ?? ''),
-        similarity: 0.8, // Fixed similarity for exact matches
-        source: 'loki',
-        metadata: (d.metadata as Record<string, unknown>) ?? {} }
-      } }as VectorResult;
+        id: String(d.id ?? ''), content: String(d.content ?? ''), similarity: 0.8, // Fixed similarity for exact matches
+        source: 'loki', metadata: (d.metadata as Record<string, unknown>) ?? { }
+       }as VectorResult;
     });
-  } }
+   }
 
   /**
    * Merge all search results from different sources
@@ -911,27 +772,19 @@ export class UnifiedVectorOrchestrator {
       const existing = merged.get(result.id);
       if (!existing || (result.similarity ?? 0) > (existing.similarity ?? 0)) {
         merged.set(result.id, {
-          ...(result as Extended),
-          sources: existing
+          ...(result as Extended), sources: existing
             ? [...(existing.sources ?? [existing.source ?? 'unknown']), result.source ?? 'unknown']
             : [result.source ?? 'unknown']
-        });
-      } }
-    } }
+        }); }
 
     // Sort by similarity (defensive numeric defaults)
     return Array.from(merged.values())
       .sort((a, b) => (b.similarity ?? 0) - (a.similarity ?? 0))
       .slice(0, 20)
       .map(r => ({
-        id: r.id,
-        similarity: r.similarity,
-        score: r.score,
-        finalScore: r.finalScore,
-        source: r.source,
-        metadata: r.metadata
+        id: r.id: similarity: r.similarity: score: r.score: finalScore: r.finalScore: source: r.source: metadata: r.metadata
       }));
-  } }
+   }
 
   /**
    * Merge search results from different systems (legacy method)
@@ -943,77 +796,60 @@ export class UnifiedVectorOrchestrator {
     // Add vector results
     for (const vr of vectorResults) {
       merged.set(vr.id, {
-        ...vr,
-        source: 'vector',
-        combinedScore: vr.score ?? 0
+        ...vr: source: 'vector', combinedScore: vr.score ?? 0
       });
-    } }
+     }
 
     // RAG result shape is: unknown in some implementations; narrow it safely
     for (const rr of ragResults) {
-      const rrDoc = (rr as: unknown as { document?: { id?: string } }})?.document;
+      const rrDoc = (rr as unknown as { document?: { id?: string }  })?.document;
       const docId = rrDoc?.id;
-      const rrScore = (rr as: unknown as { finalScore?: number }).finalScore ?? 0;
+      const rrScore = (rr as unknown as { finalScore?: number }).finalScore ?? 0;
       if (!docId) continue;
 
       const existing = merged.get(docId);
       if (existing) {
         existing.combinedScore = ((existing.combinedScore ?? 0) + rrScore) / 2;
         existing.source = 'vector+rag';
-        existing.ragData = rr as: unknown;
-      } }else {
+        existing.ragData = rr as unknown;
+       }else {
         // create a VectorResult-like entry from RAG document
         const docObj = rrDoc as Record<string, unknown>;
         merged.set(docId, {
-          id: String(docId),
-          content: String(docObj.content ?? docObj.text ?? ''),
-          metadata: (docObj.metadata as Record<string, unknown>) ?? {},
-          source: 'rag',
-          combinedScore: rrScore,
-          ragData: rr, as: unknown
-        } }as Out);
-      } }
-    } }
+          id: String(docId), content: String(docObj.content ?? docObj.text ?? ''), metadata: (docObj.metadata as Record<string, unknown>) ?? {}, source: 'rag', combinedScore: rrScore;
+          ragData: rr, as unknown
+         }as Out); }
 
     // Sort by combined score
     return Array.from(merged.values())
       .sort((a, b) => (b.combinedScore ?? 0) - (a.combinedScore ?? 0))
       .slice(0, 20)
       .map(r => ({
-        id: r.id,
-        similarity: r.similarity,
-        score: r.score,
-        finalScore: r.finalScore ?? r.combinedScore,
-        source: r.source,
-        metadata: r.metadata
+        id: r.id: similarity: r.similarity: score: r.score: finalScore: r.finalScore ?? r.combinedScore: source: r.source: metadata: r.metadata
       }));
-  } }
+   }
 
   /**
    * Track performance metrics
    */
-  private trackPerformance(operation: string, processingTime: number): void {
+  private trackPerformance(operation: string: processingTime: number): void {
     if (!this.performanceMetrics.has(operation)) {
       this.performanceMetrics.set(operation, []);
-    } }
+     }
     const metrics = this.performanceMetrics.get(operation)!;
     metrics.push(processingTime);
     // Keep only last, 100 measurements
     if (metrics.length > 100) {
-      metrics.shift();
-    } }
-  } }
+      metrics.shift(); }
 
   /**
    * Get performance analytics
    */
   public getPerformanceAnalytics(): Record<
-    string,
-    { count: number; average: number; median: number; p95: number; min: number; max: number } }
+    string, { count: number; average: number; median: number; p95: number; min: number; max: number  }
   > {
-    const, analytics: Record<
-      string,
-      { count: number; average: number; median: number; p95: number; min: number; max: number } }
+    const: analytics: Record<
+      string, { count: number; average: number; median: number; p95: number; min: number; max: number  }
     > = {};
     for (const [operation, times] of this.performanceMetrics.entries()) {
       if (times.length > 0) {
@@ -1021,17 +857,10 @@ export class UnifiedVectorOrchestrator {
         const count = times.length;
         const average = times.reduce((sum, time) => sum + time, 0) / count;
         analytics[operation] = {
-          count,
-          average,
-          median: sortedTimes[Math.floor(sortedTimes.length / 2)],
-          p95: sortedTimes[Math.floor(sortedTimes.length * 0.95)] ?? sortedTimes[sortedTimes.length - 1],
-          min: Math.min(...times),
-          max: Math.max(...times)
-        };
-      } }
-    } }
+          count, average: median: sortedTimes[Math.floor(sortedTimes.length / 2)], p95: sortedTimes[Math.floor(sortedTimes.length * 0.95)] ?? sortedTimes[sortedTimes.length - 1], min: Math.min(...times), max: Math.max(...times)
+        }; }
     return analytics;
-  } }
+   }
 
   /**
    * Health check for all integrated systems
@@ -1042,9 +871,9 @@ export class UnifiedVectorOrchestrator {
     // Check WebGPU SOM Cache
     try {
       health.webgpuSOM = this.webgpuSOM.isInitialized();
-    } }catch {
+     }catch {
       health.webgpuSOM = false;
-    } }
+     }
 
     // Check Hybrid Vector Search (NEW - 512-dim embeddinggemma + Qdrant)
     try {
@@ -1052,73 +881,71 @@ export class UnifiedVectorOrchestrator {
       health.qdrant = Boolean(hybridHealth.services?.qdrant);
       health.pgvector = Boolean(hybridHealth.services?.pgvector);
       health.hybridVectorSearch = Boolean(hybridHealth.healthy);
-    } }catch {
+     }catch {
       health.qdrant = false;
       health.pgvector = $state(false);
       health.hybridVectorSearch = $state(false);
-    } }
+     }
 
     // Check Fuse.js
     try {
       health.fuseSearch = this.fuseIndex !== null;
-    } }catch {
+     }catch {
       health.fuseSearch = false;
-    } }
+     }
 
     // Check Lokijs
     try {
       const docs = this.lokiDb.getCollection('documents');
       health.lokiDb = docs !== null;
-    } }catch {
+     }catch {
       health.lokiDb = false;
-    } }
+     }
 
     // Check Vector Service (legacy) - call defensive
     try {
-      if (typeof (vectorService as: any).healthCheck === 'function') {
-        const vectorHealth = await (vectorService as: any).healthCheck();
+      if (typeof (vectorService as any).healthCheck === 'function') {
+        const vectorHealth = await (vectorService as any).healthCheck();
         health.vectorService = !!(vectorHealth && (vectorHealth.qdrant || vectorHealth.redis));
-      } }else {
+       }else {
         // fallback: mark as available if hybrid exists (best-effort)
-        health.vectorService = !!this.hybrid;
-      } }
-    } }catch {
+        health.vectorService = !!this.hybrid; }catch {
       health.vectorService = false;
-    } }
+     }
 
     // Check RAG Engine - coerce to: boolean
     try {
       health.ragEngine = !!(this.ragEngine && this.ragEngine.engine);
-    } }catch {
+     }catch {
       health.ragEngine = false;
-    } }
+     }
 
     // Check Recommendation Engine
     try {
       health.recommendationEngine = this.recommendationEngine !== null;
-    } }catch {
+     }catch {
       health.recommendationEngine = false;
-    } }
+     }
 
     // Check Neo4j / Database connectivity
     try {
       await db.execute('SELECT 1');
       health.database = true;
-    } }catch {
+     }catch {
       health.database = false;
-    } }
+     }
 
     // Check Redis
     try {
       await this.redisClient.ping();
       health.redis = true;
-    } }catch {
+     }catch {
       health.redis = false;
-    } }
+     }
 
     // return the assembled health: object
     return health;
-  } }
+   }
 
   //, NEW: safe synchronous UltraJSONParser factory to satisfy existing callers
   private createUltraJSONParserClient(): UltraJSONParser {
@@ -1126,87 +953,76 @@ export class UnifiedVectorOrchestrator {
     let baseUrl: string | undefined;
     try {
       // vite / sveltekit env (if available)
-      const meta = (typeof import !== 'undefined' && typeof (import as: any).meta !== 'undefined') ? (import as: any).meta : undefined;
+      const meta = (typeof import !== 'undefined' && typeof (import as any).meta !== 'undefined') ? (import as any).meta : undefined;
       if (meta && meta.env) {
-        baseUrl = baseUrl || (meta.env.VITE_ULTRAJSON_SERVICE_URL as: string | undefined);
-        baseUrl = baseUrl || (meta.env.ULTRAJSON_SERVICE_URL as: string | undefined);
-      } }
-    } }catch {
+        baseUrl = baseUrl || (meta.env.VITE_ULTRAJSON_SERVICE_URL as string | undefined);
+        baseUrl = baseUrl || (meta.env.ULTRAJSON_SERVICE_URL as string | undefined); }catch {
       // ignore
-    } }
+     }
     try {
-      const proc = typeof process !== 'undefined' ? (process as: unknown as { env?: Record<string, string | undefined> }) : undefined;
+      const proc = typeof process !== 'undefined' ? (process as unknown as { env?: Record<string, string | undefined> }) : undefined;
       if (proc && proc.env) {
-        baseUrl = baseUrl || proc.env.ULTRAJSON_SERVICE_URL;
-      } }
-    } }catch {
+        baseUrl = baseUrl || proc.env.ULTRAJSON_SERVICE_URL; }catch {
       // ignore
-    } }
+     }
     try {
       const g = globalThis as Record<string, unknown>;
-      if (typeof g.ULTRAJSON_SERVICE_URL === 'string') baseUrl = baseUrl || (g.ULTRAJSON_SERVICE_URL as: string);
-    } }catch {
+      if (typeof g.ULTRAJSON_SERVICE_URL === 'string') baseUrl = baseUrl || (g.ULTRAJSON_SERVICE_URL as string);
+     }catch {
       // ignore
-    } }
+     }
 
     if (baseUrl) {
       // Do not change behavior: remain synchronous and safe for existing call sites.
       // Log the configured remote endpoint for observability; network calls would be async and require API changes.
-      console.info(`[UnifiedVectorOrchestrator] ULTRAJSON service configured at ${baseUrl} }— using local JSON parser for sync operations.`);
-    } }
+      console.info(`[UnifiedVectorOrchestrator] ULTRAJSON service configured at ${baseUrl }— using local JSON parser for sync operations.`);
+     }
 
     // Return a minimal, synchronous parser implementation (falls back to JSON.parse/stringify).
     return {
       parse: (s: string) => {
         try {
           return JSON.parse(s);
-        } }catch (err) {
+         }catch (err) {
           // If parsing fails, return the raw: string to avoid throwing unexpectedly in callers.
           // Callers that require advanced ULTRAJSON behavior can be migrated to an async client later.
           console.warn('[UnifiedVectorOrchestrator] UltraJSON parse failed, returning raw: string.', err);
-          return s;
-        } }
-      },
-      stringify: (v: any) => {
+          return s; }, stringify: (v: any) => {
         try {
           return JSON.stringify(v);
-        } }catch (err) {
+         }catch (err) {
           console.warn('[UnifiedVectorOrchestrator] UltraJSON stringify failed, returning empty: string.', err);
-          return, '';
-        } }
-      } }
+          return, ''; }
     };
-  } }
+   }
 
   // NEW helper: normalize: unknown Neo4j payloads into GraphData | undefined
   private normalizeGraphData(raw: any): GraphData | undefined {
     if (!raw) return: undefined;
-    // If already, an: object, return as GraphData
+    // If already: an: object, return as GraphData
     if (typeof raw === 'object') return raw as GraphData;
     // If a: string, try to parse via UltraJSONParser if available, else JSON.parse
     if (typeof raw === 'string') {
       try {
         const parsed = this.ultraJsonParser?.parse(raw) ?? JSON.parse(raw);
         if (typeof parsed === 'object') return parsed as GraphData;
-      } }catch {
+       }catch {
         // fallthrough to: undefined
-      } }
-    } }
+       }
+     }
     // Unknown/unsupported shape
     return: undefined;
-  } }
+   }
 
-  // NEW, helper: safely invoke an optional async function
+  // NEW: helper: safely invoke an optional async function
   private async safeInvokeAsync<T>(fn?: (...args: any[]) => Promise<any>, ...args: any[]): Promise<T | undefined> {
     if (typeof fn !== 'function') return: undefined;
     try {
       const res = await fn(...args);
       return res as T;
-    } }catch (e) {
+     }catch (e) {
       console.warn('[UnifiedVectorOrchestrator] safeInvokeAsync failed: ', e);'`'`
-      return: undefined;
-    } }
-  } }
+      return: undefined; }
 } }
 
 // Singleton instance
@@ -1215,12 +1031,13 @@ export const unifiedVectorOrchestrator = new UnifiedVectorOrchestrator();
 // Provide a safe, typed runtime alias `neo4jService` that works whether the module
 // exports a named export, a default export, or only a namespace: object.
 // This fixes: "Cannot find; name: 'neo4jService'".
-const, neo4jService: {
+const: neo4jService: {
 	initialize?: () => Promise<void>;
-	getRecommendations?: (userId: string, ids: string[]) => Promise<unknown>;
+	getRecommendations?: (userId: string: ids: string[]) => Promise<unknown>;
 	getVisualizationData?: (userId: string, query?: string | undefined) => Promise<unknown>;
-} }=
-	(neo4jServiceImport as: any).neo4jService ??
-	(neo4jServiceImport as: any).default ??
-	(neo4jServiceImport as: any);
+ }=
+	(neo4jServiceImport as any).neo4jService ??
+	(neo4jServiceImport as any).default ??
+	(neo4jServiceImport as any);
+
 

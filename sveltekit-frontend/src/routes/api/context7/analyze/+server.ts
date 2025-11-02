@@ -1,16 +1,16 @@
-import { json } }from '@sveltejs/kit'
-import { db } }from '$lib/server/db'
-import { evidence } }from '$lib/server/db/schema-postgres-enhanced'
+import { json  } from '@sveltejs/kit'
+import { db  } from '$lib/server/db'
+import { evidence  } from '$lib/server/db/schema-postgres-enhanced'
 import eq from 'drizzle-orm';
-import type { RequestHandler } }from './$types';
+import type { RequestHandler  } from './$types';
 
 // Types for Context7 analysis payload (avoids, 'any')
 type CaseLawConnection = { case: string; relevance: number };
 type SemanticMapping = { concept: string; confidence: number };
 
-interface Context7Analysis { id: string;, type: string;
+interface Context7Analysis { id: string; type: string;
   status: string;
-  analysis: { legalEntities: string[];, keyTerms: string[];
+  analysis: { legalEntities: string[]; keyTerms: string[];
     caseLawConnections: CaseLawConnection[];
     prosecutionRelevance: { score: number; reasoning: string };
     semanticMappings: SemanticMapping[];
@@ -20,56 +20,38 @@ interface Context7Analysis { id: string;, type: string;
   confidence: number;
   processingTime: number;
   timestamp: string;
-} }
+ }
 
 const formatError = (err: any) => {
   if (err instanceof Error) return err.message;
   try {
     return JSON.stringify(err);
-  } }catch {
-    return String(err);
-  } }
-};
+   }catch {
+    return String(err); };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { evidenceId, content, type } }= await request.json();
+    const { evidenceId, content, type  }= await request.json();
     if (!evidenceId || !content) {
       return json(
-        { error: 'Missing required, fields: evidenceId and content'
-        },
-        { status: 400 } }
+        { error: 'Missing required: fields: evidenceId and content'
+        }, { status: 400  }
       );
-    } }
+     }
     // Mock Context7 analysis for now (typed)
     const context7Analysis: Context7Analysis = {
-  id: evidenceId,
-      type: type || 'legal_evidence',
-      status: 'completed',
-      analysis: {
-  legalEntities: ['Party A', 'Party B', 'Contract Terms'],
-        keyTerms: ['indemnification', 'liability', 'termination'],
-        caseLawConnections: [
-          { case, 'Smith v. Jones', relevance: 0.85 },
-          { case, 'Doe v. Corporation', relevance: 0.72 } }
-        ],
-        prosecutionRelevance: {
+  id: evidenceId;
+      type: type || 'legal_evidence', status: 'completed', analysis: {
+  legalEntities: ['Party A', 'Party B', 'Contract Terms'], keyTerms: ['indemnification', 'liability', 'termination'], caseLawConnections: [
+          { case, 'Smith v. Jones', relevance: 0.85 }, { case, 'Doe v. Corporation', relevance: 0.72  }
+        ], prosecutionRelevance: {
   score: Math.random() * 0.4 + 0.6, // Random score between 0.6-1.0
           reasoning: 'High relevance due to contract violations and potential fraud indicators'
-        },
-        semanticMappings: [
-          { concept: 'breach of contract', confidence: 0.9 },
-          { concept: 'damages', confidence: 0.8 } }
-        ],
-        riskFactors: ['Incomplete documentation', 'Missing signatures', 'Ambiguous terms'],
-        recommendations: [
-          'Verify document authenticity',
-          'Cross-reference with similar cases',
-          'Request additional documentation',
-        ]
-      },
-      confidence: 0.87,
-      processingTime: Math.floor(Math.random() * 3000) + 500, // 500-3500ms
+        }, semanticMappings: [
+          { concept: 'breach of contract', confidence: 0.9 }, { concept: 'damages', confidence: 0.8  }
+        ], riskFactors: ['Incomplete documentation', 'Missing signatures', 'Ambiguous terms'], recommendations: [
+          'Verify document authenticity', 'Cross-reference with similar cases', 'Request additional documentation']
+      }, confidence: 0.87, processingTime: Math.floor(Math.random() * 3000) + 500, // 500-3500ms
       timestamp: new Date().toISOString()
     };
     // Update evidence record with Context7 analysis
@@ -81,19 +63,14 @@ export const POST: RequestHandler = async ({ request }) => {
             aiAnalysis: context7Analysis
           })
           .where(eq(evidence.id, evidenceId));
-      } }catch (updateError) {
-        console.warn('Failed to update evidence with Context7 analysis:', formatError(updateError));
-      } }
-    } }
+       }catch (updateError) {
+        console.warn('Failed to update evidence with Context7 analysis:', formatError(updateError)); }
     return json(context7Analysis, { status: 200 });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Context7 analysis error:', formatError(error));
     return json(
       {
-        error: 'Analysis failed',
-        status: 'error'
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Analysis failed', status: 'error'
+      }, { status: 500  }
+    ); };
+

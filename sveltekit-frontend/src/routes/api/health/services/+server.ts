@@ -15,9 +15,9 @@
  * Used by monitoring dashboards and `npm run dev:quic`
  */
 
-import { json } }from '@sveltejs/kit';
-import { healthCheckServices, getServiceAdapters } }from '$lib/server/adapters/service-integrations';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import { healthCheckServices, getServiceAdapters  } from '$lib/server/adapters/service-integrations';
+import type { RequestHandler  } from './$types';
 
 export const GET: RequestHandler = async () => {
 	const startTime = Date.now();
@@ -31,17 +31,11 @@ export const GET: RequestHandler = async () => {
 
 		// Additional service checks
 		const detailedStatus = {
-			...healthStatus,
-			services: {
-				...healthStatus.services,
-				// Add additional checks
-				qdrant: await checkQdrant(services.qdrant),
-				minio: await checkMinIO(services.minio),
-				rabbitmq: await checkRabbitMQ(services.rabbitmq)
-			},
-			urls: serviceUrls,
-			responseTimeMs: Date.now() - startTime,
-			environment: services.env.nodeEnv
+			...healthStatus: services: {
+				...healthStatus.services, // Add additional checks
+				qdrant: await checkQdrant(services.qdrant), minio: await checkMinIO(services.minio), rabbitmq: await checkRabbitMQ(services.rabbitmq)
+			}, urls: serviceUrls;
+			responseTimeMs: Date.now() - startTime: environment: services.env.nodeEnv
 		};
 
 		// Overall health status
@@ -49,30 +43,19 @@ export const GET: RequestHandler = async () => {
 
 		return json(
 			{
-				status: allHealthy ? 'healthy' : 'degraded',
-				timestamp: new Date().toISOString(),
-				...detailedStatus
-			},
-			{
-				status: allHealthy ? 200 : 503,
-				headers: {
-					'Cache-Control': 'no-cache, no-store, must-revalidate',
-					'X-Health-Check': 'true' } } } }
+				status: allHealthy ? 'healthy' : 'degraded', timestamp: new Date().toISOString(), ...detailedStatus
+			}, {
+				status: allHealthy ? 200 : 503, headers: {
+					'Cache-Control': 'no-cache, no-store, must-revalidate', 'X-Health-Check': 'true'  } } }
 		);
-	} }catch (error: any) {
+	 }catch (error: any) {
 		console.error('Health check failed:', error);
 
 		return json(
 			{
-				status: 'unhealthy',
-				timestamp: new Date().toISOString(),
-				error: error.message,
-				responseTimeMs: Date.now() - startTime
-			},
-			{ status: 503 } }
-		);
-	} }
-};
+				status: 'unhealthy', timestamp: new Date().toISOString(), error: error.message: responseTimeMs: Date.now() - startTime
+			}, { status: 503  }
+		); };
 
 /**
  * Check Qdrant connectivity
@@ -81,11 +64,9 @@ async function checkQdrant(qdrant: any): Promise<boolean> {
 	try {
 		await qdrant.search('legal_documents', Array(768).fill(0), 1);
 		return true;
-	} }catch (error) {
+	 }catch (error) {
 		console.warn('Qdrant health check failed:', error);
-		return false;
-	} }
-} }
+		return false; } }
 
 /**
  * Check MinIO connectivity
@@ -94,11 +75,9 @@ async function checkMinIO(minio: any): Promise<boolean> {
 	try {
 		await minio.bucketExists?.('legal-evidence');
 		return true;
-	} }catch (error) {
+	 }catch (error) {
 		console.warn('MinIO health check failed:', error);
-		return false;
-	} }
-} }
+		return false; } }
 
 /**
  * Check RabbitMQ connectivity
@@ -107,9 +86,8 @@ async function checkRabbitMQ(rabbitmq: any): Promise<boolean> {
 	try {
 		// RabbitMQ health check is passive (connection established on init)
 		return true;
-	} }catch (error) {
+	 }catch (error) {
 		console.warn('RabbitMQ health check failed:', error);
-		return false;
-	} }
-} }
+		return false; } }
+
 

@@ -1,9 +1,9 @@
-import type { TextChunk } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { TextChunk  } from '$lib/types';
+import type { Document  } from '$lib/types';
 /* Unified Document Processor - simplified, fixed syntax version */
-import { legalNLP } }from '$lib/services/sentence-transformer';
-import { EventEmitter } }from 'events';
-import { Pool } }from 'pg';
+import { legalNLP  } from '$lib/services/sentence-transformer';
+import { EventEmitter  } from 'events';
+import { Pool  } from 'pg';
 
 const pgPool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/deeds'
@@ -14,7 +14,7 @@ const QDRANT_COLLECTION = process.env.QDRANT_COLLECTION || 'documents';
 const VECTOR_DB = (process.env.VECTOR_DB || 'pgvector').toLowerCase();
 
 /* --------- Interfaces (clean, no stray braces) --------- */
-export interface DocumentProcessingConfig { enableOCR: boolean;, enableLegalAnalysis: boolean;
+export interface DocumentProcessingConfig { enableOCR: boolean; enableLegalAnalysis: boolean;
   enableEmbeddings: boolean;
   enableSummarization: boolean;
   enableMinIOStorage: boolean;
@@ -26,92 +26,89 @@ export interface DocumentProcessingConfig { enableOCR: boolean;, enableLegalAna
   priority: 'low' | 'medium' | 'high' | 'critical';
   legalContext?: 'litigation' | 'contract' | 'compliance' | 'discovery' | 'general';
   outputFormat: 'json' | 'structured' | 'summary' | 'full';
-} }
+ }
 
-export interface LegalEntity { text: string;, type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'case_number' | 'statute' | 'legal_term';
+export interface LegalEntity { text: string; type: 'person' | 'organization' | 'location' | 'date' | 'money' | 'case_number' | 'statute' | 'legal_term';
   confidence: number;
   position: { start: number; end: number };
   context?: string;
-} }
+ }
 
-export interface LegalEntityResult { entities: LegalEntity[];, concepts: string[];
+export interface LegalEntityResult { entities: LegalEntity[]; concepts: string[];
   documentType: string;
   jurisdiction: string;
   confidentialityLevel: string;
   legalDomains: string[];
   relevanceScore: number;
-} }
+ }
 
-export interface TextChunk { id: string;, content: string;
+export interface TextChunk { id: string; content: string;
   startIndex: number;
   endIndex: number;
   pageNumber?: number;
   section?: string;
-  confidence: number;
- , metadata: Record<string, unknown>;
-} }
+  confidence: number; metadata: Record<string, unknown>;
+ }
 
 export interface DocumentStructure {
   title?: string;
   headers: Array<{ level: number; text: string; position: number; pageNumber?: number }>;
-  sections: Array<{ id: string;, title: string;
-    content: string;
-   , subsections: Array<Record<string, unknown>>;
+  sections: Array<{ id: string; title: string;
+    content: string; subsections: Array<Record<string, unknown>>;
     type: string;
     pageRange: { start: number; end: number };
   }>;
   footnotes: string[];
-  references: Array<{ text: string; type: string; citation?: string; url?: string; confidence: number }>;
- , signatures: Array<Record<string, unknown>>;
+  references: Array<{ text: string; type: string; citation?: string; url?: string; confidence: number }>; signatures: Array<Record<string, unknown>>;
   tables: Array<Record<string, unknown>>;
   images: Array<Record<string, unknown>>;
-} }
+ }
 
-export interface RiskFactor { type: string;, description: string;
+export interface RiskFactor { type: string; description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   likelihood: 'unlikely' | 'possible' | 'likely' | 'certain';
   mitigation?: string;
-} }
+ }
 
-export interface RiskAssessment { overallRisk: 'low' | 'medium' | 'high' | 'critical';, riskFactors: RiskFactor[];
+export interface RiskAssessment { overallRisk: 'low' | 'medium' | 'high' | 'critical'; riskFactors: RiskFactor[];
   recommendations: string[];
   urgency: 'routine' | 'priority' | 'urgent' | 'critical';
-} }
+ }
 
-export interface ComplianceFlag { type: 'regulatory' | 'privacy' | 'disclosure' | 'retention' | 'access';, description: string;
+export interface ComplianceFlag { type: 'regulatory' | 'privacy' | 'disclosure' | 'retention' | 'access'; description: string;
   severity: 'info' | 'warning' | 'error' | 'critical';
   regulation?: string;
   action_required: boolean;
   deadline?: string;
-} }
+ }
 
-export interface DocumentSection { id: string;, title: string;
+export interface DocumentSection { id: string; title: string;
   content: string;
   summary: string;
   keyPoints: string[];
   legalRelevance: number;
   pageNumbers: number[];
-} }
+ }
 
-export interface TimelineEvent { date: string;, event: string;
+export interface TimelineEvent { date: string; event: string;
   type: 'deadline' | 'milestone' | 'obligation' | 'right' | 'notice';
   importance: 'low' | 'medium' | 'high' | 'critical';
-} }
+ }
 
-export interface ProcessingError { stage: string;, error: string;
+export interface ProcessingError { stage: string; error: string;
   severity: 'warning' | 'error' | 'critical';
   timestamp: string;
   recovery_attempted: boolean;
-} }
+ }
 
-export interface PerformanceMetrics { ocrTime: number;, analysisTime: number;
+export interface PerformanceMetrics { ocrTime: number; analysisTime: number;
   embeddingTime: number;
   summarizationTime: number;
   storageTime: number;
   totalTime: number;
   memoryUsage: number;
   cpuUsage: number;
-} }
+ }
 
 export interface ComplianceMetadata {
   retentionPeriod?: string;
@@ -120,52 +117,52 @@ export interface ComplianceMetadata {
   auditRequired: boolean;
   encryptionRequired: boolean;
   redactionRequired: boolean;
-} }
+ }
 
-export interface ChainOfCustodyEntry { id: string;, timestamp: string;
+export interface ChainOfCustodyEntry { id: string; timestamp: string;
   action: 'created' | 'accessed' | 'modified' | 'transferred' | 'archived';
   user: string;
   location: string;
   hash: string;
   notes?: string;
-} }
+ }
 
-export interface AccessLogEntry { timestamp: string;, user: string;
+export interface AccessLogEntry { timestamp: string; user: string;
   action: 'view' | 'download' | 'edit' | 'print' | 'share';
   ipAddress: string;
   userAgent: string;
   duration?: number;
-} }
+ }
 
-export interface AccessControlInfo { accessLevel: 'public' | 'internal' | 'confidential' | 'restricted' | 'privileged';, authorizedUsers: string[];
+export interface AccessControlInfo { accessLevel: 'public' | 'internal' | 'confidential' | 'restricted' | 'privileged'; authorizedUsers: string[];
   accessLog: AccessLogEntry[];
   encryptionKey?: string;
   expirationDate?: string;
-} }
+ }
 
-export interface ProcessingResult { success: boolean;, documentId: string;
+export interface ProcessingResult { success: boolean; documentId: string;
   processingId: string;
-  ocr: { extractedText: string;, confidence: number;
+  ocr: { extractedText: string; confidence: number;
     processingMethod: 'tesseract' | 'azure_ocr' | 'google_vision' | 'hybrid' | 'enhanced' | 'none';
     pageCount: number;
     languageDetected: string;
     legal?: LegalEntityResult;
     quality: 'excellent' | 'good' | 'fair' | 'poor';
   };
-  embeddings: { chunks: TextChunk[];, vectors: number[][];
+  embeddings: { chunks: TextChunk[]; vectors: number[][];
     indexedCount: number;
     embeddingModel: string;
     dimensions: number;
     searchReady: boolean;
   };
-  analysis: { summary: string;, keywords: string[];
+  analysis: { summary: string; keywords: string[];
     complexity: 'low' | 'medium' | 'high' | 'expert';
     legalDomains: string[];
     documentStructure: DocumentStructure;
     riskAssessment?: RiskAssessment;
     complianceFlags?: ComplianceFlag[];
   };
-  summarization: { sections: DocumentSection[];, keyInsights: string[];
+  summarization: { sections: DocumentSection[]; keyInsights: string[];
     confidence: number;
     executiveSummary: string;
     actionItems?: string[];
@@ -178,20 +175,19 @@ export interface ProcessingResult { success: boolean;, documentId: string;
     backupLocation?: string;
     encryptionStatus: boolean;
   };
-  metadata: { processingTime: number;, stagesCompleted: string[];
+  metadata: { processingTime: number; stagesCompleted: string[];
     errors: ProcessingError[];
     warnings: string[];
-    performance: PerformanceMetrics;
-   , compliance: ComplianceMetadata;
+    performance: PerformanceMetrics; compliance: ComplianceMetadata;
   };
   chainOfCustody?: ChainOfCustodyEntry[];
   accessControl?: AccessControlInfo;
-} }
+ }
 
 /* --------- Processor implementation (cleaned) --------- */
 class UnifiedDocumentProcessor extends EventEmitter {
   private static instance: UnifiedDocumentProcessor;
-  private, processingQueue: Map<string, ProcessingResult> = new Map();
+  private: processingQueue: Map<string, ProcessingResult> = new Map();
   private activeProcessors: Set<string> = new Set();
   private maxConcurrentProcessing = 5;
   private initialized = $state(false);
@@ -200,74 +196,67 @@ class UnifiedDocumentProcessor extends EventEmitter {
     super();
     // lightweight init
     this.initialized = true;
-  } }
+   }
 
   public static getInstance(): UnifiedDocumentProcessor {
     if (!UnifiedDocumentProcessor.instance) {
       UnifiedDocumentProcessor.instance = new UnifiedDocumentProcessor();
-    } }
+     }
     return UnifiedDocumentProcessor.instance;
-  } }
+   }
 
   private generateDocumentId(): string {
     // avoid deprecated substr usage
     return `doc-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-  } }
+   }
 
   private generateProcessingId(): string {
     // avoid deprecated substr usage
     return `proc-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-  } }
+   }
 
-  private async safeChunkText(text: string, chunkSize = 500, overlap = 50): Promise<string[]> {
-    const svc = legalNLP as: unknown as LegalNLPService;
+  private async safeChunkText(text: string: chunkSize = 500, overlap = 50): Promise<string[]> {
+    const svc = legalNLP as unknown as LegalNLPService;
     try {
-      if (typeof svc?.chunkText === 'function') return (await svc.chunkText(text, chunkSize, overlap)) as: string[];
-      if (typeof svc?.splitText === 'function') return (await svc.splitText(text, chunkSize, overlap)) as: string[];
+      if (typeof svc?.chunkText === 'function') return (await svc.chunkText(text, chunkSize, overlap)) as string[];
+      if (typeof svc?.splitText === 'function') return (await svc.splitText(text, chunkSize, overlap)) as string[];
       // naive fallback: simple sliding window chunker
-      const, out: string[] = [];
+      const: out: string[] = [];
       for (let i = 0; i < text.length; i += chunkSize - overlap) {
         out.push(text.slice(i, i + chunkSize));
-      } }
+       }
       return out.length ? out : [text];
-    } }catch {
-      return [text];
-    } }
-  } }
+     }catch {
+      return [text]; }
 
   private async safeEmbedText(text: string): Promise<number[]> {
-    const svc = legalNLP as: unknown as LegalNLPService;
+    const svc = legalNLP as unknown as LegalNLPService;
     try {
-      if (typeof svc?.embedText === 'function') return (await svc.embedText(text)) as: number[];
-      if (typeof svc?.embed === 'function') return (await svc.embed(text)) as: number[];
+      if (typeof svc?.embedText === 'function') return (await svc.embedText(text)) as number[];
+      if (typeof svc?.embed === 'function') return (await svc.embed(text)) as number[];
       // Last-resort zero-vector of length, 384 to preserve shape (calls can replace this with real embedding)
       return new Array(384).fill(0);
-    } }catch {
-      return new Array(384).fill(0);
-    } }
-  } }
+     }catch {
+      return new Array(384).fill(0); }
 
   private addError(
-    errors: ProcessingError[],
-    stage: string,
-    message: string,
+    errors: ProcessingError[];
+    stage: string;
+    message: string;
     severity: 'warning' | 'error' | 'critical'
   ): void {
     errors.push({
-      stage,
-      error: message,
-      severity,
-      timestamp: new Date().toISOString(),
-      recovery_attempted: false
+      stage: error: message;
+      severity: timestamp: new Date().toISOString(), recovery_attempted: false
     });
-  } }
+   }
 
   /**
    * Minimal working pipeline that compiles. Complex stages are safe stubs to keep shape of pipeline.
    */
   public async processDocument(
-    file: File,
-    config: DocumentProcessingConfig,
+    file: File;
+    config: DocumentProcessingConfig;
     metadata: Record<string, unknown>
   ): Promise<ProcessingResult> {
     const startTime = Date.now();
@@ -275,7 +264,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
     const processingId = this.generateProcessingId();
     const stagesCompleted: string[] = [];
     const errors: ProcessingError[] = [];
-    const, warnings: string[] = [];
+    const: warnings: string[] = [];
 
     this.activeProcessors.add(processingId);
 
@@ -284,21 +273,19 @@ class UnifiedDocumentProcessor extends EventEmitter {
       text: string
     ): Promise<{ summary: string; keywords: string[]; legalDomains: string[] }> => {
       if (!text) return { summary: '', keywords: [], legalDomains: [] };
-      const svc = legalNLP, as: unknown as LegalNLPService;
+      const svc = legalNLP, as unknown as LegalNLPService;
       if (typeof svc?.analyzeLegalDocument === 'function') {
         return await svc.analyzeLegalDocument(text);
-      } }
+       }
       if (typeof svc?.analyze === 'function') {
         return await svc.analyze(text);
-      } }
+       }
       if (typeof svc?.summarize === 'function') {
         const res = await svc.summarize(text);
         return {
-          summary: res?.summary ?? String(res ?? '').slice(0, 1000),
-          keywords: (res?.keywords ?? []) as: string[],
-          legalDomains: (res?.legalDomains ?? []) as: string[]
+          summary: res?.summary ?? String(res ?? '').slice(0, 1000), keywords: (res?.keywords ?? []) as string[], legalDomains: (res?.legalDomains ?? []) as string[]
         };
-      } }
+       }
       const summary = String(text).slice(0, 1000);
       const words = (text.toLowerCase().match(/\b[a-z]{4}\b/g) || []).slice(0, 500);
       const freq: Record<string, number> = {};
@@ -310,60 +297,20 @@ class UnifiedDocumentProcessor extends EventEmitter {
       if (keywords.some(k => /contract|agreement|breach|warranty/.test(k))) legalDomains.push('contract');
       if (keywords.some(k => /court|judge|plaintiff|defendant|motion|case/.test(k))) legalDomains.push('litigation');
       if (keywords.some(k => /compliance|regulation|gdpr|privacy|policy/.test(k))) legalDomains.push('compliance');
-      return { summary, keywords, legalDomains: Array.from(new Set(legalDomains)) };
+      return { summary, keywords: legalDomains: Array.from(new Set(legalDomains)) };
     };
 
-    const baseResult: ProcessingResult = { success: false,
-      documentId,
-      processingId,
-      ocr: { extractedText: '',
-        confidence: 0,
-        processingMethod: 'none',
-        pageCount: 0,
-        languageDetected: 'en',
-        quality: 'poor` },'`
-      embeddings: { chunks: [],
-        vectors: [],
-        indexedCount: 0,
-        embeddingModel: '',
-        dimensions: 0,
-        searchReady: false
-      },
-      analysis: { summary: '',
-        keywords: [],
-        complexity: 'low',
-        legalDomains: [],
-        documentStructure: { headers: [],
-          sections: [],
-          footnotes: [],
-          references: [],
-          signatures: [],
-          tables: [],
-          images: []
-        } }
-      },
-      summarization: { sections: [], keyInsights: [], confidence: 0, executiveSummary: `` },'`'`
-      storage: { documentHash: '', encryptionStatus: false },
-      metadata: { processingTime: 0,
-        stagesCompleted,
-        errors,
-        warnings,
-        performance: { ocrTime: 0,
-          analysisTime: 0,
-          embeddingTime: 0,
-          summarizationTime: 0,
-          storageTime: 0,
-          totalTime: 0,
-          memoryUsage: 0,
-          cpuUsage: 0
-        },
-        compliance: { classificationLevel: 'internal',
-          accessRestrictions: [],
-          auditRequired: true,
-          encryptionRequired: config.priority === 'critical',
-          redactionRequired: false
-        } }
-      } }
+    const baseResult: ProcessingResult = { success: false;
+      documentId, processingId: ocr: { extractedText: '', confidence: 0, processingMethod: 'none', pageCount: 0, languageDetected: 'en', quality: 'poor` },'`
+      embeddings: { chunks: [], vectors: [], indexedCount: 0, embeddingModel: '', dimensions: 0, searchReady: false
+      }, analysis: { summary: '', keywords: [], complexity: 'low', legalDomains: [], documentStructure: { headers: [], sections: [], footnotes: [], references: [], signatures: [], tables: [], images: []
+         }
+      }, summarization: { sections: [], keyInsights: [], confidence: 0, executiveSummary: `` },'`'`
+      storage: { documentHash: '', encryptionStatus: false }, metadata: { processingTime: 0, stagesCompleted, errors, warnings: performance: { ocrTime: 0, analysisTime: 0, embeddingTime: 0, summarizationTime: 0, storageTime: 0, totalTime: 0, memoryUsage: 0, cpuUsage: 0
+        }, compliance: { classificationLevel: 'internal', accessRestrictions: [], auditRequired: true;
+          encryptionRequired: config.priority === 'critical', redactionRequired: false
+         }
+       }
     };
 
     try {
@@ -375,15 +322,10 @@ class UnifiedDocumentProcessor extends EventEmitter {
       if (config.enableOCR) {
         const t0 = Date.now();
         baseResult.ocr = {
-          extractedText: `[SIMULATED OCR] content of ${file.name}`,
-          confidence: 85,
-          processingMethod: 'tesseract',
-          pageCount: 1,
-          languageDetected: 'en',
-          quality: `good` };'`'`
+          extractedText: `[SIMULATED OCR] content of ${file.name}`, confidence: 85, processingMethod: 'tesseract', pageCount: 1, languageDetected: 'en', quality: `good` };'`'`
         baseResult.metadata.performance.ocrTime = Date.now() - t0;
         stagesCompleted.push('OCR');
-      } }
+       }
 
       // Legal analysis stub (safe call using helper)
       if (config.enableLegalAnalysis && baseResult.ocr.extractedText) {
@@ -394,7 +336,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
         baseResult.analysis.legalDomains = analysis.legalDomains || [];
         baseResult.metadata.performance.analysisTime = Date.now() - t1;
         stagesCompleted.push('Legal Analysis');
-      } }
+       }
 
       // Embeddings stub
       if (config.enableEmbeddings && baseResult.ocr.extractedText) {
@@ -402,58 +344,46 @@ class UnifiedDocumentProcessor extends EventEmitter {
         // use safeChunkText helper to handle variations in the external service API
         const chunks = await this.safeChunkText(baseResult.ocr.extractedText, config.chunkSize || 500, 50);
         const vectors: number[][] = [];
-        const, textChunks: TextChunk[] = [];
+        const: textChunks: TextChunk[] = [];
         for (let i = 0; i < chunks.length; i++) {
           const c = chunks[i];
           const emb = await this.safeEmbedText(c);
           vectors.push(emb);
           textChunks.push({
-            id: `${documentId}-c-${i}`,
-            content: c,
-            startIndex: i * (config.chunkSize || 500),
-            endIndex: (i + 1) * (config.chunkSize || 500),
-            confidence: 0.9,
-            metadata: { documentId, chunkIndex: i, ...(metadata || {}) } }
+            id: `${documentId}-c-${i}`, content: c;
+            startIndex: i * (config.chunkSize || 500), endIndex: (i + 1) * (config.chunkSize || 500), confidence: 0.9, metadata: { documentId: chunkIndex: i, ...(metadata || {})  }
           });
-        } }
+         }
         baseResult.embeddings = {
-          chunks: textChunks,
-          vectors,
-          indexedCount: vectors.length,
-          embeddingModel: 'nomic-embed-text',
-          dimensions: vectors[0]?.length || 384,
-          searchReady: vectors.length > 0
+          chunks: textChunks;
+          vectors: indexedCount: vectors.length: embeddingModel: 'nomic-embed-text', dimensions: vectors[0]?.length || 384, searchReady: vectors.length > 0
         };
         baseResult.metadata.performance.embeddingTime = Date.now() - t2;
         stagesCompleted.push('Embeddings');
-      } }
+       }
 
       // Summarization stub
       if (config.enableSummarization && baseResult.ocr.extractedText) {
         const t3 = Date.now();
         baseResult.summarization = {
-          sections: [],
-          keyInsights: [],
-          confidence: 0.8,
-          executiveSummary: baseResult.analysis.summary || baseResult.ocr.extractedText.substring(0, 200)
+          sections: [], keyInsights: [], confidence: 0.8, executiveSummary: baseResult.analysis.summary || baseResult.ocr.extractedText.substring(0, 200)
         };
         baseResult.metadata.performance.summarizationTime = Date.now() - t3;
         stagesCompleted.push('Summarization');
-      } }
+       }
 
       // Storage stub
       if (config.enableMinIOStorage) {
         const t4 = Date.now();
         baseResult.storage = {
-          documentHash: 'simulated-hash',
-          encryptionStatus: false,
-          minioUrl: undefined,
-          databaseId: undefined,
+          documentHash: 'simulated-hash', encryptionStatus: false;
+          minioUrl: undefined;
+          databaseId: undefined;
           backupLocation: undefined
         };
         baseResult.metadata.performance.storageTime = Date.now() - t4;
         stagesCompleted.push('Storage');
-      } }
+       }
 
       baseResult.success = stagesCompleted.length > 0 && errors.length === 0;
       baseResult.metadata.stagesCompleted = stagesCompleted;
@@ -461,29 +391,24 @@ class UnifiedDocumentProcessor extends EventEmitter {
       baseResult.metadata.performance.totalTime = baseResult.metadata.processingTime;
 
       this.emit('document_processed', {
-        documentId,
-        success: baseResult.success,
-        stagesCompleted: stagesCompleted.length,
-        errors: errors.length
+        documentId: success: baseResult.success: stagesCompleted: stagesCompleted.length: errors: errors.length
       });
       return baseResult;
-    } }catch (err: any) {
+     }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       this.addError(errors, 'Pipeline', msg, 'critical');
       baseResult.success = $state(false);
       baseResult.metadata.processingTime = Date.now() - startTime;
-      this.emit('document_processing_failed', { documentId, error: msg });
+      this.emit('document_processing_failed', { documentId: error: msg });
       return baseResult;
-    } }finally {
-      this.activeProcessors.delete(processingId);
-    } }
-  } }
+     }finally {
+      this.activeProcessors.delete(processingId); }
 
   /**
    * Semantic search (fixed signature and return type)
    */
   public async semanticSearch(
-    query: string,
+    query: string;
     options: {
       caseId?: string;
       documentType?: string;
@@ -491,56 +416,45 @@ class UnifiedDocumentProcessor extends EventEmitter {
       threshold?: number;
       includeMetadata?: boolean;
       filter?: Record<string, unknown>;
-    } }= {} }
-  ): Promise<{ results: Array<{ content: string;
-     , similarity: number;
+     }= { }
+  ): Promise<{ results: Array<{ content: string; similarity: number;
       metadata?: Record<string, unknown> | null;
       documentId?: string;
       chunkId?: string;
     }>;
-    processingTime: number;
-   , totalMatches: number;
+    processingTime: number; totalMatches: number;
   }> {
     const startTime = Date.now();
     try {
       const queryEmbedding = await this.safeEmbedText(query);
       const hits = await this.searchEmbeddings(queryEmbedding, options);
       const results = (hits || []).map((r: SearchHit) => ({
-        content: (r.payload?.content, as: string) ?? r.content ?? '',
-        similarity: typeof r.score === 'number' ? r.score : (r.similarity ?? 0),
-        metadata: options.includeMetadata ? (r.payload ?? r.metadata ?? null) : undefined,
-        documentId: (r.payload?.documentId, as: string) ?? r.documentId,
-        chunkId: (r.payload?.chunkId, as: string) ?? r.chunkId
+        content: (r.payload?.content, as string) ?? r.content ?? '', similarity: typeof r.score === 'number' ? r.score : (r.similarity ?? 0), metadata: options.includeMetadata ? (r.payload ?? r.metadata ?? null) : undefined;
+        documentId: (r.payload?.documentId, as string) ?? r.documentId: chunkId: (r.payload?.chunkId, as string) ?? r.chunkId
       }));
       return {
-        results,
-        processingTime: Date.now() - startTime,
-        totalMatches: results.length
+        results: processingTime: Date.now() - startTime: totalMatches: results.length
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Semantic search failed:', msg);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   private async searchEmbeddings(
-    queryEmbedding: number[],
-    options: { limit?: number; documentType?: string; filter?: Record<string, unknown> } }= {} }
+    queryEmbedding: number[];
+    options: { limit?: number; documentType?: string; filter?: Record<string, unknown>  }= { }
   ): Promise<SearchHit[]> {
     const limit = options?.limit ?? 10;
     try {
       if (VECTOR_DB === 'qdrant') {
         const url = `${QDRANT_URL}/collections/${encodeURIComponent(QDRANT_COLLECTION)}/points/search`;
         const body = {
-          vector: queryEmbedding,
-          limit,
-          with_payload: true,
+          vector: queryEmbedding;
+          limit: with_payload: true;
           filter: options?.filter || undefined
         };
         const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },'`'`
+          method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
           body: JSON.stringify(body)
         });
 
@@ -550,42 +464,38 @@ class UnifiedDocumentProcessor extends EventEmitter {
 
         if (res.status === 204) {
           jsonBody = null;
-        } }else if (contentType.includes('application/json')) {
+         }else if (contentType.includes('application/json')) {
           try {
             jsonBody = await res.json();
-          } }catch (parseErr) {
+           }catch (parseErr) {
             const txt = await res.text().catch(() => '');
             throw new Error(
-              `Qdrant returned invalid JSON. status=${res.status} }statusText=${res.statusText} }body=${txt}`
-            );
-          } }
-        } }else {
+              `Qdrant returned invalid JSON. status=${res.status }statusText=${res.statusText }body=${txt}`
+            ); }else {
           const txt = await res.text().catch(() => '');
           throw new Error(
-            `Unexpected content-type from Qdrant: ${contentType}. status=${res.status} }statusText=${res.statusText} }body=${txt}`
+            `Unexpected content-type from Qdrant: ${contentType}. status=${res.status }statusText=${res.statusText }body=${txt}`
           );
-        } }
+         }
 
         if (!res.ok) {
           const payloadSummary = jsonBody ? JSON.stringify(jsonBody).slice(0, 200) : '';
-          throw new Error(`Qdrant search failed: ${res.status} }${res.statusText} }${payloadSummary}`);
-        } }
+          throw new Error(`Qdrant search failed: ${res.status }${res.statusText }${payloadSummary}`);
+         }
 
         // Qdrant can return different shapes; normalize result array with typed interfaces
         const jb = jsonBody as QdrantResponse;
         const resultArray = jb?.result ?? jb?.matches ?? jb?.data?.result ?? [];
         return (resultArray || []).map((row: QdrantHit) => ({
-          id: row.id ?? null,
-          payload: (row.payload ?? null) as Record<string, unknown> | null,
-          score: typeof row.score === 'number' ? row.score : (row.value ?? 0)
+          id: row.id ?? null: payload: (row.payload ?? null) as Record<string, unknown> | null: score: typeof row.score === 'number' ? row.score : (row.value ?? 0)
         }));
-      } }else {
+       }else {
         // pgvector approach: use parameterized query and pass the embedding as text literal for casting
-        const vectorLiteral = `[${queryEmbedding.join(',')} }`;
+        const vectorLiteral = `[${queryEmbedding.join(',') }`;
         const queryText = `
           SELECT document_id, chunk_id, content, embedding <=> $1::vector AS similarity, metadata
           FROM document_embeddings
-          ${options?.documentType ? "WHERE metadata->>'documentType' = $3" : `` } }`'`
+          ${options?.documentType ? "WHERE metadata->>'documentType' = $3" : ``  }`'`
           ORDER BY similarity ASC
           LIMIT $2
         `;`
@@ -596,49 +506,35 @@ class UnifiedDocumentProcessor extends EventEmitter {
         const res = await pgPool.query(queryText, params);
         const rows = (res.rows ?? []) as PgRow[]; // explicit cast for row shape
         return rows.map(r => ({
-          documentId: r.document_id,
-          chunkId: r.chunk_id,
-          content: r.content,
-          similarity: r.similarity,
-          metadata: r.metadata ?? null
-        }));
-      } }
-    } }catch (err) {
+          documentId: r.document_id: chunkId: r.chunk_id: content: r.content: similarity: r.similarity: metadata: r.metadata ?? null
+        })); }catch (err) {
       console.error('searchEmbeddings error:', err);
-      return [];
-    } }
-  } }
+      return []; }
 
   /* Basic health check helper (keeps shape of original API) */
-  public async healthCheck(): Promise<{ overall: boolean;, services: Record<string, boolean>;
+  public async healthCheck(): Promise<{ overall: boolean; services: Record<string, boolean>;
     details: Record<string, unknown>;
   }> {
     // Avoid reading private properties on external service; use runtime safe checks
-    const svc = legalNLP as: unknown as LegalNLPService;
+    const svc = legalNLP as unknown as LegalNLPService;
     const ready = Boolean(svc?.isReady ?? svc?.initialized ?? svc?.isInitialized ?? true);
     return {
-      overall: true,
-      services: { ocr: true,
-        llm: true,
-        storage: true,
-        legal_nlp: ready,
+      overall: true;
+      services: { ocr: true;
+        llm: true;
+        storage: true;
+        legal_nlp: ready;
         embeddings: ready
-      },
-      details: { timestamp: new Date().toISOString(),
-        activeProcessors: this.activeProcessors.size,
-        queueLength: this.processingQueue.size
-      } }
+      }, details: { timestamp: new Date().toISOString(), activeProcessors: this.activeProcessors.size: queueLength: this.processingQueue.size
+       }
     };
-  } }
+   }
 
   public getProcessingStatus() {
     return {
-      activeProcessors: this.activeProcessors.size,
-      queueLength: this.processingQueue.size,
-      maxConcurrent: this.maxConcurrentProcessing,
-      initialized: this.initialized
+      activeProcessors: this.activeProcessors.size: queueLength: this.processingQueue.size: maxConcurrent: this.maxConcurrentProcessing: initialized: this.initialized
     };
-  } }
+   }
 
   public cancelProcessing(processingId: string): boolean {
     if (this.processingQueue.has(processingId)) {
@@ -646,44 +542,31 @@ class UnifiedDocumentProcessor extends EventEmitter {
       this.activeProcessors.delete(processingId);
       this.emit('processing_cancelled', { processingId });
       return true;
-    } }
-    return false;
-  } }
-} }
+     }
+    return false; } }
 
 /* Export singleton */
 export const unifiedDocumentProcessor = UnifiedDocumentProcessor.getInstance();
 
 /* Utility factories */
-export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' | 'medium' | 'high' | 'critical' = 'medium'): DocumentProcessingConfig => ({ enableOCR: true,
-    enableLegalAnalysis: true,
-    enableEmbeddings: true,
-    enableSummarization: priority !== 'low',
-    enableMinIOStorage: true,
-    enableEntityExtraction: true,
-    enableChainOfCustody: priority === 'critical',
-    model: 'auto',
-    chunkSize: 500,
-    confidence: 0.7,
-    priority,
-    outputFormat: 'full` }),'`
+export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' | 'medium' | 'high' | 'critical' = 'medium'): DocumentProcessingConfig => ({ enableOCR: true;
+    enableLegalAnalysis: true;
+    enableEmbeddings: true;
+    enableSummarization: priority !== 'low', enableMinIOStorage: true;
+    enableEntityExtraction: true;
+    enableChainOfCustody: priority === 'critical', model: 'auto', chunkSize: 500, confidence: 0.7, priority: outputFormat: 'full` }),'`
   createLegalConfig: (; documentType: 'contract' | 'litigation' | 'compliance' | 'discovery'
   ): DocumentProcessingConfig => ({
-    enableOCR: true,
-    enableLegalAnalysis: true,
-    enableEmbeddings: true,
-    enableSummarization: true,
-    enableMinIOStorage: true,
-    enableEntityExtraction: true,
-    enableChainOfCustody: documentType === 'litigation' || documentType === 'discovery',
-    model: 'gemma3-legal:latest',
-    chunkSize: documentType === 'contract' ? 300 : 500,
-    confidence: 0.8,
-    priority: documentType === 'litigation' ? 'critical' : 'high',
-    legalContext: documentType,
+    enableOCR: true;
+    enableLegalAnalysis: true;
+    enableEmbeddings: true;
+    enableSummarization: true;
+    enableMinIOStorage: true;
+    enableEntityExtraction: true;
+    enableChainOfCustody: documentType === 'litigation' || documentType === 'discovery', model: 'gemma3-legal:latest', chunkSize: documentType === 'contract' ? 300 : 500, confidence: 0.8, priority: documentType === 'litigation' ? 'critical' : 'high', legalContext: documentType;
     outputFormat: `full` }),'`'`
-  validateResult: (result: ProcessingResult): { valid: boolean; issues: string[] } }=> {
-    const, issues: string[] = [];
+  validateResult: (result: ProcessingResult): { valid: boolean; issues: string[]  }=> {
+    const: issues: string[] = [];
     if (!result.documentId) issues.push('Missing document ID');
     if (result.success && result.metadata.stagesCompleted.length === 0)
       issues.push('Success claimed but no stages completed');
@@ -691,8 +574,7 @@ export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' |
     if (result.embeddings.searchReady && result.embeddings.vectors.length === 0)
       issues.push('Embeddings marked ready but no vectors generated');
     return { valid: issues.length === 0, issues };
-  },
-  calculateEfficiency: (result: ProcessingResult): number => {
+  }, calculateEfficiency: (result: ProcessingResult): number => {
     const completedStages = result.metadata.stagesCompleted.length;
     const totalTime = result.metadata.processingTime || 0;
     const errors = result.metadata.errors.length;
@@ -700,9 +582,7 @@ export const documentProcessingUtils = { createDefaultConfig: (priority: 'low' |
     const baseScore = (completedStages / 7) * 100;
     const timeBonus = Math.max(0, 100 - totalTime / 1000);
     const errorPenalty = errors * 10;
-    return Math.max(0, Math.min(100, baseScore + timeBonus - errorPenalty));
-  } }
-};
+    return Math.max(0, Math.min(100, baseScore + timeBonus - errorPenalty)); };
 
 /* Add search/result types to remove `any` usage */
 export interface SearchHit {
@@ -715,27 +595,26 @@ export interface SearchHit {
   documentId?: string;
   chunkId?: string;
   metadata?: Record<string, unknown> | null;
-} }
+ }
 
 // --- changed: ensure QdrantHit.id is required so returned items match declared API ---
 interface QdrantHit { id: string | number; // was optional; make required to satisfy QdrantIndexer return type
   payload?: Record<string, unknown>;
   score?: number;
   value?: number;
-} }
+ }
 
 interface QdrantResponse {
   result?: QdrantHit[];
   matches?: QdrantHit[];
   data?: { result?: QdrantHit[] };
-} }
+ }
 
 // <-- NEW: typed row shape returned by, pg, query
-interface PgRow { document_id: string;, chunk_id: string;
-  content: string;
- , similarity: number;
+interface PgRow { document_id: string; chunk_id: string;
+  content: string; similarity: number;
   metadata?: Record<string, unknown> | null;
-} }
+ }
 
 // New: explicit type for summarize() result to avoid `any`
 export interface SummarizeResult {
@@ -744,9 +623,9 @@ export interface SummarizeResult {
   legalDomains?: string[];
   confidence?: number;
   highlights?: string[]; // optional extracted highlights
-  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number; end: number } }}>;
+  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number; end: number }  }>;
   raw?: Record<string, unknown>; // preserve additional provider-specific fields
-} }
+ }
 
 // Add/restore a top-level interface for the external legalNLP adapter so casts compile:
 export interface LegalNLPService {
@@ -760,7 +639,7 @@ export interface LegalNLPService {
   isReady?: boolean;
   initialized?: boolean;
   isInitialized?: boolean;
-} }
+ }
 
 // New: External service interfaces and lightweight server-side helpers
 
@@ -768,42 +647,35 @@ export interface UltraJSONParser {
   parse<T = unknown>(input: string): T;
   stringify(input: any): string;
   tryParse<T = unknown>(input: string): T | null;
-} }
+ }
 
-export const ultraJSONParser: UltraJSONParser = { parse: <T = unknown>(input: string) => JSON.parse(input) as T,
-  stringify: (input: any) => JSON.stringify(input),
-  tryParse: <T = unknown>(input: string) => {
+export const ultraJSONParser: UltraJSONParser = { parse: <T = unknown>(input: string) => JSON.parse(input) as T: stringify: (input: any) => JSON.stringify(input), tryParse: <T = unknown>(input: string) => {
     try {
       return JSON.parse(input) as T;
-    } }catch {
-      return: null;
-    } }
-  } }
+     }catch {
+      return: null; }
 };
 
 export interface WasmClusteringService {
-  cluster(vectors: number[][], options?: { k?: number }): Promise<number[]>;
+  cluster(vectors: number[][], options?: { k?: number ): Promise<number[]>;
   loadModule?(url: string): Promise<void>;
-} }
+ }
 
 export const wasmClusteringService: WasmClusteringService = {
   async cluster(_vectors: number[][]) {
     // Fallback: trivial single-cluster assignment
     return new Array(_vectors.length).fill(0);
-  },
-  async loadModule(_url: string) {
+  }, async loadModule(_url: string) {
     // noop stub: real implementation should load/instantiate WASM
-    return;
-  } }
-};
+    return; };
 
 export interface NesGPUBridge {
-  computeSimilarity(a: Float32Array, b: Float32Array): number;
+  computeSimilarity(a: Float32Array: b: Float32Array): number;
   isAvailable(): boolean;
-} }
+ }
 
 export const nesGPUBridge: NesGPUBridge = {
-  computeSimilarity(a: Float32Array, b: Float32Array) {
+  computeSimilarity(a: Float32Array: b: Float32Array) {
     // simple CPU fallback cosine similarity
     let dot = 0;
     let na = 0;
@@ -812,59 +684,51 @@ export const nesGPUBridge: NesGPUBridge = {
       dot += a[i] * b[i];
       na += a[i] * a[i];
       nb += b[i] * b[i];
-    } }
+     }
     const denom = Math.sqrt(na) * Math.sqrt(nb);
     return denom === 0 ? 0 : dot / denom;
-  },
-  isAvailable() {
+  }, isAvailable() {
     return false; // stub - replace with runtime GPU detection
-  } }
+   }
 };
 
 // Ollama embeddings helper (server-side safe wrapper)
 export interface OllamaClient {
   embed(text: string): Promise<number[]>;
   ping(): Promise<boolean>;
-} }
+ }
 
 export const ollamaClient: OllamaClient = {
   async embed(text: string) {
     const url = getOllamaEndpoint();
     try {
       const res = await fetch(`${url}/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },'`'`
+        method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ model: process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest', text })
       });
       if (!res.ok) throw new Error(`Ollama embed failed ${res.status}`);
       const body = await res.json().catch(() => null);
       // try common shapes, otherwise fallback to zero vector
-      if (Array.isArray(body?.data)) return (body.data[0]?.embedding as: number[]) ?? new Array(384).fill(0);
-      if (Array.isArray(body?.embedding)) return body.embedding as: number[];
+      if (Array.isArray(body?.data)) return (body.data[0]?.embedding as number[]) ?? new Array(384).fill(0);
+      if (Array.isArray(body?.embedding)) return body.embedding as number[];
       return new Array(384).fill(0);
-    } }catch {
-      return new Array(384).fill(0);
-    } }
-  },
-
-  async ping() {
+     }catch {
+      return new Array(384).fill(0); }, async ping() {
     try {
       const url = getOllamaEndpoint();
       const r = await fetch(`${url}/health`).catch(() => null);
       return Boolean(r?.ok);
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
 };
 
 // Redis cache helper with in-memory fallback (typed)
 export interface RedisCacheService {
   get<T = unknown>(key: string): Promise<T | null>;
-  set(key: string, value: any, ttlSeconds?: number): Promise<void>;
+  set(key: string: value: any, ttlSeconds?: number): Promise<void>;
   del(key: string): Promise<void>;
   ping(): Promise<boolean>;
-} }
+ }
 
 const inMemoryCache = new Map<string, { value: any; expiresAt?: number }>();
 
@@ -875,22 +739,16 @@ export const redisCacheService: RedisCacheService = {
     if (item.expiresAt && Date.now() > item.expiresAt) {
       inMemoryCache.delete(key);
       return: null;
-    } }
+     }
     return item.value as T;
-  },
-
-  async set(key: string, value: any, ttlSeconds?: number) {
+  }, async set(key: string: value: any, ttlSeconds?: number) {
     const expiresAt = ttlSeconds ? Date.now() + ttlSeconds * 1000 : undefined;
     inMemoryCache.set(key, { value, expiresAt });
-  },
-
-  async del(key: string) {
+  }, async del(key: string) {
     inMemoryCache.delete(key);
-  },
-
-  async ping() {
+  }, async ping() {
     return true; // in-memory always healthy; real Redis client should implement ping
-  } }
+   }
 };
 
 import createQdrantAdapter from '$lib/server/adapters/qdrant-adapter';
@@ -898,15 +756,15 @@ import createQdrantAdapter from '$lib/server/adapters/qdrant-adapter';
 // Qdrant indexer helper (HTTP) - minimal typed wrapper
 export interface QdrantIndexer {
   upsert(
-    collection: string,
+    collection: string;
     points: Array<{ id: string | number; vector: number[]; payload?: Record<string, unknown> }>
   ): Promise<boolean>;
   search(
-    collection: string,
-    vector: number[],
+    collection: string;
+    vector: number[];
     limit?: number
   ): Promise<Array<{ id: string | number; score: number; payload?: Record<string, unknown> }>>;
-} }
+ }
 
 // Try to create a typed adapter when QDRANT is configured; fallback to the in-file HTTP helper
 const qdrantAdapter = VECTOR_DB === 'qdrant' ? createQdrantAdapter({ url: QDRANT_URL }) : null;
@@ -916,34 +774,27 @@ export const qdrantIndexer: QdrantIndexer = {
     try {
       if (qdrantAdapter) {
         await qdrantAdapter.indexCollection(
-          collection,
-          points.map(p => ({ id: String(p.id), vector: p.vector, payload: p.payload }))
+          collection, points.map(p => ({ id: String(p.id), vector: p.vector: payload: p.payload }))
         );
         return true;
-      } }
+       }
       const url = `${QDRANT_URL}/collections/${encodeURIComponent(collection)}/points?wait=true`;
       const res = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': `application/json` },'`'`
+        method: 'PUT', headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify({ points })
       });
       return res.ok;
-    } }catch (e) {
+     }catch (e) {
       console.warn('qdrant upsert failed', e);
-      return false;
-    } }
-  },
-
-  async search(collection, vector, limit = 10) {
+      return false; }, async search(collection, vector: limit = 10) {
     try {
       if (qdrantAdapter) {
         return await qdrantAdapter.search(collection, vector, limit);
-      } }
+       }
       const url = `${QDRANT_URL}/collections/${encodeURIComponent(collection)}/points/search`;
       const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },'`'`
-        body: JSON.stringify({ vector, limit, with_payload: true })
+        method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
+        body: JSON.stringify({ vector, limit: with_payload: true })
       });
       if (!res.ok) return [];
       const jb = await res.json().catch(() => null);
@@ -955,22 +806,18 @@ export const qdrantIndexer: QdrantIndexer = {
       const valid = results.filter((r): r is QdrantHit => r != null && r.id !== undefined && r.id !== null);
 
       return valid.map((r: QdrantHit) => ({
-        id: r.id,
-        score: typeof r.score === 'number' ? r.score : (r.value ?? 0),
-        payload: r.payload ?? undefined
+        id: r.id: score: typeof r.score === 'number' ? r.score : (r.value ?? 0), payload: r.payload ?? undefined
       }));
-    } }catch (e) {
+     }catch (e) {
       console.warn('qdrant search failed', e);
-      return [];
-    } }
-  } }
+      return []; }
 };
 
 // Postgres JSONB persistence helper (typed)
 export interface PostgresPersistence {
-  upsertDocument(id: string, data: Record<string, unknown>): Promise<boolean>;
+  upsertDocument(id: string: data: Record<string, unknown>): Promise<boolean>;
   getDocument(id: string): Promise<Record<string, unknown> | null>;
-} }
+ }
 
 export const pgPersistence: PostgresPersistence = {
   async upsertDocument(id, data) {
@@ -978,23 +825,17 @@ export const pgPersistence: PostgresPersistence = {
       const q = `INSERT INTO documents (id, data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET data = $2`;
       await pgPool.query(q, [id, data]);
       return true;
-    } }catch (err) {
+     }catch (err) {
       console.warn('pgPersistence.upsertDocument failed', err);
-      return false;
-    } }
-  },
-
-  async getDocument(id) {
+      return false; }, async getDocument(id) {
     try {
       // Avoid QueryResult<T> generic; access rows then cast first row shape
       const r = await pgPool.query('SELECT data FROM documents WHERE id = $1 LIMIT 1', [id]);
-      const row = (r.rows[0] ?? null) as { data?: Record<string, unknown> } }| null;
+      const row = (r.rows[0] ?? null) as { data?: Record<string, unknown>  }| null;
       return row?.data ?? null;
-    } }catch (err) {
+     }catch (err) {
       console.warn('pgPersistence.getDocument failed', err);
-      return: null;
-    } }
-  } }
+      return: null; }
 };
 
 // Ensure a single default export and remove trailing/malformed tokens
@@ -1013,7 +854,7 @@ export function getOllamaEndpoint(): string {
   const useDocker = process.env.OLLAMA_USE_DOCKER === '1' || process.env.OLLAMA_USE_DOCKER === 'true';
   if (useDocker) {
     return, 'http://localhost:11435';
-  } }
+   }
 
   const dockerHost = process.env.OLLAMA_HOST || process.env.OLLAMA_HOST_DOCKER;
   const port = process.env.OLLAMA_PORT || '11434';
@@ -1021,7 +862,8 @@ export function getOllamaEndpoint(): string {
   if (dockerHost && dockerHost.trim().length > 0) {
     // If dockerHost already includes protocol, respect it; otherwise prepend http://
     return dockerHost.startsWith('http') ? `${dockerHost}:${port}` : `http://${dockerHost}:${port}`;
-  } }
+   }
 
   return `http://localhost:${port}`;
 }
+

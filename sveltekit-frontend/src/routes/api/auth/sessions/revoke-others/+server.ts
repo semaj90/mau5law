@@ -3,11 +3,11 @@
  * Useful for security - sign out from all other devices
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { auth } }from '$lib/server/auth';
-import { db } }from '$lib/server/db';
-import { sessions, as sessionsTable } }from '$lib/server/db/schema';
-import { eq, ne } }from 'drizzle-orm';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { auth  } from '$lib/server/auth';
+import { db  } from '$lib/server/db';
+import { sessions, as sessionsTable  } from '$lib/server/db/schema';
+import { eq, ne  } from 'drizzle-orm';
 
 export const POST: RequestHandler = async (event) => {
   try {
@@ -16,31 +16,25 @@ export const POST: RequestHandler = async (event) => {
     if (!currentSessionId) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Not authenticated',
-            code: 'NO_SESSION',
-            status: 401
-          } }
-        },
-        { status: 401 } }
+  message: 'Not authenticated', code: 'NO_SESSION', status: 401
+           }
+        }, { status: 401  }
       );
-    } }
+     }
 
-    const { session, user } }= await auth.validateSession(currentSessionId);
+    const { session, user  }= await auth.validateSession(currentSessionId);
     if (!session || !user) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Invalid session',
-            code: 'INVALID_SESSION',
-            status: 401
-          } }
-        },
-        { status: 401 } }
+  message: 'Invalid session', code: 'INVALID_SESSION', status: 401
+           }
+        }, { status: 401  }
       );
-    } }
+     }
 
     // Get all other sessions for this user
     const otherSessions = await db
@@ -54,26 +48,21 @@ export const POST: RequestHandler = async (event) => {
     // Revoke all other sessions
     for (const sess of otherSessions) {
       await auth.invalidateSession(sess.id);
-    } }
+     }
 
     return json({
-      success: true,
-      message: `Revoked ${otherSessions.length} }session(s)`,
-      revokedCount: otherSessions.length
+      success: true;
+      message: `Revoked ${otherSessions.length }session(s)`, revokedCount: otherSessions.length
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error revoking other sessions:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: {
-  message: 'Failed to revoke sessions',
-          code: 'REVOKE_ERROR',
-          status: 500
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+  message: 'Failed to revoke sessions', code: 'REVOKE_ERROR', status: 500
+         }
+      }, { status: 500  }
+    ); };
+
 

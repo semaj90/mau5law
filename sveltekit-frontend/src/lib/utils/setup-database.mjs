@@ -22,9 +22,7 @@ const DATABASE_URL =
 
 console.log("🗄️ Legal AI Database Setup Starting...");
 console.log(
-  "📍 Database URL:",
-  DATABASE_URL.replace(/\/\/.*@/, "//[credentials]@"),
-);
+  "📍 Database URL:", DATABASE_URL.replace(/\/\/.*@/, "//[credentials]@"));
 
 async function setupDatabase() {
   let client;
@@ -63,8 +61,7 @@ async function setupDatabase() {
         console.log("✅ Database migrations completed!");
       } catch (migrationError) {
         console.log(
-          "ℹ️ No new migrations to run or migrations already applied",
-        );
+          "ℹ️ No new migrations to run or migrations already applied");
       }
     } else {
       console.log("ℹ️ No migrations folder found, creating basic tables...");
@@ -72,35 +69,15 @@ async function setupDatabase() {
       // Create basic tables if no migrations exist
       await client`
         CREATE TABLE IF NOT EXISTS users (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          email TEXT UNIQUE NOT NULL,
-          name TEXT NOT NULL,
-          role TEXT DEFAULT 'user',
-          password_hash TEXT,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(), email TEXT UNIQUE NOT NULL, name TEXT NOT NULL, role TEXT DEFAULT 'user', password_hash TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         
         CREATE TABLE IF NOT EXISTS cases (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          title TEXT NOT NULL,
-          description TEXT,
-          status TEXT DEFAULT 'active',
-          priority TEXT DEFAULT 'medium',
-          created_by UUID REFERENCES users(id),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(), title TEXT NOT NULL, description TEXT, status TEXT DEFAULT 'active', priority TEXT DEFAULT 'medium', created_by UUID REFERENCES users(id), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         
         CREATE TABLE IF NOT EXISTS evidence (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          case_id UUID REFERENCES cases(id),
-          title TEXT NOT NULL,
-          file_path TEXT,
-          file_type TEXT,
-          file_size INTEGER,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(), case_id UUID REFERENCES cases(id), title TEXT NOT NULL, file_path TEXT, file_type TEXT, file_size INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
         CREATE INDEX IF NOT EXISTS idx_cases_status ON cases(status);
@@ -173,11 +150,7 @@ async function seedDatabase() {
       await client`
         INSERT INTO cases (title, description, status, priority, created_by) 
         VALUES (
-          'Sample Legal Case', 
-          'This is a sample case to demonstrate the system capabilities.',
-          'active',
-          'high',
-          ${adminId}
+          'Sample Legal Case', 'This is a sample case to demonstrate the system capabilities.', 'active', 'high', ${adminId}
         )
       `;
       console.log("  ✓ Created sample case");
@@ -193,11 +166,7 @@ async function seedDatabase() {
         await client`
           INSERT INTO cases (title, description, status, priority, created_by) 
           VALUES (
-            'Sample Legal Case', 
-            'This is a sample case to demonstrate the system capabilities.',
-            'active',
-            'high',
-            ${existingAdmin[0].id}
+            'Sample Legal Case', 'This is a sample case to demonstrate the system capabilities.', 'active', 'high', ${existingAdmin[0].id}
           )
         `;
         console.log("  ✓ Created sample case");

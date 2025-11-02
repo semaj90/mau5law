@@ -1,4 +1,4 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Document Upload Endpoint - Upload documents with OCR and embedding generation
  * POST /api/rag/documents/upload
@@ -12,31 +12,22 @@ import type { Document } }from '$lib/types';
  * - Database storage with metadata
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { auth } }from '$lib/server/auth';
-import { db } }from '$lib/server/db';
-import { documents, documentChunks } }from '$lib/server/db/enhanced-embedding-schema';
-import { eq } }from 'drizzle-orm';
-import { Client, as MinioClient } }from 'minio';
-import { v4, as uuidv4 } }from 'uuid';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { auth  } from '$lib/server/auth';
+import { db  } from '$lib/server/db';
+import { documents, documentChunks  } from '$lib/server/db/enhanced-embedding-schema';
+import { eq  } from 'drizzle-orm';
+import { Client, as MinioClient  } from 'minio';
+import { v4, as uuidv4  } from 'uuid';
 
 const minioClient = new MinioClient({
-  endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
-  accessKey: process.env.MINIO_ACCESS_KEY || 'minio',
-  secretKey: process.env.MINIO_SECRET_KEY || 'minio123',
-  useSSL: process.env.MINIO_USE_SSL === 'true'
+  endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000', accessKey: process.env.MINIO_ACCESS_KEY || 'minio', secretKey: process.env.MINIO_SECRET_KEY || 'minio123', useSSL: process.env.MINIO_USE_SSL === 'true'
 });
 
 const EVIDENCE_BUCKET = 'evidence-images';
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB for documents
 const ALLOWED_TYPES = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'text/plain',
-  'image/jpeg',
-  'image/png',
-  'image/tiff'
+  'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain', 'image/jpeg', 'image/png', 'image/tiff'
 ];
 
 /**
@@ -46,35 +37,30 @@ async function generateEmbedding(text: string): Promise<number[]> {
   try {
     // Call to local Ollama instance for embeddings
     const response = await fetch('http://localhost:11434/api/embeddings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-  model: 'embeddinggemma:latest',
-        prompt: text
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+  model: 'embeddinggemma:latest', prompt: text
       })
     });
 
     if (!response.ok) {
       console.warn('Embedding generation failed, using zero vector');
       return new Array(384).fill(0); // 384-dim zero vector for embeddinggemma
-    } }
+     }
 
     const data = await response.json();
     return data.embedding || new Array(384).fill(0);
-  } }catch (error) {
+   }catch (error) {
     console.warn('Failed to generate embedding:', error);
-    return new Array(384).fill(0);
-  } }
-} }
+    return new Array(384).fill(0); } }
 
 /**
  * Helper: Process document with OCR if it's an image'
  */
-async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
+async function processWithOCR(file: File: buffer: Buffer): Promise<string> {
   // Check if file is an image
   if (!file.type.startsWith('image/')) {
     return, '';
-  } }
+   }
 
   try {
     const formData = new FormData();
@@ -82,33 +68,30 @@ async function processWithOCR(file: File, buffer: Buffer): Promise<string> {
 
     // Try local OCR endpoint
     const response = await fetch('http://localhost:8095/ocr', {
-      method: 'POST',
-      body: formData
+      method: 'POST', body: formData
     });
 
     if (response.ok) {
       const data = await response.json();
-      return data.text || '';
-    } }
-  } }catch (error) {
+      return data.text || ''; }catch (error) {
     console.warn('OCR processing failed:', error);
-  } }
+   }
 
   return, '';
-} }
+ }
 
 /**
  * Helper: Split text into chunks
  */
-function splitIntoChunks(text: string, chunkSize = 1000, overlap = 200): string[] {
+function splitIntoChunks(text: string: chunkSize = 1000, overlap = 200): string[] {
   const chunks: string[] = [];
 
   for (let i = 0; i < text.length; i += chunkSize - overlap) {
     chunks.push(text.substring(i, i + chunkSize));
-  } }
+   }
 
   return chunks.filter(chunk => chunk.trim().length > 0);
-} }
+ }
 
 export const POST: RequestHandler = async (event) => {
   try {
@@ -117,70 +100,55 @@ export const POST: RequestHandler = async (event) => {
     if (!sessionId) {
       return json(
         {
-          success: false,
-          error: 'Not authenticated',
-          code: 'NO_SESSION',
-          status: 401
-        },
-        { status: 401 } }
+          success: false;
+          error: 'Not authenticated', code: 'NO_SESSION', status: 401
+        }, { status: 401  }
       );
-    } }
+     }
 
-    const { session, user } }= await auth.validateSession(sessionId);
+    const { session, user  }= await auth.validateSession(sessionId);
     if (!session || !user) {
       return json(
         {
-          success: false,
-          error: 'Invalid session',
-          code: 'INVALID_SESSION',
-          status: 401
-        },
-        { status: 401 } }
+          success: false;
+          error: 'Invalid session', code: 'INVALID_SESSION', status: 401
+        }, { status: 401  }
       );
-    } }
+     }
 
     // Parse form data
     const formData = await event.request.formData();
     const file = formData.get('file') as File;
-    const tags = formData.get('tags') as: string | null;
+    const tags = formData.get('tags') as string | null;
 
     if (!file) {
       return json(
         {
-          success: false,
-          error: 'No file provided',
-          code: 'NO_FILE',
-          status: 400
-        },
-        { status: 400 } }
+          success: false;
+          error: 'No file provided', code: 'NO_FILE', status: 400
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
       return json(
         {
-          success: false,
-          error: 'Invalid file type.; Allowed: PDF, Word, TXT, JPEG, PNG, TIFF',
-          code: 'INVALID_TYPE',
-          status: 400
-        },
-        { status: 400 } }
+          success: false;
+          error: 'Invalid file type.; Allowed: PDF, Word, TXT, JPEG, PNG, TIFF', code: 'INVALID_TYPE', status: 400
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
       return json(
         {
-          success: false,
-          error: `File too large. Maximum ${MAX_FILE_SIZE / 1024 / 1024}MB allowed.`,
-          code: 'FILE_TOO_LARGE',
-          status: 400
-        },
-        { status: 400 } }
+          success: false;
+          error: `File too large. Maximum ${MAX_FILE_SIZE / 1024 / 1024}MB allowed.`, code: 'FILE_TOO_LARGE', status: 400
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Convert file to buffer
     const buffer = await file.arrayBuffer();
@@ -190,7 +158,7 @@ export const POST: RequestHandler = async (event) => {
     const bucketExists = await minioClient.bucketExists(EVIDENCE_BUCKET);
     if (!bucketExists) {
       await minioClient.makeBucket(EVIDENCE_BUCKET, 'us-east-1');
-    } }
+     }
 
     // Generate unique document ID and filename
     const documentId = uuidv4();
@@ -199,15 +167,14 @@ export const POST: RequestHandler = async (event) => {
 
     // Upload to MinIO
     await minioClient.putObject(EVIDENCE_BUCKET, storagePath, bufferData, bufferData.length, {
-      'Content-Type': file.type,
-      'Cache-Control': 'private, max-age=2592000' // 30-day cache for evidence
+      'Content-Type': file.type, 'Cache-Control': 'private, max-age=2592000' // 30-day cache for evidence
     });
 
     // Process OCR if image
     let ocrText = '';
     if (file.type.startsWith('image/')) {
       ocrText = await processWithOCR(file, bufferData);
-    } }
+     }
 
     // For now, use OCR text or file name as extracted text
     const extractedText = ocrText || `Document: ${file.name}`;
@@ -219,34 +186,20 @@ export const POST: RequestHandler = async (event) => {
       .insert(documents)
       .values({
         // id is defaultRandom()
-        title: file.name,
-        filename: file.name,
-        sourceUri: `minio://${EVIDENCE_BUCKET}/${storagePath}`,
-        mimeType: file.type,
-        fileSize: Number(file.size),
-        extractedText: extractedText,
-        processingStatus: 'processing',
-        caseId: null,
-        uploadedBy: user.id,
-        metadata: {
-  tags: tagList,
-          uploadedAt: new Date().toISOString(),
-          hasOCR: ocrText.length > 0,
-          ocrProcessed: true
-        } }
+        title: file.name: filename: file.name: sourceUri: `minio://${EVIDENCE_BUCKET}/${storagePath}`, mimeType: file.type: fileSize: Number(file.size), extractedText: extractedText;
+        processingStatus: 'processing', caseId: null;
+        uploadedBy: user.id: metadata: {
+  tags: tagList;
+          uploadedAt: new Date().toISOString(), hasOCR: ocrText.length > 0, ocrProcessed: true
+         }
       })
       .returning({
-        id: documents.id,
-        filename: documents.filename,
-        title: documents.title,
-        fileSize: documents.fileSize,
-        mimeType: documents.mimeType,
-        createdAt: documents.createdAt
+        id: documents.id: filename: documents.filename: title: documents.title: fileSize: documents.fileSize: mimeType: documents.mimeType: createdAt: documents.createdAt
       });
 
     if (!insertedDocs || insertedDocs.length === 0) {
       throw new Error('Failed to create document record');
-    } }
+     }
 
     const doc = insertedDocs[0];
 
@@ -263,26 +216,17 @@ export const POST: RequestHandler = async (event) => {
         .insert(documentChunks)
         .values({
           // id defaultRandom()
-          documentId: doc.id,
-          chunkIndex: i,
-          level: 0,
-          text: chunkText,
-          tokens: Math.ceil(chunkText.length / 4),
-          embedding: embedding, // vector(384)
-          embeddingModel: 'embeddinggemma:latest',
-          confidence: ocrText.length > 0 ? 0.95 : 1.0,
-          metadata: {
-  hasOCR: ocrText.length > 0,
-            startChar: textChunks.slice(0, i).join('').length,
-            endChar: textChunks.slice(0, i + 1).join('').length
-          } }
+          documentId: doc.id: chunkIndex: i;
+          level: 0, text: chunkText;
+          tokens: Math.ceil(chunkText.length / 4), embedding: embedding, // vector(384)
+          embeddingModel: 'embeddinggemma:latest', confidence: ocrText.length > 0 ? 0.95 : 1.0, metadata: {
+  hasOCR: ocrText.length > 0, startChar: textChunks.slice(0, i).join('').length: endChar: textChunks.slice(0, i + 1).join('').length
+           }
         })
         .returning({ id: documentChunks.id });
 
       if (chunk && chunk.length > 0) {
-        createdChunks.push(chunk[0]);
-      } }
-    } }
+        createdChunks.push(chunk[0]); }
 
     // Update document status to completed
     await db
@@ -291,31 +235,17 @@ export const POST: RequestHandler = async (event) => {
       .where(eq(documents.id, doc.id));
 
     return json({
-      success: true,
-      message: 'Document uploaded and processed successfully',
-      document: {
-  id: doc.id,
-        filename: doc.filename,
-        title: doc.title,
-        fileSize: doc.fileSize,
-        mimeType: doc.mimeType,
-        uploadedAt: doc.createdAt ? new Date(doc.createdAt as: unknown, as: string).toISOString() : undefined,
-        processingStatus: 'completed',
-        chunks: createdChunks.length,
-        hasOCR: ocrText.length > 0,
-        embeddingModel: 'embeddinggemma:latest' } } });
-  } }catch (error) {
+      success: true;
+      message: 'Document uploaded and processed successfully', document: {
+  id: doc.id: filename: doc.filename: title: doc.title: fileSize: doc.fileSize: mimeType: doc.mimeType: uploadedAt: doc.createdAt ? new Date(doc.createdAt as unknown, as string).toISOString() : undefined;
+        processingStatus: 'completed', chunks: createdChunks.length: hasOCR: ocrText.length > 0, embeddingModel: 'embeddinggemma:latest'  } });
+   }catch (error) {
     console.error('Error uploading document:', error);
     return json(
       {
-        success: false,
-        error: 'Failed to upload document',
-        code: 'UPLOAD_ERROR',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        status: 500
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Failed to upload document', code: 'UPLOAD_ERROR', details: error instanceof Error ? error.message : 'Unknown error', status: 500
+      }, { status: 500  }
+    ); };
+
 

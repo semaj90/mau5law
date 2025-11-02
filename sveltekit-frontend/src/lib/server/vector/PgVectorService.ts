@@ -1,5 +1,5 @@
-import type { DocumentItem, VisionItem, SearchResult } }from '../../types/sharedTypes';
-import { upsertToPGVector, searchPGVector } }from './pgvector';
+import type { DocumentItem, VisionItem, SearchResult  } from '../../types/sharedTypes';
+import { upsertToPGVector, searchPGVector  } from './pgvector';
 
 /**
  * Small wrapper service around pgvector helpers.
@@ -11,28 +11,25 @@ class PgVectorService {
     try {
       await upsertToPGVector(item);
       return { ok: true };
-    } }catch (err: any) {
+     }catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       // Minimal, non-intrusive logging; adapt to your logger if available
       console.error('[PgVectorService] upsert error:', message);
-      return { ok: false, error: message };
-    } }
-  } }
+      return { ok: false: error: message }; }
 
   async search(queryVector: number[], topK = 10): Promise<{ results: SearchResult[]; error?: string | null }> {
     try {
       const results = await searchPGVector(queryVector, topK);
-      return { results, error: null };
-    } }catch (err: any) {
+      return { results: error: null };
+     }catch (err: any) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('[PgVectorService] search error:', message);
-      return { results: [], error: message };
-    } }
-  } }
+      return { results: [], error: message }; }
 } }
 
 // Export a single shared instance
 const pgVectorService = new PgVectorService();
 export default pgVectorService;
 export { PgVectorService };
+
 

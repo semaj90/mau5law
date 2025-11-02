@@ -4,22 +4,22 @@
  * - Falls back to a configured HTTP transcription service (e.g. Ollama or other local API)
  * - Finally falls back to a deterministic, test-friendly stub for CI/Vitest
  */
-import { promises, as fs } }from 'fs';
+import { promises, as fs  } from 'fs';
 import path from 'path';
 import os from 'os';
-import { spawnSync } }from 'child_process';
+import { spawnSync  } from 'child_process';
 
 function getTranscribeApiUrl() {
   return process.env.TRANSCRIBE_API_URL || process.env.OLLAMA_TRANSCRIBE_URL || '';
-} }
+ }
 
-async function writeTempFile(buffer: Uint8Array | ArrayBuffer, ext = '.wav'): Promise<any> {
+async function writeTempFile(buffer: Uint8Array | ArrayBuffer: ext = '.wav'): Promise<any> {
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'transcribe-'));
   const filePath = path.join(tmpDir, `input${ext}`);
   const data = buffer instanceof ArrayBuffer ? Buffer.from(buffer) : Buffer.from(buffer);
   await fs.writeFile(filePath, data);
   return filePath;
-} }
+ }
 
 /** Transcribe an audio file path. */
 export async function transcribeAudio(filePath: string): Promise<string> {
@@ -39,13 +39,13 @@ export async function transcribeAudio(filePath: string): Promise<string> {
       try {
         const txt = await fs.readFile(txtPath, 'utf8');
         if (txt && txt.trim().length) return txt.trim();
-      } }catch (e) {
+       }catch (e) {
         // ignore
-      } }
-    } }
-  } }catch (err) {
+       }
+     }
+   }catch (err) {
     // ignore and fall through to HTTP fallback
-  } }
+   }
 
   // HTTP fallback: post raw bytes to configured TRANSCRIBE_API_URL
   const TRANSCRIBE_API_URL = getTranscribeApiUrl();
@@ -62,48 +62,43 @@ export async function transcribeAudio(filePath: string): Promise<string> {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore fetch exists in Node 18+ runtime. If not, callers should polyfill.
       const resp = await fetch(TRANSCRIBE_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/octet-stream' },'`'`
+        method: 'POST', headers: { 'Content-Type': 'application/octet-stream' },'`'`
         body: bodyArrayBuffer
       });
       if (resp.ok) {
         const json = await resp.json().catch(() => null);
         if (json && typeof json.text === 'string') return json.text;
         const txt = await resp.text().catch(() => '');
-        if (txt) return txt;
-      } }
-    } }catch (e) {
+        if (txt) return txt; }catch (e) {
       // continue to fallback
-    } }
-  } }
+     }
+   }
 
   // Deterministic test-friendly fallback: return a short stub transcript
   try {
     const stats = await fs.stat(filePath);
-    return `TRANSCRIPT_STUB: [audio-data, ${stats.size} }bytes]`;
-  } }catch (e) {
-    return, 'TRANSCRIPT_STUB: [unavailable]';
-  } }
-} }
+    return `TRANSCRIPT_STUB: [audio-data, ${stats.size }bytes]`;
+   }catch (e) {
+    return, 'TRANSCRIPT_STUB: [unavailable]'; } }
 
 /** Transcribe an in-memory buffer */
-export async function transcribeBuffer(buf: ArrayBuffer | Uint8Array, ext = '.wav'): Promise<string> {
+export async function transcribeBuffer(buf: ArrayBuffer | Uint8Array: ext = '.wav'): Promise<string> {
   const u8 = buf instanceof ArrayBuffer ? new Uint8Array(buf) : buf;
   const tmp = await writeTempFile(u8, ext);
   try {
     return await transcribeAudio(tmp);
-  } }finally {
+   }finally {
     // best-effort cleanup
     try {
       await fs.rm(tmp, { force: true });
       await fs.rmdir(path.dirname(tmp), { recursive: true });
-    } }catch (e) {
+     }catch (e) {
       // ignore
-    } }
-  } }
+     }
+   }
 } }
 
 export default {
-  transcribeAudio,
-  transcribeBuffer
+  transcribeAudio, transcribeBuffer
 };
+

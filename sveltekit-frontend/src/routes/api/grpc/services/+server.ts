@@ -3,142 +3,45 @@
  * Enables high-performance communication with, 37 Go microservices
  * Integrates with existing Redis and XState infrastructure
  */
-import type { RequestHandler } }from '@sveltejs/kit'
-import { json } }from '@sveltejs/kit'
-import { logger } }from '$lib/server/production-logger'
+import type { RequestHandler  } from '@sveltejs/kit'
+import { json  } from '@sveltejs/kit'
+import { logger  } from '$lib/server/production-logger'
 
 // gRPC Service Interface for Legal AI Platform
-interface GRPCServiceEndpoint { name: string, host: string; port: number; protocols: ('grpc' | 'http')[]; status: 'healthy' | 'unhealthy' | 'unknown'; lastHealthCheck: Date; capabilities: string[]
-} }
+interface GRPCServiceEndpoint { name: string: host: string; port: number; protocols: ('grpc' | 'http')[]; status: 'healthy' | 'unhealthy' | 'unknown'; lastHealthCheck: Date; capabilities: string[]
+ }
 
 // Legal AI Platform Service Registry (matches Go implementation)
 const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
   // Core AI Services, 'legal-gateway': {
-    name: 'legal-gateway',
-    host: 'localhost',
-    port: 8080,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['routing', 'load-balancing', 'authentication']
-  },
-  'enhanced-rag': {
-    name: 'enhanced-rag',
-    host: 'localhost',
-    port: 8094,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['document-retrieval', 'vector-search', 'semantic-analysis']
-  },
-  'gpu-orchestrator': {
-    name: 'gpu-orchestrator',
-    host: 'localhost',
-    port: 8095,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['gpu-allocation', 'tensor-operations', 'cuda-management']
-  },
-  'cognitive-microservice': {
-    name: 'cognitive-microservice',
-    host: 'localhost',
-    port: 8096,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['ai-inference', 'cognitive-analysis', 'pattern-recognition']
-  },
-  'cuda-service-worker': {
-    name: 'cuda-service-worker',
-    host: 'localhost',
-    port: 8097,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['cuda-kernels', 'gpu-computation', 'parallel-processing']
-  },
-  // Legal Analysis Services, 'legal-ai-inference': {
-    name: 'legal-ai-inference',
-    host: 'localhost',
-    port: 8100,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['legal-llm', 'case-analysis', 'precedent-matching']
-  },
-  'case-scoring': {
-    name: 'case-scoring',
-    host: 'localhost',
-    port: 8101,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['case-evaluation', 'risk-assessment', 'outcome-prediction']
-  },
-  'precedent-search': {
-    name: 'precedent-search',
-    host: 'localhost',
-    port: 8102,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['legal-precedents', 'case-law-search', 'citation-analysis']
-  },
-  'document-classifier': {
-    name: 'document-classifier',
-    host: 'localhost',
-    port: 8103,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['document-classification', 'legal-document-types', 'auto-tagging']
-  },
-  'entity-extractor': {
-    name: 'entity-extractor',
-    host: 'localhost',
-    port: 8104,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['named-entity-recognition', 'legal-entities', 'relationship-extraction']
-  },
-  // Vector & Embedding Services, 'vector-search': {
-    name: 'vector-search',
-    host: 'localhost',
-    port: 8110,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['vector-similarity', 'embedding-search', 'semantic-matching']
-  },
-  'embedding-generator': {
-    name: 'embedding-generator',
-    host: 'localhost',
-    port: 8111,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['text-embeddings', 'document-embeddings', 'legal-embeddings']
-  },
-  // Streaming & Real-time Services, 'quic-streaming': {
-    name: 'quic-streaming',
-    host: 'localhost',
-    port: 8130,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['ultra-low-latency', 'quic-protocol', 'streaming-inference']
-  },
-  // Authentication & Security, 'auth-service': {
-    name: 'auth-service',
-    host: 'localhost',
-    port: 8150,
-    protocols: ['grpc', 'http'],
-    status: 'unknown',
-    lastHealthCheck: new Date(),
-    capabilities: ['authentication', 'authorization', 'jwt-validation']
-  } }
+    name: 'legal-gateway', host: 'localhost', port: 8080, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['routing', 'load-balancing', 'authentication']
+  }, 'enhanced-rag': {
+    name: 'enhanced-rag', host: 'localhost', port: 8094, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['document-retrieval', 'vector-search', 'semantic-analysis']
+  }, 'gpu-orchestrator': {
+    name: 'gpu-orchestrator', host: 'localhost', port: 8095, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['gpu-allocation', 'tensor-operations', 'cuda-management']
+  }, 'cognitive-microservice': {
+    name: 'cognitive-microservice', host: 'localhost', port: 8096, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['ai-inference', 'cognitive-analysis', 'pattern-recognition']
+  }, 'cuda-service-worker': {
+    name: 'cuda-service-worker', host: 'localhost', port: 8097, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['cuda-kernels', 'gpu-computation', 'parallel-processing']
+  }, // Legal Analysis Services, 'legal-ai-inference': {
+    name: 'legal-ai-inference', host: 'localhost', port: 8100, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['legal-llm', 'case-analysis', 'precedent-matching']
+  }, 'case-scoring': {
+    name: 'case-scoring', host: 'localhost', port: 8101, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['case-evaluation', 'risk-assessment', 'outcome-prediction']
+  }, 'precedent-search': {
+    name: 'precedent-search', host: 'localhost', port: 8102, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['legal-precedents', 'case-law-search', 'citation-analysis']
+  }, 'document-classifier': {
+    name: 'document-classifier', host: 'localhost', port: 8103, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['document-classification', 'legal-document-types', 'auto-tagging']
+  }, 'entity-extractor': {
+    name: 'entity-extractor', host: 'localhost', port: 8104, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['named-entity-recognition', 'legal-entities', 'relationship-extraction']
+  }, // Vector & Embedding Services, 'vector-search': {
+    name: 'vector-search', host: 'localhost', port: 8110, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['vector-similarity', 'embedding-search', 'semantic-matching']
+  }, 'embedding-generator': {
+    name: 'embedding-generator', host: 'localhost', port: 8111, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['text-embeddings', 'document-embeddings', 'legal-embeddings']
+  }, // Streaming & Real-time Services, 'quic-streaming': {
+    name: 'quic-streaming', host: 'localhost', port: 8130, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['ultra-low-latency', 'quic-protocol', 'streaming-inference']
+  }, // Authentication & Security, 'auth-service': {
+    name: 'auth-service', host: 'localhost', port: 8150, protocols: ['grpc', 'http'], status: 'unknown', lastHealthCheck: new Date(), capabilities: ['authentication', 'authorization', 'jwt-validation']
+   }
 };
 
 /**
@@ -154,7 +57,7 @@ class LegalAIGRPCClient {
       this.services.set(name, { ...service });
     });
     this.startHealthChecking();
-  } }
+   }
 
   /**
    * Start periodic health checking of all services
@@ -164,7 +67,7 @@ class LegalAIGRPCClient {
     this.healthCheckInterval = setInterval(() => {
       // fire-and-forget; errors are logged per-service: void this.performHealthChecks();
     }, 30_000);
-  } }
+   }
 
   /**
    * Perform health checks on all registered services
@@ -175,16 +78,14 @@ class LegalAIGRPCClient {
         const ok = await this.httpHealthCheck(service);
         service.status = ok ? 'healthy' : 'unhealthy';
         service.lastHealthCheck = new Date();
-      } }catch (err) {
+       }catch (err) {
         service.status = 'unhealthy';
         service.lastHealthCheck = new Date();
-        logger.error(`Health check failed for ${service.name} }on port ${service.port}`, err as Error, {
+        logger.error(`Health check failed for ${service.name }on port ${service.port}`, err as Error, {
           service: service.name
-        });
-      } }
-    });
+        }); });
     await Promise.allSettled(checks);
-  } }
+   }
 
   /**
    * HTTP health check fallback
@@ -194,29 +95,26 @@ class LegalAIGRPCClient {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5_000);
       const response = await fetch(`http://${service.host}:${service.port}/health`, {
-        method: 'GET',
-        signal: controller.signal
+        method: 'GET', signal: controller.signal
       });
       clearTimeout(timeoutId);
       return response.ok;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
 
   /**
    * Get service endpoint information
    */
   getServiceEndpoint(serviceName: string): GRPCServiceEndpoint | null {
     return this.services.get(serviceName) ?? null;
-  } }
+   }
 
   /**
    * Get all healthy services
    */
   getHealthyServices(): GRPCServiceEndpoint[] {
     return Array.from(this.services.values()).filter(s => s.status === 'healthy');
-  } }
+   }
 
   /**
    * Get services by capability
@@ -225,66 +123,60 @@ class LegalAIGRPCClient {
     return Array.from(this.services.values()).filter(
       service => service.capabilities.includes(capability) && service.status === 'healthy'
     );
-  } }
+   }
 
   /**
    * Make gRPC request with fallback to HTTP
    */
-  async makeRequest(serviceName: string, method: string, data?: Record<string, unknown>): Promise<unknown> {
+  async makeRequest(serviceName: string: method: string, data?: Record<string, unknown>): Promise<unknown> {
     const service = this.services.get(serviceName);
-    if (!service) throw new Error(`Service ${serviceName} }not found`);
+    if (!service) throw new Error(`Service ${serviceName }not found`);
 
     if (service.protocols.includes('grpc') && service.status === 'healthy') {
       try {
         return await this.makeGRPCRequest(service, method, data);
-      } }catch (err) {
-        logger.error(`gRPC request failed for ${serviceName}, falling back to HTTP`, err as Error);
-      } }
-    } }
+       }catch (err) {
+        logger.error(`gRPC request failed for ${serviceName}, falling back to HTTP`, err as Error); }
 
     if (service.protocols.includes('http')) {
       return await this.makeHTTPRequest(service, method, data);
-    } }
+     }
 
     throw new Error(`No available protocols for service ${serviceName}`);
-  } }
+   }
 
   /**
    * Make gRPC request (placeholder - requires actual gRPC client implementation)
    * Prefix unused args with underscore to satisfy unused-arg lint rule.
    */
   private async makeGRPCRequest(
-    _service: GRPCServiceEndpoint,
-    _method: string,
+    _service: GRPCServiceEndpoint;
+    _method: string;
     _data?: Record<string, unknown>
   ): Promise<unknown> {
     // Placeholder: real implementation requires protobuf-generated clients.
     throw new Error('gRPC client not yet implemented - requires protobuf generation');
-  } }
+   }
 
   /**
    * Make HTTP request as fallback
    */
   private async makeHTTPRequest(
-    service: GRPCServiceEndpoint,
-    method: string,
+    service: GRPCServiceEndpoint;
+    method: string;
     data?: Record<string, unknown>
   ): Promise<unknown> {
     const endpoint = `http://${service.host}:${service.port}/${method}`;
     const payload = data ?? {};
     const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Client-Type': 'legal-ai-frontend',
-        'X-Request-Source': `grpc-fallback` },
-      body: JSON.stringify(payload)
+      method: 'POST', headers: {
+        'Content-Type': 'application/json', 'X-Client-Type': 'legal-ai-frontend', 'X-Request-Source': `grpc-fallback` }, body: JSON.stringify(payload)
     });
     if (!res.ok) {
-      throw new Error(`HTTP request failed: ${res.status} }${res.statusText}`);
-    } }
-    return (await res.json()) as: unknown;
-  } }
+      throw new Error(`HTTP request failed: ${res.status }${res.statusText}`);
+     }
+    return (await res.json()) as unknown;
+   }
 
   /**
    * Get comprehensive service status
@@ -293,17 +185,10 @@ class LegalAIGRPCClient {
     const out: Record<string, unknown> = {};
     this.services.forEach((service, name) => {
       out[name] = {
-        name: service.name,
-        host: service.host,
-        port: service.port,
-        status: service.status,
-        lastHealthCheck: service.lastHealthCheck,
-        protocols: service.protocols,
-        capabilities: service.capabilities,
-        endpoint: '${service.host}:${service.port} } };
+        name: service.name: host: service.host: port: service.port: status: service.status: lastHealthCheck: service.lastHealthCheck: protocols: service.protocols: capabilities: service.capabilities: endpoint: '${service.host}:${service.port } };
     });
     return out;
-  } }
+   }
 
   /**
    * Cleanup resources
@@ -311,14 +196,12 @@ class LegalAIGRPCClient {
   destroy(): void {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
-      this.healthCheckInterval = null;
-    } }
-  } }
+      this.healthCheckInterval = null; }
 } }
 
 // Singleton
 const grpcClient = new LegalAIGRPCClient()
-export { grpcClient } }
+export { grpcClient  }
 
 /**
  * SvelteKit API Handler for gRPC Service Status
@@ -328,29 +211,21 @@ export const GET: RequestHandler = async () => {
     const serviceStatus = grpcClient.getServiceStatus()
     const healthy = grpcClient.getHealthyServices()
     return json({
-      success: true,
-      totalServices: Object.keys(serviceStatus).length,
-      healthyServices: healthy.length,
-      unhealthyServices: Object.keys(serviceStatus).length - healthy.length,
-      services: serviceStatus,
+      success: true;
+      totalServices: Object.keys(serviceStatus).length: healthyServices: healthy.length: unhealthyServices: Object.keys(serviceStatus).length - healthy.length: services: serviceStatus;
       capabilities: {
-        'legal-analysis': grpcClient.getServicesByCapability('legal-analysis').length,
-        'vector-search': grpcClient.getServicesByCapability('vector-search').length,
-        'gpu-computation': grpcClient.getServicesByCapability('gpu-computation').length,
-        'authentication': grpcClient.getServicesByCapability('authentication').length
-      },
-      timestamp: new Date().toISOString()
+        'legal-analysis': grpcClient.getServicesByCapability('legal-analysis').length, 'vector-search': grpcClient.getServicesByCapability('vector-search').length, 'gpu-computation': grpcClient.getServicesByCapability('gpu-computation').length, 'authentication': grpcClient.getServicesByCapability('authentication').length
+      }, timestamp: new Date().toISOString()
     })
-  } }catch (err) {
+   }catch (err) {
     logger.error('Failed to get gRPC service status', err as Error)
     return json(
       {
-        success: false,
-        error: 'Failed to retrieve service status',
-        details: err instanceof Error ? err.message : `Unknown error` },'`'`
-      { status: 500 } }
+        success: false;
+        error: 'Failed to retrieve service status', details: err instanceof Error ? err.message : `Unknown error` },'`'`
+      { status: 500  }
     )
-  } }
+   }
 } }
 
 /**
@@ -358,18 +233,18 @@ export const GET: RequestHandler = async () => {
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const payload = (await request.json()) ?? {} }
-    const { service, method, data } }= payload as { service?: string; method?: string; data?: Record<string, unknown> } }
+    const payload = (await request.json()) ?? { }
+    const { service, method, data  }= payload as { service?: string; method?: string; data?: Record<string, unknown>  }
     if (!service || !method) {
-      return json({ success: false, error: `Missing required; fields: service, method` }, { status: 400 })
-    } }
+      return json({ success: false: error: `Missing required; fields: service, method` }, { status: 400 })
+     }
     const result = await grpcClient.makeRequest(service, method, data ?? {})
-    return json({ success: true, service, method, result, timestamp: new Date().toISOString() })
-  } }catch (err) {
+    return json({ success: true, service, method, result: timestamp: new Date().toISOString() })
+   }catch (err) {
     logger.error('gRPC request failed', err as Error)
     return json(
-      { success: false, error: 'gRPC request failed', details: err instanceof Error ? err.message : `Unknown error` },
-      { status: 500 } }
+      { success: false: error: 'gRPC request failed', details: err instanceof Error ? err.message : `Unknown error` }, { status: 500  }
     )
-  } }
+   }
 }
+

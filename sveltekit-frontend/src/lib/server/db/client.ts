@@ -1,6 +1,6 @@
-import { drizzle, type NodePgDatabase } }from 'drizzle-orm/node-postgres';
+import { drizzle, type NodePgDatabase  } from 'drizzle-orm/node-postgres';
 import postgres from 'postgres';
-import { drizzle as drizzleJs } }from 'drizzle-orm/postgres-js';
+import { drizzle as drizzleJs  } from 'drizzle-orm/postgres-js';
 import * as schema from './schema-postgres.js';
 // ===============================
 // Configuration & Environment
@@ -13,7 +13,7 @@ function getDatabaseUrl(): string {
     `postgresql://legal_admin:123456@${process.env.DATABASE_HOST ?? 'postgres` }:${`'`
       process.env.DATABASE_PORT ?? '5434` }/legal_ai_db`'
   );
-} }
+ }
 function getAdminDatabaseUrl(): string {
   return (
     process.env.ADMIN_DATABASE_URL ||
@@ -22,7 +22,7 @@ function getAdminDatabaseUrl(): string {
         process.env.ADMIN_DATABASE_PORT ?? '5432` }/postgres`) ||'
     getDatabaseUrl()
   );
-} }
+ }
 // ===============================
 // Connection Singletons
 // ===============================
@@ -39,11 +39,11 @@ export function createRuntimeConnection(): NodePgDatabase<typeof schema> {
     runtimeConnectionSingleton = postgres(url, {
       max: Number(process.env.PG_MAX_CLIENTS ?? 10)
     });
-    // drizzle's inferred return may be typed as: unknown here -> cast to the expected NodePgDatabase type'
+    // drizzle's inferred return may be typed as unknown here -> cast to the expected NodePgDatabase type'
     runtimeDb = drizzle(runtimeConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof schema>;
-  } }
+   }
   return runtimeDb!;
-} }
+ }
 export function createAdminConnection(): NodePgDatabase<typeof schema> {
   if (!adminConnectionSingleton) {
     const url = getAdminDatabaseUrl();
@@ -52,9 +52,9 @@ export function createAdminConnection(): NodePgDatabase<typeof schema> {
     });
     // same cast for admin DB
     adminDb = drizzle(adminConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof schema>;
-  } }
+   }
   return adminDb!;
-} }
+ }
 // ===============================
 // Health Checks
 // ===============================
@@ -66,13 +66,11 @@ export async function testRuntimeConnection(): Promise<boolean> {
     // Only close if we created a temporary connection and it supports .end()
     if (!runtimeConnectionSingleton && typeof (client as { end?: () => Promise<void> }).end === 'function') {
       await (client as { end: () => Promise<void> }).end();
-    } }
+     }
     return Array.isArray(res) && (res as unknown[]).length > 0;
-  } }catch (err) {
+   }catch (err) {
     console.error('❌ Runtime DB connection test failed:', err);
-    return false;
-  } }
-} }
+    return false; } }
 export async function testAdminConnection(): Promise<boolean> {
   try {
     const client = adminConnectionSingleton ?? postgres(getAdminDatabaseUrl());
@@ -80,13 +78,11 @@ export async function testAdminConnection(): Promise<boolean> {
     // Only close the connection if we created a new one and it's not the singleton'
     if (!adminConnectionSingleton && typeof (client as unknown as { end?: () => Promise<void> }).end === 'function') {
       await (client as unknown as { end: () => Promise<void> }).end();
-    } }
+     }
     return Array.isArray(res) && (res as unknown[]).length > 0;
-  } }catch (err) {
+   }catch (err) {
     console.error('❌ Admin DB connection test failed:', err);
-    return false;
-  } }
-} }
+    return false; } }
 // ===============================
 // Connection Cleanup
 // ===============================
@@ -97,17 +93,13 @@ export async function closeConnections(): Promise<void> {
       runtimeConnectionSingleton = null;
       runtimeDb = null;
       console.log('🔌 Runtime database connection closed');
-    } }
+     }
     if (adminConnectionSingleton && typeof adminConnectionSingleton.end === 'function') {
       await adminConnectionSingleton.end();
       adminConnectionSingleton = null;
       adminDb = null;
-      console.log('🔌 Admin database connection closed');
-    } }
-  } }catch (err) {
-    console.warn('⚠️ Error closing DB connections:', err);
-  } }
-} }
+      console.log('🔌 Admin database connection closed'); }catch (err) {
+    console.warn('⚠️ Error closing DB connections:', err); } }
 // Legacy alias removed for consistency
 export const closeConnection = closeConnections;
 // ===============================
@@ -119,25 +111,25 @@ async function initializeDatabase(): Promise<void> {
   if (!isDev) {
     console.log('🔄 initializeDatabase: production initialization placeholder');
     // Recommended: Use Drizzle ORM migrations.
-    //, Example: import { migrate } }from 'drizzle-orm/node-postgres/migrator';
+    //, Example: import { migrate  } from 'drizzle-orm/node-postgres/migrator';
     // await migrate(runtimeDb, { migrationsFolder: `./drizzle/migrations` });
     // See https://orm.drizzle.team/docs/migrations for details.
-  } }
+   }
   // mark as initialized to prevent re-run
   initialized = true;
-} }
+ }
 // Single fire-and-forget initialization in non-dev
 if (!isDev) {
   initializeDatabase().catch(e => {
     console.warn('[DB] Production initialization error in initializeDatabase:', e);
   });
-} }
+ }
 // ===============================
 // Default Export
 // ===============================
 const dbManager = {
-  getDb: createRuntimeConnection,
-  getAdminDb: createAdminConnection,
+  getDb: createRuntimeConnection;
+  getAdminDb: createAdminConnection;
   closeConnections
 };
 export default dbManager;
@@ -156,4 +148,5 @@ export * from './schema-postgres.js';
 const connection = postgres(process.env.DATABASE_URL!);
 export const db = drizzleJs(connection, { schema }); // Drizzle ORM instance
 export const rawDb = connection; // Raw postgres-js client for direct queries
+
 

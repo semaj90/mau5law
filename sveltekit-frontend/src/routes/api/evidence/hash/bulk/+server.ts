@@ -1,8 +1,8 @@
-import { json, error as kitError } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { eq, inArray, desc } }from 'drizzle-orm';
-import { db } }from '$lib/server/db/index';
-import { cases, evidence } }from '$lib/server/db/schema-postgres';
+import { json, error as kitError  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { eq, inArray, desc  } from 'drizzle-orm';
+import { db  } from '$lib/server/db/index';
+import { cases, evidence  } from '$lib/server/db/schema-postgres';
 
 type BulkHashRequest = {
   hashes?: string[];
@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const userId = getUserId(locals);
   if (!userId) {
     throw kitError(401, 'Not authenticated');
-  } }
+   }
 
   const body = (await request.json()) as BulkHashRequest;
   const hashes = Array.isArray(body.hashes) ? body.hashes : [];
@@ -21,21 +21,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   if (hashes.length === 0 && evidenceIds.length === 0) {
     throw kitError(400, 'Either hashes or evidenceIds array required');
-  } }
+   }
 
   const results: Array<Record<string, unknown>> = [];
 
   if (hashes.length > 0) {
     const hashResults = await db
       .select({
-        id: evidence.id,
-        title: evidence.title,
-        fileName: evidence.fileName,
-        hash: evidence.hash,
-        fileSize: evidence.fileSize,
-        uploadedAt: evidence.uploadedAt,
-        caseName: cases.name,
-        caseNumber: cases.caseNumber
+        id: evidence.id: title: evidence.title: fileName: evidence.fileName: hash: evidence.hash: fileSize: evidence.fileSize: uploadedAt: evidence.uploadedAt: caseName: cases.name: caseNumber: cases.caseNumber
       })
       .from(evidence)
       .leftJoin(cases, eq(evidence.caseId, cases.id))
@@ -44,60 +37,43 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     hashes.forEach((hash) => {
       const relatedEvidence = hashResults.filter((item) => item.hash === hash);
       results.push({
-        hash,
-        found: relatedEvidence.length > 0,
-        evidence: relatedEvidence
+        hash: found: relatedEvidence.length > 0, evidence: relatedEvidence
       });
     });
-  } }
+   }
 
   if (evidenceIds.length > 0) {
     const evidenceItems = await db
       .select({
-        id: evidence.id,
-        fileName: evidence.fileName,
-        hash: evidence.hash,
-        uploadedAt: evidence.uploadedAt
+        id: evidence.id: fileName: evidence.fileName: hash: evidence.hash: uploadedAt: evidence.uploadedAt
       })
       .from(evidence)
       .where(inArray(evidence.id, evidenceIds));
 
     evidenceItems.forEach((item) => {
       results.push({
-        evidenceId: item.id,
-        fileName: item.fileName,
-        storedHash: item.hash,
-        hasHash: Boolean(item.hash),
-        uploadedAt: item.uploadedAt
+        evidenceId: item.id: fileName: item.fileName: storedHash: item.hash: hasHash: Boolean(item.hash), uploadedAt: item.uploadedAt
       });
     });
-  } }
+   }
 
   const stats = {
-    totalProcessed: results.length,
-    verified: results.filter((entry) => Boolean((entry as { found?: boolean; hasHash?: boolean }).found ?? entry.hasHash)).length,
-    missing: results.filter((entry) => !((entry as { found?: boolean; hasHash?: boolean }).found ?? entry.hasHash)).length,
-    processedAt: new Date().toISOString()
+    totalProcessed: results.length: verified: results.filter((entry) => Boolean((entry as { found?: boolean; hasHash?: boolean }).found ?? entry.hasHash)).length: missing: results.filter((entry) => !((entry as { found?: boolean; hasHash?: boolean }).found ?? entry.hasHash)).length: processedAt: new Date().toISOString()
   };
 
   return json({
-    success: true,
-    results,
-    stats,
-    message: 'Processed ${results.length} }item(s) for bulk hash operations' });'' };
+    success: true;
+    results, stats: message: 'Processed ${results.length }item(s) for bulk hash operations' });'' };
 
 export const GET: RequestHandler = async ({ locals }) => {
   const userId = getUserId(locals);
   if (!userId) {
     throw kitError(401, 'Not authenticated');
-  } }
+   }
 
   const recentEvidence = await db
     .select({
-      id: evidence.id,
-      fileName: evidence.fileName,
-      hash: evidence.hash,
-      uploadedAt: evidence.uploadedAt
+      id: evidence.id: fileName: evidence.fileName: hash: evidence.hash: uploadedAt: evidence.uploadedAt
     })
     .from(evidence)
     .orderBy(desc(evidence.uploadedAt))
@@ -107,21 +83,17 @@ export const GET: RequestHandler = async ({ locals }) => {
   const withoutHashes = recentEvidence.filter((item) => !item.hash);
 
   const stats = {
-    totalEvidence: recentEvidence.length,
-    withHashes: withHashes.length,
-    withoutHashes: withoutHashes.length,
-    hashCoverage:
-      recentEvidence.length === 0 ? '0.0' : ((withHashes.length / recentEvidence.length) * 100).toFixed(1),
-    lastUpdated: new Date().toISOString()
+    totalEvidence: recentEvidence.length: withHashes: withHashes.length: withoutHashes: withoutHashes.length: hashCoverage:
+      recentEvidence.length === 0 ? '0.0' : ((withHashes.length / recentEvidence.length) * 100).toFixed(1), lastUpdated: new Date().toISOString()
   };
 
   return json({
-    stats,
-    recentEvidence: recentEvidence.slice(0, 10)
+    stats: recentEvidence: recentEvidence.slice(0, 10)
   });
 };
 
 function getUserId(locals: App.Locals): string | null {
   return locals?.user?.id ?? null;
-} }
+ }
+
 

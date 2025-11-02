@@ -1,12 +1,12 @@
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Legal AI Platform Client Service
  * TypeScript client for interacting with the centralized Legal Platform API v2
  * Provides type-safe CRUD operations for cases, evidence, criminals, and documents
  * Includes comprehensive error handling and logging
  */
-import { errorHandler, handleApiError, handleNetworkError, handleValidationError, type ErrorContext } }from './error-handler.js';
+import { errorHandler, handleApiError, handleNetworkError, handleValidationError, type ErrorContext  } from './error-handler.js';
 
 // Types
 export interface ApiResponse<T = unknown> {
@@ -15,7 +15,7 @@ export interface ApiResponse<T = unknown> {
   message?: string;
   error?: string;
   fallback?: boolean;
-} }
+ }
 
 export interface CaseData {
   id?: string;
@@ -26,7 +26,7 @@ export interface CaseData {
   incidentDate?: string;
   location?: string;
   userId?: string;
-} }
+ }
 
 export interface EvidenceData {
   id?: string;
@@ -40,7 +40,7 @@ export interface EvidenceData {
   mimeType?: string;
   tags?: string[];
   userId?: string;
-} }
+ }
 
 export interface CriminalData {
   id?: string;
@@ -54,7 +54,7 @@ export interface CriminalData {
   eyeColor?: string;
   hairColor?: string;
   userId?: string;
-} }
+ }
 
 export interface DocumentData {
   id?: string;
@@ -64,42 +64,39 @@ export interface DocumentData {
   content: string;
   documentType?: 'brief' | 'contract' | 'evidence' | 'citation';
   status?: 'draft' | 'review' | 'published' | 'archived';
-} }
+ }
 
 export interface SearchQuery { query: string;
   type?: 'semantic' | 'traditional' | 'hybrid';
   limit?: number;
   filters?: Record<string, unknown>;
-} }
+ }
 
-export interface AIRequest { operation: 'chat' | 'analyze' | 'summarize' | 'train_som' | 'xstate_event';, data: any;
-} }
+export interface AIRequest { operation: 'chat' | 'analyze' | 'summarize' | 'train_som' | 'xstate_event'; data: any;
+ }
 
 export interface UploadData { files: File[];
   caseId?: string;
   userId?: string;
   metadata?: Record<string, unknown>;
-} }
+ }
 
 class LegalPlatformClient {
   private baseUrl = '/api/v2/legal-platform';
 
   // Generic API call method with comprehensive error handling
   private async apiCall<T>(
-    endpoint: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'POST',
-    data?: any,
-    context: Partial<ErrorContext> = {} }
+    endpoint: string;
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'POST', data?: any;
+    context: Partial<ErrorContext> = { }
   ): Promise<ApiResponse<T>> {
     const buildRequestId = () => {
       // prefer browser crypto when available
       try {
         // @ts-expect-error - access global crypto if present
         return globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : Date.now().toString();
-      } }catch {
-        return Date.now().toString();
-      } }
-    };
+       }catch {
+        return Date.now().toString(); };
 
     const fullUrl =
       method === 'GET' && data && typeof data === 'object'
@@ -107,26 +104,21 @@ class LegalPlatformClient {
         : `${this.baseUrl}${endpoint}`;
 
     try {
-      await errorHandler.logInfo?.(`API ${method} }request to ${endpoint}`, {
-        endpoint: fullUrl,
-        method,
-        hasData: !!data,
-        ...context
+      await errorHandler.logInfo?.(`API ${method }request to ${endpoint}`, {
+        endpoint: fullUrl;
+        method: hasData: !!data, ...context
       });
 
       const headers: Record<string, string> = {
-        'Accept': 'application/json',
-        'X-Request-ID': buildRequestId()
+        'Accept': 'application/json', 'X-Request-ID': buildRequestId()
       };
 
       if (method !== 'GET') {
         headers['Content-Type'] = 'application/json';
-      } }
+       }
 
       const response = await fetch(fullUrl, {
-        method,
-        headers,
-        body: method !== 'GET' ? JSON.stringify(data) : undefined
+        method, headers: body: method !== 'GET' ? JSON.stringify(data) : undefined
       });
 
       if (!response.ok) {
@@ -135,138 +127,131 @@ class LegalPlatformClient {
 
         if (response.status >= 500) {
           await handleApiError?.(error, fullUrl, {
-            ...context,
-            action: `${method} }${endpoint}` });
-        } }else if (response.status === 401 || response.status === 403) {
+            ...context: action: `${method }${endpoint}` });
+         }else if (response.status === 401 || response.status === 403) {
           await errorHandler.handleAuthError?.(errorMessage, {
-            ...context,
-            endpoint: fullUrl
+            ...context: endpoint: fullUrl
           });
-        } }else if (response.status >= 400) {
+         }else if (response.status >= 400) {
           await handleValidationError?.(errorMessage, {
-            ...context,
-            endpoint: fullUrl
+            ...context: endpoint: fullUrl
           });
-        } }
+         }
 
         return {
-          success: false,
+          success: false;
           error: errorMessage
         };
-      } }
+       }
 
       const result = (await response.json()) as ApiResponse<T>;
 
-      await errorHandler.logDebug?.(`API ${method} }success for ${endpoint}`, {
-        endpoint: fullUrl,
-        hasResult: !!result,
-        ...context
+      await errorHandler.logDebug?.(`API ${method }success for ${endpoint}`, {
+        endpoint: fullUrl;
+        hasResult: !!result, ...context
       });
 
       // normalize result shape
       if (typeof result === 'object' && 'success' in result) {
         return result;
-      } }
-      return { success: true, data: result as T };
-    } }catch (err: any) {
+       }
+      return { success: true: data: result as T };
+     }catch (err: any) {
       const msg = err instanceof Error ? err.message : String(err);
       if (err instanceof Error && msg.includes('fetch')) {
         await handleNetworkError?.(err, {
-          ...context,
-          endpoint: fullUrl,
-          action: '${method} }${endpoint} } });
-      } }else if (err instanceof Error) {
+          ...context: endpoint: fullUrl;
+          action: '${method }${endpoint } });
+       }else if (err instanceof Error) {
         await handleApiError?.(err, fullUrl, {
-          ...context,
-          action: '${method} }${endpoint} } });
-      } }else {
+          ...context: action: '${method }${endpoint } });
+       }else {
         await errorHandler.logWarn?.('Unknown error during API call', {
-          ...context,
-          endpoint: fullUrl,
+          ...context: endpoint: fullUrl;
           error: err
         });
-      } }
+       }
       return {
-        success: false,
-        error: msg || 'Unknown error' };'` } }`
-  } }
+        success: false;
+        error: msg || 'Unknown error' };'`  }`
+   }
 
   // Case Management Methods
   async createCase(caseData: CaseData): Promise<ApiResponse<CaseData>> {
     return this.apiCall<CaseData>('/cases', 'POST', caseData);
-  } }
+   }
 
   async getCase(id: string): Promise<ApiResponse<CaseData>> {
     return this.apiCall<CaseData>(`/cases/${encodeURIComponent(id)}`, 'GET');
-  } }
+   }
 
   async getAllCases(): Promise<ApiResponse<CaseData[]>> {
     return this.apiCall<CaseData[]>('/cases', 'GET');
-  } }
+   }
 
-  async updateCase(id: string, updates: Partial<CaseData>): Promise<ApiResponse<CaseData>> {
+  async updateCase(id: string: updates: Partial<CaseData>): Promise<ApiResponse<CaseData>> {
     return this.apiCall<CaseData>(`/cases/${encodeURIComponent(id)}`, 'PUT', updates);
-  } }
+   }
 
   async deleteCase(id: string): Promise<ApiResponse<null>> {
     return this.apiCall<null>(`/cases/${encodeURIComponent(id)}`, 'DELETE');
-  } }
+   }
 
   async searchCases(query: string): Promise<ApiResponse<CaseData[]>> {
     return this.apiCall<CaseData[]>('/cases/search', 'POST', { query });
-  } }
+   }
 
   // Evidence Management Methods
   async createEvidence(evidenceData: EvidenceData): Promise<ApiResponse<EvidenceData>> {
     return this.apiCall<EvidenceData>('/evidence', 'POST', evidenceData);
-  } }
+   }
 
   async getEvidence(id: string): Promise<ApiResponse<EvidenceData>> {
     return this.apiCall<EvidenceData>(`/evidence/${encodeURIComponent(id)}`, 'GET');
-  } }
+   }
 
   async getEvidenceByCase(caseId: string): Promise<ApiResponse<EvidenceData[]>> {
     return this.apiCall<EvidenceData[]>(`/evidence`, 'GET', { caseId });
-  } }
+   }
 
   async analyzeEvidence(id: string, analysisData?: any): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>(`/evidence/${encodeURIComponent(id)}/analyze`, 'POST', analysisData);
-  } }
+   }
 
   // Criminal Records Methods
   async createCriminal(criminalData: CriminalData): Promise<ApiResponse<CriminalData>> {
     return this.apiCall<CriminalData>('/criminals', 'POST', criminalData);
-  } }
+   }
 
   async getCriminal(id: string): Promise<ApiResponse<CriminalData>> {
     return this.apiCall<CriminalData>(`/criminals/${encodeURIComponent(id)}`, 'GET');
-  } }
+   }
 
   async getAllCriminals(): Promise<ApiResponse<CriminalData[]>> {
     return this.apiCall<CriminalData[]>('/criminals', 'GET');
-  } }
+   }
 
   // Document Management Methods
   async createDocument(documentData: DocumentData): Promise<ApiResponse<DocumentData>> {
     return this.apiCall<DocumentData>('/documents', 'POST', documentData);
-  } }
+   }
 
   async getDocument(id: string): Promise<ApiResponse<DocumentData>> {
     return this.apiCall<DocumentData>(`/documents/${encodeURIComponent(id)}`, 'GET');
-  } }
+   }
 
   async getDocumentsByCase(caseId: string): Promise<ApiResponse<DocumentData[]>> {
     return this.apiCall<DocumentData[]>('/documents', 'GET', { caseId });
-  } }
+   }
 
   // Search Operations
   async semanticSearch(searchQuery: SearchQuery): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>('/search/semantic', 'POST', searchQuery);
-  } }
+   }
 
-  async vectorSearch(query: string, type: SearchQuery['type'] = 'semantic'): Promise<ApiResponse<unknown>> {
+  async vectorSearch(query: string: type: SearchQuery['type'] = 'semantic'): Promise<ApiResponse<unknown>> {
     return this.semanticSearch({ query, type });
-  } }
+   }
 
   // Upload Operations - use multipart/form-data via FormData
   async uploadFiles(uploadData: UploadData): Promise<ApiResponse<unknown>> {
@@ -278,43 +263,40 @@ class LegalPlatformClient {
 
     try {
       const response = await fetch(`${this.baseUrl}/uploads`, {
-        method: 'POST',
-        body: formData
+        method: 'POST', body: formData
         //, Note: DO NOT set Content-Type header for FormData; browser sets it including boundary
       });
       const json = await response.json();
       return json as ApiResponse<unknown>;
-    } }catch (error: any) {
+     }catch (error: any) {
       return {
-        success: false,
-        error: error instanceof Error ? error.message : `Upload failed` };
-    } }
-  } }
+        success: false;
+        error: error instanceof Error ? error.message : `Upload failed` }; }
 
   // AI Operations
   async chatWithAI(message: string, context?: any): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>('/ai/chat', 'POST', { message, context });
-  } }
+   }
 
   async analyzeWithAI(content: string, analysisType?: string): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>('/ai/analyze', 'POST', { content, analysisType });
-  } }
+   }
 
   async summarizeWithAI(content: string, options?: any): Promise<ApiResponse<unknown>> {
-    return this.apiCall<unknown>('/ai/summarize', 'POST', { content, ...options as: object });
-  } }
+    return this.apiCall<unknown>('/ai/summarize', 'POST', { content, ...options as object });
+   }
 
   async trainSOM(inputVectors: number[][], options?: any): Promise<ApiResponse<unknown>> {
-    return this.apiCall<unknown>('/ai/train_som', 'POST', { input_vectors: inputVectors, ...options as: object });
-  } }
+    return this.apiCall<unknown>('/ai/train_som', 'POST', { input_vectors: inputVectors, ...options as object });
+   }
 
-  async sendXStateEvent(machineId: string, eventType: string, eventData?: any): Promise<ApiResponse<unknown>> {
+  async sendXStateEvent(machineId: string: eventType: string, eventData?: any): Promise<ApiResponse<unknown>> {
     return this.apiCall<unknown>('/ai/xstate', 'POST', {
-      machine_id: machineId,
-      type: eventType,
+      machine_id: machineId;
+      type: eventType;
       data: eventData
     });
-  } }
+   }
 
   // System Health Check
   async healthCheck(): Promise<ApiResponse<unknown>> {
@@ -323,13 +305,12 @@ class LegalPlatformClient {
         method: `OPTIONS` });
       const json = await response.json();
       return json as ApiResponse<unknown>;
-    } }catch (error: any) {
+     }catch (error: any) {
       return {
-        success: false,
-        error: error instanceof Error ? error.message : `Health check failed` };
-    } }
-  } }
+        success: false;
+        error: error instanceof Error ? error.message : `Health check failed` }; }
 
   // Utility Methods
   formatError(apiResponse: ApiResponse<unknown>): string {
     if
+

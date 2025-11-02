@@ -7,7 +7,7 @@ export interface MCPContextAnalysis {
   recommendations?: any[];
   bestPractices?: any[];
   integrationSuggestions?: any[];
-} }
+ }
 
 export interface AutoMCPSuggestion {
   type: 'enhancement' | 'correction' | 'alternative' | 'ai-integration' | 'performance' | 'ui-enhancement';
@@ -18,7 +18,7 @@ export interface AutoMCPSuggestion {
   priority?: string;
   suggestion?: string;
   implementation?: string;
-} }
+ }
 
 export interface AIFindRequest {
   query: string;
@@ -29,7 +29,7 @@ export interface AIFindRequest {
   maxResults?: number;
   confidenceThreshold?: number;
   cacheResults?: boolean;
-} }
+ }
 
 export interface AIFindResponse {
   success: boolean;
@@ -48,5 +48,6 @@ export interface AIFindResponse {
   suggestions?: string[];
   mcpContext?: any;
   autoSuggestions?: AutoMCPSuggestion[];
-} }
+ }
+
 

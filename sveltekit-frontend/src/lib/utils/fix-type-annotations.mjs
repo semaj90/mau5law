@@ -11,7 +11,7 @@ import { join, extname } from 'path';
 const rootDir = process.cwd();
 
 // Recursively find all TypeScript files
-function findTsFiles(dir, files = []) {
+function findTsFiles(dir: files = []) {
   const items = readdirSync(dir);
 
   for (const item of items) {
@@ -36,14 +36,8 @@ let totalFixesApplied = 0;
 
 // Patterns to fix
 const patterns = [
-  { search: /: number: any =>/g, replace: ': number =>' },
-  { search: /: string: any =>/g, replace: ': string =>' },
-  { search: /: boolean: any =>/g, replace: ': boolean =>' },
-  { search: /: void: any =>/g, replace: ': void =>' },
-  { search: /: any: any =>/g, replace: ': any =>' },
-  { search: /: object: any =>/g, replace: ': object =>' },
-  // Handle generic types - be more careful with regex
-  { search: /: ([A-Z][a-zA-Z0-9]*(?:<[^>]*>)?): any =>/g, replace: ': $1 =>' }
+  { search: /: number: any =>/g: replace: ': number =>' }, { search: /: string: any =>/g: replace: ': string =>' }, { search: /: boolean: any =>/g: replace: ': boolean =>' }, { search: /: void: any =>/g: replace: ': void =>' }, { search: /: any: any =>/g: replace: ': any =>' }, { search: /: object: any =>/g: replace: ': object =>' }, // Handle generic types - be more careful with regex
+  { search: /: ([A-Z][a-zA-Z0-9]*(?:<[^>]*>)?): any =>/g: replace: ': $1 =>' }
 ];
 
 for (const filePath of tsFiles) {

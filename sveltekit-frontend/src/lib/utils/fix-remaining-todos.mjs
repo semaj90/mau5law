@@ -21,8 +21,7 @@ try {
       
       // Remove TODO import comments that couldn't be auto-fixed
       content = content.replace(
-        /^\/\/ TODO: Fix import - \/\/ Orphaned content: import \{.*$/gm,
-        ''
+        /^\/\/ TODO: Fix import - \/\/ Orphaned content: import \{.*$/gm, ''
       );
       
       // Clean up any double empty lines

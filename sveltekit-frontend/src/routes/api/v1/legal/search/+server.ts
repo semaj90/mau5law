@@ -8,9 +8,9 @@
  * - Metadata filtering
  */
 
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { getLegalAIPipeline } }from '$lib/server/integrations';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { getLegalAIPipeline  } from '$lib/server/integrations';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -18,43 +18,37 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Parse request body
     const body = await request.json();
-    const { query, topK = 10, filter } }= body;
+    const { query: topK = 10, filter  }= body;
 
     // Validate inputs
     if (!query || typeof query !== 'string') {
       throw error(400, 'Invalid or missing: "query" field');
-    } }
+     }
 
     if (typeof topK !== 'number' || topK < 1 || topK > 100) {
       throw error(400, 'topK must be a: number between, 1 and 100');
-    } }
+     }
 
     // Perform search
     const results = await pipeline.searchDocuments(query, topK, filter);
 
     return json({
-      success: true,
+      success: true;
       data: {
-        query,
-        results: results.map(r => ({
-  id: r.id,
-          score: r.score,
-          content: r.content.slice(0, 500), // Truncate for API response
+        query: results: results.map(r => ({
+  id: r.id: score: r.score: content: r.content.slice(0, 500), // Truncate for API response
           metadata: r.metadata
-        })),
-        count: results.length
-      } }
+        })), count: results.length
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Search API error:', err);
 
     if (err.status) {
       throw err;
-    } }
+     }
 
-    throw error(500, err.message || 'Failed to search documents');
-  } }
-};
+    throw error(500, err.message || 'Failed to search documents'); };
 
 /**
  * GET /api/v1/legal/search?query=...&topK=...
@@ -71,33 +65,27 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!query) {
       throw error(400, 'Missing, "query" parameter');
-    } }
+     }
 
     // Build filter from query params
-    const filter = type ? { type } }: undefined;
+    const filter = type ? { type  }: undefined;
 
     const results = await pipeline.searchDocuments(query, topK, filter);
 
     return json({
-      success: true,
+      success: true;
       data: {
-        query,
-        results: results.map(r => ({
-  id: r.id,
-          score: r.score,
-          content: r.content.slice(0, 500),
-          metadata: r.metadata
-        })),
-        count: results.length
-      } }
+        query: results: results.map(r => ({
+  id: r.id: score: r.score: content: r.content.slice(0, 500), metadata: r.metadata
+        })), count: results.length
+       }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Search API error:', err);
 
     if (err.status) {
       throw err;
-    } }
+     }
 
-    throw error(500, err.message || 'Failed to search documents');
-  } }
-};
+    throw error(500, err.message || 'Failed to search documents'); };
+

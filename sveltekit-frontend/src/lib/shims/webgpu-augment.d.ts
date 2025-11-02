@@ -7,7 +7,7 @@ declare global {
   interface GPUAdapter {
     // keep minimal, real implementations will come later
     requestAdapter?: (options?: any) => Promise<GPUAdapter>;
-  } }
+   }
   interface GPUDevice {
     // commonly used, sometimes missing in d.ts targets
     getPreferredCanvasFormat?: (...args: any[]) => any;
@@ -15,15 +15,16 @@ declare global {
     writeBuffer?: (...args: any[]) => any;
     // fallthrough for other experimental helpers
     [k: string]: any;
-  } }
+   }
   interface GPUQueue {
     submit?: (...args: any[]) => any;
     writeBuffer?: (...args: any[]) => any;
     onSubmittedWorkDone?: (...args: any[]) => any;
-  } }
+   }
   // allow BufferSource and shared variants used in the repo to be permissive
   type GPUAllowSharedBufferSource = any;
   type ArrayBufferLike = any;
   type BufferSource = any;
-} }
+ }
+
 

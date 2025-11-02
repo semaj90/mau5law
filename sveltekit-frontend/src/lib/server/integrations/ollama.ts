@@ -5,38 +5,23 @@
  * with automatic fallback, batching, caching, and health monitoring.
  */
 import type {
-  IOllamaEmbeddingService,
-  IOllamaChatService,
-  EmbeddingOptions,
-  ChatMessage,
-  ChatOptions,
-  ChatResult
-} }from '$lib/types/external-services';
-interface OllamaConfig { baseUrl: string;
-, embeddingModel: string;
- , chatModel: string;
+  IOllamaEmbeddingService, IOllamaChatService, EmbeddingOptions, ChatMessage, ChatOptions, ChatResult
+ } from '$lib/types/external-services';
+interface OllamaConfig { baseUrl: string; embeddingModel: string; chatModel: string;
   timeout?: number;
   retries?: number;
   batchSize?: number;
-} }
+ }
 class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
   private config: Required<OllamaConfig>;
-  private, embeddingModelFallbacks: string[] = [
-    'embeddinggemma:latest',
-    'embeddinggemma',
-    'nomic-embed-text:latest',
-    'nomic-embed-text'
+  private: embeddingModelFallbacks: string[] = [
+    'embeddinggemma:latest', 'embeddinggemma', 'nomic-embed-text:latest', 'nomic-embed-text'
   ];
   constructor(config: Partial<OllamaConfig> = {}) {
     this.config = {
-      baseUrl: config.baseUrl || process.env.OLLAMA_URL || 'http://localhost:11434',
-      embeddingModel: config.embeddingModel || 'embeddinggemma:latest',
-      chatModel: config.chatModel || 'gemma3:legal-latest',
-      timeout: config.timeout || 30000,
-      retries: config.retries || 3,
-      batchSize: config.batchSize || 10
+      baseUrl: config.baseUrl || process.env.OLLAMA_URL || 'http://localhost:11434', embeddingModel: config.embeddingModel || 'embeddinggemma:latest', chatModel: config.chatModel || 'gemma3:legal-latest', timeout: config.timeout || 30000, retries: config.retries || 3, batchSize: config.batchSize || 10
     };
-  } }
+   }
   /**
    * Embed single text with automatic model fallback
    */
@@ -46,32 +31,28 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
     for (const attemptModel of models) {
       try {
         const response = await this.fetchWithTimeout(
-          `${this.config.baseUrl}/api/embeddings`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },'`'`
-            body: JSON.stringify({ model: attemptModel,
+          `${this.config.baseUrl}/api/embeddings`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+            body: JSON.stringify({ model: attemptModel;
               prompt: options?.truncateTo ? text.slice(0, options.truncateTo) : text
             })
-          } }
+           }
         );
         if (!response.ok) {
           throw new Error(`Ollama embeddings failed: ${response.statusText}`);
-        } }
+         }
         const data = await response.json();
         let embedding = new Float32Array(data.embedding);
         // Normalize if requested
         if (options?.normalize !== false) {
           embedding = this.normalizeVector(embedding);
-        } }
+         }
         return embedding;
-      } }catch (error) {
-        console.warn(`Ollama model ${attemptModel} }failed, trying next...`, error);
-        continue;
-      } }
-    } }
+       }catch (error) {
+        console.warn(`Ollama model ${attemptModel }failed, trying next...`, error);
+        continue; }
     throw new Error('All Ollama embedding models failed');
-  } }
+   }
   /**
    * Embed batch with automatic chunking and parallel processing
    */
@@ -83,9 +64,9 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
         chunk.map(text => this.embedText(text, options))
       );
       results.push(...embeddings);
-    } }
+     }
     return results;
-  } }
+   }
   /**
    * Chat completion (non-streaming)
    */
@@ -94,62 +75,47 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
     const startTime = Date.now();
     try {
       const response = await this.fetchWithTimeout(
-        `${this.config.baseUrl}/api/chat`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },'`'`
+        `${this.config.baseUrl}/api/chat`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
           body: JSON.stringify({
-            model,
-            messages: messages.map(m => ({ role: m.role, content: m.content })),
-            stream: false,
-            options: { temperature: options?.temperature ?? 0.7,
-              num_predict: options?.maxTokens
-            } }
+            model: messages: messages.map(m => ({ role: m.role: content: m.content })), stream: false;
+            options: { temperature: options?.temperature ?? 0.7, num_predict: options?.maxTokens
+             }
           })
-        } }
+         }
       );
       if (!response.ok) {
         throw new Error(`Ollama chat failed: ${response.statusText}`);
-      } }
+       }
       const data = await response.json();
       const tokensUsed = data.eval_count || 0;
       return {
-        id: crypto.randomUUID(),
-        response: data.message.content,
-        model,
-        tokensUsed,
-        raw: data
+        id: crypto.randomUUID(), response: data.message.content, model, tokensUsed: raw: data
       };
-    } }catch (error) {
-      throw new Error(`Ollama chat error: ${error instanceof Error ? error.message : String(error)}`);
-    } }
-  } }
+     }catch (error) {
+      throw new Error(`Ollama chat error: ${error instanceof Error ? error.message : String(error)}`); }
   /**
    * Stream chat tokens
    */
   async *streamChat(messages: ChatMessage[], options?: ChatOptions): AsyncIterable<string> {
     const model = options?.model || this.config.chatModel;
     const response = await fetch(`${this.config.baseUrl}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
-        model,
-        messages: messages.map(m => ({ role: m.role, content: m.content })),
-        stream: true,
-        options: { temperature: options?.temperature ?? 0.7,
-          num_predict: options?.maxTokens
-        } }
+        model: messages: messages.map(m => ({ role: m.role: content: m.content })), stream: true;
+        options: { temperature: options?.temperature ?? 0.7, num_predict: options?.maxTokens
+         }
       })
     });
     if (!response.ok || !response.body) {
       throw new Error(`Ollama stream failed: ${response.statusText}`);
-    } }
+     }
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
     try {
       while (true) {
-        const { done, value } }= await reader.read();
+        const { done, value  }= await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
@@ -159,18 +125,12 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
             try {
               const data = JSON.parse(line);
               if (data.message?.content) {
-                yield data.message.content;
-              } }
-            } }catch (e) {
-              console.warn('Failed to parse stream chunk:', line);
-            } }
-          } }
-        } }
-      } }
-    } }finally {
-      reader.releaseLock();
-    } }
-  } }
+                yield data.message.content; }catch (e) {
+              console.warn('Failed to parse stream chunk:', line); }
+         }
+       }
+     }finally {
+      reader.releaseLock(); }
   /**
    * Health check
    */
@@ -178,63 +138,55 @@ class OllamaService implements IOllamaEmbeddingService, IOllamaChatService {
     const startTime = Date.now();
     try {
       const response = await this.fetchWithTimeout(
-        `${this.config.baseUrl}/api/tags`,
-        { method: 'GET' },'`'`
+        `${this.config.baseUrl}/api/tags`, { method: 'GET' },'`'`
         5000 // Quick health check timeout
       );
       if (!response.ok) {
         return { status: 'unavailable', latencyMs: Date.now() - startTime };
-      } }
+       }
       const latencyMs = Date.now() - startTime;
       return {
-        status: latencyMs < 1000 ? 'healthy' : 'degraded',
-        latencyMs
+        status: latencyMs < 1000 ? 'healthy' : 'degraded', latencyMs
       };
-    } }catch (error) {
-      return { status: 'unavailable', latencyMs: Date.now() - startTime };
-    } }
-  } }
+     }catch (error) {
+      return { status: 'unavailable', latencyMs: Date.now() - startTime }; }
   // Helper methods
   private async fetchWithTimeout(
-    url: string,
-    options: RequestInit,
+    url: string;
+    options: RequestInit;
     timeout = this.config.timeout
   ): Promise<Response> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     try {
       const response = await fetch(url, {
-        ...options,
-        signal: controller.signal
+        ...options: signal: controller.signal
       });
       return response;
-    } }finally {
-      clearTimeout(timeoutId);
-    } }
-  } }
+     }finally {
+      clearTimeout(timeoutId); }
   private normalizeVector(vec: Float32Array): Float32Array {
     const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0));
     if (magnitude === 0) return vec;
     return new Float32Array(vec.map(val => val / magnitude));
-  } }
+   }
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
       chunks.push(array.slice(i, i + size));
-    } }
-    return chunks;
-  } }
-} }
+     }
+    return chunks; } }
 // Singleton instance
 let ollamaInstance: OllamaService | null = null;
 export function getOllamaService(config?: Partial<OllamaConfig>): OllamaService {
   if (!ollamaInstance || config) {
     ollamaInstance = new OllamaService(config);
-  } }
+   }
   return ollamaInstance;
-} }
+ }
 export { OllamaService };
 // No changes needed for this file. The Ollama integration is already configured
 // to be production-ready, using environment variables for endpoints and
 // appropriate model defaults and fallbacks, as per the project's guidelines.'
+
 

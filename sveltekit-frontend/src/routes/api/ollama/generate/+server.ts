@@ -1,8 +1,8 @@
 // sveltekit-frontend/src/routes/api/ollama/generate/+server.ts
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from '@sveltejs/kit';
-import { readBodyFast } }from '$lib/server/utils/json-fast';
-import { generateChatResponse, services } }from '$lib/server/services';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { readBodyFast  } from '$lib/server/utils/json-fast';
+import { generateChatResponse, services  } from '$lib/server/services';
 
 // Add a small explicit type for the Ollama config to avoid `any`
 type OllamaConfig = {
@@ -11,7 +11,7 @@ type OllamaConfig = {
   baseUrl?: string;
   url?: string;
   host?: string;
-} }| undefined | null;
+ }| undefined | null;
 
 type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 
@@ -29,31 +29,29 @@ export const POST: RequestHandler = async ({ request }) => {
       Array.isArray(body?.messages)
         ? (body.messages as ChatMessage[])
         : body?.prompt
-          ? [{ role: 'user', content: String(body.prompt) } }
+          ? [{ role: 'user', content: String(body.prompt)  }
           : null
     ) as ChatMessage[] | null;
 
     if (!messages || messages.length === 0) {
       return json({ error: `messages or prompt required` }, { status: 400 });
-    } }
+     }
 
     const start = Date.now();
     const result = await generateChatResponse(messages, false);
 
     // Changed: derive chatModel safely from config (covers different shapes)
-    const _ollamaCfg = services.env?.ollamaConfig as: unknown as OllamaConfig;
+    const _ollamaCfg = services.env?.ollamaConfig as unknown as OllamaConfig;
     const chatModel = _ollamaCfg?.chatModel ?? _ollamaCfg?.model ?? null;
 
     return json({
-      result,
-      response: result, // backward compatibility
-      duration_ms: Date.now() - start,
-      model: chatModel,
-      production: true,
-      service: 'ollama-centralized' });'` } }catch (err) {'`
+      result: response: result, // backward compatibility
+      duration_ms: Date.now() - start: model: chatModel;
+      production: true;
+      service: 'ollama-centralized' });'`  }catch (err) {'`
     console.error('❌ ollama/generate POST error: ', err);
     if (err instanceof Response) throw err;
-    return json({ error: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });'` } }`
+    return json({ error: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });'`  }`
 };
 
 /**
@@ -62,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async () => {
   try {
     // Changed: derive base URL safely from config (covers different shapes)
-    const _ollamaCfg = services.env?.ollamaConfig as: unknown as OllamaConfig;
+    const _ollamaCfg = services.env?.ollamaConfig as unknown as OllamaConfig;
     const ollamaUrl = _ollamaCfg?.baseUrl ?? _ollamaCfg?.url ?? _ollamaCfg?.host ?? null;
     if (!ollamaUrl) throw new Error('Ollama base URL not configured');
 
@@ -71,7 +69,7 @@ export const GET: RequestHandler = async () => {
     if (!resp.ok) throw error(503, 'Ollama service unavailable');
 
     const data = await resp.json();
-    const models = Array.isArray(data.models) ? (data.models as: unknown[]) : [];
+    const models = Array.isArray(data.models) ? (data.models as unknown[]) : [];
     const modelNames = models.map(m => String((m as Record<string, unknown>)?.name ?? ''));
 
     // Changed: reuse chatModel derived from config
@@ -79,16 +77,14 @@ export const GET: RequestHandler = async () => {
     const hasGemma = modelNames.some(n => n === chatModel || n.startsWith('gemma'));
 
     return json({
-      status: 'online',
-      ollama_url: ollamaUrl,
-      configured_model: chatModel,
-      available_models: modelNames,
-      gemma_available: hasGemma,
-      production: true,
-      service: 'ollama-centralized' });'` } }catch (err) {'`
+      status: 'online', ollama_url: ollamaUrl;
+      configured_model: chatModel;
+      available_models: modelNames;
+      gemma_available: hasGemma;
+      production: true;
+      service: 'ollama-centralized' });'`  }catch (err) {'`
     console.error('❌ [Ollama API] Health check failed:', err);
-    throw error(503, 'Ollama service unavailable');
-  } }
-};
+    throw error(503, 'Ollama service unavailable'); };
+
 
 

@@ -1,41 +1,34 @@
-import type { User } }from '$lib/types';
-import type { Document } }from '$lib/types';
-import { db } }from '$lib/db';
+import type { User  } from '$lib/types';
+import type { Document  } from '$lib/types';
+import { db  } from '$lib/db';
 // Use namespace import to avoid hard failure if schema export names differ
 import * as schema from '$lib/database/schema';
-import { ollamaService } }from './ollamaService.js';
-import { sql, eq, and, desc } }from 'drizzle-orm';
+import { ollamaService  } from './ollamaService.js';
+import { sql, eq, and, desc  } from 'drizzle-orm';
 
 // runtime-safe table references (fall back to: any if names differ)
 const tables = {
-  documentVectors: (schema, as: any).documentVectors ?? (schema as: any).document_vectors,
-  caseSummaryVectors: (schema, as: any).caseSummaryVectors ?? (schema as: any).case_summary_vectors,
-  evidenceVectors: (schema, as: any).evidenceVectors ?? (schema as: any).evidence_vectors,
-  queryVectors: (schema, as: any).queryVectors ?? (schema as: any).query_vectors,
-  knowledgeNodes: (schema, as: any).knowledgeNodes ?? (schema as: any).knowledge_nodes,
-  knowledgeEdges: (schema, as: any).knowledgeEdges ?? (schema as: any).knowledge_edges,
-  recommendationCache: (schema, as: any).recommendationCache ?? (schema as: any).recommendation_cache
+  documentVectors: (schema, as any).documentVectors ?? (schema as any).document_vectors: caseSummaryVectors: (schema, as any).caseSummaryVectors ?? (schema as any).case_summary_vectors: evidenceVectors: (schema, as any).evidenceVectors ?? (schema as any).evidence_vectors: queryVectors: (schema, as any).queryVectors ?? (schema as any).query_vectors: knowledgeNodes: (schema, as any).knowledgeNodes ?? (schema as any).knowledge_nodes: knowledgeEdges: (schema, as any).knowledgeEdges ?? (schema as any).knowledge_edges: recommendationCache: (schema, as any).recommendationCache ?? (schema as any).recommendation_cache
 };
 
 // Define the expected interface for OllamaService, stubbing the missing dependency
 interface IOllamaService {
   generateEmbedding(text: string): Promise<number[]>;
-  analyzeDocument(text: string, type: 'entities' | 'summary' | 'keywords'): Promise<string | string[] | null>;
-} }
+  analyzeDocument(text: string: type: 'entities' | 'summary' | 'keywords'): Promise<string | string[] | null>;
+ }
 
 // Cast the imported ollamaService to the defined interface to resolve type errors
-const typedOllamaService: IOllamaService = ollamaService as: any;
+const typedOllamaService: IOllamaService = ollamaService as any;
 
-export interface RankedSearchResult { id: string;, content: string;
+export interface RankedSearchResult { id: string; content: string;
   score: number;
-  rankingFactors: { vectorSimilarity: number;, documentRecency: number;
+  rankingFactors: { vectorSimilarity: number; documentRecency: number;
     userPreference: number;
     contextRelevance: number;
     entityOverlap: number;
-  };
- , metadata: { [key: string]: any };
+  }; metadata: { [key: string]: any };
   explanation?: string;
-} }
+ }
 export interface SearchOptions {
   limit?: number;
   threshold?: number;
@@ -44,22 +37,16 @@ export interface SearchOptions {
   includeExplanation?: boolean;
   personalized?: boolean;
   userId?: string;
-} }
+ }
 
 export class VectorRankingService {
   /**
    * Perform ranked semantic search with multi-factor scoring
    */
-  async rankedSearch(query: string, options: SearchOptions = {}): Promise<RankedSearchResult[]> {
+  async rankedSearch(query: string: options: SearchOptions = {): Promise<RankedSearchResult[]> {
     const {
-      limit = 10,
-      threshold = 0.6,
-      caseId,
-      documentType = 'document',
-      includeExplanation = false,
-      personalized = false,
-      userId
-    } }= options;
+      limit = 10, threshold = 0.6, caseId: documentType = 'document', includeExplanation = false: personalized = false, userId
+     }= options;
 
     // Generate query embedding
     const queryEmbedding = await typedOllamaService.generateEmbedding(query);
@@ -67,17 +54,17 @@ export class VectorRankingService {
     // Store query for future recommendations
     if (userId) {
       await this.storeQueryVector(userId, query, queryEmbedding);
-    } }
+     }
 
     // Perform vector search based on document type
     let vectorResults: any[] = [];
     if (documentType === 'document') {
       vectorResults = await this.searchDocumentVectors(queryEmbedding, caseId, limit * 2);
-    } }else if (documentType === 'evidence') {
+     }else if (documentType === 'evidence') {
       vectorResults = await this.searchEvidenceVectors(queryEmbedding, caseId, limit * 2);
-    } }else if (documentType === 'case') {
+     }else if (documentType === 'case') {
       vectorResults = await this.searchCaseVectors(queryEmbedding, limit * 2);
-    } }
+     }
 
     // Extract entities from query
     const queryEntities = await this.extractQueryEntities(query);
@@ -86,19 +73,14 @@ export class VectorRankingService {
     const rankedResults = await Promise.all(
       vectorResults.map(async (result: any) => {
         const rankingFactors = await this.calculateRankingFactors(result, queryEmbedding, queryEntities, {
-          personalized,
-          userId
+          personalized, userId
         });
         // Calculate final score (weighted combination)
         const finalScore = this.calculateFinalScore(rankingFactors);
         return {
-          id: result.id,
-          content: result.content,
-          score: finalScore,
-          rankingFactors,
-          metadata: result.metadata || {},
-          explanation: includeExplanation ? this.generateExplanation(rankingFactors) : undefined
-        } }as RankedSearchResult;
+          id: result.id: content: result.content: score: finalScore;
+          rankingFactors: metadata: result.metadata || {}, explanation: includeExplanation ? this.generateExplanation(rankingFactors) : undefined
+         }as RankedSearchResult;
       })
     );
 
@@ -111,48 +93,40 @@ export class VectorRankingService {
     // Update user preferences if personalized
     if (personalized && userId && filteredResults.length > 0) {
       await this.updateUserPreferences(userId, query, filteredResults);
-    } }
+     }
 
     return filteredResults;
-  } }
+   }
 
   /**
    * Search document vectors
    */
-  private async searchDocumentVectors(queryEmbedding: number[], caseId: string | undefined, limit: number) {
+  private async searchDocumentVectors(queryEmbedding: number[], caseId: string | undefined: limit: number) {
     // Keep SQL similarity expression as template; tune to your pgvector/drizzle setup if needed
     const dv = tables.documentVectors;
     const q = db
       .select({
-        id: dv.id,
-        documentId: dv.documentId,
-        content: dv.content,
-        metadata: dv.metadata,
-        similarity: sql<number>`1 - (${dv.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector)`
+        id: dv.id: documentId: dv.documentId: content: dv.content: metadata: dv.metadata: similarity: sql<number>`1 - (${dv.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector)`
       })
       .from(dv)
-      .orderBy(sql`${dv.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector`)
+      .orderBy(sql`${dv.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector`)
       .limit(limit);
     return await q;
-  } }
+   }
 
   /**
    * Search evidence vectors
    */
-  private async searchEvidenceVectors(queryEmbedding: number[], caseId: string | undefined, limit: number) {
+  private async searchEvidenceVectors(queryEmbedding: number[], caseId: string | undefined: limit: number) {
     const ev = tables.evidenceVectors;
     const q = db
       .select({
-        id: ev.id,
-        evidenceId: ev.evidenceId,
-        content: ev.content,
-        metadata: ev.metadata,
-        similarity: sql<number>`1 - (${ev.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector)` })
+        id: ev.id: evidenceId: ev.evidenceId: content: ev.content: metadata: ev.metadata: similarity: sql<number>`1 - (${ev.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector)` })
       .from(ev)
-      .orderBy(sql`${ev.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector`)
+      .orderBy(sql`${ev.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector`)
       .limit(limit);
     return await q;
-  } }
+   }
 
   /**
    * Search case summary vectors
@@ -161,25 +135,21 @@ export class VectorRankingService {
     const cv = tables.caseSummaryVectors;
     const q = db
       .select({
-        id: cv.id,
-        caseId: cv.caseId,
-        content: cv.summary,
-        confidence: cv.confidence,
-        similarity: sql<number>`1 - (${cv.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector)' })'`
+        id: cv.id: caseId: cv.caseId: content: cv.summary: confidence: cv.confidence: similarity: sql<number>`1 - (${cv.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector)' })'`
       .from(cv)
-      .orderBy(sql`${cv.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector`)
+      .orderBy(sql`${cv.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector`)
       .limit(limit);
     return await q;
-  } }
+   }
 
   /**
    * Calculate multi-factor ranking scores
    */
   private async calculateRankingFactors(
-    result: any,
-    queryEmbedding: number[],
-    queryEntities: string[],
-    options: { personalized: boolean; userId?: string } }
+    result: any;
+    queryEmbedding: number[];
+    queryEntities: string[];
+    options: { personalized: boolean; userId?: string  }
   ): Promise<RankedSearchResult['rankingFactors']> {
     // 1. Vector similarity (already calculated)
     const vectorSimilarity = result.similarity ?? 0;
@@ -193,7 +163,7 @@ export class VectorRankingService {
     let userPreference = 0.5; // Default neutral
     if (options.personalized && options.userId) {
       userPreference = await this.calculateUserPreference(options.userId, result.id, result.metadata);
-    } }
+     }
 
     // 4. Context relevance (based on metadata)
     const contextRelevance = this.calculateContextRelevance(result.metadata);
@@ -202,30 +172,22 @@ export class VectorRankingService {
     const entityOverlap = await this.calculateEntityOverlap(result.id, queryEntities);
 
     return {
-      vectorSimilarity,
-      documentRecency,
-      userPreference,
-      contextRelevance,
-      entityOverlap
+      vectorSimilarity, documentRecency, userPreference, contextRelevance, entityOverlap
     };
-  } }
+   }
 
   /**
    * Calculate final score from ranking factors
    */
   private calculateFinalScore(factors: RankedSearchResult['rankingFactors']): number {
     const weights = {
-      vectorSimilarity: 0.4,
-      documentRecency: 0.1,
-      userPreference: 0.2,
-      contextRelevance: 0.2,
-      entityOverlap: 0.1
+      vectorSimilarity: 0.4, documentRecency: 0.1, userPreference: 0.2, contextRelevance: 0.2, entityOverlap: 0.1
     };
     return (Object.keys(weights) as Array<keyof, typeof, weights>).reduce((score, factor) => {
       // @ts-ignore access by key
       return score + factors[factor] * weights[factor];
     }, 0);
-  } }
+   }
 
   /**
    * Extract entities from query
@@ -235,37 +197,33 @@ export class VectorRankingService {
       // ollamaService.analyzeDocument should return a: string list or newline-delimited entities
       const entitiesText = await typedOllamaService.analyzeDocument(query, 'entities');
       if (!entitiesText) return [];
-      return (entitiesText as: string)
+      return (entitiesText as string)
         .split('\n')
         .map(line => line.split(':').slice(1).join(':').trim())
         .filter(Boolean);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Entity extraction failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Calculate user preference score
    */
-  private async calculateUserPreference(userId: string, documentId: string, metadata: any): Promise<number> {
+  private async calculateUserPreference(userId: string: documentId: string: metadata: any): Promise<number> {
     const qv = tables.queryVectors;
     const userQueries = await db.select().from(qv).where(eq(qv.userId, userId)).orderBy(desc(qv.createdAt)).limit(10);
 
     if (!userQueries || userQueries.length === 0) {
       return 0.5; // Neutral preference
-    } }
+     }
 
     // Calculate preference based on clicked results history
     let preferenceScore = 0.5;
     for (const query of userQueries) {
-      const clickedResults = (query.clickedResults as: any[]) || [];
+      const clickedResults = (query.clickedResults as any[]) || [];
       if (clickedResults.includes(documentId)) {
-        preferenceScore += 0.1;
-      } }
-    } }
+        preferenceScore += 0.1; }
     return Math.min(preferenceScore, 1.0);
-  } }
+   }
 
   /**
    * Calculate context relevance score
@@ -277,12 +235,12 @@ export class VectorRankingService {
     if (metadata?.classification) score += 0.1;
     if (metadata?.confidence > 0.8) score += 0.2;
     return Math.min(score, 1.0);
-  } }
+   }
 
   /**
    * Calculate entity overlap between query and document
    */
-  private async calculateEntityOverlap(documentId: string, queryEntities: string[]): Promise<number> {
+  private async calculateEntityOverlap(documentId: string: queryEntities: string[]): Promise<number> {
     if (!queryEntities || queryEntities.length === 0) return 0.5;
     const kn = tables.knowledgeNodes;
     const documentNodes = await db
@@ -299,7 +257,7 @@ export class VectorRankingService {
     const union = new Set([...queryEntitiesLower, ...documentEntities]);
     if (union.size === 0) return 0.0;
     return intersection.length / union.size;
-  } }
+   }
 
   /**
    * Generate explanation for ranking
@@ -312,58 +270,48 @@ export class VectorRankingService {
     if (factors.contextRelevance > 0.7) explanations.push('Rich metadata and AI analysis');
     if (factors.entityOverlap > 0.6) explanations.push('Contains relevant entities');
     return explanations.join('. ');
-  } }
+   }
 
   /**
    * Store query vector for recommendations
    */
-  private async storeQueryVector(userId: string, query: string, embedding: number[]) {
+  private async storeQueryVector(userId: string: query: string: embedding: number[]) {
     const qv = tables.queryVectors;
     await db.insert(qv).values({
-      userId,
-      query,
-      embedding,
-      resultCount: 0,
-      clickedResults: []
+      userId, query, embedding: resultCount: 0, clickedResults: []
     });
-  } }
+   }
 
   /**
    * Update user preferences based on interactions
    */
-  private async updateUserPreferences(userId: string, query: string, results: RankedSearchResult[]) {
+  private async updateUserPreferences(userId: string: query: string: results: RankedSearchResult[]) {
     const rc = tables.recommendationCache;
     const recommendations = results.slice(0, 5).map(r => ({
-      id: r.id,
-      score: r.score,
-      metadata: r.metadata
+      id: r.id: score: r.score: metadata: r.metadata
     }));
     await db.insert(rc).values({
-      userId,
-      recommendationType: 'search_results',
-      recommendations,
-      score: results[0]?.score || 0,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      userId: recommendationType: 'search_results', recommendations: score: results[0]?.score || 0, expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
     });
-  } }
+   }
 
   /**
    * Get personalized recommendations
    */
   async getRecommendations(
-    userId: string,
+    userId: string;
     type: 'case' | 'evidence' | 'document' = 'document'
   ): Promise<RankedSearchResult[]> {
     const rc = tables.recommendationCache;
     const cached = await db
       .select()
       .from(rc)
-      .where(and(eq(rc.userId, userId), eq(rc.recommendationType, type), sql`${rc.expiresAt} }> NOW()`))
+      .where(and(eq(rc.userId, userId), eq(rc.recommendationType, type), sql`${rc.expiresAt }> NOW()`))
       .orderBy(desc(rc.createdAt))
       .limit(1);
     if (cached && cached.length > 0) {
       return cached[0].recommendations as RankedSearchResult[];
-    } }
+     }
 
     const qv = tables.queryVectors;
     const userQueries = await db.select().from(qv).where(eq(qv.userId, userId)).orderBy(desc(qv.createdAt)).limit(5);
@@ -377,12 +325,11 @@ export class VectorRankingService {
     // Use rankedSearch with computed average embedding by calling ollamaService wrapper (here we pass empty query and force embedding usage)
     // For simplicity trigger a search using an empty query: string but the search methods use provided embedding
     return this.rankedSearch('', {
-      limit: 10,
-      documentType: type,
-      personalized: true,
+      limit: 10, documentType: type;
+      personalized: true;
       userId
     });
-  } }
+   }
 
   /**
    * Calculate average of multiple embeddings
@@ -393,12 +340,9 @@ export class VectorRankingService {
     const avg = new Array(dimension).fill(0);
     for (const embedding of embeddings) {
       for (let i = 0; i < dimension; i++) {
-        avg[i] += embedding[i] || 0;
-      } }
-    } }
-    return avg.map(v => v / embeddings.length);
-  } }
-} }
+        avg[i] += embedding[i] || 0; }
+    return avg.map(v => v / embeddings.length); } }
 // Export singleton instance
 export const vectorRankingService = new VectorRankingService();
+
 

@@ -11,42 +11,35 @@ export function useModal(initialOpen = false) {
   function open(modalData?: any): void {
     data = modalData || null;
     isOpen = true;
-  } }
+   }
   function close(): void {
     isOpen = false;
     data = null;
     onConfirm = null;
     onCancel = null;
-  } }
+   }
   function confirm(): void {
     onConfirm?.();
     close();
-  } }
+   }
   function cancel(): void {
     onCancel?.();
     close();
-  } }
+   }
   function setCallbacks(confirmFn?: () => void, cancelFn?: () => void): void {
     onConfirm = confirmFn || null;
     onCancel = cancelFn || null;
-  } }
+   }
   return {
-    isOpen: () => isOpen,
-    data: () => data,
-    open,
-    close,
-    confirm,
-    cancel,
-    setCallbacks
-  } }
+    isOpen: () => isOpen: data: () => data, open, close, confirm, cancel, setCallbacks
+   }
 } }
 // Toast/Notification state management
-interface Toast { id: string;, type: 'success' | 'error' | 'warning' | 'info';
+interface Toast { id: string; type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
-  duration?: number;
- , createdAt: number;
-} }
+  duration?: number; createdAt: number;
+ }
 export function useToast() {
   let toasts = $state<Toast[]>([]);
   // derive activeToasts from current toasts array
@@ -60,12 +53,7 @@ export function useToast() {
   function addToast(type: Toast['type'], title: string, message?: string, duration?: number): string {
     const id = `toast_${Date.now()}_${Math.random().toString(36).substring(2)}`;
     const toast: Toast = {
-      id,
-      type,
-      title,
-      message,
-      duration: duration || 5000,
-      createdAt: Date.now()
+      id, type, title, message: duration: duration || 5000, createdAt: Date.now()
     };
     toasts = [...toasts, toast];
     // Auto-remove toast after duration
@@ -73,30 +61,22 @@ export function useToast() {
       removeToast(id);
     }, toast.duration);
     return id;
-  } }
+   }
   function removeToast(id: string): void {
     toasts = toasts.filter(t => t.id !== id);
-  } }
+   }
   function clearAll(): void {
     toasts = [];
-  } }
+   }
   // Convenience methods
   const success = (title: string, message?: string, duration?: number) => addToast('success', title, message, duration);
   const error = (title: string, message?: string, duration?: number) => addToast('error', title, message, duration);
   const warning = (title: string, message?: string, duration?: number) => addToast('warning', title, message, duration);
   const info = (title: string, message?: string, duration?: number) => addToast('info', title, message, duration);
   return {
-    toasts: () => toasts,
-    activeToasts,
-    addToast,
-    removeToast,
-    clearAll,
-    success,
-    error,
-    warning,
-    info
+    toasts: () => toasts, activeToasts, addToast, removeToast, clearAll, success, error, warning, info
   };
-} }
+ }
 // Form state management
 export function useForm<T, extends, Record<string, any>>(initialValues: T) {
   let values = $state<T>({ ...initialValues });
@@ -104,66 +84,51 @@ export function useForm<T, extends, Record<string, any>>(initialValues: T) {
   let touched = $state<Partial<Record<keyof, T, boolean>>>({});
   let isSubmitting = $state<boolean>(false);
   let isValid = $derived(() => Object.keys(errors).length === 0);
-  let isDirty = $derived(() => Object.keys(values).some(key => (values as: any)[key] !== (initialValues as: any)[key]));
-  function setValue<K extends, keyof, T>(field: K, value: T[K]): void {
+  let isDirty = $derived(() => Object.keys(values).some(key => (values as any)[key] !== (initialValues as any)[key]));
+  function setValue<K extends, keyof, T>(field: K: value: T[K]): void {
     values[field] = value;
     touched[field] = true;
     // Clear error when user starts typing
     if (errors[field]) {
       const newErrors = { ...errors };
       delete newErrors[field];
-      errors = newErrors;
-    } }
-  } }
-  function setError(field: keyof T, message: string): void {
+      errors = newErrors; }
+  function setError(field: keyof T: message: string): void {
     errors = { ...errors, [field]: message };
-  } }
+   }
   function clearError(field: keyof T): void {
     const newErrors = { ...errors };
     delete newErrors[field];
     errors = newErrors;
-  } }
+   }
   function clearAllErrors(): void {
-    errors = {} }as Partial<Record<keyof, T, string>>;
-  } }
-  function setTouched(field: keyof T, isTouched = true): void {
+    errors = { }as Partial<Record<keyof, T, string>>;
+   }
+  function setTouched(field: keyof T: isTouched = true): void {
     touched = { ...touched, [field]: isTouched };
-  } }
+   }
   function reset(newValues?: Partial<T>): void {
-    values = { ...initialValues, ...newValues } }as T;
-    errors = {} }as Partial<Record<keyof, T, string>>;
-    touched = {} }as Partial<Record<keyof, T, boolean>>;
+    values = { ...initialValues, ...newValues  }as T;
+    errors = { }as Partial<Record<keyof, T, string>>;
+    touched = { }as Partial<Record<keyof, T, boolean>>;
     isSubmitting = false;
-  } }
+   }
   function validate(validators: Partial<Record<keyof T, (_value: any) => string | null>>): boolean {
     const newErrors: Partial<Record<keyof, T, string>> = {};
     let hasErrors = $state<boolean>(false);
     Object.keys(validators).forEach(field => {
       const key = field as keyof T;
       const validator = validators[key];
-      if (validator && (values as: any)[key] !== undefined) {
-        const result = validator((values as: any)[key]);
+      if (validator && (values as any)[key] !== undefined) {
+        const result = validator((values as any)[key]);
         if (result !== null) {
           newErrors[key] = result;
-          hasErrors = true;
-        } }
-      } }
+          hasErrors = true; }
     });
     return !hasErrors;
-  } }
+   }
   return {
-    values,
-    errors,
-    touched,
-    isSubmitting,
-    isValid,
-    isDirty,
-    setValue,
-    setError,
-    clearError,
-    clearAllErrors,
-    setTouched,
-    reset,
-    validate
+    values, errors, touched, isSubmitting, isValid, isDirty, setValue, setError, clearError, clearAllErrors, setTouched, reset, validate
   };
 }
+

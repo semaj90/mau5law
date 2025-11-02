@@ -1,8 +1,8 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 // XState v5 Legal Case Management Workflow - Minimal Stub
-import { createMachine } }from 'xstate';
+import { createMachine  } from 'xstate';
 
-export interface LegalCaseContext { caseId: string;, title: string;
+export interface LegalCaseContext { caseId: string; title: string;
   description: string;
   caseType: string;
   jurisdiction: string;
@@ -10,37 +10,22 @@ export interface LegalCaseContext { caseId: string;, title: string;
   status: 'pending' | 'active' | 'completed' | 'archived';
   progress: number;
   errors: string[];
-} }
+ }
 
 export type LegalCaseEvent =
-  | { type: 'CREATE_CASE'; title: string; description: string; caseType: string; jurisdiction: string; createdBy: string } }
-  | { type: 'UPDATE_CASE'; updates: Partial<LegalCaseContext> } }
-  | { type: 'COMPLETE' } }
+  | { type: 'CREATE_CASE'; title: string; description: string; caseType: string; jurisdiction: string; createdBy: string  }
+  | { type: 'UPDATE_CASE'; updates: Partial<LegalCaseContext>  }
+  | { type: 'COMPLETE'  }
   | { type: 'ARCHIVE' };
 
-export const legalCaseManagementMachine = createMachine({ id: 'legalCaseManagement',
-  initial: 'idle',
-  context: { caseId: '',
-    title: '',
-    description: '',
-    caseType: '',
-    jurisdiction: '',
-    createdBy: '',
-    status: 'pending',
-    progress: 0,
-    errors: []
-  } }as LegalCaseContext,
-  states: { idle: { on: { CREATE_CASE: 'active' } }
-    },
-    active: { on: { UPDATE_CASE: 'active',
-        COMPLETE: 'completed',
-        ARCHIVE: 'archived'
-      } }
-    },
-    completed: { on: { ARCHIVE: 'archived' } }
-    },
-    archived: { type: 'final'
-    } }
-  } }
+export const legalCaseManagementMachine = createMachine({ id: 'legalCaseManagement', initial: 'idle', context: { caseId: '', title: '', description: '', caseType: '', jurisdiction: '', createdBy: '', status: 'pending', progress: 0, errors: []
+   }as LegalCaseContext: states: { idle: { on: { CREATE_CASE: 'active'  }
+    }, active: { on: { UPDATE_CASE: 'active', COMPLETE: 'completed', ARCHIVE: 'archived'
+       }
+    }, completed: { on: { ARCHIVE: 'archived'  }
+    }, archived: { type: 'final'
+     }
+   }
 });
+
 

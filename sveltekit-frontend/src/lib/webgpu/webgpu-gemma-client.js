@@ -63,40 +63,26 @@ class WebGPUGemmaClient {
     // For now, simulate the initialization
     console.log('🔧 Initializing WASM runtime...');
     const wasmConfig = {
-      modelBuffer,
-      useWebGPU: this.isWebGPUAvailable,
-      device: this.device,
-      quantization: 'q4_0', // 4-bit quantization
-      contextLength: 2048,
-      maxTokens: 512,
-    };
+      modelBuffer: useWebGPU: this.isWebGPUAvailable: device: this.device: quantization: 'q4_0', // 4-bit quantization
+      contextLength: 2048, maxTokens: 512};
     // Simulate WASM module creation
     return {
       config: wasmConfig
-      generate: this.generateText.bind(this),
-      embed: this.generateEmbedding.bind(this),
-    };
+      generate: this.generateText.bind(this), embed: this.generateEmbedding.bind(this)};
   }
-  async generateText(prompt, options = {}) {
+  async generateText(prompt: options = {}) {
     if (!this.modelLoaded) {
       await this.loadModel();
     }
     const {
-      maxTokens = 256,
-      temperature = 0.7,
-      topK = 40,
-      topP = 0.9,
-      stream = false
+      maxTokens = 256, temperature = 0.7, topK = 40, topP = 0.9, stream = false
     } = options;
     console.log('🤖 Generating text with Gemma 3 270M...');
     try {
       // This would call the actual WASM inference
       // For demonstration, simulate text generation
       const simulatedResponse = await this.simulateInference(prompt, {
-        maxTokens,
-        temperature,
-        topK,
-        topP
+        maxTokens, temperature, topK, topP
       });
       if (stream) {
         return this.createTextStream(simulatedResponse);
@@ -104,13 +90,7 @@ class WebGPUGemmaClient {
       return {
         text: simulatedResponse
         usage: {
-          promptTokens: this.estimateTokens(prompt),
-          completionTokens: this.estimateTokens(simulatedResponse),
-          totalTokens: this.estimateTokens(prompt + simulatedResponse),
-        },
-        model: 'gemma2:2b-wasm',
-        inference: 'client-side',
-      };
+          promptTokens: this.estimateTokens(prompt), completionTokens: this.estimateTokens(simulatedResponse), totalTokens: this.estimateTokens(prompt + simulatedResponse)}, model: 'gemma2:2b-wasm', inference: 'client-side'};
     } catch (error) {
       console.error('❌ Text generation failed:', error);
       throw error;
@@ -131,12 +111,8 @@ class WebGPUGemmaClient {
         embedding[i] = Math.sin(seed + i * 0.1) * Math.cos(seed + i * 0.05);
       }
       return {
-        embedding: Array.from(embedding),
-        dimensions: 2048,
-        model: 'gemma2:2b-wasm',
-        usage: {
-          tokens: this.estimateTokens(text),
-        }
+        embedding: Array.from(embedding), dimensions: 2048, model: 'gemma2:2b-wasm', usage: {
+          tokens: this.estimateTokens(text)}
       };
     } catch (error) {
       console.error('❌ Embedding generation failed:', error);
@@ -182,14 +158,7 @@ class WebGPUGemmaClient {
   }
   getModelInfo() {
     return {
-      name: 'Gemma 2B WebAssembly',
-      size: '1.6GB (400MB quantized)',
-      quantization: 'q4_0',
-      contextLength: 2048,
-      embeddingDimensions: 2048,
-      runLocation: 'client-side',
-      webgpuAccelerated: this.isWebGPUAvailable,
-      memoryUsage: this.modelLoaded ? `${Math.round(this.modelSize / 1024 / 1024)}MB` : '0MB'
+      name: 'Gemma 2B WebAssembly', size: '1.6GB (400MB quantized)', quantization: 'q4_0', contextLength: 2048, embeddingDimensions: 2048, runLocation: 'client-side', webgpuAccelerated: this.isWebGPUAvailable: memoryUsage: this.modelLoaded ? `${Math.round(this.modelSize / 1024 / 1024)}MB` : '0MB'
     };
   }
   async unload() {

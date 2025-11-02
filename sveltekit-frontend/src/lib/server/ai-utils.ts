@@ -1,4 +1,4 @@
-import type { Candidate } }from '$lib/types';
+import type { Candidate  } from '$lib/types';
 
 // Placeholder for a server-side embedding function (e.g., calling a TensorRT/Gemma3 service)
 export async function embedTextServer(text: string): Promise<number[]> {
@@ -8,7 +8,7 @@ export async function embedTextServer(text: string): Promise<number[]> {
   const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const dummyEmbedding = Array.from({ length: 768 }, (_, i) => Math.sin(hash + i) * 0.1);
   return Promise.resolve(dummyEmbedding);
-} }
+ }
 
 // Placeholder for Cosine Similarity calculation
 function calculateCosineSimilarity(vecA: number[], vecB: number[]): number {
@@ -21,20 +21,20 @@ function calculateCosineSimilarity(vecA: number[], vecB: number[]): number {
     dot += vecA[i] * vecB[i];
     na += vecA[i] * vecA[i];
     nb += vecB[i] * vecB[i];
-  } }
+   }
   if (na === 0 || nb === 0) return 0;
   return dot / (Math.sqrt(na) * Math.sqrt(nb));
-} }
+ }
 
 /**
  * Maximal Marginal Relevance (MMR) diversification.
  * This is a placeholder; a real implementation would use actual embeddings and a more robust algorithm.
  */
 export function MMR(
-  query: string,
-  candidates: Candidate[],
-  candidateEmbeddings: number[][],
-  queryEmbedding: number[],
+  query: string;
+  candidates: Candidate[];
+  candidateEmbeddings: number[][];
+  queryEmbedding: number[];
   lambda: number = 0.5
 ): Candidate[] {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\server\ai-utils.ts
@@ -51,9 +51,7 @@ export function MMR(
   for (let i = 0; i < remaining.length; i++) {
     if ((remaining[i].relevanceScore ?? 0) > maxRelevance) {
       maxRelevance = (remaining[i].relevanceScore ?? 0);
-      bestInitialIndex = i;
-    } }
-  } }
+      bestInitialIndex = i; }
 
   selected.push(remaining.splice(bestInitialIndex, 1)[0]);
   const selectedEmbeddings: number[][] = [remainingEmbeddings.splice(bestInitialIndex, 1)[0]];
@@ -74,34 +72,30 @@ export function MMR(
       for (const selectedEmb of selectedEmbeddings) {
         const similarity = calculateCosineSimilarity(candidateEmb, selectedEmb);
         if (similarity > maxSimilarityWithSelected) {
-          maxSimilarityWithSelected = similarity;
-        } }
-      } }
+          maxSimilarityWithSelected = similarity; }
 
       const mmrScore = lambda * relevance - (1 - lambda) * maxSimilarityWithSelected;
 
       if (mmrScore > maxMmrScore) {
         maxMmrScore = mmrScore;
-        bestCandidateIndex = i;
-      } }
-    } }
+        bestCandidateIndex = i; }
 
     if (bestCandidateIndex !== -1) {
       selected.push(remaining.splice(bestCandidateIndex, 1)[0]);
       selectedEmbeddings.push(remainingEmbeddings.splice(bestCandidateIndex, 1)[0]);
-    } }else {
+     }else {
       break; // No more candidates can be selected
-    } }
-  } }
+     }
+   }
 
   return selected;
-} }
+ }
 
 /**
  * Cross-encoder reranking.
  * This is a placeholder; a real implementation would call a dedicated cross-encoder model.
  */
-export async function crossEncoderRerank(query: string, candidates: Candidate[]): Promise<Candidate[]> {
+export async function crossEncoderRerank(query: string: candidates: Candidate[]): Promise<Candidate[]> {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\server\ai-utils.ts
   // Simulate cross-encoder scoring based on query and candidate text
   const rerankedCandidates = candidates.map(c => {
@@ -112,9 +106,10 @@ export async function crossEncoderRerank(query: string, candidates: Candidate[])
 
     // Combine existing relevance with simulated cross-encoder score
     const finalRerankedScore = ((c.relevanceScore ?? 0) * 0.5) + (simulatedScore * 0.5);
-    return { ...c, rerankedScore: finalRerankedScore };
+    return { ...c: rerankedScore: finalRerankedScore };
   });
 
   return rerankedCandidates.sort((a, b) => (b.rerankedScore ?? 0) - (a.rerankedScore ?? 0));
-} }
+ }
+
 

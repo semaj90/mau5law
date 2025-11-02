@@ -6,7 +6,7 @@ self.onmessage = async (e: MessageEvent) => {
     if (!transformers?.pipeline) {
       self.postMessage({ error: 'pipeline not available' });
       return;
-    } }
+     }
 
     // run feature-extraction pipeline (model chosen for compact embeddings)
     const pipe = await transformers.pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
@@ -18,8 +18,7 @@ self.onmessage = async (e: MessageEvent) => {
     const flat = flatten(out);
 
     self.postMessage({ embedding: flat });
-  } }catch (err) {
-    self.postMessage({ error: String(err) });
-  } }
-};
+   }catch (err) {
+    self.postMessage({ error: String(err) }); };
+
 

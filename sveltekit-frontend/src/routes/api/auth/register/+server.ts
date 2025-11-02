@@ -4,15 +4,15 @@
  * Validates email, password strength, and duplicate accounts
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { authService, auth } }from '$lib/server/auth';
-import { isAuthError, formatErrorResponse } }from '$lib/server/errors';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { authService, auth  } from '$lib/server/auth';
+import { isAuthError, formatErrorResponse  } from '$lib/server/errors';
 
-interface RegisterRequest { email: string;, password: string;
+interface RegisterRequest { email: string; password: string;
   firstName?: string;
   lastName?: string;
   displayName?: string;
-} }
+ }
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
@@ -22,40 +22,29 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     if (contentType?.includes('application/json')) {
       data = (await request.json()) as RegisterRequest;
-    } }else if (contentType?.includes('application/x-www-form-urlencoded')) {
+     }else if (contentType?.includes('application/x-www-form-urlencoded')) {
       const formData = await request.formData();
       data = {
-        email: formData.get('email') as: string,
-        password: formData.get('password') as: string,
-        firstName: formData.get('firstName') as: string | undefined,
-        lastName: formData.get('lastName') as: string | undefined,
-        displayName: formData.get('displayName') as: string | undefined
+        email: formData.get('email') as string: password: formData.get('password') as string: firstName: formData.get('firstName') as string | undefined: lastName: formData.get('lastName') as string | undefined: displayName: formData.get('displayName') as string | undefined
       };
-    } }else {
+     }else {
       throw new Error('Invalid content type');
-    } }
+     }
 
     if (!data.email || !data.password) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Email and password are required',
-            code: 'INVALID_REQUEST',
-            status: 400
-          } }
-        },
-        { status: 400 } }
+  message: 'Email and password are required', code: 'INVALID_REQUEST', status: 400
+           }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Register new user with structured error handling
     const newUser = await authService.register({
-      email: data.email,
-      password: data.password,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      displayName: data.displayName
+      email: data.email: password: data.password: firstName: data.firstName: lastName: data.lastName: displayName: data.displayName
     });
 
     // Create session for new user
@@ -64,50 +53,37 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Set session cookie
     const sessionCookie = auth.createSessionCookie(session.id);
     cookies.set(sessionCookie.name, sessionCookie.value, {
-      ...sessionCookie.attributes,
-      path: '/'
+      ...sessionCookie.attributes: path: '/'
     });
 
     // Return success with user data
     return json(
       {
-        success: true,
+        success: true;
         user: {
-  id: newUser.id,
-          email: newUser.email,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-          role: newUser.role,
-          avatarUrl: newUser.avatarUrl
-        },
-        session: {
-  id: session.id,
-          expiresAt: session.expiresAt
-        } }
-      },
-      { status: 201 } }
+  id: newUser.id: email: newUser.email: firstName: newUser.firstName: lastName: newUser.lastName: role: newUser.role: avatarUrl: newUser.avatarUrl
+        }, session: {
+  id: session.id: expiresAt: session.expiresAt
+         }
+      }, { status: 201  }
     );
-  } }catch (error) {
+   }catch (error) {
     if (isAuthError(error)) {
       // Structured auth error with proper status code for front-end handling
       const errorResponse = formatErrorResponse(error);
       console.error('[API] Auth error in /api/auth/register:', errorResponse);
       return json(errorResponse, { status: error.status });
-    } }
+     }
 
     // Unknown error - log and return generic message
     console.error('[API] Unexpected error in /api/auth/register:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: {
-  message: 'Registration failed. Please try again.',
-          code: 'UNKNOWN_ERROR',
-          status: 500
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+  message: 'Registration failed. Please try again.', code: 'UNKNOWN_ERROR', status: 500
+         }
+      }, { status: 500  }
+    ); };
+
 

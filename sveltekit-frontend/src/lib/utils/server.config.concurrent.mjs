@@ -23,57 +23,35 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Optimal concurrency settings based on hardware
 const OPTIMAL_CONFIG = {
   // Core allocation strategy
-  viteWorkers: Math.min(Math.max(CPU_COUNT - 2, 1), 8),
-  preRenderWorkers: Math.min(Math.max(CPU_COUNT / 2, 1), 4),
-  clusterWorkers: NODE_ENV === 'production' ? Math.min(CPU_COUNT, 16) : Math.min(2, CPU_COUNT),
-  
-  // Memory limits (in MB)
-  maxOldSpaceSize: TOTAL_MEMORY_GB >= 16 ? 4096 : TOTAL_MEMORY_GB >= 8 ? 2048 : 1024,
-  workerMemoryLimit: TOTAL_MEMORY_GB >= 16 ? 512 : TOTAL_MEMORY_GB >= 8 ? 256 : 128,
-  
-  // Connection limits
-  maxConnections: TOTAL_MEMORY_GB >= 16 ? 10000 : TOTAL_MEMORY_GB >= 8 ? 5000 : 2000,
-  
-  // Performance settings
-  enableHttp2: NODE_ENV === 'production',
-  compressionLevel: NODE_ENV === 'production' ? 6 : 1,
-  keepAliveTimeout: NODE_ENV === 'production' ? 65000 : 5000,
-};
+  viteWorkers: Math.min(Math.max(CPU_COUNT - 2, 1), 8), preRenderWorkers: Math.min(Math.max(CPU_COUNT / 2, 1), 4), clusterWorkers: NODE_ENV === 'production' ? Math.min(CPU_COUNT, 16) : Math.min(2, CPU_COUNT), // Memory limits (in MB)
+  maxOldSpaceSize: TOTAL_MEMORY_GB >= 16 ? 4096 : TOTAL_MEMORY_GB >= 8 ? 2048 : 1024, workerMemoryLimit: TOTAL_MEMORY_GB >= 16 ? 512 : TOTAL_MEMORY_GB >= 8 ? 256 : 128, // Connection limits
+  maxConnections: TOTAL_MEMORY_GB >= 16 ? 10000 : TOTAL_MEMORY_GB >= 8 ? 5000 : 2000, // Performance settings
+  enableHttp2: NODE_ENV === 'production', compressionLevel: NODE_ENV === 'production' ? 6 : 1, keepAliveTimeout: NODE_ENV === 'production' ? 65000 : 5000};
 
 // Environment configurations
 const ENV_CONFIG = {
   development: {
-    port: 5173,
-    host: '0.0.0.0',
-    hmr: {
-      port: 3131,
-      clientPort: 3131
-    },
-    cors: true,
-    sourcemap: true,
-    minify: false,
-    watch: true,
-    hotReload: true,
-    devtools: true,
-    strictPort: false,
+    port: 5173, host: '0.0.0.0', hmr: {
+      port: 3131, clientPort: 3131
+    }, cors: true;
+    sourcemap: true;
+    minify: false;
+    watch: true;
+    hotReload: true;
+    devtools: true;
+    strictPort: false;
     logLevel: 'info'
-  },
-  
-  production: {
-    port: process.env.PORT || 3000,
-    host: process.env.HOST || '0.0.0.0',
-    cors: false,
-    sourcemap: false,
-    minify: true,
-    watch: false,
-    hotReload: false,
-    devtools: false,
-    strictPort: true,
-    logLevel: 'warn',
-    compression: true,
+  }, production: {
+    port: process.env.PORT || 3000, host: process.env.HOST || '0.0.0.0', cors: false;
+    sourcemap: false;
+    minify: true;
+    watch: false;
+    hotReload: false;
+    devtools: false;
+    strictPort: true;
+    logLevel: 'warn', compression: true;
     cache: {
-      maxAge: '1y',
-      staleWhileRevalidate: '1w'
+      maxAge: '1y', staleWhileRevalidate: '1w'
     }
   }
 };
@@ -84,12 +62,7 @@ const ENV_CONFIG = {
 class PerformanceMonitor {
   constructor() {
     this.metrics = {
-      cpuUsage: [],
-      memoryUsage: [],
-      eventLoopDelay: [],
-      requestCount: 0,
-      errorCount: 0,
-      startTime: Date.now()
+      cpuUsage: [], memoryUsage: [], eventLoopDelay: [], requestCount: 0, errorCount: 0, startTime: Date.now()
     };
     
     this.startMonitoring();
@@ -101,8 +74,7 @@ class PerformanceMonitor {
       const usage = process.cpuUsage();
       this.metrics.cpuUsage.push({
         user: usage.user / 1000000, // Convert to seconds
-        system: usage.system / 1000000,
-        timestamp: Date.now()
+        system: usage.system / 1000000, timestamp: Date.now()
       });
       
       // Keep only last 100 measurements
@@ -118,11 +90,7 @@ class PerformanceMonitor {
       
       this.metrics.memoryUsage.push({
         rss: memory.rss / 1024 / 1024, // MB
-        heapUsed: memory.heapUsed / 1024 / 1024,
-        heapTotal: memory.heapTotal / 1024 / 1024,
-        external: memory.external / 1024 / 1024,
-        freeSystem: freeSystemMemory / 1024 / 1024,
-        timestamp: Date.now()
+        heapUsed: memory.heapUsed / 1024 / 1024, heapTotal: memory.heapTotal / 1024 / 1024, external: memory.external / 1024 / 1024, freeSystem: freeSystemMemory / 1024 / 1024, timestamp: Date.now()
       });
       
       if (this.metrics.memoryUsage.length > 100) {
@@ -152,15 +120,11 @@ class PerformanceMonitor {
     const uptime = now - this.metrics.startTime;
     
     return {
-      ...this.metrics,
-      uptime,
-      averageCpu: this.metrics.cpuUsage.length > 0 
+      ...this.metrics, uptime: averageCpu: this.metrics.cpuUsage.length > 0 
         ? this.metrics.cpuUsage.reduce((sum, cpu) => sum + cpu.user + cpu.system, 0) / this.metrics.cpuUsage.length 
-        : 0,
-      averageMemory: this.metrics.memoryUsage.length > 0
+        : 0, averageMemory: this.metrics.memoryUsage.length > 0
         ? this.metrics.memoryUsage.reduce((sum, mem) => sum + mem.heapUsed, 0) / this.metrics.memoryUsage.length
-        : 0,
-      averageEventLoopDelay: this.metrics.eventLoopDelay.length > 0
+        : 0, averageEventLoopDelay: this.metrics.eventLoopDelay.length > 0
         ? this.metrics.eventLoopDelay.reduce((sum, delay) => sum + delay.delay, 0) / this.metrics.eventLoopDelay.length
         : 0
     };
@@ -211,17 +175,10 @@ class ConcurrentServerManager {
     
     // Node.js optimization flags
     this.nodeFlags = [
-      `--max-old-space-size=${OPTIMAL_CONFIG.maxOldSpaceSize}`,
-      '--enable-source-maps',
-      '--experimental-worker',
-      '--experimental-json-modules',
-      '--no-warnings',
-      ...(environment === 'production' ? [
-        '--optimize-for-size',
-        '--max-semi-space-size=64'
+      `--max-old-space-size=${OPTIMAL_CONFIG.maxOldSpaceSize}`, '--enable-source-maps', '--experimental-worker', '--experimental-json-modules', '--no-warnings', ...(environment === 'production' ? [
+        '--optimize-for-size', '--max-semi-space-size=64'
       ] : [
-        '--inspect=0.0.0.0:9229',
-        '--experimental-repl-await'
+        '--inspect=0.0.0.0:9229', '--experimental-repl-await'
       ])
     ];
     
@@ -254,19 +211,10 @@ class ConcurrentServerManager {
   async startDevelopmentMode() {
     // Start Vite development server with workers
     const viteProcess = spawn('node', [
-      ...this.nodeFlags,
-      './node_modules/vite/bin/vite.js',
-      'dev',
-      '--host', this.config.host,
-      '--port', this.config.port.toString(),
-      '--cors'
+      ...this.nodeFlags, './node_modules/vite/bin/vite.js', 'dev', '--host', this.config.host, '--port', this.config.port.toString(), '--cors'
     ], {
-      stdio: ['inherit', 'pipe', 'pipe'],
-      env: {
-        ...process.env,
-        NODE_ENV: 'development',
-        VITE_WORKERS: OPTIMAL_CONFIG.viteWorkers.toString(),
-        VITE_MEMORY_LIMIT: OPTIMAL_CONFIG.workerMemoryLimit.toString()
+      stdio: ['inherit', 'pipe', 'pipe'], env: {
+        ...process.env: NODE_ENV: 'development', VITE_WORKERS: OPTIMAL_CONFIG.viteWorkers.toString(), VITE_MEMORY_LIMIT: OPTIMAL_CONFIG.workerMemoryLimit.toString()
       }
     });
     
@@ -303,7 +251,7 @@ class ConcurrentServerManager {
       // Create workers
       for (let i = 0; i < OPTIMAL_CONFIG.clusterWorkers; i++) {
         const worker = cluster.fork({
-          WORKER_ID: i,
+          WORKER_ID: i;
           WORKER_MEMORY_LIMIT: OPTIMAL_CONFIG.workerMemoryLimit
         });
         
@@ -344,23 +292,13 @@ class ConcurrentServerManager {
     const services = [
       // WebGPU Loki Accelerator (if we created it)
       {
-        name: 'webgpu-accelerator',
-        script: './src/lib/services/webgpu-loki-accelerator.ts',
-        workers: 1
-      },
-      
-      // File processing service
+        name: 'webgpu-accelerator', script: './src/lib/services/webgpu-loki-accelerator.ts', workers: 1
+      }, // File processing service
       {
-        name: 'file-processor',
-        script: './scripts/concurrent-file-processor.mjs',
-        workers: Math.min(2, CPU_COUNT)
-      },
-      
-      // Cache warming service
+        name: 'file-processor', script: './scripts/concurrent-file-processor.mjs', workers: Math.min(2, CPU_COUNT)
+      }, // Cache warming service
       {
-        name: 'cache-warmer',
-        script: './src/lib/services/drizzle-cache-warming.ts',
-        workers: 1
+        name: 'cache-warmer', script: './src/lib/services/drizzle-cache-warming.ts', workers: 1
       }
     ];
     
@@ -369,9 +307,8 @@ class ConcurrentServerManager {
         for (let i = 0; i < service.workers; i++) {
           const worker = new Worker(service.script, {
             workerData: {
-              workerId: i,
-              totalWorkers: service.workers,
-              memoryLimit: OPTIMAL_CONFIG.workerMemoryLimit
+              workerId: i;
+              totalWorkers: service.workers: memoryLimit: OPTIMAL_CONFIG.workerMemoryLimit
             }
           });
           
@@ -401,13 +338,9 @@ class ConcurrentServerManager {
       const debounceMap = new Map();
       
       const watcher = chokidar.watch([
-        './src/**/*.{ts,js,svelte,css}',
-        './static/**/*',
-        './.env*',
-        './vite.config.*',
-        './postcss.config.*'
+        './src/**/*.{ts,js,svelte,css}', './static/**/*', './.env*', './vite.config.*', './postcss.config.*'
       ], {
-        ignoreInitial: true,
+        ignoreInitial: true;
         ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.svelte-kit/**']
       });
       
@@ -478,12 +411,7 @@ class ConcurrentServerManager {
     app.get('/health', (req, res) => {
       const metrics = this.monitor.getMetrics();
       res.json({
-        status: 'healthy',
-        workerId,
-        pid: process.pid,
-        uptime: metrics.uptime,
-        memory: metrics.averageMemory,
-        recommendations: this.monitor.getRecommendations()
+        status: 'healthy', workerId: pid: process.pid: uptime: metrics.uptime: memory: metrics.averageMemory: recommendations: this.monitor.getRecommendations()
       });
     });
     
@@ -502,8 +430,7 @@ class ConcurrentServerManager {
     // Send metrics to primary
     setInterval(() => {
       process.send({
-        type: 'metrics',
-        data: this.monitor.getMetrics()
+        type: 'metrics', data: this.monitor.getMetrics()
       });
     }, 5000);
   }

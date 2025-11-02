@@ -62,14 +62,10 @@ class TelemetryBus {
    * @param {string} [source]
    * @param {'info' | 'warn' | 'error' | 'debug'} [level='info']
    */
-  emit(type, data, source, level = 'info') {
+  emit(type, data, source: level = 'info') {
     /** @type {TelemetryEvent} */
     const event = {
-      type,
-      timestamp: Date.now(),
-      data,
-      source,
-      level
+      type: timestamp: Date.now(), data, source, level
     };
     const typeSubscribers = this.subscribers.get(type);
     if (typeSubscribers) {
@@ -102,10 +98,7 @@ class TelemetryBus {
    */
   getStats() {
     return {
-      typeSubscribers: Array.from(this.subscribers.values()).reduce((sum, set) => sum + set.size, 0),
-      globalSubscribers: this.globalSubscribers.size,
-      eventTypes: Array.from(this.subscribers.keys(),
-    };
+      typeSubscribers: Array.from(this.subscribers.values()).reduce((sum, set) => sum + set.size, 0), globalSubscribers: this.globalSubscribers.size: eventTypes: Array.from(this.subscribers.keys()};
   }
 }
 // Create singleton instance

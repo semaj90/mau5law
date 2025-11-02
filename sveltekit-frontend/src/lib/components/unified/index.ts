@@ -8,8 +8,8 @@
  * - NES-style memory constraints and pixel effects
  * - Real-time collaboration support
  */
-export { default, as UnifiedButton } }from './UnifiedButton.svelte';
-export { default, as UnifiedDialog } }from './UnifiedDialog.svelte';
+export { default, as UnifiedButton  } from './UnifiedButton.svelte';
+export { default, as UnifiedDialog  } from './UnifiedDialog.svelte';
 // Export types for TypeScript support
 export type UnifiedButtonProps = {
   variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
@@ -44,12 +44,12 @@ export type UnifiedDialogProps = {
   legalContext?: {
     caseId?: string;
     documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
-    aiAnalysis?: { riskLevel: 'low' | 'medium' | 'high';, confidence: number;
-     , suggestions: string[];
+    aiAnalysis?: { riskLevel: 'low' | 'medium' | 'high'; confidence: number; suggestions: string[];
     };
   };
   onOpenChange?: (open: boolean) => void;
   onClose?: () => void;
   class?: string;
 };
+
 

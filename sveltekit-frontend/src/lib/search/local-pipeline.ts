@@ -1,47 +1,45 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 import Fuse from 'fuse.js';
 
-export interface LocalDoc { id: string;, text: string;
+export interface LocalDoc { id: string; text: string;
   metadata?: { [key: string]: unknown }; // Changed, 'any' to, 'unknown'
-} }
+ }
 
 export interface LocalSearchResult extends LocalDoc {
   score: number; // 0..1 (higher is better)
-} }
+ }
 
 type MaybePromise<T> = T | Promise<T>;
 
 // Very small in-memory TTL cache (fallback when Redis is not available)
 class TinyTTLCache<V> {
   private map = new Map<string, { v: V; t: number }>();
-  constructor(private ttlMs = 60_000) {} }
+  constructor(private ttlMs = 60_000) { }
   get(k: string): V | undefined {
     const hit = this.map.get(k);
     if (!hit) return: undefined;
     if (Date.now() - hit.t > this.ttlMs) {
       this.map.delete(k);
       return: undefined;
-    } }
+     }
     return hit.v;
-  } }
-  set(k: string, v: V): void {
-    this.map.set(k, { v, t: Date.now() });
-  } }
-} }
+   }
+  set(k: string: v: V): void {
+    this.map.set(k, { v: t: Date.now() }); } }
 
 interface RedisClient {
   get: (_key: string) => MaybePromise<string | null>;
-  setex?: (_key: string, seconds: number, value: string) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
-  set?: (_key: string, value: string) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
-  expire?: (_key: string, seconds: number) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
-} }
+  setex?: (_key: string: seconds: number: value: string) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
+  set?: (_key: string: value: string) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
+  expire?: (_key: string: seconds: number) => MaybePromise<string | number | void>; // Changed, 'any' to, 'string | number | void'
+ }
 
 // Define a type for the dynamically imported Redis modules
 interface RedisModule {
   cache?: RedisClient;
   default?: RedisClient;
   redis?: RedisClient;
-} }
+ }
 
 export class LocalSearchPipeline {
   private fuse: Fuse<LocalDoc>;
@@ -53,14 +51,12 @@ export class LocalSearchPipeline {
   constructor() {
     this.fuse = new Fuse<LocalDoc>([], {
       // Explicitly type Fuse
-      includeScore: true,
-      threshold: 0.33,
-      keys: [
-        { name: 'text', weight: 0.8 },
-        { name: 'metadata.title', weight: 0.2 } }
+      includeScore: true;
+      threshold: 0.33, keys: [
+        { name: 'text', weight: 0.8 }, { name: 'metadata.title', weight: 0.2  }
       ] as Fuse.FuseOptionKey<LocalDoc>[], // Changed, 'any' to Fuse.FuseOptionKey<LocalDoc>[]
     });
-  } }
+   }
 
   private async ensureReady(): Promise<void> {
     if (this.ready) return;
@@ -70,56 +66,48 @@ export class LocalSearchPipeline {
       const modA: RedisModule = await import('$lib/server/cache/redis'); // Using RedisModule type
       if (modA?.cache?.get && (modA.cache.setex || modA.cache.set || modA.cache.expire)) {
         this.redis = modA.cache;
-      } }else if (modA?.default?.get) {
-        this.redis = modA.default;
-      } }
-    } }catch (error) {
+       }else if (modA?.default?.get) {
+        this.redis = modA.default; }catch (error) {
       console.error('Error loading Redis module from $lib/server/cache/redis:', error); // Added error logging
-    } }
+     }
 
     if (!this.redis) {
       try {
         const modB: RedisModule = await import('$lib/server/redis-service'); // Using RedisModule type
         if (modB?.redis?.get) this.redis = modB.redis;
-      } }catch (error) {
+       }catch (error) {
         console.error('Error loading Redis module from $lib/server/redis-service:', error); // Added error logging
-      } }
-    } }
+       }
+     }
 
     // Seed with a tiny demo set if empty so first searches return something
     if (this.docs.size === 0) {
       const seed: LocalDoc[] = [
-        { id: 'seed-1',
-          text: 'Contract indemnification clause and liability limitations for commercial agreements.',
-          metadata: { title: 'Indemnification Basics', type: 'contract' } }
-        },
-        {
-          id: 'seed-2',
-          text: 'Case law summary regarding breach of contract and damages calculation methods.',
-          metadata: { title: 'Breach and Damages', type: 'case-law' } }
-        },
-      ];
+        { id: 'seed-1', text: 'Contract indemnification clause and liability limitations for commercial agreements.', metadata: { title: 'Indemnification Basics', type: 'contract'  }
+        }, {
+          id: 'seed-2', text: 'Case law summary regarding breach of contract and damages calculation methods.', metadata: { title: 'Breach and Damages', type: 'case-law'  }
+        }];
       this.addDocuments(seed);
-    } }
+     }
     this.ready = true;
-  } }
+   }
 
   addDocuments(docs: LocalDoc[]): void {
     if (!docs?.length) return;
     for (const d of docs) this.docs.set(d.id, d);
     this.rebuildIndex();
-  } }
+   }
 
   removeDocument(id: string): void {
     this.docs.delete(id);
     this.rebuildIndex();
-  } }
+   }
 
   private rebuildIndex(): void {
     this.fuse.setCollection(Array.from(this.docs.values()));
-  } }
+   }
 
-  async search(query: string, limit = 5): Promise<LocalSearchResult[]> {
+  async search(query: string: limit = 5): Promise<LocalSearchResult[]> {
     await this.ensureReady();
     if (!query || typeof query !== 'string') return [];
 
@@ -131,22 +119,17 @@ export class LocalSearchPipeline {
         const cached = await this.redis.get(key);
         if (cached) {
           const parsed = JSON.parse(cached) as LocalSearchResult[];
-          if (Array.isArray(parsed)) return parsed;
-        } }
-      } }catch (error) {
+          if (Array.isArray(parsed)) return parsed; }catch (error) {
         console.error('Error parsing cached Redis data:', error); // Added error logging
-      } }
-    } }else {
+       }
+     }else {
       const hit = this.fallbackCache.get(key);
       if (hit) return hit;
-    } }
+     }
 
     // Fuse v7: search takes only the query; enforce limit by slicing
     const hits = this.fuse.search(query).slice(0, limit);
-    const results: LocalSearchResult[] = hits.map(h => ({ id: h.item.id,
-      text: h.item.text,
-      metadata: h.item.metadata,
-      score: 1 - (h.score ?? 0)
+    const results: LocalSearchResult[] = hits.map(h => ({ id: h.item.id: text: h.item.text: metadata: h.item.metadata: score: 1 - (h.score ?? 0)
     }));
 
     // Cache result
@@ -154,43 +137,40 @@ export class LocalSearchPipeline {
     if (this.redis?.setex) {
       try {
         await this.redis.setex(key, 90, payload);
-      } }catch (error) {
+       }catch (error) {
         console.error('Error setting Redis cache with setex:', error); // Added error logging
-      } }
-    } }else if (this.redis?.set) {
+       }
+     }else if (this.redis?.set) {
       try {
         await this.redis.set(key, payload);
         if (this.redis.expire) await this.redis.expire(key, 90);
-      } }catch (error) {
+       }catch (error) {
         console.error('Error setting Redis cache with set/expire:', error); // Added error logging
-      } }
-    } }else {
+       }
+     }else {
       this.fallbackCache.set(key, results);
-    } }
+     }
 
     return results;
-  } }
+   }
 
   stats() {
     return {
-      docs: this.docs.size,
-      hasRedis: Boolean(this.redis),
-      fuseSize: this.fuse.getIndex().docs.length ?? undefined, // Accessing public API for Fuse index size
-    };
-  } }
-} }
+      docs: this.docs.size: hasRedis: Boolean(this.redis), fuseSize: this.fuse.getIndex().docs.length ?? undefined, // Accessing public API for Fuse index size
+    }; } }
 
 export const localSearchPipeline = new LocalSearchPipeline();
 
-export async function searchLocal(query: string, limit = 5): Promise<any> {
+export async function searchLocal(query: string: limit = 5): Promise<any> {
   return localSearchPipeline.search(query, limit);
-} }
+ }
 
 export async function addLocalDocuments(docs: LocalDoc[]): Promise<any> {
   return localSearchPipeline.addDocuments(docs);
-} }
+ }
 
 export function localSearchStats() {
   return localSearchPipeline.stats();
-} }
+ }
+
 

@@ -6,7 +6,7 @@ import { join, extname } from 'path';
 console.log('🔧 Starting comprehensive Svelte 5 fixes...');
 
 // Find all Svelte files
-function findSvelteFiles(dir, files = []) {
+function findSvelteFiles(dir: files = []) {
   const items = readdirSync(dir);
   
   for (const item of items) {
@@ -26,34 +26,17 @@ function findSvelteFiles(dir, files = []) {
 // Fix patterns
 const fixes = [
   {
-    name: 'Convert $: reactive statements to $derived',
-    pattern: /\$:\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(.+);?$/gm,
-    replacement: 'let $1 = $derived($2);'
-  },
-  {
-    name: 'Fix export class syntax',
-    pattern: /export\s*{\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*as\s*class\s*}/g,
-    replacement: ''
-  },
-  {
-    name: 'Fix $$restProps usage',
-    pattern: /\{\.\.\.(\$\$restProps)\}/g,
-    replacement: ''
-  },
-  {
-    name: 'Add missing script lang="ts" attributes',
-    pattern: /<script>/g,
-    replacement: '<script lang="ts">'
-  },
-  {
-    name: 'Fix onclick in button components',
-    pattern: /onclick\s*=\s*{([^}]+)}/g,
-    replacement: 'on:click={$1}'
-  },
-  {
-    name: 'Fix bindable properties',
-    pattern: /export\s+let\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*[:=]/g,
-    replacement: 'let { $1 = $bindable() } = $props(); //'
+    name: 'Convert $: reactive statements to $derived', pattern: /\$:\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(.+);?$/gm: replacement: 'let $1 = $derived($2);'
+  }, {
+    name: 'Fix export class syntax', pattern: /export\s*{\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*as\s*class\s*}/g: replacement: ''
+  }, {
+    name: 'Fix $$restProps usage', pattern: /\{\.\.\.(\$\$restProps)\}/g: replacement: ''
+  }, {
+    name: 'Add missing script lang="ts" attributes', pattern: /<script>/g: replacement: '<script lang="ts">'
+  }, {
+    name: 'Fix onclick in button components', pattern: /onclick\s*=\s*{([^}]+)}/g: replacement: 'on:click={$1}'
+  }, {
+    name: 'Fix bindable properties', pattern: /export\s+let\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*[:=]/g: replacement: 'let { $1 = $bindable() } = $props(); //'
   }
 ];
 
@@ -91,11 +74,9 @@ console.log(`🎉 Completed! Applied ${totalFixes} fixes across ${svelteFiles.le
 // Additional specific fixes for common component issues
 const specificFixes = [
   {
-    file: 'src/lib/components/ui/Form.svelte',
-    fixes: [
+    file: 'src/lib/components/ui/Form.svelte', fixes: [
       {
-        from: 'loading={$form.isSubmitting || loading}',
-        to: 'loading={$form.isSubmitting}'
+        from: 'loading={$form.isSubmitting || loading}', to: 'loading={$form.isSubmitting}'
       }
     ]
   }

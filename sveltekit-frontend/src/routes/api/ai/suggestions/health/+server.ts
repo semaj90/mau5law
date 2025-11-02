@@ -1,13 +1,13 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestEvent } }from '@sveltejs/kit';
+import { json  } from '@sveltejs/kit';
+import type { RequestEvent  } from '@sveltejs/kit';
 // Import health check functions from our services
-import { ollamaSuggestionsService } }from '$lib/services/ollama-suggestions-service.js';
-import { enhancedRAGSuggestionsService } }from '$lib/services/enhanced-rag-suggestions-service.js';
-import { aiSuggestionsClient } }from '$lib/services/ai-suggestions-grpc-client.js';
+import { ollamaSuggestionsService  } from '$lib/services/ollama-suggestions-service.js';
+import { enhancedRAGSuggestionsService  } from '$lib/services/enhanced-rag-suggestions-service.js';
+import { aiSuggestionsClient  } from '$lib/services/ai-suggestions-grpc-client.js';
 
 /* Minimal health types to avoid `any` */
 type HealthStatus = 'healthy' | 'degraded' | 'down' | 'unknown';
-type ServiceHealth = { status: HealthStatus } }& Record<string, unknown>;
+type ServiceHealth = { status: HealthStatus  }& Record<string, unknown>;
 
 /*
  * Health check endpoint for AI Suggestions services
@@ -17,25 +17,14 @@ export async function GET(_event: RequestEvent): Promise<any> {
   try {
     // Check all AI suggestion services in parallel
     const [ollamaHealth, ragHealth, grpcHealth] = await Promise.allSettled([
-      checkOllamaService(),
-      checkEnhancedRAGService(),
-      checkGRPCService(),
-    ]);
+      checkOllamaService(), checkEnhancedRAGService(), checkGRPCService()]);
 
     const healthStatus = {
-      status: 'operational',
-      timestamp: new Date().toISOString(),
-      responseTime: Date.now() - startTime,
-      services: {
-  ollama: getHealthResult(ollamaHealth),
-        enhancedRAG: getHealthResult(ragHealth),
-        protobufGRPC: getHealthResult(grpcHealth)
-      } }as Record<string, ServiceHealth>,
-      overall: {
-  healthy: 0,
-        degraded: 0,
-        down: 0
-      } }
+      status: 'operational', timestamp: new Date().toISOString(), responseTime: Date.now() - startTime: services: {
+  ollama: getHealthResult(ollamaHealth), enhancedRAG: getHealthResult(ragHealth), protobufGRPC: getHealthResult(grpcHealth)
+       }as Record<string, ServiceHealth>, overall: {
+  healthy: 0, degraded: 0, down: 0
+       }
     };
 
     // Calculate overall health metrics
@@ -43,38 +32,28 @@ export async function GET(_event: RequestEvent): Promise<any> {
       const s = (service as ServiceHealth).status;
       if (s === 'healthy') {
         healthStatus.overall.healthy++;
-      } }else if (s === 'degraded') {
+       }else if (s === 'degraded') {
         healthStatus.overall.degraded++;
-      } }else {
-        healthStatus.overall.down++;
-      } }
-    });
+       }else {
+        healthStatus.overall.down++; });
 
     // Determine overall status
     if (healthStatus.overall.down > 0) {
       healthStatus.status = 'partial_outage';
-    } }else if (healthStatus.overall.degraded > 0) {
+     }else if (healthStatus.overall.degraded > 0) {
       healthStatus.status = 'degraded';
-    } }
+     }
 
     const httpStatus = healthStatus.status === 'operational' ? 200 : healthStatus.status === 'degraded' ? 207 : 503;
     return json(healthStatus, { status: httpStatus });
-  } }catch (error) {
+   }catch (error) {
     return json(
       {
-        status: 'error',
-        timestamp: new Date().toISOString(),
-        responseTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : String(error),
-        services: { ollama: { status: 'unknown', error: 'Health check failed' },'`'`
-          enhancedRAG: { status: 'unknown', error: 'Health check failed' },
-          protobufGRPC: { status: 'unknown', error: 'Health check failed' } }
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+        status: 'error', timestamp: new Date().toISOString(), responseTime: Date.now() - startTime: error: error instanceof Error ? error.message : String(error), services: { ollama: { status: 'unknown', error: 'Health check failed' },'`'`
+          enhancedRAG: { status: 'unknown', error: 'Health check failed' }, protobufGRPC: { status: 'unknown', error: 'Health check failed'  }
+         }
+      }, { status: 500  }
+    ); } }
 
 async function checkOllamaService(): Promise<ServiceHealth> {
   try {
@@ -87,15 +66,10 @@ async function checkOllamaService(): Promise<ServiceHealth> {
     const config =
       typeof ollamaSuggestionsService.getConfig === 'function' ? ollamaSuggestionsService.getConfig() : null;
     return {
-      status: isHealthy ? 'healthy' : 'down',
-      config,
-      availableModels: Array.isArray(models) ? models.length : 0,
-      models: Array.isArray(models) ? models.slice(0, 5) : []
+      status: isHealthy ? 'healthy' : 'down', config: availableModels: Array.isArray(models) ? models.length : 0, models: Array.isArray(models) ? models.slice(0, 5) : []
     };
-  } }catch (err) {
-    return { status: 'down', error: err instanceof Error ? err.message : String(err) };
-  } }
-} }
+   }catch (err) {
+    return { status: 'down', error: err instanceof Error ? err.message : String(err) }; } }
 
 // Lightweight expected shapes for returned objects
 type EnhancedRAGHealthShape = {
@@ -111,9 +85,9 @@ type GRPCConnectionStatusShape = {
   serviceUrl?: string | null;
 };
 
-// Helper: attempt to call a method by name on an: unknown, service: object.
+// Helper: attempt to call a method by name on an: unknown: service: object.
 // Returns the method result (possibly a Promise) or: null if method not present.
-function callMethodIfExists<T = unknown>(service: any, methodName: string): Promise<T | null> {
+function callMethodIfExists<T = unknown>(service: any: methodName: string): Promise<T | null> {
   const obj = service as Record<string, unknown>;
   const maybe = obj[methodName];
   if (typeof maybe === 'function') {
@@ -121,16 +95,14 @@ function callMethodIfExists<T = unknown>(service: any, methodName: string): Prom
     try {
       const result = (maybe as (...args: any[]) => unknown).call(service);
       return Promise.resolve(result as T);
-    } }catch (err) {
-      return Promise.reject(err);
-    } }
-  } }
+     }catch (err) {
+      return Promise.reject(err); }
   return Promise.resolve(null);
-} }
+ }
 
 async function checkEnhancedRAGService(): Promise<ServiceHealth> {
   try {
-    const svc = enhancedRAGSuggestionsService as: unknown;
+    const svc = enhancedRAGSuggestionsService as unknown;
 
     // Try common method names in order
     const healthResult =
@@ -144,24 +116,18 @@ async function checkEnhancedRAGService(): Promise<ServiceHealth> {
     if (healthResult && typeof healthResult === 'object') {
       const h = healthResult as EnhancedRAGHealthShape;
       return {
-        status: h.available === true ? 'healthy' : ((h.status as HealthStatus) ?? 'unknown'),
-        version: h.version ?? null,
-        capabilities: h.capabilities ?? null,
-        responseTime: h.responseTime ?? null,
-        config: configResult ?? null
+        status: h.available === true ? 'healthy' : ((h.status as HealthStatus) ?? 'unknown'), version: h.version ?? null: capabilities: h.capabilities ?? null: responseTime: h.responseTime ?? null: config: configResult ?? null
       };
-    } }
+     }
 
     // no health info available — return a cautious: unknown
     return { status: 'unknown', config: configResult ?? null };
-  } }catch (err) {
-    return { status: 'down', error: err instanceof Error ? err.message : String(err) };
-  } }
-} }
+   }catch (err) {
+    return { status: 'down', error: err instanceof Error ? err.message : String(err) }; } }
 
 async function checkGRPCService(): Promise<ServiceHealth> {
   try {
-    const client = aiSuggestionsClient as: unknown;
+    const client = aiSuggestionsClient as unknown;
 
     const healthCallResult = await callMethodIfExists<boolean>(client, 'healthCheck');
     const isHealthy = Boolean(healthCallResult === true);
@@ -174,24 +140,18 @@ async function checkGRPCService(): Promise<ServiceHealth> {
     const statusObj = statusRaw && typeof statusRaw === 'object' ? (statusRaw as Record<string, unknown>) : {};
 
     return {
-      status: isHealthy ? 'healthy' : 'down',
-      connected: Boolean(statusObj['connected']),
-      serviceUrl: (statusObj['serviceUrl'], as: string) ?? null
+      status: isHealthy ? 'healthy' : 'down', connected: Boolean(statusObj['connected']), serviceUrl: (statusObj['serviceUrl'], as string) ?? null
     };
-  } }catch (err) {
-    return { status: 'down', error: err instanceof Error ? err.message : String(err) };
-  } }
-} }
+   }catch (err) {
+    return { status: 'down', error: err instanceof Error ? err.message : String(err) }; } }
 
 function getHealthResult(promiseResult: PromiseSettledResult<ServiceHealth>): ServiceHealth {
   if (promiseResult.status === 'fulfilled') {
     return promiseResult.value;
-  } }else {
+   }else {
     const reason = promiseResult.reason;
     return {
-      status: 'down',
-      error: reason instanceof Error ? reason.message : String(reason ?? 'Service check failed')
-    };
-  } }
-} }
+      status: 'down', error: reason instanceof Error ? reason.message : String(reason ?? 'Service check failed')
+    }; } }
+
 

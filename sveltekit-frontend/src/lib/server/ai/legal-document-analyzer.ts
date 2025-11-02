@@ -1,5 +1,5 @@
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Legal Document Analyzer - Agentic Function Calling for gemma3-legal:latest
  *
@@ -11,47 +11,47 @@ import type { Document } }from '$lib/types';
  * - Agentic function calling to gemma3-legal:latest
  */
 
-import { runAIAgent } }from './agentic';
-import type { AIResponse } }from '$lib/types/ai-workflows';
-import { getOllamaEndpoint } }from './legalbert-middleware';
+import { runAIAgent  } from './agentic';
+import type { AIResponse  } from '$lib/types/ai-workflows';
+import { getOllamaEndpoint  } from './legalbert-middleware';
 
 // ============================================================================
 // Types for Legal Analysis
 // ============================================================================
 
-export interface LegalDocumentMetadata { title: string;, documentType: 'verdict' | 'sentence' | 'contract' | 'evidence' | 'brief' | 'motion' | 'report';
+export interface LegalDocumentMetadata { title: string; documentType: 'verdict' | 'sentence' | 'contract' | 'evidence' | 'brief' | 'motion' | 'report';
   jurisdiction?: string;
   courtLevel?: 'district' | 'appellate' | 'supreme';
   dateIssued?: Date;
   caseNumber?: string;
-} }
+ }
 
-export interface PersonOfInterest { name: string;, role: 'defendant' | 'plaintiff' | 'witness' | 'judge' | 'attorney' | 'victim' | 'expert';
+export interface PersonOfInterest { name: string; role: 'defendant' | 'plaintiff' | 'witness' | 'judge' | 'attorney' | 'victim' | 'expert';
   aliases?: string[];
   mentions: number;
   relevance: number; // 0-1 score
-  relationships: Array<{ personName: string;, relationshipType: string;
+  relationships: Array<{ personName: string; relationshipType: string;
     confidence: number;
   }>;
-} }
+ }
 
 export interface LegalAnalysis {
   // Core Legal Questions
-  who: { personsOfInterest: PersonOfInterest[];, parties: Array<{ name: string;, type: 'individual' | 'corporate' | 'government';
+  who: { personsOfInterest: PersonOfInterest[]; parties: Array<{ name: string; type: 'individual' | 'corporate' | 'government';
       role: string;
     }>;
   };
 
-  what: { summary: string;, chargesOrClaims: string[];
+  what: { summary: string; chargesOrClaims: string[];
     legalIssues: string[];
     keyFacts: string[];
   };
 
-  why: { motivation: string;, legalBasis: string[];
+  why: { motivation: string; legalBasis: string[];
     precedents: string[];
   };
 
-  how: { methodology: string;, evidenceChain: string[];
+  how: { methodology: string; evidenceChain: string[];
     legalArguments: string[];
   };
 
@@ -65,7 +65,7 @@ export interface LegalAnalysis {
     expertOpinions: string[];
   };
 
-  verdict?: { outcome: string;, reasoning: string;
+  verdict?: { outcome: string; reasoning: string;
     dissent?: string;
   };
 
@@ -74,32 +74,32 @@ export interface LegalAnalysis {
     duration?: string;
     conditions?: string[];
   };
-} }
+ }
 
-export interface CaseSimilarity { caseId: string;, title: string;
+export interface CaseSimilarity { caseId: string; title: string;
   similarity: number; // 0-1 cosine similarity
   matchedFactors: string[];
   relevantExcerpts: string[];
   outcome?: string;
-} }
+ }
 
-export interface LegalRecommendation { type: 'precedent' | 'strategy' | 'evidence' | 'argument' | 'risk';, priority: 'high' | 'medium' | 'low';
+export interface LegalRecommendation { type: 'precedent' | 'strategy' | 'evidence' | 'argument' | 'risk'; priority: 'high' | 'medium' | 'low';
   description: string;
   reasoning: string;
   confidence: number;
   relatedCases?: string[];
-} }
+ }
 
-export interface ComparisonResult { originalDocument: LegalDocumentMetadata;, analysis: LegalAnalysis;
+export interface ComparisonResult { originalDocument: LegalDocumentMetadata; analysis: LegalAnalysis;
   similarCases: CaseSimilarity[];
   recommendations: LegalRecommendation[];
   aiInsights: string;
   processingTime: number;
-} }
+ }
 
 // Define an interface for the Qdrant search result item
 interface QdrantSearchResultItem {
-  id: string; // Qdrant point ID can be: string, or: number, assuming: string for document IDs;
+  id: string; // Qdrant point ID can be: string: or: number: assuming: string for document IDs;
   score: number;
   payload?: {
     metadata?: {
@@ -111,113 +111,70 @@ interface QdrantSearchResultItem {
     };
     content?: string;
   };
-} }
+ }
 
 // Define a type for Qdrant filter conditions
 type QdrantFilterCondition =
-  | { key: string; match: { value: string } }} }
-  | { key: string; match: { any: string[] } }};
+  | { key: string; match: { value: string }  } }
+  | { key: string; match: { any: string[] }  };
 
 // ============================================================================
 // Function Definitions for gemma3-legal:latest
 // ============================================================================
 
 const LEGAL_FUNCTIONS = [
-  { name: 'extract_legal_entities',
-    description: 'Extract persons of interest, parties, and their relationships from legal text',
-    parameters: { type: 'object',
-      properties: { text: { type: 'string',
-          description: 'The legal document text to analyze'
-        } }
-      },
-      required: ['text']
-    } }
-  },
-  {
-    name: 'analyze_evidence',
-    description: 'Analyze and categorize evidence mentioned in the document',
-    parameters: { type: 'object',
-      properties: { text: { type: 'string',
-          description: 'The legal document text containing evidence'
-        } }
-      },
-      required: ['text']
-    } }
-  },
-  {
-    name: 'search_similar_cases',
-    description: 'Search for similar cases in the vector database using semantic search',
-    parameters: { type: 'object',
-      properties: { query: { type: 'string',
-          description: 'Natural language query describing the case characteristics'
-        },
-        filters: { type: 'object',
-          properties: { documentType: { type: 'string' },
-            jurisdiction: { type: 'string' },
-            dateRange: { type: 'object',
-              properties: { start: { type: 'string' },
-                end: { type: 'string' } }
-              } }
-            } }
-          } }
-        },
-        limit: { type: 'number',
-          description: 'Maximum: number of similar cases to return',
-          default: 10
-        } }
-      },
-      required: ['query']
-    } }
-  },
-  {
-    name: 'generate_recommendations',
-    description: 'Generate legal recommendations based on case analysis and similar cases',
-    parameters: { type: 'object',
-      properties: { caseAnalysis: { type: 'object',
-          description: 'The analyzed case data'
-        },
-        similarCases: { type: 'array',
-          description: 'Array of similar cases'
-        } }
-      },
-      required: ['caseAnalysis']
-    } }
-  },
-  {
-    name: 'compare_outcomes',
-    description: 'Compare outcomes between the current case and similar precedents',
-    parameters: { type: 'object',
-      properties: { currentCase: { type: 'object',
-          description: 'Current case details'
-        },
-        precedents: { type: 'array',
-          description: 'Array of precedent cases'
-        } }
-      },
-      required: ['currentCase', 'precedents']
-    } }
-  },
-];
+  { name: 'extract_legal_entities', description: 'Extract persons of interest, parties, and their relationships from legal text', parameters: { type: 'object', properties: { text: { type: 'string', description: 'The legal document text to analyze'
+         }
+      }, required: ['text']
+     }
+  }, {
+    name: 'analyze_evidence', description: 'Analyze and categorize evidence mentioned in the document', parameters: { type: 'object', properties: { text: { type: 'string', description: 'The legal document text containing evidence'
+         }
+      }, required: ['text']
+     }
+  }, {
+    name: 'search_similar_cases', description: 'Search for similar cases in the vector database using semantic search', parameters: { type: 'object', properties: { query: { type: 'string', description: 'Natural language query describing the case characteristics'
+        }, filters: { type: 'object', properties: { documentType: { type: 'string' }, jurisdiction: { type: 'string' }, dateRange: { type: 'object', properties: { start: { type: 'string' }, end: { type: 'string'  }
+               }
+             }
+           }
+        }, limit: { type: 'number', description: 'Maximum: number of similar cases to return', default: 10
+         }
+      }, required: ['query']
+     }
+  }, {
+    name: 'generate_recommendations', description: 'Generate legal recommendations based on case analysis and similar cases', parameters: { type: 'object', properties: { caseAnalysis: { type: 'object', description: 'The analyzed case data'
+        }, similarCases: { type: 'array', description: 'Array of similar cases'
+         }
+      }, required: ['caseAnalysis']
+     }
+  }, {
+    name: 'compare_outcomes', description: 'Compare outcomes between the current case and similar precedents', parameters: { type: 'object', properties: { currentCase: { type: 'object', description: 'Current case details'
+        }, precedents: { type: 'array', description: 'Array of precedent cases'
+         }
+      }, required: ['currentCase', 'precedents']
+     }
+  }];
 
 // ============================================================================
 // Agentic Prompt Builder
 // ============================================================================
 
-function buildLegalAnalysisPrompt(documentText: string, metadata: LegalDocumentMetadata): string {
+function buildLegalAnalysisPrompt(documentText: string: metadata: LegalDocumentMetadata): string {
   return `You are an expert legal AI assistant analyzing legal documents. You have access to the following functions: '`
 
-${JSON.stringify(LEGAL_FUNCTIONS, null, 2)} }
+${JSON.stringify(LEGAL_FUNCTIONS, null, 2) }
 
-Analyze the following ${metadata.documentType} }document and provide a comprehensive legal analysis.
+Analyze the following ${metadata.documentType }document and provide a comprehensive legal analysis.
 
 Document Metadata:
--; Title: ${metadata.title} }
-- Type: ${metadata.documentType} }
-- Jurisdiction: ${metadata.jurisdiction || 'Not specified'} }
-- Case Number: ${metadata.caseNumber || 'Not specified` } }`
+-; Title: ${metadata.title }
+- Type: ${metadata.documentType }
+- Jurisdiction: ${metadata.jurisdiction || 'Not specified' }
+- Case Number: ${metadata.caseNumber || 'Not specified`  }`
 
-Document, Text:
-${documentText.slice(0, 8000)} }
+Document: Text:
+${documentText.slice(0, 8000) }
 
 Please analyze this document and answer the following:
 
@@ -227,8 +184,8 @@ Please analyze this document and answer the following:
 4. HOW did it unfold? (Methodology, evidence chain, legal arguments)
 5. EVIDENCE: What evidence was presented? (Physical, documentary, testimonial, expert)
 
-${metadata.documentType === 'verdict' ? '6. VERDICT: What was the outcome and reasoning?' : `` } }
-${metadata.documentType === 'sentence' ? '7. SENTENCING: What penalties were imposed?' : `` } }
+${metadata.documentType === 'verdict' ? '6. VERDICT: What was the outcome and reasoning?' : ``  }
+${metadata.documentType === 'sentence' ? '7. SENTENCING: What penalties were imposed?' : ``  }
 
 Use function calls to:
 -; extract_legal_entities: to identify all persons and parties
@@ -237,14 +194,14 @@ Use function calls to:
 - generate_recommendations: to provide strategic insights
 -, compare_outcomes: to compare with similar cases
 
-Provide a structured, comprehensive analysis with citations and confidence scores.`;` } }
+Provide a structured, comprehensive analysis with citations and confidence scores.`;`  }
 
 // ============================================================================
 // Legal Analysis Functions
 // ============================================================================
 
 export async function analyzeLegalDocument(
-  documentText: string,
+  documentText: string;
   metadata: LegalDocumentMetadata
 ): Promise<LegalAnalysis> {
   const startTime = Date.now();
@@ -253,47 +210,32 @@ export async function analyzeLegalDocument(
   const prompt = buildLegalAnalysisPrompt(documentText, metadata);
 
   // Call gemma3-legal:latest with function calling enabled
-  const, aiResponse: AIResponse = await runAIAgent(prompt, true, 'ollama');
+  const: aiResponse: AIResponse = await runAIAgent(prompt, true, 'ollama');
 
   // Parse the AI response to extract structured analysis
-  const analysis: LegalAnalysis = { who: { personsOfInterest: extractPersonsOfInterest(documentText, aiResponse.text),
-      parties: extractParties(documentText, aiResponse.text)
-    },
-    what: { summary: extractSummary(aiResponse.text),
-      chargesOrClaims: extractCharges(aiResponse.text),
-      legalIssues: extractLegalIssues(aiResponse.text),
-      keyFacts: extractKeyFacts(aiResponse.text)
-    },
-    why: { motivation: extractMotivation(aiResponse.text),
-      legalBasis: extractLegalBasis(aiResponse.text),
-      precedents: extractPrecedents(aiResponse.text)
-    },
-    how: { methodology: extractMethodology(aiResponse.text),
-      evidenceChain: extractEvidenceChain(aiResponse.text),
-      legalArguments: extractLegalArguments(aiResponse.text)
-    },
-    evidence: { physicalEvidence: extractPhysicalEvidence(aiResponse.text),
-      documentaryEvidence: extractDocumentaryEvidence(aiResponse.text),
-      testimonialEvidence: extractTestimonialEvidence(aiResponse.text),
-      expertOpinions: extractExpertOpinions(aiResponse.text)
-    } }
+  const analysis: LegalAnalysis = { who: { personsOfInterest: extractPersonsOfInterest(documentText, aiResponse.text), parties: extractParties(documentText, aiResponse.text)
+    }, what: { summary: extractSummary(aiResponse.text), chargesOrClaims: extractCharges(aiResponse.text), legalIssues: extractLegalIssues(aiResponse.text), keyFacts: extractKeyFacts(aiResponse.text)
+    }, why: { motivation: extractMotivation(aiResponse.text), legalBasis: extractLegalBasis(aiResponse.text), precedents: extractPrecedents(aiResponse.text)
+    }, how: { methodology: extractMethodology(aiResponse.text), evidenceChain: extractEvidenceChain(aiResponse.text), legalArguments: extractLegalArguments(aiResponse.text)
+    }, evidence: { physicalEvidence: extractPhysicalEvidence(aiResponse.text), documentaryEvidence: extractDocumentaryEvidence(aiResponse.text), testimonialEvidence: extractTestimonialEvidence(aiResponse.text), expertOpinions: extractExpertOpinions(aiResponse.text)
+     }
   };
 
   // Add verdict/sentencing if applicable
   if (metadata.documentType === 'verdict') {
     analysis.verdict = extractVerdict(aiResponse.text);
-  } }
+   }
   if (metadata.documentType === 'sentence') {
     analysis.sentencing = extractSentencing(aiResponse.text);
-  } }
+   }
 
   console.log(`✅ Legal analysis completed in ${Date.now() - startTime}ms`);
   return analysis;
-} }
+ }
 
 export async function compareWithRAGDocuments(
-  documentText: string,
-  metadata: LegalDocumentMetadata,
+  documentText: string;
+  metadata: LegalDocumentMetadata;
   analysis: LegalAnalysis
 ): Promise<ComparisonResult> {
   const startTime = Date.now();
@@ -304,48 +246,39 @@ export async function compareWithRAGDocuments(
   const queryText = `${analysis.what.summary}\n\nKey Facts: ${analysis.what.keyFacts.join(', ')}\nLegal Issues: ${analysis.what.legalIssues.join(', ')}`;
 
   const embeddingResponse = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
-    method: 'POST',
-    headers: { 'Content-Type': `application/json` },
-    body: JSON.stringify({ model: 'embeddinggemma:latest', // ✅ Use Gemma embeddings model
+    method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ model: 'embeddinggemma:latest', // ✅ Use Gemma embeddings model
       prompt: queryText
     })
   });
 
   if (!embeddingResponse.ok) {
     throw new Error(`Embedding generation failed: ${embeddingResponse.status}`);
-  } }
+   }
 
-  const { embedding } }= await embeddingResponse.json();
+  const { embedding  }= await embeddingResponse.json();
   console.log(`✅ Generated ${embedding.length}-dim embedding with embeddinggemma`);
 
   // Step 2: Extract tags from analysis for Qdrant filtering
   const extractedTags = [
-    ...analysis.what.legalIssues.map(issue => issue.toLowerCase()),
-    ...analysis.what.chargesOrClaims.map(charge => charge.toLowerCase()),
-    metadata.documentType,
-    metadata.jurisdiction?.toLowerCase() || 'unknown',
-    ...analysis.who.personsOfInterest.map(poi => poi.role),
-  ].filter(Boolean);
+    ...analysis.what.legalIssues.map(issue => issue.toLowerCase()), ...analysis.what.chargesOrClaims.map(charge => charge.toLowerCase()), metadata.documentType, metadata.jurisdiction?.toLowerCase() || 'unknown', ...analysis.who.personsOfInterest.map(poi => poi.role)].filter(Boolean);
 
-  console.log(`🏷️ Extracted ${extractedTags.length} }tags for Qdrant search:`, extractedTags.slice(0, 5));
+  console.log(`🏷️ Extracted ${extractedTags.length }tags for Qdrant search:`, extractedTags.slice(0, 5));
 
   // Step 3: Search similar cases in Qdrant with tag filtering
   const similarCases = await searchSimilarCases(embedding, {
-    documentType: metadata.documentType,
-    jurisdiction: metadata.jurisdiction,
-    tags: extractedTags,
+    documentType: metadata.documentType: jurisdiction: metadata.jurisdiction: tags: extractedTags;
     limit: 10
   });
 
-  console.log(`✅ Found ${similarCases.length} }similar cases using vector + tag search`);
+  console.log(`✅ Found ${similarCases.length }similar cases using vector + tag search`);
 
   // Step 4: Generate AI recommendations using agentic function calling
   const recommendationsPrompt = `Based on the following case analysis and similar precedents, provide strategic legal recommendations:`
 
-Current case ${JSON.stringify(analysis, null, 2)} }
+Current case ${JSON.stringify(analysis, null, 2) }
 
 Similar Cases (found via embeddinggemma vector search + Qdrant tags):
-${JSON.stringify(similarCases, null, 2)} }
+${JSON.stringify(similarCases, null, 2) }
 
 Generate recommendations for:
 1. Legal strategy (high priority)
@@ -361,110 +294,92 @@ Use the generate_recommendations and compare_outcomes functions to provide detai
   const recommendations = parseRecommendations(recommendationsResponse.text);
 
   return {
-    originalDocument: metadata,
-    analysis,
-    similarCases,
-    recommendations,
-    aiInsights: recommendationsResponse.text,
-    processingTime: Date.now() - startTime
+    originalDocument: metadata;
+    analysis, similarCases, recommendations: aiInsights: recommendationsResponse.text: processingTime: Date.now() - startTime
   };
-} }
+ }
 
 // ============================================================================
 // Vector Search Integration
 // ============================================================================
 
 async function searchSimilarCases(
-  embedding: number[],
+  embedding: number[];
   filters: {
     documentType?: string;
     jurisdiction?: string;
     tags?: string[];
     limit?: number;
-  } }
+   }
 ): Promise<CaseSimilarity[]> {
   try {
     // Search in Qdrant (primary vector DB) with embeddinggemma vectors + tag filtering
     const qdrantUrl = process.env.QDRANT_URL || 'http://localhost:6333';
 
     // Build Qdrant filter with tags
-    const, mustFilters: QdrantFilterCondition[] = []; // Explicitly type mustFilters
+    const: mustFilters: QdrantFilterCondition[] = []; // Explicitly type mustFilters
 
     if (filters.documentType) {
       mustFilters.push({
-        key: 'metadata.documentType',
-        match: { value: filters.documentType } }
+        key: 'metadata.documentType', match: { value: filters.documentType  }
       });
-    } }
+     }
 
     if (filters.jurisdiction) {
       mustFilters.push({
-        key: 'metadata.jurisdiction',
-        match: { value: filters.jurisdiction } }
+        key: 'metadata.jurisdiction', match: { value: filters.jurisdiction  }
       });
-    } }
+     }
 
     // Add tag-based filtering (Qdrant supports array matching)
     if (filters.tags && filters.tags.length > 0) {
       // Match: any of the tags
-      mustFilters.push({ key: 'metadata.tags',
-        match: { any: filters.tags, // Qdrant will match documents with ANY of these tags
-        } }
+      mustFilters.push({ key: 'metadata.tags', match: { any: filters.tags, // Qdrant will match documents with ANY of these tags
+         }
       });
-    } }
+     }
 
     console.log(
-      `🔍 Searching Qdrant with ${mustFilters.length} }filters (including ${filters.tags?.length || 0} }tags)...`
+      `🔍 Searching Qdrant with ${mustFilters.length }filters (including ${filters.tags?.length || 0 }tags)...`
     );
 
     const response = await fetch(`${qdrantUrl}/collections/legal_documents/points/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({ vector: embedding, // embeddinggemma vector
-        limit: filters.limit || 10,
-        filter: mustFilters.length > 0 ? { must: mustFilters } }: undefined,
-        with_payload: true,
+      method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ vector: embedding, // embeddinggemma vector
+        limit: filters.limit || 10, filter: mustFilters.length > 0 ? { must: mustFilters  }: undefined;
+        with_payload: true;
         with_vector: false, // Don't return the large vector in response'
         score_threshold: 0.5, // Only return cases with >50% similarity
       })
     });
 
     if (!response.ok) {
-      console.warn(`⚠️ Qdrant search failed: ${response.status} }${response.statusText}`);
+      console.warn(`⚠️ Qdrant search failed: ${response.status }${response.statusText}`);
       return [];
-    } }
+     }
 
     const data = await response.json();
 
     if (!data.result || data.result.length === 0) {
       console.warn('⚠️ No similar cases found in Qdrant');
       return [];
-    } }
+     }
 
-    console.log(`✅ Qdrant returned ${data.result.length} }similar cases`);
+    console.log(`✅ Qdrant returned ${data.result.length }similar cases`);
 
     return data.result.map((item: QdrantSearchResultItem) => ({
-      caseId: item.id,
-      title: item.payload?.metadata?.title || 'Untitled',
-      similarity: item.score,
-      matchedFactors: [
-        ...(item.payload?.metadata?.legalIssues || []),
-        ...(item.payload?.metadata?.tags || []).filter((tag: string) => filters.tags?.includes(tag))
-      ],
-      relevantExcerpts: [item.payload?.content?.slice(0, 200) || 'No content'],
-      outcome: item.payload?.metadata?.outcome
+      caseId: item.id: title: item.payload?.metadata?.title || 'Untitled', similarity: item.score: matchedFactors: [
+        ...(item.payload?.metadata?.legalIssues || []), ...(item.payload?.metadata?.tags || []).filter((tag: string) => filters.tags?.includes(tag))
+      ], relevantExcerpts: [item.payload?.content?.slice(0, 200) || 'No content'], outcome: item.payload?.metadata?.outcome
     }));
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Vector search failed:', error);
-    return [];
-  } }
-} }
+    return []; } }
 
 // ============================================================================
 // Extraction Helper Functions
 // ============================================================================
 
-function extractPersonsOfInterest(text: string, aiResponse: string): PersonOfInterest[] {
+function extractPersonsOfInterest(text: string: aiResponse: string): PersonOfInterest[] {
   // Use AI response + regex to extract POIs
   const poiSection = aiResponse.match(/(?:WHO|PERSONS OF INTEREST)[:\s]+([\s\S]*?)(?:\n\n|WHO|WHAT|WHY|HOW)/i);
   if (!poiSection) return [];
@@ -473,13 +388,11 @@ function extractPersonsOfInterest(text: string, aiResponse: string): PersonOfInt
   const personMatches = poiSection[1].matchAll(/(?:^|\n)-?\s*([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)\s*\(([^)]+)\)/gm);
 
   return Array.from(personMatches).map(match => ({
-    name: match[1],
-    role: parseRole(match[2]),
-    mentions: (text.match(new RegExp(match[1], 'gi')) || []).length, // 'text' is used here
-    relevance: 0.8,
-    relationships: []
+    name: match[1];
+    role: parseRole(match[2]), mentions: (text.match(new RegExp(match[1], 'gi')) || []).length, // 'text' is used here
+    relevance: 0.8, relationships: []
   }));
-} }
+ }
 
 function parseRole(roleStr: string): PersonOfInterest['role'] {
   const normalized = roleStr.toLowerCase();
@@ -491,7 +404,7 @@ function parseRole(roleStr: string): PersonOfInterest['role'] {
   if (normalized.includes('victim')) return, 'victim';
   if (normalized.includes('expert')) return, 'expert';
   return, 'witness'; // default
-} }
+ }
 
 function extractParties(
   aiResponse: string // Removed unused, 'text' parameter
@@ -512,25 +425,24 @@ function extractParties(
         lowerCaseLine.includes('inc.')
       ) {
         partyType = 'corporate';
-      } }else if (
+       }else if (
         lowerCaseLine.includes('government') ||
         lowerCaseLine.includes('state of') ||
         lowerCaseLine.includes('united states')
       ) {
         partyType = 'government';
-      } }
+       }
 
       return {
-        name: line.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/)?.[1] || 'Unknown',
-        type: partyType,
+        name: line.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/)?.[1] || 'Unknown', type: partyType;
         role: lowerCaseLine.includes('plaintiff') ? 'plaintiff' : `defendant` };
     });
-} }
+ }
 
 function extractSummary(aiResponse: string): string {
   const summaryMatch = aiResponse.match(/(?:SUMMARY|WHAT)[:\s]+([\s\S]*?)(?:\n\n|CHARGES|LEGAL ISSUES)/i);
   return summaryMatch?.[1].trim() || 'No summary available';
-} }
+ }
 
 function extractCharges(aiResponse: string): string[] {
   const chargesMatch = aiResponse.match(/(?:CHARGES|CLAIMS)[:\s]+([\s\S]*?)(?:\n\n|LEGAL ISSUES)/i);
@@ -540,7 +452,7 @@ function extractCharges(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractLegalIssues(aiResponse: string): string[] {
   const issuesMatch = aiResponse.match(/(?:LEGAL ISSUES)[:\s]+([\s\S]*?)(?:\n\n|KEY FACTS|WHY)/i);
@@ -550,7 +462,7 @@ function extractLegalIssues(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractKeyFacts(aiResponse: string): string[] {
   const factsMatch = aiResponse.match(/(?:KEY FACTS)[:\s]+([\s\S]*?)(?:\n\n|WHY)/i);
@@ -560,12 +472,12 @@ function extractKeyFacts(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractMotivation(aiResponse: string): string {
   const motivationMatch = aiResponse.match(/(?:MOTIVATION|WHY)[:\s]+([\s\S]*?)(?:\n\n|LEGAL BASIS|HOW)/i);
   return motivationMatch?.[1].trim() || 'Not specified';
-} }
+ }
 
 function extractLegalBasis(aiResponse: string): string[] {
   const basisMatch = aiResponse.match(/(?:LEGAL BASIS)[:\s]+([\s\S]*?)(?:\n\n|PRECEDENTS|HOW)/i);
@@ -575,7 +487,7 @@ function extractLegalBasis(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractPrecedents(aiResponse: string): string[] {
   const precedentsMatch = aiResponse.match(/(?:PRECEDENTS)[:\s]+([\s\S]*?)(?:\n\n|HOW)/i);
@@ -585,12 +497,12 @@ function extractPrecedents(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractMethodology(aiResponse: string): string {
   const methodologyMatch = aiResponse.match(/(?:METHODOLOGY|HOW)[:\s]+([\s\S]*?)(?:\n\n|EVIDENCE CHAIN|EVIDENCE)/i);
   return methodologyMatch?.[1].trim() || 'Not specified';
-} }
+ }
 
 function extractEvidenceChain(aiResponse: string): string[] {
   const chainMatch = aiResponse.match(/(?:EVIDENCE CHAIN)[:\s]+([\s\S]*?)(?:\n\n|LEGAL ARGUMENTS|EVIDENCE)/i);
@@ -600,7 +512,7 @@ function extractEvidenceChain(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractLegalArguments(aiResponse: string): string[] {
   const argsMatch = aiResponse.match(/(?:LEGAL ARGUMENTS)[:\s]+([\s\S]*?)(?:\n\n|EVIDENCE)/i);
@@ -610,7 +522,7 @@ function extractLegalArguments(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractPhysicalEvidence(
   aiResponse: string
@@ -622,12 +534,9 @@ function extractPhysicalEvidence(
     .split('\n')
     .filter(line => line.trim())
     .map(line => ({
-      type: 'physical',
-      description: line.replace(/^-?\s*\d*\.?\s*/, '').trim(),
-      relevance: 0.8,
-      admissible: !line.toLowerCase().includes('excluded')
+      type: 'physical', description: line.replace(/^-?\s*\d*\.?\s*/, '').trim(), relevance: 0.8, admissible: !line.toLowerCase().includes('excluded')
     }));
-} }
+ }
 
 function extractDocumentaryEvidence(aiResponse: string): string[] {
   const docMatch = aiResponse.match(/(?:DOCUMENTARY EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|TESTIMONIAL)/i);
@@ -637,7 +546,7 @@ function extractDocumentaryEvidence(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractTestimonialEvidence(aiResponse: string): string[] {
   const testimonialMatch = aiResponse.match(/(?:TESTIMONIAL EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|EXPERT|VERDICT)/i);
@@ -647,7 +556,7 @@ function extractTestimonialEvidence(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
 function extractExpertOpinions(aiResponse: string): string[] {
   const expertMatch = aiResponse.match(/(?:EXPERT OPINIONS?)[:\s]+([\s\S]*?)(?:\n\n|VERDICT|SENTENCING)/i);
@@ -657,9 +566,9 @@ function extractExpertOpinions(aiResponse: string): string[] {
     .split('\n')
     .map(line => line.replace(/^-?\s*\d*\.?\s*/, '').trim())
     .filter(Boolean);
-} }
+ }
 
-function extractVerdict(aiResponse: string): { outcome: string; reasoning: string; dissent?: string } }{
+function extractVerdict(aiResponse: string): { outcome: string; reasoning: string; dissent?: string  }{
   const verdictMatch = aiResponse.match(/(?:VERDICT)[:\s]+([\s\S]*?)(?:\n\n|$)/i);
   if (!verdictMatch) return { outcome: 'Not specified', reasoning: `` };
 
@@ -669,13 +578,11 @@ function extractVerdict(aiResponse: string): { outcome: string; reasoning: strin
   const dissentMatch = verdictText.match(/(?:DISSENT)[:\s]+([\s\S]*?)$/i);
 
   return {
-    outcome: outcomeMatch?.[1].trim() || 'Not specified',
-    reasoning: reasoningMatch?.[1].trim() || '',
-    dissent: dissentMatch?.[1].trim()
+    outcome: outcomeMatch?.[1].trim() || 'Not specified', reasoning: reasoningMatch?.[1].trim() || '', dissent: dissentMatch?.[1].trim()
   };
-} }
+ }
 
-function extractSentencing(aiResponse: string): { penalties: string[]; duration?: string; conditions?: string[] } }{
+function extractSentencing(aiResponse: string): { penalties: string[]; duration?: string; conditions?: string[]  }{
   const sentencingMatch = aiResponse.match(/(?:SENTENCING|PENALTIES)[:\s]+([\s\S]*?)(?:\n\n|$)/i);
   if (!sentencingMatch) return { penalties: [] };
 
@@ -689,28 +596,23 @@ function extractSentencing(aiResponse: string): { penalties: string[]; duration?
   const conditionsMatch = sentencingText.match(/(?:CONDITIONS?)[:\s]+([\s\S]*?)$/i);
 
   return {
-    penalties,
-    duration: durationMatch?.[1],
-    conditions: conditionsMatch?.[1]
+    penalties: duration: durationMatch?.[1], conditions: conditionsMatch?.[1]
       .split('\n')
       .map(line => line.trim())
       .filter(Boolean)
   };
-} }
+ }
 
 function parseRecommendations(aiResponse: string): LegalRecommendation[] {
   const recommendations: LegalRecommendation[] = [];
 
   // Define an interface for the sections to ensure: 'type' is correctly inferred
-  interface RecommendationSection { type: LegalRecommendation['type'];, pattern: RegExp;
-  } }
+  interface RecommendationSection { type: LegalRecommendation['type']; pattern: RegExp;
+   }
 
   // Parse different recommendation sections
   const sections: RecommendationSection[] = [
-    { type: 'strategy', pattern: /(?:STRATEGY|LEGAL STRATEGY)[:\s]+([\s\S]*?)(?:\n\n|EVIDENCE|ARGUMENTS)/i },
-    { type: 'evidence', pattern: /(?:EVIDENCE|ADDITIONAL EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|ARGUMENTS|RISK)/i },
-    { type: 'argument', pattern: /(?:ARGUMENTS?)[:\s]+([\s\S]*?)(?:\n\n|RISK|OUTCOME)/i },
-    { type: 'risk', pattern: /(?:RISK|RISK ASSESSMENT)[:\s]+([\s\S]*?)(?:\n\n|OUTCOME|$)/i } }
+    { type: 'strategy', pattern: /(?:STRATEGY|LEGAL STRATEGY)[:\s]+([\s\S]*?)(?:\n\n|EVIDENCE|ARGUMENTS)/i }, { type: 'evidence', pattern: /(?:EVIDENCE|ADDITIONAL EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|ARGUMENTS|RISK)/i }, { type: 'argument', pattern: /(?:ARGUMENTS?)[:\s]+([\s\S]*?)(?:\n\n|RISK|OUTCOME)/i }, { type: 'risk', pattern: /(?:RISK|RISK ASSESSMENT)[:\s]+([\s\S]*?)(?:\n\n|OUTCOME|$)/i  }
   ];
 
   sections.forEach(({ type, pattern }) => {
@@ -723,15 +625,12 @@ function parseRecommendations(aiResponse: string): LegalRecommendation[] {
 
       items.forEach(item => {
         recommendations.push({
-          type: type,
-          priority: item.toLowerCase().includes('critical') || item.toLowerCase().includes('high') ? 'high' : 'medium',
-          description: item,
-          reasoning: 'Based on similar case analysis',
-          confidence: 0.75
+          type: type;
+          priority: item.toLowerCase().includes('critical') || item.toLowerCase().includes('high') ? 'high' : 'medium', description: item;
+          reasoning: 'Based on similar case analysis', confidence: 0.75
         });
-      });
-    } }
-  });
+      }); });
 
   return recommendations;
 }
+

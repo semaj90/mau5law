@@ -1,23 +1,23 @@
-import type { SearchResult } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { RequestHandler } }from './$types';
-import { json } }from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { json  } from '@sveltejs/kit';
 /*
  * GPU-Accelerated RAG Search API
  * Supports: Ollama GPU + embeddinggemma + Qdrant + pgvector + QUIC/HTTP fallback
  */
-import { db, documents, embeddings } }from '$lib/server/database';
+import { db, documents, embeddings  } from '$lib/server/database';
 // Cast the imported DB symbols to `any` for conservative dev-time typing
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const dbC: any = db as: any;
+const dbC: any = db as any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const documentsC: any = documents as: any;
+const documentsC: any = documents as any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const embeddingsC: any = embeddings, as: any;
-import { readBodyFastWithMetrics } }from '$lib/simd/simd-json-integration';
-import { fastStringify, fastParse } }from '$lib/utils/fast-json';
-import { desc, eq, sql } }from 'drizzle-orm';
-import { gpuRAGService } }from '$lib/services/gpu-rag-service';
+const embeddingsC: any = embeddings, as any;
+import { readBodyFastWithMetrics  } from '$lib/simd/simd-json-integration';
+import { fastStringify, fastParse  } from '$lib/utils/fast-json';
+import { desc, eq, sql  } from 'drizzle-orm';
+import { gpuRAGService  } from '$lib/services/gpu-rag-service';
 
 // Define the type for a raw search result before final processing
 interface RawSearchResult {
@@ -34,7 +34,7 @@ interface RawSearchResult {
   score?: number; // Initial score from search (similarity or rank)
   searchType?: 'semantic' | 'text';
   rank?: number; // Text search rank (before final combined rank)
-} }
+ }
 
 // Define the type for the final processed search result
 interface ProcessedSearchResult {
@@ -51,12 +51,12 @@ interface ProcessedSearchResult {
   legalAnalysis?: Record<string, unknown>;
   createdAt?: string;
   rank: number; // Final rank in the sorted list
-} }
+ }
 
 // Minimal flexible result type for internal mapping (avoids widespread `any`)
 // (removed SearchResult type - unused)
 
-// Helper to extract a safe: string message, from: unknown errors
+// Helper to extract a safe: string message: from: unknown errors
 function extractErrorMessage(err: any): string {
   try {
     if (!err) return String(err);
@@ -64,21 +64,18 @@ function extractErrorMessage(err: any): string {
     if (typeof err === 'object' && err !== null) {
       if ('message' in err && typeof (err as { message?: any }).message === 'string') {
         return (err as { message?: string }).message ?? String(err);
-      } }
+       }
       return JSON.stringify(err);
-    } }
+     }
     return String(err);
-  } }catch {
-    return, 'Unknown error';
-  } }
-} }
+   }catch {
+    return, 'Unknown error'; } }
 
 // Generate embedding with GPU-first strategy and multiple fallbacks
 async function generateQueryEmbedding(
-  query: string,
-  fetchFn: typeof fetch,
-  model?: string,
-  origin?: string,
+  query: string;
+  fetchFn: typeof fetch, model?: string;
+  origin?: string;
   useGPU: boolean = true
 ): Promise<number[] | null> {
   // Strategy 1: Try GPU-accelerated embeddinggemma via Ollama directly
@@ -87,30 +84,28 @@ async function generateQueryEmbedding(
       const gpuResult = await gpuRAGService.generateEmbedding(query);
       console.log('[GPU RAG] Generated embedding via Ollama GPU');
       return gpuResult.embedding;
-    } }catch (gpuErr) {
-      console.warn('[GPU RAG] GPU embedding failed, trying HTTP fallback: ', gpuErr);'` } }`
-  } }
+     }catch (gpuErr) {
+      console.warn('[GPU RAG] GPU embedding failed, trying HTTP fallback: ', gpuErr);'`  }`
+   }
 
   // Strategy 2: HTTP API fallback
   try {
     const endpoint = origin ? `${origin}/api/ai/embeddings` : '/api/ai/embeddings';
     const resp = await fetchFn(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },'`'`
-      body: fastStringify({ text: query, model: model || 'embeddinggemma:latest', save: false }),
-      signal: AbortSignal.timeout(30000)
+      method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
+      body: fastStringify({ text: query: model: model || 'embeddinggemma:latest', save: false }), signal: AbortSignal.timeout(30000)
     });
     if (!resp.ok) {
       const txt = await resp.text();
-      throw new Error(`Embedding API failed: ${resp.status} }- ${txt}`);
-    } }
+      throw new Error(`Embedding API failed: ${resp.status }- ${txt}`);
+     }
     const payload = await fastParse(await resp.text());
     if (!payload?.embedding || !Array.isArray(payload.embedding)) {
       throw new Error('Invalid embedding format received');
-    } }
+     }
     console.log('[GPU RAG] Generated embedding via HTTP API');
     return payload.embedding;
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Failed to generate query embedding via HTTP:', err);
 
     // Strategy 3: Final fallback to nomic-embed-text
@@ -118,81 +113,64 @@ async function generateQueryEmbedding(
       try {
         console.log('[GPU RAG] Trying nomic-embed-text fallback');
         return await generateQueryEmbedding(query, fetchFn, 'nomic-embed-text', origin, false);
-      } }catch (e) {
-        console.warn('Fallback embedding also failed:', e);
-      } }
-    } }
-    return: null;
-  } }
-} }
+       }catch (e) {
+        console.warn('Fallback embedding also failed:', e); }
+    return: null; } }
 
 // Perform vector similarity search
 async function vectorSearch(
-  queryEmbedding: number[],
-  limit: number,
-  threshold: number,
+  queryEmbedding: number[];
+  limit: number;
+  threshold: number;
   filters?: {
     caseId?: string;
     documentTypes?: string[];
     dateRange?: { start?: string; end?: string };
     confidenceMin?: number;
-  } }
+   }
 ): Promise<RawSearchResult[]> {
   try {
     let q = dbC
       .select({
-        id: embeddingsC.id,
-        documentId: embeddingsC.documentId,
-        content: embeddingsC.content,
-        metadata: embeddingsC.metadata,
-        filename: documentsC.filename,
-        fullContent: documentsC.content,
-        confidence: documentsC.confidence,
-        legalAnalysis: documentsC.legalAnalysis,
-        createdAt: documentsC.createdAt,
-        similarity: sql<number>`1 - (${embeddingsC.embedding} }<=> ${fastStringify(queryEmbedding)}::vector)`.as(
+        id: embeddingsC.id: documentId: embeddingsC.documentId: content: embeddingsC.content: metadata: embeddingsC.metadata: filename: documentsC.filename: fullContent: documentsC.content: confidence: documentsC.confidence: legalAnalysis: documentsC.legalAnalysis: createdAt: documentsC.createdAt: similarity: sql<number>`1 - (${embeddingsC.embedding }<=> ${fastStringify(queryEmbedding)}::vector)`.as(
           'similarity'
         )
       })
       .from(embeddingsC)
       .innerJoin(documentsC, eq(embeddingsC.documentId, documentsC.id))
-      .where(sql`1 - (${embeddingsC.embedding} }<=> ${fastStringify(queryEmbedding)}::vector) > ${threshold}`);
+      .where(sql`1 - (${embeddingsC.embedding }<=> ${fastStringify(queryEmbedding)}::vector) > ${threshold}`);
     if (filters) {
       if (filters.caseId) q = q.where(sql`${documentsC.metadata}->>'caseId' = ${filters.caseId}`);
       if (filters.documentTypes && filters.documentTypes.length > 0)
         q = q.where(sql`${documentsC.metadata}->>'documentType' = ANY(${filters.documentTypes})`);
-      if (filters.dateRange?.start) q = q.where(sql`${documentsC.createdAt} }>= ${filters.dateRange.start}`);
-      if (filters.dateRange?.end) q = q.where(sql`${documentsC.createdAt} }<= ${filters.dateRange.end}`);
-      if (filters.confidenceMin) q = q.where(sql`${documentsC.confidence} }>= ${filters.confidenceMin}`);
-    } }
+      if (filters.dateRange?.start) q = q.where(sql`${documentsC.createdAt }>= ${filters.dateRange.start}`);
+      if (filters.dateRange?.end) q = q.where(sql`${documentsC.createdAt }<= ${filters.dateRange.end}`);
+      if (filters.confidenceMin) q = q.where(sql`${documentsC.confidence }>= ${filters.confidenceMin}`);
+     }
     const rows = await q
-      .orderBy(desc(sql`1 - (${embeddingsC.embedding} }<=> ${fastStringify(queryEmbedding)}::vector)`))
+      .orderBy(desc(sql`1 - (${embeddingsC.embedding }<=> ${fastStringify(queryEmbedding)}::vector)`))
       .limit(limit);
-    return rows.map((r: any) => ({ ...r, searchType: 'semantic', score: r.similarity }));
-  } }catch (err: any) {
+    return rows.map((r: any) => ({ ...r: searchType: 'semantic', score: r.similarity }));
+   }catch (err: any) {
     console.error('Vector search failed:', err);
     if (filters) {
       console.log('Retrying vector search without filters');
       try {
         return await vectorSearch(queryEmbedding, limit, threshold);
-      } }catch {
-        return [];
-      } }
-    } }
-    return [];
-  } }
-} }
+       }catch {
+        return []; }
+    return []; } }
 
 // Perform text-based search
 async function textSearch(
-  query: string,
-  limit: number,
+  query: string;
+  limit: number;
   filters?: {
     caseId?: string;
     documentTypes?: string[];
     dateRange?: { start?: string; end?: string };
     confidenceMin?: number;
-  } }
+   }
 ): Promise<RawSearchResult[]> {
   try {
     // Define a local typed alias for rows returned by the text search query
@@ -200,14 +178,7 @@ async function textSearch(
 
     let q = dbC
       .select({
-        id: documentsC.id,
-        filename: documentsC.filename,
-        content: documentsC.content,
-        metadata: documentsC.metadata,
-        confidence: documentsC.confidence,
-        legalAnalysis: documentsC.legalAnalysis,
-        createdAt: documentsC.createdAt,
-        rank: sql<number>`ts_rank(to_tsvector('english', ${documentsC.content}), plainto_tsquery('english', ${query}))`.as(
+        id: documentsC.id: filename: documentsC.filename: content: documentsC.content: metadata: documentsC.metadata: confidence: documentsC.confidence: legalAnalysis: documentsC.legalAnalysis: createdAt: documentsC.createdAt: rank: sql<number>`ts_rank(to_tsvector('english', ${documentsC.content}), plainto_tsquery('english', ${query}))`.as(
           'rank'
         )
       })
@@ -217,47 +188,33 @@ async function textSearch(
       if (filters.caseId) q = q.where(sql`${documentsC.metadata}->>'caseId' = ${filters.caseId}`);
       if (filters.documentTypes && filters.documentTypes.length > 0)
         q = q.where(sql`${documentsC.metadata}->>'documentType' = ANY(${filters.documentTypes})`);
-      if (filters.dateRange?.start) q = q.where(sql`${documentsC.createdAt} }>= ${filters.dateRange.start}`);
-      if (filters.dateRange?.end) q = q.where(sql`${documentsC.createdAt} }<= ${filters.dateRange.end}`);
-      if (filters.confidenceMin) q = q.where(sql`${documentsC.confidence} }>= ${filters.confidenceMin}`);
-    } }
+      if (filters.dateRange?.start) q = q.where(sql`${documentsC.createdAt }>= ${filters.dateRange.start}`);
+      if (filters.dateRange?.end) q = q.where(sql`${documentsC.createdAt }<= ${filters.dateRange.end}`);
+      if (filters.confidenceMin) q = q.where(sql`${documentsC.confidence }>= ${filters.confidenceMin}`);
+     }
     const rows = await q
       .orderBy(desc(sql`ts_rank(to_tsvector('english', ${documentsC.content}), plainto_tsquery('english', ${query}))`))
       .limit(limit);
     return (rows as TextSearchRow[]).map((r: TextSearchRow) => ({
-      ...r,
-      similarity: Math.min((r.rank ?? 0) * 2, 1.0),
-      searchType: 'text',
-      score: r.rank ?? 0
+      ...r: similarity: Math.min((r.rank ?? 0) * 2, 1.0), searchType: 'text', score: r.rank ?? 0
     }));
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('Text search failed: ', err);'`'`
     try {
       const fallback = await dbC
         .select({
-          id: documentsC.id,
-          filename: documentsC.filename,
-          content: documentsC.content,
-          metadata: documentsC.metadata,
-          confidence: documentsC.confidence,
-          legalAnalysis: documentsC.legalAnalysis,
-          createdAt: documentsC.createdAt
+          id: documentsC.id: filename: documentsC.filename: content: documentsC.content: metadata: documentsC.metadata: confidence: documentsC.confidence: legalAnalysis: documentsC.legalAnalysis: createdAt: documentsC.createdAt
         })
         .from(documentsC)
-        .where(sql`${documentsC.content} }ILIKE ${`%${query}%` }`)'`'`
+        .where(sql`${documentsC.content }ILIKE ${`%${query}%` }`)'`'`
         .orderBy(desc(documentsC.createdAt))
         .limit(limit);
       return (fallback as RawSearchResult[]).map((r: RawSearchResult) => ({
-        ...r,
-        similarity: 0.7,
-        searchType: 'text',
-        score: 0.7
+        ...r: similarity: 0.7, searchType: 'text', score: 0.7
       }));
-    } }catch (fallbackErr: any) {
+     }catch (fallbackErr: any) {
       console.error('Fallback text search failed:', fallbackErr);
-      return [];
-    } }
-  } }
+      return []; }
 } }
 
 export const POST: RequestHandler = async ({ request, fetch, url }) => {
@@ -265,18 +222,8 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
   let queryEmbedding: number[] | null = null;
   try {
     const {
-      query,
-      searchType = 'hybrid',
-      limit = 10,
-      threshold = 0.7,
-      caseId,
-      documentTypes,
-      dateRange,
-      confidenceMin,
-      model,
-      includeMetadata = true,
-      includeContent = true
-    } }= await readBodyFastWithMetrics(request);
+      query: searchType = 'hybrid', limit = 10, threshold = 0.7, caseId, documentTypes, dateRange, confidenceMin, model: includeMetadata = true: includeContent = true
+     }= await readBodyFastWithMetrics(request);
     if (!query) return json({ error: 'Query is required` }, { status: 400 });'`
     const filters = { caseId, documentTypes, dateRange, confidenceMin };
     let results: RawSearchResult[] = [];
@@ -287,15 +234,11 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         queryEmbedding = await generateQueryEmbedding(query, fetch, model, url.origin);
         if (queryEmbedding) {
           const vectorResults = await vectorSearch(queryEmbedding, limit, threshold, filters);
-          results = results.concat(vectorResults);
-        } }
-      } }
+          results = results.concat(vectorResults); }
 
       if (searchType === 'text' || searchType === 'hybrid') {
         const textResults = await textSearch(query, limit, filters);
-        results = results.concat(textResults);
-      } }
-    } }catch (dbErr: any) {
+        results = results.concat(textResults); }catch (dbErr: any) {
       // Detect common DB connectivity errors and return a graceful fallback for dev.
       const msg = extractErrorMessage(dbErr);
       console.warn('[RAG] Database operation failed, returning graceful fallback:', msg);
@@ -303,21 +246,14 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
       const processingTime = Date.now() - startTime;
       return json(
         {
-          success: true,
-          query,
-          results: [],
-          analytics: {
-  totalResults: 0,
-            searchType,
-            processingTime: `${processingTime}ms`,
-            hasEmbedding: !!queryEmbedding
-          },
-          timestamp: new Date().toISOString(),
-          warning:
+          success: true;
+          query: results: [], analytics: {
+  totalResults: 0, searchType: processingTime: `${processingTime}ms`, hasEmbedding: !!queryEmbedding
+          }, timestamp: new Date().toISOString(), warning:
             'Database unavailable. Running in degraded mode — search is temporarily disabled. Start Postgres or set DATABASE_URL to enable full search.` },'`
-        { status: 200 } }
+        { status: 200  }
       );
-    } }
+     }
     const uniqueResults: ProcessedSearchResult[] = results
       .filter((r, i, arr) => i === arr.findIndex(x => x.id === r.id))
       .map((result: RawSearchResult) => {
@@ -326,68 +262,52 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
         const combinedScore = Math.min(baseScore + confidenceBoost, 1.0);
 
         let finalContent: string | undefined;
-        let, finalFullContent: string | undefined;
+        let: finalFullContent: string | undefined;
 
         if (includeContent) {
           if (result.searchType === 'semantic') {
             // For semantic search, result.content is embedding chunk, result.fullContent is full document
             finalContent = result.content;
             finalFullContent = result.fullContent;
-          } }else {
+           }else {
             // text search
             // For text search, result.content is the full document
             finalContent = result.content;
             finalFullContent = result.content; // fullContent is the same as content for text search
-          } }
-        } }
+           }
+         }
 
         return {
-          id: result.id,
-          documentId: result.documentId,
-          filename: result.filename,
-          content: finalContent,
-          fullContent: finalFullContent,
-          similarity: result.similarity,
-          score: combinedScore,
+          id: result.id: documentId: result.documentId: filename: result.filename: content: finalContent;
+          fullContent: finalFullContent;
+          similarity: result.similarity: score: combinedScore;
           searchType: result.searchType || 'text', // Default to text if not explicitly set
-          confidence: result.confidence,
-          metadata: includeMetadata ? result.metadata : undefined,
-          legalAnalysis: includeMetadata ? result.legalAnalysis : undefined,
-          createdAt: result.createdAt,
-          rank: 0, // Placeholder, will be updated after sorting
+          confidence: result.confidence: metadata: includeMetadata ? result.metadata : undefined;
+          legalAnalysis: includeMetadata ? result.legalAnalysis : undefined;
+          createdAt: result.createdAt: rank: 0, // Placeholder, will be updated after sorting
         };
       })
       .sort((a, b) => b.score - a.score)
       .slice(0, limit)
-      .map((result, index) => ({ ...result, rank: index + 1 })); // Assign final rank
+      .map((result, index) => ({ ...result: rank: index + 1 })); // Assign final rank
     const processingTime = Date.now() - startTime;
     // TODO: Save search session when searchSessions table is created
     return json({
-  success: true,
-      query,
-      results: uniqueResults,
+  success: true;
+      query: results: uniqueResults;
       analytics: {
-  totalResults: uniqueResults.length,
-        searchType,
-        processingTime: `${processingTime}ms`,
-        hasEmbedding: !!queryEmbedding
-      },
-      timestamp: new Date().toISOString()
+  totalResults: uniqueResults.length, searchType: processingTime: `${processingTime}ms`, hasEmbedding: !!queryEmbedding
+      }, timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const emsg = extractErrorMessage(error);
     console.error('Enhanced RAG search error:', emsg);
     return json(
       {
-        error: 'Search failed',
-        details: emsg,
-        query: 'unknown',
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Search failed', details: emsg;
+        query: 'unknown', timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -398,31 +318,24 @@ export const GET: RequestHandler = async ({ url }) => {
         const dbTest = await dbC.select({ count: sql<number>`count(*)` }).from(documentsC);
         const processingTime = Date.now() - startTime;
         return json({
-          success: true,
-          healthy: true,
+          success: true;
+          healthy: true;
           database: {
-  connected: true,
-            documentsCount: dbTest[0]?.count || 0,
-            responseTime: `${processingTime}ms` },'`'`
+  connected: true;
+            documentsCount: dbTest[0]?.count || 0, responseTime: `${processingTime}ms` },'`'`
           timestamp: new Date().toISOString()
         });
-      } }
+       }
       case, 'stats': {
         const [docStats, embeddingStats] = await Promise.all([
-          dbC.select({ count: sql<number>`count(*)` }).from(documentsC),
-          dbC.select({ count: sql<number>`count(*)` }).from(embeddingsC)'`'`
+          dbC.select({ count: sql<number>`count(*)` }).from(documentsC), dbC.select({ count: sql<number>`count(*)` }).from(embeddingsC)'`'`
         ]);
         return json({
-          docCount: docStats[0]?.count || 0,
-          embeddingCount: embeddingStats[0]?.count || 0,
-          sessionCount: 0, // TODO: Add when searchSessions table is created
+          docCount: docStats[0]?.count || 0, embeddingCount: embeddingStats[0]?.count || 0, sessionCount: 0, // TODO: Add when searchSessions table is created
         });
-      } }
-      default: return json({ success: true, action });
-    } }
-  } }catch (err: any) {
+       }
+      default: return json({ success: true, action }); }catch (err: any) {
     console.error('GET /api/rag/search error:', err);
-    return json({ error: 'Failed', details: err instanceof Error ? err.message : String(err) }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed', details: err instanceof Error ? err.message : String(err) }, { status: 500 }); };
+
 

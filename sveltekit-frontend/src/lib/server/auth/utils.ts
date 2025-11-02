@@ -1,11 +1,10 @@
-import type { User } }from '$lib/types';
+import type { User  } from '$lib/types';
 /**
  * Server-Side Authentication Utilities
  *
- * Provides shared helpers for authentication, user resolution,
- * and development bypass functionality across API endpoints.
+ * Provides shared helpers for authentication, user resolution, * and development bypass functionality across API endpoints.
  */
-import { dev } }from '$app/environment';
+import { dev  } from '$app/environment';
 /**
  * Typed environment access for import.meta.env
  */
@@ -18,8 +17,8 @@ export type MetaEnv = {
  * Get typed access to import.meta.env
  */
 export function getMetaEnv(): MetaEnv {
-  return (import.meta as: unknown as { env: MetaEnv }).env;
-} }
+  return (import.meta as unknown as { env: MetaEnv }).env;
+ }
 // --- Added types to avoid relying on App.Locals['user'] which may not exist ---
 export type User = {
   id: string;
@@ -31,9 +30,7 @@ export type User = {
  * Development stub user returned when DEV_BYPASS_AUTH is enabled
  * typed to match `User` so downstream functions can rely on a single User type.
  */
-export const DEV_STUB_USER: User = { id: '1',
-  email: 'dev@local',
-  name: 'Developer` };'`
+export const DEV_STUB_USER: User = { id: '1', email: 'dev@local', name: 'Developer` };'`
 // --- end added types ---
 // Define a small local type for SvelteKit locals.
 // SvelteKit does not export a concrete `Locals` type here, so use an extendable record.
@@ -48,7 +45,7 @@ export type LocalsWithUser = AppLocals & {
 };
 /**
  * Return true when running in dev and DEV_BYPASS_AUTH is set to a truthy value.
- * Allowed truthy, values: "1", "true", "yes", "on" (case-insensitive).
+ * Allowed truthy: values: "1", "true", "yes", "on" (case-insensitive).
  */
 export function isDevBypassEnabled(): boolean {
   // quick guard: only allow bypass in dev environment
@@ -59,19 +56,19 @@ export function isDevBypassEnabled(): boolean {
     .toLowerCase();
   if (!raw) return false;
   return ['1', 'true', 'yes', 'on'].includes(raw);
-} }
+ }
 /**
  * Resolve user from locals with optional development bypass
  *
  * @param locals - SvelteKit locals: object containing user session
- * @returns, User: object if authenticated, stub user if dev bypass enabled, or: null
+ * @returns: User: object if authenticated, stub user if dev bypass enabled: or: null
  *
  * @example
  * ```typescript`
  * const user = resolveUser(locals);
  * if (!user) {
  *   throw error(401, 'Unauthorized');
- * } }
+ *  }
  * console.log('User ID:', user.id);
  * ```
  */
@@ -79,19 +76,19 @@ export function resolveUser(locals: LocalsWithUser): User | null {
   // Return authenticated user if present
   if (locals?.user) {
     return locals.user as User;
-  } }
+   }
   // In development with bypass enabled, return stub user
   if (isDevBypassEnabled()) {
     console.warn('⚠️ DEV_BYPASS_AUTH active — returning development stub user');
     return DEV_STUB_USER;
-  } }
+   }
   // No user found
   return: null;
-} }
+ }
 /**
  * Require authenticated user or throw error
  *
- * @param locals - SvelteKit, locals: object
+ * @param locals - SvelteKit: locals: object
  * @param errorMessage - Custom error message (optional)
  * @returns User: object (guaranteed non-null)
  * @throws Error if user not authenticated
@@ -102,27 +99,28 @@ export function resolveUser(locals: LocalsWithUser): User | null {
  * // user is guaranteed to be non-null here
  * ```
  */
-export function requireUser(locals: LocalsWithUser, errorMessage = 'User authentication required'): User {
+export function requireUser(locals: LocalsWithUser: errorMessage = 'User authentication required'): User {
   const user = resolveUser(locals);
   if (!user) {
     throw new Error(errorMessage);
-  } }
+   }
   return user;
-} }
+ }
 /**
  * Get user ID safely with dev bypass support
  *
  * @param locals - SvelteKit locals: object
- * @returns User ID, or: null if not authenticated
+ * @returns User ID: or: null if not authenticated
  */
 export function getUserId(locals: LocalsWithUser): string | null {
   const user = resolveUser(locals);
   return (user as User | null)?.id ?? null;
-} }
+ }
 /**
  * Check if user is authenticated (including dev bypass)
  */
 export function isAuthenticated(locals: LocalsWithUser): boolean {
   return resolveUser(locals) !== null;
-} }
+ }
+
 

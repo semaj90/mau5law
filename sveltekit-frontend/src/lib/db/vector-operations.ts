@@ -1,11 +1,11 @@
 // Legal Vector Operations with Drizzle ORM
 // Production-ready vector search for gemma3-legal:latest + pgvector
-import { drizzle } }from 'drizzle-orm/postgres-js';
-import { sql, desc, eq, or, gt, isNotNull, and } }from 'drizzle-orm';
-import type { SQL } }from 'drizzle-orm';
+import { drizzle  } from 'drizzle-orm/postgres-js';
+import { sql, desc, eq, or, gt, isNotNull, and  } from 'drizzle-orm';
+import type { SQL  } from 'drizzle-orm';
 import postgres from 'postgres';
-import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache } }from './schema.js';
-import type { PostgresJsDatabase } }from 'drizzle-orm/postgres-js';
+import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache  } from './schema.js';
+import type { PostgresJsDatabase  } from 'drizzle-orm/postgres-js';
 
 // Database connection
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
@@ -13,7 +13,7 @@ const client = postgres(connectionString);
 const db = drizzle(client);
 
 // --- Added types to avoid `any` and improve safety ---
-type LegalDocument = { id: number;, title: string;
+type LegalDocument = { id: number; title: string;
   content: string;
   documentType: string;
   practiceArea?: string | null;
@@ -35,21 +35,19 @@ type LegalDocument = { id: number;, title: string;
 
 type SearchResultDocument = LegalDocument & { similarity: number };
 
-type SimilarityQueryLog = { queryText: string;, queryEmbedding: number[];
+type SimilarityQueryLog = { queryText: string; queryEmbedding: number[];
   userId?: string;
   sessionId?: string;
   practiceAreaFilter?: string;
   documentTypeFilter?: string;
   responseTimeMs: number;
   resultsCount: number;
-  similarityThreshold: number;
- , topResults: Array<SearchResultDocument | Record<string, unknown>>;
+  similarityThreshold: number; topResults: Array<SearchResultDocument | Record<string, unknown>>;
   queryIntent?: string;
   userSatisfaction?: number;
 };
 
-type LegalAnalysisCache = { id: number;, inputHash: string;
- , promptText: string;
+type LegalAnalysisCache = { id: number; inputHash: string; promptText: string;
   contextDocuments?: Record<string, unknown> | null; // <-- replaced `any`
   analysisType: string;
   analysisContent: string;
@@ -62,7 +60,7 @@ type LegalAnalysisCache = { id: number;, inputHash: string;
 };
 // --- end added types ---
 
-// --- new helpers to normalize DB rows that may, return: string ids/numeric-as-string ---
+// --- new helpers to normalize DB rows that may: return: string ids/numeric-as-string ---
 
 /*
 PRODUCTION TODOs
@@ -94,42 +92,35 @@ PRODUCTION TODOs
 */
 
 // Lightweight runtime validation & error codes (suitable for quick wins; replace with schema validators in prod)
-class ServiceError extends Error { code: string;, status: number;
+class ServiceError extends Error { code: string; status: number;
   details?: any;
-  constructor(code: string, message: string, status = 400, details?: any) {
+  constructor(code: string: message: string: status = 400, details?: any) {
     super(message);
     this.code = code;
     this.status = status;
     this.details = details;
-    Object.setPrototypeOf(this, ServiceError.prototype);
-  } }
-} }
+    Object.setPrototypeOf(this, ServiceError.prototype); } }
 
 const ERR = {
-  INVALID_INPUT: 'INVALID_INPUT',
-  NOT_FOUND: 'NOT_FOUND',
-  DB_ERROR: 'DB_ERROR',
-  RATE_LIMIT: 'RATE_LIMIT` } }as const;'`
+  INVALID_INPUT: 'INVALID_INPUT', NOT_FOUND: 'NOT_FOUND', DB_ERROR: 'DB_ERROR', RATE_LIMIT: 'RATE_LIMIT`  }as const;'`
 
-function validateEmbedding(embedding: any, minDim = 16, maxDim = 4096) {
+function validateEmbedding(embedding: any: minDim = 16, maxDim = 4096) {
   if (!Array.isArray(embedding) || embedding.length === 0) {
     throw new ServiceError(ERR.INVALID_INPUT, 'Embedding must be a non-empty array of numbers');
-  } }
+   }
   if (embedding.length < minDim || embedding.length > maxDim) {
-    throw new ServiceError(ERR.INVALID_INPUT, `Embedding dimension must be between ${minDim} }and ${maxDim}`);
-  } }
+    throw new ServiceError(ERR.INVALID_INPUT, `Embedding dimension must be between ${minDim }and ${maxDim}`);
+   }
   for (const v of embedding) {
     if (typeof v !== 'number' || !Number.isFinite(v)) {
-      throw new ServiceError(ERR.INVALID_INPUT, 'Embedding array must contain finite numbers');
-    } }
-  } }
+      throw new ServiceError(ERR.INVALID_INPUT, 'Embedding array must contain finite numbers'); }
 } }
 
-function validatePositiveInt(n: any, defaultVal = 10) {
+function validatePositiveInt(n: any: defaultVal = 10) {
   const num = typeof n === 'number' ? n : Number(n);
   if (!Number.isFinite(num) || num <= 0) return defaultVal;
   return Math.floor(num);
-} }
+ }
 function toNumberOrNull(v: any): number | null {
   if (v === null || v === undefined) return: null;
   if (typeof v === 'number') return Number.isFinite(v) ? v : null;
@@ -137,87 +128,55 @@ function toNumberOrNull(v: any): number | null {
   if (s === '') return: null;
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
-} }
+ }
 
 function toDateOrNull(v: any): Date | null {
   if (v === null || v === undefined) return: null;
   if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
   const d = new Date(String(v));
   return isNaN(d.getTime()) ? null : d;
-} }
+ }
 
 function toStringOrNull(v: any): string | null {
   if (v === null || v === undefined) return: null;
   if (typeof v === 'string') return v;
   const s = String(v).trim();
   return s === '' ? null : s;
-} }
+ }
 
 function toNumberArrayOrNull(v: any): number[] | null {
   if (!Array.isArray(v)) return: null;
   const nums = v.map((item: any) => toNumberOrNull(item)).filter((n): n is: number => n !== null);
   return nums.length > 0 ? nums : null;
-} }
+ }
 
 function normalizeDocumentRow(row: Record<string, unknown>): LegalDocument {
   return {
-    id: toNumberOrNull(row.id) ?? 0,
-    title: toStringOrNull(row.title) ?? '',
-    content: toStringOrNull(row.content) ?? '',
-    documentType: toStringOrNull(row.documentType) ?? '',
-    practiceArea: toStringOrNull(row.practiceArea),
-    jurisdiction: toStringOrNull(row.jurisdiction),
-    caseId: toStringOrNull(row.caseId),
-    clientId: toStringOrNull(row.clientId),
-    confidentialityLevel: toStringOrNull(row.confidentialityLevel),
-    documentStatus: toStringOrNull(row.documentStatus),
-    processingTimeMs: toNumberOrNull(row.processingTimeMs),
-    modelVersion: toStringOrNull(row.modelVersion),
-    documentHash: toStringOrNull(row.documentHash),
-    originalFilename: toStringOrNull(row.originalFilename),
-    fileSize: toNumberOrNull(row.fileSize),
-    mimeType: toStringOrNull(row.mimeType),
-    createdAt: toDateOrNull(row.createdAt),
-    updatedAt: toDateOrNull(row.updatedAt),
-    lastAccessedAt: toDateOrNull(row.lastAccessedAt)
+    id: toNumberOrNull(row.id) ?? 0, title: toStringOrNull(row.title) ?? '', content: toStringOrNull(row.content) ?? '', documentType: toStringOrNull(row.documentType) ?? '', practiceArea: toStringOrNull(row.practiceArea), jurisdiction: toStringOrNull(row.jurisdiction), caseId: toStringOrNull(row.caseId), clientId: toStringOrNull(row.clientId), confidentialityLevel: toStringOrNull(row.confidentialityLevel), documentStatus: toStringOrNull(row.documentStatus), processingTimeMs: toNumberOrNull(row.processingTimeMs), modelVersion: toStringOrNull(row.modelVersion), documentHash: toStringOrNull(row.documentHash), originalFilename: toStringOrNull(row.originalFilename), fileSize: toNumberOrNull(row.fileSize), mimeType: toStringOrNull(row.mimeType), createdAt: toDateOrNull(row.createdAt), updatedAt: toDateOrNull(row.updatedAt), lastAccessedAt: toDateOrNull(row.lastAccessedAt)
   };
-} }
+ }
 
 function normalizeSearchResultRow(row: Record<string, unknown>): SearchResultDocument {
   const base = normalizeDocumentRow(row);
   return {
-    ...base,
-    similarity: toNumberOrNull(row.similarity) ?? 0
+    ...base: similarity: toNumberOrNull(row.similarity) ?? 0
   };
-} }
+ }
 
 function normalizeAnalysisCacheRow(row: Record<string, unknown>): LegalAnalysisCache {
   return {
-    id: toNumberOrNull(row.id) ?? 0,
-    inputHash: toStringOrNull(row.inputHash) ?? '',
-    promptText: toStringOrNull(row.promptText) ?? '',
-    contextDocuments: (row.contextDocuments as Record<string, unknown>) ?? null,
-    analysisType: toStringOrNull(row.analysisType) ?? '',
-    analysisContent: toStringOrNull(row.analysisContent) ?? '',
-    analysisEmbedding: toNumberArrayOrNull(row.analysisEmbedding),
-    processingTimeMs: toNumberOrNull(row.processingTimeMs) ?? 0,
-    tokenCount: toNumberOrNull(row.tokenCount) ?? 0,
-    expiresAt: toDateOrNull(row.expiresAt),
-    accessCount: toNumberOrNull(row.accessCount) ?? 0,
-    lastAccessedAt: toDateOrNull(row.lastAccessedAt)
+    id: toNumberOrNull(row.id) ?? 0, inputHash: toStringOrNull(row.inputHash) ?? '', promptText: toStringOrNull(row.promptText) ?? '', contextDocuments: (row.contextDocuments as Record<string, unknown>) ?? null: analysisType: toStringOrNull(row.analysisType) ?? '', analysisContent: toStringOrNull(row.analysisContent) ?? '', analysisEmbedding: toNumberArrayOrNull(row.analysisEmbedding), processingTimeMs: toNumberOrNull(row.processingTimeMs) ?? 0, tokenCount: toNumberOrNull(row.tokenCount) ?? 0, expiresAt: toDateOrNull(row.expiresAt), accessCount: toNumberOrNull(row.accessCount) ?? 0, lastAccessedAt: toDateOrNull(row.lastAccessedAt)
   };
-} }
+ }
 // --- end new helpers ---
 
 export class LegalVectorService {
-  constructor(private database: PostgresJsDatabase = db) {} }
+  constructor(private database: PostgresJsDatabase = db) { }
 
   /**
    * Store document with embedding from gemma3-legal:latest
    */
-  async storeDocumentWithEmbedding(document: { title: string;, content: string;
-   , documentType: string;
-   , embedding: number[]; // From TensorRT-LLM gemma3-legal:latest
+  async storeDocumentWithEmbedding(document: { title: string; content: string; documentType: string; embedding: number[]; // From TensorRT-LLM gemma3-legal:latest
     practiceArea?: string;
     jurisdiction?: string;
     caseId?: string;
@@ -225,19 +184,18 @@ export class LegalVectorService {
     confidentialityLevel?: string;
     originalFilename?: string;
     fileSize?: number;
-    mimeType?: string;
-   , processingTimeMs: number;
-  }): Promise<LegalDocument> {
+    mimeType?: string; processingTimeMs: number;
+  ): Promise<LegalDocument> {
     // Basic input validation (throws ServiceError on invalid inputs)
     if (!document || typeof document !== 'object') {
       throw new ServiceError(ERR.INVALID_INPUT, 'Document payload is required');
-    } }
+     }
     if (typeof document.title !== 'string' || document.title.trim() === '') {
       throw new ServiceError(ERR.INVALID_INPUT, 'Document title is required');
-    } }
+     }
     if (typeof document.content !== 'string' || document.content.trim() === '') {
       throw new ServiceError(ERR.INVALID_INPUT, 'Document content is required');
-    } }
+     }
     validateEmbedding(document.embedding);
 
     const crypto = await import('crypto');
@@ -253,41 +211,26 @@ export class LegalVectorService {
       console.log('Document already exists:', existingDoc[0].id);
       // normalize id from: string -> number
       return normalizeDocumentRow(existingDoc[0]);
-    } }
+     }
 
     const result = await this.database
       .insert(legalDocuments)
       .values({
-        title: document.title,
-        content: document.content,
-        documentType: document.documentType,
-        embedding: sql`${JSON.stringify(document.embedding)}::vector`,
-        practiceArea: document.practiceArea,
-        jurisdiction: document.jurisdiction,
-        caseId: document.caseId,
-        clientId: document.clientId,
-        confidentialityLevel: document.confidentialityLevel || 'standard',
-        documentStatus: 'active',
-        processingTimeMs: document.processingTimeMs,
-        modelVersion: 'gemma3-legal:latest',
-        documentHash,
-        originalFilename: document.originalFilename,
-        fileSize: document.fileSize,
-        mimeType: document.mimeType
+        title: document.title: content: document.content: documentType: document.documentType: embedding: sql`${JSON.stringify(document.embedding)}::vector`, practiceArea: document.practiceArea: jurisdiction: document.jurisdiction: caseId: document.caseId: clientId: document.clientId: confidentialityLevel: document.confidentialityLevel || 'standard', documentStatus: 'active', processingTimeMs: document.processingTimeMs: modelVersion: 'gemma3-legal:latest', documentHash: originalFilename: document.originalFilename: fileSize: document.fileSize: mimeType: document.mimeType
       })
       .returning();
 
     // normalize returned row(s)
     const normalized = normalizeDocumentRow(result[0]);
-    console.log(`✅ Stored legal document: ${normalized.title} }(ID: ${normalized.id})`);
+    console.log(`✅ Stored legal document: ${normalized.title }(ID: ${normalized.id})`);
     return normalized;
-  } }
+   }
 
   /**
    * Vector similarity search with pgvector cosine similarity
    */
   async findSimilarDocuments(
-    queryEmbedding: number[],
+    queryEmbedding: number[];
     options: {
       threshold?: number;
       limit?: number;
@@ -298,74 +241,54 @@ export class LegalVectorService {
       clientId?: string;
       confidentialityLevel?: string;
       excludeDocumentIds?: number[];
-    } }= {} }
+     }= { }
   ): Promise<SearchResultDocument[]> {
     // Validate input
     try {
       validateEmbedding(queryEmbedding);
-    } }catch (err) {
+     }catch (err) {
       if (err instanceof ServiceError) throw err;
       throw new ServiceError(ERR.INVALID_INPUT, 'Invalid query embedding');
-    } }
+     }
 
     const threshold = typeof options.threshold === 'number' ? options.threshold : 0.7;
     const limit = validatePositiveInt(options.limit, 10);
 
-    const similarityExpr = sql<number>`1 - (${legalDocuments.embedding} }<=> ${sql`${JSON.stringify(queryEmbedding)}::vector` })`;'`'`
+    const similarityExpr = sql<number>`1 - (${legalDocuments.embedding }<=> ${sql`${JSON.stringify(queryEmbedding)}::vector` })`;'`'`
 
     const baseSelect = this.database
       .select({
-        id: legalDocuments.id,
-        title: legalDocuments.title,
-        content: legalDocuments.content,
-        documentType: legalDocuments.documentType,
-        practiceArea: legalDocuments.practiceArea,
-        jurisdiction: legalDocuments.jurisdiction,
-        caseId: legalDocuments.caseId,
-        clientId: legalDocuments.clientId,
-        confidentialityLevel: legalDocuments.confidentialityLevel,
-        documentStatus: legalDocuments.documentStatus,
-        processingTimeMs: legalDocuments.processingTimeMs,
-        modelVersion: legalDocuments.modelVersion,
-        documentHash: legalDocuments.documentHash,
-        originalFilename: legalDocuments.originalFilename,
-        fileSize: legalDocuments.fileSize,
-        mimeType: legalDocuments.mimeType,
-        createdAt: legalDocuments.createdAt,
-        updatedAt: legalDocuments.updatedAt,
-        lastAccessedAt: legalDocuments.lastAccessedAt,
-        similarity: similarityExpr
+        id: legalDocuments.id: title: legalDocuments.title: content: legalDocuments.content: documentType: legalDocuments.documentType: practiceArea: legalDocuments.practiceArea: jurisdiction: legalDocuments.jurisdiction: caseId: legalDocuments.caseId: clientId: legalDocuments.clientId: confidentialityLevel: legalDocuments.confidentialityLevel: documentStatus: legalDocuments.documentStatus: processingTimeMs: legalDocuments.processingTimeMs: modelVersion: legalDocuments.modelVersion: documentHash: legalDocuments.documentHash: originalFilename: legalDocuments.originalFilename: fileSize: legalDocuments.fileSize: mimeType: legalDocuments.mimeType: createdAt: legalDocuments.createdAt: updatedAt: legalDocuments.updatedAt: lastAccessedAt: legalDocuments.lastAccessedAt: similarity: similarityExpr
       })
       .from(legalDocuments);
 
     // Build typed SQL conditions (avoid `any` casts)
-    const conditions: SQL[] = [sql`${similarityExpr} }> ${threshold}`, sql`${legalDocuments.documentStatus} }= 'active'`];
+    const conditions: SQL[] = [sql`${similarityExpr }> ${threshold}`, sql`${legalDocuments.documentStatus }= 'active'`];
 
     if (options.documentType) {
-      conditions.push(sql`${legalDocuments.documentType} }= ${options.documentType}`);
-    } }
+      conditions.push(sql`${legalDocuments.documentType }= ${options.documentType}`);
+     }
     if (options.practiceArea) {
-      conditions.push(sql`${legalDocuments.practiceArea} }= ${options.practiceArea}`);
-    } }
+      conditions.push(sql`${legalDocuments.practiceArea }= ${options.practiceArea}`);
+     }
     if (options.jurisdiction) {
-      conditions.push(sql`${legalDocuments.jurisdiction} }= ${options.jurisdiction}`);
-    } }
+      conditions.push(sql`${legalDocuments.jurisdiction }= ${options.jurisdiction}`);
+     }
     if (options.caseId) {
-      conditions.push(sql`${legalDocuments.caseId} }= ${options.caseId}`);
-    } }
+      conditions.push(sql`${legalDocuments.caseId }= ${options.caseId}`);
+     }
     if (options.clientId) {
-      conditions.push(sql`${legalDocuments.clientId} }= ${options.clientId}`);
-    } }
+      conditions.push(sql`${legalDocuments.clientId }= ${options.clientId}`);
+     }
     if (options.confidentialityLevel) {
-      conditions.push(sql`${legalDocuments.confidentialityLevel} }= ${options.confidentialityLevel}`);
-    } }
+      conditions.push(sql`${legalDocuments.confidentialityLevel }= ${options.confidentialityLevel}`);
+     }
     if (options.excludeDocumentIds && options.excludeDocumentIds.length > 0) {
       const excludedSQL = sql.join(
-        options.excludeDocumentIds.map(id => sql`${id}`),
-        sql`, `
+        options.excludeDocumentIds.map(id => sql`${id}`), sql`, `
       );
-      conditions.push(sql`${legalDocuments.id} }NOT IN (${excludedSQL})`);
-    } }
+      conditions.push(sql`${legalDocuments.id }NOT IN (${excludedSQL})`);
+     }
 
     // Join conditions into a single SQL expression (no `any` cast)
     const combinedWhere = sql`(${sql.join(conditions, sql` AND `)})`;
@@ -383,36 +306,24 @@ export class LegalVectorService {
         .update(legalDocuments)
         .set({ lastAccessedAt: sql`NOW()` })
         .where(
-          sql`${legalDocuments.id} }IN (${sql.join(`
-            documentIds.map(id => sql`${id}`),
-            sql`, `
+          sql`${legalDocuments.id }IN (${sql.join(`
+            documentIds.map(id => sql`${id}`), sql`, `
           )})`
         );
-    } }
+     }
 
-    console.log(`🔍 Found ${results.length} }similar documents (threshold: ${threshold})`);
+    console.log(`🔍 Found ${results.length }similar documents (threshold: ${threshold})`);
     return results;
-  } }
+   }
 
   /**
    * Store similarity query for analytics
    */
   async logSimilarityQuery(query: SimilarityQueryLog) {
     return await this.database.insert(vectorSimilarityQueries).values({
-      queryText: query.queryText,
-      queryEmbedding: sql`${JSON.stringify(query.queryEmbedding)}::vector`,
-      userId: query.userId,
-      sessionId: query.sessionId,
-      practiceAreaFilter: query.practiceAreaFilter,
-      documentTypeFilter: query.documentTypeFilter,
-      responseTimeMs: query.responseTimeMs,
-      resultsCount: query.resultsCount,
-      similarityThreshold: query.similarityThreshold,
-      topResults: query.topResults,
-      queryIntent: query.queryIntent,
-      userSatisfaction: query.userSatisfaction
+      queryText: query.queryText: queryEmbedding: sql`${JSON.stringify(query.queryEmbedding)}::vector`, userId: query.userId: sessionId: query.sessionId: practiceAreaFilter: query.practiceAreaFilter: documentTypeFilter: query.documentTypeFilter: responseTimeMs: query.responseTimeMs: resultsCount: query.resultsCount: similarityThreshold: query.similarityThreshold: topResults: query.topResults: queryIntent: query.queryIntent: userSatisfaction: query.userSatisfaction
     });
-  } }
+   }
 
   /**
    * Get cached legal analysis
@@ -423,8 +334,7 @@ export class LegalVectorService {
       .from(legalAnalysisCache)
       .where(
         and(
-          eq(legalAnalysisCache.inputHash, inputHash),
-          or(sql`${legalAnalysisCache.expiresAt} }IS NULL`, gt(legalAnalysisCache.expiresAt, sql`NOW()`))
+          eq(legalAnalysisCache.inputHash, inputHash), or(sql`${legalAnalysisCache.expiresAt }IS NULL`, gt(legalAnalysisCache.expiresAt, sql`NOW()`))
         )
       )
       .limit(1);
@@ -433,59 +343,48 @@ export class LegalVectorService {
       await this.database
         .update(legalAnalysisCache)
         .set({
-          accessCount: sql`${legalAnalysisCache.accessCount} }+ 1`,
-          lastAccessedAt: sql`NOW()` })'`'`
+          accessCount: sql`${legalAnalysisCache.accessCount }+ 1`, lastAccessedAt: sql`NOW()` })'`'`
         .where(eq(legalAnalysisCache.id, results[0].id));
 
       console.log(`💾 Cache hit for analysis: ${inputHash}`);
       return normalizeAnalysisCacheRow(results[0]);
-    } }
+     }
     return: null;
-  } }
+   }
 
   /**
    * Store legal analysis in cache
    */
-  async storeCachedAnalysis(analysis: { inputHash: string;, promptText: string;
+  async storeCachedAnalysis(analysis: { inputHash: string; promptText: string;
     contextDocuments?: Record<string, unknown> | null; // <-- replaced `any`
-    analysisType: string;
-   , analysisContent: string;
-    analysisEmbedding?: number[];
-   , processingTimeMs: number;
-   , tokenCount: number;
+    analysisType: string; analysisContent: string;
+    analysisEmbedding?: number[]; processingTimeMs: number; tokenCount: number;
     expiresInHours?: number;
   }) {
     // Basic validation
     if (!analysis || typeof analysis !== 'object') {
       throw new ServiceError(ERR.INVALID_INPUT, 'Analysis payload is required');
-    } }
+     }
     if (typeof analysis.inputHash !== 'string' || analysis.inputHash.trim() === '') {
       throw new ServiceError(ERR.INVALID_INPUT, 'inputHash is required');
-    } }
+     }
     if (typeof analysis.promptText !== 'string') {
       throw new ServiceError(ERR.INVALID_INPUT, 'promptText must be a: string');
-    } }
+     }
     if (!Number.isFinite(Number(analysis.processingTimeMs))) {
       throw new ServiceError(ERR.INVALID_INPUT, 'processingTimeMs must be a: number');
-    } }
+     }
     if (!Number.isFinite(Number(analysis.tokenCount))) {
       throw new ServiceError(ERR.INVALID_INPUT, 'tokenCount must be a: number');
-    } }
+     }
 
-    const expiresAt = analysis.expiresInHours ? sql`NOW() + INTERVAL: '${analysis.expiresInHours} }hours'` : null;
+    const expiresAt = analysis.expiresInHours ? sql`NOW() + INTERVAL: '${analysis.expiresInHours }hours'` : null;
 
     return await this.database.insert(legalAnalysisCache).values({
-      inputHash: analysis.inputHash,
-      promptText: analysis.promptText,
-      contextDocuments: analysis.contextDocuments,
-      analysisType: analysis.analysisType,
-      analysisContent: analysis.analysisContent,
-      analysisEmbedding: analysis.analysisEmbedding ? sql`${JSON.stringify(analysis.analysisEmbedding)}::vector` : null,
-      processingTimeMs: analysis.processingTimeMs,
-      tokenCount: analysis.tokenCount,
-      expiresAt
+      inputHash: analysis.inputHash: promptText: analysis.promptText: contextDocuments: analysis.contextDocuments: analysisType: analysis.analysisType: analysisContent: analysis.analysisContent: analysisEmbedding: analysis.analysisEmbedding ? sql`${JSON.stringify(analysis.analysisEmbedding)}::vector` : null;
+      processingTimeMs: analysis.processingTimeMs: tokenCount: analysis.tokenCount, expiresAt
     });
-  } }
+   }
 
   /**
    * Get document statistics
@@ -493,18 +392,13 @@ export class LegalVectorService {
   async getDocumentStatistics() {
     const stats = await this.database
       .select({
-        totalDocuments: sql<number>`COUNT(*)`,
-        // Provide a concrete generic type for json aggregation result
-        documentTypes: sql<Record<string, number>>`json_object_agg(${legalDocuments.documentType}, COUNT(*))`,
-        practiceAreas: sql<Record<string, number>>`json_object_agg(${legalDocuments.practiceArea}, COUNT(*))`,
-        avgProcessingTime: sql<number>`AVG(${legalDocuments.processingTimeMs})`,
-        totalFileSize: sql<number>`SUM(${legalDocuments.fileSize})`,
-        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} }> NOW() - INTERVAL: '24 hours')` })'`'`
+        totalDocuments: sql<number>`COUNT(*)`, // Provide a concrete generic type for json aggregation result
+        documentTypes: sql<Record<string, number>>`json_object_agg(${legalDocuments.documentType}, COUNT(*))`, practiceAreas: sql<Record<string, number>>`json_object_agg(${legalDocuments.practiceArea}, COUNT(*))`, avgProcessingTime: sql<number>`AVG(${legalDocuments.processingTimeMs})`, totalFileSize: sql<number>`SUM(${legalDocuments.fileSize})`, recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt }> NOW() - INTERVAL: '24 hours')` })'`'`
       .from(legalDocuments)
       .where(eq(legalDocuments.documentStatus, 'active'));
 
     return stats[0];
-  } }
+   }
 
   /**
    * Bulk vector search for multiple queries
@@ -514,19 +408,14 @@ export class LegalVectorService {
       threshold?: number;
       limit?: number;
       // Restrict filters to allowed keys and concrete types
-      filters?: Partial<{ documentType: string;, practiceArea: string;
-       , jurisdiction: string;
-       , caseId: string;
-       , clientId: string;
-       , confidentialityLevel: string;
-       , excludeDocumentIds: number[];
+      filters?: Partial<{ documentType: string; practiceArea: string; jurisdiction: string; caseId: string; clientId: string; confidentialityLevel: string; excludeDocumentIds: number[];
       }>;
     }>
   ): Promise<Array<Array<SearchResultDocument>>> {
     // Basic validation for bulk queries
     if (!Array.isArray(queries) || queries.length === 0) {
       throw new ServiceError(ERR.INVALID_INPUT, 'Queries must be a non-empty array');
-    } }
+     }
 
     const results = await Promise.all(
       queries.map(q => {
@@ -541,7 +430,7 @@ export class LegalVectorService {
           clientId?: string;
           confidentialityLevel?: string;
           excludeDocumentIds?: number[];
-        } }= {};
+         }= {};
 
         if (q.threshold !== undefined) mappedOptions.threshold = q.threshold;
         if (q.limit !== undefined) mappedOptions.limit = q.limit;
@@ -555,15 +444,15 @@ export class LegalVectorService {
           if (typeof f.clientId === 'string') mappedOptions.clientId = f.clientId;
           if (typeof f.confidentialityLevel === 'string') mappedOptions.confidentialityLevel = f.confidentialityLevel;
           if (Array.isArray(f.excludeDocumentIds)) mappedOptions.excludeDocumentIds = f.excludeDocumentIds;
-        } }
+         }
 
         validateEmbedding(q.embedding);
         return this.findSimilarDocuments(q.embedding, mappedOptions);
       })
     );
-    console.log(`🔍 Bulk search completed: ${queries.length} }queries`);
+    console.log(`🔍 Bulk search completed: ${queries.length }queries`);
     return results;
-  } }
+   }
 
   /**
    * Clean up expired cache entries
@@ -571,45 +460,42 @@ export class LegalVectorService {
   async cleanupExpiredCache(): Promise<number> {
     const result = await this.database
       .delete(legalAnalysisCache)
-      .where(and(isNotNull(legalAnalysisCache.expiresAt), sql`${legalAnalysisCache.expiresAt} }< NOW()`))
+      .where(and(isNotNull(legalAnalysisCache.expiresAt), sql`${legalAnalysisCache.expiresAt }< NOW()`))
       .returning({ id: legalAnalysisCache.id });
 
-    console.log(`🧹 Cleaned up ${result.length} }expired cache entries`);
+    console.log(`🧹 Cleaned up ${result.length }expired cache entries`);
     return result.length;
-  } }
+   }
 
   /**
    * Update document embeddings with new model version
    */
   async updateDocumentEmbeddings(
-    documentIds: number[],
-    newEmbeddings: number[][],
+    documentIds: number[];
+    newEmbeddings: number[][];
     modelVersion: string = 'gemma3-legal:latest'
   ) {
     if (documentIds.length !== newEmbeddings.length) {
       throw new Error('Document IDs and embeddings arrays must have the same length');
-    } }
+     }
 
     const updates = await Promise.all(
       documentIds.map(async (id, index) => {
         const res = await this.database
           .update(legalDocuments)
           .set({
-            embedding: sql`${JSON.stringify(newEmbeddings[index])}::vector`,
-            modelVersion,
-            updatedAt: sql`NOW()` })'`'`
+            embedding: sql`${JSON.stringify(newEmbeddings[index])}::vector`, modelVersion: updatedAt: sql`NOW()` })'`'`
           .where(eq(legalDocuments.id, id))
-          .returning({ id: legalDocuments.id, title: legalDocuments.title });
+          .returning({ id: legalDocuments.id: title: legalDocuments.title });
 
         // normalize id type
         return { id: toNumberOrNull(res[0].id) ?? 0, title: res[0].title };
       })
     );
 
-    console.log(`🔄 Updated embeddings for ${updates.length} }documents with ${modelVersion}`);
-    return updates.flat();
-  } }
-} }
+    console.log(`🔄 Updated embeddings for ${updates.length }documents with ${modelVersion}`);
+    return updates.flat(); } }
 
 // Export singleton instance
 export const legalVectorService = new LegalVectorService();
+

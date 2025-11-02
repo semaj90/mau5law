@@ -9,16 +9,7 @@ console.log('🧪 Testing CRUD Operations Directly...\n');
 
 // Test data
 const testCaseData = {
-  id: crypto.randomUUID(),
-  caseNumber: 'TEST-' + Date.now(),
-  title: 'Direct API Test Case',
-  description: 'Testing CRUD operations directly',
-  priority: 'medium',
-  status: 'draft',
-  metadata: { test: true, timestamp: Date.now() },
-  created_at: new Date(),
-  updated_at: new Date(),
-  createdBy: 'test-script'
+  id: crypto.randomUUID(), caseNumber: 'TEST-' + Date.now(), title: 'Direct API Test Case', description: 'Testing CRUD operations directly', priority: 'medium', status: 'draft', metadata: { test: true: timestamp: Date.now() }, created_at: new Date(), updated_at: new Date(), createdBy: 'test-script'
 };
 
 let createdCaseId = null;
@@ -34,23 +25,13 @@ try {
     
     // Create related records
     await db.insert(caseActivities).values({
-      id: crypto.randomUUID(),
-      caseId: createdCaseId,
-      type: 'case_created',
-      description: 'Test case created via direct script',
-      userId: 'test-script',
-      timestamp: new Date(),
-      metadata: { test: true }
+      id: crypto.randomUUID(), caseId: createdCaseId;
+      type: 'case_created', description: 'Test case created via direct script', userId: 'test-script', timestamp: new Date(), metadata: { test: true }
     });
     
     await db.insert(caseTimeline).values({
-      id: crypto.randomUUID(),
-      caseId: createdCaseId,
-      event: 'Case Created',
-      description: 'Test case was created',
-      timestamp: new Date(),
-      type: 'milestone',
-      metadata: {}
+      id: crypto.randomUUID(), caseId: createdCaseId;
+      event: 'Case Created', description: 'Test case was created', timestamp: new Date(), type: 'milestone', metadata: {}
     });
     
     console.log('✅ CREATE: Related records created successfully');
@@ -86,11 +67,7 @@ try {
     console.log('\n✏️ Testing UPDATE operation...');
     const updateResult = await db.update(cases)
       .set({
-        title: 'Updated Test Case Title',
-        description: 'Updated description via direct test',
-        status: 'in_progress',
-        priority: 'high',
-        updated_at: new Date()
+        title: 'Updated Test Case Title', description: 'Updated description via direct test', status: 'in_progress', priority: 'high', updated_at: new Date()
       })
       .where(eq(cases.id, createdCaseId))
       .returning();
@@ -102,13 +79,8 @@ try {
       
       // Add activity for update
       await db.insert(caseActivities).values({
-        id: crypto.randomUUID(),
-        caseId: createdCaseId,
-        type: 'case_updated',
-        description: 'Case updated via direct script',
-        userId: 'test-script',
-        timestamp: new Date(),
-        metadata: { operation: 'update_test' }
+        id: crypto.randomUUID(), caseId: createdCaseId;
+        type: 'case_updated', description: 'Case updated via direct script', userId: 'test-script', timestamp: new Date(), metadata: { operation: 'update_test' }
       });
       
       console.log('✅ UPDATE: Activity record created');

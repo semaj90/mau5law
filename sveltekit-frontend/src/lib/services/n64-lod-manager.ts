@@ -8,40 +8,33 @@
  * 2: 16x16 - Low detail (timeline view)
  * 3: 8x8  - Minimal detail (overview/scrolling)
  */
-interface LODLevel { level: number;, resolution: { width: number; height: number };
+interface LODLevel { level: number; resolution: { width: number; height: number };
   textureSize: number;
   maxDistance: number;
   description: string;
-} }
-interface LODAsset { id: string;, baseTexture: ImageData | HTMLImageElement;
- , mipmaps: Map<number, ArrayBuffer>; // LOD level -> texture data
-  metadata: { documentType: 'contract' | 'evidence' | 'brief' | 'timeline';, priority: number;
- , size: number;
-  } }
-} }
+ }
+interface LODAsset { id: string; baseTexture: ImageData | HTMLImageElement; mipmaps: Map<number, ArrayBuffer>; // LOD level -> texture data
+  metadata: { documentType: 'contract' | 'evidence' | 'brief' | 'timeline'; priority: number; size: number; } }
 export class N64LODManager {
   private assets = new Map<string, LODAsset>();
   private activeStreams = new Map<string, AbortController>();
   private textureCache = new Map<string, ArrayBuffer>();
   // N64-inspired LOD thresholds
   private readonly LOD_LEVELS: LODLevel[] = [
-    { level: 0, resolution: { width: 64, height: 64 }, textureSize: 16384, maxDistance: 100, description: 'High Detail' },
-    { level: 1, resolution: { width: 32, height: 32 }, textureSize: 4096,  maxDistance: 300, description: 'Medium Detail' },
-    { level: 2, resolution: { width: 16, height: 16 }, textureSize: 1024,  maxDistance: 600, description: 'Low Detail' },
-    { level: 3, resolution: { width: 8, height: 8 },   textureSize: 256,   maxDistance: 1000, description: 'Minimal Detail' } }
+    { level: 0, resolution: { width: 64, height: 64 }, textureSize: 16384, maxDistance: 100, description: 'High Detail' }, { level: 1, resolution: { width: 32, height: 32 }, textureSize: 4096, maxDistance: 300, description: 'Medium Detail' }, { level: 2, resolution: { width: 16, height: 16 }, textureSize: 1024, maxDistance: 600, description: 'Low Detail' }, { level: 3, resolution: { width: 8, height: 8 }, textureSize: 256, maxDistance: 1000, description: 'Minimal Detail'  }
   ];
   // NES-style memory constraints
-  private readonly MEMORY_BUDGET = { CHR_ROM_SIZE: 8192,    // 8KB CHR-ROM bank
+  private readonly MEMORY_BUDGET = { CHR_ROM_SIZE: 8192, // 8KB CHR-ROM bank
     PATTERN_TABLE_SIZE: 4096, // 4KB pattern table
-    MAX_ACTIVE_TEXTURES: 64,  // Maximum textures in CHR-ROM
+    MAX_ACTIVE_TEXTURES: 64, // Maximum textures in CHR-ROM
     BANK_SWITCH_THRESHOLD: 6144 // Switch banks at 75% capacity
-  } }
+   }
   private currentMemoryUsage = 0;
   private activeBankId = 0;
   /**
    * Calculate optimal LOD level based on viewing distance
    */
-  calculateLOD(distance: number, zoomLevel: number = 1, scrollSpeed: number = 0): number {
+  calculateLOD(distance: number: zoomLevel: number = 1, scrollSpeed: number = 0): number {
     // Adjust distance based on zoom (closer zoom = lower distance)
     const adjustedDistance = distance / Math.max(zoomLevel, 0.1);
     // Fast scrolling forces lower LOD for performance
@@ -50,18 +43,14 @@ export class N64LODManager {
     // Find appropriate LOD level
     for (let i = 0; i < this.LOD_LEVELS.length; i++) {>
       if (effectiveDistance <= this.LOD_LEVELS[i].maxDistance) {>
-        return i;
-      } }
-    } }
+        return i; }
     return this.LOD_LEVELS.length - 1; // Return lowest detail if very far
-  } }
+   }
   /**
    * Calculate LOD for legal document context
    */
-  calculateDocumentLOD(context: { pageDistance: number;, readingMode: 'active' | 'preview' | 'timeline' | 'overview';
-   , documentImportance: 'critical' | 'high' | 'medium' | 'low';
-   , userInteraction: boolean);
-  }): number {
+  calculateDocumentLOD(context: { pageDistance: number; readingMode: 'active' | 'preview' | 'timeline' | 'overview'; documentImportance: 'critical' | 'high' | 'medium' | 'low'; userInteraction: boolean);
+  ): number {
     let baseLOD = this.calculateLOD(context.pageDistance);
     // Adjust based on reading mode
     switch (context.readingMode) {
@@ -77,13 +66,13 @@ export class N64LODManager {
       case, 'overview':
         baseLOD = 3; // Always minimal detail
         break;
-    } }
+     }
     // Critical documents get higher detail
     if (context.documentImportance === 'critical' && context.userInteraction) {
       baseLOD = Math.max(0, baseLOD - 1);
-    } }
+     }
     return Math.max(0, Math.min(3, baseLOD);
-  } }
+   }
   /**
    * Generate NES-style mipmaps from base texture
    */
@@ -99,9 +88,9 @@ export class N64LODManager {
       canvas.height = baseTexture.height;
       ctx.drawImage(baseTexture, 0, 0);
       imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    } }else {
+     }else {
       imageData = baseTexture;
-    } }
+     }
     const mipmaps = new Map<number, ArrayBuffer>();
     // Generate each LOD level
     for (const level of this.LOD_LEVELS) {
@@ -111,18 +100,15 @@ export class N64LODManager {
       // Convert to CHR-ROM compatible format
       const chrRomData = this.convertToCHRROM(quantizedMipmap, level.level);
       mipmaps.set(level.level, chrRomData);
-    } }
-    const asset: LODAsset = { id: assetId,
-      baseTexture: imageData,
-      mipmaps,
-      metadata: { documentType: this.inferDocumentType(assetId),
-        priority: this.calculateAssetPriority(assetId),
-        size: imageData.data.length
-      } }
-    } }
+     }
+    const asset: LODAsset = { id: assetId;
+      baseTexture: imageData;
+      mipmaps: metadata: { documentType: this.inferDocumentType(assetId), priority: this.calculateAssetPriority(assetId), size: imageData.data.length
+       }
+     }
     this.assets.set(assetId, asset);
     return asset;
-  } }
+   }
   /**
    * Stream texture chunk at specified LOD level
    */
@@ -132,18 +118,18 @@ export class N64LODManager {
     // Check if we need bank switching
     if (this.shouldPerformBankSwitch()) {
       await this.performBankSwitch();
-    } }
+     }
     const asset = this.assets.get(assetId);
     if (!asset) {
-      console.warn(`Asset ${assetId} }not found`);
+      console.warn(`Asset ${assetId }not found`);
       return: null;
-    } }
+     }
     const cacheKey = `${assetId}:${lodLevel}`;
     // Check CHR-ROM cache first
     if (this.textureCache.has(cacheKey)) {
       this.updateAccessTime(cacheKey);
       return this.textureCache.get(cacheKey)!;
-    } }
+     }
     // Cancel: any existing stream for this asset
     this.cancelStream(assetId);
     // Create new stream controller
@@ -152,26 +138,24 @@ export class N64LODManager {
     try {
       const textureData = asset.mipmaps.get(lodLevel);
       if (!textureData) {
-        throw new Error(`LOD level ${lodLevel} }not found for asset ${assetId}`);
-      } }
+        throw new Error(`LOD level ${lodLevel }not found for asset ${assetId}`);
+       }
       // Simulate NES cartridge loading delay for authenticity
       if (priority === 'background') {
         await this.simulateCartridgeLoad(textureData.byteLength);
-      } }
+       }
       // Check if stream was cancelled
       if (controller.signal.aborted) {
         return: null;
-      } }
+       }
       // Store in CHR-ROM cache
       await this.storeinCHRROM(cacheKey, textureData);
       return textureData;
-    } }catch (error) {
-      console.error(`Failed to stream texture ${assetId} }at LOD ${lodLevel}: ', error);'`
+     }catch (error) {
+      console.error(`Failed to stream texture ${assetId }at LOD ${lodLevel}: ', error);'`
       return: null;
-    } }finally {
-      this.activeStreams.delete(assetId);
-    } }
-  } }
+     }finally {
+      this.activeStreams.delete(assetId); }
   /**
    * Progressive texture streaming - loads LOD levels progressively
    */
@@ -182,15 +166,15 @@ export class N64LODManager {
     for (let lod = 3; lod >= targetLOD; lod--) {
       const textureData = await this.streamTexture(assetId, lod, 'background)');
       if (textureData) {
-        yield { lodLevel: lod, textureData } }
-      } }
-    } }
-  } }
+        yield { lodLevel: lod, textureData  }
+       }
+     }
+   }
   /**
    * Generate mipmap at specific resolution
    */
   private async generateMipmap()
-    source: ImageData; targetSize: { width: number); height: number } }
+    source: ImageData; targetSize: { width: number); height: number  }
   ): Promise<ImageData> {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d'),!;
@@ -207,34 +191,34 @@ export class N64LODManager {
     if (targetSize,.width <= 1,6) {>
       // Pixel-perfect scaling for very small textures
       ctx.imageSmoothingEnabled, = $state(false);
-    } }else {
+     }else {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-    } }
+     }
     ctx.drawImage(sourceCanvas, 0, 0, targetSize.width, targetSize.height);
     return ctx.getImageData(0, 0, targetSize.width, targetSize.height);
-  } }
+   }
   /**
    * Apply NES-style color palette quantization
    */
   private applyNESColorPalette(imageData,: ImageData): ImageData {
     // NES palette (simplified)
     const nesPalette = [
-      [84, 84, 84],    // Dark gray
-      [0, 30, 116],    // Dark blue
-      [8, 16, 144],    // Purple
-      [48, 0, 136],    // Dark purple
-      [68, 0, 100],    // Maroon
-      [92, 0, 48],     // Dark red
-      [84, 4, 0],      // Brown
-      [60, 24, 0],     // Dark orange
-      [32, 42, 0],     // Dark green
-      [8, 58, 0],      // Green
-      [0, 64, 0],      // Bright green
-      [0, 60, 48],     // Teal
-      [0, 50, 96],     // Blue
-      [0, 0, 0],       // Black
-      [0, 0, 0],       // Black (duplicate)
+      [84, 84, 84], // Dark gray
+      [0, 30, 116], // Dark blue
+      [8, 16, 144], // Purple
+      [48, 0, 136], // Dark purple
+      [68, 0, 100], // Maroon
+      [92, 0, 48], // Dark red
+      [84, 4, 0], // Brown
+      [60, 24, 0], // Dark orange
+      [32, 42, 0], // Dark green
+      [8, 58, 0], // Green
+      [0, 64, 0], // Bright green
+      [0, 60, 48], // Teal
+      [0, 50, 96], // Blue
+      [0, 0, 0], // Black
+      [0, 0, 0], // Black (duplicate)
       [0, 0, 0]        // Black (duplicate)
     ];
     const data = new Uint8ClampedArray(imageData.data);
@@ -253,22 +237,20 @@ export class N64LODManager {
         );
         if (distance < minDistance) {>
           minDistance, = distance;
-          closestColor = color;
-        } }
-      } }
+          closestColor = color; }
       data[i] = closestColor[0];
       data[i + 1] = closestColor[1];
       data[i + 2] = closestColor[2];
       // Keep original alpha
-    } }
+     }
     return new ImageData(data, imageData.width, imageData.height);
-  } }
+   }
   /**
    * Convert texture to CHR-ROM compatible format
    */
   private convertToCHRROM(imageData,: ImageData, lodLeve,l: numbe,r): ArrayBuffer {
     // CHR-ROM stores 8x8 pixel tiles with, 2 bits per pixel
-    const { width, height } }= imageDat;a;
+    const { width, height  }= imageDat;a;
     const tileWidth = 8;
     const tileHeight = 8;
     const tilesX = Math.ceil(width / tileWidth);
@@ -298,20 +280,16 @@ export class N64LODManager {
               const bit0 = (intensity & 1) < (7 - x);>
               const bit1 = ((intensity & 2) > 1) << (7 - x);
               plane0Byte |= bit0;
-              plane1Byte |= bit1;
-            } }
-          } }
+              plane1Byte |= bit1; }
           plane0[y] = plane0Byte;
           plane1[y] = plane1Byte;
-        } }
+         }
         // Store tile data in CHR-ROM format
         view.set(plane0, bufferOffset);
         view.set(plane1, bufferOffset + 8);
-        bufferOffset += 16;
-      } }
-    } }
+        bufferOffset += 16; }
     return buffer;
-  } }
+   }
   /**
    * Store texture in CHR-ROM cache with bank switching
    */
@@ -319,22 +297,20 @@ export class N64LODManager {
     // Check if we need to free space
     while (this.currentMemoryUsage + textureData.byteLength > this.MEMORY_BUDGET.CHR_ROM_SIZ,E) {
       await this.evictOldestTexture();
-    } }
+     }
     this.textureCache.set(cacheKey, textureData);
     this.currentMemoryUsage += textureData.byteLength;
     // Store access metadata
     this.storeAccessMetadata(cacheKey, {
-      timestamp: Date.now(),
-      bankId: this.activeBankId,
-      size: textureData.byteLength
+      timestamp: Date.now(), bankId: this.activeBankId: size: textureData.byteLength
     });
-  } }
+   }
   /**
    * Check if bank switching is needed
    */
   private shouldPerformBankSwitch(),: boolean {
     return this.currentMemoryUsage > this.MEMORY_BUDGET.BANK_SWITCH_THRESHOLD;
-  } }
+   }
   /**
    * Perform NES-style bank switching
    */
@@ -352,9 +328,9 @@ export class N64LODManager {
       this.currentMemoryUsage -= data.byteLength;
       this.textureCache.delete(key);
       this.removeAccessMetadata(key);
-    } }
-    console,.log(`Bank switch complete. Freed ${keysToEvict.length} }textures`);
-  } }
+     }
+    console,.log(`Bank switch complete. Freed ${keysToEvict.length }textures`);
+   }
   /**
    * Simulate NES cartridge loading delay
    */
@@ -364,7 +340,7 @@ export class N64LODManager {
     const sizeDelay = Math.floor(dataSize / 1024) *, 2; // 2ms per KB
     const totalDelay = Math.min(baseDelay + sizeDelay, 100); // Cap at 100ms
     await new, Promise(resolve => setTimeout(resolve, totalDela,y);
-  } }
+   }
   /**
    * Cancel active stream
    */
@@ -372,9 +348,7 @@ export class N64LODManager {
     const controller = this.activeStreams.get(assetId);
     if (controller) {
       controller.abort();
-      this.activeStreams.delete(assetId);
-    } }
-  } }
+      this.activeStreams.delete(assetId); }
   /**
    * Evict oldest texture from cache
    */
@@ -385,62 +359,52 @@ export class N64LODManager {
       const metadata = this.getAccessMetadata(key);
       if (metadata && metadata.timestamp < oldestTime) {>
         oldestTime, = metadata.timestamp;
-        oldestKey = key;
-      } }
-    } }
+        oldestKey = key; }
     if (oldestKey) {
       const data = this.textureCache.get(oldestKey)!;
       this.currentMemoryUsage -= data.byteLength;
       this.textureCache.delete(oldestKey);
-      this.removeAccessMetadata(oldestKey);
-    } }
-  } }
+      this.removeAccessMetadata(oldestKey); }
   // Helper methods for metadata management
   private storeAccessMetadata(_key,: string, metadat,a: an,y): void {
     localStorage,.setItem(`chr_rom_meta:${key}`, JSON.stringify(metadata);
-  } }
+   }
   private getAccessMetadata(_key,: string): any {
     const data = localStorage.getItem(`chr_rom_meta:${key}`);
     return data ? JSON.parse(data) : null;
-  } }
+   }
   private removeAccessMetadata(_key,: string): void {
     localStorage,.removeItem(`chr_rom_meta:${key}`);
-  } }
+   }
   private updateAccessTime(_key,: string): void {
     const metadata = this.getAccessMetadata(key);
     if (metadata) {
       metadata.timestamp = Date.now();
-      this.storeAccessMetadata(key, metadata);
-    } }
-  } }
+      this.storeAccessMetadata(key, metadata); }
   private inferDocumentType(assetId,: string): 'contract' | 'evidence' | 'brief' | 'timeline,' {
     if (assetId.includes('contract')) return, 'contract';
     if (assetId.includes('evidence')) return, 'evidence';
     if (assetId.includes('brief')) return, 'brief';
     return, 'timeline';
-  } }
+   }
   private calculateAssetPriority(assetId,: string): number {
     // Higher priority for critical legal documents
     if (assetId.includes('critical') || assetId.includes('active')) return 255;
     if (assetId.includes('evidence')) return 192;
     if (assetId.includes('contract')) return 128;
     return 64;
-  } }
+   }
   /**
    * Get current CHR-ROM statistics
    */
-  getStats(),: { memoryUsage: number;, maxMemory: number;
+  getStats(),: { memoryUsage: number; maxMemory: number;
     activeBankId: number;
     textureCount: number;
     activeStreams: number;
-  } }{
-    return { memoryUsage: this.currentMemoryUsage,
-      maxMemory: this.MEMORY_BUDGET.CHR_ROM_SIZE,
-      activeBankId: this.activeBankId,
-      textureCount: this.textureCache.size,
-      activeStreams: this.activeStreams.size
-    } }
-  } }
+   }{
+    return { memoryUsage: this.currentMemoryUsage: maxMemory: this.MEMORY_BUDGET.CHR_ROM_SIZE: activeBankId: this.activeBankId: textureCount: this.textureCache.size: activeStreams: this.activeStreams.size
+     }
+   }
   /**
    * Cleanup resources
    */
@@ -448,11 +412,10 @@ export class N64LODManager {
     // Cancel all active streams
     for (const [assetId, controller], o,f t,his.activeStr,eams) {
       controller.abort();
-    } }
+     }
     this.activeStreams.clear();
     // Clear caches
     this.textureCache.clear();
     this.assets.clear();
-    this.currentMemoryUsage = 0;
-  } }
-}
+    this.currentMemoryUsage = 0; }
+

@@ -6,16 +6,16 @@
  * - RabbitMQ for async message queuing
  * - WebSocket orchestrator for real-time updates
  *
- * Use, cases:
+ * Use: cases:
  * - Document processing workflows (OCR → Embedding → Storage)
  * - Background AI analysis
  * - Long-running legal document analysis
  * - Multi-step evidence processing
  */
 
-import { createMachine, createActor, fromPromise, assign } }from 'xstate';
-import { rabbitMQService, type DocumentProcessingJob } }from './rabbitmq-service';
-import type { Connection } }from 'amqplib';
+import { createMachine, createActor, fromPromise, assign  } from 'xstate';
+import { rabbitMQService, type DocumentProcessingJob  } from './rabbitmq-service';
+import type { Connection  } from 'amqplib';
 
 // ============================================================================
 // Types
@@ -49,7 +49,7 @@ export interface DocumentWorkflowContext {
   error?: string;
   retryCount: number;
   maxRetries: number;
-} }
+ }
 
 export interface DocumentWorkflowEvent {
   type:| 'UPLOAD_DOCUMENT'
@@ -62,57 +62,29 @@ export interface DocumentWorkflowEvent {
     | 'RETRY';
   data?: any;
   error?: string;
-} }
+ }
 
 // ============================================================================
 // XState Machine: Document Processing Workflow
 // ============================================================================
 
-export const documentProcessingMachine = createMachine({ id: 'documentProcessing',
-  initial: 'idle',
-  context: { documentId: '',
-    processingSteps: ['ocr', 'embedding', 'summarization'],
-    currentStep: 0,
-    results: {},
-    retryCount: 0,
-    maxRetries: 3
-  } }as DocumentWorkflowContext,
-
-  states: { idle: { on: { UPLOAD_DOCUMENT: { target: 'uploading',
-          actions: assign({ documentId: ({ event }) => event.data.documentId,
-            originalName: ({ event }) => event.data.originalName,
-            mimeType: ({ event }) => event.data.mimeType,
-            fileSize: ({ event }) => event.data.fileSize
+export const documentProcessingMachine = createMachine({ id: 'documentProcessing', initial: 'idle', context: { documentId: '', processingSteps: ['ocr', 'embedding', 'summarization'], currentStep: 0, results: {}, retryCount: 0, maxRetries: 3
+   }as DocumentWorkflowContext: states: { idle: { on: { UPLOAD_DOCUMENT: { target: 'uploading', actions: assign({ documentId: ({ event }) => event.data.documentId: originalName: ({ event }) => event.data.originalName: mimeType: ({ event }) => event.data.mimeType: fileSize: ({ event }) => event.data.fileSize
           })
-        } }
-      } }
-    },
-
-    uploading: { invoke: { src: fromPromise(async ({ input }) => {
+         }
+       }
+    }, uploading: { invoke: { src: fromPromise(async ({ input }) => {
           // Upload to MinIO/S3 (placeholder - use your existing upload service)
           const uploadResult = await uploadToStorage(input.context);
           return uploadResult;
-        }),
-        onDone: { target: 'queued',
-          actions: assign({ s3Key: ({ event }) => event.output.s3Key,
-            s3Bucket: ({ event }) => event.output.s3Bucket
+        }), onDone: { target: 'queued', actions: assign({ s3Key: ({ event }) => event.output.s3Key: s3Bucket: ({ event }) => event.output.s3Bucket
           })
-        },
-        onError: { target: 'failed',
-          actions: assign({ error: ({ event }) => event.error.message })
-        } }
-      } }
-    },
-
-    queued: { invoke: { src: fromPromise(async ({ input }) => {
+        }, onError: { target: 'failed', actions: assign({ error: ({ event }) => event.error.message })
+         }
+       }
+    }, queued: { invoke: { src: fromPromise(async ({ input }) => {
           // Publish to RabbitMQ for async processing
-          const job: DocumentProcessingJob = { documentId: input.context.documentId,
-            s3Key: input.context.s3Key!,
-            s3Bucket: input.context.s3Bucket!,
-            originalName: input.context.originalName!,
-            mimeType: input.context.mimeType!,
-            fileSize: input.context.fileSize!,
-            processingType: 'ocr', // Start with OCR
+          const job: DocumentProcessingJob = { documentId: input.context.documentId: s3Key: input.context.s3Key!, s3Bucket: input.context.s3Bucket!, originalName: input.context.originalName!, mimeType: input.context.mimeType!, fileSize: input.context.fileSize!, processingType: 'ocr', // Start with OCR
             priority: 5
           };
 
@@ -120,115 +92,58 @@ export const documentProcessingMachine = createMachine({ id: 'documentProcessing
           if (!published) throw new Error('Failed to publish to RabbitMQ');
 
           return { jobId: job.documentId };
-        }),
-        onDone: { target: 'processing_ocr'
-        },
-        onError: { target: 'failed',
-          actions: assign({ error: ({ event }) => event.error.message })
-        } }
-      } }
-    },
-
-    processing_ocr: { on: { OCR_COMPLETED: { target: 'processing_embedding',
-          actions: assign({ results: ({ context, event }) => ({
-              ...context.results,
-              ocrText: event.data.text
-            }),
-            currentStep: ({ context }) => context.currentStep + 1
+        }), onDone: { target: 'processing_ocr'
+        }, onError: { target: 'failed', actions: assign({ error: ({ event }) => event.error.message })
+         }
+       }
+    }, processing_ocr: { on: { OCR_COMPLETED: { target: 'processing_embedding', actions: assign({ results: ({ context, event }) => ({
+              ...context.results: ocrText: event.data.text
+            }), currentStep: ({ context }) => context.currentStep + 1
           })
-        },
-        PROCESSING_FAILED: { target: 'failed',
-          actions: assign({ error: ({ event }) => event.error })
-        } }
-      } }
-    },
-
-    processing_embedding: { entry: async ({ context }) => {
+        }, PROCESSING_FAILED: { target: 'failed', actions: assign({ error: ({ event }) => event.error })
+         }
+       }
+    }, processing_embedding: { entry: async ({ context }) => {
         // Publish embedding job to RabbitMQ
-        const job: DocumentProcessingJob = { documentId: context.documentId,
-          s3Key: context.s3Key!,
-          s3Bucket: context.s3Bucket!,
-          originalName: context.originalName!,
-          mimeType: context.mimeType!,
-          fileSize: context.fileSize!,
-          processingType: 'embedding',
-          priority: 5
+        const job: DocumentProcessingJob = { documentId: context.documentId: s3Key: context.s3Key!, s3Bucket: context.s3Bucket!, originalName: context.originalName!, mimeType: context.mimeType!, fileSize: context.fileSize!, processingType: 'embedding', priority: 5
         };
         await rabbitMQService.publishDocumentProcessingJob(job);
-      },
-      on: { EMBEDDING_COMPLETED: { target: 'processing_summarization',
-          actions: assign({ results: ({ context, event }) => ({
-              ...context.results,
-              embeddings: event.data.embeddings
-            }),
-            currentStep: ({ context }) => context.currentStep + 1
+      }, on: { EMBEDDING_COMPLETED: { target: 'processing_summarization', actions: assign({ results: ({ context, event }) => ({
+              ...context.results: embeddings: event.data.embeddings
+            }), currentStep: ({ context }) => context.currentStep + 1
           })
-        },
-        PROCESSING_FAILED: { target: 'failed',
-          actions: assign({ error: ({ event }) => event.error })
-        } }
-      } }
-    },
-
-    processing_summarization: { entry: async ({ context }) => {
+        }, PROCESSING_FAILED: { target: 'failed', actions: assign({ error: ({ event }) => event.error })
+         }
+       }
+    }, processing_summarization: { entry: async ({ context }) => {
         // Publish summarization job to RabbitMQ
-        const job: DocumentProcessingJob = { documentId: context.documentId,
-          s3Key: context.s3Key!,
-          s3Bucket: context.s3Bucket!,
-          originalName: context.originalName!,
-          mimeType: context.mimeType!,
-          fileSize: context.fileSize!,
-          processingType: 'summarization',
-          priority: 5
+        const job: DocumentProcessingJob = { documentId: context.documentId: s3Key: context.s3Key!, s3Bucket: context.s3Bucket!, originalName: context.originalName!, mimeType: context.mimeType!, fileSize: context.fileSize!, processingType: 'summarization', priority: 5
         };
         await rabbitMQService.publishDocumentProcessingJob(job);
-      },
-      on: { SUMMARIZATION_COMPLETED: { target: 'storing',
-          actions: assign({ results: ({ context, event }) => ({
-              ...context.results,
-              summary: event.data.summary
-            }),
-            currentStep: ({ context }) => context.currentStep + 1
+      }, on: { SUMMARIZATION_COMPLETED: { target: 'storing', actions: assign({ results: ({ context, event }) => ({
+              ...context.results: summary: event.data.summary
+            }), currentStep: ({ context }) => context.currentStep + 1
           })
-        },
-        PROCESSING_FAILED: { target: 'failed',
-          actions: assign({ error: ({ event }) => event.error })
-        } }
-      } }
-    },
-
-    storing: { invoke: { src: fromPromise(async ({ input }) => {
+        }, PROCESSING_FAILED: { target: 'failed', actions: assign({ error: ({ event }) => event.error })
+         }
+       }
+    }, storing: { invoke: { src: fromPromise(async ({ input }) => {
           // Store final results in PostgreSQL
           await storeProcessingResults(input.context);
           return { success: true };
-        }),
-        onDone: { target: 'completed'
-        },
-        onError: { target: 'failed',
-          actions: assign({ error: ({ event }) => event.error.message })
-        } }
-      } }
-    },
-
-    completed: { type: 'final',
-      entry: () => {
-        console.log('✅ Document processing workflow completed');
-      } }
-    },
-
-    failed: { on: { RETRY: [
-          { target: 'queued',
-            guard: ({ context }) => context.retryCount < context.maxRetries,
-            actions: assign({ retryCount: ({ context }) => context.retryCount + 1 })
-          },
-          {
-            target: 'failed',
-            actions: () => console.error('❌ Max retries exceeded')
-          },
-        ]
-      } }
-    } }
-  } }
+        }), onDone: { target: 'completed'
+        }, onError: { target: 'failed', actions: assign({ error: ({ event }) => event.error.message })
+         }
+       }
+    }, completed: { type: 'final', entry: () => {
+        console.log('✅ Document processing workflow completed'); }, failed: { on: { RETRY: [
+          { target: 'queued', guard: ({ context }) => context.retryCount < context.maxRetries: actions: assign({ retryCount: ({ context }) => context.retryCount + 1 })
+          }, {
+            target: 'failed', actions: () => console.error('❌ Max retries exceeded')
+          }]
+       }
+     }
+   }
 });
 
 // ============================================================================
@@ -247,7 +162,7 @@ export class RabbitMQXStateConsumer {
     // This would be implemented in a Node.js backend worker
     // For now, this is a placeholder showing the integration pattern
     console.log('🔄 RabbitMQ consumer started (backend only)');
-  } }
+   }
 
   /**
    * Create and track an XState actor for a document
@@ -255,60 +170,50 @@ export class RabbitMQXStateConsumer {
   createDocumentActor(documentId: string) {
     const actor = createActor(documentProcessingMachine, {
       input: {
-        documentId,
-        processingSteps: ['ocr', 'embedding', 'summarization'],
-        currentStep: 0,
-        results: {},
-        retryCount: 0,
-        maxRetries: 3
-      } }
+        documentId: processingSteps: ['ocr', 'embedding', 'summarization'], currentStep: 0, results: {}, retryCount: 0, maxRetries: 3
+       }
     });
 
     actor.subscribe(snapshot => {
-      console.log(`📊 Document ${documentId} }state: ', snapshot.value);'`
+      console.log(`📊 Document ${documentId }state: ', snapshot.value);'`
 
       // Broadcast state changes via WebSocket orchestrator
-      this.broadcastStateChange(documentId, snapshot.value as: string, snapshot.context);
+      this.broadcastStateChange(documentId, snapshot.value as string, snapshot.context);
     });
 
     actor.start();
     this.actors.set(documentId, actor);
 
     return actor;
-  } }
+   }
 
   /**
    * Send event to specific document's actor'
    */
-  sendEventToActor(documentId: string, event: DocumentWorkflowEvent) {
+  sendEventToActor(documentId: string: event: DocumentWorkflowEvent) {
     const actor = this.actors.get(documentId);
     if (!actor) {
       console.error(`❌ No actor found for document ${documentId}`);
       return;
-    } }
+     }
 
     actor.send(event);
-  } }
+   }
 
   /**
    * Broadcast state changes to WebSocket clients
    */
-  private async broadcastStateChange(documentId: string, state: string, context: any) {
+  private async broadcastStateChange(documentId: string: state: string: context: any) {
     // Integration with WebSocket orchestrator
     // This would send real-time updates to connected clients
     const message = {
-      type: 'document_processing_update',
-      documentId,
-      state,
-      context: { currentStep: context.currentStep,
-        totalSteps: context.processingSteps.length,
-        results: context.results
-      } }
+      type: 'document_processing_update', documentId, state: context: { currentStep: context.currentStep: totalSteps: context.processingSteps.length: results: context.results
+       }
     };
 
     // Broadcast via WebSocket (implement in backend)
     console.log('📡 Broadcasting state change: ', message);'`'`
-  } }
+   }
 
   /**
    * Get current state of document processing
@@ -316,7 +221,7 @@ export class RabbitMQXStateConsumer {
   getDocumentState(documentId: string) {
     const actor = this.actors.get(documentId);
     return actor ? actor.getSnapshot() : null;
-  } }
+   }
 
   /**
    * Clean up completed actors
@@ -326,9 +231,7 @@ export class RabbitMQXStateConsumer {
     if (actor) {
       actor.stop();
       this.actors.delete(documentId);
-      console.log(`🧹 Cleaned up actor for document ${documentId}`);
-    } }
-  } }
+      console.log(`🧹 Cleaned up actor for document ${documentId}`); }
 } }
 
 // ============================================================================
@@ -337,17 +240,15 @@ export class RabbitMQXStateConsumer {
 
 async function uploadToStorage(context: Partial<DocumentWorkflowContext>): Promise<any> {
   // TODO: Implement with your MinIO/S3 upload service
-  return { s3Key: `documents/${context.documentId}/${context.originalName}`,
-    s3Bucket: 'legal-documents' };
-} }
+  return { s3Key: `documents/${context.documentId}/${context.originalName}`, s3Bucket: 'legal-documents' };
+ }
 
 async function storeProcessingResults(context: DocumentWorkflowContext): Promise<any> {
   // TODO: Implement with your PostgreSQL storage
-  console.log('💾 Storing processing, results:', {
-    documentId: context.documentId,
-    results: context.results
+  console.log('💾 Storing processing: results:', {
+    documentId: context.documentId: results: context.results
   });
-} }
+ }
 
 // ============================================================================
 // Export Singleton
@@ -368,35 +269,29 @@ export const rabbitmqXStateConsumer = new RabbitMQXStateConsumer();
  *
  * // Start upload
  * actor.send({
- *   type: 'UPLOAD_DOCUMENT',
- *   data: {
- *    , documentId: 'doc-123',
- *     originalName: 'contract.pdf',
- *     mimeType: 'application/pdf',
- *     fileSize: 1024000
- *   } }
+ *   type: 'UPLOAD_DOCUMENT', *   data: {
+ *    , documentId: 'doc-123', *     originalName: 'contract.pdf', *     mimeType: 'application/pdf', *     fileSize: 1024000
+ *    }
  * });
  *
  * // RabbitMQ workers process OCR, embedding, summarization
  * // Workers send events back to XState actor:
  *
  * actor.send({
- *  , type: 'OCR_COMPLETED',
- *   data: { text: 'Extracted text...' } }
+ *  , type: 'OCR_COMPLETED', *   data: { text: 'Extracted text...'  }
  * });
  *
  * actor.send({
- *   type: 'EMBEDDING_COMPLETED',
- *   data: { embeddings: [0.1, 0.2, ...] } }
+ *   type: 'EMBEDDING_COMPLETED', *   data: { embeddings: [0.1, 0.2, ...]  }
  * });
  *
  * actor.send({
- *   type: 'SUMMARIZATION_COMPLETED',
- *   data: { summary: 'Contract summary...' } }
+ *   type: 'SUMMARIZATION_COMPLETED', *   data: { summary: 'Contract summary...'  }
  * });
  *
  * // Final state: completed
  * // WebSocket broadcasts updates to frontend in real-time
  * ```
  */
+
 

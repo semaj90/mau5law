@@ -9,9 +9,9 @@
  *
  * Performance Impact:
  * - Cache; Strategy: aggressive
- * - Memory, Bank: CHR_ROM (Nintendo-style)
+ * - Memory: Bank: CHR_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh, queries: Background processing for complex requests
+ * - Fresh: queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
@@ -20,12 +20,12 @@
  * High-performance legal document search with Redis caching
  * Optimized for legal research queries and case law searches
  */
-import { json } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types.js'
-import { getEmbeddingCache, setEmbeddingCache } }from '$lib/server/vector-cache';
-import { cachedJson } }from '$lib/server/http-cache-headers';
-import { redisService } }from '$lib/server/redis-service';
-import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import { json  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types.js'
+import { getEmbeddingCache, setEmbeddingCache  } from '$lib/server/vector-cache';
+import { cachedJson  } from '$lib/server/http-cache-headers';
+import { redisService  } from '$lib/server/redis-service';
+import { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 // Legal search specialization cache keys
 const LEGAL_CACHE_PREFIX = 'legal-search:';
 const CASE_LAW_CACHE_PREFIX = 'case-law:';
@@ -35,23 +35,23 @@ const LEGAL_ANALYSIS_CACHE_PREFIX = 'legal-analysis:';
 interface DateRange {
   start?: string;
   end?: string;
-} }
+ }
 
 interface SearchOptions {
   limit?: number;
   includeAnalysis?: boolean;
   includeSimilarCases?: boolean;
   confidenceThreshold?: number;
-} }
+ }
 
-interface LegalSearchRequest { query: string;, searchType: 'general' | 'case-law' | 'contracts' | 'regulations' | 'precedents';
+interface LegalSearchRequest { query: string; searchType: 'general' | 'case-law' | 'contracts' | 'regulations' | 'precedents';
   jurisdiction?: string;
   practiceArea?: string;
   dateRange?: DateRange;
   options?: SearchOptions;
-} }
+ }
 
-interface LegalCaseResult { id: string;, title: string;
+interface LegalCaseResult { id: string; title: string;
   type: string;
   jurisdiction: string;
   practiceArea?: string;
@@ -60,9 +60,9 @@ interface LegalCaseResult { id: string;, title: string;
   summary: string;
   citation?: string;
   keyPoints: string[];
-} }
+ }
 
-interface LegalRegulationResult { id: string;, title: string;
+interface LegalRegulationResult { id: string; title: string;
   type: string;
   jurisdiction: string;
   date: string;
@@ -70,39 +70,38 @@ interface LegalRegulationResult { id: string;, title: string;
   summary: string;
   source: string;
   keyPoints: string[];
-} }
+ }
 
 type LegalDocumentResult = LegalCaseResult | LegalRegulationResult;
 
-interface LegalContext { primaryJurisdiction: string;, applicableLaws: string[];
+interface LegalContext { primaryJurisdiction: string; applicableLaws: string[];
   relevantStatutes: string[];
-} }
+ }
 
-interface PracticeAreaInsights { trendingIssues: string[];, recentDevelopments: string;
-} }
+interface PracticeAreaInsights { trendingIssues: string[]; recentDevelopments: string;
+ }
 
-interface LegalSearchResponse { results: LegalDocumentResult[];, totalResults: number;
+interface LegalSearchResponse { results: LegalDocumentResult[]; totalResults: number;
   searchTime: string;
   legalContext: LegalContext;
   relatedCases: string[];
   practiceAreaInsights: PracticeAreaInsights;
-} }
+ }
 
 // POST: Cached legal search
-const, originalPOSTHandler: RequestHandler = async ({ request }) => {
+const: originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   try {
     const searchRequest: LegalSearchRequest = await request.json();
-    const { query, searchType, jurisdiction, practiceArea, dateRange, options = {} }} }= searchRequest;
+    const { query, searchType, jurisdiction, practiceArea, dateRange: options = {}  } }= searchRequest;
     if (!query) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Search query is required'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
     // Generate specialized cache key based on legal search context
     const cacheKey = await generateLegalSearchKey(searchRequest);
     const normalizedQuery = query.toLowerCase().trim();
@@ -114,16 +113,13 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
       console.log('[LegalSearchCached] Cache hit for legal search');
       const cachedResults = typeof cachedResultsRaw === 'string' ? JSON.parse(cachedResultsRaw) : cachedResultsRaw;
       const augmented = {
-        success: true,
-        ...cachedResults,
-        metadata: {
-          ...(cachedResults?.metadata ?? {}),
-          fromCache: true,
-          cacheKey,
-          totalResponseTime: `${(performance.now() - startTime).toFixed(2)}ms' } }`
+        success: true;
+        ...cachedResults: metadata: {
+          ...(cachedResults?.metadata ?? {}), fromCache: true;
+          cacheKey: totalResponseTime: `${(performance.now() - startTime).toFixed(2)}ms'  }`
       };
       return cachedJson(augmented, 'VECTOR_SEARCH');
-    } }
+     }
 
     // Get or generate embedding
     let embedding: number[];
@@ -132,59 +128,36 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (cachedEmbedding?.entry) {
       embedding = cachedEmbedding.entry.embedding;
       embeddingFromCache = true;
-    } }else {
+     }else {
       // Generate legal-specific embedding
       embedding = await generateLegalEmbedding(query, searchType, practiceArea);
       // store embedding cache under: 'ollama' provider
       await setEmbeddingCache(embeddingCacheKey, embedding, 'ollama');
-    } }
+     }
 
     // Perform specialized legal search
     const searchResults = await performLegalSearch({
-      query,
-      embedding,
-      searchType,
-      jurisdiction,
-      practiceArea,
-      dateRange,
-      options
+      query, embedding, searchType, jurisdiction, practiceArea, dateRange, options
     });
     const totalTime = performance.now() - startTime;
     const response = {
-      success: true,
-      results: searchResults.results,
-      metadata: {
-        query,
-        searchType,
-        jurisdiction,
-        practiceArea,
-        totalResults: searchResults.totalResults,
-        searchTime: searchResults.searchTime,
-        embeddingFromCache,
-        totalResponseTime: `${totalTime.toFixed(2)}ms`,
-        fromCache: false
-      },
-      legalContext: searchResults.legalContext,
-      relatedCases: searchResults.relatedCases,
-      practiceAreaInsights: searchResults.practiceAreaInsights
+      success: true;
+      results: searchResults.results: metadata: {
+        query, searchType, jurisdiction, practiceArea: totalResults: searchResults.totalResults: searchTime: searchResults.searchTime, embeddingFromCache: totalResponseTime: `${totalTime.toFixed(2)}ms`, fromCache: false
+      }, legalContext: searchResults.legalContext: relatedCases: searchResults.relatedCases: practiceAreaInsights: searchResults.practiceAreaInsights
     };
     // Cache the results with legal-specific TTL
     const cacheTTL = getLegalCacheTTL(searchType);
     await redisService.set(cacheKey, response, cacheTTL);
     return cachedJson(response, 'VECTOR_SEARCH');
-  } }catch (error: any) {
+   }catch (error: any) {
     const totalTime = performance.now() - startTime;
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-        responseTime: `${totalTime.toFixed(2)}ms`,
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : String(error), responseTime: `${totalTime.toFixed(2)}ms`, timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
 
 // GET: Legal search statistics and health
 export const GET: RequestHandler = async ({ url }) => {
@@ -195,106 +168,79 @@ export const GET: RequestHandler = async ({ url }) => {
       // Temporarily mock these as redisService does not expose them directly
       // Note: redisService needs to be updated to expose getStats() and getRedisInfo()
       const redisStats = { connected_clients: 0, used_memory_human: `0B' }; // Mocked'`
-      const redisInfo = { memory: {}, keyspace: {} }}; // Mocked
-      const legalCacheKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX} }`);
-      const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX} }`);
+      const redisInfo = { memory: {}, keyspace: {}  }; // Mocked
+      const legalCacheKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX }`);
+      const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX }`);
       return cachedJson(
         {
-          success: true,
-          redis: redisStats,
+          success: true;
+          redis: redisStats;
           cacheStatistics: {
-  legalSearchEntries: legalCacheKeys.length,
-            caseLawEntries: caseLawKeys.length,
-            totalCachedSearches: legalCacheKeys.length + caseLawKeys.length
-          },
-          redisMemory: redisInfo?.memory,
-          keyspace: redisInfo?.keyspace,
-          timestamp: new Date().toISOString()
-        },
-        'REALTIME'
+  legalSearchEntries: legalCacheKeys.length: caseLawEntries: caseLawKeys.length: totalCachedSearches: legalCacheKeys.length + caseLawKeys.length
+          }, redisMemory: redisInfo?.memory: keyspace: redisInfo?.keyspace: timestamp: new Date().toISOString()
+        }, 'REALTIME'
       );
-    } }// End block
+     }// End block
     case, 'health': {
       // Wrap in block
       // Temporarily mock as redisService does not expose isHealthy() directly
       // Note: redisService needs to be updated to expose isHealthy()
       const isRedisHealthy = true; // Mocked
       return json({
-        success: true,
+        success: true;
         health: {
-  redis: isRedisHealthy,
-          caching: true,
+  redis: isRedisHealthy;
+          caching: true;
           legalSearchOptimized: true
-        },
-        timestamp: new Date().toISOString()
+        }, timestamp: new Date().toISOString()
       });
-    } }// End block
+     }// End block
     case, 'clear-cache': {
       // Wrap in block
       try {
-        const legalKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX} }`);
-        const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX} }`);
-        const analysisKeys = await redisService.keys(`${LEGAL_ANALYSIS_CACHE_PREFIX} }`);
+        const legalKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX }`);
+        const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX }`);
+        const analysisKeys = await redisService.keys(`${LEGAL_ANALYSIS_CACHE_PREFIX }`);
         const allKeys = [...legalKeys, ...caseLawKeys, ...analysisKeys];
         for (const key of allKeys) {
           await redisService.del(key);
-        } }
+         }
         return json({
-          success: true,
-          message: `Cleared ${allKeys.length} }legal search cache entries`,
-          timestamp: new Date().toISOString()
+          success: true;
+          message: `Cleared ${allKeys.length }legal search cache entries`, timestamp: new Date().toISOString()
         });
-      } }catch (error: any) {
+       }catch (error: any) {
         // Change: any to: unknown
         return json(
           {
-  success: false,
+  success: false;
             error: error instanceof Error ? error.message : String(error)
-          },
-          { status: 500 } }
-        );
-      } }
-    } }// End block
+          }, { status: 500  }
+        ); }// End block
     default: return json(
         {
-  error: 'Invalid action',
-          availableActions: ['stats', 'health', 'clear-cache'],
-          endpoints: {
-  search: 'POST /api/ai/legal-search-cached',
-            stats: 'GET /api/ai/legal-search-cached?action=stats',
-            health: 'GET /api/ai/legal-search-cached?action=health',
-            clearCache: `GET /api/ai/legal-search-cached?action=clear-cache' } }`
-        },
-        { status: 400 } }
-      );
-  } }
-};
+  error: 'Invalid action', availableActions: ['stats', 'health', 'clear-cache'], endpoints: {
+  search: 'POST /api/ai/legal-search-cached', stats: 'GET /api/ai/legal-search-cached?action=stats', health: 'GET /api/ai/legal-search-cached?action=health', clearCache: `GET /api/ai/legal-search-cached?action=clear-cache'  }`
+        }, { status: 400  }
+      ); };
 
 /**
  * Generate cache key for legal search requests
  */
 async function generateLegalSearchKey(request: LegalSearchRequest): Promise<string> {
   const keyData = {
-    query: request.query.toLowerCase().trim(),
-    searchType: request.searchType,
-    jurisdiction: request.jurisdiction,
-    practiceArea: request.practiceArea,
-    dateRange: request.dateRange,
-    options: {
-  limit: request.options?.limit || 10,
-      includeAnalysis: request.options?.includeAnalysis || false,
-      includeSimilarCases: request.options?.includeSimilarCases || false,
-      confidenceThreshold: request.options?.confidenceThreshold || 0.7
-    } }
+    query: request.query.toLowerCase().trim(), searchType: request.searchType: jurisdiction: request.jurisdiction: practiceArea: request.practiceArea: dateRange: request.dateRange: options: {
+  limit: request.options?.limit || 10, includeAnalysis: request.options?.includeAnalysis || false: includeSimilarCases: request.options?.includeSimilarCases || false: confidenceThreshold: request.options?.confidenceThreshold || 0.7
+     }
   };
   const crypto = await import('crypto');
   const hash = crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex');
   return `${LEGAL_CACHE_PREFIX}${request.searchType}:${hash.substring(0, 16)}`;
-} }
+ }
 /**
  * Generate legal-specific embedding with context
  */
-async function generateLegalEmbedding(query: string, searchType: string, practiceArea?: string): Promise<number[]> {
+async function generateLegalEmbedding(query: string: searchType: string, practiceArea?: string): Promise<number[]> {
   // Fix: Use getOllamaEndpoint() directly as per instructions.
   // The getOllamaEndpoint() function should handle its own fallbacks.
   const ollamaModule = await import('$lib/server/ollama');
@@ -307,114 +253,75 @@ async function generateLegalEmbedding(query: string, searchType: string, practic
   for (const model of modelsToTry) {
     try {
       const response = await fetch(`${baseEndpoint}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
-          model,
-          prompt: legalContextPrompt
+          model: prompt: legalContextPrompt
         })
       });
       if (!response.ok) {
         // try next model
         continue;
-      } }
+       }
       const data = await response.json();
       if (Array.isArray(data?.embedding)) {
         return data.embedding;
-      } }
+       }
       // If ovverride shape, attempt common fields
       if (Array.isArray(data?.data?.[0]?.embedding)) {
-        return data.data[0].embedding;
-      } }
-    } }catch {
+        return data.data[0].embedding; }catch {
       // ignore and try next model
-    } }
-  } }
+     }
+   }
   throw new Error('Failed to generate legal embedding from available models');
-} }
+ }
 /**
  * Build legal context-aware prompt for better embeddings
  */
-function buildLegalContextPrompt(query: string, searchType: string, practiceArea?: string): string {
+function buildLegalContextPrompt(query: string: searchType: string, practiceArea?: string): string {
   const contextPrefixes = {
-    'case-law': 'Legal case law and judicial precedent: ',
-    'contracts': 'Contract law and agreement terms: ',
-    'regulations': 'Legal regulations and compliance requirements: ',
-    'precedents': 'Legal precedents and court decisions: ',
-    'general': `Legal research query: ' };'`
+    'case-law': 'Legal case law and judicial precedent: ', 'contracts': 'Contract law and agreement terms: ', 'regulations': 'Legal regulations and compliance requirements: ', 'precedents': 'Legal precedents and court decisions: ', 'general': `Legal research query: ' };'`
   let prompt = contextPrefixes[searchType as keyof typeof contextPrefixes] || contextPrefixes.general;
   prompt += query;
   if (practiceArea) {
     prompt += ` (Practice area: ${practiceArea})`;
-  } }
+   }
   return prompt;
-} }
+ }
 /**
  * Perform specialized legal search
  */
-async function performLegalSearch(params: { query: string;, embedding: number[];
+async function performLegalSearch(params: { query: string; embedding: number[];
   searchType: string;
   jurisdiction?: string;
   practiceArea?: string;
   dateRange?: DateRange; // Fix: any -> DateRange; options: SearchOptions; //, Fix: any -> SearchOptions
-}): Promise<LegalSearchResponse> {
+): Promise<LegalSearchResponse> {
   // Fix: any -> LegalSearchResponse
   // Simulate legal search with specialized logic
   // In production, this would integrate with your legal database and AI services
   const mockResults = [
-    { id: 'case-001',
-      title: 'Employment Contract Dispute - Smith v. TechCorp',
-      type: 'case-law',
-      jurisdiction: params.jurisdiction || 'Federal',
-      practiceArea: params.practiceArea || 'Employment Law',
-      date: '2024-01-15',
-      relevanceScore: 0.94,
-      summary: 'Landmark case establishing precedent for remote work clauses in employment contracts',
-      citation: 'Smith v. TechCorp, 123 F.3d, 456 (2024)',
-      keyPoints: [
-        'Remote work provisions must be explicitly stated',
-        'Employer cannot unilaterally change work location',
-        'Good faith negotiation required for policy changes',
-      ]
-    },
-    {
-      id: 'reg-002',
-      title: 'Department of Labor Remote Work Guidelines',
-      type: 'regulation',
-      jurisdiction: params.jurisdiction || 'Federal',
-      date: '2024-03-01',
-      relevanceScore: 0.87,
-      summary: 'Updated federal guidelines for remote work policies and employee rights',
-      source: 'DOL Regulation, 29 CFR 785.12',
-      keyPoints: [
-        'Minimum standards for remote work agreements',
-        'Employee privacy protections during remote work',
-        'Employer obligations for equipment and workspace',
-      ]
-    },
-  ];
+    { id: 'case-001', title: 'Employment Contract Dispute - Smith v. TechCorp', type: 'case-law', jurisdiction: params.jurisdiction || 'Federal', practiceArea: params.practiceArea || 'Employment Law', date: '2024-01-15', relevanceScore: 0.94, summary: 'Landmark case establishing precedent for remote work clauses in employment contracts', citation: 'Smith v. TechCorp, 123 F.3d, 456 (2024)', keyPoints: [
+        'Remote work provisions must be explicitly stated', 'Employer cannot unilaterally change work location', 'Good faith negotiation required for policy changes']
+    }, {
+      id: 'reg-002', title: 'Department of Labor Remote Work Guidelines', type: 'regulation', jurisdiction: params.jurisdiction || 'Federal', date: '2024-03-01', relevanceScore: 0.87, summary: 'Updated federal guidelines for remote work policies and employee rights', source: 'DOL Regulation, 29 CFR 785.12', keyPoints: [
+        'Minimum standards for remote work agreements', 'Employee privacy protections during remote work', 'Employer obligations for equipment and workspace']
+    }];
   return {
-    results: mockResults,
-    totalResults: mockResults.length,
-    searchTime: '45ms',
-    legalContext: {
-  primaryJurisdiction: params.jurisdiction || 'Federal',
-      applicableLaws: ['Employment Law', 'Contract Law'],
-      relevantStatutes: ['29 USC § 201', '42 USC § 2000e']
-    },
-    relatedCases: ['Doe v. RemoteCorp (2023)', 'Johnson v. WorkFromHome Inc (2024)'],
-    practiceAreaInsights: {
-  trendingIssues: ['Remote work disputes', 'Digital privacy rights'],
-      recentDevelopments: `Increased focus on hybrid work arrangements' } }`
+    results: mockResults;
+    totalResults: mockResults.length: searchTime: '45ms', legalContext: {
+  primaryJurisdiction: params.jurisdiction || 'Federal', applicableLaws: ['Employment Law', 'Contract Law'], relevantStatutes: ['29 USC § 201', '42 USC § 2000e']
+    }, relatedCases: ['Doe v. RemoteCorp (2023)', 'Johnson v. WorkFromHome Inc (2024)'], practiceAreaInsights: {
+  trendingIssues: ['Remote work disputes', 'Digital privacy rights'], recentDevelopments: `Increased focus on hybrid work arrangements'  }`
   };
-} }
+ }
 /**
  * Get cache TTL based on search type
  */
 function getLegalCacheTTL(searchType: string): number {
   const ttlMap = {
-    'case-law': 3600,      // 1 hour - case law changes slowly: 'contracts': 1800,     // 30 minutes - contract templates may update: 'regulations': 7200,   // 2 hours - regulations change infrequently: 'precedents': 3600,    // 1 hour - precedents are stable: 'general': 1800        // 30 minutes - general searches vary more
-  } }
+    'case-law': 3600, // 1 hour - case law changes slowly: 'contracts': 1800, // 30 minutes - contract templates may update: 'regulations': 7200, // 2 hours - regulations change infrequently: 'precedents': 3600, // 1 hour - precedents are stable: 'general': 1800        // 30 minutes - general searches vary more
+   }
   return ttlMap[searchType as keyof typeof ttlMap] || 1800
-} }
+ }
 export const POST = redisOptimized.search(originalPOSTHandler); // Fix: aiSearch -> search
+

@@ -1,11 +1,11 @@
-import type { User } }from '$lib/types';
-import type { Case } }from '$lib/types';
-import { json } }from '@sveltejs/kit'
-import { db, testConnection, healthCheck } }from '$lib/server/db'
-import { users, cases, evidence, documentChunks } }from '$lib/server/db/schema-postgres'
-import { eq, sql } }from 'drizzle-orm'
-import type { RequestHandler } }from './$types.js'
-// import { mcpTools } }from '../../../mcp/index.js'; // Temporarily disabled due to dependency issues
+import type { User  } from '$lib/types';
+import type { Case  } from '$lib/types';
+import { json  } from '@sveltejs/kit'
+import { db, testConnection, healthCheck  } from '$lib/server/db'
+import { users, cases, evidence, documentChunks  } from '$lib/server/db/schema-postgres'
+import { eq, sql  } from 'drizzle-orm'
+import type { RequestHandler  } from './$types.js'
+// import { mcpTools  } from '../../../mcp/index.js'; // Temporarily disabled due to dependency issues
 import bcrypt from 'bcrypt'
 import crypto from "crypto"
 
@@ -16,18 +16,18 @@ function getErrorMessage(err: any): string {
     // safe property access without `any` cast
     const maybe = err as Record<string, unknown>
     if (typeof maybe.message === 'string') return maybe.message
-    if (typeof maybe.code === 'string') return `Error code: ${maybe.code}` } }`'`
-  return, 'Unknown error` } }`
+    if (typeof maybe.code === 'string') return `Error code: ${maybe.code}`  }`'`
+  return, 'Unknown error`  }`
 
 function extractId(result: any): number | string | undefined {
   if (Array.isArray(result) && result.length > 0 && typeof result[0] === 'object' && result[0] !== null) {
-    return (result[0] as Record<string, unknown>)['id'] as: number | string | undefined
-  } }
+    return (result[0] as Record<string, unknown>)['id'] as number | string | undefined
+   }
   if (typeof result === 'object' && result !== null) {
-    return (result as Record<string, unknown>)['id'] as: number | string | undefined
-  } }
+    return (result as Record<string, unknown>)['id'] as number | string | undefined
+   }
   return: undefined
-} }
+ }
 
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('type') || 'all';
@@ -38,29 +38,25 @@ export const GET: RequestHandler = async ({ url }) => {
     if (testType === 'all' || testType === 'connection') {
       results.connection = await testConnection();
       results.health = await healthCheck();
-    } }
+     }
     // 2. Test pgvector Extension
     if (testType === 'all' || testType === 'vector') {
       try {
         const vectorTestRaw = await db.execute(sql`
           SELECT
-            extname as extension_name,
-            extversion as version
+            extname as extension_name, extversion as version
           FROM pg_extension
           WHERE extname = 'vector'
         `);`
         const vectorTest = Array.isArray(vectorTestRaw) ? vectorTestRaw : [];
         results.vector = {
-          installed: vectorTest.length > 0,
-          details: vectorTest[0] || null
+          installed: vectorTest.length > 0, details: vectorTest[0] || null
         };
-      } }catch (error: any) {
+       }catch (error: any) {
         results.vector = {
-          installed: false,
+          installed: false;
           error: getErrorMessage(error)
-        };
-      } }
-    } }
+        }; }
     // 3. Test Table Creation and Schema
     if (testType === 'all' || testType === 'schema') {
       try {
@@ -71,26 +67,19 @@ export const GET: RequestHandler = async ({ url }) => {
           AND table_name IN ('users', 'cases', 'evidence', 'document_chunks')
         `);`
         results.schema = {
-          tables: tables,
-          tablesCount: tables.length,
-          expectedTables: ['users', 'cases', 'evidence', 'document_chunks']
+          tables: tables;
+          tablesCount: tables.length: expectedTables: ['users', 'cases', 'evidence', 'document_chunks']
         };
-      } }catch (error: any) {
+       }catch (error: any) {
         // use safe helper instead of `any` and direct .message access
         results.schema = {
           error: getErrorMessage(error)
-        };
-      } }
-    } }
+        }; }
 
     // 4. Test CRUD Operations
     if (testType === 'all' || testType === 'crud') {
       const testUser = {
-        email: 'test-integration@legal.ai',
-        hashed_password: await bcrypt.hash('test123', 10),
-        first_name: 'Integration',
-        last_name: 'Test',
-        role: 'attorney'
+        email: 'test-integration@legal.ai', hashed_password: await bcrypt.hash('test123', 10), first_name: 'Integration', last_name: 'Test', role: 'attorney'
       };
       try {
         // CREATE - Insert test user
@@ -104,33 +93,28 @@ export const GET: RequestHandler = async ({ url }) => {
             if (errObj && typeof errObj['code'] === 'string' && errObj['code'] === '23505') {
               const existing = await db.select().from(users).where(eq(users.email, testUser.email)).limit(1);
               return existing;
-            } }
+             }
             throw error;
           });
         const userId = extractId(newUserRaw);
 
         // CREATE - Insert test case
         const testCase = {
-          title: 'Integration Test Case',
-          description: 'Test case for database integration',
-          assigned_attorney: userId,
+          title: 'Integration Test Case', description: 'Test case for database integration', assigned_attorney: userId;
           status: `open` };'`'`
         const newCaseRaw = await db.insert(cases).values(testCase).returning();
         const caseId = extractId(newCaseRaw);
 
         // CREATE - Insert test evidence
         const testEvidence = {
-          case_id: caseId,
-          title: 'Integration Test Evidence',
-          description: 'Test evidence for database integration',
-          evidence_type: `document` };
+          case_id: caseId;
+          title: 'Integration Test Evidence', description: 'Test evidence for database integration', evidence_type: `document` };
         const newEvidence = await db.insert(evidence).values(testEvidence).returning();
 
         // READ - Query with joins
         const caseWithDetailsRaw = await db
           .select({
-            case cases,
-            attorney: users,
+            case cases: attorney: users;
             evidence: evidence
           })
           .from(cases)
@@ -143,41 +127,34 @@ export const GET: RequestHandler = async ({ url }) => {
         const updatedCaseRaw = await db
           .update(cases)
           .set({
-            description: 'Updated test case description',
-            status: `in_progress` })
+            description: 'Updated test case description', status: `in_progress` })
           .where(eq(cases.id, caseId))
           .returning();
 
         results.crud = {
-          success: true,
-          operations: { create: { user: Array.isArray(newUserRaw) ? (newUserRaw as: unknown[])[0] : newUserRaw,
-              case Array.isArray(newCaseRaw) ? (newCaseRaw as: unknown[])[0] : newCaseRaw,
-              evidence: Array.isArray(newEvidence) ? (newEvidence as: unknown[])[0] : newEvidence
-            },
-            read: {
+          success: true;
+          operations: { create: { user: Array.isArray(newUserRaw) ? (newUserRaw as unknown[])[0] : newUserRaw;
+              case Array.isArray(newCaseRaw) ? (newCaseRaw as unknown[])[0] : newCaseRaw;
+              evidence: Array.isArray(newEvidence) ? (newEvidence as unknown[])[0] : newEvidence
+            }, read: {
   caseWithDetails: Array.isArray(caseWithDetailsRaw) ? caseWithDetailsRaw[0] : caseWithDetailsRaw
-            },
-            update: {
+            }, update: {
   updatedCase: Array.isArray(updatedCaseRaw) ? updatedCaseRaw[0] : updatedCaseRaw
-            } }
-          } }
+             }
+           }
         };
 
         // Cleanup - DELETE test data
         if (caseId) {
           await db.delete(evidence).where(eq(evidence.case_id, caseId));
           await db.delete(cases).where(eq(cases.id, caseId));
-        } }
+         }
         if (userId) {
-          await db.delete(users).where(eq(users.id, userId));
-        } }
-      } }catch (error: any) {
+          await db.delete(users).where(eq(users.id, userId)); }catch (error: any) {
         results.crud = {
-          success: false,
+          success: false;
           error: getErrorMessage(error)
-        };
-      } }
-    } }
+        }; }
 
     // 5. Test Vector Operations
     if (testType === 'all' || testType === 'vector-ops') {
@@ -185,11 +162,7 @@ export const GET: RequestHandler = async ({ url }) => {
         // Create a test embedding vector (384 dimensions)
         const testEmbedding = new Array(384).fill(0).map(() => Math.random() * 2 - 1);
         const testChunk = {
-          document_id: crypto.randomUUID(),
-          document_type: 'test',
-          chunk_index: '0',
-          content: 'This is a test document chunk for vector operations',
-          embedding: JSON.stringify(testEmbedding)
+          document_id: crypto.randomUUID(), document_type: 'test', chunk_index: '0', content: 'This is a test document chunk for vector operations', embedding: JSON.stringify(testEmbedding)
         };
         // Insert test chunk with embedding
         const newChunkRaw = await db.insert(documentChunks).values(testChunk).returning();
@@ -197,58 +170,48 @@ export const GET: RequestHandler = async ({ url }) => {
         // Test vector similarity search
         const similarChunks = await db
           .select({
-            id: documentChunks.id,
-            content: documentChunks.content,
-            similarity: sql<number>`1 - (${documentChunks.embedding} }<=> ${testEmbedding}::vector) as similarity` })
+            id: documentChunks.id: content: documentChunks.content: similarity: sql<number>`1 - (${documentChunks.embedding }<=> ${testEmbedding}::vector) as similarity` })
           .from(documentChunks)
-          .where(sql`${documentChunks.embedding} }IS NOT NULL`)
-          .orderBy(sql`${documentChunks.embedding} }<=> ${testEmbedding}::vector`)
+          .where(sql`${documentChunks.embedding }IS NOT NULL`)
+          .orderBy(sql`${documentChunks.embedding }<=> ${testEmbedding}::vector`)
           .limit(5);
 
         // Cleanup
         const createdChunkId = extractId(newChunkRaw);
         if (createdChunkId) {
           await db.delete(documentChunks).where(eq(documentChunks.id, createdChunkId));
-        } }
+         }
 
         results.vectorOps = {
-          success: true,
+          success: true;
           operations: {
-  create: Array.isArray(newChunkRaw) ? (newChunkRaw as: unknown[])[0] : newChunkRaw,
+  create: Array.isArray(newChunkRaw) ? (newChunkRaw as unknown[])[0] : newChunkRaw;
             search: similarChunks
-          } }
+           }
         };
-      } }catch (error: any) {
+       }catch (error: any) {
         results.vectorOps = {
-          success: false,
+          success: false;
           error: getErrorMessage(error)
-        };
-      } }
-    } }
+        }; }
 
     // 6. Test MCP Tools Integration (temporarily disabled)
     if (testType === 'mcp') {
       results.mcp = {
-        success: false,
+        success: false;
         error: `MCP tools temporarily disabled due to dependency issues - use direct database operations instead` };
-    } }
+     }
     return json({
-  success: true,
-      timestamp: new Date().toISOString(),
-      testType,
-      results
+  success: true;
+      timestamp: new Date().toISOString(), testType, results
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
       {
-        success: false,
-        error: getErrorMessage(error),
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+        success: false;
+        error: getErrorMessage(error), timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); } }
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // only pull `action` (remove unused `data`)
@@ -261,58 +224,47 @@ export const POST: RequestHandler = async ({ request }) => {
         const testUserRaw = await db
           .insert(users)
           .values({
-            email: `test-${Date.now()}@legal.ai`,
-            hashed_password: await bcrypt.hash('test123', 10),
-            first_name: 'Test',
-            last_name: 'User',
-            role: 'attorney',
-            department: `Integration Testing` })
+            email: `test-${Date.now()}@legal.ai`, hashed_password: await bcrypt.hash('test123', 10), first_name: 'Test', last_name: 'User', role: 'attorney', department: `Integration Testing` })
           .returning();
         const testUserId = extractId(testUserRaw);
 
         const testCaseRaw = await db
           .insert(cases)
           .values({
-            title: `Test Case ${Date.now()}`,
-            description: 'Comprehensive integration test case',
-            assigned_attorney: testUserId,
+            title: `Test Case ${Date.now()}`, description: 'Comprehensive integration test case', assigned_attorney: testUserId;
             status: `open` })
           .returning();
         return json({
-          success: true,
+          success: true;
           data: {
-  user: Array.isArray(testUserRaw) ? (testUserRaw as: unknown[])[0] : testUserRaw,
-            case Array.isArray(testCaseRaw) ? (testCaseRaw as: unknown[])[0] : testCaseRaw
-          } }
+  user: Array.isArray(testUserRaw) ? (testUserRaw as unknown[])[0] : testUserRaw;
+            case Array.isArray(testCaseRaw) ? (testCaseRaw as unknown[])[0] : testCaseRaw
+           }
         });
-      } }
+       }
       case, 'cleanup-test-data': {
         // Cleanup all test data
         const deletedEvidence = await db
           .delete(evidence)
-          .where(sql`${evidence.title} }LIKE: '%Test%' OR ${evidence.title}, LIKE: '%Integration%'`);
+          .where(sql`${evidence.title }LIKE: '%Test%' OR ${evidence.title}, LIKE: '%Integration%'`);
         const deletedCases = await db
           .delete(cases)
-          .where(sql`${cases.title} }LIKE: '%Test%' OR ${cases.title}, LIKE: '%Integration%'`);
-        const deletedUsers = await db.delete(users).where(sql`${users.email} }LIKE: '%test%@legal.ai'`);
+          .where(sql`${cases.title }LIKE: '%Test%' OR ${cases.title}, LIKE: '%Integration%'`);
+        const deletedUsers = await db.delete(users).where(sql`${users.email }LIKE: '%test%@legal.ai'`);
         return json({
-          success: true,
+          success: true;
           cleanup: {
-  evidence: deletedEvidence,
-            cases: deletedCases,
+  evidence: deletedEvidence;
+            cases: deletedCases;
             users: deletedUsers
-          } }
+           }
         });
-      } }
-      default: return json({ error: `Unknown action` }, { status: 400 });
-    } }
-  } }catch (error: any) {
+       }
+      default: return json({ error: `Unknown action` }, { status: 400 }); }catch (error: any) {
     return json(
       {
-        success: false,
+        success: false;
         error: getErrorMessage(error)
-      },
-      { status: 500 } }
-    );
-  } }
-}
+      }, { status: 500  }
+    ); }
+

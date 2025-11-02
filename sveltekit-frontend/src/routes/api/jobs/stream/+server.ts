@@ -4,10 +4,10 @@
  * Provides real-time job status updates via Server-Sent Events
  * Integrates with GlobalLokiStore for cross-worker state visibility
  */
-import type { RequestHandler, RequestEvent } }from './$types.js';
-import { globalLoki } }from '$lib/stores/global-loki-store.js';
-import { cacheService } }from '$lib/api/services/cache-service.js';
-import type { RedisClientType } }from 'redis';
+import type { RequestHandler, RequestEvent  } from './$types.js';
+import { globalLoki  } from '$lib/stores/global-loki-store.js';
+import { cacheService  } from '$lib/api/services/cache-service.js';
+import type { RedisClientType  } from 'redis';
 
 export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
   const jobIds = url.searchParams.get('jobIds')?.split(',') || [];
@@ -19,11 +19,9 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
     const redisClient = cacheService.getClient() as RedisClientType | undefined;
     if (redisClient) {
       // Pass the properly-typed client instead of casting to `any`
-      await globalLoki.initRedis(redisClient);
-    } }
-  } }catch (err) {
+      await globalLoki.initRedis(redisClient); }catch (err) {
     console.warn('globalLoki.initRedis failed:', err);
-  } }
+   }
 
   const stream = new ReadableStream<string>({
     start(controller) {
@@ -32,9 +30,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
       // Send initial connection message
       controller.enqueue(
         `data: ${JSON.stringify({`
-  type: 'connection',
-          message: 'Connected to job status stream',
-          timestamp: new Date().toISOString()
+  type: 'connection', message: 'Connected to job status stream', timestamp: new Date().toISOString()
         })}\n\n`
       );
       // Send current job statuses
@@ -45,35 +41,28 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
             const allJobs = globalLoki.getAllJobs();
             controller.enqueue(
               `data: ${JSON.stringify({`
-  type: 'jobs_snapshot',
-                jobs: allJobs,
+  type: 'jobs_snapshot', jobs: allJobs;
                 timestamp: new Date().toISOString()
               })}\n\n`
             );
-          } }else if (jobIds.length > 0) {
+           }else if (jobIds.length > 0) {
             // Send specific jobs
             const jobs = jobIds.map((id: string) => globalLoki.getJob(id)).filter(Boolean);
             controller.enqueue(
               `data: ${JSON.stringify({`
-  type: 'jobs_snapshot',
-                jobs,
-                timestamp: new Date().toISOString()
+  type: 'jobs_snapshot', jobs: timestamp: new Date().toISOString()
               })}\n\n`
             );
-          } }
+           }
           // Send stats
           const stats = globalLoki.getStats();
           controller.enqueue(
             `data: ${JSON.stringify({`
-  type: 'stats',
-              stats,
-              timestamp: new Date().toISOString()
+  type: 'stats', stats: timestamp: new Date().toISOString()
             })}\n\n`
           );
-        } }catch (error) {
-          console.error('Error sending current statuses:', error);
-        } }
-      };
+         }catch (error) {
+          console.error('Error sending current statuses:', error); };
       // Send initial statuses
       sendCurrentStatuses();
       // Set up periodic updates (every, 2 seconds)
@@ -81,7 +70,7 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
         if (!isAlive) {
           clearInterval(updateInterval);
           return;
-        } }
+         }
         sendCurrentStatuses();
       }, 2000);
       // Set up heartbeat (every, 30 seconds)
@@ -89,11 +78,10 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
         if (!isAlive) {
           clearInterval(heartbeatInterval);
           return;
-        } }
+         }
         controller.enqueue(
           `data: ${JSON.stringify({`
-  type: 'heartbeat',
-            timestamp: new Date().toISOString()
+  type: 'heartbeat', timestamp: new Date().toISOString()
           })}\n\n`
         );
       }, 30000);
@@ -107,9 +95,9 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
         subscribers.clear();
         try {
           controller.close();
-        } }catch (e) {
+         }catch (e) {
           // Controller might already be closed
-        } }
+         }
       });
       // Return cleanup function
       return () => {
@@ -119,18 +107,12 @@ export const GET: RequestHandler = async ({ url, request }: RequestEvent) => {
         subscribers.forEach(unsubscribe => unsubscribe());
         subscribers.clear();
       };
-    },
-    cancel() {
+    }, cancel() {
       // Stream was cancelled
-      console.log('Job status stream cancelled');
-    } }
-  });
+      console.log('Job status stream cancelled'); });
   return new Response(stream, {
     headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Cache-Control` } }`
+      'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Cache-Control`  }`
   });
 };
+

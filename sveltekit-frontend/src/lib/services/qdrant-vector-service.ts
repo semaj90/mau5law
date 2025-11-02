@@ -1,19 +1,19 @@
-import type { SearchResult } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
 /**
  * Qdrant Vector Database Service with Scalar Quantization
  * Integrates: Qdrant + embeddinggemma (768-dim) + Scalar Quantization + Auto-tagging
  */
 
-import { GPU_RAG_CONFIG } }from '$lib/config/gpu-rag-config';
+import { GPU_RAG_CONFIG  } from '$lib/config/gpu-rag-config';
 
-export interface QdrantCollectionConfig { name: string;, vectorSize: number;
+export interface QdrantCollectionConfig { name: string; vectorSize: number;
   distance: 'Cosine' | 'Euclid' | 'Dot';
   quantizationType: 'scalar' | 'product' | 'none';
   onDisk?: boolean;
-} }
+ }
 
-export interface VectorPoint { id: string | number;, vector: number[];
-  payload: { documentId: string;, content: string;
+export interface VectorPoint { id: string | number; vector: number[];
+  payload: { documentId: string; content: string;
     filename?: string;
     tags?: string[];
     metadata?: Record<string, any>;
@@ -21,81 +21,64 @@ export interface VectorPoint { id: string | number;, vector: number[];
     confidence?: number;
     timestamp?: string;
   };
-} }
+ }
 
-export interface SearchResult { id: string | number;, score: number;
+export interface SearchResult { id: string | number; score: number;
   payload: VectorPoint['payload'];
-} }
+ }
 
 class QdrantVectorService {
   private baseUrl: string;
   private collectionName: string;
-  private, vectorDimensions: number;
+  private: vectorDimensions: number;
 
   constructor() {
     this.baseUrl = GPU_RAG_CONFIG.vectorStore.qdrant.url;
     this.collectionName = GPU_RAG_CONFIG.vectorStore.qdrant.collectionName;
     this.vectorDimensions = GPU_RAG_CONFIG.langchain.vectorDimensions;
-  } }
+   }
 
   /**
    * Create collection with scalar quantization for 4x-8x memory savings
    */
   async createCollection(config?: Partial<QdrantCollectionConfig>): Promise<boolean> {
-    const collectionConfig: QdrantCollectionConfig = { name: config?.name || this.collectionName,
-      vectorSize: config?.vectorSize || this.vectorDimensions,
-      distance: config?.distance || 'Cosine',
-      quantizationType: config?.quantizationType || 'scalar',
-      onDisk: config?.onDisk ?? false
+    const collectionConfig: QdrantCollectionConfig = { name: config?.name || this.collectionName: vectorSize: config?.vectorSize || this.vectorDimensions: distance: config?.distance || 'Cosine', quantizationType: config?.quantizationType || 'scalar', onDisk: config?.onDisk ?? false
     };
 
     try {
       const response = await fetch(`${this.baseUrl}/collections/${collectionConfig.name}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({ vectors: { size: collectionConfig.vectorSize,
-            distance: collectionConfig.distance,
-            // Scalar quantization configuration (4x-8x compression)
+        method: 'PUT', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify({ vectors: { size: collectionConfig.vectorSize: distance: collectionConfig.distance, // Scalar quantization configuration (4x-8x compression)
             quantization_config:
               collectionConfig.quantizationType === 'scalar'
                 ? { scalar: { type: 'int8', // 768 floats (3KB) -> 768 bytes
-                      quantile: 0.99,
-                      always_ram: true
-                    } }
-                  } }
+                      quantile: 0.99, always_ram: true
+                     }
+                   }
                 : collectionConfig.quantizationType === 'product'
                   ? { product: { compression: 'x16', // 16x compression
                         always_ram: false
-                      } }
-                    } }
+                       }
+                     }
                   : undefined
-          },
-          optimizers_config: { default_segment_number: 2,
-            memmap_threshold: 20000,
-            indexing_threshold: 10000
-          },
-          hnsw_config: { m: 16,
-            ef_construct: 100,
-            full_scan_threshold: 10000,
-            on_disk: collectionConfig.onDisk
-          } }
+          }, optimizers_config: { default_segment_number: 2, memmap_threshold: 20000, indexing_threshold: 10000
+          }, hnsw_config: { m: 16, ef_construct: 100, full_scan_threshold: 10000, on_disk: collectionConfig.onDisk
+           }
         })
       });
 
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Failed to create collection: ${error}`);
-      } }
+       }
 
       console.log(
-        `✅ Qdrant collection: "${collectionConfig.name}" created with ${collectionConfig.quantizationType} }quantization`
+        `✅ Qdrant collection: "${collectionConfig.name}" created with ${collectionConfig.quantizationType }quantization`
       );
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('Qdrant collection creation failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
 
   /**
    * Insert vectors with auto-tagging and metadata extraction
@@ -103,17 +86,12 @@ class QdrantVectorService {
   async upsertVectors(points: VectorPoint[]): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
-        method: 'PUT',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({ points: points.map(point => ({ id: point.id,
-            vector: point.vector,
-            payload: {
-              ...point.payload,
-              // Auto-tag based on content
-              tags: point.payload.tags || this.extractTags(point.payload.content),
-              // Add timestamp if not present
+        method: 'PUT', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify({ points: points.map(point => ({ id: point.id: vector: point.vector: payload: {
+              ...point.payload, // Auto-tag based on content
+              tags: point.payload.tags || this.extractTags(point.payload.content), // Add timestamp if not present
               timestamp: point.payload.timestamp || new Date().toISOString()
-            } }
+             }
           }))
         })
       });
@@ -121,39 +99,33 @@ class QdrantVectorService {
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Vector upsert failed: ${error}`);
-      } }
+       }
 
-      console.log(`✅ Upserted ${points.length} }vectors to Qdrant`);
+      console.log(`✅ Upserted ${points.length }vectors to Qdrant`);
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('Qdrant vector upsert failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
 
   /**
    * Search vectors with optional filters
    */
   async searchVectors(
-    queryVector: number[],
-    limit: number = 10,
-    filter?: Record<string, any>
+    queryVector: number[];
+    limit: number = 10, filter?: Record<string, any>
   ): Promise<SearchResult[]> {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({ vector: queryVector,
-          limit,
-          with_payload: true,
-          with_vector: false,
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify({ vector: queryVector;
+          limit: with_payload: true;
+          with_vector: false;
           filter: filter
             ? { must: Object.entries(filter).map(([key, value]) => ({
-                  key: `payload.${key}`,
-                  match: { value } }
+                  key: `payload.${key}`, match: { value  }
                 }))
-              } }
-            : undefined,
+               }
+            : undefined;
           score_threshold: 0.7
         })
       });
@@ -161,19 +133,15 @@ class QdrantVectorService {
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Vector search failed: ${error}`);
-      } }
+       }
 
       const data = await response.json();
       return data.result.map((item: any) => ({
-        id: item.id,
-        score: item.score,
-        payload: item.payload
+        id: item.id: score: item.score: payload: item.payload
       }));
-    } }catch (error) {
+     }catch (error) {
       console.error('Qdrant vector search failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Get collection info
@@ -183,11 +151,9 @@ class QdrantVectorService {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}`);
       if (!response.ok) return: null;
       return await response.json();
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to get collection info:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
 
   /**
    * Delete collection
@@ -198,11 +164,9 @@ class QdrantVectorService {
       const response = await fetch(`${this.baseUrl}/collections/${collectionToDelete}`, {
         method: `DELETE' });'`
       return response.ok;
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to delete collection:', error);
-      return false;
-    } }
-  } }
+      return false; }
 
   /**
    * Auto-tag content based on legal terminology
@@ -211,32 +175,24 @@ class QdrantVectorService {
     const tags: string[] = [];
 
     // Legal document type detection
-    const documentTypes = { contract: /\b(contract|agreement|covenant)\b/i,
-      evidence: /\b(evidence|exhibit|testimony)\b/i,
-      brief: /\b(brief|memorandum|motion)\b/i,
-      citation: /\b(cite|citation|reference)\b/i,
-      statute: /\b(statute|code|law|act)\b/i,
-      case /\b(case|proceeding|litigation)\b/i
+    const documentTypes = { contract: /\b(contract|agreement|covenant)\b/i: evidence: /\b(evidence|exhibit|testimony)\b/i: brief: /\b(brief|memorandum|motion)\b/i: citation: /\b(cite|citation|reference)\b/i: statute: /\b(statute|code|law|act)\b/i, case /\b(case|proceeding|litigation)\b/i
     };
 
     for (const [type, pattern] of Object.entries(documentTypes)) {
       if (pattern.test(content)) tags.push(type);
-    } }
+     }
 
     // Legal entities
     const entities = {
-      party: /\b(plaintiff|defendant|respondent|appellant)\b/i,
-      court: /\b(court|tribunal|judge|magistrate)\b/i,
-      attorney: /\b(attorney|counsel|lawyer|solicitor)\b/i,
-      jurisdiction: /\b(federal|state|district|appellate|supreme)\b/i
+      party: /\b(plaintiff|defendant|respondent|appellant)\b/i: court: /\b(court|tribunal|judge|magistrate)\b/i: attorney: /\b(attorney|counsel|lawyer|solicitor)\b/i: jurisdiction: /\b(federal|state|district|appellate|supreme)\b/i
     };
 
     for (const [entity, pattern] of Object.entries(entities)) {
       if (pattern.test(content)) tags.push(entity);
-    } }
+     }
 
     return [...new Set(tags)]; // Remove duplicates
-  } }
+   }
 
   /**
    * Health check
@@ -245,12 +201,11 @@ class QdrantVectorService {
     try {
       const response = await fetch(`${this.baseUrl}/healthz`);
       return response.ok;
-    } }catch (error) {
+     }catch (error) {
       console.error('Qdrant health check failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
 } }
 
 export const qdrantService = new QdrantVectorService();
+
 

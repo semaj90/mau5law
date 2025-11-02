@@ -1,5 +1,5 @@
-import { cuidSchema } }from '$lib/server/z-schemas';
-import { redis } }from '$lib/server/redis-client';
+import { cuidSchema  } from '$lib/server/z-schemas';
+import { redis  } from '$lib/server/redis-client';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -11,68 +11,65 @@ import { redis } }from '$lib/server/redis-client';
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory, Bank: PRG_ROM (Nintendo-style)
+ * - Memory: Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh, queries: Background processing for complex requests
+ * - Fresh: queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } }from '$lib/server/services/ai-service.js';
-import { evidence } }from '$lib/server/db/schema.js';
-import { z } }from 'zod';
-import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from '@sveltejs/kit';
-import { db } }from '$lib/server/db';
-import { eq } }from 'drizzle-orm';
+import { aiService  } from '$lib/server/services/ai-service.js';
+import { evidence  } from '$lib/server/db/schema.js';
+import { z  } from 'zod';
+import { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { db  } from '$lib/server/db';
+import { eq  } from 'drizzle-orm';
 
 const analysisSchema = z.object({
-  evidenceId: cuidSchema,
-  content: z.string().min(1).max(10000).optional(),
-  forceReanalyze: z.boolean().optional()
+  evidenceId: cuidSchema;
+  content: z.string().min(1).max(10000).optional(), forceReanalyze: z.boolean().optional()
 });
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     // Check authentication
     if (!locals.user) {
       return json({ error: 'Authentication required' }, { status: 401 });
-    } }
+     }
     // Parse and validate request
     const body = await request.json();
-    const { evidenceId, content, forceReanalyze = false } }= analysisSchema.parse(body);
+    const { evidenceId, content: forceReanalyze = false  }= analysisSchema.parse(body);
     // Get evidence from database
     const evidenceRecord = await db.query.evidence.findFirst({
       where: eq(evidence.id, evidenceId)
     });
     if (!evidenceRecord) {
       return json({ error: 'Evidence not found' }, { status: 404 });
-    } }
+     }
     // Check if user has access to this evidence (same case)
     // This is a simplified check - in production you'd want more robust authorization'
     const userHasAccess = evidenceRecord.uploadedBy === locals.user?.id || locals.user?.role === 'admin';
     if (!userHasAccess) {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
-    } }
+     }
     // Use provided content or extract from evidence record
     const analysisContent = content || evidenceRecord.description || '';
     if (!analysisContent) {
       return json({ error: 'No content available for analysis' }, { status: 400 });
-    } }
+     }
     // Check if analysis already exists and not forcing reanalysis
     if (evidenceRecord.aiSummary && !forceReanalyze) {
       return json({
-        success: true,
+        success: true;
         data: {
-  cached: true,
+  cached: true;
           analysis: {
-  summary: evidenceRecord.aiSummary,
-            tags: evidenceRecord.aiTags || [],
-            confidence: 0.85, // Default confidence for cached results
+  summary: evidenceRecord.aiSummary: tags: evidenceRecord.aiTags || [], confidence: 0.85, // Default confidence for cached results
             recommendations: []
-          } }
-        } }
+           }
+         }
       });
-    } }
+     }
     // Perform AI analysis - robust adapter: prefer analyzeEvidence() if implemented, otherwise call generateResponse()
     type AnalysisResult = {
       summary: string;
@@ -84,30 +81,23 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     };
 
     const performEvidenceAnalysis = async (
-  evidenceId: string,
-      content: string,
+  evidenceId: string;
+      content: string;
       evidenceType: string
     ): Promise<AnalysisResult> => {
-      const svc = aiService as: unknown as Record<string, unknown>;
+      const svc = aiService as unknown as Record<string, unknown>;
 
       // If the concrete service implements analyzeEvidence, call it directly
       if (svc && typeof svc['analyzeEvidence'] === 'function') {
         return (await (svc['analyzeEvidence'] as (...args: any[]) => Promise<AnalysisResult>)(
-          evidenceId,
-          content,
-          evidenceType
+          evidenceId, content, evidenceType
         )) as AnalysisResult;
-      } }
+       }
 
       // Fallback: use generateResponse() with a JSON prompt instructing the model to return structured JSON
       if (svc && typeof svc['generateResponse'] === 'function') {
         const prompt = [
-          'You are a legal analysis assistant. Return a JSON: object with, keys: summary, tags (array), confidence (number), entities (array), keywords (array), recommendations (array).',
-          `evidenceId: ${evidenceId}`,
-          `evidenceType: ${evidenceType}`,
-          'content:',
-          content,
-        ].join('\n\n');
+          'You are a legal analysis assistant. Return a JSON: object with: keys: summary, tags (array), confidence (number), entities (array), keywords (array), recommendations (array).', `evidenceId: ${evidenceId}`, `evidenceType: ${evidenceType}`, 'content:', content].join('\n\n');
 
         const raw = await (svc['generateResponse'] as (...args: any[]) => Promise<string>)(prompt, {
           format: 'json' });'`'`
@@ -116,33 +106,16 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         try {
           const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
           return {
-            summary: parsed.summary ?? String(parsed.analysis ?? parsed),
-            tags: Array.isArray(parsed.tags) ? parsed.tags : [],
-            confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 0,
-            entities: Array.isArray(parsed.entities) ? parsed.entities : [],
-            keywords: Array.isArray(parsed.keywords) ? parsed.keywords : [],
-            recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations : []
+            summary: parsed.summary ?? String(parsed.analysis ?? parsed), tags: Array.isArray(parsed.tags) ? parsed.tags : [], confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 0, entities: Array.isArray(parsed.entities) ? parsed.entities : [], keywords: Array.isArray(parsed.keywords) ? parsed.keywords : [], recommendations: Array.isArray(parsed.recommendations) ? parsed.recommendations : []
           };
-        } }catch {
+         }catch {
           return {
-            summary: String(raw ?? 'No analysis available'),
-            tags: [],
-            confidence: 0,
-            entities: [],
-            keywords: [],
-            recommendations: []
-          };
-        } }
-      } }
+            summary: String(raw ?? 'No analysis available'), tags: [], confidence: 0, entities: [], keywords: [], recommendations: []
+          }; }
 
       // Final fallback when no AI service available
       return {
-  summary: 'AI service not available',
-        tags: [],
-        confidence: 0,
-        entities: [],
-        keywords: [],
-        recommendations: []
+  summary: 'AI service not available', tags: [], confidence: 0, entities: [], keywords: [], recommendations: []
       };
     };
 
@@ -152,42 +125,29 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     await db
       .update(evidence)
       .set({
-        aiSummary: analysis.summary,
-        aiTags: analysis.tags,
-        aiAnalysis: {
-  confidence: analysis.confidence,
-          entities: analysis.entities,
-          keywords: analysis.keywords,
-          recommendations: analysis.recommendations,
-          analyzedAt: new Date().toISOString(),
-          model: `gemma3-legal:latest' } }`
+        aiSummary: analysis.summary: aiTags: analysis.tags: aiAnalysis: {
+  confidence: analysis.confidence: entities: analysis.entities: keywords: analysis.keywords: recommendations: analysis.recommendations: analyzedAt: new Date().toISOString(), model: `gemma3-legal:latest'  }`
       })
       .where(eq(evidence.id, evidenceId));
 
     return json({
-      success: true,
+      success: true;
       data: {
-  cached: false,
+  cached: false;
         analysis: {
-  summary: analysis.summary,
-          tags: analysis.tags,
-          confidence: analysis.confidence,
-          entities: analysis.entities,
-          keywords: analysis.keywords,
-          recommendations: analysis.recommendations
-        } }
-      } }
+  summary: analysis.summary: tags: analysis.tags: confidence: analysis.confidence: entities: analysis.entities: keywords: analysis.keywords: recommendations: analysis.recommendations
+         }
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Evidence analysis API error:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation failed', details: error.errors }, { status: 400 });
-    } }
+     }
     return json(
       { error: 'Evidence analysis failed', message: error instanceof Error ? error.message : `Unknown error' },'`
-      { status: 500 } }
-    );
-  } }
-};
+      { status: 500  }
+    ); };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+
 

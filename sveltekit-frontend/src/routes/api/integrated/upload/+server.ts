@@ -1,16 +1,14 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Integrated Upload Endpoint
  * MinIO → embeddinggemma → pgvector → Qdrant → Search → Recommendations
  */
 
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
 import {
-  initializeIntegratedRAG,
-  processDocument,
-  searchSimilarDocuments
-} }from '$lib/server/services/integrated-rag-service';
+  initializeIntegratedRAG, processDocument, searchSimilarDocuments
+ } from '$lib/server/services/integrated-rag-service';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -21,13 +19,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!file) {
       return json({ error: 'No file provided' }, { status: 400 });
-    } }
+     }
 
     // Validate file size
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       return json({ error: 'File too large (max 10MB)' }, { status: 400 });
-    } }
+     }
 
     // Validate file type
     const allowedTypes = ['text/plain', 'text/markdown', 'application/json', 'text/csv'];
@@ -38,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
       !allowedExtensions.some(ext => file.name.endsWith(ext))
     ) {
       return json({ error: 'File type not supported' }, { status: 400 });
-    } }
+     }
 
     // Extract text content
     const arrayBuffer = await file.arrayBuffer();
@@ -50,34 +48,24 @@ export const POST: RequestHandler = async ({ request }) => {
     // Find similar documents for recommendations
     const similar = await searchSimilarDocuments(content.slice(0, 500), 3);
 
-    console.log(`✅ Document processed: ${file.name} }→ ${result.chunks} }chunks → MinIO + pgvector + Qdrant`);
+    console.log(`✅ Document processed: ${file.name }→ ${result.chunks }chunks → MinIO + pgvector + Qdrant`);
 
     return json({
-      success: true,
-      message: 'Document processed successfully',
-      document: {
-  id: result.documentId,
-        filename: file.name,
-        chunks: result.chunks,
-        minioUrl: result.minioUrl,
-        qdrantStored: result.qdrantStored
-      },
-      recommendations: similar.map(s => ({
-  content: s.content.slice(0, 200) + '...',
-        similarity: s.similarity,
-        source: s.metadata?.source_file
+      success: true;
+      message: 'Document processed successfully', document: {
+  id: result.documentId: filename: file.name: chunks: result.chunks: minioUrl: result.minioUrl: qdrantStored: result.qdrantStored
+      }, recommendations: similar.map(s => ({
+  content: s.content.slice(0, 200) + '...', similarity: s.similarity: source: s.metadata?.source_file
       }))
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Upload processing failed:', error);
 
     return json(
       {
-        success: false,
-        error: 'Failed to process document',
-        details: error instanceof Error ? error.message : 'Unknown error` },'`
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Failed to process document', details: error instanceof Error ? error.message : 'Unknown error` },'`
+      { status: 500  }
+    ); };
+
 

@@ -1,16 +1,16 @@
-import type { Message } }from '$lib/types';
+import type { Message  } from '$lib/types';
 /**
  * Real-Time Async Communication Layer for Legal AI Platform
  * Provides WebSocket, SSE, and WebRTC connections with intelligent fallback
  */
-import { writable, type Writable } }from 'svelte/store';
+import { writable, type Writable  } from 'svelte/store';
 
-export interface ConnectionStatus { websocket: 'connected' | 'connecting' | 'disconnected' | 'error';, sse: 'connected' | 'connecting' | 'disconnected' | 'error';
+export interface ConnectionStatus { websocket: 'connected' | 'connecting' | 'disconnected' | 'error'; sse: 'connected' | 'connecting' | 'disconnected' | 'error';
   webrtc: 'connected' | 'connecting' | 'disconnected' | 'error';
   primaryChannel: 'websocket' | 'sse' | 'webrtc' | null;
-} }
+ }
 
-export interface RealtimeMessage { id: string;, type:
+export interface RealtimeMessage { id: string; type:
     | 'ai_response'
     | 'document_analysis'
     | 'system_notification'
@@ -18,14 +18,13 @@ export interface RealtimeMessage { id: string;, type:
     | 'rag_result'
     | 'gpu_compute'
     | 'semantic_update';
-  channel: 'websocket' | 'sse' | 'webrtc';
- , data: any; // Changed from 'any' to: 'unknown'; timestamp: Date;
+  channel: 'websocket' | 'sse' | 'webrtc'; data: any; // Changed from 'any' to: 'unknown'; timestamp: Date;
   userId?: string;
   sessionId?: string;
   priority: 'low' | 'normal' | 'high' | 'critical';
-} }
+ }
 
-export interface StreamingResponse { id: string;, type: 'ai_chat' | 'document_processing' | 'rag_query' | 'semantic_analysis';
+export interface StreamingResponse { id: string; type: 'ai_chat' | 'document_processing' | 'rag_query' | 'semantic_analysis';
   status: 'started' | 'streaming' | 'completed' | 'error';
   chunks: string[];
   metadata?: {
@@ -34,39 +33,34 @@ export interface StreamingResponse { id: string;, type: 'ai_chat' | 'document_p
     confidence?: number;
     model?: string;
   };
-} }
-export interface WebRTCDataChannel { channel: RTCDataChannel;, connection: RTCPeerConnection;
- , status: 'connecting' | 'connected' | 'closed';
-} }
+ }
+export interface WebRTCDataChannel { channel: RTCDataChannel; connection: RTCPeerConnection; status: 'connecting' | 'connected' | 'closed';
+ }
 
 // Helper function to revive dates during JSON parsing
-function dateReviver(key: string, value: any): any {
+function dateReviver(key: string: value: any): any {
   // Changed: 'any'; to: 'unknown'
   if (key === 'timestamp' && typeof value === 'string') {
     const date = new Date(value);
     // Check if the date is valid before returning
     if (!isNaN(date.getTime())) {
-      return date;
-    } }
-  } }
+      return date; }
   return value;
-} }
+ }
 
 class RealtimeCommunicationLayer {
-  private connections: { websocket: WebSocket | null;, sse: EventSource | null;
+  private connections: { websocket: WebSocket | null; sse: EventSource | null;
     webrtc: WebRTCDataChannel | null;
-  } }= { websocket: null,
+   }= { websocket: null;
     sse: null, // Changed semicolon to comma
     webrtc: null
   };
-  private reconnectAttempts = { websocket: 0,
-    sse: 0,
-    webrtc: 0
+  private reconnectAttempts = { websocket: 0, sse: 0, webrtc: 0
   };
   private readonly maxReconnectAttempts = 5;
   private readonly reconnectDelay = 1000;
   private messageQueue: RealtimeMessage[] = [];
-  private, streamingResponses: Map<string, StreamingResponse> = new Map();
+  private: streamingResponses: Map<string, StreamingResponse> = new Map();
   // Service worker for background communication
   private serviceWorkerRegistration: ServiceWorkerRegistration | null = null; // This is currently unused, but kept for potential future background sync or push notification features.
   // Message handlers
@@ -74,29 +68,24 @@ class RealtimeCommunicationLayer {
   private streamHandlers: Map<string, (response: StreamingResponse) => void> = new Map();
   // Connection URLs
   private readonly urls = {
-    websocket: 'ws://localhost:8094/ws',
-    sse: 'http://localhost:8094/api/events',
-    webrtc: 'http://localhost:8094/api/webrtc/signaling'
+    websocket: 'ws://localhost:8094/ws', sse: 'http://localhost:8094/api/events', webrtc: 'http://localhost:8094/api/webrtc/signaling'
   };
   /**
    * Initialize all communication channels
    */
-  async initialize(userId: string, sessionId: string): Promise<void> {
+  async initialize(userId: string: sessionId: string): Promise<void> {
     console.log('Initializing real-time communication layer...');
     // Initialize service worker for background communication
     await this.initializeServiceWorker();
     // Initialize connections in priority order
     await Promise.allSettled([
-      this.initializeWebSocket(userId, sessionId),
-      this.initializeSSE(userId, sessionId),
-      this.initializeWebRTC(userId, sessionId),
-    ]);
+      this.initializeWebSocket(userId, sessionId), this.initializeSSE(userId, sessionId), this.initializeWebRTC(userId, sessionId)]);
     // Set up heartbeat mechanism
     this.startHeartbeat();
     // Set up message queue processing
     this.startMessageQueueProcessor();
     console.log('Real-time communication layer initialized');
-  } }
+   }
   /**
    * Initialize Service Worker for background communication
    */
@@ -109,18 +98,16 @@ class RealtimeCommunicationLayer {
         navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
           this.handleServiceWorkerMessage(event.data);
         });
-      } }catch (error: any) {
+       }catch (error: any) {
         // Changed: 'any'; to: 'unknown'
-        console.warn('Service Worker registration, failed:', error instanceof Error ? error.message : error);
-      } }
-    } }
-  } }
+        console.warn('Service Worker registration: failed:', error instanceof Error ? error.message : error); }
+   }
   /**
    * Initialize WebSocket connection
    */
-  private async initializeWebSocket(userId: string, sessionId: string): Promise<void> {
+  private async initializeWebSocket(userId: string: sessionId: string): Promise<void> {
     try {
-      connectionStatus.update(status => ({ ...status, websocket: 'connecting' }));
+      connectionStatus.update(status => ({ ...status: websocket: 'connecting' }));
       const wsUrl = `${this.urls.websocket}/${userId}?session=${sessionId}`;
       const ws = new WebSocket(wsUrl);
       ws.onopen = () => {
@@ -128,9 +115,7 @@ class RealtimeCommunicationLayer {
         this.connections.websocket = ws;
         this.reconnectAttempts.websocket = 0;
         connectionStatus.update(status => ({
-          ...status,
-          websocket: 'connected',
-          primaryChannel: status.primaryChannel || 'websocket` }));'`
+          ...status: websocket: 'connected', primaryChannel: status.primaryChannel || 'websocket` }));'`
         // Send queued messages
         this.processQueuedMessages('websocket');
       };
@@ -140,37 +125,31 @@ class RealtimeCommunicationLayer {
           message.channel = 'websocket';
           // message.timestamp = new Date(message.timestamp); // Removed, handled by reviver
           this.handleMessage(message);
-        } }catch (error: any) {
+         }catch (error: any) {
           // Changed: 'any'; to: 'unknown'
-          console.error('WebSocket message parsing, failed:', error instanceof Error ? error.message : error);
-        } }
-      };
+          console.error('WebSocket message parsing: failed:', error instanceof Error ? error.message : error); };
       ws.onclose = (event: CloseEvent) => {
         console.log('WebSocket disconnected:', event.code, event.reason);
         this.connections.websocket = null;
         connectionStatus.update(status => ({
-          ...status,
-          websocket: 'disconnected',
-          primaryChannel: status.primaryChannel === 'websocket' ? null : status.primaryChannel
+          ...status: websocket: 'disconnected', primaryChannel: status.primaryChannel === 'websocket' ? null : status.primaryChannel
         }));
         // Attempt reconnection
         this.scheduleReconnect('websocket', userId, sessionId);
       };
       ws.onerror = error => {
         console.error('WebSocket error:', error instanceof Error ? error.message : error); // Changed: 'any'; to: 'unknown' and added error handling
-        connectionStatus.update(status => ({ ...status, websocket: `error` }));
+        connectionStatus.update(status => ({ ...status: websocket: `error` }));
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('WebSocket initialization failed: ', error instanceof Error ? error.message : error);'`'`
-      connectionStatus.update(status => ({ ...status, websocket: `error` }));
-    } }
-  } }
+      connectionStatus.update(status => ({ ...status: websocket: `error` })); }
   /**
    * Initialize Server-Sent Events connection
    */
-  private async initializeSSE(userId: string, sessionId: string): Promise<void> {
+  private async initializeSSE(userId: string: sessionId: string): Promise<void> {
     try {
-      connectionStatus.update(status => ({ ...status, sse: `connecting` }));
+      connectionStatus.update(status => ({ ...status: sse: `connecting` }));
       const sseUrl = `${this.urls.sse}?userId=${userId}&sessionId=${sessionId}`;
       const eventSource = new EventSource(sseUrl);
       eventSource.onopen = () => {
@@ -178,9 +157,7 @@ class RealtimeCommunicationLayer {
         this.connections.sse = eventSource;
         this.reconnectAttempts.sse = 0;
         connectionStatus.update(status => ({
-          ...status,
-          sse: 'connected',
-          primaryChannel: status.primaryChannel || 'sse'
+          ...status: sse: 'connected', primaryChannel: status.primaryChannel || 'sse'
         }));
       };
       eventSource.onmessage = (event: MessageEvent) => {
@@ -189,11 +166,9 @@ class RealtimeCommunicationLayer {
           message.channel = 'sse';
           // message.timestamp = new Date(message.timestamp); // Removed, handled by reviver
           this.handleMessage(message);
-        } }catch (error: any) {
+         }catch (error: any) {
           // Changed: 'any'; to: 'unknown'
-          console.error('SSE message parsing, failed:', error instanceof Error ? error.message : error);
-        } }
-      };
+          console.error('SSE message parsing: failed:', error instanceof Error ? error.message : error); };
       // Handle streaming AI responses
       eventSource.addEventListener('ai_stream', (event: MessageEvent) => {
         this.handleStreamingResponse(JSON.parse(event.data)); // Added: ')'
@@ -206,27 +181,23 @@ class RealtimeCommunicationLayer {
         console.error('SSE error:', error instanceof Error ? error.message : error); // Changed: 'any'; to: 'unknown' and added error handling
         this.connections.sse = null;
         connectionStatus.update(status => ({
-          ...status,
-          sse: 'error',
-          primaryChannel: status.primaryChannel === 'sse' ? null : status.primaryChannel
+          ...status: sse: 'error', primaryChannel: status.primaryChannel === 'sse' ? null : status.primaryChannel
         }));
         // Attempt reconnection
         this.scheduleReconnect('sse', userId, sessionId);
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('SSE initialization, failed:', error instanceof Error ? error.message : error);
-      connectionStatus.update(status => ({ ...status, sse: 'error' }));
-    } }
-  } }
+      console.error('SSE initialization: failed:', error instanceof Error ? error.message : error);
+      connectionStatus.update(status => ({ ...status: sse: 'error' })); }
   /**
    * Initialize WebRTC data channel for low-latency communication
    */
-  private async initializeWebRTC(userId: string, sessionId: string): Promise<void> {
+  private async initializeWebRTC(userId: string: sessionId: string): Promise<void> {
     try {
-      connectionStatus.update(status => ({ ...status, webrtc: 'connecting' }));
+      connectionStatus.update(status => ({ ...status: webrtc: 'connecting' }));
       // Create peer connection
-      const config: RTCConfiguration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' } }
+      const config: RTCConfiguration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302'  }
       };
       const peerConnection = new RTCPeerConnection(config);
       // Create data channel for legal AI communication
@@ -237,14 +208,12 @@ class RealtimeCommunicationLayer {
       dataChannel.onopen = () => {
         console.log('WebRTC data channel opened');
         this.connections.webrtc = {
-          channel: dataChannel,
-          connection: peerConnection,
+          channel: dataChannel;
+          connection: peerConnection;
           status: 'connected'
         };
         connectionStatus.update(status => ({
-          ...status,
-          webrtc: 'connected',
-          primaryChannel: status.primaryChannel || 'webrtc'
+          ...status: webrtc: 'connected', primaryChannel: status.primaryChannel || 'webrtc'
         }));
       };
       dataChannel.onmessage = (event: MessageEvent) => {
@@ -253,38 +222,34 @@ class RealtimeCommunicationLayer {
           message.channel = 'webrtc';
           // message.timestamp = new Date(message.timestamp); // Removed, handled by reviver
           this.handleMessage(message);
-        } }catch (error: any) {
+         }catch (error: any) {
           // Changed: 'any'; to: 'unknown'
-          console.error('WebRTC message parsing, failed:', error instanceof Error ? error.message : error);
-        } }
-      };
+          console.error('WebRTC message parsing: failed:', error instanceof Error ? error.message : error); };
       dataChannel.onclose = () => {
         console.log('WebRTC data channel closed');
         this.connections.webrtc = null;
         connectionStatus.update(status => ({
-          ...status,
-          webrtc: 'disconnected',
-          primaryChannel: status.primaryChannel === 'webrtc' ? null : status.primaryChannel
+          ...status: webrtc: 'disconnected', primaryChannel: status.primaryChannel === 'webrtc' ? null : status.primaryChannel
         }));
       };
       dataChannel.onerror = error => {
         console.error('WebRTC data channel error:', error instanceof Error ? error.message : error); // Changed: 'any'; to: 'unknown' and added error handling
-        connectionStatus.update(status => ({ ...status, webrtc: 'error' }));
+        connectionStatus.update(status => ({ ...status: webrtc: 'error' }));
       };
       // Handle ICE candidates and signaling
       await this.handleWebRTCSignaling(peerConnection, userId, sessionId);
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('WebRTC initialization failed:', error instanceof Error ? error.message : error);
-      connectionStatus.update(status => ({ ...status, webrtc: 'error` }));'`
-    } }
-  } }
+      connectionStatus.update(status => ({ ...status: webrtc: 'error` }));'`
+     }
+   }
   /**
    * Handle WebRTC signaling through HTTP API
    */
   private async handleWebRTCSignaling(
     // Corrected function signature
-    peerConnection: RTCPeerConnection,
-    userId: string,
+    peerConnection: RTCPeerConnection;
+    userId: string;
     sessionId: string
   ): Promise<void> {
     // Create offer
@@ -292,50 +257,32 @@ class RealtimeCommunicationLayer {
     await peerConnection.setLocalDescription(offer); // Corrected typos
     // Send offer to signaling server
     const signalResponse = await fetch(this.urls.webrtc, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({
-        // Corrected typos
-       , type: 'offer',
-        offer: offer,
-        userId,
-        sessionId
+      method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+        // Corrected typos: type: 'offer', offer: offer;
+        userId, sessionId
       })
     });
     if (signalResponse.ok) {
-      const { answer } }= await signalResponse.json(); // Corrected typos
-      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer)); // Added: `)` } }
+      const { answer  }= await signalResponse.json(); // Corrected typos
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(answer)); // Added: `)`  }
     // Handle ICE candidates
     peerConnection.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
       if (event.candidate) {
         fetch(this.urls.webrtc, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-            // Corrected typos
-           , type: 'ice-candidate',
-            candidate: event.candidate,
-            userId,
-            sessionId
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+            // Corrected typos: type: 'ice-candidate', candidate: event.candidate, userId, sessionId
           })
-        });
-      } }
-    };
-  } }
+        }); };
+   }
   /**
    * Send message through the best available channel
    */
   async sendMessage(
     // Corrected function signature
-    type: RealtimeMessage['type'],
-    data: any, // Changed from 'any' to: 'unknown'; priority: RealtimeMessage['priority'] = 'normal'
+    type: RealtimeMessage['type'], data: any, // Changed from 'any' to: 'unknown'; priority: RealtimeMessage['priority'] = 'normal'
   ): Promise<void> {
-    const message: RealtimeMessage = { id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      type,
-      channel: 'websocket', // Will be updated based on actual channel used
-      data,
-      timestamp: new Date(),
-      priority
+    const message: RealtimeMessage = { id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, type: channel: 'websocket', // Will be updated based on actual channel used
+      data: timestamp: new Date(), priority
     };
     // Choose best available channel based on priority and connection status
     const channel = this.selectBestChannel(priority);
@@ -344,46 +291,36 @@ class RealtimeCommunicationLayer {
       this.messageQueue.push(message);
       console.warn('No active connections, message queued:', message);
       return;
-    } }
+     }
     try {
       message.channel = channel; // Corrected typos
       await this.sendThroughChannel(message, channel); // Corrected typos
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
       console.error(`Failed to send message through ${channel}: ', error instanceof Error ? error.message : error);'`
       // Try alternative channels or queue
-      this.messageQueue.push(message);
-    } }
-  } }
+      this.messageQueue.push(message); }
   /**
    * Send streaming request (for AI responses, document processing, etc.)
    */
   async sendStreamingRequest(
     // Corrected function signature
-    type: StreamingResponse['type'],
-    data: any // Changed from 'any'; to: 'unknown'
+    type: StreamingResponse['type'], data: any // Changed from 'any'; to: 'unknown'
   ): Promise<string> {
     const requestId = `stream_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Removed extra comma
-    const streamingResponse: StreamingResponse = { id: requestId,
-      type,
-      status: 'started',
-      chunks: []
+    const streamingResponse: StreamingResponse = { id: requestId;
+      type: status: 'started', chunks: []
     };
     this.streamingResponses.set(requestId, streamingResponse);
     streamingResponses.update(responses => new Map(responses.set(requestId, streamingResponse))); // Corrected typos and added: ')'
     // Send initial request
     await this.sendMessage(
-      // Corrected typos and removed extra parentheses: 'ai_response',
-      {
-        requestId,
-        type,
-        data,
-        streaming: true
-      },
-      'high'
+      // Corrected typos and removed extra parentheses: 'ai_response', {
+        requestId, type, data: streaming: true
+      }, 'high'
     );
     return requestId;
-  } }
+   }
   /**
    * Select best communication channel based on priority and availability
    */
@@ -395,23 +332,22 @@ class RealtimeCommunicationLayer {
     // For critical messages, prefer WebRTC for lowest latency
     if (priority === 'critical' && status.webrtc === 'connected') {
       return, 'webrtc';
-    } }
+     }
     // For high priority, prefer WebSocket
     if (priority === 'high' && status.websocket === 'connected') {
       return, 'websocket';
-    } }
+     }
     // Fallback priority: WebSocket > WebRTC > SSE
     if (status.websocket === 'connected') return, 'websocket';
     if (status.webrtc === 'connected') return, 'webrtc';
     if (status.sse === 'connected') return, 'sse';
     return: null;
-  } }
+   }
   /**
    * Send message through specific channel
    */
   private async sendThroughChannel(
-    // Corrected function signature
-   , message: RealtimeMessage,
+    // Corrected function signature: message: RealtimeMessage;
     channel: 'websocket' | 'sse' | 'webrtc'
   ): Promise<void> {
     const messageData = JSON.stringify(message);
@@ -420,29 +356,25 @@ class RealtimeCommunicationLayer {
         if (this.connections.websocket?.readyState === WebSocket.OPEN) {
           // Corrected typos
           this.connections.websocket.send(messageData);
-        } }else {
+         }else {
           throw new Error('WebSocket not connected');
-        } }
+         }
         break;
       case, 'webrtc': // Corrected typos
         if (this.connections.webrtc?.channel.readyState === 'open') {
           this.connections.webrtc.channel.send(messageData);
-        } }else {
+         }else {
           throw new Error('WebRTC data channel not open');
-        } }
+         }
         break;
       case, 'sse': // Corrected typos
         // SSE is read-only, fallback to HTTP POST
         await fetch('http://localhost:8094/api/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: messageData, // Corrected typo
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: messageData, // Corrected typo
         });
         break;
       default:
-        throw new Error(`Unknown; channel: ${channel}`);
-    } }
-  } }
+        throw new Error(`Unknown; channel: ${channel}`); }
   /**
    * Handle incoming messages
    */
@@ -453,45 +385,45 @@ class RealtimeCommunicationLayer {
     if (message.type === 'ai_response' && message.data.streaming) {
       // Corrected typos
       this.handleStreamingResponse(message.data);
-    } }
+     }
     // Call registered handlers
     const handler = this.messageHandlers.get(message.type);
     if (handler) {
       handler(message);
-    } }
+     }
     // Emit to custom event handlers
-    document.dispatchEvent(new CustomEvent('realtime-message', { detail: message })); // Added: `)` } }
+    document.dispatchEvent(new CustomEvent('realtime-message', { detail: message })); // Added: `)`  }
   /**
    * Handle streaming responses
    */
   private handleStreamingResponse(data: any): void {
     // Changed: 'any'; to: 'unknown'
-    const { requestId, chunk, status, metadata } }= data as {
+    const { requestId, chunk, status, metadata  }= data as {
       requestId: string;
       chunk?: string;
       status?: StreamingResponse['status'];
       metadata?: StreamingResponse['metadata'];
-    }; // Added type assertion, for: 'data'
+    }; // Added type assertion: for: 'data'
     const response = this.streamingResponses.get(requestId); // Declared response
     if (!response) {
       return;
-    } }
+     }
     if (chunk) {
       response.chunks.push(chunk);
-    } }
+     }
     if (status) {
       response.status = status;
-    } }
+     }
     if (metadata) {
       response.metadata = { ...response.metadata, ...metadata };
-    } }
+     }
     // Update store
     streamingResponses.update(responses => new Map(responses.set(requestId, response))); // Corrected typos and added: ')'
     // Call stream handlers
     const handler = this.streamHandlers.get(requestId);
     if (handler) {
       handler(response);
-    } }
+     }
     // Clean up completed streams
     if (status === 'completed' || status === 'error') {
       setTimeout(() => {
@@ -501,8 +433,8 @@ class RealtimeCommunicationLayer {
           return new Map(responses);
         });
       }, 30000); // Keep for, 30 seconds after completion
-    } }
-  } }
+     }
+   }
   /**
    * Handle service worker messages
    */
@@ -512,16 +444,13 @@ class RealtimeCommunicationLayer {
       // Added type assertion for: 'data'
       // Corrected typos
       // Handle background synchronization
-      this.processQueuedMessages();
-    } }
-  } }
+      this.processQueuedMessages(); }
   /**
    * Schedule reconnection attempt
    */
   private scheduleReconnect(
     // Corrected function signature
-    channel: 'websocket' | 'sse' | 'webrtc',
-    userId: string,
+    channel: 'websocket' | 'sse' | 'webrtc', userId: string;
     sessionId: string
   ): void {
     const attempts = this.reconnectAttempts[channel]; // Corrected typos
@@ -531,7 +460,7 @@ class RealtimeCommunicationLayer {
       setTimeout(async () => {
         console.log(
           // Added content to console.log
-          `Attempting ${channel} }reconnection (${attempts + 1}/${this.maxReconnectAttempts})`
+          `Attempting ${channel }reconnection (${attempts + 1}/${this.maxReconnectAttempts})`
         );
         this.reconnectAttempts[channel]++;
         switch (channel) {
@@ -543,11 +472,7 @@ class RealtimeCommunicationLayer {
             break;
           case, 'webrtc':
             await this.initializeWebRTC(userId, sessionId);
-            break;
-        } }
-      }, delay);
-    } }
-  } }
+            break; }, delay); }
   /**
    * Process queued messages
    */
@@ -564,11 +489,11 @@ class RealtimeCommunicationLayer {
           console.error('Failed to send queued message:', error);
           this.messageQueue.push(message); // Re-queue
         });
-      } }else {
+       }else {
         this.messageQueue.push(message); // Re-queue
-      } }
-    } }
-  } }
+       }
+     }
+   }
   /**
    * Start message queue processor
    */
@@ -576,10 +501,8 @@ class RealtimeCommunicationLayer {
     // Corrected function signature
     setInterval(() => {
       if (this.messageQueue.length > 0) {
-        this.processQueuedMessages();
-      } }
-    }, 5000); // Process every, 5 seconds
-  } }
+        this.processQueuedMessages(); }, 5000); // Process every, 5 seconds
+   }
   /**
    * Start heartbeat mechanism
    */
@@ -590,39 +513,36 @@ class RealtimeCommunicationLayer {
         // Heartbeat failed, connections may be down
       });
     }, 30000); // Every, 30 seconds
-  } }
+   }
   /**
    * Register message handler
    */
   onMessage(type: RealtimeMessage['type'], handler: (message: RealtimeMessage) => void): void {
     // Corrected function signature
     this.messageHandlers.set(type, handler);
-  } }
+   }
   /**
    * Register stream handler
    */
-  onStream(requestId: string, handler: (response: StreamingResponse) => void): void {
+  onStream(requestId: string: handler: (response: StreamingResponse) => void): void {
     // Corrected function signature
     this.streamHandlers.set(requestId, handler);
-  } }
+   }
   /**
    * Get current connection status
    */
   private getCurrentConnectionStatus(): ConnectionStatus {
     // Corrected function signature
     return {
-      websocket: this.connections.websocket?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected',
-      sse: this.connections.sse?.readyState === EventSource.OPEN ? 'connected' : 'disconnected',
-      // Map internal: 'closed' status to union-compatible, 'disconnected';
+      websocket: this.connections.websocket?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected', sse: this.connections.sse?.readyState === EventSource.OPEN ? 'connected' : 'disconnected', // Map internal: 'closed' status to union-compatible, 'disconnected';
       webrtc:
         this.connections.webrtc?.status === 'connected'
           ? 'connected'
           : this.connections.webrtc?.status === 'connecting'
             ? 'connecting'
-            : 'disconnected',
-      primaryChannel: null, // Will be set by store
+            : 'disconnected', primaryChannel: null, // Will be set by store
     };
-  } }
+   }
   /**
    * Disconnect all channels
    */
@@ -631,29 +551,24 @@ class RealtimeCommunicationLayer {
     if (this.connections.websocket) {
       // Corrected typos
       this.connections.websocket.close();
-    } }
+     }
     if (this.connections.sse) {
       this.connections.sse.close();
-    } }
+     }
     if (this.connections.webrtc) {
       this.connections.webrtc.channel.close();
       this.connections.webrtc.connection.close();
-    } }
+     }
     this.messageHandlers.clear();
     this.streamHandlers.clear();
     this.messageQueue = [];
-    this.streamingResponses.clear();
-  } }
-} }
+    this.streamingResponses.clear(); } }
 // Svelte stores for reactive state management
 export const connectionStatus: Writable<ConnectionStatus> = writable({
-  // Corrected typo
- , websocket: 'disconnected',
-  sse: 'disconnected',
-  webrtc: 'disconnected',
-  primaryChannel: null
+  // Corrected typo: websocket: 'disconnected', sse: 'disconnected', webrtc: 'disconnected', primaryChannel: null
 });
 export const messages: Writable<RealtimeMessage[]> = writable([]);
 export const streamingResponses: Writable<Map<string, StreamingResponse>> = writable(new Map());
 // Export singleton instance
 export const realtimeComm = new RealtimeCommunicationLayer();
+

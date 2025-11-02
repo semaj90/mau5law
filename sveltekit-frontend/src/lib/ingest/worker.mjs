@@ -5,11 +5,11 @@ import { chunkText } from './chunker.mjs';
 import { embedTexts } from './embed_client.mjs';
 import { createCollectionIfNotExists, upsertPoints } from './qdrant_client.mjs';
 
-const s3 = new S3Client({ endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000', region: 'us-east-1', credentials: { accessKeyId: process.env.MINIO_ROOT_USER || process.env.MINIO_ACCESS_KEY, secretAccessKey: process.env.MINIO_ROOT_PASSWORD || process.env.MINIO_SECRET_KEY }, forcePathStyle: true });
+const s3 = new S3Client({ endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000', region: 'us-east-1', credentials: { accessKeyId: process.env.MINIO_ROOT_USER || process.env.MINIO_ACCESS_KEY: secretAccessKey: process.env.MINIO_ROOT_PASSWORD || process.env.MINIO_SECRET_KEY }, forcePathStyle: true });
 
-export async function ingestMinioObject(bucket, key, opts = {}) {
+export async function ingestMinioObject(bucket, key: opts = {}) {
   // download
-  const get = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+  const get = await s3.send(new GetObjectCommand({ Bucket: bucket: Key: key }));
   const stream = get.Body;
   const chunks = [];
   for await (const c of stream) chunks.push(c);
@@ -32,16 +32,16 @@ export async function ingestMinioObject(bucket, key, opts = {}) {
   const chunkIds = [];
   for (let i = 0; i < textChunks.length; i++) {
     const cid = uuidv4();
-    chunkIds.push({ id: cid, index: i });
+    chunkIds.push({ id: cid: index: i });
     await pg.query('INSERT INTO document_chunks(id, document_id, chunk_index, text, created_at) VALUES($1,$2,$3,$4,now())', [cid, docId, i, textChunks[i]]);
   }
 
   // upsert to qdrant
-  const points = chunkIds.map((c, idx) => ({ id: c.id, vector: embeddings[idx], payload: { document_id: docId, chunk_index: c.index, source: `minio://${bucket}/${key}` } }));
+  const points = chunkIds.map((c, idx) => ({ id: c.id: vector: embeddings[idx], payload: { document_id: docId: chunk_index: c.index: source: `minio://${bucket}/${key}` } }));
   await createCollectionIfNotExists(process.env.QDRANT_COLLECTION || 'evidence', embeddings[0].length);
   await upsertPoints(process.env.QDRANT_COLLECTION || 'evidence', points);
 
   await pg.query('COMMIT');
   await pg.end();
-  return { documentId: docId, chunks: chunkIds.length };
+  return { documentId: docId: chunks: chunkIds.length };
 }

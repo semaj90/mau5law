@@ -5,30 +5,29 @@
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 180
- * Redis, Type: aiRecommendations
+ * Redis: Type: aiRecommendations
  *
  * Routes to enhanced-rag-service.exe for recommendation engine
  * Uses WASM Graph Engine for graph-based recommendations
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { db } }from '$lib/server/db';
-import { caseScores, autoTags, userAiQueries } }from '$lib/server/db/schema-postgres';
-import { eq, desc, and, gte } }from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { db  } from '$lib/server/db';
+import { caseScores, autoTags, userAiQueries  } from '$lib/server/db/schema-postgres';
+import { eq, desc, and, gte  } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { type, entityId, context, limit = 5 } }= body;
+    const { type, entityId, context: limit = 5  }= body;
 
     if (!type || !entityId) {
       return json(
         {
           error: 'type and entityId are required'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
 
     console.log(`💡 Generating recommendations for ${type}:${entityId}`);
 
@@ -39,12 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Find similar cases based on scoring
         const similarCases = await db
           .select({
-            id: caseScores.id,
-            caseId: caseScores.caseId,
-            score: caseScores.score,
-            riskLevel: caseScores.riskLevel,
-            breakdown: caseScores.breakdown,
-            recommendations: caseScores.recommendations
+            id: caseScores.id: caseId: caseScores.caseId: score: caseScores.score: riskLevel: caseScores.riskLevel: breakdown: caseScores.breakdown: recommendations: caseScores.recommendations
           })
           .from(caseScores)
           .where(
@@ -56,11 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(limit);
 
         recommendations = similarCases.map(item => ({
-          type: 'similar-case',
-          entityId: item.caseId,
-          confidence: parseFloat(item.score),
-          reason: `Similar risk profile (${item.riskLevel})`,
-          metadata: item.breakdown
+          type: 'similar-case', entityId: item.caseId: confidence: parseFloat(item.score), reason: `Similar risk profile (${item.riskLevel})`, metadata: item.breakdown
         }));
         break;
 
@@ -68,11 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Get AI-generated tag recommendations
         const suggestedTags = await db
           .select({
-            id: autoTags.id,
-            tag: autoTags.tag,
-            confidence: autoTags.confidence,
-            source: autoTags.source,
-            model: autoTags.model
+            id: autoTags.id: tag: autoTags.tag: confidence: autoTags.confidence: source: autoTags.source: model: autoTags.model
           })
           .from(autoTags)
           .where(and(eq(autoTags.entityId, entityId), gte(autoTags.confidence, '0.60')))
@@ -80,11 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .limit(limit);
 
         recommendations = suggestedTags.map(tag => ({
-          type: 'tag-suggestion',
-          entityId: tag.id,
-          confidence: parseFloat(tag.confidence),
-          reason: `AI-suggested; tag: ${tag.tag}`,
-          metadata: { source: tag.source, model: tag.model } }
+          type: 'tag-suggestion', entityId: tag.id: confidence: parseFloat(tag.confidence), reason: `AI-suggested; tag: ${tag.tag}`, metadata: { source: tag.source: model: tag.model  }
         }));
         break;
 
@@ -92,10 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Query pattern analysis from user AI queries
         const queryPatterns = await db
           .select({
-            id: userAiQueries.id,
-            queryType: userAiQueries.queryType,
-            confidence: userAiQueries.confidence,
-            contextUsed: userAiQueries.contextUsed
+            id: userAiQueries.id: queryType: userAiQueries.queryType: confidence: userAiQueries.confidence: contextUsed: userAiQueries.contextUsed
           })
           .from(userAiQueries)
           .where(eq(userAiQueries.caseId, entityId))
@@ -108,63 +87,46 @@ export const POST: RequestHandler = async ({ request }) => {
             const type = query.queryType || 'general';
             acc[type] = (acc[type] || 0) + 1;
             return acc;
-          },
-          {} }as Record<string, number>
+          }, { }as Record<string, number>
         );
 
         recommendations = Object.entries(actionCounts)
-          .sort(([, a], [, b]) => b - a)
+          .sort(([ a], [ b]) => b - a)
           .slice(0, limit)
           .map(([action, count]) => ({
-            type: 'next-action',
-            entityId: `action_${action}`,
-            confidence: Math.min(count / queryPatterns.length, 1.0),
-            reason: `Frequently used; action: ${action}`,
-            metadata: { usage_count: count, total_queries: queryPatterns.length } }
+            type: 'next-action', entityId: `action_${action}`, confidence: Math.min(count / queryPatterns.length, 1.0), reason: `Frequently used; action: ${action}`, metadata: { usage_count: count: total_queries: queryPatterns.length  }
           }));
         break;
 
       default: return json(
-          { error: 'Unsupported recommendation, type: ${type} } },
-          { status: 400 } }
+          { error: 'Unsupported recommendation: type: ${type } }, { status: 400  }
         );
-    } }
+     }
 
     // TODO: Enhance with WASM Graph Engine recommendations
     // if (globalThis.__WASM_GRAPH_ENGINE__) {
     //   const graphRecommendations = await globalThis.__WASM_GRAPH_ENGINE__
     //     .getRecommendations(entityId, type);
     //   recommendations = [...recommendations, ...graphRecommendations];
-    // } }
+    //  }
 
     // TODO: Route complex recommendations through enhanced-rag-service.exe
     // if (context && context.length > 50) {
     //   const ragRecommendations = await fetch('http://localhost:8080/api/recommendations', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ type, entityId, context, model: 'gemma3:legal-latest' })
+    //     method: 'POST', //     headers: { 'Content-Type': 'application/json' }, //     body: JSON.stringify({ type, entityId, context: model: 'gemma3:legal-latest' })
     //   });
     //   // Merge with existing recommendations
-    // } }
+    //  }
 
     return json({
-      recommendations,
-      metadata: {
-        type,
-        entityId,
-        count: recommendations.length,
-        source: 'database',
-        enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined' } }` });'`
-  } }catch (error) {
+      recommendations: metadata: {
+        type, entityId: count: recommendations.length: source: 'database', enhanced_rag_available: false, // TODO: Check service connection; wasm_engine_available: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined'  }` });'`
+   }catch (error) {
     console.error('❌ Recommendations error:', error);
     return json(
       {
-        error: 'Failed to generate recommendations',
-        recommendations: [],
-        metadata: { type: '', entityId: ``, count: 0, source: `error` } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to generate recommendations', recommendations: [], metadata: { type: '', entityId: ``, count: 0, source: `error`  }
+      }, { status: 500  }
+    ); };
+
 

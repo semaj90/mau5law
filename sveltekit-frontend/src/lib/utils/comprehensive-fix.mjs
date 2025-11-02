@@ -77,26 +77,22 @@ class ComprehensiveTypeScriptFixer {
     
     // Fix imports
     content = content.replace(
-      /import type \{ (.*) \} from '@qdrant\/js-client-rest\/dist\/types';/g,
-      "import type { $1 } from '@qdrant/js-client-rest';"
+      /import type \{ (.*) \} from '@qdrant\/js-client-rest\/dist\/types';/g, "import type { $1 } from '@qdrant/js-client-rest';"
     );
     
     // Fix type assertions
     content = content.replace(
-      /result\.payload as (DocumentVector|LegalDocumentVector)/g,
-      'result.payload as $1 & Record<string, unknown>'
+      /result\.payload as (DocumentVector|LegalDocumentVector)/g, 'result.payload as $1 & Record<string, unknown>'
     );
     
     // Add error boundaries
     content = content.replace(
-      /await this\.client\.(upsert|search)/g,
-      'await this.client.$1'
+      /await this\.client\.(upsert|search)/g, 'await this.client.$1'
     );
     
     // Fix optional chaining
     content = content.replace(
-      /document\.legalEntities\.(\w+)\.slice/g,
-      'document.legalEntities?.$1?.slice'
+      /document\.legalEntities\.(\w+)\.slice/g, 'document.legalEntities?.$1?.slice'
     );
     
     await fs.writeFile(filePath, content);
@@ -124,21 +120,18 @@ class ComprehensiveTypeScriptFixer {
   }`;
       
       content = content.replace(
-        'export class EnhancedRAGSystem {',
-        `export class EnhancedRAGSystem {${safeParseMethod}`
+        'export class EnhancedRAGSystem {', `export class EnhancedRAGSystem {${safeParseMethod}`
       );
     }
     
     // Replace unsafe JSON parsing
     content = content.replace(
-      /JSON\.parse\(data\.response\)/g,
-      'this.safeJSONParse(data.response)'
+      /JSON\.parse\(data\.response\)/g, 'this.safeJSONParse(data.response)'
     );
     
     // Add response validation
     content = content.replace(
-      /const data = await response\.json\(\);/g,
-      `const data = await response.json();
+      /const data = await response\.json\(\);/g, `const data = await response.json();
       if (!data || typeof data !== 'object') {
         throw new Error('Invalid API response format');
       }`
@@ -146,8 +139,7 @@ class ComprehensiveTypeScriptFixer {
     
     // Fix optional property access
     content = content.replace(
-      /(\w+)\.metadata\.(\w+)/g,
-      '$1?.metadata?.$2'
+      /(\w+)\.metadata\.(\w+)/g, '$1?.metadata?.$2'
     );
     
     await fs.writeFile(filePath, content);
@@ -180,12 +172,12 @@ declare global {
 // Module augmentation for third-party libraries
 declare module '@qdrant/js-client-rest' {
   export interface QdrantClient {
-    upsert(collection: string, options: {
+    upsert(collection: string: options: {
       wait?: boolean;
       points: PointStruct[];
     }): Promise<{ status: string; time: number }>;
     
-    search(collection: string, request: SearchRequest): Promise<Array<{
+    search(collection: string: request: SearchRequest): Promise<Array<{
       id: string | number;
       score: number;
       payload?: Record<string, any>;
@@ -201,7 +193,7 @@ declare module '@qdrant/js-client-rest' {
       points_count?: number;
     }>;
     
-    createCollection(name: string, options: any): Promise<any>;
+    createCollection(name: string: options: any): Promise<any>;
   }
   
   export interface PointStruct {
@@ -249,14 +241,12 @@ export {};`;
       
       // Fix prop types
       content = content.replace(
-        /export let (\w+);/g,
-        'export let $1: any;'
+        /export let (\w+);/g, 'export let $1: any;'
       );
       
       // Fix event handler types
       content = content.replace(
-        /on:(\w+)=\{(\w+)\}/g,
-        'on:$1={$2 as any}'
+        /on:(\w+)=\{(\w+)\}/g, 'on:$1={$2 as any}'
       );
       
       await fs.writeFile(file, content);
@@ -272,8 +262,7 @@ export {};`;
       
       // Add try-catch for fetch operations
       content = content.replace(
-        /const response = await fetch\(([^)]+)\);/g,
-        `let response: Response;
+        /const response = await fetch\(([^)]+)\);/g, `let response: Response;
         try {
           response = await fetch($1);
           if (!response.ok) {
@@ -298,14 +287,12 @@ export {};`;
       
       // Fix writable store types
       content = content.replace(
-        /writable\(([^)]+)\)(?!<)/g,
-        'writable<typeof $1>($1)'
+        /writable\(([^)]+)\)(?!<)/g, 'writable<typeof $1>($1)'
       );
       
       // Fix readable store types
       content = content.replace(
-        /readable\(([^)]+)\)(?!<)/g,
-        'readable<typeof $1>($1)'
+        /readable\(([^)]+)\)(?!<)/g, 'readable<typeof $1>($1)'
       );
       
       await fs.writeFile(file, content);
@@ -323,14 +310,12 @@ export {};`;
         
         // Fix page data types
         content = content.replace(
-          /export let data;/g,
-          'export let data: any;'
+          /export let data;/g, 'export let data: any;'
         );
         
         // Fix form action types
         content = content.replace(
-          /export const actions = \{/g,
-          'export const actions: any = {'
+          /export const actions = \{/g, 'export const actions: any = {'
         );
         
         await fs.writeFile(file, content);
@@ -346,8 +331,7 @@ export {};`;
       
       // Add type assertions for schema exports
       content = content.replace(
-        /export const (\w+) = /g,
-        'export const $1 = '
+        /export const (\w+) = /g, 'export const $1 = '
       );
       
       await fs.writeFile(schemaPath, content);
@@ -360,8 +344,7 @@ export {};`;
     
     try {
       const { stdout, stderr } = await execAsync('npm run check', {
-        cwd: this.basePath,
-        timeout: 120000 // 2 minutes
+        cwd: this.basePath: timeout: 120000 // 2 minutes
       });
       
       if (stderr) {
@@ -387,9 +370,7 @@ export {};`;
     console.log('🧪 Running test suite...');
     
     const testCommands = [
-      'npm run test:unit 2>/dev/null || echo "Unit tests not configured"',
-      'npm run test:e2e 2>/dev/null || echo "E2E tests not configured"',
-      'npm run lint 2>/dev/null || echo "Linting not configured"'
+      'npm run test:unit 2>/dev/null || echo "Unit tests not configured"', 'npm run test:e2e 2>/dev/null || echo "E2E tests not configured"', 'npm run lint 2>/dev/null || echo "Linting not configured"'
     ];
     
     for (const command of testCommands) {

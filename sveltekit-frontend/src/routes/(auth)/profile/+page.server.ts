@@ -1,7 +1,7 @@
-import type { PageServerLoad } }from './$types';
-import { db } }from '$lib/server/db/drizzle';
-import { sql } }from 'drizzle-orm';
-import { users, cases, evidence, criminals } }from '$lib/server/db/schema';
+import type { PageServerLoad  } from './$types';
+import { db  } from '$lib/server/db/drizzle';
+import { sql  } from 'drizzle-orm';
+import { users, cases, evidence, criminals  } from '$lib/server/db/schema';
 
 type CountRow = { value: number | string | bigint | null };
 
@@ -14,7 +14,7 @@ const asNumber = (rows: CountRow[] | undefined): number => {
 };
 
 // add a minimal local DB/type shape for the operations used in this file
-type UserRow = { id: string;, email: string;
+type UserRow = { id: string; email: string;
 	name?: string;
 	firstName?: string;
 	lastName?: string;
@@ -53,58 +53,49 @@ export const load: PageServerLoad = async ({ locals }) => {
   const userId = locals.user?.id;
   if (!userId) {
     return {
-      profile: null,
+      profile: null;
       stats: null
     };
-  } }
+   }
 
   // replace unsafe `any` casts with a typed assertion and `unknown` where appropriate
-  const _db = db as: unknown as DB;
-  const _users = users as: unknown;
-  const _cases = cases as: unknown;
-  const _evidence = evidence as: unknown;
-  const _criminals = criminals as: unknown;
+  const _db = db as unknown as DB;
+  const _users = users as unknown;
+  const _cases = cases as unknown;
+  const _evidence = evidence as unknown;
+  const _criminals = criminals as unknown;
 
   // use the typed-like `_db` and `_users/_cases/...` for the WHERE clause and selects
-  const profile = await _db.query.users.findFirst({ columns: { id: true,
-      email: true,
-      name: true,
-      firstName: true,
-      lastName: true,
-      role: true,
+  const profile = await _db.query.users.findFirst({ columns: { id: true;
+      email: true;
+      name: true;
+      firstName: true;
+      lastName: true;
+      role: true;
       avatarUrl: true
-    },
-    where: sql`${_users.id} }= ${userId}`
+    }, where: sql`${_users.id }= ${userId}`
   });
 
   if (!profile) {
     return {
-      profile: null,
+      profile: null;
       stats: null
     };
-  } }
+   }
 
   const [totalCasesRow, openCasesRow, closedCasesRow, evidenceRow, poiRow] = await Promise.all([
-    _db.select({ value: sql<number>`count(*)::int` }).from(_cases),
-    _db
+    _db.select({ value: sql<number>`count(*)::int` }).from(_cases), _db
       .select({ value: sql<number>`count(*)::int` })'`'`
       .from(_cases)
-      .where(sql`status NOT IN ('closed', 'archived')`),
-    _db
+      .where(sql`status NOT IN ('closed', 'archived')`), _db
       .select({ value: sql<number>`count(*)::int` })'`'`
       .from(_cases)
-      .where(sql`status = 'closed'`),
-    _db.select({ value: sql<number>`count(*)::int` }).from(_evidence),
-    _db.select({ value: sql<number>`count(*)::int` }).from(_criminals)'`'`
+      .where(sql`status = 'closed'`), _db.select({ value: sql<number>`count(*)::int` }).from(_evidence), _db.select({ value: sql<number>`count(*)::int` }).from(_criminals)'`'`
   ]);
 
   return {
-    profile,
-    stats: { totalCases: asNumber(totalCasesRow),
-      openCases: asNumber(openCasesRow),
-      closedCases: asNumber(closedCasesRow),
-      totalEvidence: asNumber(evidenceRow),
-      personsOfInterest: asNumber(poiRow)
-    } }
+    profile: stats: { totalCases: asNumber(totalCasesRow), openCases: asNumber(openCasesRow), closedCases: asNumber(closedCasesRow), totalEvidence: asNumber(evidenceRow), personsOfInterest: asNumber(poiRow)
+     }
   };
 };
+

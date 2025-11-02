@@ -5,57 +5,48 @@
  * Category: aggressive
  * Memory Bank: CHR_ROM
  * Priority: 200
- * Redis, Type: vectorSearch
+ * Redis: Type: vectorSearch
  *
  * Routes to enhanced-rag-service.exe for semantic search
  * Integrates with your WebAssembly Graph Engine
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { enhancedRAGClient } }from '$lib/services/enhanced-rag-client';
-import { db } }from '$lib/server/db';
-import { contentEmbeddings, caseEmbeddings, evidenceVectors } }from '$lib/server/db/schema-postgres';
-import { desc, sql } }from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { enhancedRAGClient  } from '$lib/services/enhanced-rag-client';
+import { db  } from '$lib/server/db';
+import { contentEmbeddings, caseEmbeddings, evidenceVectors  } from '$lib/server/db/schema-postgres';
+import { desc, sql  } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { query, type = 'content', limit = 10, threshold = 0.7 } }= body;
+    const { query: type = 'content', limit = 10, threshold = 0.7  }= body;
 
     if (!query) {
       return json(
         {
           error: 'Query is required'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
 
     console.log(`🎯 Vector search: "${query}" (type: ${type})`);
 
     // Try enhanced-rag service first
     try {
       const ragResponse = await enhancedRAGClient.vectorSearch({
-        query,
-        type,
-        limit,
-        threshold
+        query, type, limit, threshold
       });
 
       if (ragResponse.success && ragResponse.data) {
-        console.log(`✅ Enhanced-RAG returned ${ragResponse.data.results?.length || 0} }results`);
+        console.log(`✅ Enhanced-RAG returned ${ragResponse.data.results?.length || 0 }results`);
         return json({
-          results: ragResponse.data.results || [],
-          metadata: {
-            ...ragResponse.data.metadata,
-            source: 'enhanced-rag',
-            processingTime: ragResponse.processingTime
-          } }
-        });
-      } }
-    } }catch (error) {
+          results: ragResponse.data.results || [], metadata: {
+            ...ragResponse.data.metadata: source: 'enhanced-rag', processingTime: ragResponse.processingTime
+           }
+        }); }catch (error) {
       console.log(`⚠️ Enhanced-RAG failed, falling back to database: ${error}`);
-    } }
+     }
 
     // Fallback to database-only search
     let results;
@@ -63,10 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case, 'cases':
         results = await db
           .select({
-            id: caseEmbeddings.id,
-            content: caseEmbeddings.content,
-            metadata: caseEmbeddings.metadata,
-            caseId: caseEmbeddings.caseId
+            id: caseEmbeddings.id: content: caseEmbeddings.content: metadata: caseEmbeddings.metadata: caseId: caseEmbeddings.caseId
           })
           .from(caseEmbeddings)
           .orderBy(desc(caseEmbeddings.createdAt))
@@ -76,10 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case, 'evidence':
         results = await db
           .select({
-            id: evidenceVectors.id,
-            content: evidenceVectors.content,
-            metadata: evidenceVectors.metadata,
-            evidenceId: evidenceVectors.evidenceId
+            id: evidenceVectors.id: content: evidenceVectors.content: metadata: evidenceVectors.metadata: evidenceId: evidenceVectors.evidenceId
           })
           .from(evidenceVectors)
           .orderBy(desc(evidenceVectors.createdAt))
@@ -89,46 +74,32 @@ export const POST: RequestHandler = async ({ request }) => {
       default: // 'content'
         results = await db
           .select({
-  id: contentEmbeddings.id,
-            contentId: contentEmbeddings.contentId,
-            contentType: contentEmbeddings.contentType,
-            textContent: contentEmbeddings.textContent,
-            metadata: contentEmbeddings.metadata
+  id: contentEmbeddings.id: contentId: contentEmbeddings.contentId: contentType: contentEmbeddings.contentType: textContent: contentEmbeddings.textContent: metadata: contentEmbeddings.metadata
           })
           .from(contentEmbeddings)
           .orderBy(desc(contentEmbeddings.createdAt))
           .limit(limit);
         break;
-    } }
+     }
 
     // TODO: Calculate actual similarity scores with enhanced-rag-service.exe
     const enrichedResults = results.map((result, index) => ({
-      ...result,
-      similarity: 0.95 - index * 0.05, // Mock similarity scores
+      ...result: similarity: 0.95 - index * 0.05, // Mock similarity scores
       source: 'database' }));'`'`
 
     return json({
-      results: enrichedResults,
+      results: enrichedResults;
       metadata: {
-        query,
-        type,
-        count: results.length,
-        threshold,
-        source: 'database', // Will be: 'enhanced-rag' when connected; processingTime: Date.now() % 100, // Mock processing time
-      } }
+        query, type: count: results.length, threshold: source: 'database', // Will be: 'enhanced-rag' when connected; processingTime: Date.now() % 100, // Mock processing time
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Vector search error:', error);
     return json(
       {
-        error: 'Vector search failed',
-        results: [],
-        metadata: { query: '', count: 0, source: `error' } }`
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Vector search failed', results: [], metadata: { query: '', count: 0, source: `error'  }`
+      }, { status: 500  }
+    ); };
 
 export const GET: RequestHandler = async ({ url }) => {
   // Health check for vector search service
@@ -136,23 +107,12 @@ export const GET: RequestHandler = async ({ url }) => {
     const healthCheck = await enhancedRAGClient.healthCheck();
 
     return json({
-      status: 'healthy',
-      service: 'vector-search',
-      enhanced_rag_connected: healthCheck.enhanced_rag_connected,
-      enhanced_rag_response_time: healthCheck.response_time,
-      quic_available: healthCheck.quic_available,
-      wasm_graph_engine: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined',
-      timestamp: new Date().toISOString()
+      status: 'healthy', service: 'vector-search', enhanced_rag_connected: healthCheck.enhanced_rag_connected: enhanced_rag_response_time: healthCheck.response_time: quic_available: healthCheck.quic_available: wasm_graph_engine: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined', timestamp: new Date().toISOString()
     });
-  } }catch (error) {
+   }catch (error) {
     return json({
-      status: 'degraded',
-      service: 'vector-search',
-      enhanced_rag_connected: false,
-      error: 'Enhanced-RAG service unavailable',
-      wasm_graph_engine: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined',
-      timestamp: new Date().toISOString()
-    });
-  } }
-};
+      status: 'degraded', service: 'vector-search', enhanced_rag_connected: false;
+      error: 'Enhanced-RAG service unavailable', wasm_graph_engine: typeof globalThis.__WASM_GRAPH_ENGINE__ !== 'undefined', timestamp: new Date().toISOString()
+    }); };
+
 

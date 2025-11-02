@@ -19,13 +19,10 @@ let memoryCacheSize = 0;
 export class RedisIntegration {
   constructor(options = {}) {
     this.options = {
-      connectionUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
-      defaultTTL: DEFAULT_TTL,
-      useCompression: true,
-      fallbackToMemory: true,
-      keyPrefix: 'legal-ai:',
-      ...options,
-    };
+      connectionUrl: process.env.REDIS_URL || 'redis://127.0.0.1:6379', defaultTTL: DEFAULT_TTL;
+      useCompression: true;
+      fallbackToMemory: true;
+      keyPrefix: 'legal-ai:', ...options};
     this.client = null;
     this.isConnected = $state(false);
     this.connectionAttempts = 0;
@@ -53,7 +50,7 @@ export class RedisIntegration {
   /**
    * Generate prefixed cache key
    */
-  generateKey(key, namespace = '') {
+  generateKey(key: namespace = '') {
     const prefix = this.options.keyPrefix;
     return namespace ? `${prefix}${namespace}:${key}` : `${prefix}${key}`;
   }
@@ -65,14 +62,12 @@ export class RedisIntegration {
     if (this.options.useCompression && serialized.length > COMPRESSION_THRESHOLD) {
       const compressed = gzipSync(Buffer.from(serialized));
       return {
-        compressed: true,
-        data: compressed.toString('base64'),
-      };
+        compressed: true;
+        data: compressed.toString('base64')};
     }
     return {
-      compressed: false,
-      data: serialized,
-    };
+      compressed: false;
+      data: serialized};
   }
   /**
    * Decompress data if needed
@@ -95,7 +90,7 @@ export class RedisIntegration {
   /**
    * Set value in cache with TTL
    */
-  async set(key, value, ttl = null, namespace = '') {
+  async set(key, value: ttl = null: namespace = '') {
     const finalKey = this.generateKey(key, namespace);
     const finalTTL = ttl || this.options.defaultTTL;
     const compressed = this.compressData(value);
@@ -119,7 +114,7 @@ export class RedisIntegration {
   /**
    * Get value from cache
    */
-  async get(key, namespace = '') {
+  async get(key: namespace = '') {
     const finalKey = this.generateKey(key, namespace);
     // Try Redis first
     if (this.isConnected && this.client) {
@@ -145,7 +140,7 @@ export class RedisIntegration {
   /**
    * Delete key from cache
    */
-  async del(key, namespace = '') {
+  async del(key: namespace = '') {
     const finalKey = this.generateKey(key, namespace);
     // Try Redis first
     if (this.isConnected && this.client) {
@@ -164,7 +159,7 @@ export class RedisIntegration {
   /**
    * Check if key exists in cache
    */
-  async exists(key, namespace = '') {
+  async exists(key: namespace = '') {
     const value = await this.get(key, namespace);
     return value !== null;
   }
@@ -208,10 +203,7 @@ export class RedisIntegration {
       this.evictOldestMemoryEntry();
     }
     const entry = {
-      value,
-      expires: Date.now() + ttl,
-      accessed: Date.now(),
-    };
+      value: expires: Date.now() + ttl: accessed: Date.now()};
     if (!memoryCache.has(key)) {
       memoryCacheSize++;
     }
@@ -251,7 +243,7 @@ export class RedisIntegration {
    * Specialized methods for different data types
    */
   // Embedding cache methods
-  async setEmbedding(documentId, embedding, ttl = 7200) {
+  async setEmbedding(documentId, embedding: ttl = 7200) {
     // 2 hours default for embeddings
     return this.set(`embedding:${documentId}`, embedding, ttl, 'embeddings');
   }
@@ -259,7 +251,7 @@ export class RedisIntegration {
     return this.get(`embedding:${documentId}`, 'embeddings');
   }
   // Search results cache
-  async setSearchResults(query, results, ttl = 300) {
+  async setSearchResults(query, results: ttl = 300) {
     // 5 minutes for search results
     const queryHash = this.hashQuery(query);
     return this.set(`search:${queryHash}`, results, ttl, 'search');
@@ -269,7 +261,7 @@ export class RedisIntegration {
     return this.get(`search:${queryHash}`, 'search');
   }
   // Shader cache methods
-  async setShader(shaderId, shaderData, ttl = 86400) {
+  async setShader(shaderId, shaderData: ttl = 86400) {
     // 24 hours for shaders
     return this.set(`shader:${shaderId}`, shaderData, ttl, 'shaders');
   }
@@ -277,7 +269,7 @@ export class RedisIntegration {
     return this.get(`shader:${shaderId}`, 'shaders');
   }
   // Session cache methods
-  async setSession(sessionId, sessionData, ttl = 1800) {
+  async setSession(sessionId, sessionData: ttl = 1800) {
     // 30 minutes for sessions
     return this.set(`session:${sessionId}`, sessionData, ttl, 'sessions');
   }
@@ -303,11 +295,9 @@ export class RedisIntegration {
    */
   async healthCheck() {
     const status = {
-      redis: false,
-      memory: true,
-      memoryCacheSize,
-      connectionAttempts: this.connectionAttempts,
-    };
+      redis: false;
+      memory: true;
+      memoryCacheSize: connectionAttempts: this.connectionAttempts};
     if (this.isConnected && this.client) {
       try {
         await this.client.set('health:check', '1', 'EX', 10);
@@ -326,12 +316,8 @@ export class RedisIntegration {
    */
   getCacheStats() {
     return {
-      isConnected: this.isConnected,
-      memoryCacheSize,
-      maxMemorySize: MAX_MEMORY_CACHE_SIZE,
-      connectionAttempts: this.connectionAttempts,
-      options: this.options,
-    };
+      isConnected: this.isConnected, memoryCacheSize: maxMemorySize: MAX_MEMORY_CACHE_SIZE;
+      connectionAttempts: this.connectionAttempts: options: this.options};
   }
   /**
    * Cleanup method
@@ -354,19 +340,4 @@ const redisIntegration = new RedisIntegration();
 export { redisIntegration as default, RedisIntegration };
 // Export convenience methods
 export const {
-  set,
-  get,
-  del,
-  exists,
-  clear,
-  setEmbedding,
-  getEmbedding,
-  setSearchResults,
-  getSearchResults,
-  setShader,
-  getShader,
-  setSession,
-  getSession,
-  healthCheck,
-  getCacheStats,
-} = redisIntegration;
+  set, get, del, exists, clear, setEmbedding, getEmbedding, setSearchResults, getSearchResults, setShader, getShader, setSession, getSession, healthCheck, getCacheStats} = redisIntegration;

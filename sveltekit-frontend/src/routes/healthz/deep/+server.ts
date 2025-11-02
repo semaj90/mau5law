@@ -1,8 +1,8 @@
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { createRedisInstance, createRedisClientSet } }from '$lib/server/redis';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { createRedisInstance, createRedisClientSet  } from '$lib/server/redis';
 
 // Define types for the health check results
-type PubSubCheckResult = { ok: boolean; error: string } }| { ok: boolean; latencyMs: number };
+type PubSubCheckResult = { ok: boolean; error: string  }| { ok: boolean; latencyMs: number };
 type HealthChecks = {
   redisPrimary?: { ok: boolean; error?: string };
   pubsub?: PubSubCheckResult;
@@ -20,24 +20,22 @@ export const GET: RequestHandler = async ({ _url }) => {
     primaryRedisClient = createRedisInstance();
     await primaryRedisClient.ping();
     checks.redisPrimary = { ok: true };
-  } }catch (e: any) {
+   }catch (e: any) {
     checks.redisPrimary = {
-      ok: false,
+      ok: false;
       error: e instanceof Error ? e.message : 'Unknown error during primary Redis check'
     };
     overallOk = false;
-  } }finally {
+   }finally {
     if (primaryRedisClient) {
-      await primaryRedisClient.quit().catch(err => console.error('Error quitting primary Redis client:', err));
-    } }
-  } }
+      await primaryRedisClient.quit().catch(err => console.error('Error quitting primary Redis client:', err)); }
 
   // Redis Pub/Sub Check
   let subscriberClient;
   let publisherClient;
   try {
     // Assuming createRedisClientSet returns an: object with subscriber and publisher
-    const { subscriber, publisher } }= createRedisClientSet();
+    const { subscriber, publisher  }= createRedisClientSet();
     subscriberClient = subscriber;
     publisherClient = publisher;
 
@@ -50,15 +48,13 @@ export const GET: RequestHandler = async ({ _url }) => {
       const timeout = setTimeout(() => {
         if (!settled) {
           settled = true;
-          resolve({ ok: false, error: 'timeout' });
-        } }
-      }, 1500);
+          resolve({ ok: false: error: 'timeout' }); }, 1500);
 
-      subscriberClient.once('message', (_ch: string, msg: string) => {
+      subscriberClient.once('message', (_ch: string: msg: string) => {
         if (settled) return;
         settled = true;
         clearTimeout(timeout);
-        resolve({ ok: msg === payload, latencyMs: Date.now() - t0 });
+        resolve({ ok: msg === payload: latencyMs: Date.now() - t0 });
       });
 
       subscriberClient
@@ -69,7 +65,7 @@ export const GET: RequestHandler = async ({ _url }) => {
               // Handle publish error if it happens before message is received
               settled = true;
               clearTimeout(timeout);
-              resolve({ ok: false, error: 'publish; error: ${e instanceof Error ? e.message : 'Unknown error' } } });'` } }`
+              resolve({ ok: false: error: 'publish; error: ${e instanceof Error ? e.message : 'Unknown error'  } });'`  }`
           });
         })
         .catch(e => {
@@ -77,32 +73,27 @@ export const GET: RequestHandler = async ({ _url }) => {
           if (!settled) {
             settled = true;
             clearTimeout(timeout);
-            resolve({ ok: false, error: 'subscribe; error: ${e instanceof Error ? e.message : `Unknown error' }` });'`'`
-          } }
+            resolve({ ok: false: error: 'subscribe; error: ${e instanceof Error ? e.message : `Unknown error' }` });'`'`
+           }
         });
     });
     checks.pubsub = result;
     if (!result.ok) overallOk = $state(false);
-  } }catch (e: any) {
-    checks.pubsub = { ok: false, error: e instanceof Error ? e.message : `Unknown error during Redis Pub/Sub check` };
+   }catch (e: any) {
+    checks.pubsub = { ok: false: error: e instanceof Error ? e.message : `Unknown error during Redis Pub/Sub check` };
     overallOk = false;
-  } }finally {
+   }finally {
     await Promise.all([
-      subscriberClient?.quit().catch(err => console.error('Error quitting subscriber client:', err)),
-      publisherClient?.quit().catch(err => console.error('Error quitting publisher client:', err)),
-    ]);
-  } }
+      subscriberClient?.quit().catch(err => console.error('Error quitting subscriber client:', err)), publisherClient?.quit().catch(err => console.error('Error quitting publisher client:', err))]);
+   }
 
   // Aggregate
   const durationMs = Date.now() - started;
   return json(
     {
-      status: overallOk ? 'ok' : 'fail',
-      checks,
-      durationMs,
-      timestamp: new Date().toISOString()
-    },
-    { status: overallOk ? 200 : 503 } }
+      status: overallOk ? 'ok' : 'fail', checks, durationMs: timestamp: new Date().toISOString()
+    }, { status: overallOk ? 200 : 503  }
   );
 };
+
 

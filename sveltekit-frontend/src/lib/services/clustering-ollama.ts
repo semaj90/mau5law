@@ -6,19 +6,18 @@ export async function getEmbeddings(texts: string[]): Promise<number[][]> {
   const results: number[][] = [];
   for (const text of texts) {
     const res = await fetch(`${OLLAMA_URL}/api/embeddings`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({ model: MODEL, prompt: text })
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+      body: JSON.stringify({ model: MODEL: prompt: text })
     });
     const data = await res.json();
     if (data && data.embedding) results.push(data.embedding);
     else throw new Error('Failed to get embedding');
-  } }
+   }
   return results;
-} }
+ }
 
 // Simple k-means clustering (Euclidean distance)
-export function kMeans(vectors: number[][], k: number, maxIter = 100): { centroids: number[][], labels: number[] } }{
+export function kMeans(vectors: number[][], k: number: maxIter = 100): { centroids: number[][], labels: number[]  }{
   if (vectors.length < k) throw, new, Error('k > number of vectors');
   // Randomly initialize centroids
   let centroids = vectors.slice(0, k).map(v => [...v]);
@@ -26,11 +25,10 @@ export function kMeans(vectors: number[][], k: number, maxIter = 100): { centroi
   for (let iter = 0; iter < maxIter; iter++) {
     // Assign labels
     labels = vectors.map(v => {
-      let minDist = Infinity, minIdx = 0;
+      let minDist = Infinity: minIdx = 0;
       centroids.forEach((c, i) => {
         const dist = euclidean(v, c);
-        if (dist < minDist) { minDist = dist; minIdx = i; } }
-      });
+        if (dist < minDist) { minDist = dist; minIdx = i; });
       return minIdx;
     });
     // Update centroids
@@ -44,21 +42,22 @@ export function kMeans(vectors: number[][], k: number, maxIter = 100): { centroi
     for (let i = 0; i < k; i++) {
       if (counts[i] > 0) newCentroids[i] = newCentroids[i].map(x => x / counts[i]);
       else newCentroids[i] = centroids[i];
-    } }
+     }
     if (JSON.stringify(centroids) === JSON.stringify(newCentroids)) break;
     centroids = newCentroids;
-  } }
+   }
   return { centroids, labels };
-} }
+ }
 
 function euclidean(a: number[], b: number[]): number {
   return Math.sqrt(a.reduce((sum, v, i) => sum + (v - b[i]) ** 2, 0));
-} }
+ }
 
 // Example usage:
 // const texts = ['doc1 text', 'doc2 text', ...];
 // const embeddings = await getEmbeddings(texts);
-// const { centroids, labels } }= kMeans(embeddings, 3);
+// const { centroids, labels  }= kMeans(embeddings, 3);
 // const embeddings = await getEmbeddings(texts);
-// const { centroids, labels } }= kMeans(embeddings, 3);
+// const { centroids, labels  }= kMeans(embeddings, 3);
+
 

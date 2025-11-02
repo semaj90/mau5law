@@ -1,5 +1,5 @@
-import type { LayoutServerLoad } }from './$types';
-export const load: LayoutServerLoad = async ({ url, locals, cookies: _cookies }) => {
+import type { LayoutServerLoad  } from './$types';
+export const load: LayoutServerLoad = async ({ url, locals: cookies: _cookies }) => {
   const path = url.pathname;
   // Public routes are accessible to everyone
   // Pass user data if available for personalized experience
@@ -7,29 +7,21 @@ export const load: LayoutServerLoad = async ({ url, locals, cookies: _cookies })
   const session = locals.session || null;
   // Determine page metadata based on route
   let pageMetadata = {
-    title: 'YoRHa Legal AI',
-    description: 'Advanced Legal Intelligence Platform powered by Neural Networks',
-    keywords: 'legal AI, neural networks, legal intelligence, case management'
+    title: 'YoRHa Legal AI', description: 'Advanced Legal Intelligence Platform powered by Neural Networks', keywords: 'legal AI, neural networks, legal intelligence, case management'
   };
   if (path.startsWith('/demo')) {
     pageMetadata = {
-      title: 'Demo - YoRHa Legal AI',
-      description: 'Interactive demonstration of YoRHa Legal AI Platform capabilities',
-      keywords: 'legal AI demo, neural networks demo, AI showcase'
+      title: 'Demo - YoRHa Legal AI', description: 'Interactive demonstration of YoRHa Legal AI Platform capabilities', keywords: 'legal AI demo, neural networks demo, AI showcase'
     };
-  } }else if (path.startsWith('/showcase')) {
+   }else if (path.startsWith('/showcase')) {
     pageMetadata = {
-      title: 'Showcase - YoRHa Legal AI',
-      description: 'Showcase of YoRHa Legal AI Platform features and capabilities',
-      keywords: 'legal AI showcase, platform features, AI capabilities'
+      title: 'Showcase - YoRHa Legal AI', description: 'Showcase of YoRHa Legal AI Platform features and capabilities', keywords: 'legal AI showcase, platform features, AI capabilities'
     };
-  } }
+   }
   return {
-    user,
-    session,
-    isPublicRoute: true,
-    path,
-    pageMetadata
+    user, session: isPublicRoute: true;
+    path, pageMetadata
   };
 };
+
 

@@ -1,22 +1,19 @@
-import type { User } }from '$lib/types';
+import type { User  } from '$lib/types';
 /**
  * Avatar upload endpoint - Upload and optimize user profile pictures to MinIO S3
  * Uses separate: 'user-avatars' bucket for profile images
- * Optimizes, images: max 2MB, JPEG/PNG only, scales to 400x400px
+ * Optimizes: images: max 2MB, JPEG/PNG only, scales to 400x400px
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { auth } }from '$lib/server/auth';
-import { db } }from '$lib/server/db';
-import { users } }from '$lib/server/db/schema';
-import { eq } }from 'drizzle-orm';
-import { Client, as MinioClient } }from 'minio';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { auth  } from '$lib/server/auth';
+import { db  } from '$lib/server/db';
+import { users  } from '$lib/server/db/schema';
+import { eq  } from 'drizzle-orm';
+import { Client, as MinioClient  } from 'minio';
 
 const minioClient = new MinioClient({
-  endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000',
-  accessKey: process.env.MINIO_ACCESS_KEY || 'minio',
-  secretKey: process.env.MINIO_SECRET_KEY || 'minio123',
-  useSSL: process.env.MINIO_USE_SSL === 'true'
+  endPoint: process.env.MINIO_ENDPOINT || 'localhost:9000', accessKey: process.env.MINIO_ACCESS_KEY || 'minio', secretKey: process.env.MINIO_SECRET_KEY || 'minio123', useSSL: process.env.MINIO_USE_SSL === 'true'
 });
 
 const AVATAR_BUCKET = 'user-avatars';
@@ -30,31 +27,25 @@ export const POST: RequestHandler = async (event) => {
     if (!sessionId) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Not authenticated',
-            code: 'NO_SESSION',
-            status: 401
-          } }
-        },
-        { status: 401 } }
+  message: 'Not authenticated', code: 'NO_SESSION', status: 401
+           }
+        }, { status: 401  }
       );
-    } }
+     }
 
-    const { session, user } }= await auth.validateSession(sessionId);
+    const { session, user  }= await auth.validateSession(sessionId);
     if (!session || !user) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Invalid session',
-            code: 'INVALID_SESSION',
-            status: 401
-          } }
-        },
-        { status: 401 } }
+  message: 'Invalid session', code: 'INVALID_SESSION', status: 401
+           }
+        }, { status: 401  }
       );
-    } }
+     }
 
     // Parse form data
     const formData = await event.request.formData();
@@ -63,46 +54,37 @@ export const POST: RequestHandler = async (event) => {
     if (!file) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'No file provided',
-            code: 'NO_FILE',
-            status: 400
-          } }
-        },
-        { status: 400 } }
+  message: 'No file provided', code: 'NO_FILE', status: 400
+           }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Invalid file type. Only JPEG and PNG allowed.',
-            code: 'INVALID_TYPE',
-            status: 400
-          } }
-        },
-        { status: 400 } }
+  message: 'Invalid file type. Only JPEG and PNG allowed.', code: 'INVALID_TYPE', status: 400
+           }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'File too large. Maximum 2MB allowed.',
-            code: 'FILE_TOO_LARGE',
-            status: 400
-          } }
-        },
-        { status: 400 } }
+  message: 'File too large. Maximum 2MB allowed.', code: 'FILE_TOO_LARGE', status: 400
+           }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Generate unique filename with user ID
     const ext = file.type === 'image/jpeg' ? 'jpg' : 'png';
@@ -117,12 +99,11 @@ export const POST: RequestHandler = async (event) => {
     const bucketExists = await minioClient.bucketExists(AVATAR_BUCKET);
     if (!bucketExists) {
       await minioClient.makeBucket(AVATAR_BUCKET, 'us-east-1');
-    } }
+     }
 
     // Upload to MinIO
     await minioClient.putObject(AVATAR_BUCKET, objectPath, bufferData, bufferData.length, {
-      'Content-Type': file.type,
-      'Cache-Control': 'public, max-age=31536000', // Cache for, 1 year
+      'Content-Type': file.type, 'Cache-Control': 'public, max-age=31536000', // Cache for, 1 year
     });
 
     // Generate avatar URL
@@ -137,26 +118,19 @@ export const POST: RequestHandler = async (event) => {
       .where(eq(users.id, user.id));
 
     return json({
-      success: true,
-      message: 'Avatar uploaded successfully',
-      avatarUrl,
-      filename
+      success: true;
+      message: 'Avatar uploaded successfully', avatarUrl, filename
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error uploading avatar:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: {
-  message: 'Failed to upload avatar',
-          code: 'UPLOAD_ERROR',
-          status: 500
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+  message: 'Failed to upload avatar', code: 'UPLOAD_ERROR', status: 500
+         }
+      }, { status: 500  }
+    ); };
 
 /**
  * GET endpoint to retrieve user avatar
@@ -168,16 +142,13 @@ export const GET: RequestHandler = async (event) => {
     if (!userId) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'User ID required',
-            code: 'NO_USER_ID',
-            status: 400
-          } }
-        },
-        { status: 400 } }
+  message: 'User ID required', code: 'NO_USER_ID', status: 400
+           }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // List objects for user
     const objectsList = await minioClient.listObjects(AVATAR_BUCKET, `${userId}/`, true);
@@ -186,11 +157,11 @@ export const GET: RequestHandler = async (event) => {
     const objects: any[] = [];
     for await (const obj of objectsList) {
       objects.push(obj);
-    } }
+     }
 
     if (objects.length === 0) {
       return new Response('Avatar not found', { status: 404 });
-    } }
+     }
 
     // Sort by last modified, get most recent
     objects.sort((a, b) => (b.lastModified?.getTime() ?? 0) - (a.lastModified?.getTime() ?? 0));
@@ -199,14 +170,12 @@ export const GET: RequestHandler = async (event) => {
     // Get: object stream
     const dataStream = await minioClient.getObject(AVATAR_BUCKET, latestAvatar.name);
 
-    return new Response(dataStream as: any, {
+    return new Response(dataStream as any, {
       headers: {
-        'Content-Type': latestAvatar.etag ? 'image/jpeg' : 'image/png',
-        'Cache-Control': 'public, max-age=31536000` } }`
+        'Content-Type': latestAvatar.etag ? 'image/jpeg' : 'image/png', 'Cache-Control': 'public, max-age=31536000`  }`
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error retrieving avatar:', error);
-    return new Response('Error retrieving avatar', { status: 500 });
-  } }
-};
+    return new Response('Error retrieving avatar', { status: 500 }); };
+
 

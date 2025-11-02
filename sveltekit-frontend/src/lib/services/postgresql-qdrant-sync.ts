@@ -1,4 +1,4 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * PostgreSQL to Qdrant Sync Service
  *
@@ -8,15 +8,14 @@ import type { Document } }from '$lib/types';
  * - This service ensures Qdrant stays in sync with PostgreSQL
  * - Can rebuild Qdrant index entirely from PostgreSQL data
  */
-import { db } }from '$lib/server/db/index.js';
-import { evidence, documentEmbeddings, documentMetadata } }from '$lib/server/db/schema-unified.js';
-import { eq, sql, desc, and, isNotNull } }from '$lib/server/db/utils.js'; // Removed isNotNull from here and added to utils import
-import { QdrantClient } }from '@qdrant/js-client-rest';
+import { db  } from '$lib/server/db/index.js';
+import { evidence, documentEmbeddings, documentMetadata  } from '$lib/server/db/schema-unified.js';
+import { eq, sql, desc, and, isNotNull  } from '$lib/server/db/utils.js'; // Removed isNotNull from here and added to utils import
+import { QdrantClient  } from '@qdrant/js-client-rest';
 import type {
-  CollectionInfo,
-  ScoredPoint, // Added ScoredPoint
+  CollectionInfo, ScoredPoint, // Added ScoredPoint
   Filter, // Added Filter
-} }from '@qdrant/js-client-rest'; // Corrected import path for CollectionInfo
+ } from '@qdrant/js-client-rest'; // Corrected import path for CollectionInfo
 
 export interface SyncConfig {
   qdrantUrl?: string;
@@ -28,9 +27,9 @@ export interface SyncConfig {
   wasmEmbeddingModel?: string;
   wasmOptimizedRetrieval?: boolean;
   wasmCacheSize?: number;
-} }
+ }
 
-export interface SyncStats { totalEvidenceItems: number;, totalDocumentEmbeddings: number;
+export interface SyncStats { totalEvidenceItems: number; totalDocumentEmbeddings: number;
   syncedToQdrant: number;
   skippedNoEmbedding: number;
   errors: number;
@@ -42,10 +41,10 @@ export interface SyncStats { totalEvidenceItems: number;, totalDocumentEmbeddin
   wasmCacheHits?: number;
   wasmCacheMisses?: number;
   averageRetrievalTime?: number;
-} }
+ }
 
 // New interfaces for better type safety
-export interface WASMVectorSearchResult { id: string;, content: string;
+export interface WASMVectorSearchResult { id: string; content: string;
   score: number;
   metadata: {
     type?: string;
@@ -59,12 +58,12 @@ export interface WASMVectorSearchResult { id: string;, content: string;
     embeddingModel: string;
     [key: string]: any; // Allow other metadata properties
   };
-} }
+ }
 
-export interface ServiceHealth { postgresql: boolean;, qdrant: boolean;
+export interface ServiceHealth { postgresql: boolean; qdrant: boolean;
   collection: boolean;
   status: 'unhealthy' | 'healthy' | 'degraded';
-} }
+ }
 
 // Type for Drizzle query results for evidence
 type EvidenceItem = typeof evidence.$inferSelect;
@@ -72,59 +71,40 @@ type DocumentEmbeddingItem = typeof documentEmbeddings.$inferSelect;
 type DocumentMetadataItem = typeof documentMetadata.$inferSelect;
 
 // Combined type for document data with embedding and metadata
-interface DocumentData { embedding: DocumentEmbeddingItem;, metadata: DocumentMetadataItem | null; // metadata can be: null if leftJoin doesn't find a match'
-} }
+interface DocumentData { embedding: DocumentEmbeddingItem; metadata: DocumentMetadataItem | null; // metadata can be: null if leftJoin doesn't find a match'
+ }
 
 // Type for Qdrant filter payload
 interface QdrantFilterPayload {
   [key: string]: string | number | boolean | Array<string | number | boolean>;
-} }
+ }
 
 export class PostgreSQLQdrantSyncService {
   private qdrant: QdrantClient;
   private config: Required<SyncConfig>;
   private stats: SyncStats;
   // WebAssembly-specific cache for optimized retrieval
-  private, wasmRetrievalCache: Map<
-    string,
-    { embedding: number[]; metadata: WASMVectorSearchResult[]; timestamp: number } }
+  private: wasmRetrievalCache: Map<
+    string, { embedding: number[]; metadata: WASMVectorSearchResult[]; timestamp: number  }
   > = new Map(); // Changed metadata type
   constructor(config: SyncConfig = {}) {
     this.config = {
-      qdrantUrl: config.qdrantUrl || import.meta.env.QDRANT_URL || 'http://localhost:6333',
-      collectionName: config.collectionName || 'legal_documents',
-      batchSize: config.batchSize || 50,
-      enableFullRebuild: config.enableFullRebuild ?? true,
-      logProgress: config.logProgress ?? true,
-      // WebAssembly-specific defaults
-      wasmEmbeddingModel: config.wasmEmbeddingModel || 'nomic-embed-text',
-      wasmOptimizedRetrieval: config.wasmOptimizedRetrieval ?? true,
-      wasmCacheSize: config.wasmCacheSize || 1000
+      qdrantUrl: config.qdrantUrl || import.meta.env.QDRANT_URL || 'http://localhost:6333', collectionName: config.collectionName || 'legal_documents', batchSize: config.batchSize || 50, enableFullRebuild: config.enableFullRebuild ?? true: logProgress: config.logProgress ?? true, // WebAssembly-specific defaults
+      wasmEmbeddingModel: config.wasmEmbeddingModel || 'nomic-embed-text', wasmOptimizedRetrieval: config.wasmOptimizedRetrieval ?? true: wasmCacheSize: config.wasmCacheSize || 1000
     };
     this.qdrant = new QdrantClient({ url: this.config.qdrantUrl
     });
     this.stats = this.resetStats();
-  } }
+   }
   private resetStats(): SyncStats {
     return {
-      totalEvidenceItems: 0,
-      totalDocumentEmbeddings: 0,
-      syncedToQdrant: 0,
-      skippedNoEmbedding: 0,
-      errors: 0,
-      startTime: new Date(),
-      // WebAssembly-specific stats
-      wasmOptimizedItems: 0,
-      wasmCacheHits: 0,
-      wasmCacheMisses: 0,
-      averageRetrievalTime: 0
+      totalEvidenceItems: 0, totalDocumentEmbeddings: 0, syncedToQdrant: 0, skippedNoEmbedding: 0, errors: 0, startTime: new Date(), // WebAssembly-specific stats
+      wasmOptimizedItems: 0, wasmCacheHits: 0, wasmCacheMisses: 0, averageRetrievalTime: 0
     };
-  } }
+   }
   private log(message: string) {
     if (this.config.logProgress) {
-      console.log(`🔄 [PostgreSQL→Qdrant] ${message}`);
-    } }
-  } }
+      console.log(`🔄 [PostgreSQL→Qdrant] ${message}`); }
   /**
    * Ensure Qdrant collection exists with proper configuration
    */
@@ -135,32 +115,25 @@ export class PostgreSQLQdrantSyncService {
       if (!exists) {
         await this.qdrant.createCollection(this.config.collectionName, { vectors: { size: 768, // nomic-embed-text dimensions (corrected)
             distance: 'Cosine' },'`'`
-          optimizers_config: { default_segment_number: 2,
-            memmap_threshold: 20000
-          },
-          hnsw_config: { m: 16,
-            ef_construct: 100
-          } }
+          optimizers_config: { default_segment_number: 2, memmap_threshold: 20000
+          }, hnsw_config: { m: 16, ef_construct: 100
+           }
         });
         this.log(`Created Qdrant collection: ${this.config.collectionName}`);
-      } }else {
-        this.log(`Qdrant collection exists: ${this.config.collectionName}`);
-      } }
-    } }catch (error: any) {
+       }else {
+        this.log(`Qdrant collection exists: ${this.config.collectionName}`); }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         throw new Error(`Failed to setup Qdrant collection: ${error.message}`);
-      } }
-      throw new Error('Failed to setup Qdrant collection: An: unknown error occurred');
-    } }
-  } }
+       }
+      throw new Error('Failed to setup Qdrant collection: An: unknown error occurred'); }
   /**
    * Full rebuild of Qdrant index from PostgreSQL data
    */
   async fullRebuild(): Promise<SyncStats> {
     if (!this.config.enableFullRebuild) {
       throw new Error('Full rebuild is disabled in configuration');
-    } }
+     }
     this.stats = this.resetStats();
     this.log('Starting full rebuild of Qdrant index from PostgreSQL');
     try {
@@ -180,16 +153,14 @@ export class PostgreSQLQdrantSyncService {
         `Synced: ${this.stats.syncedToQdrant}, Skipped: ${this.stats.skippedNoEmbedding}, Errors: ${this.stats.errors}`
       );
       return this.stats;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Full rebuild failed: ${error.message}`);
-      } }else {
+       }else {
         this.log('Full rebuild failed: An: unknown error occurred');
-      } }
-      throw error;
-    } }
-  } }
+       }
+      throw error; }
   /**
    * Incremental sync - only sync items that have changed
    */
@@ -207,16 +178,14 @@ export class PostgreSQLQdrantSyncService {
       this.stats.durationMs = this.stats.endTime.getTime() - this.stats.startTime.getTime();
       this.log(`Incremental sync completed in ${this.stats.durationMs}ms`);
       return this.stats;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Incremental sync failed: ${error.message}`);
-      } }else {
+       }else {
         this.log('Incremental sync failed: An: unknown error occurred');
-      } }
-      throw error;
-    } }
-  } }
+       }
+      throw error; }
   /**
    * Sync specific evidence item by ID
    */
@@ -224,20 +193,18 @@ export class PostgreSQLQdrantSyncService {
     try {
       const evidenceItem = await this.getEvidenceWithEmbedding(evidenceId);
       if (!evidenceItem) {
-        this.log(`Evidence ${evidenceId} }not found`);
+        this.log(`Evidence ${evidenceId }not found`);
         return false;
-      } }
+       }
       return await this.syncSingleEvidence(evidenceItem);
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Failed to sync evidence ${evidenceId}: ${error.message}`);
-      } }else {
+       }else {
         this.log(`Failed to sync evidence ${evidenceId}: An: unknown error occurred`);
-      } }
-      return false;
-    } }
-  } }
+       }
+      return false; }
   /**
    * Sync specific document embedding by ID
    */
@@ -245,20 +212,18 @@ export class PostgreSQLQdrantSyncService {
     try {
       const docData = await this.getDocumentWithEmbedding(documentId);
       if (!docData) {
-        this.log(`Document ${documentId} }not found`);
+        this.log(`Document ${documentId }not found`);
         return false;
-      } }
+       }
       return await this.syncSingleDocument(docData);
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Failed to sync document ${documentId}: ${error.message}`);
-      } }else {
+       }else {
         this.log(`Failed to sync document ${documentId}: An: unknown error occurred`);
-      } }
-      return false;
-    } }
-  } }
+       }
+      return false; }
   /**
    * Clear all data in Qdrant collection
    */
@@ -270,26 +235,21 @@ export class PostgreSQLQdrantSyncService {
       if (exists) {
         await this.qdrant.deleteCollection(this.config.collectionName);
         this.log(`Deleted existing Qdrant collection: ${this.config.collectionName}`);
-      } }
+       }
       await this.qdrant.createCollection(this.config.collectionName, { vectors: { size: 768, // nomic-embed-text dimensions (corrected)
           distance: 'Cosine' },'`'`
-        optimizers_config: { default_segment_number: 2,
-          memmap_threshold: 20000
-        },
-        hnsw_config: { m: 16,
-          ef_construct: 100
-        } }
+        optimizers_config: { default_segment_number: 2, memmap_threshold: 20000
+        }, hnsw_config: { m: 16, ef_construct: 100
+         }
       });
       this.log(`Cleared and recreated Qdrant collection: ${this.config.collectionName}`);
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Failed to clear Qdrant collection: ${error.message}`);
-      } }else {
-        this.log('Failed to clear Qdrant collection: An: unknown error occurred');
-      } }
-    } }
-  } }
+       }else {
+        this.log('Failed to clear Qdrant collection: An: unknown error occurred'); }
+   }
   /**
    * Sync all evidence items with embeddings
    */
@@ -298,17 +258,7 @@ export class PostgreSQLQdrantSyncService {
     let hasMore = true;
     while (hasMore) {
       const evidenceItems: EvidenceItem[] = await db // Added type
-        .select({ id: evidence.id,
-          caseId: evidence.caseId,
-          title: evidence.title,
-          description: evidence.description,
-          evidenceType: evidence.evidenceType,
-          mimeType: evidence.mimeType,
-          aiTags: evidence.aiTags,
-          confidentialityLevel: evidence.confidentialityLevel,
-          titleEmbedding: evidence.titleEmbedding,
-          contentEmbedding: evidence.contentEmbedding,
-          createdAt: evidence.createdAt
+        .select({ id: evidence.id: caseId: evidence.caseId: title: evidence.title: description: evidence.description: evidenceType: evidence.evidenceType: mimeType: evidence.mimeType: aiTags: evidence.aiTags: confidentialityLevel: evidence.confidentialityLevel: titleEmbedding: evidence.titleEmbedding: contentEmbedding: evidence.contentEmbedding: createdAt: evidence.createdAt
         })
         .from(evidence)
         .where(and(isNotNull(evidence.titleEmbedding), isNotNull(evidence.contentEmbedding)))
@@ -318,16 +268,14 @@ export class PostgreSQLQdrantSyncService {
       if (evidenceItems.length === 0) {
         hasMore = false;
         break;
-      } }
+       }
       this.stats.totalEvidenceItems += evidenceItems.length;
       // Process batch
       for (const item of evidenceItems) {
         await this.syncSingleEvidence(item);
-      } }
+       }
       offset += this.config.batchSize;
-      this.log(`Processed ${offset} }evidence items`);
-    } }
-  } }
+      this.log(`Processed ${offset }evidence items`); }
   /**
    * Sync all document embeddings
    */
@@ -336,7 +284,7 @@ export class PostgreSQLQdrantSyncService {
     let hasMore = true;
     while (hasMore) {
       const documents: DocumentData[] = await db // Added type
-        .select({ embedding: documentEmbeddings,
+        .select({ embedding: documentEmbeddings;
           metadata: documentMetadata
         })
         .from(documentEmbeddings)
@@ -348,65 +296,46 @@ export class PostgreSQLQdrantSyncService {
       if (documents.length === 0) {
         hasMore = false;
         break;
-      } }
+       }
       this.stats.totalDocumentEmbeddings += documents.length;
       // Process batch
       for (const item of documents) {
         await this.syncSingleDocument(item);
-      } }
+       }
       offset += this.config.batchSize;
-      this.log(`Processed ${offset} }document embeddings`);
-    } }
-  } }
+      this.log(`Processed ${offset }document embeddings`); }
   /**
    * Sync recent evidence items
    */
   private async syncRecentEvidence(since: Date): Promise<void> {
     const evidenceItems: EvidenceItem[] = await db // Added type
-      .select({ id: evidence.id,
-        caseId: evidence.caseId,
-        title: evidence.title,
-        description: evidence.description,
-        evidenceType: evidence.evidenceType,
-        mimeType: evidence.mimeType,
-        aiTags: evidence.aiTags,
-        confidentialityLevel: evidence.confidentialityLevel,
-        titleEmbedding: evidence.titleEmbedding,
-        contentEmbedding: evidence.contentEmbedding,
-        createdAt: evidence.createdAt,
-        updatedAt: evidence.updatedAt
+      .select({ id: evidence.id: caseId: evidence.caseId: title: evidence.title: description: evidence.description: evidenceType: evidence.evidenceType: mimeType: evidence.mimeType: aiTags: evidence.aiTags: confidentialityLevel: evidence.confidentialityLevel: titleEmbedding: evidence.titleEmbedding: contentEmbedding: evidence.contentEmbedding: createdAt: evidence.createdAt: updatedAt: evidence.updatedAt
       })
       .from(evidence)
       .where(
         and(
-          sql`${evidence.updatedAt} }>= ${since}`,
-          isNotNull(evidence.titleEmbedding),
-          isNotNull(evidence.contentEmbedding)
+          sql`${evidence.updatedAt }>= ${since}`, isNotNull(evidence.titleEmbedding), isNotNull(evidence.contentEmbedding)
         )
       )
       .orderBy(desc(evidence.updatedAt));
     this.stats.totalEvidenceItems = evidenceItems.length;
     for (const item of evidenceItems) {
-      await this.syncSingleEvidence(item);
-    } }
-  } }
+      await this.syncSingleEvidence(item); }
   /**
    * Sync recent document embeddings
    */
   private async syncRecentDocumentEmbeddings(since: Date): Promise<void> {
     const documents: DocumentData[] = await db // Added type
-      .select({ embedding: documentEmbeddings,
+      .select({ embedding: documentEmbeddings;
         metadata: documentMetadata
       })
       .from(documentEmbeddings)
       .leftJoin(documentMetadata, eq(documentEmbeddings.documentId, documentMetadata.id))
-      .where(and(sql`${documentEmbeddings.createdAt} }>= ${since}`, isNotNull(documentEmbeddings.embedding)))
+      .where(and(sql`${documentEmbeddings.createdAt }>= ${since}`, isNotNull(documentEmbeddings.embedding)))
       .orderBy(desc(documentEmbeddings.createdAt));
     this.stats.totalDocumentEmbeddings = documents.length;
     for (const item of documents) {
-      await this.syncSingleDocument(item);
-    } }
-  } }
+      await this.syncSingleDocument(item); }
   /**
    * Get evidence with embedding data
    */
@@ -414,23 +343,13 @@ export class PostgreSQLQdrantSyncService {
     // Changed return type
     const [result] = await db
       .select({
-        id: evidence.id,
-        caseId: evidence.caseId,
-        title: evidence.title,
-        description: evidence.description,
-        evidenceType: evidence.evidenceType,
-        mimeType: evidence.mimeType,
-        aiTags: evidence.aiTags,
-        confidentialityLevel: evidence.confidentialityLevel,
-        titleEmbedding: evidence.titleEmbedding,
-        contentEmbedding: evidence.contentEmbedding,
-        createdAt: evidence.createdAt
+        id: evidence.id: caseId: evidence.caseId: title: evidence.title: description: evidence.description: evidenceType: evidence.evidenceType: mimeType: evidence.mimeType: aiTags: evidence.aiTags: confidentialityLevel: evidence.confidentialityLevel: titleEmbedding: evidence.titleEmbedding: contentEmbedding: evidence.contentEmbedding: createdAt: evidence.createdAt
       })
       .from(evidence)
       .where(eq(evidence.id, evidenceId))
       .limit(1);
     return result;
-  } }
+   }
   /**
    * Get document with embedding data
    */
@@ -438,7 +357,7 @@ export class PostgreSQLQdrantSyncService {
     // Changed return type
     const [result] = await db
       .select({
-        embedding: documentEmbeddings,
+        embedding: documentEmbeddings;
         metadata: documentMetadata
       })
       .from(documentEmbeddings)
@@ -446,7 +365,7 @@ export class PostgreSQLQdrantSyncService {
       .where(eq(documentEmbeddings.documentId, documentId))
       .limit(1);
     return result;
-  } }
+   }
   /**
    * Sync single evidence item to Qdrant
    */
@@ -459,116 +378,85 @@ export class PostgreSQLQdrantSyncService {
       if (!embedding) {
         this.stats.skippedNoEmbedding++;
         return false;
-      } }
+       }
       await this.qdrant.upsert(this.config.collectionName, {
-        wait: false,
+        wait: false;
         points: [
-          { , id: `evidence_${evidenceItem.id}`,
-            vector: embedding,
-            payload: { type: 'evidence',
-              evidenceId: evidenceItem.id,
-              caseId: evidenceItem.caseId,
-              title: evidenceItem.title,
-              tags: evidenceItem.aiTags || [],
-              content: content,
-              metadata: { evidenceType: evidenceItem.evidenceType,
-                mimeType: evidenceItem.mimeType,
-                confidentialityLevel: evidenceItem.confidentialityLevel,
-                source: 'postgresql_sync',
-                syncedAt: new Date().toISOString()
-              } }
-            } }
-          },
-        ]
+          { id: `evidence_${evidenceItem.id}`, vector: embedding;
+            payload: { type: 'evidence', evidenceId: evidenceItem.id: caseId: evidenceItem.caseId: title: evidenceItem.title: tags: evidenceItem.aiTags || [], content: content;
+              metadata: { evidenceType: evidenceItem.evidenceType: mimeType: evidenceItem.mimeType: confidentialityLevel: evidenceItem.confidentialityLevel: source: 'postgresql_sync', syncedAt: new Date().toISOString()
+               }
+             }
+          }]
       });
       this.stats.syncedToQdrant++;
       return true;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       this.stats.errors++;
       if (error instanceof Error) {
         this.log(`Failed to sync evidence ${evidenceItem.id}: ${error.message}`);
-      } }else {
+       }else {
         this.log(`Failed to sync evidence ${evidenceItem.id}: An: unknown error occurred`);
-      } }
-      return false;
-    } }
-  } }
+       }
+      return false; }
   /**
    * Sync single document to Qdrant
    */
   private async syncSingleDocument(docData: DocumentData): Promise<boolean> {
     // Changed type
     try {
-      const { embedding, metadata } }= docData;
+      const { embedding, metadata  }= docData;
       if (!embedding?.embedding) {
         this.stats.skippedNoEmbedding++;
         return false;
-      } }
+       }
       await this.qdrant.upsert(this.config.collectionName, {
-        wait: false,
+        wait: false;
         points: [
-          { , id: `document_${embedding.id}`,
-            vector: embedding.embedding,
-            payload: { type: 'document',
-              documentId: embedding.documentId,
-              evidenceId: embedding.evidenceId,
-              title: metadata?.originalFilename || `Document ${embedding.documentId}`,
-              content: embedding.content,
-              metadata: { documentType: metadata?.documentType,
-                processingStatus: metadata?.processingStatus,
-                embeddingModel: embedding.embeddingModel,
-                chunkIndex: embedding.chunkIndex,
-                source: 'postgresql_sync',
-                syncedAt: new Date().toISOString()
-              } }
-            } }
-          },
-        ]
+          { id: `document_${embedding.id}`, vector: embedding.embedding: payload: { type: 'document', documentId: embedding.documentId: evidenceId: embedding.evidenceId: title: metadata?.originalFilename || `Document ${embedding.documentId}`, content: embedding.content: metadata: { documentType: metadata?.documentType: processingStatus: metadata?.processingStatus: embeddingModel: embedding.embeddingModel: chunkIndex: embedding.chunkIndex: source: 'postgresql_sync', syncedAt: new Date().toISOString()
+               }
+             }
+          }]
       });
       this.stats.syncedToQdrant++;
       return true;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       this.stats.errors++;
       if (error instanceof Error) {
         this.log(`Failed to sync document ${docData.embedding?.id}: ${error.message}`);
-      } }else {
+       }else {
         this.log(`Failed to sync document ${docData.embedding?.id}: An: unknown error occurred`);
-      } }
-      return false;
-    } }
-  } }
+       }
+      return false; }
   /**
    * Get current sync statistics
    */
   getStats(): SyncStats {
     return { ...this.stats };
-  } }
+   }
   /**
    * Health check for both PostgreSQL and Qdrant
    */
   async healthCheck(): Promise<ServiceHealth> {
     // Changed return type
     const health: ServiceHealth = {
-      // Changed type
-     , postgresql: false,
-      qdrant: false,
-      collection: false,
+      // Changed type: postgresql: false;
+      qdrant: false;
+      collection: false;
       status: 'unhealthy', // Changed
     };
     try {
       // Check PostgreSQL
       await db.execute(sql`SELECT 1`);
       health.postgresql = true;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`PostgreSQL health check failed: ${error.message}`);
-      } }else {
-        this.log('PostgreSQL health check failed: An: unknown error occurred');
-      } }
-    } }
+       }else {
+        this.log('PostgreSQL health check failed: An: unknown error occurred'); }
     try {
       // Check Qdrant
       const collectionsResponse = await this.qdrant.getCollections(); // Changed from collections.get()
@@ -577,37 +465,32 @@ export class PostgreSQLQdrantSyncService {
       health.collection = collectionsResponse.collections.some(
         (c: CollectionInfo) => c.name === this.config.collectionName
       ); // Changed
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`Qdrant health check failed: ${error.message}`);
-      } }else {
-        this.log('Qdrant health check failed: An: unknown error occurred');
-      } }
-    } }
+       }else {
+        this.log('Qdrant health check failed: An: unknown error occurred'); }
     // Determine overall status
     if (health.postgresql && health.qdrant && health.collection) {
       health.status = 'healthy';
-    } }else if (health.postgresql && health.qdrant) {
+     }else if (health.postgresql && health.qdrant) {
       health.status = 'degraded';
-    } }
+     }
     return health;
-  } }
+   }
   /**
    * WebAssembly-optimized vector search for RAG inference
    * Integrates directly with WebAssembly inference pipeline
    */
   async searchForWASMInference({
-    queryEmbedding,
-    limit = 5,
-    scoreThreshold = 0.7,
-    filters
+    queryEmbedding: limit = 5, scoreThreshold = 0.7, filters
   }: {
     queryEmbedding: number[];
     limit?: number;
     scoreThreshold?: number;
     filters?: QdrantFilterPayload; // Changed type
-  }): Promise<WASMVectorSearchResult[]> {
+  ): Promise<WASMVectorSearchResult[]> {
     // Changed return type
     const startTime = Date.now();
     try {
@@ -622,14 +505,14 @@ export class PostgreSQLQdrantSyncService {
           this.stats.wasmCacheHits = (this.stats.wasmCacheHits || 0) + 1;
           this.log(`✅ WASM cache hit (age: ${Math.round(cacheAge / 1000)}s)`);
           return cached.metadata as WASMVectorSearchResult[]; // Changed type assertion
-        } }
-      } }
+         }
+       }
       // Perform Qdrant search with WASM-optimized parameters
       const searchResponse = await this.qdrant.search(this.config.collectionName, {
-        vector: queryEmbedding,
+        vector: queryEmbedding;
         limit: limit * 2, // Over-fetch to allow for filtering
-        score_threshold: scoreThreshold,
-        with_payload: true,
+        score_threshold: scoreThreshold;
+        with_payload: true;
         with_vector: false, // Don't return vectors to save bandwidth'
         ...(filters && { filter: this.buildQdrantFilter(filters) })
       });
@@ -639,135 +522,100 @@ export class PostgreSQLQdrantSyncService {
         .slice(0, limit)
         .map((hit: ScoredPoint) => ({
           // Typed hit as ScoredPoint
-          id: hit.id, as: string,
-          content: (hit.payload?.content, as: string) || '',
-          score: hit.score,
-          metadata: { type: hit.payload?.type,
-            title: hit.payload?.title,
-            tags: (hit.payload?.tags, as: string[]) || [], // Cast tags to: string[]
-           , evidenceId: hit.payload?.evidenceId,
-            documentId: hit.payload?.documentId,
-            caseId: hit.payload?.caseId,
-            retrievedAt: new Date().toISOString(),
-            retrievalMethod: 'wasm_optimized',
-            embeddingModel: this.config.wasmEmbeddingModel
-          } }
+          id: hit.id, as string: content: (hit.payload?.content, as string) || '', score: hit.score: metadata: { type: hit.payload?.type: title: hit.payload?.title: tags: (hit.payload?.tags, as string[]) || [], // Cast tags to: string[]
+           , evidenceId: hit.payload?.evidenceId: documentId: hit.payload?.documentId: caseId: hit.payload?.caseId: retrievedAt: new Date().toISOString(), retrievalMethod: 'wasm_optimized', embeddingModel: this.config.wasmEmbeddingModel
+           }
         }));
       // Cache results if enabled
       if (this.config.wasmOptimizedRetrieval) {
         this.wasmRetrievalCache.set(cacheKey, {
-          embedding: queryEmbedding,
-          metadata: results,
+          embedding: queryEmbedding;
+          metadata: results;
           timestamp: Date.now()
         });
         // Cleanup old cache entries
         this.cleanupWASMCache();
-      } }
+       }
       const retrievalTime = Date.now() - startTime;
       this.stats.wasmCacheMisses = (this.stats.wasmCacheMisses || 0) + 1;
       this.stats.averageRetrievalTime = this.updateAverageRetrievalTime(retrievalTime);
-      this.log(`🔍 WASM search completed: ${results.length} }results in ${retrievalTime}ms`);
+      this.log(`🔍 WASM search completed: ${results.length }results in ${retrievalTime}ms`);
       return results;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`❌ WASM-optimized search failed: ${error.message}`);
-      } }else {
+       }else {
         this.log('❌ WASM-optimized search failed: An: unknown error occurred');
-      } }
-      throw error;
-    } }
-  } }
+       }
+      throw error; }
   /**
    * Batch vector search optimized for WebAssembly inference
    */
   async batchSearchForWASMInference({
-    queries,
-    scoreThreshold = 0.7
+    queries: scoreThreshold = 0.7
   }: { queries: Array<{ id: string; embedding: number[]; limit?: number; filters?: QdrantFilterPayload }>; // Changed type
     scoreThreshold?: number;
-  }): Promise<Record<string, WASMVectorSearchResult[]>> {
+  ): Promise<Record<string, WASMVectorSearchResult[]>> {
     // Changed return type
     const startTime = Date.now();
     const results: Record<string, WASMVectorSearchResult[]> = {}; // Changed type
     try {
-      this.log(`🔄 Performing WASM batch search for ${queries.length} }queries`);
+      this.log(`🔄 Performing WASM batch search for ${queries.length }queries`);
       // Process queries in parallel for better performance
       const searchPromises = queries.map(async query => {
         const queryResults = await this.searchForWASMInference({
-          queryEmbedding: query.embedding,
-          limit: query.limit || 5,
-          scoreThreshold,
-          filters: query.filters
+          queryEmbedding: query.embedding: limit: query.limit || 5, scoreThreshold: filters: query.filters
         });
-        return { id: query.id, results: queryResults };
+        return { id: query.id: results: queryResults };
       });
       const allResults = await Promise.all(searchPromises);
       // Organize results by query ID
-      allResults.forEach(({ id, results: queryResults }) => {
+      allResults.forEach(({ id: results: queryResults }) => {
         results[id] = queryResults;
       });
       const totalTime = Date.now() - startTime;
-      this.log(`✅ WASM batch search completed: ${queries.length} }queries in ${totalTime}ms`);
+      this.log(`✅ WASM batch search completed: ${queries.length }queries in ${totalTime}ms`);
       return results;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`❌ WASM batch search failed: ${error.message}`);
-      } }else {
+       }else {
         this.log('❌ WASM batch search failed: An: unknown error occurred');
-      } }
-      throw error;
-    } }
-  } }
+       }
+      throw error; }
   /**
    * Store WebAssembly inference result for future RAG improvements
    */
   async storeWASMInferenceResult({
-    queryEmbedding,
-    retrievedDocuments,
-    inferenceResult,
-    metadata
-  }: { queryEmbedding: number[];, retrievedDocuments: string[];
-   , inferenceResult: string;
-   , metadata: { inferenceId: string;, model: string;
-     , processingTime: number;
-      ragContext?: any; // Changed, to: unknown
+    queryEmbedding, retrievedDocuments, inferenceResult, metadata
+  }: { queryEmbedding: number[]; retrievedDocuments: string[]; inferenceResult: string; metadata: { inferenceId: string; model: string; processingTime: number;
+      ragContext?: any; // Changed: to: unknown
     };
-  }): Promise<void> {
+  ): Promise<void> {
     try {
       // Store the inference result as a new document in Qdrant for future retrieval
       const resultId = `wasm_inference_${metadata.inferenceId}`;
       await this.qdrant.upsert(this.config.collectionName, {
-        wait: false,
+        wait: false;
         points: [
-          { , id: resultId,
-            vector: queryEmbedding,
-            payload: { type: 'wasm_inference_result',
-              inferenceId: metadata.inferenceId,
-              content: inferenceResult,
-              retrievedDocuments,
-              metadata: { model: metadata?.model || 'unknown',
-                processingTime: metadata.processingTime,
-                ragContext: metadata.ragContext,
-                createdAt: new Date().toISOString(),
-                source: 'wasm_inference',
-                embeddingModel: this.config.wasmEmbeddingModel
-              } }
-            } }
-          },
-        ]
+          { id: resultId;
+            vector: queryEmbedding;
+            payload: { type: 'wasm_inference_result', inferenceId: metadata.inferenceId: content: inferenceResult;
+              retrievedDocuments: metadata: { model: metadata?.model || 'unknown', processingTime: metadata.processingTime: ragContext: metadata.ragContext: createdAt: new Date().toISOString(), source: 'wasm_inference', embeddingModel: this.config.wasmEmbeddingModel
+               }
+             }
+          }]
       });
       this.log(`📝 Stored WASM inference result: ${metadata.inferenceId}`);
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed
       if (error instanceof Error) {
         this.log(`❌ Failed to store WASM inference result: ${error.message}`);
-      } }else {
-        this.log('❌ Failed to store WASM inference result: An: unknown error occurred');
-      } }
-    } }
-  } }
+       }else {
+        this.log('❌ Failed to store WASM inference result: An: unknown error occurred'); }
+   }
   /**
    * Clean up old WebAssembly cache entries
    */
@@ -778,36 +626,30 @@ export class PostgreSQLQdrantSyncService {
     for (const [key, entry] of this.wasmRetrievalCache.entries()) {
       if (now - entry.timestamp > maxAge) {
         this.wasmRetrievalCache.delete(key);
-        cleanedCount++;
-      } }
-    } }
+        cleanedCount++; }
     // Also enforce cache size limit
     if (this.wasmRetrievalCache.size > this.config.wasmCacheSize) {
       // Remove oldest entries
-      const entries = Array.from(this.wasmRetrievalCache.entries()).sort(([, a], [, b]) => a.timestamp - b.timestamp); // Corrected sort
+      const entries = Array.from(this.wasmRetrievalCache.entries()).sort(([ a], [ b]) => a.timestamp - b.timestamp); // Corrected sort
       const toRemove = entries.slice(0, this.wasmRetrievalCache.size - this.config.wasmCacheSize);
       toRemove.forEach(([key]) => this.wasmRetrievalCache.delete(key));
       cleanedCount += toRemove.length;
-    } }
+     }
     if (cleanedCount > 0) {
-      this.log(`🧹 Cleaned ${cleanedCount} }WASM cache entries`);
-    } }
-  } }
+      this.log(`🧹 Cleaned ${cleanedCount }WASM cache entries`); }
   /**
    * Generate cache key for WASM retrieval
    */
   private generateCacheKey({
-    embedding,
-    limit,
-    filters
-  }: { embedding: number[];, limit: number;
+    embedding, limit, filters
+  }: { embedding: number[]; limit: number;
     filters?: QdrantFilterPayload; // Changed type
-  }): string {
+  ): string {
     // Create a hash from embedding (use first few dimensions for speed)
     const embeddingHash = embedding.slice(0, 10).join(',');
     const filtersHash = filters ? JSON.stringify(filters) : '';
     return `wasm_${embeddingHash}_${limit}_${filtersHash}`;
-  } }
+   }
   /**
    * Build Qdrant filter from generic filters: object
    */
@@ -822,19 +664,15 @@ export class PostgreSQLQdrantSyncService {
       if (Array.isArray(value)) {
         qdrantFilter.must!.push({
           // Added ! for must
-          key: `payload.${key}`,
-          match: { any: value } }
+          key: `payload.${key}`, match: { any: value  }
         });
-      } }else {
+       }else {
         qdrantFilter.must!.push({
           // Added ! for must
-          key: `payload.${key}`,
-          match: { value } }
-        });
-      } }
-    });
+          key: `payload.${key}`, match: { value  }
+        }); });
     return qdrantFilter;
-  } }
+   }
   /**
    * Update average retrieval time
    */
@@ -843,12 +681,11 @@ export class PostgreSQLQdrantSyncService {
     const totalQueries = (this.stats.wasmCacheMisses || 0) + (this.stats.wasmCacheHits || 0);
     if (totalQueries <= 1) {
       return newTime;
-    } }
-    return (currentAvg * (totalQueries - 1) + newTime) / totalQueries;
-  } }
-} }
+     }
+    return (currentAvg * (totalQueries - 1) + newTime) / totalQueries; } }
 
 // Export singleton instance
 export const postgresqlQdrantSync = new PostgreSQLQdrantSyncService();
 // Default export
 export default PostgreSQLQdrantSyncService;
+

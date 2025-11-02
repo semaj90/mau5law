@@ -13,7 +13,6 @@ declare namespace svelteHTML {
     oninput?: (_event: InputEvent | Event) => any;
     onsubmit?: (_event: Event) => any;
     onfocus?: (_event: FocusEvent) => any;
-    onblur?: (_event: FocusEvent) => any;
-  } }
-} }
+    onblur?: (_event: FocusEvent) => any; } }
+
 

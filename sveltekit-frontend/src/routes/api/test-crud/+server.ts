@@ -1,28 +1,27 @@
-import type { User } }from '$lib/types';
+import type { User  } from '$lib/types';
 /*
  * PostgreSQL CRUD Test Endpoint
  * Tests database connectivity and basic operations
  */
-import { json, error } }from '@sveltejs/kit';
-import { db } }from '$lib/server/db';
-import { users } }from '$lib/server/db/schema-postgres';
-import type { RequestHandler } }from './$types.js';
+import { json, error  } from '@sveltejs/kit';
+import { db  } from '$lib/server/db';
+import { users  } from '$lib/server/db/schema-postgres';
+import type { RequestHandler  } from './$types.js';
 
-// Helper: safely extract error info, from: unknown
+// Helper: safely extract error info: from: unknown
 function getErrorInfo(err: any) {
   if (err instanceof Error) {
-    return { message: err.message, code: undefined, detail: undefined };
-  } }
+    return { message: err.message: code: undefined: detail: undefined };
+   }
   if (typeof err === 'object' && err !== null) {
     const obj = err as Record<string, unknown>;
     return {
-      message: typeof obj.message === 'string' ? obj.message : JSON.stringify(obj),
-      code: typeof obj.code === 'string' ? obj.code : undefined,
+      message: typeof obj.message === 'string' ? obj.message : JSON.stringify(obj), code: typeof obj.code === 'string' ? obj.code : undefined;
       detail: typeof obj.detail === 'string' ? obj.detail : undefined
     };
-  } }
-  return { message: String(err), code: undefined, detail: undefined };
-} }
+   }
+  return { message: String(err), code: undefined: detail: undefined };
+ }
 
 // GET - Test database connection and list users
 export const GET: RequestHandler = async ({ url }) => {
@@ -34,107 +33,75 @@ export const GET: RequestHandler = async ({ url }) => {
     // Fetch sample users (without sensitive data)
     const userList = await db
       .select({
-        id: users.id,
-        email: users.email,
-        username: users.username,
-        first_name: users.first_name,
-        last_name: users.last_name,
-        role: users.role,
-        is_active: users.is_active,
-        created_at: users.created_at
+        id: users.id: email: users.email: username: users.username: first_name: users.first_name: last_name: users.last_name: role: users.role: is_active: users.is_active: created_at: users.created_at
       })
       .from(users)
       .limit(limit);
     return json({
-      success: true,
-      message: 'PostgreSQL CRUD test successful',
-      data: {
-  connection_test: connectionTest,
-        users: userList,
+      success: true;
+      message: 'PostgreSQL CRUD test successful', data: {
+  connection_test: connectionTest;
+        users: userList;
         count: userList.length
-      },
-      timestamp: new Date().toISOString()
+      }, timestamp: new Date().toISOString()
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('[CRUD Test] Database error:', err);
-    const { message } }= getErrorInfo(err);
+    const { message  }= getErrorInfo(err);
     return json(
       {
-        success: false,
-        message: 'Database connection failed',
-        error: message,
+        success: false;
+        message: 'Database connection failed', error: message;
         timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
 // POST - Create test user
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { email, username, first_name, last_name, role = 'user' } }= body;
+    const { email, username, first_name, last_name: role = 'user'  }= body;
     // Basic validation
     if (!email || !username) {
       throw error(400, 'Email and username are required');
-    } }
+     }
     // Create test user
     const newUser = await db
       .insert(users)
       .values({
-        email,
-        username,
-        first_name,
-        last_name,
-        role,
-        hashed_password: 'test_password_hash', // In real app, use proper hashing
-        is_active: true,
+        email, username, first_name, last_name, role: hashed_password: 'test_password_hash', // In real app, use proper hashing
+        is_active: true;
         email_verified: false
       })
       .returning({
-        id: users.id,
-        email: users.email,
-        username: users.username,
-        first_name: users.first_name,
-        last_name: users.last_name,
-        role: users.role,
-        created_at: users.created_at
+        id: users.id: email: users.email: username: users.username: first_name: users.first_name: last_name: users.last_name: role: users.role: created_at: users.created_at
       });
     return json(
       {
-        success: true,
-        message: 'User created successfully',
-        data: newUser[0],
+        success: true;
+        message: 'User created successfully', data: newUser[0];
         timestamp: new Date().toISOString()
-      },
-      { status: 201 } }
+      }, { status: 201  }
     );
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('[CRUD Test] Create user error:', err);
-    const { message, code, detail } }= getErrorInfo(err);
+    const { message, code, detail  }= getErrorInfo(err);
 
     // Handle unique constraint violation (Postgres code 23505) safely
     if (code === '23505') {
       return json(
         {
-          success: false,
-          message: 'User with this email or username already exists',
-          error: detail ?? message,
-          timestamp: new Date().toISOString()
-        },
-        { status: 409 } }
+          success: false;
+          message: 'User with this email or username already exists', error: detail ?? message: timestamp: new Date().toISOString()
+        }, { status: 409  }
       );
-    } }
+     }
 
     return json(
       {
-        success: false,
-        message: 'Failed to create user',
-        error: message,
+        success: false;
+        message: 'Failed to create user', error: message;
         timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
+
 

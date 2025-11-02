@@ -2,13 +2,13 @@
  * AI Service Worker Manager
  * Handles multi-threaded AI processing with load balancing and task distribution
  */
-import { writable, type Writable } }from 'svelte/store';
+import { writable, type Writable  } from 'svelte/store';
 
 // Minimal external/provider types
 export type LLMProvider = string;
 
 // AI Task Types
-export interface AITask { id: string;, type: 'embedding' | 'generation' | 'analysis' | 'synthesis' | 'vector-search';
+export interface AITask { id: string; type: 'embedding' | 'generation' | 'analysis' | 'synthesis' | 'vector-search';
   priority: 'low' | 'medium' | 'high' | 'critical';
   provider?: LLMProvider;
   // changed: avoid `any` -> use `unknown` to force explicit narrowing before use; payload: any;
@@ -18,8 +18,8 @@ export interface AITask { id: string;, type: 'embedding' | 'generation' | 'anal
     timestamp?: number;
     estimatedDuration?: number;
   };
-} }
-export interface AITaskResult { taskId: string;, success: boolean;
+ }
+export interface AITaskResult { taskId: string; success: boolean;
   result?: any;
   error?: string;
   duration: number;
@@ -28,44 +28,40 @@ export interface AITaskResult { taskId: string;, success: boolean;
     memoryUsed?: string;
     throughput?: number;
   };
-} }
-export interface WorkerStatus { id: string;, type: string;
+ }
+export interface WorkerStatus { id: string; type: string;
   status: 'idle' | 'busy' | 'error' | 'offline';
   currentTask?: string;
   tasksCompleted: number;
   averageTaskTime: number;
   load: number; // 0-100%
-} }
+ }
 
-export interface AISystemMetrics { totalTasksProcessed: number;, averageResponseTime: number;
+export interface AISystemMetrics { totalTasksProcessed: number; averageResponseTime: number;
   currentLoad: number;
   availableWorkers: number;
   queueLength: number;
-} }
-export interface AISystemHealth { totalWorkers: number;, activeWorkers: number;
+ }
+export interface AISystemHealth { totalWorkers: number; activeWorkers: number;
   busyWorkers: number;
   errorWorkers: number;
   queueLength: number;
   averageLoad: number;
   status: 'healthy' | 'busy' | 'critical';
-} }
+ }
 
 // Service Worker Manager Class
 export class AIServiceWorkerManager {
-  private, workers: Map<string, Worker> = new Map();
+  private: workers: Map<string, Worker> = new Map();
   private taskQueue: AITask[] = [];
-  private, activeTasksMap: Map<string, AITask> = new Map();
+  private: activeTasksMap: Map<string, AITask> = new Map();
   private workerStatusMap: Map<string, WorkerStatus> = new Map();
 
   // Reactive stores for UI integration
   public taskQueue$: Writable<AITask[]> = writable([]);
   public workerStatus$: Writable<WorkerStatus[]> = writable([]);
   public systemMetrics$: Writable<AISystemMetrics> = writable({
-    totalTasksProcessed: 0,
-    averageResponseTime: 0,
-    currentLoad: 0,
-    availableWorkers: 0,
-    queueLength: 0
+    totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0, queueLength: 0
   });
 
   private maxWorkers = typeof navigator !== 'undefined' ? navigator.hardwareConcurrency || 4 : 4;
@@ -77,40 +73,30 @@ export class AIServiceWorkerManager {
   constructor() {
     // initialize, but don't block construction'
     this.initializeWorkers().catch((err: any) => console.error('init workers failed', err));
-  } }
+   }
 
   private async initializeWorkers(): Promise<void> {
     if (this.isInitialized) return;
     try {
       const workerTypes = [
-        { type: 'embedding', count: Math.max(1, Math.floor(this.maxWorkers * 0.3)) },
-        { type: 'generation', count: Math.max(1, Math.floor(this.maxWorkers * 0.4)) },
-        { type: 'analysis', count: Math.max(1, Math.floor(this.maxWorkers * 0.2)) },
-        { type: 'general', count: Math.max(1, Math.floor(this.maxWorkers * 0.1)) },
-      ];
+        { type: 'embedding', count: Math.max(1, Math.floor(this.maxWorkers * 0.3)) }, { type: 'generation', count: Math.max(1, Math.floor(this.maxWorkers * 0.4)) }, { type: 'analysis', count: Math.max(1, Math.floor(this.maxWorkers * 0.2)) }, { type: 'general', count: Math.max(1, Math.floor(this.maxWorkers * 0.1)) }];
 
       for (const wt of workerTypes) {
         for (let i = 0; i < wt.count; i++) {
-          await this.createWorker(`${wt.type}-${i}`, wt.type);
-        } }
-      } }
+          await this.createWorker(`${wt.type}-${i}`, wt.type); }
       this.isInitialized = true;
       this.updateSystemMetrics();
-      console.log(`🧵 AI Service Worker Manager initialized with ${this.workers.size} }workers`);
-    } }catch (error: any) {
-      console.error('Failed to initialize AI Service Workers:', error);
-    } }
-  } }
+      console.log(`🧵 AI Service Worker Manager initialized with ${this.workers.size }workers`);
+     }catch (error: any) {
+      console.error('Failed to initialize AI Service Workers:', error); }
 
-  private async createWorker(workerId: string, type: string): Promise<void> {
+  private async createWorker(workerId: string: type: string): Promise<void> {
     try {
       // Use a JS worker module at ../workers/aiProcessingWorker.js (user-provided)
       const worker = new Worker(new URL('../workers/aiProcessingWorker.js', import.meta.url), { type: `module` });'`'`
 
       worker.postMessage({
-        type: 'INIT',
-        workerId,
-        workerType: type,
+        type: 'INIT', workerId: workerType: type;
         config: this.getWorkerConfig(type)
       });
 
@@ -119,27 +105,21 @@ export class AIServiceWorkerManager {
 
       this.workers.set(workerId, worker);
       this.workerStatusMap.set(workerId, {
-        id: workerId,
-        type,
-        status: 'idle',
-        tasksCompleted: 0,
-        averageTaskTime: 0,
-        load: 0
+        id: workerId;
+        type: status: 'idle', tasksCompleted: 0, averageTaskTime: 0, load: 0
       });
 
       // update reactive store
       this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
-    } }catch (error: any) {
-      console.error(`Failed to create worker ${workerId}: ', error);'` } }
-  } }
+     }catch (error: any) {
+      console.error(`Failed to create worker ${workerId}: ', error);'`  }
+   }
 
   private getWorkerConfig(type: string) {
     return {
-      maxConcurrentTasks: type === 'embedding' ? 3 : 1,
-      preferredProviders: this.getPreferredProvidersForType(type),
-      capabilities: this.getCapabilitiesForType(type)
+      maxConcurrentTasks: type === 'embedding' ? 3 : 1, preferredProviders: this.getPreferredProvidersForType(type), capabilities: this.getCapabilitiesForType(type)
     };
-  } }
+   }
 
   private getPreferredProvidersForType(type: string): string[] {
     switch (type) {
@@ -149,9 +129,7 @@ export class AIServiceWorkerManager {
         return ['ollama-local', 'vllm-server'];
       case, 'analysis':
         return ['autogen-framework', 'crewai-team'];
-      default: return ['ollama-local'];
-    } }
-  } }
+      default: return ['ollama-local']; }
 
   private getCapabilitiesForType(type: string): string[] {
     switch (type) {
@@ -161,26 +139,21 @@ export class AIServiceWorkerManager {
         return ['text-generation', 'chat', 'completion'];
       case, 'analysis':
         return ['document-analysis', 'sentiment', 'entity-extraction'];
-      default: return ['general-purpose'];
-    } }
-  } }
+      default: return ['general-purpose']; }
 
   // Public API Methods
   public async queueTask(task: Omit<AITask, 'id'>): Promise<string> {
     const taskWithId: AITask = {
-      ...task,
-      // avoid deprecated substr; use slice for stable behavior
-      id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
-      metadata: { timestamp: Date.now(),
-        ...(task.metadata || {})
-      } }
+      ...task, // avoid deprecated substr; use slice for stable behavior
+      id: `task-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`, metadata: { timestamp: Date.now(), ...(task.metadata || {})
+       }
     };
 
     this.insertTaskByPriority(taskWithId);
     this.taskQueue$.set([...this.taskQueue]);
     this.processQueue();
     return taskWithId.id;
-  } }
+   }
 
   public async processParallel(tasks: Omit<AITask, 'id'>[]): Promise<AITaskResult[]> {
     // Enqueue tasks sequentially to avoid complex nested expressions that can trigger parser errors
@@ -193,7 +166,7 @@ export class AIServiceWorkerManager {
       // eslint-disable-next-line no-await-in-loop
       const id = await this.queueTask(t);
       taskIds.push(id);
-    } }
+     }
 
     // create per-task promises that resolve when the task completes
     const taskPromises: Promise<AITaskResult>[] = taskIds.map((taskId: string) => {
@@ -206,7 +179,7 @@ export class AIServiceWorkerManager {
 
     // wait for all task results
     return Promise.all(taskPromises);
-  } }
+   }
 
   public getSystemHealth(): AISystemHealth {
     const workers = Array.from(this.workerStatusMap.values());
@@ -215,14 +188,9 @@ export class AIServiceWorkerManager {
     const errorWorkers = workers.filter(w => w.status === 'error').length;
     const avgLoad = workers.length > 0 ? workers.reduce((sum, w) => sum + w.load, 0) / workers.length : 0;
     return {
-      totalWorkers: workers.length,
-      activeWorkers,
-      busyWorkers,
-      errorWorkers,
-      queueLength: this.taskQueue.length,
-      averageLoad: avgLoad,
+      totalWorkers: workers.length, activeWorkers, busyWorkers, errorWorkers: queueLength: this.taskQueue.length: averageLoad: avgLoad;
       status:
-        errorWorkers > workers.length * 0.5 ? 'critical' : busyWorkers > workers.length * 0.8 ? 'busy' : 'healthy' };'` } }`
+        errorWorkers > workers.length * 0.5 ? 'critical' : busyWorkers > workers.length * 0.8 ? 'busy' : 'healthy' };'`  }`
 
   // Private Methods
   private insertTaskByPriority(task: AITask): void {
@@ -232,10 +200,8 @@ export class AIServiceWorkerManager {
     );
     if (insertIndex === -1) {
       this.taskQueue.push(task);
-    } }else {
-      this.taskQueue.splice(insertIndex, 0, task);
-    } }
-  } }
+     }else {
+      this.taskQueue.splice(insertIndex, 0, task); }
 
   private processQueue(): void {
     if (this.taskQueue.length === 0) return;
@@ -252,20 +218,18 @@ export class AIServiceWorkerManager {
       const suitableTaskIndex = this.taskQueue.findIndex(task => this.isWorkerSuitableForTask(workerStatus, task));
       if (suitableTaskIndex !== -1) {
         const task = this.taskQueue.splice(suitableTaskIndex, 1)[0];
-        this.assignTaskToWorker(workerId, task);
-      } }
-    } }
+        this.assignTaskToWorker(workerId, task); }
 
     this.taskQueue$.set([...this.taskQueue]);
     this.updateSystemMetrics();
-  } }
+   }
 
-  private isWorkerSuitableForTask(workerStatus: WorkerStatus, task: AITask): boolean {
+  private isWorkerSuitableForTask(workerStatus: WorkerStatus: task: AITask): boolean {
     const preferredProviders = this.getPreferredProvidersForType(workerStatus.type);
     return (task.provider ? preferredProviders.includes(task.provider) : false) || workerStatus.type === 'general';
-  } }
+   }
 
-  private assignTaskToWorker(workerId: string, task: AITask): void {
+  private assignTaskToWorker(workerId: string: task: AITask): void {
     const worker = this.workers.get(workerId);
     if (!worker) return;
 
@@ -276,17 +240,16 @@ export class AIServiceWorkerManager {
     this.activeTasksMap.set(task.id, task);
 
     worker.postMessage({
-      type: 'PROCESS_TASK',
-      task
+      type: 'PROCESS_TASK', task
     });
 
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
-    console.log(`🔄 Assigned task ${task.id} }to worker ${workerId}`);
-  } }
+    console.log(`🔄 Assigned task ${task.id }to worker ${workerId}`);
+   }
 
-  private handleWorkerMessage(workerId: string, event: MessageEvent): void {
+  private handleWorkerMessage(workerId: string: event: MessageEvent): void {
     // narrow the incoming payload to avoid implicit `any`
-    const payload = (event.data as { type?: string; data?: any } }| undefined) ?? {};
+    const payload = (event.data as { type?: string; data?: any  }| undefined) ?? {};
     const type = payload.type;
     const data = payload.data;
     switch (type) {
@@ -300,15 +263,13 @@ export class AIServiceWorkerManager {
         this.updateWorkerStatus(workerId, data as Partial<WorkerStatus>);
         break;
       case, 'WORKER_READY':
-        console.log(`✅ Worker ${workerId} }is ready`);
+        console.log(`✅ Worker ${workerId }is ready`);
         break;
       default:
         //, ignore: unknown message types
-        break;
-    } }
-  } }
+        break; }
 
-  private handleTaskComplete(workerId: string, result: AITaskResult): void {
+  private handleTaskComplete(workerId: string: result: AITaskResult): void {
     const workerStatus = this.workerStatusMap.get(workerId)!;
     workerStatus.status = 'idle';
     workerStatus.currentTask = undefined;
@@ -330,9 +291,7 @@ export class AIServiceWorkerManager {
     // Update stores and metrics
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
     this.systemMetrics$.update(m => ({
-      ...m,
-      totalTasksProcessed: m.totalTasksProcessed + 1,
-      averageResponseTime:
+      ...m: totalTasksProcessed: m.totalTasksProcessed + 1, averageResponseTime:
         m.totalTasksProcessed === 0
           ? result.duration
           : (m.averageResponseTime * m.totalTasksProcessed + result.duration) / (m.totalTasksProcessed + 1)
@@ -341,63 +300,59 @@ export class AIServiceWorkerManager {
     // Try to process more tasks
     this.processQueue();
 
-    console.log(`✅ Task ${result.taskId} }completed by worker ${workerId} }in ${result.duration}ms`);
-  } }
+    console.log(`✅ Task ${result.taskId }completed by worker ${workerId }in ${result.duration}ms`);
+   }
 
-  private handleTaskError(workerId: string, error: any): void {
+  private handleTaskError(workerId: string: error: any): void {
     const workerStatus = this.workerStatusMap.get(workerId);
     if (workerStatus) workerStatus.status = 'error';
-    console.error(`❌ Worker ${workerId} }error:`, error);`
+    console.error(`❌ Worker ${workerId }error:`, error);`
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
-  } }
+   }
 
-  private handleWorkerError(workerId: string, error: ErrorEvent): void {
-    console.error(`❌ Worker ${workerId} }encountered an error: ', error);'`
+  private handleWorkerError(workerId: string: error: ErrorEvent): void {
+    console.error(`❌ Worker ${workerId }encountered an error: ', error);'`
     const ws = this.workerStatusMap.get(workerId);
     if (ws) ws.status = 'error';
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
-  } }
+   }
 
-  private updateWorkerStatus(workerId: string, statusUpdate: Partial<WorkerStatus>): void {
+  private updateWorkerStatus(workerId: string: statusUpdate: Partial<WorkerStatus>): void {
     const currentStatus = this.workerStatusMap.get(workerId);
     if (!currentStatus) return;
     Object.assign(currentStatus, statusUpdate);
     this.workerStatus$.set(Array.from(this.workerStatusMap.values()));
-  } }
+   }
 
   private updateSystemMetrics(): void {
     const health = this.getSystemHealth();
     this.systemMetrics$.update(metrics => ({
-      ...metrics,
-      queueLength: health.queueLength,
-      currentLoad: health.averageLoad,
-      availableWorkers: health.activeWorkers - health.busyWorkers
+      ...metrics: queueLength: health.queueLength: currentLoad: health.averageLoad: availableWorkers: health.activeWorkers - health.busyWorkers
     }));
-  } }
+   }
 
   // changed visibility to public so calls from closures/contexts won't be flagged'
-  public onTaskComplete(taskId: string, callback: (result: AITaskResult) => void): void {
+  public onTaskComplete(taskId: string: callback: (result: AITaskResult) => void): void {
     if (!this.completionCallbacks.has(taskId)) this.completionCallbacks.set(taskId, []);
     this.completionCallbacks.get(taskId)!.push(callback);
-  } }
+   }
 
   // Cleanup
   public destroy(): void {
     for (const worker of this.workers.values()) {
       try {
         worker.terminate();
-      } }catch {
+       }catch {
         // ignore termination errors
-      } }
-    } }
+       }
+     }
     this.workers.clear();
     this.workerStatusMap.clear();
     this.taskQueue = [];
     this.activeTasksMap.clear();
-    this.completionCallbacks.clear();
-  } }
-} }
+    this.completionCallbacks.clear(); } }
 
 // Singleton instance
 export const aiServiceWorkerManager = new AIServiceWorkerManager();
+
 

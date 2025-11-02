@@ -57,10 +57,7 @@ class ComponentTester {
       } else {
         const errorCount = (result.output.match(/error/gi) || []).length;
         this.addResult(
-          'TypeScript Compilation',
-          errorCount > 10 ? 'fail' : 'warning',
-          `${errorCount} TypeScript errors found`,
-          { output: result.output.slice(-500) }
+          'TypeScript Compilation', errorCount > 10 ? 'fail' : 'warning', `${errorCount} TypeScript errors found`, { output: result.output.slice(-500) }
         );
       }
     } catch (error) {
@@ -219,8 +216,7 @@ class ComponentTester {
   async runCommand(command, args) {
     return new Promise((resolve) => {
       const childProc = spawn(command, args, {
-        stdio: 'pipe',
-        shell: true,
+        stdio: 'pipe', shell: true;
         cwd: this.baseDir
       });
 
@@ -236,8 +232,7 @@ class ComponentTester {
 
       childProc.on('close', (code) => {
         resolve({
-          success: code === 0,
-          output
+          success: code === 0, output
         });
       });
 
@@ -245,7 +240,7 @@ class ComponentTester {
       setTimeout(() => {
         try { childProc.kill(); } catch (e) {}
         resolve({
-          success: false,
+          success: false;
           output: output + '\n[TIMEOUT]'
         });
       }, 30000);
@@ -284,14 +279,11 @@ class ComponentTester {
 
     // Write detailed report
     const reportData = {
-      timestamp: new Date().toISOString(),
-      summary: { passed, warnings, failed, total: this.results.length },
-      results: this.results
+      timestamp: new Date().toISOString(), summary: { passed, warnings, failed: total: this.results.length }, results: this.results
     };
 
     writeFileSync(
-      join(this.baseDir, 'component-fix-report.json'),
-      JSON.stringify(reportData, null, 2)
+      join(this.baseDir, 'component-fix-report.json'), JSON.stringify(reportData, null, 2)
     );
 
     console.log('\n📄 Detailed report saved to: component-fix-report.json');

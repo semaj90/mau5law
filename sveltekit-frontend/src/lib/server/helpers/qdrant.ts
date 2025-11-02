@@ -1,5 +1,5 @@
 // sveltekit-frontend/src/lib/server/helpers/qdrant.ts
-import { QDRANT_CONFIG } }from '$lib/server/config'; // Assuming this config exists
+import { QDRANT_CONFIG  } from '$lib/server/config'; // Assuming this config exists
 
 /**
  * Retrieves the base URL for the Qdrant service.
@@ -8,7 +8,7 @@ import { QDRANT_CONFIG } }from '$lib/server/config'; // Assuming this config exi
  */
 export function getQdrantBaseUrl(): string {
   return process.env.QDRANT_URL || process.env.VITE_QDRANT_URL || QDRANT_CONFIG.url || 'http://localhost:6333';
-} }
+ }
 
 /**
  * Checks the health of the Qdrant service.
@@ -19,8 +19,7 @@ export async function checkQdrantHealth(): Promise<boolean> {
   try {
     const response = await fetch(`${qdrantUrl}/healthz`, { signal: AbortSignal.timeout(3000) });
     return response.ok;
-  } }catch (error) {
+   }catch (error) {
     console.error('Qdrant health check failed:', error);
-    return false;
-  } }
-}
+    return false; }
+

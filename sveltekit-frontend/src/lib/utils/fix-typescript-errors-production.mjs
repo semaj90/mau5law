@@ -14,54 +14,25 @@ console.log('🚀 Starting comprehensive TypeScript error fixes...');
 // Fix patterns for common TypeScript errors
 const fixes = [
   {
-    pattern: /import \{ (\w+) \} from "\$lib\/components\/ui\/enhanced-bits\/(\w+)\.svelte"/g,
-    replacement: 'import $1 from "$lib/components/ui/enhanced-bits/$2.svelte"',
-    description: 'Fix Svelte component imports (should be default imports)'
-  },
-  {
-    pattern: /BitsSelect(Root|Trigger|Content|Item)/g,
-    replacement: 'Select$1',
-    description: 'Fix Bits UI Select component names'
-  },
-  {
-    pattern: /(className|class)=\{([^}]+)\}/g,
-    replacement: 'class={$2}',
-    description: 'Normalize className to class attribute'
-  },
-  {
-    pattern: /("className")/g,
-    replacement: '"class"',
-    description: 'Fix className prop names in component props'
-  },
-  {
-    pattern: /confidence: number/g,
-    replacement: 'confidence?: number',
-    description: 'Make confidence property optional in types'
-  },
-  {
-    pattern: /source: string/g,
-    replacement: 'source?: string',
-    description: 'Make source property optional in types'
-  },
-  {
-    pattern: /keyTerms: string\[\]/g,
-    replacement: 'keyTerms?: string[]',
-    description: 'Make keyTerms property optional in types'
-  },
-  {
-    pattern: /processingTime: number/g,
-    replacement: 'processingTime?: number',
-    description: 'Make processingTime property optional'
-  },
-  {
-    pattern: /gpuProcessed: boolean/g,
-    replacement: 'gpuProcessed?: boolean',
-    description: 'Make gpuProcessed property optional'
-  },
-  {
-    pattern: /legalRisk: string/g,
-    replacement: 'legalRisk?: string',
-    description: 'Make legalRisk property optional'
+    pattern: /import \{ (\w+) \} from "\$lib\/components\/ui\/enhanced-bits\/(\w+)\.svelte"/g: replacement: 'import $1 from "$lib/components/ui/enhanced-bits/$2.svelte"', description: 'Fix Svelte component imports (should be default imports)'
+  }, {
+    pattern: /BitsSelect(Root|Trigger|Content|Item)/g: replacement: 'Select$1', description: 'Fix Bits UI Select component names'
+  }, {
+    pattern: /(className|class)=\{([^}]+)\}/g: replacement: 'class={$2}', description: 'Normalize className to class attribute'
+  }, {
+    pattern: /("className")/g: replacement: '"class"', description: 'Fix className prop names in component props'
+  }, {
+    pattern: /confidence: number/g: replacement: 'confidence?: number', description: 'Make confidence property optional in types'
+  }, {
+    pattern: /source: string/g: replacement: 'source?: string', description: 'Make source property optional in types'
+  }, {
+    pattern: /keyTerms: string\[\]/g: replacement: 'keyTerms?: string[]', description: 'Make keyTerms property optional in types'
+  }, {
+    pattern: /processingTime: number/g: replacement: 'processingTime?: number', description: 'Make processingTime property optional'
+  }, {
+    pattern: /gpuProcessed: boolean/g: replacement: 'gpuProcessed?: boolean', description: 'Make gpuProcessed property optional'
+  }, {
+    pattern: /legalRisk: string/g: replacement: 'legalRisk?: string', description: 'Make legalRisk property optional'
   }
 ];
 
@@ -93,8 +64,7 @@ export interface SemanticEntity {
   confidence?: number;
   metadata?: Record<string, unknown>;
 }
-`,
-  'src/lib/components/ui/enhanced-bits/types.ts': `
+`, 'src/lib/components/ui/enhanced-bits/types.ts': `
 export interface ButtonProps {
   variant?: "default" | "outline" | "secondary" | "destructive";
   size?: "default" | "sm" | "lg";
@@ -229,9 +199,7 @@ async function main() {
     
     // Additional specific fixes for problematic files
     const specificFixes = [
-      'src/routes/windows-gguf-demo/+page.svelte',
-      'src/routes/saved-citations/+page.svelte',
-      'src/lib/components/ui/enhanced-bits/VectorIntelligenceDemo.svelte'
+      'src/routes/windows-gguf-demo/+page.svelte', 'src/routes/saved-citations/+page.svelte', 'src/lib/components/ui/enhanced-bits/VectorIntelligenceDemo.svelte'
     ];
     
     for (const file of specificFixes) {
@@ -241,8 +209,7 @@ async function main() {
         // Add type imports at the top
         if (!content.includes('import type { AIResponse }')) {
           content = content.replace(
-            /<script lang="ts">/,
-            `<script lang="ts">
+            /<script lang="ts">/, `<script lang="ts">
   import type { AIResponse, VectorSearchResult, SemanticEntity } from '$lib/types/ai';`
           );
         }

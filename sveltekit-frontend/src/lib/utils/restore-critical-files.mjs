@@ -5,25 +5,7 @@ import { constants } from 'fs';
 
 // High priority files that need restoration
 const criticalFiles = [
-  'src/lib/components/AttractivenessMetr.svelte',
-  'src/lib/components/BitsDemo.svelte',
-  'src/lib/components/CanvasEditor.svelte',
-  'src/lib/components/Chat.svelte',
-  'src/lib/components/DocumentUploadForm.svelte',
-  'src/lib/components/EvidenceAnalysisForm.svelte',
-  'src/lib/components/EvidenceUploader.svelte',
-  'src/lib/components/InfiniteScrollList.svelte',
-  'src/lib/components/LegalCaseManager.svelte',
-  'src/lib/components/RealTimeEvidenceGrid.svelte',
-  'src/lib/components/ReviewSubmitForm.svelte',
-  'src/lib/components/CaseInfoForm.svelte',
-  'src/lib/components/WebGPUProcessor.svelte',
-  'src/lib/components/ai/AIRecommendation.svelte',
-  'src/lib/components/ai/AIStatusIndicator.svelte',
-  'src/lib/components/ai/ChatInterface.svelte',
-  'src/lib/components/ai/ComprehensiveSummaryEngine.svelte',
-  'src/routes/evidence/+page.svelte',
-  'src/routes/dev/copilot-optimizer/+page.svelte'
+  'src/lib/components/AttractivenessMetr.svelte', 'src/lib/components/BitsDemo.svelte', 'src/lib/components/CanvasEditor.svelte', 'src/lib/components/Chat.svelte', 'src/lib/components/DocumentUploadForm.svelte', 'src/lib/components/EvidenceAnalysisForm.svelte', 'src/lib/components/EvidenceUploader.svelte', 'src/lib/components/InfiniteScrollList.svelte', 'src/lib/components/LegalCaseManager.svelte', 'src/lib/components/RealTimeEvidenceGrid.svelte', 'src/lib/components/ReviewSubmitForm.svelte', 'src/lib/components/CaseInfoForm.svelte', 'src/lib/components/WebGPUProcessor.svelte', 'src/lib/components/ai/AIRecommendation.svelte', 'src/lib/components/ai/AIStatusIndicator.svelte', 'src/lib/components/ai/ChatInterface.svelte', 'src/lib/components/ai/ComprehensiveSummaryEngine.svelte', 'src/routes/evidence/+page.svelte', 'src/routes/dev/copilot-optimizer/+page.svelte'
 ];
 
 async function restoreCriticalFiles() {

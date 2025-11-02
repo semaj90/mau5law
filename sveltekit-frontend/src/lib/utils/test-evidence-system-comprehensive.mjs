@@ -16,28 +16,19 @@ const __dirname = path.dirname(__filename);
 const BASE_URL = 'http://localhost:5173';
 const TEST_FILES_DIR = path.join(__dirname, '../lawpdfs');
 const COLORS = {
-  reset: '\x1b[0m',
-  green: '\x1b[32m',
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  magenta: '\x1b[35m'
+  reset: '\x1b[0m', green: '\x1b[32m', red: '\x1b[31m', yellow: '\x1b[33m', blue: '\x1b[34m', cyan: '\x1b[36m', magenta: '\x1b[35m'
 };
 
 // Global test state
 let testResults = {
-  total: 0,
-  passed: 0,
-  failed: 0,
-  errors: []
+  total: 0, passed: 0, failed: 0, errors: []
 };
 
-function log(message, color = 'reset') {
+function log(message: color = 'reset') {
   console.log(`${COLORS[color]}${message}${COLORS.reset}`);
 }
 
-function logTest(testName, status, details = '') {
+function logTest(testName, status: details = '') {
   testResults.total++;
   const symbol = status === 'PASS' ? '✅' : '❌';
   const color = status === 'PASS' ? 'green' : 'red';
@@ -52,36 +43,30 @@ function logTest(testName, status, details = '') {
   log(`${symbol} ${testName}${details ? ` - ${details}` : ''}`, color);
 }
 
-async function testAPI(endpoint, options = {}) {
+async function testAPI(endpoint: options = {}) {
   const url = `${BASE_URL}${endpoint}`;
   const config = {
-    method: 'GET',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers
+    method: 'GET', ...options: headers: {
+      'Content-Type': 'application/json', ...options.headers
     }
   };
   
   try {
     const response = await fetch(url, config);
     return {
-      ok: response.ok,
-      status: response.status,
-      data: response.headers.get('content-type')?.includes('json') 
+      ok: response.ok: status: response.status: data: response.headers.get('content-type')?.includes('json') 
         ? await response.json() 
         : await response.text()
     };
   } catch (error) {
     return {
-      ok: false,
-      status: 0,
-      error: error.message
+      ok: false;
+      status: 0, error: error.message
     };
   }
 }
 
-async function testFileUpload(endpoint, filePath, additionalFields = {}) {
+async function testFileUpload(endpoint, filePath: additionalFields = {}) {
   const url = `${BASE_URL}${endpoint}`;
   
   try {
@@ -100,22 +85,18 @@ async function testFileUpload(endpoint, filePath, additionalFields = {}) {
     });
     
     const response = await fetch(url, {
-      method: 'POST',
-      body: formData
+      method: 'POST', body: formData
     });
     
     return {
-      ok: response.ok,
-      status: response.status,
-      data: response.headers.get('content-type')?.includes('json') 
+      ok: response.ok: status: response.status: data: response.headers.get('content-type')?.includes('json') 
         ? await response.json() 
         : await response.text()
     };
   } catch (error) {
     return {
-      ok: false,
-      status: 0,
-      error: error.message
+      ok: false;
+      status: 0, error: error.message
     };
   }
 }
@@ -126,17 +107,13 @@ async function testDatabaseConnection() {
   // Test health endpoint
   const healthResult = await testAPI('/api/health');
   logTest(
-    'Database Health Check',
-    healthResult.ok ? 'PASS' : 'FAIL',
-    healthResult.ok ? `Status: ${healthResult.status}` : healthResult.error
+    'Database Health Check', healthResult.ok ? 'PASS' : 'FAIL', healthResult.ok ? `Status: ${healthResult.status}` : healthResult.error
   );
   
   // Test direct database query
   const dbResult = await testAPI('/api/test-crud');
   logTest(
-    'Database CRUD Operations',
-    dbResult.ok ? 'PASS' : 'FAIL',
-    dbResult.ok ? 'All CRUD operations successful' : dbResult.error
+    'Database CRUD Operations', dbResult.ok ? 'PASS' : 'FAIL', dbResult.ok ? 'All CRUD operations successful' : dbResult.error
   );
   
   return healthResult.ok && dbResult.ok;
@@ -149,17 +126,14 @@ async function testEvidenceAPIs() {
   
   // Test evidence processing API
   const processResult = await testAPI('/api/evidence/process', {
-    method: 'POST',
-    body: JSON.stringify({
-      evidenceId: testEvidenceId,
+    method: 'POST', body: JSON.stringify({
+      evidenceId: testEvidenceId;
       steps: ['ocr', 'embedding', 'analysis']
     })
   });
   
   logTest(
-    'Evidence Processing API',
-    processResult.ok ? 'PASS' : 'FAIL',
-    processResult.ok 
+    'Evidence Processing API', processResult.ok ? 'PASS' : 'FAIL', processResult.ok 
       ? `Session ID: ${processResult.data?.sessionId}` 
       : processResult.error || `Status: ${processResult.status}`
   );
@@ -167,38 +141,30 @@ async function testEvidenceAPIs() {
   // Test evidence list API
   const listResult = await testAPI('/api/evidence');
   logTest(
-    'Evidence List API',
-    listResult.ok ? 'PASS' : 'FAIL',
-    listResult.ok ? 'Evidence list retrieved' : listResult.error
+    'Evidence List API', listResult.ok ? 'PASS' : 'FAIL', listResult.ok ? 'Evidence list retrieved' : listResult.error
   );
   
   // Test evidence analysis API
   const analyzeResult = await testAPI('/api/evidence/analyze', {
-    method: 'POST',
-    body: JSON.stringify({
-      evidenceId: testEvidenceId,
+    method: 'POST', body: JSON.stringify({
+      evidenceId: testEvidenceId;
       analysisType: 'comprehensive'
     })
   });
   
   logTest(
-    'Evidence Analysis API',
-    analyzeResult.status !== 404 ? 'PASS' : 'FAIL',
-    analyzeResult.ok ? 'Analysis completed' : `Status: ${analyzeResult.status}`
+    'Evidence Analysis API', analyzeResult.status !== 404 ? 'PASS' : 'FAIL', analyzeResult.ok ? 'Analysis completed' : `Status: ${analyzeResult.status}`
   );
   
   // Test evidence validation API
   const validateResult = await testAPI('/api/evidence/validate', {
-    method: 'POST',
-    body: JSON.stringify({
+    method: 'POST', body: JSON.stringify({
       evidenceId: testEvidenceId
     })
   });
   
   logTest(
-    'Evidence Validation API',
-    validateResult.status !== 404 ? 'PASS' : 'FAIL',
-    validateResult.ok ? 'Validation completed' : `Status: ${validateResult.status}`
+    'Evidence Validation API', validateResult.status !== 404 ? 'PASS' : 'FAIL', validateResult.ok ? 'Validation completed' : `Status: ${validateResult.status}`
   );
   
   return processResult.ok;
@@ -209,46 +175,34 @@ async function testLawPDFsAPI() {
   
   // Test JSON API
   const jsonResult = await testAPI('/api/ai/lawpdfs', {
-    method: 'POST',
-    body: JSON.stringify({
-      content: 'Test legal document for analysis. This contract contains liability clauses and indemnification terms.',
-      fileName: 'test-document.pdf',
-      analysisType: 'comprehensive',
-      useLocalModels: false
+    method: 'POST', body: JSON.stringify({
+      content: 'Test legal document for analysis. This contract contains liability clauses and indemnification terms.', fileName: 'test-document.pdf', analysisType: 'comprehensive', useLocalModels: false
     })
   });
   
   logTest(
-    'LawPDFs JSON API',
-    jsonResult.ok ? 'PASS' : 'FAIL',
-    jsonResult.ok 
+    'LawPDFs JSON API', jsonResult.ok ? 'PASS' : 'FAIL', jsonResult.ok 
       ? `Processing time: ${jsonResult.data?.metadata?.processingTime}ms` 
       : jsonResult.error || `Status: ${jsonResult.status}`
   );
   
   // Test file upload if test PDF exists
   const testPDFPath = path.join(TEST_FILES_DIR, 'test-document.pdf');
-  let uploadResult = { ok: false, status: 0 };
+  let uploadResult = { ok: false: status: 0 };
   
   if (fs.existsSync(testPDFPath)) {
     uploadResult = await testFileUpload('/api/ai/lawpdfs', testPDFPath, {
-      enableOCR: 'true',
-      enableEmbedding: 'true',
-      enableRAG: 'true'
+      enableOCR: 'true', enableEmbedding: 'true', enableRAG: 'true'
     });
     
     logTest(
-      'LawPDFs File Upload',
-      uploadResult.ok ? 'PASS' : 'FAIL',
-      uploadResult.ok 
+      'LawPDFs File Upload', uploadResult.ok ? 'PASS' : 'FAIL', uploadResult.ok 
         ? `Files processed: ${uploadResult.data?.results?.length || 0}` 
         : uploadResult.error || `Status: ${uploadResult.status}`
     );
   } else {
     logTest(
-      'LawPDFs File Upload',
-      'FAIL',
-      'No test PDF found. Create a test PDF at lawpdfs/test-document.pdf'
+      'LawPDFs File Upload', 'FAIL', 'No test PDF found. Create a test PDF at lawpdfs/test-document.pdf'
     );
   }
   
@@ -263,16 +217,11 @@ async function testMinIOUpload() {
   
   if (fs.existsSync(testFile)) {
     const uploadResult = await testFileUpload('/api/upload', testFile, {
-      caseId: 'TEST-CASE-001',
-      documentType: 'evidence',
-      description: 'Test evidence upload',
-      priority: 'medium'
+      caseId: 'TEST-CASE-001', documentType: 'evidence', description: 'Test evidence upload', priority: 'medium'
     });
     
     logTest(
-      'MinIO Upload API',
-      uploadResult.ok ? 'PASS' : 'FAIL',
-      uploadResult.ok 
+      'MinIO Upload API', uploadResult.ok ? 'PASS' : 'FAIL', uploadResult.ok 
         ? 'File uploaded successfully' 
         : uploadResult.error || `Status: ${uploadResult.status}`
     );
@@ -280,9 +229,7 @@ async function testMinIOUpload() {
     return uploadResult.ok;
   } else {
     logTest(
-      'MinIO Upload API',
-      'FAIL',
-      'No test file found for upload'
+      'MinIO Upload API', 'FAIL', 'No test file found for upload'
     );
     
     return false;
@@ -303,9 +250,7 @@ async function testWebSocketConnection(sessionId) {
       const timeout = setTimeout(() => {
         ws.close();
         logTest(
-          'WebSocket Connection',
-          'FAIL',
-          'Connection timeout after 5 seconds'
+          'WebSocket Connection', 'FAIL', 'Connection timeout after 5 seconds'
         );
         resolve(false);
       }, 5000);
@@ -314,9 +259,7 @@ async function testWebSocketConnection(sessionId) {
         connected = true;
         clearTimeout(timeout);
         logTest(
-          'WebSocket Connection',
-          'PASS',
-          'Successfully connected'
+          'WebSocket Connection', 'PASS', 'Successfully connected'
         );
         ws.close();
         resolve(true);
@@ -325,18 +268,14 @@ async function testWebSocketConnection(sessionId) {
       ws.onerror = (error) => {
         clearTimeout(timeout);
         logTest(
-          'WebSocket Connection',
-          'FAIL',
-          `Connection error: ${error.message || 'Unknown error'}`
+          'WebSocket Connection', 'FAIL', `Connection error: ${error.message || 'Unknown error'}`
         );
         resolve(false);
       };
       
     } catch (error) {
       logTest(
-        'WebSocket Connection',
-        'FAIL',
-        `WebSocket not available: ${error.message}`
+        'WebSocket Connection', 'FAIL', `WebSocket not available: ${error.message}`
       );
       resolve(false);
     }
@@ -347,20 +286,13 @@ async function testEvidenceRoutes() {
   log('\n🌐 Testing Evidence Routes...', 'cyan');
   
   const routes = [
-    '/evidence',
-    '/evidence/analyze', 
-    '/evidence/hash',
-    '/evidence/realtime',
-    '/evidence/upload',
-    '/evidenceboard'
+    '/evidence', '/evidence/analyze', '/evidence/hash', '/evidence/realtime', '/evidence/upload', '/evidenceboard'
   ];
   
   for (const route of routes) {
     const result = await testAPI(route);
     logTest(
-      `Route: ${route}`,
-      result.status !== 404 ? 'PASS' : 'FAIL',
-      result.ok ? 'Page loads successfully' : `Status: ${result.status}`
+      `Route: ${route}`, result.status !== 404 ? 'PASS' : 'FAIL', result.ok ? 'Page loads successfully' : `Status: ${result.status}`
     );
   }
 }
@@ -370,10 +302,8 @@ async function testSystemIntegration() {
   
   // Create test evidence
   const evidenceResult = await testAPI('/api/evidence/process', {
-    method: 'POST',
-    body: JSON.stringify({
-      evidenceId: `integration_test_${Date.now()}`,
-      steps: ['ocr', 'embedding']
+    method: 'POST', body: JSON.stringify({
+      evidenceId: `integration_test_${Date.now()}`, steps: ['ocr', 'embedding']
     })
   });
   
@@ -384,25 +314,19 @@ async function testSystemIntegration() {
     // Test evidence retrieval
     const retrieveResult = await testAPI(`/api/evidence/${evidenceResult.data.evidenceId}`);
     logTest(
-      'Evidence Retrieval',
-      retrieveResult.status !== 404 ? 'PASS' : 'FAIL',
-      retrieveResult.ok ? 'Evidence data retrieved' : `Status: ${retrieveResult.status}`
+      'Evidence Retrieval', retrieveResult.status !== 404 ? 'PASS' : 'FAIL', retrieveResult.ok ? 'Evidence data retrieved' : `Status: ${retrieveResult.status}`
     );
   }
   
   // Test vector search integration
   const vectorResult = await testAPI('/api/vector/search', {
-    method: 'POST',
-    body: JSON.stringify({
-      query: 'legal contract terms',
-      limit: 5
+    method: 'POST', body: JSON.stringify({
+      query: 'legal contract terms', limit: 5
     })
   });
   
   logTest(
-    'Vector Search Integration',
-    vectorResult.status !== 404 ? 'PASS' : 'FAIL',
-    vectorResult.ok ? 'Vector search working' : `Status: ${vectorResult.status}`
+    'Vector Search Integration', vectorResult.status !== 404 ? 'PASS' : 'FAIL', vectorResult.ok ? 'Vector search working' : `Status: ${vectorResult.status}`
   );
 }
 
@@ -411,7 +335,7 @@ async function runPostgresTests() {
   
   return new Promise((resolve) => {
     const testProcess = spawn('node', ['test-postgres-drizzle.mjs'], {
-      cwd: __dirname,
+      cwd: __dirname;
       stdio: 'pipe'
     });
     
@@ -431,9 +355,7 @@ async function runPostgresTests() {
       const success = code === 0 && !hasError;
       
       logTest(
-        'PostgreSQL + Drizzle Test',
-        success ? 'PASS' : 'FAIL',
-        success ? 'All database tests passed' : 'Check console for details'
+        'PostgreSQL + Drizzle Test', success ? 'PASS' : 'FAIL', success ? 'All database tests passed' : 'Check console for details'
       );
       
       if (!success) {

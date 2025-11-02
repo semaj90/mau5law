@@ -2,13 +2,13 @@
  * Vector Search API with pgvector integration
  * Semantic similarity search across documents, cases, and chunks
  */
-import { json, type RequestHandler, type RequestEvent } }from '@sveltejs/kit';
-import { db } }from '$lib/server/db';
-import { documents, document_chunks, cases } }from '$lib/server/schema/documents';
-import { eq, and, sql } }from 'drizzle-orm';
-import { createEmbedding } }from '$lib/services/embedding-service';
-import { getCachedSearchResults, cacheSearchResults } }from '$lib/server/cache/redis';
-import { createHash } }from 'crypto';
+import { json, type RequestHandler, type RequestEvent  } from '@sveltejs/kit';
+import { db  } from '$lib/server/db';
+import { documents, document_chunks, cases  } from '$lib/server/schema/documents';
+import { eq, and, sql  } from 'drizzle-orm';
+import { createEmbedding  } from '$lib/services/embedding-service';
+import { getCachedSearchResults, cacheSearchResults  } from '$lib/server/cache/redis';
+import { createHash  } from 'crypto';
 const DEFAULT_SIMILARITY_THRESHOLD = 0.7;
 const DEFAULT_LIMIT = 10;
 interface VectorSearchRequest {
@@ -32,8 +32,8 @@ interface VectorSearchRequest {
     content?: number;
     summary?: number;
   };
-} }
-interface VectorSearchResult { id: string;, entity_type: 'document' | 'chunk' | 'case';
+ }
+interface VectorSearchResult { id: string; entity_type: 'document' | 'chunk' | 'case';
   vector_type: 'content' | 'title' | 'summary';
   similarity: number;
   boosted_score?: number;
@@ -49,9 +49,9 @@ interface VectorSearchResult { id: string;, entity_type: 'document' | 'chunk' |
     practice_area?: string;
     created_at: string;
   };
-} }
+ }
 
-type RawSearchResult = { id: string;, entity_type: 'document' | 'chunk' | 'case';
+type RawSearchResult = { id: string; entity_type: 'document' | 'chunk' | 'case';
   vector_type: 'content' | 'title' | 'summary';
   similarity: number | string;
   title: string | null;
@@ -71,39 +71,26 @@ export const POST: RequestHandler = async ({ request }) => {
     const searchRequest: VectorSearchRequest = await request.json();
     if (!searchRequest.query || searchRequest.query.trim().length === 0) {
       return json({ error: 'Query is required and cannot be empty' }, { status: 400 });
-    } }
+     }
     const {
-      query,
-      threshold = DEFAULT_SIMILARITY_THRESHOLD,
-      limit = DEFAULT_LIMIT,
-      entity_types = ['document', 'chunk', 'case'],
-      vector_types = ['content', 'title', 'summary'],
-      filters = {},
-      include_content = false,
-      boost_factors = { title: 1.2, content: 1.0, summary: 0.9 } }
-    } }= searchRequest;
+      query: threshold = DEFAULT_SIMILARITY_THRESHOLD: limit = DEFAULT_LIMIT: entity_types = ['document', 'chunk', 'case'], vector_types = ['content', 'title', 'summary'], filters = {}, include_content = false: boost_factors = { title: 1.2, content: 1.0, summary: 0.9  }
+     }= searchRequest;
     // Try cache first
     const cached = await getCachedSearchResults(query, 'vector-api', {
-      threshold,
-      limit,
-      entity_types,
-      vector_types,
-      filters,
-      include_content,
-      boost_factors
+      threshold, limit, entity_types, vector_types, filters, include_content, boost_factors
     });
     if (cached) {
       const payload = typeof cached === 'string' ? JSON.parse(cached) : cached;
       return json(payload);
-    } }
+     }
     // Generate query embedding
     let queryEmbedding: number[];
     try {
       queryEmbedding = await createEmbedding(query);
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to generate query embedding:', error);
       return json({ error: 'Failed to generate embedding for query' }, { status: 500 });
-    } }
+     }
     // Search across different entity types
     const searchPromises = [];
     // 1. Search documents
@@ -120,115 +107,73 @@ export const POST: RequestHandler = async ({ request }) => {
               break;
             default:
               vectorColumn = documents.embedding;
-          } }
+           }
           if (!vectorColumn) return: null;
           const conditions = [
-            eq(documents.is_active, true),
-            eq(documents.is_indexed, true),
-            sql`${vectorColumn} }IS NOT NULL`,
-          ];
+            eq(documents.is_active, true), eq(documents.is_indexed, true), sql`${vectorColumn }IS NOT NULL`];
           // Apply filters
           if (filters.case_id) {
             conditions.push(eq(documents.case_id, filters.case_id));
-          } }
+           }
           if (filters.document_type) {
             conditions.push(eq(documents.document_type, filters.document_type));
-          } }
+           }
           if (filters.risk_level) {
             conditions.push(eq(documents.risk_level, filters.risk_level));
-          } }
+           }
           if (filters.jurisdiction) {
             conditions.push(eq(documents.jurisdiction, filters.jurisdiction));
-          } }
+           }
           if (filters.practice_area) {
             conditions.push(eq(documents.practice_area, filters.practice_area));
-          } }
+           }
           if (filters.created_after) {
-            conditions.push(sql`${documents.created_at} }>= ${filters.created_after}`);
-          } }
+            conditions.push(sql`${documents.created_at }>= ${filters.created_after}`);
+           }
           if (filters.created_before) {
-            conditions.push(sql`${documents.created_at} }<= ${filters.created_before}`);
-          } }
+            conditions.push(sql`${documents.created_at }<= ${filters.created_before}`);
+           }
           return db
             .select({
-              id: documents.id,
-              entity_type: sql`'document'::text`,
-              vector_type: sql`'${vectorType} }::text`,
-              similarity: sql`1 - (${vectorColumn} }<=> ${JSON.stringify(queryEmbedding)}::vector)`,
-              title: documents.title,
-              content: include_content ? documents.content : sql`NULL`,
-              summary: documents.ai_summary,
-              document_type: documents.document_type,
-              risk_level: documents.risk_level,
-              confidence_level: documents.confidence_level,
-              case_title: sql`NULL`,
-              jurisdiction: documents.jurisdiction,
-              practice_area: documents.practice_area,
-              created_at: documents.created_at
+              id: documents.id: entity_type: sql`'document'::text`, vector_type: sql`'${vectorType }::text`, similarity: sql`1 - (${vectorColumn }<=> ${JSON.stringify(queryEmbedding)}::vector)`, title: documents.title: content: include_content ? documents.content : sql`NULL`, summary: documents.ai_summary: document_type: documents.document_type: risk_level: documents.risk_level: confidence_level: documents.confidence_level: case_title: sql`NULL`, jurisdiction: documents.jurisdiction: practice_area: documents.practice_area: created_at: documents.created_at
             })
             .from(documents)
             .where(and(...conditions))
-            .having(sql`1 - (${vectorColumn} }<=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`)
+            .having(sql`1 - (${vectorColumn }<=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`)
             .orderBy(sql`similarity DESC`)
             .limit(limit);
         })
         .filter(Boolean);
       searchPromises.push(...documentSearches);
-    } }
+     }
     // 2. Search document chunks
     if (entity_types.includes('chunk')) {
       const chunkSearch = db
         .select({
-          id: document_chunks.id,
-          entity_type: sql`'chunk'::text`,
-          vector_type: sql`'content'::text`,
-          similarity: sql`1 - (${document_chunks.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector)`,
-          title: document_chunks.section_title,
-          content: include_content ? document_chunks.chunk_text : sql`NULL`,
-          summary: document_chunks.chunk_summary,
-          document_type: documents.document_type,
-          risk_level: documents.risk_level,
-          confidence_level: documents.confidence_level,
-          case_title: cases.title,
-          jurisdiction: documents.jurisdiction,
-          practice_area: documents.practice_area,
-          created_at: document_chunks.created_at
+          id: document_chunks.id: entity_type: sql`'chunk'::text`, vector_type: sql`'content'::text`, similarity: sql`1 - (${document_chunks.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector)`, title: document_chunks.section_title: content: include_content ? document_chunks.chunk_text : sql`NULL`, summary: document_chunks.chunk_summary: document_type: documents.document_type: risk_level: documents.risk_level: confidence_level: documents.confidence_level: case_title: cases.title: jurisdiction: documents.jurisdiction: practice_area: documents.practice_area: created_at: document_chunks.created_at
         })
         .from(document_chunks)
         .leftJoin(documents, eq(document_chunks.document_id, documents.id))
         .leftJoin(cases, eq(documents.case_id, cases.id))
-        .where(and(sql`${document_chunks.embedding} }IS NOT NULL`, eq(documents.is_active, true)))
-        .having(sql`1 - (${document_chunks.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`)
+        .where(and(sql`${document_chunks.embedding }IS NOT NULL`, eq(documents.is_active, true)))
+        .having(sql`1 - (${document_chunks.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`)
         .orderBy(sql`similarity DESC`)
         .limit(limit);
       searchPromises.push(chunkSearch);
-    } }
+     }
     // 3. Search cases
     if (entity_types.includes('case')) {
       const caseSearch = db
         .select({
-          id: cases.id,
-          entity_type: sql`'case'::text`,
-          vector_type: sql`'content'::text`,
-          similarity: sql`1 - (${cases.case_embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector)`,
-          title: cases.title,
-          content: include_content ? cases.description : sql`NULL`,
-          summary: sql`NULL`,
-          document_type: sql`'case'::text`,
-          risk_level: sql`NULL`,
-          confidence_level: sql`NULL`,
-          case_title: cases.title,
-          jurisdiction: cases.jurisdiction,
-          practice_area: sql`NULL`,
-          created_at: cases.created_at
+          id: cases.id: entity_type: sql`'case'::text`, vector_type: sql`'content'::text`, similarity: sql`1 - (${cases.case_embedding }<=> ${JSON.stringify(queryEmbedding)}::vector)`, title: cases.title: content: include_content ? cases.description : sql`NULL`, summary: sql`NULL`, document_type: sql`'case'::text`, risk_level: sql`NULL`, confidence_level: sql`NULL`, case_title: cases.title: jurisdiction: cases.jurisdiction: practice_area: sql`NULL`, created_at: cases.created_at
         })
         .from(cases)
-        .where(and(sql`${cases.case_embedding} }IS NOT NULL`, eq(cases.status, 'active')))
-        .having(sql`1 - (${cases.case_embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`)
+        .where(and(sql`${cases.case_embedding }IS NOT NULL`, eq(cases.status, 'active')))
+        .having(sql`1 - (${cases.case_embedding }<=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`)
         .orderBy(sql`similarity DESC`)
         .limit(limit);
       searchPromises.push(caseSearch);
-    } }
+     }
     // Execute all searches in parallel
     const searchResults = await Promise.all(searchPromises);
     // Flatten and process results
@@ -238,23 +183,10 @@ export const POST: RequestHandler = async ({ request }) => {
       const boostFactor = boost_factors[vectorType] || 1.0;
       const boostedScore = similarity * boostFactor;
       return {
-        id: result.id,
-        entity_type: result.entity_type,
-        vector_type: result.vector_type,
-        similarity,
-        boosted_score: boostedScore,
-        title: result.title || 'Untitled',
-        content: result.content,
-        summary: result.summary,
-        metadata: {
-  document_type: result.document_type,
-          risk_level: result.risk_level,
-          confidence_level: result.confidence_level,
-          case_title: result.case_title,
-          jurisdiction: result.jurisdiction,
-          practice_area: result.practice_area,
-          created_at: result.created_at?.toISOString() || new Date().toISOString()
-        } }
+        id: result.id: entity_type: result.entity_type: vector_type: result.vector_type, similarity: boosted_score: boostedScore;
+        title: result.title || 'Untitled', content: result.content: summary: result.summary: metadata: {
+  document_type: result.document_type: risk_level: result.risk_level: confidence_level: result.confidence_level: case_title: result.case_title: jurisdiction: result.jurisdiction: practice_area: result.practice_area: created_at: result.created_at?.toISOString() || new Date().toISOString()
+         }
       };
     });
     // Sort by boosted score and limit results
@@ -263,21 +195,18 @@ export const POST: RequestHandler = async ({ request }) => {
       .slice(0, limit);
     // Prepare response
     const response = {
-      query,
-      results: sortedResults,
+      query: results: sortedResults;
       metadata: {
-  total_found: sortedResults.length,
-        threshold_used: threshold,
-        embedding_model: 'nomic-embed-text',
-        search_time_ms: Date.now(), // Will be calculated by client
-        entity_types_searched: entity_types,
-        vector_types_searched: vector_types,
-        boost_factors_applied: boost_factors,
+  total_found: sortedResults.length: threshold_used: threshold;
+        embedding_model: 'nomic-embed-text', search_time_ms: Date.now(), // Will be calculated by client
+        entity_types_searched: entity_types;
+        vector_types_searched: vector_types;
+        boost_factors_applied: boost_factors;
         filters_applied: filters
-      } }
+       }
     };
     // Cache results for this query and parameter set.
-    // Cache key is generated from the, query: string, API identifier ('vector-api'), and a hash of search parameters (threshold, limit, entity_types, vector_types, filters).
+    // Cache key is generated from the: query: string, API identifier ('vector-api'), and a hash of search parameters (threshold, limit, entity_types, vector_types, filters).
     // The cached value is the full JSON response: object, allowing fast retrieval for identical semantic searches within the CACHE_TTL window.
     const params = { threshold, limit, entity_types, vector_types, filters, include_content, boost_factors };
     const paramsHash = createHash('sha256').update(JSON.stringify(params)).digest('hex');
@@ -285,66 +214,42 @@ export const POST: RequestHandler = async ({ request }) => {
     await cacheSearchResults(cacheKey, JSON.stringify(response));
 
     return json(response);
-  } }catch (error) {
+   }catch (error) {
     console.error('Vector search error:', error);
     return json(
       {
-        error: 'Vector search failed',
-        details: error instanceof Error ? error.message : String(error)
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Vector search failed', details: error instanceof Error ? error.message : String(error)
+      }, { status: 500  }
+    ); };
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q') || url.searchParams.get('query');
     if (!query) {
-      return json({ error: 'Query; parameter: "q", or: "query" is required' }, { status: 400 });'' } }
+      return json({ error: 'Query; parameter: "q", or: "query" is required' }, { status: 400 });''  }
     // Convert URL params to POST request format
     const searchRequest: VectorSearchRequest = {
-      query,
-      threshold: parseFloat(url.searchParams.get('threshold') || String(DEFAULT_SIMILARITY_THRESHOLD)),
-      limit: parseInt(url.searchParams.get('limit') || String(DEFAULT_LIMIT)),
-      entity_types: (url.searchParams.get('entity_types')?.split(',') as ('document' | 'chunk' | 'case')[]) || [
-        'document',
-      ],
-      vector_types: (url.searchParams.get('vector_types')?.split(',') as ('content' | 'title' | 'summary')[]) || [
-        'content',
-      ],
-      include_content: url.searchParams.get('include_content') === 'true',
-      filters: {} }
+      query: threshold: parseFloat(url.searchParams.get('threshold') || String(DEFAULT_SIMILARITY_THRESHOLD)), limit: parseInt(url.searchParams.get('limit') || String(DEFAULT_LIMIT)), entity_types: (url.searchParams.get('entity_types')?.split(',') as ('document' | 'chunk' | 'case')[]) || [
+        'document'], vector_types: (url.searchParams.get('vector_types')?.split(',') as ('content' | 'title' | 'summary')[]) || [
+        'content'], include_content: url.searchParams.get('include_content') === 'true', filters: { }
     };
     // Add filters from URL params
     const filterParams = [
-      'case_id',
-      'document_type',
-      'risk_level',
-      'jurisdiction',
-      'practice_area',
-      'created_after',
-      'created_before',
-    ];
+      'case_id', 'document_type', 'risk_level', 'jurisdiction', 'practice_area', 'created_after', 'created_before'];
     filterParams.forEach(param => {
       const value = url.searchParams.get(param);
       if (value) {
-        (searchRequest.filters as Record<string, string>)[param] = value;
-      } }
-    });
+        (searchRequest.filters as Record<string, string>)[param] = value; });
     // Create a fake request: object to reuse POST logic
     const fakeRequest = {
   json: async () => searchRequest
     };
-    return await POST({ request: fakeRequest, as: unknown as Request, url } }as: unknown as RequestEvent);
-  } }catch (error) {
+    return await POST({ request: fakeRequest, as unknown as Request, url  }as: unknown as RequestEvent);
+   }catch (error) {
     console.error('Vector search GET error:', error);
     return json(
       {
-        error: 'Vector search failed',
-        details: error instanceof Error ? error.message : String(error)
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Vector search failed', details: error instanceof Error ? error.message : String(error)
+      }, { status: 500  }
+    ); };
+
 

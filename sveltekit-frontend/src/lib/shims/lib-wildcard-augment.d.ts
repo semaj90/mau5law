@@ -36,6 +36,7 @@ declare module, '$lib/*' {
   export const analyzeCurrentErrors: any;
   // Additional missing exports
   export const crewAIService: any;
-  export const, phase13Stores: any;
-} }
+  export const phase13Stores: any;
+ }
+
 

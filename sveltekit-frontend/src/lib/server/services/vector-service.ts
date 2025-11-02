@@ -2,7 +2,7 @@
  * Production Vector Service - Real Implementation
  * Integrates Redis Vector DB, Qdrant, and Ollama for production use
  */
-// { redisVectorService } }from '../../../services/redis-vector-service.js'
+// { redisVectorService  } from '../../../services/redis-vector-service.js'
 // TODO: Fix import - // Orphaned; content: import {  // Temporary stub for redis vector service
 export interface EmbeddingOptions {
   contentType?: string;
@@ -11,17 +11,17 @@ export interface EmbeddingOptions {
   userId?: string;
   caseId?: string;
   conversationId?: string;
-} }
+ }
 
 type Metadata = Record<string, unknown>;
 
-type StoredDocument = { id: string;, embedding: number[];
+type StoredDocument = { id: string; embedding: number[];
   content: string;
   metadata?: Metadata;
 };
 
 export type AnalysisResult =
-  | { analysis: any; type: string; timestamp: string } }
+  | { analysis: any; type: string; timestamp: string  }
   | { analysis: string; error?: string };
 
 // Add a lightweight in-memory store used by the stubbed redisVectorService
@@ -30,33 +30,25 @@ const inMemoryVectorStore = new Map<string, StoredDocument>();
 const redisVectorService = {
   async healthCheck(): Promise<boolean> {
     return true;
-  },
-  async search(): Promise<StoredDocument[]> {
+  }, async search(): Promise<StoredDocument[]> {
     // return all stored docs from the in-memory store
     return Array.from(inMemoryVectorStore.values());
-  },
-  async store(doc: StoredDocument): Promise<{ success: boolean }> {
+  }, async store(doc: StoredDocument): Promise<{ success: boolean }> {
     // persist to in-memory map so the parameter is actually used (fixes unused-arg lint)
     inMemoryVectorStore.set(doc.id, doc);
     return { success: true };
-  },
-  async storeDocument(doc: StoredDocument): Promise<{ success: boolean }> {
+  }, async storeDocument(doc: StoredDocument): Promise<{ success: boolean }> {
     return this.store(doc);
-  },
-  async searchSimilar(
-    _embedding: number[],
-    _options?: { topK?: number; threshold?: number; filter?: any } }
+  }, async searchSimilar(
+    _embedding: number[];
+    _options?: { topK?: number; threshold?: number; filter?: any  }
   ): Promise<Array<StoredDocument & { score?: number }>> {
     // naive stub: return stored docs with a placeholder score
-    return Array.from(inMemoryVectorStore.values()).map(d => ({ ...d, score: 1 }));
-  },
-  async getDocument(_id: string): Promise<StoredDocument | null> {
+    return Array.from(inMemoryVectorStore.values()).map(d => ({ ...d: score: 1 }));
+  }, async getDocument(_id: string): Promise<StoredDocument | null> {
     return inMemoryVectorStore.get(_id) ?? null;
-  },
-  async deleteDocument(_id: string): Promise<{ success: boolean }> {
-    return { success: inMemoryVectorStore.delete(_id) };
-  } }
-};
+  }, async deleteDocument(_id: string): Promise<{ success: boolean }> {
+    return { success: inMemoryVectorStore.delete(_id) }; };
 
 // Export helper so other modules can call getOllamaEndpoint() instead of hardcoding Ollama URLs.
 // Prefer Docker service name first, fall back to localhost for non-Docker dev.
@@ -67,249 +59,203 @@ export const getOllamaEndpoint = (): string => {
 export class VectorService {
   private static get ollamaUrl(): string {
     return getOllamaEndpoint();
-  } }
+   }
   private static embeddingModel = 'embeddinggemma';
 
   /**
    * Generate embedding using Ollama
    */
-  static async generateEmbedding(content: string, options: EmbeddingOptions = {}): Promise<number[]> {
+  static async generateEmbedding(content: string: options: EmbeddingOptions = {): Promise<number[]> {
     try {
       const model = options.model || this.embeddingModel;
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },'`'`
+        method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
-          model,
-          prompt: content
+          model: prompt: content
         })
       });
 
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status}`);
-      } }
+       }
 
       const data = await response.json();
-      // Expecting { embedding: number[] } }
-      return Array.isArray(data.embedding) ? (data.embedding as: number[]) : [];
-    } }catch (error: any) {
+      // Expecting { embedding: number[]  }
+      return Array.isArray(data.embedding) ? (data.embedding as number[]) : [];
+     }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error generating embedding:', message);
-      throw new Error(message);
-    } }
-  } }
+      throw new Error(message); }
 
   /**
    * Generate embedding with metadata
    */
   static async generateEmbeddingWithMetadata(
-    content: string,
-    options: EmbeddingOptions = {} }
+    content: string;
+    options: EmbeddingOptions = { }
   ): Promise<{ embedding: number[]; model: string }> {
     const embedding = await this.generateEmbedding(content, options);
     return {
-      embedding,
-      model: options.model || this.embeddingModel
+      embedding: model: options.model || this.embeddingModel
     };
-  } }
+   }
 
   /**
    * Store evidence vector in Redis (stubbed redisVectorService)
    */
-  static async storeEvidenceVector(evidence: { id: string;, content: string;
+  static async storeEvidenceVector(evidence: { id: string; content: string;
     metadata?: Metadata;
     evidenceId?: string;
-  }): Promise<void> {
+  ): Promise<void> {
     const embedding = await this.generateEmbedding(evidence.content);
     await redisVectorService.storeDocument({
-      id: `evidence:${evidence.evidenceId || evidence.id}`,
-      embedding,
-      content: evidence.content,
-      metadata: { type: 'evidence',
-        evidenceId: evidence.evidenceId || evidence.id,
-        ...(evidence.metadata || {})
-      } }
+      id: `evidence:${evidence.evidenceId || evidence.id}`, embedding: content: evidence.content: metadata: { type: 'evidence', evidenceId: evidence.evidenceId || evidence.id, ...(evidence.metadata || {})
+       }
     });
-  } }
+   }
 
   /**
    * Store case embedding
    */
-  static async storeCaseEmbedding(data: { caseId: string;, content: string;
+  static async storeCaseEmbedding(data: { caseId: string; content: string;
     metadata?: Metadata;
     embedding?: number[];
-  }): Promise<void> {
+  ): Promise<void> {
     const embedding = data.embedding ?? (await this.generateEmbedding(data.content));
     await redisVectorService.storeDocument({
-      id: `case:${data.caseId}`,
-      embedding,
-      content: data.content,
-      metadata: { type: 'case',
-        caseId: data.caseId,
-        ...(data.metadata || {})
-      } }
+      id: `case:${data.caseId}`, embedding: content: data.content: metadata: { type: 'case', caseId: data.caseId, ...(data.metadata || {})
+       }
     });
-  } }
+   }
 
   /**
    * Store chat embedding
    */
-  static async storeChatEmbedding(data: { conversationId: string;, messageId: string;
-   , content: string;
+  static async storeChatEmbedding(data: { conversationId: string; messageId: string; content: string;
     userId?: string;
     role?: string;
     embedding?: number[];
-  }): Promise<void> {
+  ): Promise<void> {
     const embedding = data.embedding ?? (await this.generateEmbedding(data.content));
     await redisVectorService.storeDocument({
-      id: `chat:${data.conversationId}:${data.messageId}`,
-      embedding,
-      content: data.content,
-      metadata: { type: 'chat',
-        conversationId: data.conversationId,
-        messageId: data.messageId,
-        userId: data.userId,
-        role: data.role
-      } }
+      id: `chat:${data.conversationId}:${data.messageId}`, embedding: content: data.content: metadata: { type: 'chat', conversationId: data.conversationId: messageId: data.messageId: userId: data.userId: role: data.role
+       }
     });
-  } }
+   }
 
   /**
    * Find similar vectors using Redis search
    */
   static async findSimilar(
-    embedding: number[],
-    options: { limit?: number; threshold?: number; type?: string; userId?: string } }= {} }
+    embedding: number[];
+    options: { limit?: number; threshold?: number; type?: string; userId?: string  }= { }
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     const results = await redisVectorService.searchSimilar(embedding, {
-      topK: options.limit ?? 10,
-      threshold: options.threshold ?? 0.7,
-      filter: options.type ? { type: options.type } }: undefined
+      topK: options.limit ?? 10, threshold: options.threshold ?? 0.7, filter: options.type ? { type: options.type  }: undefined
     });
 
     return results.map(result => ({
-      id: result.id,
-      score: result.score,
-      content: result.content,
-      metadata: result.metadata
+      id: result.id: score: result.score: content: result.content: metadata: result.metadata
     }));
-  } }
+   }
 
   /**
    * Semantic search with text query
    */
   static async semanticSearch(
-    query: string,
-    options: { limit?: number; threshold?: number; type?: string; userId?: string } }= {} }
+    query: string;
+    options: { limit?: number; threshold?: number; type?: string; userId?: string  }= { }
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     const queryEmbedding = await this.generateEmbedding(query);
     return this.findSimilar(queryEmbedding, options);
-  } }
+   }
 
   /**
    * Store document with automatic embedding
    */
   static async storeDocument(
-    documentId: string,
-    documentType: string,
-    text: string,
-    metadata: Metadata = {} }
+    documentId: string;
+    documentType: string;
+    text: string;
+    metadata: Metadata = { }
   ): Promise<{ id: string; type: string }> {
     const embedding = await this.generateEmbedding(text);
     await redisVectorService.storeDocument({
-      id: `doc:${documentId}`,
-      embedding,
-      content: text,
-      metadata: { type: documentType,
-        documentId,
-        ...metadata
-      } }
+      id: `doc:${documentId}`, embedding: content: text;
+      metadata: { type: documentType;
+        documentId, ...metadata
+       }
     });
-    return { id: documentId, type: documentType };
-  } }
+    return { id: documentId: type: documentType };
+   }
 
   /**
    * Analyze document using Ollama
    */
-  static async analyzeDocument(text: string, analysisType: string): Promise<AnalysisResult> {
+  static async analyzeDocument(text: string: analysisType: string): Promise<AnalysisResult> {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ model: 'gemma3-legal',
-          prompt: `Analyze this document for ${analysisType}:\n\n${text}\n\nProvide a structured, analysis:`,
-          stream: false
+        method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+        body: JSON.stringify({ model: 'gemma3-legal', prompt: `Analyze this document for ${analysisType}:\n\n${text}\n\nProvide a structured: analysis:`, stream: false
         })
       });
 
       if (!response.ok) {
         throw new Error(`Ollama generate API error: ${response.status}`);
-      } }
+       }
 
       const data = await response.json();
       return {
-        analysis: data.response ?? data,
-        type: analysisType,
+        analysis: data.response ?? data: type: analysisType;
         timestamp: new Date().toISOString()
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error analyzing document:', message);
       return {
-        analysis: 'Analysis failed',
-        error: message
-      };
-    } }
-  } }
+        analysis: 'Analysis failed', error: message
+      }; }
 
   /**
    * Search documents with semantic similarity
    */
-  static async search(
-   , query: string,
-    options: { limit?: number; threshold?: number; type?: string } }= {} }
+  static async search( query: string;
+    options: { limit?: number; threshold?: number; type?: string  }= { }
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     return this.semanticSearch(query, options);
-  } }
+   }
 
   /**
    * Find similar documents to a given document
    */
   static async findSimilarDocuments(
-    documentId: string,
+    documentId: string;
     limit = 10
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
     try {
       const doc = await redisVectorService.getDocument(`doc:${documentId}`);
       if (!doc) return [];
-      return this.findSimilar(doc.embedding, { limit, threshold: 0.7 });
-    } }catch (error: any) {
+      return this.findSimilar(doc.embedding, { limit: threshold: 0.7 });
+     }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Error finding similar documents:', message);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Store user embedding (legacy compatibility)
    */
   static async storeUserEmbedding(
-    userId: string,
-    content: string,
-    embedding: number[],
-    options: EmbeddingOptions = {} }
+    userId: string;
+    content: string;
+    embedding: number[];
+    options: EmbeddingOptions = { }
   ): Promise<string> {
     await redisVectorService.storeDocument({
-      id: `user:${userId}:${Date.now()}`,
-      embedding,
-      content,
-      metadata: { type: 'user_content',
-        userId,
-        ...(options.metadata || {})
-      } }
+      id: `user:${userId}:${Date.now()}`, embedding, content: metadata: { type: 'user_content', userId, ...(options.metadata || {})
+       }
     });
     return userId;
-  } }
+   }
 
   static async getUserEmbeddings(
     userId: string
@@ -317,54 +263,45 @@ export class VectorService {
     Array<{ userId: string; content?: string; embedding: number[]; metadata?: Metadata; createdAt?: any }>
   > {
     const results = await redisVectorService.searchSimilar(new Array(384).fill(0), {
-      topK: 100,
-      threshold: 0,
-      filter: { userId } }
+      topK: 100, threshold: 0, filter: { userId  }
     });
     return results.map(result => ({
-      userId,
-      content: result.content,
-      embedding: (result.metadata as Metadata & { embedding?: number[] })?.embedding ?? [],
-      metadata: result.metadata,
-      createdAt: (result.metadata as Metadata & { timestamp?: any })?.timestamp
+      userId: content: result.content: embedding: (result.metadata as Metadata & { embedding?: number[] })?.embedding ?? [], metadata: result.metadata: createdAt: (result.metadata as Metadata & { timestamp?: any })?.timestamp
     }));
-  } }
+   }
 
   /**
    * Update evidence metadata
    */
-  static async updateEvidenceMetadata(evidenceId: string, metadata: Metadata): Promise<void> {
+  static async updateEvidenceMetadata(evidenceId: string: metadata: Metadata): Promise<void> {
     const id = `evidence:${evidenceId}`;
     const doc = await redisVectorService.getDocument(id);
     if (doc) {
       doc.metadata = { ...(doc.metadata || {}), ...metadata };
-      await redisVectorService.storeDocument(doc);
-    } }
-  } }
+      await redisVectorService.storeDocument(doc); }
 
   /**
    * Delete evidence vector
    */
   static async deleteEvidenceVector(evidenceId: string): Promise<void> {
     await redisVectorService.deleteDocument(`evidence:${evidenceId}`);
-  } }
+   }
 
   /**
    * Simple similarity search (legacy compatibility)
    */
   static async searchSimilar(
-    query: string,
-    options: { limit?: number; threshold?: number } }= {} }
+    query: string;
+    options: { limit?: number; threshold?: number  }= { }
   ): Promise<Array<{ id: string; score?: number; content?: string; metadata?: Metadata }>> {
-    return this.semanticSearch(query, { limit: options.limit, threshold: options.threshold });
-  } }
+    return this.semanticSearch(query, { limit: options.limit: threshold: options.threshold });
+   }
 
   /**
    * Health check
    */
   static async healthCheck(): Promise<boolean> {
-    return redisVectorService.healthCheck();
-  } }
-} }
+    return redisVectorService.healthCheck(); } }
 export default VectorService;
+
 

@@ -17,7 +17,7 @@ export function getDatabaseUrl(): string {
     process.env.DATABASE_URL ||
     'postgresql://legal_admin:123456@postgres:5432/legal_ai_db'
   );
-} }
+ }
 
 /**
  * PostgreSQL test database URL (isolated from main)
@@ -27,7 +27,7 @@ export function getTestDatabaseUrl(): string {
     process.env.TEST_DATABASE_URL ||
     'postgresql://legal_admin:123456@postgres:5432/legal_ai_db_test'
   );
-} }
+ }
 
 // ============================================================================
 // REDIS CACHE
@@ -38,35 +38,35 @@ export function getTestDatabaseUrl(): string {
  */
 export function getRedisUrl(): string {
   return process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
-} }
+ }
 
 /**
  * Redis password (for AUTH)
  */
 export function getRedisPassword(): string {
   return process.env.REDIS_PASSWORD || 'redis';
-} }
+ }
 
 /**
  * Redis host (used if REDIS_URL not provided)
  */
 export function getRedisHost(): string {
   return process.env.REDIS_HOST || 'localhost';
-} }
+ }
 
 /**
  * Redis port (used if REDIS_URL not provided)
  */
 export function getRedisPort(): number {
   return parseInt(process.env.REDIS_PORT || '6379', 10);
-} }
+ }
 
 /**
  * Redis test instance (isolated from main cache)
  */
 export function getRedisTestUrl(): string {
   return process.env.REDIS_TEST_URL || 'redis://localhost:6380/0';
-} }
+ }
 
 // ============================================================================
 // VECTOR DATABASES
@@ -77,14 +77,14 @@ export function getRedisTestUrl(): string {
  */
 export function getQdrantUrl(): string {
   return process.env.QDRANT_URL || 'http://localhost:6333';
-} }
+ }
 
 /**
  * Qdrant gRPC port (if needed)
  */
 export function getQdrantGrpcPort(): number {
   return parseInt(process.env.QDRANT_GRPC_PORT || '6334', 10);
-} }
+ }
 
 /**
  * PgVector (PostgreSQL extension) - shares same connection as main DB
@@ -92,7 +92,7 @@ export function getQdrantGrpcPort(): number {
 export function getPgVectorUrl(): string {
   // PgVector is accessed via the same database connection
   return getDatabaseUrl();
-} }
+ }
 
 // ============================================================================
 // AI & LLM SERVICES
@@ -108,14 +108,14 @@ export function getOllamaUrl(): string {
     process.env.OLLAMA_ENDPOINT ||
     'http://localhost:11434'
   );
-} }
+ }
 
 /**
  * vLLM GPU-accelerated endpoint (optional, for high-performance inference)
  */
 export function getVllmUrl(): string {
   return process.env.VLLM_ENDPOINT || 'http://localhost:8000/v1';
-} }
+ }
 
 /**
  * Ollama GPU layers override
@@ -123,21 +123,21 @@ export function getVllmUrl(): string {
  */
 export function getOllamaGpuLayers(): string {
   return process.env.OLLAMA_GPU_LAYERS || '999';
-} }
+ }
 
 /**
  * Embedding model name for Ollama
  */
 export function getEmbeddingModel(): string {
   return process.env.EMBED_MODEL || 'nomic-embed-text';
-} }
+ }
 
 /**
  * Embedding cache TTL (how long to cache embeddings in Redis)
  */
 export function getEmbedCacheTtl(): string {
   return process.env.EMBED_CACHE_TTL || '10m';
-} }
+ }
 
 // ============================================================================
 // STORAGE & OBJECT SERVICES
@@ -148,26 +148,26 @@ export function getEmbedCacheTtl(): string {
  */
 export function getMinioEndpoint(): string {
   return process.env.MINIO_ENDPOINT || 'localhost:9000';
-} }
+ }
 
 export function getMinioAccessKey(): string {
   return process.env.MINIO_ACCESS_KEY || 'minioadmin';
-} }
+ }
 
 export function getMinioSecretKey(): string {
   return process.env.MINIO_SECRET_KEY || 'minioadmin';
-} }
+ }
 
 export function getMinioBucketName(): string {
   return process.env.MINIO_BUCKET_NAME || 'legal-documents';
-} }
+ }
 
 /**
  * MinIO console URL (for browser access)
  */
 export function getMinioConsoleUrl(): string {
   return process.env.MINIO_CONSOLE_URL || 'http://localhost:9001';
-} }
+ }
 
 // ============================================================================
 // MESSAGE QUEUES & MESSAGING
@@ -181,21 +181,21 @@ export function getRabbitMqUrl(): string {
     process.env.RABBITMQ_URL ||
     'amqp://legal_admin:123456@localhost:5672'
   );
-} }
+ }
 
 /**
  * RabbitMQ management API URL
  */
 export function getRabbitMqManagementUrl(): string {
   return process.env.RABBITMQ_MANAGEMENT_URL || 'http://localhost:15672';
-} }
+ }
 
 /**
  * NATS message queue (alternative to RabbitMQ)
  */
 export function getNatsUrl(): string {
   return process.env.NATS_URL || 'nats://localhost:4222';
-} }
+ }
 
 // ============================================================================
 // GRAPH DATABASES
@@ -206,15 +206,15 @@ export function getNatsUrl(): string {
  */
 export function getNeo4jUri(): string {
   return process.env.NEO4J_URI || 'bolt://localhost:7687';
-} }
+ }
 
 export function getNeo4jUser(): string {
   return process.env.NEO4J_USER || 'neo4j';
-} }
+ }
 
 export function getNeo4jPassword(): string {
   return process.env.NEO4J_PASSWORD || 'legal123456';
-} }
+ }
 
 // ============================================================================
 // MICROSERVICES & BACKENDS
@@ -225,28 +225,28 @@ export function getNeo4jPassword(): string {
  */
 export function getEnhancedRagUrl(): string {
   return process.env.ENHANCED_RAG_URL || 'http://localhost:8094';
-} }
+ }
 
 /**
  * GPU orchestrator/inference service
  */
 export function getGpuOrchestratorUrl(): string {
   return process.env.GPU_ORCHESTRATOR_URL || 'http://localhost:8095';
-} }
+ }
 
 /**
  * Upload/ingestion service
  */
 export function getUploadServiceUrl(): string {
   return process.env.UPLOAD_SERVICE_URL || 'http://localhost:8093';
-} }
+ }
 
 /**
  * Go gRPC service endpoint (for Protobuf serialization, etc.)
  */
 export function getGrpcServiceUrl(): string {
   return process.env.GRPC_SERVICE_URL || 'localhost:8084';
-} }
+ }
 
 // ============================================================================
 // PROTOCOLS & TRANSPORT
@@ -258,14 +258,14 @@ export function getGrpcServiceUrl(): string {
  */
 export function getQuicUrl(): string {
   return process.env.QUIC_URL || 'http://localhost:4433';
-} }
+ }
 
 /**
  * QUIC server UDP port
  */
 export function getQuicPort(): number {
   return parseInt(process.env.QUIC_PORT || '4433', 10);
-} }
+ }
 
 // ============================================================================
 // AUTHENTICATION & SECURITY
@@ -277,16 +277,16 @@ export function getQuicPort(): number {
 export function getJwtSecret(): string {
   if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
     throw new Error('JWT_SECRET is required in production');
-  } }
+   }
   return process.env.JWT_SECRET || 'dev-secret-key-change-in-production';
-} }
+ }
 
 /**
  * Authentication bypass flag (development only)
  */
 export function shouldBypassAuth(): boolean {
   return process.env.DEV_BYPASS_AUTH === 'true';
-} }
+ }
 
 // ============================================================================
 // DEVELOPMENT & DEBUGGING
@@ -299,37 +299,37 @@ export function getNodeEnv(): 'development' | 'test' | 'production' {
   const env = process.env.NODE_ENV || 'development';
   if (!['development', 'test', 'production'].includes(env)) {
     return 'development';
-  } }
+   }
   return env as 'development' | 'test' | 'production';
-} }
+ }
 
 /**
  * Debug logging flag
  */
 export function isDebugEnabled(): boolean {
   return process.env.DEBUG === 'true' || process.env.DEBUG_VERBOSE === 'true';
-} }
+ }
 
 /**
  * MCP (Model Context Protocol) debug mode
  */
 export function isMcpDebugEnabled(): boolean {
   return process.env.MCP_DEBUG === 'true';
-} }
+ }
 
 /**
  * Frontend port (for dev server)
  */
 export function getFrontendPort(): number {
   return parseInt(process.env.FRONTEND_PORT || '5173', 10);
-} }
+ }
 
 /**
  * Frontend host/bind address
  */
 export function getFrontendHost(): string {
   return process.env.FRONTEND_HOST || 'localhost';
-} }
+ }
 
 // ============================================================================
 // AI AUTOSOLVE & OPTIMIZATION
@@ -341,28 +341,28 @@ export function getFrontendHost(): string {
  */
 export function getAutosolvethreshold(): number {
   return parseInt(process.env.AUTOSOLVE_THRESHOLD || '5', 10);
-} }
+ }
 
 /**
  * Enable GPU acceleration in autosolve
  */
 export function shouldEnableGpuInAutosolve(): boolean {
   return process.env.ENABLE_GPU !== 'false';
-} }
+ }
 
 /**
  * Enable semantic search in autosolve
  */
 export function shouldEnableSemanticSearchInAutosolve(): boolean {
   return process.env.ENABLE_SEMANTIC_SEARCH !== 'false';
-} }
+ }
 
 /**
  * Semantic batch size for autosolve
  */
 export function getSemanticBatchSize(): number {
   return parseInt(process.env.SEMANTIC_BATCH_SIZE || '64', 10);
-} }
+ }
 
 // ============================================================================
 // FEATURE FLAGS
@@ -373,35 +373,35 @@ export function getSemanticBatchSize(): number {
  */
 export function isQuicEnabled(): boolean {
   return process.env.ENABLE_QUIC !== 'false';
-} }
+ }
 
 /**
  * Enable WebGPU compute shaders
  */
 export function isWebGpuEnabled(): boolean {
   return process.env.ENABLE_WEBGPU !== 'false';
-} }
+ }
 
 /**
  * Enable WebAssembly inference
  */
 export function isWasmEnabled(): boolean {
   return process.env.ENABLE_WASM !== 'false';
-} }
+ }
 
 /**
  * Enable RabbitMQ integration
  */
 export function isRabbitMqEnabled(): boolean {
   return process.env.ENABLE_RABBITMQ !== 'false';
-} }
+ }
 
 /**
  * Enable clustering for multi-core utilization
  */
 export function isClusteringEnabled(): boolean {
   return process.env.ENABLE_CLUSTERING === 'true';
-} }
+ }
 
 // ============================================================================
 // UTILITY: Get all environment variables as object
@@ -414,54 +414,17 @@ export function isClusteringEnabled(): boolean {
 export function getAllEnvVars() {
   return {
     // Database
-    DATABASE_URL: getDatabaseUrl(),
-    TEST_DATABASE_URL: getTestDatabaseUrl(),
-
-    // Redis
-    REDIS_URL: getRedisUrl(),
-    REDIS_PASSWORD: getRedisPassword(),
-    REDIS_HOST: getRedisHost(),
-    REDIS_PORT: getRedisPort(),
-    REDIS_TEST_URL: getRedisTestUrl(),
-
-    // Vector DBs
-    QDRANT_URL: getQdrantUrl(),
-    QDRANT_GRPC_PORT: getQdrantGrpcPort(),
-
-    // AI/LLM
-    OLLAMA_URL: getOllamaUrl(),
-    VLLM_ENDPOINT: getVllmUrl(),
-    OLLAMA_GPU_LAYERS: getOllamaGpuLayers(),
-    EMBED_MODEL: getEmbeddingModel(),
-    EMBED_CACHE_TTL: getEmbedCacheTtl(),
-
-    // Storage
-    MINIO_ENDPOINT: getMinioEndpoint(),
-    MINIO_BUCKET_NAME: getMinioBucketName(),
-    MINIO_CONSOLE_URL: getMinioConsoleUrl(),
-
-    // Messaging
-    RABBITMQ_URL: getRabbitMqUrl(),
-    NATS_URL: getNatsUrl(),
-
-    // Graph DB
-    NEO4J_URI: getNeo4jUri(),
-
-    // Services
-    ENHANCED_RAG_URL: getEnhancedRagUrl(),
-    GPU_ORCHESTRATOR_URL: getGpuOrchestratorUrl(),
-    UPLOAD_SERVICE_URL: getUploadServiceUrl(),
-    GRPC_SERVICE_URL: getGrpcServiceUrl(),
-
-    // Protocols
-    QUIC_URL: getQuicUrl(),
-    QUIC_PORT: getQuicPort(),
-
-    // Dev
-    NODE_ENV: getNodeEnv(),
-    DEBUG: isDebugEnabled(),
-    FRONTEND_PORT: getFrontendPort(),
-    FRONTEND_HOST: getFrontendHost()
+    DATABASE_URL: getDatabaseUrl(), TEST_DATABASE_URL: getTestDatabaseUrl(), // Redis
+    REDIS_URL: getRedisUrl(), REDIS_PASSWORD: getRedisPassword(), REDIS_HOST: getRedisHost(), REDIS_PORT: getRedisPort(), REDIS_TEST_URL: getRedisTestUrl(), // Vector DBs
+    QDRANT_URL: getQdrantUrl(), QDRANT_GRPC_PORT: getQdrantGrpcPort(), // AI/LLM
+    OLLAMA_URL: getOllamaUrl(), VLLM_ENDPOINT: getVllmUrl(), OLLAMA_GPU_LAYERS: getOllamaGpuLayers(), EMBED_MODEL: getEmbeddingModel(), EMBED_CACHE_TTL: getEmbedCacheTtl(), // Storage
+    MINIO_ENDPOINT: getMinioEndpoint(), MINIO_BUCKET_NAME: getMinioBucketName(), MINIO_CONSOLE_URL: getMinioConsoleUrl(), // Messaging
+    RABBITMQ_URL: getRabbitMqUrl(), NATS_URL: getNatsUrl(), // Graph DB
+    NEO4J_URI: getNeo4jUri(), // Services
+    ENHANCED_RAG_URL: getEnhancedRagUrl(), GPU_ORCHESTRATOR_URL: getGpuOrchestratorUrl(), UPLOAD_SERVICE_URL: getUploadServiceUrl(), GRPC_SERVICE_URL: getGrpcServiceUrl(), // Protocols
+    QUIC_URL: getQuicUrl(), QUIC_PORT: getQuicPort(), // Dev
+    NODE_ENV: getNodeEnv(), DEBUG: isDebugEnabled(), FRONTEND_PORT: getFrontendPort(), FRONTEND_HOST: getFrontendHost()
   };
-} }
+ }
+
 

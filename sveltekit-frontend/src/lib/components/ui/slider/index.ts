@@ -1,6 +1,6 @@
 // Slider Component Barrel Export
 // Note: Slider may not be available in bits-ui v2, using fallback approach
-// import { Slider } }from "bits-ui"
+// import { Slider  } from "bits-ui"
 // Fallback implementation for missing Slider
 export const SliderRoot = null; // Slider?.Root
 export const SliderRange = null; // Slider?.Range
@@ -12,7 +12,7 @@ export const Slider = null;
 interface SliderCommonProps {
   className?: string;
   [key: string]: any;
-} }
+ }
 // TypeScript interface for Slider props
 export interface SliderProps extends SliderCommonProps {
   value?: number[];
@@ -22,5 +22,6 @@ export interface SliderProps extends SliderCommonProps {
   disabled?: boolean;
   onValueChange?: (_value: number[]) => void;
   orientation?: 'horizontal' | 'vertical';
-} }
+ }
+
 
