@@ -4,6 +4,7 @@
 </svelte:head>
 
 <script lang="ts">
+
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
@@ -117,15 +118,15 @@
   };
 
   // reactive derived values (standard Svelte)
-  $: quickStats = {
+  const quickStats = $derived({
     activeCases: data.stats?.activeCases ?? 0,
     evidenceItems: data.stats?.evidenceItems ?? 0,
     personsOfInterest: data.stats?.personsOfInterest ?? 0,
     aiQueries: data.stats?.aiQueries ?? 0
-  };
+  });
 
-  $: recentCases = Array.isArray(data.recentCases) ? data.recentCases.slice(0, 6) : [];
-  $: evidenceInsights = Array.isArray(data.evidenceInsights) ? data.evidenceInsights.slice(0, 6) : [];
+  const recentCases = $derived(Array.isArray(data.recentCases) ? data.recentCases.slice(0, 6) : []);
+  const evidenceInsights = $derived(Array.isArray(data.evidenceInsights) ? data.evidenceInsights.slice(0, 6) : []);
 
   function selectSection(section: SectionId) {
     selectedSection = section;
@@ -179,6 +180,7 @@
       default: return 'border-slate-500/40 text-slate-300';
     }
   }
+
 </script>
 
 <div class="min-h-screen bg-black text-gray-100">

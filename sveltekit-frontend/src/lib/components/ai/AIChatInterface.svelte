@@ -288,7 +288,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 		</div>
 		<header
 			class="flex items-center justify-between p-4 bg-gradient-to-r from-yorha-bg-tertiary to-yorha-bg-secondary border-b border-yorha-border cursor-move select-none relative"
-			on:mousedown={startDrag}
+		 onmousedown={startDrag}
 			role="banner"
 		>
 			<div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-yorha-primary to-transparent animate-scan"></div>

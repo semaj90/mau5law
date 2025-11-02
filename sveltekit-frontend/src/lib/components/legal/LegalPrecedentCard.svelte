@@ -1,5 +1,6 @@
 <!-- Legal Precedent Card for Legal AI App -->
 <script lang="ts">
+
   import { Scale } from 'lucide-svelte/icons/scale.svelte';
   import { Calendar } from 'lucide-svelte/icons/calendar.svelte';
   import { MapPin } from 'lucide-svelte/icons/map-pin.svelte';
@@ -83,19 +84,19 @@
     international: { label: 'International', icon: Scale, color: 'text-purple-400' }
   };
   // Reactive derived values (avoid using {@const} in template)
-  $: relevanceLevel = (() => {
-    if (precedent.relevanceScore >= 90) return 'high';
+  const relevanceLevel = $derived((() => {
+    if (precedent.relevanceScore >= 90) return 'high');
     if (precedent.relevanceScore >= 70) return 'medium';
     return 'low';
   })();
-  $: similarityLevel = (() => {
-    if (precedent.similarityScore == null) return null;
+  const similarityLevel = $derived((() => {
+    if (precedent.similarityScore == null) return null);
     if (precedent.similarityScore >= 80) return 'high';
     if (precedent.similarityScore >= 60) return 'medium';
     return 'low';
   })();
-  $: jurisdictionInfo = jurisdictionConfig[precedent.jurisdiction] ?? { label: '', icon: Scale, color: '' };
-  $: JurisdictionIcon = jurisdictionInfo.icon;
+  const jurisdictionInfo = $derived(jurisdictionConfig[precedent.jurisdiction] ?? { label: '', icon: Scale, color: '' });
+  const JurisdictionIcon = $derived(jurisdictionInfo.icon);
   function formatDate(date: Date): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -113,6 +114,7 @@
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength).trim() + '...';
   }
+
 </script>
 <div
   class={cn(

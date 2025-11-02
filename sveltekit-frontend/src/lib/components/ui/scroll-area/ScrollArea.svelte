@@ -27,7 +27,7 @@
   const restClass = ( ($$restProps as any)?.class ?? '' ) as string;
   const mergedClassWithRest = cn(mergedClass, restClass);
 </script>
-<svelte:component this={RootComp} class={mergedClassWithRest} {...$$restProps}>
+<svelte:component this={RootComp} class={mergedClassWithRest} {...rest}>
   <svelte:component this={ViewportComp} class="h-full w-full rounded-[inherit]">
     <slot />
   </svelte:component>

@@ -6,21 +6,22 @@
   import * as SelectModule from '$lib/components/ui/Select.svelte';
   // Prefer default, then named `Select`, then fallback to the module itself
   const SelectImpl = (SelectModule as any).default ?? (SelectModule as any).Select ?? (SelectModule as any);
-  export let value: any = undefined;
-  export let options: any[] = [];
-  export let placeholder: string = 'Select...';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export let disabled: any = undefined;
-  // $$restProps will forward any other attributes passed by consumers
+  let { value = undefined, options = [], placeholder = 'Select...', disabled = undefined, ...rest } = $props<{
+    value?: any;
+    options?: any[];
+    placeholder?: string;
+    disabled?: any;
+  }>();
+
   // detect if resolved export looks like a Svelte component (constructor/function)
   const hasSelectImpl = Boolean(SelectImpl && (typeof SelectImpl === 'function' || typeof SelectImpl === 'object'));
 </script>
 {#if hasSelectImpl}
-  <!-- Render the real Select implementation and forward attributes -->
-  <svelte:component this={SelectImpl} {value} {options} {placeholder} disabled={disabled} {...$$restProps} />
+  <!-- Svelte 5: Direct component usage instead of svelte:component -->
+  <SelectImpl {value} {options} {placeholder} {disabled} {...rest} />
 {:else}
   <!-- Fallback: native select to avoid runtime errors if the implemented component shape differs -->
-  <select bind:value class="compat-select" disabled={disabled} {...$$restProps}>
+  <select bind:value class="compat-select" {disabled} {...rest}>
     {#if placeholder}
       <option value="" disabled={value == null || value === ''}>{placeholder}</option>
     {/if}

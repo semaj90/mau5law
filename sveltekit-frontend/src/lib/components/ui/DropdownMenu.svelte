@@ -22,7 +22,7 @@
   // No need to declare it manually; see usage below for prop forwarding.
 </script>
 <!-- Forward all unhandled props to the DropdownMenuRoot for flexibility -->
-<DropdownMenuRoot {...$$restProps}>
+<DropdownMenuRoot {...rest}>
   <DropdownMenuTrigger>
     {#if typeof trigger === 'string'}
       {trigger}

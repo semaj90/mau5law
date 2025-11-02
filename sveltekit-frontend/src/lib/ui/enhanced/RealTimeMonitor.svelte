@@ -118,11 +118,11 @@
   <header class="header">
     <h3>Go Services Health</h3>
     <div class="controls">
-      <button on:click={() => void fetchHealth()} disabled={loading} aria-label="Refresh">
+      <button onclick={() => void fetchHealth()} disabled={loading} aria-label="Refresh">
         {#if loading}Refreshing...{:else}Refresh{/if}
       </button>
-      <button on:click={() => { stopPolling(); }} title="Pause updates">Pause</button>
-      <button on:click={() => { startPolling(); }} title="Resume updates">Resume</button>
+      <button onclick={() => { stopPolling(); }} title="Pause updates">Pause</button>
+      <button onclick={() => { startPolling(); }} title="Resume updates">Resume</button>
     </div>
   </header>
 

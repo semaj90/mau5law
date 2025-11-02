@@ -1,4 +1,5 @@
 <script lang="ts">
+
   import { aiSummaryMachine } from "$lib/machines/aiSummaryMachine";
   import { useMachine } from "@xstate/svelte";
   import {
@@ -67,7 +68,7 @@
   export let allowExport: boolean = true;
   const { state, send } = useMachine(aiSummaryMachine);
   // reactive derived content so it updates when reportData changes
-  $: analysisContent = generateAnalysisContent(reportData);
+  const analysisContent = $derived(generateAnalysisContent(reportData));
   function generateAnalysisContent(report: EvidenceReport): string {
     return `
   EVIDENCE ANALYSIS REPORT
@@ -161,6 +162,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
+
 </script>
 <div class="evidence-report-summary space-y-6">
   <!-- Report Header -->

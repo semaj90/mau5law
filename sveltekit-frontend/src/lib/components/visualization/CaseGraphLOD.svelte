@@ -13,6 +13,7 @@
   - Real-time collaboration cursors
 -->
 <script lang="ts">
+
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
@@ -145,16 +146,16 @@
     },
   } as const;
   // Derived values
-  $: recommendedLOD = (() => {
-    const distance = Math.sqrt(cameraPosition.x ** 2 + cameraPosition.y ** 2 + cameraPosition.z ** 2);
+  const recommendedLOD = $derived((() => {
+    const distance = Math.sqrt(cameraPosition.x ** 2 + cameraPosition.y ** 2 + cameraPosition.z ** 2));
     const nodeCount = allNodes.length;
     if (distance < 50 && nodeCount < 200) return 0;
     if (distance < 100 && nodeCount < 500) return 1;
     if (distance < 200 && nodeCount < 1000) return 2;
     return 3;
   })();
-  $: lodStats = (() => {
-    const config = lodConfig[currentLOD as keyof typeof lodConfig];
+  const lodStats = $derived((() => {
+    const config = lodConfig[currentLOD as keyof typeof lodConfig]);
     return {
       level: currentLOD,
       visibleNodes: visibleNodes.length,
@@ -577,6 +578,7 @@
     applyLODFiltering();
     initializePhysicsPositions();
   }
+
 </script>
 <div class="case-graph-lod nes-container with-title">
   <p class="title">🕸️ Case Relationship Graph</p>

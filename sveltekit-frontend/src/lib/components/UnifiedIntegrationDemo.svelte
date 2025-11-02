@@ -1,5 +1,6 @@
 <!-- Unified GPU/WASM Integration Demo Component -->
 <script lang="ts">
+
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -63,7 +64,7 @@ Both parties acknowledge they have read and agree to these terms.`,
   };
 
   // keep the test input in sync with selectedOperation
-  $: testInput = demoInputs[selectedOperation] ?? testInput;
+  const testInput = $derived(demoInputs[selectedOperation] ?? testInput);
 
   onMount(() => {
     updateSystemHealth();
@@ -214,6 +215,7 @@ Both parties acknowledge they have read and agree to these terms.`,
       default: return 'text-gray-600';
     }
   }
+
 </script>
 
 <div class="unified-integration-demo p-6 max-w-7xl mx-auto">

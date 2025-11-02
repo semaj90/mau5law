@@ -6,9 +6,10 @@
     onClose?: (() => void);
   }>();
 </script>
-<svelte:component this={RealDialog} {open} onclose={onClose} {...rest}>
+<!-- Svelte 5: Direct component usage instead of svelte:component -->
+<RealDialog {open} onclose={onClose} {...rest}>
   <slot />
-</svelte:component>
+</RealDialog>
 <style>
   /* shim - no styles */
 </style>

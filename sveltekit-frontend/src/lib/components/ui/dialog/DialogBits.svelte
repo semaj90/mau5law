@@ -1,4 +1,5 @@
 <script lang="ts">
+
   import { fade, scale } from 'svelte/transition';
   import { cn } from '$lib/utils';
   export let open: boolean = $state(false);
@@ -18,11 +19,11 @@
   };
   // stable id used for aria-controls / referencing the dialog
   let dialogId = `dialog-${Math.random().toString(36).slice(2, 9)}`;
-  $: dialogClasses = cn(
+  const dialogClasses = $derived(cn(
     'relative z-50 w-full max-h-[95vh] overflow-auto rounded-lg border bg-white p-6 shadow-lg dark:bg-slate-950',
     sizeClasses[size],
     className
-  );
+  ));
   let _prevOpen = open;
   $: if (_prevOpen !== open) {
     _prevOpen = open;
@@ -57,6 +58,7 @@
     }
     event.stopPropagation();
   }
+
 </script>
 <svelte:window onkeydown={handleKeydown} />
 {#if $$slots.trigger}

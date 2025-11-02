@@ -10,6 +10,7 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
+
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import type { N64RenderingOptions } from '../types/gaming-types.js';
@@ -307,13 +308,13 @@
   }
 
   // Reactive derived values
-  $: sizeStyles = getSizeStyles(size);
-  $: materialStyles = getMaterialStyles(variant, materialType, checked);
-  $: knobTranslateX = checked ? sizeStyles.width - sizeStyles.knobSize - 4 : 2;
-  $: dynamicScale = isPressed ? 0.95 : isHovered ? 1.02 : 1;
-  $: knobScale = isPressed ? 0.9 : isAnimating ? (checked ? 1.1 : 0.95) : 1;
-  $: transform3D = `perspective(${perspective}px) scale(${dynamicScale})`;
-  $: knobTransform = `translateX(${knobTranslateX}px) scale(${knobScale}) ${enableSpringPhysics && isAnimating ? `rotateZ(${checked ? 5 : -5}deg)` : ''}`;
+  const sizeStyles = $derived(getSizeStyles(size));
+  const materialStyles = $derived(getMaterialStyles(variant, materialType, checked));
+  const knobTranslateX = $derived(checked ? sizeStyles.width - sizeStyles.knobSize - 4 : 2);
+  const dynamicScale = $derived(isPressed ? 0.95 : isHovered ? 1.02 : 1);
+  const knobScale = $derived(isPressed ? 0.9 : isAnimating ? (checked ? 1.1 : 0.95) : 1);
+  const transform3D = $derived(`perspective(${perspective}px) scale(${dynamicScale})`);
+  const knobTransform = $derived(`translateX(${knobTranslateX}px) scale(${knobScale}) ${enableSpringPhysics && isAnimating ? `rotateZ(${checked ? 5 : -5}deg)` : ''}`);
 
   // Inject particle keyframes and cleanup
   onMount(() => {
@@ -334,6 +335,7 @@
     if (particleStyleElement && particleStyleElement.parentNode) particleStyleElement.remove();
     // do not close audioContext aggressively (leave to browser)
   });
+
 </script>
 
 <div class={"n64-switch-container " + className}>
