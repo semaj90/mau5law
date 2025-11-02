@@ -42,87 +42,87 @@ import type { LegalDocument, DocumentChunk, UserAiQuery, AutoTag } from '$lib/ty
  * RAG Pipeline Configuration
  */
 export interface RAGConfig {
-  database: DatabaseConfig;
-  redis: RedisConfig;
-  ollama: OllamaConfig;
-  rag: RAGSettings;
-  security: SecuritySettings;
+  readonly database: DatabaseConfig;
+  readonly redis: RedisConfig;
+  readonly ollama: OllamaConfig;
+  readonly rag: RAGSettings;
+  readonly security: SecuritySettings;
 }
 
 /**
  * Database Configuration
  */
 export interface DatabaseConfig {
-  host: string;
-  port: number;
-  database: string;
-  username: string;
-  password: string;
-  max: number;
-  idle_timeout: number;
-  ssl: boolean | string;
-  connect_timeout: number;
+  readonly host: string;
+  readonly port: number;
+  readonly database: string;
+  readonly username: string;
+  readonly password: string;
+  readonly max: number;
+  readonly idle_timeout: number;
+  readonly ssl: boolean | string;
+  readonly connect_timeout: number;
 }
 
 /**
  * Redis Configuration
  */
 export interface RedisConfig {
-  host: string;
-  port: number;
-  db: number;
-  maxRetriesPerRequest: number;
-  cacheTtl: number;
-  enableReadyCheck: boolean;
-  lazyConnect: boolean;
+  readonly host: string;
+  readonly port: number;
+  readonly db: number;
+  readonly maxRetriesPerRequest: number;
+  readonly cacheTtl: number;
+  readonly enableReadyCheck: boolean;
+  readonly lazyConnect: boolean;
 }
 
 /**
  * Ollama Configuration
  */
 export interface OllamaConfig {
-  baseUrl: string;
-  embeddingModel: string;
-  llmModel: string;
-  embeddingDimensions: number;
-  timeout: number;
-  temperature: number;
-  numCtx: number;
-  numPredict: number;
+  readonly baseUrl: string;
+  readonly embeddingModel: string;
+  readonly llmModel: string;
+  readonly embeddingDimensions: number;
+  readonly timeout: number;
+  readonly temperature: number;
+  readonly numCtx: number;
+  readonly numPredict: number;
 }
 
 /**
  * RAG Settings
  */
 export interface RAGSettings {
-  chunkSize: number;
-  chunkOverlap: number;
-  maxSources: number;
-  similarityThreshold: number;
-  timeoutMs: number;
-  enableMetrics: boolean;
-  enableAutoTagging: boolean;
-  enableCaching: boolean;
-  batchSize: number;
+  readonly chunkSize: number;
+  readonly chunkOverlap: number;
+  readonly maxSources: number;
+  readonly similarityThreshold: number;
+  readonly timeoutMs: number;
+  readonly enableMetrics: boolean;
+  readonly enableAutoTagging: boolean;
+  readonly enableCaching: boolean;
+  readonly batchSize: number;
 }
 
 /**
  * Security Settings
  */
 export interface SecuritySettings {
-  rateLimit: {
-    perMinute: number;
-    windowMs: number;
+  readonly rateLimit: {
+    readonly perMinute: number;
+    readonly windowMs: number;
   };
-  validation: {
-    maxInputLength: number;
-    maxDocumentSize: number;
-    allowedDocumentTypes: string[];
+  readonly validation: {
+    readonly maxInputLength: number;
+    readonly maxDocumentSize: number;
+    readonly allowedDocumentTypes: string[];
   };
-  sanitization: {
-    removeHtmlTags: boolean;
-    removeSqlChars: boolean;
-    maxLineLength: number;
+  readonly sanitization: {
+    readonly removeHtmlTags: boolean;
+    readonly removeSqlChars: boolean;
+    readonly maxLineLength: number;
   };
 }
 
