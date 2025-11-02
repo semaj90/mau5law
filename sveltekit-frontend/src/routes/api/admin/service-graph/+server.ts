@@ -4,10 +4,10 @@
  * GET /api/admin/service-graph
  */
 
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
 
-interface Service { id: string;, label: string;
+interface Service { id: string; label: string;
   type: string;
   port: number;
   description: string;
@@ -17,436 +17,131 @@ interface Service { id: string;, label: string;
   health?: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
   responseTime?: number;
   uptime?: number;
-} }
+ }
 
-interface Edge { source: string;, target: string;
+interface Edge { source: string; target: string;
   type: string;
-} }
+ }
 
-interface ServiceGraph { nodes: Service[];, edges: Edge[];
-  metadata: { totalServices: number;, totalConnections: number;
+interface ServiceGraph { nodes: Service[]; edges: Edge[];
+  metadata: { totalServices: number; totalConnections: number;
   generated: string;
     lastUpdated?: string;
   };
-} }
+ }
 
 // Service inventory (mirrors generate-service-dependency-graph.mjs)
 const SERVICES_INVENTORY: Record<string, Omit<Service, 'id' | 'label'>> = {
   'sveltekit-frontend': {
-    type: 'frontend',
-    port: 5173,
-    description: 'SvelteKit, 5 frontend application',
-    capabilities: ['svelte5', 'typescript', 'ssr'],
-    protocol: 'http',
-    dependsOn: ['postgres', 'redis', 'qdrant', 'minio', 'rabbitmq', 'neo4j', 'ollama']
-  },
-  'enhanced-rag': {
-    type: 'core',
-    port: 8094,
-    description: 'RAG pipeline with SOM predictor, GPU acceleration',
-    capabilities: ['ai', 'rag', 'gpu', 'som', 'xstate'],
-    protocol: 'http',
-    dependsOn: ['qdrant', 'postgres', 'minio', 'rabbitmq', 'ollama']
-  },
-  'upload-service': {
-    type: 'core',
-    port: 8093,
-    description: 'File upload and processing service',
-    capabilities: ['file-upload', 'storage', 'processing'],
-    protocol: 'http',
-    dependsOn: ['minio', 'rabbitmq', 'postgres']
-  },
-  'kratos-server': {
-    type: 'core',
-    port: 50051,
-    description: 'Legal gRPC server with GPU compute',
-    capabilities: ['legal-grpc', 'gpu-compute', 'search'],
-    protocol: 'grpc',
-    dependsOn: ['postgres', 'qdrant', 'rabbitmq']
-  },
-  'advanced-cuda': {
-    type: 'gpu',
-    port: 8095,
-    description: 'CUDA kernel splicing + FlashAttention',
-    capabilities: ['kernel-splicing', 'attention', 'flash-attention', 'cuda-direct'],
-    protocol: 'http',
-    dependsOn: ['qdrant', 'postgres', 'rabbitmq']
-  },
-  'dimensional-cache': {
-    type: 'cache',
-    port: 8097,
-    description: 'Multi-dimensional vector caching',
-    capabilities: ['multi-dimensional-cache', 'lru-eviction', 'vector-storage'],
-    protocol: 'http',
-    dependsOn: ['redis', 'postgres']
-  },
-  'xstate-manager': {
-    type: 'orchestration',
-    port: 8098,
-    description: 'XState v5 state machine management',
-    capabilities: ['idle-detection', 'state-management', 'rabbitmq-queue'],
-    protocol: 'http',
-    dependsOn: ['redis', 'rabbitmq']
-  },
-  'recommendation-engine': {
-    type: 'ai',
-    port: 8100,
-    description: 'AI recommendation system with self-prompting',
-    capabilities: ['ai-recommendations', 'user-patterns', 'self-prompting'],
-    protocol: 'http',
-    dependsOn: ['postgres', 'neo4j', 'redis', 'ollama']
-  },
-  'vector-service': {
-    type: 'vector',
-    port: 8101,
-    description: 'Vector similarity search',
-    capabilities: ['vector-search', 'similarity'],
-    protocol: 'http',
-    dependsOn: ['qdrant', 'postgres']
-  },
-  'load-balancer': {
-    type: 'infrastructure',
-    port: 8102,
-    description: 'Load balancing and request routing',
-    capabilities: ['load-balancing', 'failover'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'cluster-manager': {
-    type: 'infrastructure',
-    port: 8103,
-    description: 'Service discovery and health monitoring',
-    capabilities: ['service-discovery', 'health-monitoring'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'gpu-indexer': {
-    type: 'gpu',
-    port: 8104,
-    description: 'GPU-accelerated document indexing',
-    capabilities: ['gpu-indexing', 'texture-processing'],
-    protocol: 'http',
-    dependsOn: ['qdrant', 'postgres', 'minio']
-  },
-  'context7-error': {
-    type: 'ai',
-    port: 8105,
-    description: 'Context7 error analysis and auto-fix',
-    capabilities: ['error-analysis', 'auto-fix'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'quic-gateway': {
-    type: 'infrastructure',
-    port: 8106,
-    description: 'QUIC protocol gateway',
-    capabilities: ['quic-protocol', 'gateway'],
-    protocol: 'quic',
-    dependsOn: []
-  },
-  'cuda-worker': {
-    type: 'gpu',
-    port: 8107,
-    description: 'CUDA worker pool for GPU tasks',
-    capabilities: ['cuda-computation', 'worker-pool'],
-    protocol: 'http',
-    dependsOn: ['rabbitmq']
-  },
-  'vector-consumer': {
-    type: 'vector',
-    port: 8108,
-    description: 'Vector batch processing and consumption',
-    capabilities: ['vector-consumption', 'batch-processing'],
-    protocol: 'http',
-    dependsOn: ['qdrant', 'postgres', 'rabbitmq']
-  },
-  'gin-upload': {
-    type: 'data',
-    port: 8109,
-    description: 'Gin framework file upload service',
-    capabilities: ['gin-framework', 'file-upload'],
-    protocol: 'http',
-    dependsOn: ['minio']
-  },
-  'ingest-service': {
-    type: 'data',
-    port: 8110,
-    description: 'Data ingestion and pipeline processing',
-    capabilities: ['data-ingestion', 'pipeline'],
-    protocol: 'http',
-    dependsOn: ['postgres', 'qdrant', 'minio', 'rabbitmq']
-  },
-  'vector-redis': {
-    type: 'cache',
-    port: 8111,
-    description: 'Redis-backed vector caching',
-    capabilities: ['redis-vectors', 'caching'],
-    protocol: 'http',
-    dependsOn: ['redis', 'qdrant']
-  },
-  'enhanced-rag-go125': {
-    type: 'core',
-    port: 8112,
-    description: 'Go 1.25 optimized RAG service',
-    capabilities: ['go1.25', 'enhanced-rag', 'greenteagc'],
-    protocol: 'http',
-    dependsOn: ['qdrant', 'postgres', 'ollama']
-  },
-  'upload-service-go125': {
-    type: 'core',
-    port: 8113,
-    description: 'Go 1.25 optimized upload service',
-    capabilities: ['go1.25', 'upload', 'optimized'],
-    protocol: 'http',
-    dependsOn: ['minio', 'rabbitmq']
-  },
-  'cuda-ai-service': {
-    type: 'gpu',
-    port: 8114,
-    description: 'CUDA-accelerated AI operations',
-    capabilities: ['cuda-ai', 'gpu-acceleration'],
-    protocol: 'http',
-    dependsOn: ['qdrant', 'postgres']
-  },
-  'vector-service-go125': {
-    type: 'vector',
-    port: 8115,
-    description: 'Go 1.25 optimized vector service',
-    capabilities: ['go1.25', 'vectors'],
-    protocol: 'http',
-    dependsOn: ['qdrant', 'postgres']
-  },
-  'load-balancer-go125': {
-    type: 'infrastructure',
-    port: 8116,
-    description: 'Go 1.25 optimized load balancer',
-    capabilities: ['go1.25', 'load-balancing'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'grpc-server-go125': {
-    type: 'infrastructure',
-    port: 8117,
-    description: 'Go 1.25 optimized gRPC server',
-    capabilities: ['go1.25', 'grpc-optimized'],
-    protocol: 'grpc',
-    dependsOn: []
-  },
-  'rag-quic-go125': {
-    type: 'core',
-    port: 8118,
-    description: 'Go 1.25 QUIC-optimized RAG',
-    capabilities: ['go1.25', 'quic-rag'],
-    protocol: 'quic',
-    dependsOn: ['qdrant', 'postgres']
-  },
-  'http-gateway': {
-    type: 'infrastructure',
-    port: 8119,
-    description: 'HTTP protocol gateway and router',
-    capabilities: ['http-gateway', 'routing'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'grpc-gateway': {
-    type: 'infrastructure',
-    port: 8120,
-    description: 'gRPC gateway with transcoding',
-    capabilities: ['grpc-gateway', 'transcoding'],
-    protocol: 'grpc',
-    dependsOn: []
-  },
-  'websocket-service': {
-    type: 'infrastructure',
-    port: 8121,
-    description: 'Real-time WebSocket service',
-    capabilities: ['real-time', 'events'],
-    protocol: 'websocket',
-    dependsOn: []
-  },
-  't5-transformer': {
-    type: 'ai',
-    port: 8122,
-    description: 'T5 transformer model service',
-    capabilities: ['t5-processing', 'seq2seq'],
-    protocol: 'http',
-    dependsOn: ['rabbitmq', 'postgres']
-  },
-  'live-agent': {
-    type: 'ai',
-    port: 8123,
-    description: 'Real-time AI processing agent',
-    capabilities: ['live-processing', 'real-time-ai'],
-    protocol: 'http',
-    dependsOn: ['websocket-service', 'ollama']
-  },
-  'legal-ai': {
-    type: 'ai',
-    port: 8124,
-    description: 'Legal document analysis AI',
-    capabilities: ['legal-analysis', 'document-processing'],
-    protocol: 'http',
-    dependsOn: ['postgres', 'qdrant', 'minio']
-  },
-  'multi-core-ollama': {
-    type: 'ai',
-    port: 8125,
-    description: 'Ollama multi-core cluster management',
-    capabilities: ['ollama-cluster', 'load-balancing'],
-    protocol: 'http',
-    dependsOn: ['load-balancer']
-  },
-  'minio-proxy': {
-    type: 'infrastructure',
-    port: 8126,
-    description: 'MinIO: object storage proxy',
-    capabilities: ['object-storage', 'file-proxy'],
-    protocol: 'http',
-    dependsOn: ['minio']
-  },
-  'postgres-proxy': {
-    type: 'infrastructure',
-    port: 8127,
-    description: 'PostgreSQL connection pooling proxy',
-    capabilities: ['database-proxy', 'connection-pooling'],
-    protocol: 'http',
-    dependsOn: ['postgres']
-  },
-  'neo4j-proxy': {
-    type: 'infrastructure',
-    port: 8128,
-    description: 'Neo4j graph database proxy',
-    capabilities: ['graph-database', 'cypher-queries'],
-    protocol: 'http',
-    dependsOn: ['neo4j']
-  },
-  'qdrant-proxy': {
-    type: 'infrastructure',
-    port: 8129,
-    description: 'Qdrant vector database proxy',
-    capabilities: ['vector-database', 'similarity-search'],
-    protocol: 'http',
-    dependsOn: ['qdrant']
-  },
-  'metrics-collector': {
-    type: 'observability',
-    port: 8130,
-    description: 'Metrics collection and telemetry',
-    capabilities: ['metrics', 'telemetry'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'log-aggregator': {
-    type: 'observability',
-    port: 8131,
-    description: 'Log aggregation and analysis',
-    capabilities: ['logging', 'aggregation'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'health-monitor': {
-    type: 'observability',
-    port: 8132,
-    description: 'Health check and monitoring',
-    capabilities: ['health-checks', 'monitoring'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'alert-manager': {
-    type: 'observability',
-    port: 8133,
-    description: 'Alert management and routing',
-    capabilities: ['alerting', 'notifications'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'auth-service': {
-    type: 'security',
-    port: 8134,
-    description: 'Authentication and authorization',
-    capabilities: ['authentication', 'authorization'],
-    protocol: 'http',
-    dependsOn: ['redis', 'postgres']
-  },
-  'security-scanner': {
-    type: 'security',
-    port: 8135,
-    description: 'Security scanning and vulnerability detection',
-    capabilities: ['security-scanning', 'vulnerability-detection'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'rate-limiter': {
-    type: 'security',
-    port: 8136,
-    description: 'Rate limiting and throttling',
-    capabilities: ['rate-limiting', 'throttling'],
-    protocol: 'http',
-    dependsOn: ['redis']
-  },
-  'postgres': {
-    type: 'database',
-    port: 5432,
-    description: 'PostgreSQL with pgvector extension',
-    capabilities: ['relational-db', 'vector-search', 'persistence'],
-    protocol: 'postgresql',
-    dependsOn: []
-  },
-  'qdrant': {
-    type: 'database',
-    port: 6333,
-    description: 'Qdrant vector database',
-    capabilities: ['vector-db', 'similarity-search', 'filtering'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'redis': {
-    type: 'cache',
-    port: 6379,
-    description: 'Redis cache and session store',
-    capabilities: ['caching', 'sessions', 'pub-sub', 'distributed-state'],
-    protocol: 'redis',
-    dependsOn: []
-  },
-  'minio': {
-    type: 'storage',
-    port: 9000,
-    description: 'MinIO: object storage (S3-compatible)',
-    capabilities: ['object-storage', 'document-storage'],
-    protocol: 'http',
-    dependsOn: []
-  },
-  'rabbitmq': {
-    type: 'queue',
-    port: 5672,
-    description: 'RabbitMQ message queue',
-    capabilities: ['async-jobs', 'worker-queues', 'pub-sub'],
-    protocol: 'amqp',
-    dependsOn: []
-  },
-  'neo4j': {
-    type: 'database',
-    port: 7687,
-    description: 'Neo4j graph database',
-    capabilities: ['graph-db', 'relationships', 'recommendations'],
-    protocol: 'bolt',
-    dependsOn: []
-  },
-  'ollama': {
-    type: 'ai',
-    port: 11434,
-    description: 'Ollama local LLM (gemma3:legal-latest)',
-    capabilities: ['llm', 'embeddings', 'inference'],
-    protocol: 'http',
-    dependsOn: []
-  } }
+    type: 'frontend', port: 5173, description: 'SvelteKit, 5 frontend application', capabilities: ['svelte5', 'typescript', 'ssr'], protocol: 'http', dependsOn: ['postgres', 'redis', 'qdrant', 'minio', 'rabbitmq', 'neo4j', 'ollama']
+  }, 'enhanced-rag': {
+    type: 'core', port: 8094, description: 'RAG pipeline with SOM predictor, GPU acceleration', capabilities: ['ai', 'rag', 'gpu', 'som', 'xstate'], protocol: 'http', dependsOn: ['qdrant', 'postgres', 'minio', 'rabbitmq', 'ollama']
+  }, 'upload-service': {
+    type: 'core', port: 8093, description: 'File upload and processing service', capabilities: ['file-upload', 'storage', 'processing'], protocol: 'http', dependsOn: ['minio', 'rabbitmq', 'postgres']
+  }, 'kratos-server': {
+    type: 'core', port: 50051, description: 'Legal gRPC server with GPU compute', capabilities: ['legal-grpc', 'gpu-compute', 'search'], protocol: 'grpc', dependsOn: ['postgres', 'qdrant', 'rabbitmq']
+  }, 'advanced-cuda': {
+    type: 'gpu', port: 8095, description: 'CUDA kernel splicing + FlashAttention', capabilities: ['kernel-splicing', 'attention', 'flash-attention', 'cuda-direct'], protocol: 'http', dependsOn: ['qdrant', 'postgres', 'rabbitmq']
+  }, 'dimensional-cache': {
+    type: 'cache', port: 8097, description: 'Multi-dimensional vector caching', capabilities: ['multi-dimensional-cache', 'lru-eviction', 'vector-storage'], protocol: 'http', dependsOn: ['redis', 'postgres']
+  }, 'xstate-manager': {
+    type: 'orchestration', port: 8098, description: 'XState v5 state machine management', capabilities: ['idle-detection', 'state-management', 'rabbitmq-queue'], protocol: 'http', dependsOn: ['redis', 'rabbitmq']
+  }, 'recommendation-engine': {
+    type: 'ai', port: 8100, description: 'AI recommendation system with self-prompting', capabilities: ['ai-recommendations', 'user-patterns', 'self-prompting'], protocol: 'http', dependsOn: ['postgres', 'neo4j', 'redis', 'ollama']
+  }, 'vector-service': {
+    type: 'vector', port: 8101, description: 'Vector similarity search', capabilities: ['vector-search', 'similarity'], protocol: 'http', dependsOn: ['qdrant', 'postgres']
+  }, 'load-balancer': {
+    type: 'infrastructure', port: 8102, description: 'Load balancing and request routing', capabilities: ['load-balancing', 'failover'], protocol: 'http', dependsOn: []
+  }, 'cluster-manager': {
+    type: 'infrastructure', port: 8103, description: 'Service discovery and health monitoring', capabilities: ['service-discovery', 'health-monitoring'], protocol: 'http', dependsOn: []
+  }, 'gpu-indexer': {
+    type: 'gpu', port: 8104, description: 'GPU-accelerated document indexing', capabilities: ['gpu-indexing', 'texture-processing'], protocol: 'http', dependsOn: ['qdrant', 'postgres', 'minio']
+  }, 'context7-error': {
+    type: 'ai', port: 8105, description: 'Context7 error analysis and auto-fix', capabilities: ['error-analysis', 'auto-fix'], protocol: 'http', dependsOn: []
+  }, 'quic-gateway': {
+    type: 'infrastructure', port: 8106, description: 'QUIC protocol gateway', capabilities: ['quic-protocol', 'gateway'], protocol: 'quic', dependsOn: []
+  }, 'cuda-worker': {
+    type: 'gpu', port: 8107, description: 'CUDA worker pool for GPU tasks', capabilities: ['cuda-computation', 'worker-pool'], protocol: 'http', dependsOn: ['rabbitmq']
+  }, 'vector-consumer': {
+    type: 'vector', port: 8108, description: 'Vector batch processing and consumption', capabilities: ['vector-consumption', 'batch-processing'], protocol: 'http', dependsOn: ['qdrant', 'postgres', 'rabbitmq']
+  }, 'gin-upload': {
+    type: 'data', port: 8109, description: 'Gin framework file upload service', capabilities: ['gin-framework', 'file-upload'], protocol: 'http', dependsOn: ['minio']
+  }, 'ingest-service': {
+    type: 'data', port: 8110, description: 'Data ingestion and pipeline processing', capabilities: ['data-ingestion', 'pipeline'], protocol: 'http', dependsOn: ['postgres', 'qdrant', 'minio', 'rabbitmq']
+  }, 'vector-redis': {
+    type: 'cache', port: 8111, description: 'Redis-backed vector caching', capabilities: ['redis-vectors', 'caching'], protocol: 'http', dependsOn: ['redis', 'qdrant']
+  }, 'enhanced-rag-go125': {
+    type: 'core', port: 8112, description: 'Go 1.25 optimized RAG service', capabilities: ['go1.25', 'enhanced-rag', 'greenteagc'], protocol: 'http', dependsOn: ['qdrant', 'postgres', 'ollama']
+  }, 'upload-service-go125': {
+    type: 'core', port: 8113, description: 'Go 1.25 optimized upload service', capabilities: ['go1.25', 'upload', 'optimized'], protocol: 'http', dependsOn: ['minio', 'rabbitmq']
+  }, 'cuda-ai-service': {
+    type: 'gpu', port: 8114, description: 'CUDA-accelerated AI operations', capabilities: ['cuda-ai', 'gpu-acceleration'], protocol: 'http', dependsOn: ['qdrant', 'postgres']
+  }, 'vector-service-go125': {
+    type: 'vector', port: 8115, description: 'Go 1.25 optimized vector service', capabilities: ['go1.25', 'vectors'], protocol: 'http', dependsOn: ['qdrant', 'postgres']
+  }, 'load-balancer-go125': {
+    type: 'infrastructure', port: 8116, description: 'Go 1.25 optimized load balancer', capabilities: ['go1.25', 'load-balancing'], protocol: 'http', dependsOn: []
+  }, 'grpc-server-go125': {
+    type: 'infrastructure', port: 8117, description: 'Go 1.25 optimized gRPC server', capabilities: ['go1.25', 'grpc-optimized'], protocol: 'grpc', dependsOn: []
+  }, 'rag-quic-go125': {
+    type: 'core', port: 8118, description: 'Go 1.25 QUIC-optimized RAG', capabilities: ['go1.25', 'quic-rag'], protocol: 'quic', dependsOn: ['qdrant', 'postgres']
+  }, 'http-gateway': {
+    type: 'infrastructure', port: 8119, description: 'HTTP protocol gateway and router', capabilities: ['http-gateway', 'routing'], protocol: 'http', dependsOn: []
+  }, 'grpc-gateway': {
+    type: 'infrastructure', port: 8120, description: 'gRPC gateway with transcoding', capabilities: ['grpc-gateway', 'transcoding'], protocol: 'grpc', dependsOn: []
+  }, 'websocket-service': {
+    type: 'infrastructure', port: 8121, description: 'Real-time WebSocket service', capabilities: ['real-time', 'events'], protocol: 'websocket', dependsOn: []
+  }, 't5-transformer': {
+    type: 'ai', port: 8122, description: 'T5 transformer model service', capabilities: ['t5-processing', 'seq2seq'], protocol: 'http', dependsOn: ['rabbitmq', 'postgres']
+  }, 'live-agent': {
+    type: 'ai', port: 8123, description: 'Real-time AI processing agent', capabilities: ['live-processing', 'real-time-ai'], protocol: 'http', dependsOn: ['websocket-service', 'ollama']
+  }, 'legal-ai': {
+    type: 'ai', port: 8124, description: 'Legal document analysis AI', capabilities: ['legal-analysis', 'document-processing'], protocol: 'http', dependsOn: ['postgres', 'qdrant', 'minio']
+  }, 'multi-core-ollama': {
+    type: 'ai', port: 8125, description: 'Ollama multi-core cluster management', capabilities: ['ollama-cluster', 'load-balancing'], protocol: 'http', dependsOn: ['load-balancer']
+  }, 'minio-proxy': {
+    type: 'infrastructure', port: 8126, description: 'MinIO: object storage proxy', capabilities: ['object-storage', 'file-proxy'], protocol: 'http', dependsOn: ['minio']
+  }, 'postgres-proxy': {
+    type: 'infrastructure', port: 8127, description: 'PostgreSQL connection pooling proxy', capabilities: ['database-proxy', 'connection-pooling'], protocol: 'http', dependsOn: ['postgres']
+  }, 'neo4j-proxy': {
+    type: 'infrastructure', port: 8128, description: 'Neo4j graph database proxy', capabilities: ['graph-database', 'cypher-queries'], protocol: 'http', dependsOn: ['neo4j']
+  }, 'qdrant-proxy': {
+    type: 'infrastructure', port: 8129, description: 'Qdrant vector database proxy', capabilities: ['vector-database', 'similarity-search'], protocol: 'http', dependsOn: ['qdrant']
+  }, 'metrics-collector': {
+    type: 'observability', port: 8130, description: 'Metrics collection and telemetry', capabilities: ['metrics', 'telemetry'], protocol: 'http', dependsOn: []
+  }, 'log-aggregator': {
+    type: 'observability', port: 8131, description: 'Log aggregation and analysis', capabilities: ['logging', 'aggregation'], protocol: 'http', dependsOn: []
+  }, 'health-monitor': {
+    type: 'observability', port: 8132, description: 'Health check and monitoring', capabilities: ['health-checks', 'monitoring'], protocol: 'http', dependsOn: []
+  }, 'alert-manager': {
+    type: 'observability', port: 8133, description: 'Alert management and routing', capabilities: ['alerting', 'notifications'], protocol: 'http', dependsOn: []
+  }, 'auth-service': {
+    type: 'security', port: 8134, description: 'Authentication and authorization', capabilities: ['authentication', 'authorization'], protocol: 'http', dependsOn: ['redis', 'postgres']
+  }, 'security-scanner': {
+    type: 'security', port: 8135, description: 'Security scanning and vulnerability detection', capabilities: ['security-scanning', 'vulnerability-detection'], protocol: 'http', dependsOn: []
+  }, 'rate-limiter': {
+    type: 'security', port: 8136, description: 'Rate limiting and throttling', capabilities: ['rate-limiting', 'throttling'], protocol: 'http', dependsOn: ['redis']
+  }, 'postgres': {
+    type: 'database', port: 5432, description: 'PostgreSQL with pgvector extension', capabilities: ['relational-db', 'vector-search', 'persistence'], protocol: 'postgresql', dependsOn: []
+  }, 'qdrant': {
+    type: 'database', port: 6333, description: 'Qdrant vector database', capabilities: ['vector-db', 'similarity-search', 'filtering'], protocol: 'http', dependsOn: []
+  }, 'redis': {
+    type: 'cache', port: 6379, description: 'Redis cache and session store', capabilities: ['caching', 'sessions', 'pub-sub', 'distributed-state'], protocol: 'redis', dependsOn: []
+  }, 'minio': {
+    type: 'storage', port: 9000, description: 'MinIO: object storage (S3-compatible)', capabilities: ['object-storage', 'document-storage'], protocol: 'http', dependsOn: []
+  }, 'rabbitmq': {
+    type: 'queue', port: 5672, description: 'RabbitMQ message queue', capabilities: ['async-jobs', 'worker-queues', 'pub-sub'], protocol: 'amqp', dependsOn: []
+  }, 'neo4j': {
+    type: 'database', port: 7687, description: 'Neo4j graph database', capabilities: ['graph-db', 'relationships', 'recommendations'], protocol: 'bolt', dependsOn: []
+  }, 'ollama': {
+    type: 'ai', port: 11434, description: 'Ollama local LLM (gemma3:legal-latest)', capabilities: ['llm', 'embeddings', 'inference'], protocol: 'http', dependsOn: []
+   }
 };
 
 /**
  * Check health of a service
  */
 async function checkServiceHealth(
-  serviceId: string,
+  serviceId: string;
   port: number
 ): Promise<{ status: 'healthy' | 'degraded' | 'unhealthy'; responseTime: number; uptime?: number }> {
   const startTime = Date.now();
@@ -462,51 +157,40 @@ async function checkServiceHealth(
     const status = response.ok ? 'healthy' : 'degraded';
 
     return {
-      status,
-      responseTime,
-      uptime: response.ok ? 100 : 50
+      status, responseTime: uptime: response.ok ? 100 : 50
     };
-  } }catch (error) {
+   }catch (error) {
     return {
-      status: 'unhealthy',
-      responseTime: Date.now() - startTime,
-      uptime: 0
-    };
-  } }
-} }
+      status: 'unhealthy', responseTime: Date.now() - startTime: uptime: 0
+    }; } }
 
 /**
  * Build service graph
  */
 function buildServiceGraph(): ServiceGraph {
   const nodes: Service[] = [];
-  const, edges: Edge[] = [];
+  const: edges: Edge[] = [];
 
   for (const [id, config] of Object.entries(SERVICES_INVENTORY)) {
     nodes.push({
-      id,
-      label: id,
+      id: label: id;
       ...config
     });
 
     for (const dep of config.dependsOn) {
       edges.push({
-        source: id,
-        target: dep,
+        source: id;
+        target: dep;
         type: `depends_on' });'`
-    } }
-  } }
+     }
+   }
 
   return {
-    nodes,
-    edges,
-    metadata: {
-  totalServices: nodes.length,
-      totalConnections: edges.length,
-      generated: new Date().toISOString()
-    } }
+    nodes, edges: metadata: {
+  totalServices: nodes.length: totalConnections: edges.length: generated: new Date().toISOString()
+     }
   };
-} }
+ }
 
 /**
  * GET /api/admin/service-graph
@@ -532,29 +216,21 @@ export const GET: RequestHandler = async ({ url }) => {
 
       healthResults.forEach((result) => {
         if (result.status === 'fulfilled') {
-          healthMap.set(result.value.nodeId, result.value.health);
-        } }
-      });
+          healthMap.set(result.value.nodeId, result.value.health); });
 
       graph.nodes = graph.nodes.map(node => ({
-        ...node,
-        health: healthMap.get(node.id)?.status,
-        responseTime: healthMap.get(node.id)?.responseTime,
-        uptime: healthMap.get(node.id)?.uptime
+        ...node: health: healthMap.get(node.id)?.status: responseTime: healthMap.get(node.id)?.responseTime: uptime: healthMap.get(node.id)?.uptime
       }));
 
       graph.metadata.lastUpdated = new Date().toISOString();
-    } }
+     }
 
     return json(graph);
-  } }catch (error) {
+   }catch (error) {
     console.error('Service graph error: ', error);
     return json(
-      { error: `Failed to generate service graph` },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: `Failed to generate service graph` }, { status: 500  }
+    ); };
 
 /**
  * POST /api/admin/service-graph/analyze
@@ -563,7 +239,7 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as { serviceId?: string; depth?: number };
-    const { serviceId, depth = 2 } }= body;
+    const { serviceId: depth = 2  }= body;
 
     const graph = buildServiceGraph();
 
@@ -572,52 +248,44 @@ export const POST: RequestHandler = async ({ request }) => {
       const service = graph.nodes.find(n => n.id === serviceId);
       if (!service) {
         return json({ error: 'Service not found' }, { status: 404 });
-      } }
+       }
 
       const analysis = analyzeDependencies(graph, serviceId, depth);
       return json({
-        service: serviceId,
+        service: serviceId;
         ...analysis
       });
-    } }
+     }
 
     // Return overall graph analysis
     return json({
-      totalServices: graph.nodes.length,
-      totalDependencies: graph.edges.length,
-      averageDependencies: (graph.edges.length / graph.nodes.length).toFixed(2),
-      serviceByCriticalityScore: graph.nodes
+      totalServices: graph.nodes.length: totalDependencies: graph.edges.length: averageDependencies: (graph.edges.length / graph.nodes.length).toFixed(2), serviceByCriticalityScore: graph.nodes
         .map(node => ({
-  id: node.id,
-          criticalityScore: calculateCriticalityScore(graph, node.id)
+  id: node.id: criticalityScore: calculateCriticalityScore(graph, node.id)
         }))
         .sort((a, b) => b.criticalityScore - a.criticalityScore)
         .slice(0, 10)
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Service analysis error: ', error);
     return json(
-      { error: 'Failed to analyze services' },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: 'Failed to analyze services' }, { status: 500  }
+    ); };
 
 /**
  * Analyze dependencies for a service
  */
 function analyzeDependencies(
-  graph: ServiceGraph,
-  serviceId: string,
-  maxDepth: number,
-  visited = new Set<string>(),
-  depth = 0
+  graph: ServiceGraph;
+  serviceId: string;
+  maxDepth: number;
+  visited = new Set<string>(), depth = 0
 ): {
   directDependencies?: string[];
   directDependents?: string[];
   transitiveDependencies?: string[];
   dependencyDepth?: number;
-} }{
+ }{
   if (depth >= maxDepth || visited.has(serviceId)) return {};
 
   visited.add(serviceId);
@@ -634,27 +302,24 @@ function analyzeDependencies(
   directDependencies.forEach(dep => {
     const analysis = analyzeDependencies(graph, dep, maxDepth, visited, depth + 1);
     if (analysis.directDependencies) {
-      analysis.directDependencies.forEach((d: string) => transitiveDependencies.add(d));
-    } }
-  });
+      analysis.directDependencies.forEach((d: string) => transitiveDependencies.add(d)); });
 
   return {
-    directDependencies,
-    directDependents: dependents,
-    transitiveDependencies: Array.from(transitiveDependencies),
-    dependencyDepth: depth + 1
+    directDependencies: directDependents: dependents;
+    transitiveDependencies: Array.from(transitiveDependencies), dependencyDepth: depth + 1
   };
-} }
+ }
 
 /**
  * Calculate criticality score (how many services depend on this one)
  */
-function calculateCriticalityScore(graph: ServiceGraph, serviceId: string): number {
+function calculateCriticalityScore(graph: ServiceGraph: serviceId: string): number {
   const dependents = graph.edges.filter(e => e.target === serviceId).length;
   const dependencies = graph.edges.filter(e => e.source === serviceId).length;
 
   // Services with many dependents are more critical
   // Services with few dependencies are more stable (less critical if they fail)
   return (dependents * 2) - (dependencies * 0.5);
-} }
+ }
+
 

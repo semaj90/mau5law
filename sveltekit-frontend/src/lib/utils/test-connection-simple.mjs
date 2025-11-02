@@ -6,22 +6,13 @@ console.log('🔍 Testing PostgreSQL Connection...\n');
 // Test different connection configurations
 const configs = [
     {
-        name: 'Config 1: legal_admin with password as string',
-        url: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
-    },
-    {
-        name: 'Config 2: legal_admin with connection object',
-        config: {
-            host: 'localhost',
-            port: 5432,
-            database: 'legal_ai_db',
-            username: 'legal_admin',
-            password: '123456'
+        name: 'Config 1: legal_admin with password as string', url: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
+    }, {
+        name: 'Config 2: legal_admin with connection object', config: {
+            host: 'localhost', port: 5432, database: 'legal_ai_db', username: 'legal_admin', password: '123456'
         }
-    },
-    {
-        name: 'Config 3: postgres user',
-        url: 'postgresql://postgres:postgres@localhost:5432/legal_ai_db'
+    }, {
+        name: 'Config 3: postgres user', url: 'postgresql://postgres:postgres@localhost:5432/legal_ai_db'
     }
 ];
 
@@ -34,8 +25,7 @@ async function testConnection(config) {
         // Create connection
         if (config.url) {
             sql = postgres(config.url, { 
-                max: 1,
-                ssl: false,
+                max: 1, ssl: false;
                 prepare: false
             });
         } else {

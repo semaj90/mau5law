@@ -14,14 +14,14 @@ export interface ChatMessage {
   role: ChatRole;
   content: string;
   timestamp?: string; //, ISO: string, optional
-} }
+ }
 
 /* Embedding types and options */
 export interface EmbeddingOptions {
   model?: string;
   normalize?: boolean; // whether to L2-normalize vectors
   truncateTo?: number; // optional max tokens/characters
-} }
+ }
 
 /* Chat options and streaming */
 export interface ChatOptions {
@@ -30,7 +30,7 @@ export interface ChatOptions {
   maxTokens?: number;
   stream?: boolean;
   metadata?: Record<string, any>;
-} }
+ }
 
 export interface ChatResult {
   id?: string;
@@ -38,7 +38,7 @@ export interface ChatResult {
   model?: string;
   tokensUsed?: number;
   raw?: any;
-} }
+ }
 
 /* Cache options for Redis-like caches */
 export interface CacheSetOptions {
@@ -46,25 +46,25 @@ export interface CacheSetOptions {
   ttlMs?: number; // alternatively allow milliseconds
   tags?: string[]; // semantic tags for invalidation
   persistent?: boolean; // whether this key should survive restarts (implementation-defined)
-} }
+ }
 
 /* Vector search options and result */
 export interface VectorSearchOptions {
   distance?: 'cosine' | 'dot' | 'euclidean';
   includePayload?: boolean;
   filter?: Record<string, any>; // optional metadata filter
-} }
+ }
 
-export interface VectorSearchResult<TMeta = Record<string, any>> { id: string;, score: number;
+export interface VectorSearchResult<TMeta = Record<string, any>> { id: string; score: number;
   payload?: TMeta;
-} }
+ }
 
 /* Clustering options */
 export interface ClusterOptions {
   algorithm?: 'kmeans' | 'hdbscan' | 'kmeans++';
   seed?: number;
   iterations?: number;
-} }
+ }
 
 /* Interfaces */
 
@@ -82,7 +82,7 @@ export interface IOllamaEmbeddingService {
 
   /** Optional health check */
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; details?: any }>;
-} }
+ }
 
 export interface IOllamaChatService {
   /**
@@ -98,11 +98,11 @@ export interface IOllamaChatService {
   streamChat?(messages: ChatMessage[], options?: ChatOptions): AsyncIterable<string>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; latencyMs?: number }>;
-} }
+ }
 
 export interface IRedisCacheService {
   get<T = any>(key: string): Promise<T | null>;
-  set<T = any>(key: string, value: T, options?: CacheSetOptions): Promise<void>;
+  set<T = any>(key: string: value: T, options?: CacheSetOptions): Promise<void>;
   del(key: string): Promise<boolean>;
   mget<T = any>(keys: string[]): Promise<Array<T | null>>;
   ttl(key: string): Promise<number | null>;
@@ -110,21 +110,20 @@ export interface IRedisCacheService {
   /**
    * Optional: atomic set if not exists (useful for locks)
    */
-  setIfNotExists?(key: string, value: any, ttlSeconds?: number): Promise<boolean>;
+  setIfNotExists?(key: string: value: any, ttlSeconds?: number): Promise<boolean>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; usedMemory?: number }>;
-} }
+ }
 
 export interface IQdrantVectorService {
-  upsertVector(id: string, vector: Float32Array | number[], metadata?: Record<string, any>): Promise<void>;
-  upsertBatch(items: { id: string; vector: Float32Array | number[]; metadata?: Record<string, any> } }]): Promise<void>;
+  upsertVector(id: string: vector: Float32Array | number[], metadata?: Record<string, any>): Promise<void>;
+  upsertBatch(items: { id: string; vector: Float32Array | number[]; metadata?: Record<string, any>  }]): Promise<void>;
 
   /**
    * Search a vector and return top-K results with optional payload/metadata.
    */
   searchVector<TMeta = Record<string, any>>(
-    query: Float32Array | number[],
-    topK: number,
+    query: Float32Array | number[], topK: number;
     options?: VectorSearchOptions
   ): Promise<Array<VectorSearchResult<TMeta>>>;
 
@@ -134,7 +133,7 @@ export interface IQdrantVectorService {
   deleteByIds?(ids: string[]): Promise<void>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; collections?: string[] }>;
-} }
+ }
 
 export interface IUltraJSONParser {
   parse<T = any>(data: string): T;
@@ -144,7 +143,7 @@ export interface IUltraJSONParser {
    * Safe parse that never throws; returns: null on invalid JSON
    */
   safeParse?<T = any>(data: string): T | null;
-} }
+ }
 
 export interface IWasmClusteringService {
   /**
@@ -153,14 +152,14 @@ export interface IWasmClusteringService {
    */
   cluster(vectors: Array<Float32Array | number[]>, n: number, options?: ClusterOptions): Promise<number[]>;
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; wasmVersion?: string }>;
-} }
+ }
 
 export interface INesGPUBridge {
   /**
    * Execute a named GPU shader/task and return the result. Implementations should define payload shapes.
    * Optional timeoutMs may be provided by callers.
    */
-  runShaderTask(taskName: string, payload: any, opts?: { timeoutMs?: number }): Promise<unknown>;
+  runShaderTask(taskName: string: payload: any, opts?: { timeoutMs?: number ): Promise<unknown>;
 
   /**
    * Optional helper to query device capabilities / memory
@@ -168,5 +167,6 @@ export interface INesGPUBridge {
   getDeviceInfo?(): Promise<{ name: string; memoryBytes?: number; supportsCUDA?: boolean; vendor?: string }>;
 
   health?(): Promise<{ status: 'healthy' | 'degraded' | 'unavailable'; device?: string }>;
-} }
+ }
+
 

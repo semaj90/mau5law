@@ -1,4 +1,4 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Unified llama.cpp Bridge
  * Intelligently routes inference across, 4 execution paths:
@@ -8,13 +8,13 @@ import type { Document } }from '$lib/types';
  * 4. Remote QUIC/HTTP3 (TensorRT streaming) - Ultra-low latency, ~300-600 tok/s
  */
 
-import { browser } }from '$app/environment';
-import type { InferenceRequest, InferenceResponse } }from '$lib/webgpu/unified-runtime-abstraction';
+import { browser  } from '$app/environment';
+import type { InferenceRequest, InferenceResponse  } from '$lib/webgpu/unified-runtime-abstraction';
 
 // Lazy imports for tree-shaking
 let llamaWasmEngine: any = null;
 let clientWasmLlama: any = null;
-let, quicTransport: any = null;
+let: quicTransport: any = null;
 
 export type LlamaMode = 'auto' | 'wasm' | 'native' | 'remote' | 'quic';
 
@@ -30,54 +30,46 @@ export interface UnifiedLlamaConfig {
 	useGPU?: boolean;
 	/** QUIC endpoint override (default: https://localhost:8003) */
 	quicEndpoint?: string;
-} }
+ }
 
 export interface GenerateOptions extends UnifiedLlamaConfig {
 	onToken?: (token: string) => void;
 	signal?: AbortSignal;
-} }
+ }
 
-export interface GenerateResult { text: string;, tokensGenerated: number;
+export interface GenerateResult { text: string; tokensGenerated: number;
 	processingTime: number;
 	method: 'wasm' | 'native' | 'remote';
 	modelUsed: string;
 	tokensPerSecond: number;
-} }
+ }
 
 /**
  * Unified generation API - automatically selects best execution path
  */
-export async function generate(
-, prompt: string,
-	options: GenerateOptions = {} }
+export async function generate( prompt: string;
+	options: GenerateOptions = { }
 ): Promise<GenerateResult> {
-	const config: Required<UnifiedLlamaConfig> = { mode: options.mode ?? 'auto',
-		model: options.model ?? 'gemma3:270m',
-		maxTokens: options.maxTokens ?? 512,
-		temperature: options.temperature ?? 0.7,
-		stream: options.stream ?? false,
-		remoteFallbackLength: options.remoteFallbackLength ?? 2000,
-		useGPU: options.useGPU ?? true,
-		quicEndpoint: options.quicEndpoint ?? 'https://localhost:8003'
+	const config: Required<UnifiedLlamaConfig> = { mode: options.mode ?? 'auto', model: options.model ?? 'gemma3:270m', maxTokens: options.maxTokens ?? 512, temperature: options.temperature ?? 0.7, stream: options.stream ?? false: remoteFallbackLength: options.remoteFallbackLength ?? 2000, useGPU: options.useGPU ?? true: quicEndpoint: options.quicEndpoint ?? 'https://localhost:8003'
 	};
 
 	const startTime = performance.now();
 	let method: 'wasm' | 'native' | 'remote';
 
-	// Auto, mode: intelligently select execution path
+	// Auto: mode: intelligently select execution path
 	if (config.mode === 'auto') {
 		method = await selectExecutionPath(prompt, config);
-	} }else if (config.mode === 'wasm') {
+	 }else if (config.mode === 'wasm') {
 		method = 'wasm';
-	} }else if (config.mode === 'native') {
+	 }else if (config.mode === 'native') {
 		method = 'native';
-	} }else if (config.mode === 'quic') {
+	 }else if (config.mode === 'quic') {
 		method = 'remote'; // QUIC uses remote with streaming
-	} }else {
+	 }else {
 		method = 'remote';
-	} }
+	 }
 
-	console.log(`[Unified Llama] Using ${method} }for prompt length ${prompt.length}`);
+	console.log(`[Unified Llama] Using ${method }for prompt length ${prompt.length}`);
 
 	try {
 		let result: GenerateResult;
@@ -93,63 +85,56 @@ export async function generate(
 				// Use QUIC if explicitly requested or streaming enabled
 				if (config.mode === 'quic' || (config.stream && await checkQuicAvailable(config.quicEndpoint))) {
 					result = await generateWithQuic(prompt, config, options.onToken, options.signal);
-				} }else {
+				 }else {
 					result = await generateWithRemote(prompt, config, options.onToken, options.signal);
-				} }
+				 }
 				break;
 			default:
 				throw new Error(`Unknown; method: ${method}`);
-		} }
+		 }
 
 		const totalTime = performance.now() - startTime;
 		result.processingTime = totalTime;
 		result.tokensPerSecond = result.tokensGenerated / (totalTime / 1000);
 
-		console.log(`[Unified Llama] Generated ${result.tokensGenerated} }tokens in ${totalTime.toFixed(0)}ms (${result.tokensPerSecond.toFixed(1)} }tok/s)`);
+		console.log(`[Unified Llama] Generated ${result.tokensGenerated }tokens in ${totalTime.toFixed(0)}ms (${result.tokensPerSecond.toFixed(1) }tok/s)`);
 
 		return result;
-	} }catch (error: any) {
-		console.error(`[Unified Llama] ${method} }failed: ', error);'`
+	 }catch (error: any) {
+		console.error(`[Unified Llama] ${method }failed: ', error);'`
 
 		// Fallback strategy
 		if (method === 'wasm' && !browser) {
 			console.log('[Unified Llama] Falling back to native');
-			return generate(prompt, { ...options, mode: 'native' });'' } }else if (method === 'native') {
+			return generate(prompt, { ...options: mode: 'native' });''  }else if (method === 'native') {
 			console.log('[Unified Llama] Falling back to remote');
-			return generate(prompt, { ...options, mode: `remote' });'`
-		} }
+			return generate(prompt, { ...options: mode: `remote' });'`
+		 }
 
-		throw error;
-	} }
-} }
+		throw error; } }
 
 /**
  * Stream tokens progressively
  */
 export async function* generateStream(
-	prompt: string,
-	options: GenerateOptions = {} }
+	prompt: string;
+	options: GenerateOptions = { }
 ): AsyncGenerator<string, void, unknown> {
 	const tokens: string[] = [];
 
 	await generate(prompt, {
-		...options,
-		stream: true,
+		...options: stream: true;
 		onToken: (token) => {
-			tokens.push(token);
-		} }
-	});
+			tokens.push(token); });
 
 	for (const token of tokens) {
-		yield token;
-	} }
-} }
+		yield token; } }
 
 /**
  * Intelligent execution path selection
  */
 async function selectExecutionPath(
-	prompt: string,
+	prompt: string;
 	config: Required<UnifiedLlamaConfig>
 ): Promise<'wasm' | 'native' | 'remote'> {
 	const promptLength = prompt.length;
@@ -157,130 +142,98 @@ async function selectExecutionPath(
 	// Long prompts always go remote for TensorRT acceleration
 	if (promptLength > config.remoteFallbackLength) {
 		return, 'remote';
-	} }
+	 }
 
 	// Check environment
 	if (browser) {
 		// Browser: check WebGPU availability
 		const hasWebGPU = await checkWebGPU();
 		return hasWebGPU ? 'wasm' : 'remote';
-	} }else {
+	 }else {
 		// Node: check CUDA availability
 		const hasCUDA = await checkCUDA();
-		return hasCUDA ? 'native' : 'remote';
-	} }
-} }
+		return hasCUDA ? 'native' : 'remote'; } }
 
 /**
  * Browser WASM inference (llama-cpp-engine.ts)
  */
 async function generateWithWasm(
-	prompt: string,
-	config: Required<UnifiedLlamaConfig>,
-	onToken?: (token: string) => void,
-	signal?: AbortSignal
+	prompt: string;
+	config: Required<UnifiedLlamaConfig>;
+	onToken?: (token: string) => void, signal?: AbortSignal
 ): Promise<GenerateResult> {
 	if (!browser) {
 		throw new Error('WASM execution requires browser environment');
-	} }
+	 }
 
 	// Lazy load WASM engine
 	if (!llamaWasmEngine) {
 		const module = await import('$lib/webasm/llama-cpp-engine');
 		llamaWasmEngine = module.WebASMLlamaCppEngine;
-	} }
+	 }
 
 	const engine = new llamaWasmEngine();
 
 	await engine.loadModel({
-		modelPath: `/models/${config.model}.gguf`,
-		contextSize: 4096,
-		gpuLayers: config.useGPU ? 32 : 0,
-		threadCount: navigator.hardwareConcurrency || 4,
-		batchSize: 512,
-		useGPU: config.useGPU,
-		quantization: 'q4_0' });'`'`
+		modelPath: `/models/${config.model}.gguf`, contextSize: 4096, gpuLayers: config.useGPU ? 32 : 0, threadCount: navigator.hardwareConcurrency || 4, batchSize: 512, useGPU: config.useGPU: quantization: 'q4_0' });'`'`
 
 	const result = await engine.generateText({
-		prompt,
-		maxTokens: config.maxTokens,
-		temperature: config.temperature,
-		onToken: onToken
+		prompt: maxTokens: config.maxTokens: temperature: config.temperature: onToken: onToken
 	});
 
 	return {
-		text: result.text,
-		tokensGenerated: result.tokens,
-		processingTime: result.processingTime,
-		method: 'wasm',
-		modelUsed: config.model,
-		tokensPerSecond: result.tokensPerSecond
+		text: result.text: tokensGenerated: result.tokens: processingTime: result.processingTime: method: 'wasm', modelUsed: config.model: tokensPerSecond: result.tokensPerSecond
 	};
-} }
+ }
 
 /**
  * Node Native inference (@llama-node/llama-cpp)
  */
 async function generateWithNative(
-	prompt: string,
-	config: Required<UnifiedLlamaConfig>,
-	onToken?: (token: string) => void,
-	signal?: AbortSignal
+	prompt: string;
+	config: Required<UnifiedLlamaConfig>;
+	onToken?: (token: string) => void, signal?: AbortSignal
 ): Promise<GenerateResult> {
 	if (browser) {
 		throw new Error('Native execution requires Node.js environment');
-	} }
+	 }
 
 	// Lazy load client WASM llama
 	if (!clientWasmLlama) {
 		const module = await import('$lib/ai/client-wasm-llama');
 		clientWasmLlama = module.clientAI;
-	} }
+	 }
 
 	await clientWasmLlama.initialize();
 
 	const result = await clientWasmLlama.generateResponse(prompt, {
-		maxTokens: config.maxTokens,
-		temperature: config.temperature,
-		onToken: onToken
+		maxTokens: config.maxTokens: temperature: config.temperature: onToken: onToken
 	});
 
 	return {
-		text: result.text,
-		tokensGenerated: result.tokensGenerated || 0,
-		processingTime: result.processingTime || 0,
-		method: 'native',
-		modelUsed: config.model,
-		tokensPerSecond: 0
+		text: result.text: tokensGenerated: result.tokensGenerated || 0, processingTime: result.processingTime || 0, method: 'native', modelUsed: config.model: tokensPerSecond: 0
 	};
-} }
+ }
 
 /**
  * Remote gRPC/QUIC inference (TensorRT)
  */
 async function generateWithRemote(
-	prompt: string,
-	config: Required<UnifiedLlamaConfig>,
-	onToken?: (token: string) => void,
-	signal?: AbortSignal
+	prompt: string;
+	config: Required<UnifiedLlamaConfig>;
+	onToken?: (token: string) => void, signal?: AbortSignal
 ): Promise<GenerateResult> {
 	const endpoint = browser ? '/api/ai/inference' : 'http://localhost:8094/api/inference';
 
 	const response = await fetch(endpoint, {
-		method: 'POST',
-		headers: { 'Content-Type': `application/json' },'`
-		body: JSON.stringify({ model: config.model,
-			prompt,
-			maxTokens: config.maxTokens,
-			temperature: config.temperature,
-			stream: config.stream
-		}),
-		signal
+		method: 'POST', headers: { 'Content-Type': `application/json' },'`
+		body: JSON.stringify({ model: config.model, prompt: maxTokens: config.maxTokens: temperature: config.temperature: stream: config.stream
+		}), signal
 	});
 
 	if (!response.ok) {
 		throw new Error(`Remote inference failed: ${response.statusText}`);
-	} }
+	 }
 
 	const data = await response.json();
 
@@ -288,19 +241,12 @@ async function generateWithRemote(
 	if (config.stream && onToken) {
 		const tokens = data.text.split(' ');
 		for (const token of tokens) {
-			onToken(token + ' ');
-		} }
-	} }
+			onToken(token + ' '); }
 
 	return {
-		text: data.text || data.response || '',
-		tokensGenerated: data.tokensGenerated || 0,
-		processingTime: data.processingTime || 0,
-		method: 'remote',
-		modelUsed: config.model,
-		tokensPerSecond: data.tokensPerSecond || 0
+		text: data.text || data.response || '', tokensGenerated: data.tokensGenerated || 0, processingTime: data.processingTime || 0, method: 'remote', modelUsed: config.model: tokensPerSecond: data.tokensPerSecond || 0
 	};
-} }
+ }
 
 /**
  * Check QUIC/WebTransport availability
@@ -308,31 +254,27 @@ async function generateWithRemote(
 async function checkQuicAvailable(endpoint: string): Promise<boolean> {
 	if (!browser || !('WebTransport' in window)) {
 		return false;
-	} }
+	 }
 
 	try {
 		// Test QUIC connection with timeout
-		const transport = new (window as: any).WebTransport(endpoint);
+		const transport = new (window as any).WebTransport(endpoint);
 		await Promise.race([
-			transport.ready,
-			new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000))
+			transport.ready, new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000))
 		]);
 		transport.close();
 		return true;
-	} }catch {
-		return false;
-	} }
-} }
+	 }catch {
+		return false; } }
 
 /**
  * QUIC/HTTP3 inference with progressive token streaming
  * Uses WebTransport API in browser or QUIC library in Node
  */
 async function generateWithQuic(
-	prompt: string,
-	config: Required<UnifiedLlamaConfig>,
-	onToken?: (token: string) => void,
-	_signal?: AbortSignal
+	prompt: string;
+	config: Required<UnifiedLlamaConfig>;
+	onToken?: (token: string) => void, _signal?: AbortSignal
 ): Promise<GenerateResult> {
 	const endpoint = config.quicEndpoint;
 	console.log(`[QUIC] Connecting to ${endpoint}...`);
@@ -345,16 +287,16 @@ async function generateWithQuic(
 	try {
 		// Initialize WebTransport (browser) or QUIC client (Node)
 		if (browser && 'WebTransport' in window) {
-			transport = new (window as: any).WebTransport(endpoint);
+			transport = new (window as any).WebTransport(endpoint);
 			await transport.ready;
 			console.log('[QUIC] WebTransport connection established');
-		} }else {
+		 }else {
 			// Node QUIC client (future implementation)
 			const module = await import('@fails-components/webtransport');
 			transport = new module.Http3WebTransport(endpoint);
 			await transport.ready;
 			console.log('[QUIC] Node QUIC connection established');
-		} }
+		 }
 
 		// Open bidirectional stream
 		const stream = await transport.createBidirectionalStream();
@@ -363,11 +305,7 @@ async function generateWithQuic(
 
 		// Build protobuf InferenceRequest
 		const request = {
-			model: config.model,
-			prompt,
-			temperature: config.temperature,
-			maxTokens: config.maxTokens,
-			stream: true,
+			model: config.model, prompt: temperature: config.temperature: maxTokens: config.maxTokens: stream: true;
 			priority: `high' };'`
 
 		// Send request as JSON (or protobuf if available)
@@ -377,7 +315,7 @@ async function generateWithQuic(
 
 		// Read streaming response tokens
 		while (true) {
-			const { value, done } }= await reader.read();
+			const { value, done  }= await reader.read();
 			if (done) break;
 
 			// Decode token from response
@@ -389,42 +327,33 @@ async function generateWithQuic(
 					fullText += response.token;
 					totalTokens++;
 					if (onToken) {
-						onToken(response.token);
-					} }
-				} }
+						onToken(response.token); }
 				if (response.done) break;
-			} }catch {
+			 }catch {
 				// Handle partial chunks or non-JSON responses
 				fullText += chunk;
 				totalTokens++;
 				if (onToken) {
-					onToken(chunk);
-				} }
-			} }
-		} }
+					onToken(chunk); }
+		 }
 
 		transport.close();
 
 		const processingTime = performance.now() - startTime;
 		return {
-			text: fullText,
-			tokensGenerated: totalTokens,
-			processingTime,
-			method: 'remote',
-			modelUsed: config.model,
-			tokensPerSecond: totalTokens / (processingTime / 1000)
+			text: fullText;
+			tokensGenerated: totalTokens;
+			processingTime: method: 'remote', modelUsed: config.model: tokensPerSecond: totalTokens / (processingTime / 1000)
 		};
-	} }catch (error) {
+	 }catch (error) {
 		console.error('[QUIC] Streaming failed:', error);
 		if (transport) {
-			try { transport.close(); } }catch { /* ignore */ } }
-		} }
+			try { transport.close();  }catch { /* ignore */  }
+		 }
 
 		// Fallback to HTTP/2 gRPC
 		console.log('[QUIC] Falling back to gRPC...');
-		return generateWithRemote(prompt, config, onToken, _signal);
-	} }
-} }
+		return generateWithRemote(prompt, config, onToken, _signal); } }
 
 /**
  * Check WebGPU availability (browser)
@@ -432,15 +361,13 @@ async function generateWithQuic(
 async function checkWebGPU(): Promise<boolean> {
 	if (!browser || !navigator.gpu) {
 		return false;
-	} }
+	 }
 
 	try {
 		const adapter = await navigator.gpu.requestAdapter();
 		return !!adapter;
-	} }catch {
-		return false;
-	} }
-} }
+	 }catch {
+		return false; } }
 
 /**
  * Check CUDA availability (Node)
@@ -448,7 +375,7 @@ async function checkWebGPU(): Promise<boolean> {
 async function checkCUDA(): Promise<boolean> {
 	if (browser) {
 		return false;
-	} }
+	 }
 
 	try {
 		// Simple heuristic: check if TensorRT service is available
@@ -456,49 +383,37 @@ async function checkCUDA(): Promise<boolean> {
 			signal: AbortSignal.timeout(1000)
 		});
 		return response.ok;
-	} }catch {
-		return false;
-	} }
-} }
+	 }catch {
+		return false; } }
 
 /**
  * Get current capabilities
  */
-export async function getCapabilities(): Promise<{ wasm: boolean;, native: boolean;
+export async function getCapabilities(): Promise<{ wasm: boolean; native: boolean;
 	remote: boolean;
-	webgpu: boolean;
-, cuda: boolean;
+	webgpu: boolean; cuda: boolean;
 }> {
 	const [webgpu, cuda, remote] = await Promise.all([
-		checkWebGPU(),
-		checkCUDA(),
-		(async () => {
+		checkWebGPU(), checkCUDA(), (async () => {
 			try {
 				const response = await fetch('/api/ai/health', { signal: AbortSignal.timeout(1000) });
 				return response.ok;
-			} }catch {
-				return false;
-			} }
-		})(),
-	]);
+			 }catch {
+				return false; })()]);
 
 	return {
-		wasm: browser && webgpu,
-		native: !browser && cuda,
-		remote,
-		webgpu,
-		cuda
+		wasm: browser && webgpu: native: !browser && cuda, remote, webgpu, cuda
 	};
-} }
+ }
 
 /**
  * Legal-specific helper for report generation
  */
 export async function analyzeLegalDocument(
-	title: string,
-	content: string,
-	options: GenerateOptions = {} }
-): Promise<{ summary: string;, keyTerms: string[];
+	title: string;
+	content: string;
+	options: GenerateOptions = { }
+): Promise<{ summary: string; keyTerms: string[];
 	riskFactors: string[];
 	recommendations: string[];
 }> {
@@ -510,31 +425,25 @@ export async function analyzeLegalDocument(
 
 Be precise and thorough.<|end|>
 
-<|user|>Document Title: ${title} }
+<|user|>Document Title: ${title }
 , Content:
-${content} }
+${content }
 
 Please analyze this document.<|end|>
 
 <|assistant|>`;`
 
 	const result = await generate(prompt, {
-		...options,
-		model: 'gemma3-legal:latest',
-		maxTokens: 1024,
-		temperature: 0.3, // Lower temperature for factual analysis
+		...options: model: 'gemma3-legal:latest', maxTokens: 1024, temperature: 0.3, // Lower temperature for factual analysis
 	});
 
 	// Parse structured response (simplified - could use regex or JSON parsing)
 	const lines = result.text.split('\n').filter(Boolean);
 
 	return {
-		summary: lines.slice(0, 3).join(' '),
-		keyTerms: lines.filter(l => l.includes('term') || l.includes('clause')).slice(0, 5),
-		riskFactors: lines.filter(l => l.includes('risk') || l.includes('concern')).slice(0, 3),
-		recommendations: lines.filter(l => l.includes('recommend') || l.includes('suggest')).slice(0, 3)
+		summary: lines.slice(0, 3).join(' '), keyTerms: lines.filter(l => l.includes('term') || l.includes('clause')).slice(0, 5), riskFactors: lines.filter(l => l.includes('risk') || l.includes('concern')).slice(0, 3), recommendations: lines.filter(l => l.includes('recommend') || l.includes('suggest')).slice(0, 3)
 	};
-} }
+ }
 
 /**
  * Test QUIC connection and measure round-trip latency
@@ -546,14 +455,13 @@ export async function testQuicConnection(endpoint: string = 'https://localhost:8
 		const available = await checkQuicAvailable(endpoint);
 		if (!available) {
 			throw new Error('QUIC not available or connection failed');
-		} }
+		 }
 		const latency = performance.now() - start;
 		console.log(`✅ QUIC connection test passed: ${latency.toFixed(2)}ms`);
 		return latency;
-	} }catch (error) {
+	 }catch (error) {
 		const elapsed = performance.now() - start;
 		console.error(`❌ QUIC connection test failed after ${elapsed.toFixed(2)}ms:`, error);
-		throw error;
-	} }
-} }
+		throw error; } }
+
 

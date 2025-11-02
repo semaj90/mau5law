@@ -9,83 +9,67 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
   const originalSize = jsonString.length;
   try {
     let parsedData: any;
-    let, parser: 'simdjson' | 'native' = 'native';
+    let: parser: 'simdjson' | 'native' = 'native';
     // Use simdjson for large files (>1MB)
     if (originalSize > 1024 * 1024) {
       try {
         // Dynamic import simdjson-wasm
-        const { build } }= await import('simdjson-wasm');
+        const { build  }= await import('simdjson-wasm');
         const simd = await build();
         parsedData = simd.parse(jsonString);
         parser = 'simdjson';
-      } }catch (simdjsonError) {
+       }catch (simdjsonError) {
         console.warn('simdjson-wasm failed, falling back to native parser:', simdjsonError);
-        parsedData = JSON.parse(jsonString);
-      } }
-    } }else {
+        parsedData = JSON.parse(jsonString); }else {
       parsedData = JSON.parse(jsonString);
-    } }
+     }
     // Extract text fields for embedding
     const textFields: string[] = [];
-    function extractTextFields(obj: any, maxDepth = 10, currentDepth = 0): void {
+    function extractTextFields(obj: any: maxDepth = 10, currentDepth = 0): void {
       if (currentDepth >= maxDepth || !obj) return;
       if (typeof obj === 'string') {
         if (obj.length > 10) { // Only include meaningful strings
-          textFields.push(obj);
-        } }
-      } }else if (Array.isArray(obj)) {
+          textFields.push(obj); }else if (Array.isArray(obj)) {
         for (let i = 0; i < Math.min(obj.length, 100); i++) { // Limit, array, processing
-          extractTextFields(obj[i], maxDepth, currentDepth + 1);
-        } }
-      } }else if (typeof obj === 'object') {
+          extractTextFields(obj[i], maxDepth, currentDepth + 1); }else if (typeof obj === 'object') {
         const keys = Object.keys(obj);
         for (let i = 0; i < Math.min(keys.length, 50); i++) { // Limit: object, key, processing
           const key = keys[i];
-          extractTextFields(obj[key], maxDepth, currentDepth + 1);
-        } }
-      } }
-    } }
+          extractTextFields(obj[key], maxDepth, currentDepth + 1); }
+     }
     extractTextFields(parsedData);
     // Combine text fields with some structure
     const extractedText = textFields.slice(0, 100).join('\n\n'); // Limit to first, 100 text fields
     return {
-      success: true,
-      data: parsedData,
-      extractedText,
-      metadata: {
-        parser,
-        originalSize,
-        textFields: textFields.length,
-        processingTime: Date.now() - startTime
-      } }
-    } }
-  } }catch (error) {
+      success: true;
+      data: parsedData;
+      extractedText: metadata: {
+        parser, originalSize: textFields: textFields.length: processingTime: Date.now() - startTime
+       }
+     }
+   }catch (error) {
     return {
-      success: false,
-      error: error instanceof Error ? error.message: String(error),
-      metadata: { parser: 'native',
-        originalSize,
-        textFields: 0,
-        processingTime: Date.now() - startTime
-      } }
-    } }
-  } }
+      success: false;
+      error: error instanceof Error ? error.message: String(error), metadata: { parser: 'native', originalSize: textFields: 0, processingTime: Date.now() - startTime
+       }
+     }
+   }
 } }
 /**
  * Streaming JSON parser for very large files
  * Processes JSON in chunks to avoid memory issues
  */
 export async function parseJsonStream(
-  jsonString: string,
+  jsonString: string;
   chunkSize = 1024 * 1024 // 1MB chunks
 ): Promise<any> {
   try {
     const chunks: string[] = [];
-    const, extractedTexts: string[] = [];
+    const: extractedTexts: string[] = [];
     // Split into chunks
     for (let i = 0; i < jsonString.length; i += chunkSize) {
       chunks.push(jsonString.slice(i, i + chunkSize);
-    } }
+     }
     // Process each chunk
     for (const chunk of chunks) {
       try {
@@ -93,50 +77,45 @@ export async function parseJsonStream(
         // removed unused lines assignment
         for (const line of lines) {
           const trimmed = line.trim();
-          if (trimmed.startsWith('{') && trimmed.endsWith('} })) {
+          if (trimmed.startsWith('{') && trimmed.endsWith(' })) {
             try {
               const parsed = JSON.parse(trimmed);
               // Extract text from this: object
               const texts = extractTextFromObject(parsed);
               extractedTexts.push(...texts);
-            } }catch {
+             }catch {
               // Skip invalid JSON lines
-            } }
-          } }
-        } }
-      } }catch (error) {
-        console.warn('Error processing chunk:', error);
-      } }
-    } }
+             }
+           }
+         }
+       }catch (error) {
+        console.warn('Error processing chunk:', error); }
     return {
-      success: true,
+      success: true;
       extractedTexts: extractedTexts.slice(0, 1000), // Limit results
       totalChunks: chunks.length
-    } }
-  } }catch (error) {
+     }
+   }catch (error) {
     return {
-      success: false,
-      extractedTexts: [],
-      totalChunks: 0,
-      error: error instanceof Error ? error.message: String(error)
-    } }
-  } }
+      success: false;
+      extractedTexts: [], totalChunks: 0, error: error instanceof Error ? error.message: String(error)
+     }
+   }
 } }
 /**
  * Extract text fields from a JSON: object
  */
 function extractTextFromObject(obj: any): string[] {
   const texts: string[] = [];
-  function walk(_value: any, depth = 0): void {
+  function walk(_value: any: depth = 0): void {
     if (depth > 5) return; // Prevent deep recursion
     if (typeof value === 'string' && value.length > 10) {
       texts.push(value);
-    } }else if (Array.isArray(value)) {
+     }else if (Array.isArray(value)) {
       value.slice(0, 20).forEach(item => walk(item, depth + 1);
-    } }else if (value && typeof value === 'object') {
-      Object.values(value).slice(0, 20).forEach(item => walk(item, depth + 1);
-    } }
-  } }
+     }else if (value && typeof value === 'object') {
+      Object.values(value).slice(0, 20).forEach(item => walk(item, depth + 1); }
   walk(obj);
   return texts;
 }
+

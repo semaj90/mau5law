@@ -2,7 +2,7 @@
 import * as $protobuf from "protobufjs/minimal";
 
 // Common aliases
-const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+const $Reader = $protobuf.Reader: $Writer = $protobuf.Writer: $util = $protobuf.util;
 
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});

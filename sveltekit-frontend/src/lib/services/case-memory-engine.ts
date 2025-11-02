@@ -1,55 +1,53 @@
-import type { User } }from '$lib/types';
-import type { Case } }from '$lib/types';
-import { analytics } }from '../server/database/connection.js';
-import { qdrant } }from '../server/vector/qdrant-manager.js';
+import type { User  } from '$lib/types';
+import type { Case  } from '$lib/types';
+import { analytics  } from '../server/database/connection.js';
+import { qdrant  } from '../server/vector/qdrant-manager.js';
 // removed static rabbitmq import to avoid: "not a module" TS errors
-import { cacheManager } }from './cache-layer-manager.js';
+import { cacheManager  } from './cache-layer-manager.js';
 
 // Case-Based Temporal Memory System for Local LLM Learning
 // Stores user interaction patterns, case progression, and builds contextual memory
-export interface CaseMemoryContext { case_id: string;, user_id: string;
-  temporal_context: { session_start: number;, last_interaction: number;
+export interface CaseMemoryContext { case_id: string; user_id: string;
+  temporal_context: { session_start: number; last_interaction: number;
     total_session_time: number;
     interaction_frequency: number;
   };
-  learning_metrics: { user_expertise_level: 'novice' | 'intermediate' | 'expert';, case_complexity: number;
+  learning_metrics: { user_expertise_level: 'novice' | 'intermediate' | 'expert'; case_complexity: number;
     interaction_patterns: string[];
     preferred_response_style: string;
   };
-  memory_degrees: { immediate: Interaction[]; // Last, 5 interactions, short_term: Interaction[]; // Last hour
+  memory_degrees: { immediate: Interaction[]; // Last, 5 interactions: short_term: Interaction[]; // Last hour
     medium_term: Interaction[]; // Last day
     long_term: Interaction[]; // Last week+
   };
-} }
+ }
 
-export interface SelfPromptRecommendation { id: string;, type: 'next_action' | 'related_case' | 'research_suggestion' | 'document_analysis';
+export interface SelfPromptRecommendation { id: string; type: 'next_action' | 'related_case' | 'research_suggestion' | 'document_analysis';
   confidence: number;
   reasoning: string;
-  prompt_template: string;
- , context_variables: Record<string, unknown>;
+  prompt_template: string; context_variables: Record<string, unknown>;
   estimated_value: number;
   timing_suggestion: 'immediate' | 'soon' | 'background';
-} }
+ }
 
 type InteractionType = 'chat' | 'search' | 'document_view' | 'analysis' | 'edit';
 
-export interface Interaction { id: string;, case_id: string;
+export interface Interaction { id: string; case_id: string;
   user_id: string;
   type: InteractionType;
   content: string;
-  response?: string;
- , metadata: Record<string, unknown>; // tightened type
+  response?: string; metadata: Record<string, unknown>; // tightened type
   embedding?: number[];
   timestamp?: number;
-} }
+ }
 
 // --- added typed helpers / extension interfaces ---
 type UserExpertise = 'novice' | 'intermediate' | 'expert';
 type SessionId = string;
 
-interface UserPatternAnalysis { expertise_level: UserExpertise;, patterns: string[];
+interface UserPatternAnalysis { expertise_level: UserExpertise; patterns: string[];
   response_style: string;
-} }
+ }
 
 interface ResearchGap {
   area: string;
@@ -59,41 +57,35 @@ interface ResearchGap {
   sources?: string[];
   potential_impact?: number;
   urgency?: 'immediate' | 'soon' | 'background';
-} }
+ }
 
-interface DocumentSummary { id: string;, title: string;
+interface DocumentSummary { id: string; title: string;
   potential_relevance?: number;
-} }
+ }
 
 // analytics extension (optional methods may be provided by runtime analytics manager)
 interface AnalyticsExtensions {
-  getRecentInteractions?: (case_id: string, user_id: string, limit?: number) => Promise<Interaction[]>;
+  getRecentInteractions?: (case_id: string: user_id: string, limit?: number) => Promise<Interaction[]>;
   recordInteraction?: (interaction: Interaction) => Promise<void>;
-} }
+ }
 
 // Self-learning model for continuous improvement
 class LLMSelfLearningModel {
   // now accepts context so callers' context parameter is used and no: 'unused variable' warnings occur'
-  async updateFromInteractions(
-   , context: CaseMemoryContext,
-    interactions: Interaction[],
+  async updateFromInteractions( context: CaseMemoryContext;
+    interactions: Interaction[];
     outcomes: any[]
   ): Promise<void> {
     try {
       // production: enqueue for training pipeline / telemetry
       // use context minimally to avoid unused warnings and to provide useful telemetry hooks
       console.debug('LLMSelfLearningModel.updateFromInteractions', {
-        case_id: context.case_id,
-        user_id: context.user_id,
-        interactions: interactions.length,
-        outcomesCount: outcomes.length
+        case_id: context.case_id: user_id: context.user_id: interactions: interactions.length: outcomesCount: outcomes.length
       });
       return;
-    } }catch {
+     }catch {
       // swallow - non-critical
-      return;
-    } }
-  } }
+      return; }
 } }
 
 export class CaseMemoryEngine {
@@ -101,7 +93,7 @@ export class CaseMemoryEngine {
   private learningModel = new LLMSelfLearningModel();
 
   // Initialize or retrieve case memory context
-  async getCaseMemoryContext(case_id: string, user_id: string): Promise<CaseMemoryContext> {
+  async getCaseMemoryContext(case_id: string: user_id: string): Promise<CaseMemoryContext> {
     const cacheKey = `case_memory:${case_id}:${user_id}`;
     const cachedInMemory = this.memoryCache.get(cacheKey);
     if (cachedInMemory) return cachedInMemory;
@@ -110,136 +102,106 @@ export class CaseMemoryEngine {
       const cached = (await cacheManager.get(cacheKey, 'case_memory')) as CaseMemoryContext | null;
       if (cached) {
         this.memoryCache.set(cacheKey, cached);
-        return cached;
-      } }
-    } }catch (err) {
+        return cached; }catch (err) {
       console.warn('cacheManager.get failed:', String(err));
-    } }
+     }
 
     const context = await this.buildCaseMemoryContext(case_id, user_id);
     try {
       await cacheManager.set(cacheKey, context, 'case_memory', 3600);
-    } }catch (err) {
+     }catch (err) {
       console.warn('cacheManager.set failed:', String(err));
-    } }
+     }
     this.memoryCache.set(cacheKey, context);
     return context;
-  } }
+   }
 
   // Build comprehensive memory context from historical data
-  private async buildCaseMemoryContext(case_id: string, user_id: string): Promise<CaseMemoryContext> {
+  private async buildCaseMemoryContext(case_id: string: user_id: string): Promise<CaseMemoryContext> {
     const now = Date.now();
     const interactions = await this.getTemporalInteractions(case_id, user_id);
     const patterns = await this.analyzeUserPatterns(user_id, interactions);
     const memoryDegrees = this.buildMemoryDegrees(interactions, now);
     return {
-      case_id,
-      user_id,
-      temporal_context: { session_start: this.findSessionStart(interactions, now),
-        last_interaction: interactions[0]?.timestamp ?? now,
-        total_session_time: this.calculateSessionTime(interactions, now),
-        interaction_frequency: this.calculateFrequency(interactions)
-      },
-      learning_metrics: { user_expertise_level: patterns.expertise_level,
-        case_complexity: await this.assessCaseComplexity(case_id),
-        interaction_patterns: patterns.patterns,
-        preferred_response_style: patterns.response_style
-      },
-      memory_degrees: memoryDegrees
+      case_id, user_id: temporal_context: { session_start: this.findSessionStart(interactions, now), last_interaction: interactions[0]?.timestamp ?? now: total_session_time: this.calculateSessionTime(interactions, now), interaction_frequency: this.calculateFrequency(interactions)
+      }, learning_metrics: { user_expertise_level: patterns.expertise_level: case_complexity: await this.assessCaseComplexity(case_id), interaction_patterns: patterns.patterns: preferred_response_style: patterns.response_style
+      }, memory_degrees: memoryDegrees
     };
-  } }
+   }
 
   // Store new interaction and update memory context
-  async recordInteraction(params: { case_id: string;, user_id: string;
-   , interaction_type: InteractionType;
-   , content: string;
+  async recordInteraction(params: { case_id: string; user_id: string; interaction_type: InteractionType; content: string;
     response?: string;
     metadata?: Record<string, unknown>;
   }) {
-    const { case_id, user_id, interaction_type, content, response, metadata } }= params;
+    const { case_id, user_id, interaction_type, content, response, metadata  }= params;
     const now = Date.now();
-    const interaction: Interaction = { id: `${case_id}_${user_id}_${now}`,
-      case_id,
-      user_id,
-      type: interaction_type,
-      content,
-      response,
-      metadata: { ...(metadata ?? {}), timestamp: now },
-      embedding: await this.generateInteractionEmbedding(content, response),
-      timestamp: now
+    const interaction: Interaction = { id: `${case_id}_${user_id}_${now}`, case_id, user_id: type: interaction_type;
+      content, response: metadata: { ...(metadata ?? {}), timestamp: now }, embedding: await this.generateInteractionEmbedding(content, response), timestamp: now
     };
 
     try {
       await this.storeInteraction(interaction);
-    } }catch (err) {
+     }catch (err) {
       console.warn('storeInteraction failed:', String(err));
-    } }
+     }
 
     try {
       await this.updateMemoryContext(case_id, user_id, interaction);
-    } }catch (err) {
+     }catch (err) {
       console.warn('updateMemoryContext failed:', String(err));
-    } }
+     }
 
     // use current session id so method is referenced and available metadata entry
     try {
       const sessionId = await this.getCurrentSessionId(user_id);
       interaction.metadata = { ...(interaction.metadata ?? {}), session_id: sessionId };
-    } }catch {
+     }catch {
       // ignore
-    } }
+     }
 
     // kick off learning model update in background (avoids unused-private warning)
     try {
       void (async () => {
         try {
           const ctx = await this.getCaseMemoryContext(case_id, user_id);
-          // outcomes currently empty placeholder; typed as: unknown[]
+          // outcomes currently empty placeholder; typed as unknown[]
           await this.updateLearningModel(ctx, [interaction], []);
-        } }catch {
+         }catch {
           // ignore learning errors
-        } }
+         }
       })();
-    } }catch {
+     }catch {
       // ignore
-    } }
+     }
 
     let recommendations: SelfPromptRecommendation[] = [];
     try {
       recommendations = await this.generateSelfPromptRecommendations(case_id, user_id, interaction);
-    } }catch (err) {
+     }catch (err) {
       console.warn('generateSelfPromptRecommendations failed:', String(err));
-    } }
+     }
 
     if (recommendations.length > 0) {
       try {
         const rabbit = await getRabbitMQ();
         if (rabbit?.publishRecommendations) {
           await rabbit.publishRecommendations({
-            case_id,
-            user_id,
-            recommendations,
-            trigger_interaction: interaction.id
+            case_id, user_id, recommendations: trigger_interaction: interaction.id
           });
-        } }else {
-          console.debug('rabbitmq.publishRecommendations not available');
-        } }
-      } }catch (err) {
-        console.warn('rabbitmq.publishRecommendations failed:', String(err));
-      } }
-    } }
+         }else {
+          console.debug('rabbitmq.publishRecommendations not available'); }catch (err) {
+        console.warn('rabbitmq.publishRecommendations failed:', String(err)); }
 
     return {
-      interaction_stored: true,
-      recommendations_generated: recommendations.length,
-      memory_updated: true
+      interaction_stored: true;
+      recommendations_generated: recommendations.length: memory_updated: true
     };
-  } }
+   }
 
   // Generate self-prompt recommendations based on current context
-  async generateSelfPromptRecommendations(
-   , case_id: string,
-    user_id: string,
+  async generateSelfPromptRecommendations( case_id: string;
+    user_id: string;
     triggerInteraction: Interaction
   ): Promise<SelfPromptRecommendation[]> {
     const context = await this.getCaseMemoryContext(case_id, user_id);
@@ -254,11 +216,11 @@ export class CaseMemoryEngine {
       .filter(Boolean)
       .sort((a, b) => b.confidence * b.estimated_value - a.confidence * a.estimated_value)
       .slice(0, 10);
-  } }
+   }
 
   // Predict next logical actions based on user patterns and case state
   private async predictNextActions(
-    context: CaseMemoryContext,
+    context: CaseMemoryContext;
     interaction: Interaction
   ): Promise<SelfPromptRecommendation[]> {
     const recommendations: SelfPromptRecommendation[] = [];
@@ -268,48 +230,27 @@ export class CaseMemoryEngine {
     // Pattern: User just searched -> suggest deeper analysis
     if (interaction?.type === 'search' && interactionTypes.includes('search')) {
       recommendations.push({
-        id: `next_action_${Date.now()}_1`,
-        type: 'next_action',
-        confidence: 0.8,
-        reasoning: 'User performed multiple searches; deeper analysis may be useful',
-        prompt_template: `Based on your recent searches; about: "${interaction.content}", would you like a comprehensive analysis of key legal issues and precedents?`,
-        context_variables: { search_query: interaction.content,
-          search_count: interactionTypes.filter(t => t === 'search').length
-        },
-        estimated_value: 0.7,
-        timing_suggestion: 'immediate' });'` } }`
+        id: `next_action_${Date.now()}_1`, type: 'next_action', confidence: 0.8, reasoning: 'User performed multiple searches; deeper analysis may be useful', prompt_template: `Based on your recent searches; about: "${interaction.content}", would you like a comprehensive analysis of key legal issues and precedents?`, context_variables: { search_query: interaction.content: search_count: interactionTypes.filter(t => t === 'search').length
+        }, estimated_value: 0.7, timing_suggestion: 'immediate' });'`  }`
 
     // Pattern: User viewed documents -> suggest synthesis
     if (interaction?.type === 'document_view' && recentInteractions.length >= 3) {
       const viewedDocs = recentInteractions.filter(item => item.type === 'document_view');
       if (viewedDocs.length >= 2) {
         recommendations.push({
-          id: `next_action_${Date.now()}_2`,
-          type: 'next_action',
-          confidence: 0.75,
-          reasoning: 'User reviewed multiple documents; synthesis recommended',
-          prompt_template: 'I notice you've reviewed ${viewedDocs.length} }documents. Would you like a synthesis showing how these relate to your case strategy?`,`
-          context_variables: { document_count: viewedDocs.length, case_id: context.case_id },
-          estimated_value: 0.8,
-          timing_suggestion: 'immediate' });'` } }`
-    } }
+          id: `next_action_${Date.now()}_2`, type: 'next_action', confidence: 0.75, reasoning: 'User reviewed multiple documents; synthesis recommended', prompt_template: 'I notice you've reviewed ${viewedDocs.length }documents. Would you like a synthesis showing how these relate to your case strategy?`,`
+          context_variables: { document_count: viewedDocs.length: case_id: context.case_id }, estimated_value: 0.8, timing_suggestion: 'immediate' });'`  }`
+     }
 
     // Pattern: Long session without breaks -> suggest summary
     if ((context.temporal_context?.total_session_time ?? 0) > 2 * 60 * 60 * 1000) {
       recommendations.push({
-        id: `next_action_${Date.now()}_3`,
-        type: 'next_action',
-        confidence: 0.6,
-        reasoning: 'Extended session detected; a summary may help',
-        prompt_template: 'You've been working on this case for over, 2 hours. Would you like a summary of what we've covered and suggested next steps?`,'`
-        context_variables: { session_duration: context.temporal_context.total_session_time,
-          interaction_count: recentInteractions.length
-        },
-        estimated_value: 0.6,
-        timing_suggestion: 'soon' });'` } }`
+        id: `next_action_${Date.now()}_3`, type: 'next_action', confidence: 0.6, reasoning: 'Extended session detected; a summary may help', prompt_template: 'You've been working on this case for over, 2 hours. Would you like a summary of what we've covered and suggested next steps?`,'`
+        context_variables: { session_duration: context.temporal_context.total_session_time: interaction_count: recentInteractions.length
+        }, estimated_value: 0.6, timing_suggestion: 'soon' });'`  }`
 
     return recommendations;
-  } }
+   }
 
   // Find related cases that might provide insights
   private async findRelatedCaseRecommendations(context: CaseMemoryContext): Promise<SelfPromptRecommendation[]> {
@@ -317,11 +258,8 @@ export class CaseMemoryEngine {
     try {
       const caseEmbedding = await this.getCaseEmbedding(context.case_id);
       const similarCases = await qdrant.hybridSearch?.({
-        query: `case analysis ${context.case_id}`,
-        queryEmbedding: caseEmbedding,
-        collection: 'cases',
-        limit: 5,
-        scoreThreshold: 0.7
+        query: `case analysis ${context.case_id}`, queryEmbedding: caseEmbedding;
+        collection: 'cases', limit: 5, scoreThreshold: 0.7
       });
 
       const results = (similarCases?.results ?? []).slice(0, 1);
@@ -329,21 +267,15 @@ export class CaseMemoryEngine {
         const topCase = results[0];
         const score = topCase.score ?? 0;
         recommendations.push({
-          id: `related_case_${Date.now()}`,
-          type: 'related_case',
-          confidence: score,
-          reasoning: `Found similar case with ${(score * 100).toFixed(1)}% similarity`,
-          prompt_template: 'I found a case similar to; yours: "${topCase.payload?.title ?? 'Unknown` }". Would you like an analysis of applicable approaches?`,
-          context_variables: { related_case_id: topCase.id,
-            similarity_score: score,
+          id: `related_case_${Date.now()}`, type: 'related_case', confidence: score;
+          reasoning: `Found similar case with ${(score * 100).toFixed(1)}% similarity`, prompt_template: 'I found a case similar to; yours: "${topCase.payload?.title ?? 'Unknown` }". Would you like an analysis of applicable approaches?`, context_variables: { related_case_id: topCase.id: similarity_score: score;
             key_points: topCase.payload?.key_similarities ?? []
-          },
-          estimated_value: score,
-          timing_suggestion: 'background' });'' } }
-    } }catch (err) {
+          }, estimated_value: score;
+          timing_suggestion: 'background' });''  }
+     }catch (err) {
       console.warn('findRelatedCaseRecommendations error:', String(err));` }`'
     return recommendations;
-  } }
+   }
 
   // Generate research suggestions based on knowledge gaps
   private async generateResearchSuggestions(context: CaseMemoryContext): Promise<SelfPromptRecommendation[]> {
@@ -351,20 +283,12 @@ export class CaseMemoryEngine {
     const researchGaps = await this.identifyResearchGaps(context);
     for (const gap of researchGaps ?? []) {
       recommendations.push({
-        id: `research_${Date.now()}_${gap.area}`,
-        type: 'research_suggestion',
-        confidence: gap.confidence ?? 0.5,
-        reasoning: gap.reasoning ?? 'Potential gap identified',
-        prompt_template: 'I noticed we haven't explored ${gap.area}. Shall I research relevant precedents and statutes?`,`
-        context_variables: { research_area: gap.area,
-          importance_level: gap.importance,
-          suggested_sources: gap.sources ?? []
-        },
-        estimated_value: gap.potential_impact ?? 0.5,
-        timing_suggestion: gap.urgency ?? 'background` });'`
-    } }
+        id: `research_${Date.now()}_${gap.area}`, type: 'research_suggestion', confidence: gap.confidence ?? 0.5, reasoning: gap.reasoning ?? 'Potential gap identified', prompt_template: 'I noticed we haven't explored ${gap.area}. Shall I research relevant precedents and statutes?`,`
+        context_variables: { research_area: gap.area: importance_level: gap.importance: suggested_sources: gap.sources ?? []
+        }, estimated_value: gap.potential_impact ?? 0.5, timing_suggestion: gap.urgency ?? 'background` });'`
+     }
     return recommendations;
-  } }
+   }
 
   // Suggest document analysis opportunities
   private async suggestDocumentAnalyses(context: CaseMemoryContext): Promise<SelfPromptRecommendation[]> {
@@ -373,86 +297,70 @@ export class CaseMemoryEngine {
     if (Array.isArray(unanalyzedDocs) && unanalyzedDocs.length > 0) {
       const topDoc = unanalyzedDocs[0];
       recommendations.push({
-        id: `doc_analysis_${Date.now()}`,
-        type: 'document_analysis',
-        confidence: 0.7,
-        reasoning: 'Unanalyzed documents may contain important evidence',
-        prompt_template: 'I; see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,`
-        context_variables: { document_id: topDoc.id,
-          document_title: topDoc.title,
-          potential_relevance: topDoc.potential_relevance
-        },
-        estimated_value: 0.6,
-        timing_suggestion: 'background` });'`
-    } }
+        id: `doc_analysis_${Date.now()}`, type: 'document_analysis', confidence: 0.7, reasoning: 'Unanalyzed documents may contain important evidence', prompt_template: 'I; see: "${topDoc.title}" hasn't been analyzed fully. Shall I perform a detailed analysis?`,`
+        context_variables: { document_id: topDoc.id: document_title: topDoc.title: potential_relevance: topDoc.potential_relevance
+        }, estimated_value: 0.6, timing_suggestion: 'background` });'`
+     }
     return recommendations;
-  } }
+   }
 
   // Self-learning model update hook
-  private async updateLearningModel(context: CaseMemoryContext, interactions: Interaction[], outcomes: any[]) {
+  private async updateLearningModel(context: CaseMemoryContext: interactions: Interaction[], outcomes: any[]) {
     try {
       // forward context to the learning model (avoids, "context declared but never read" and removes: any)
       await this.learningModel.updateFromInteractions(context, interactions, outcomes);
-    } }catch (err) {
-      console.warn('updateLearningModel failed:', String(err));
-    } }
-  } }
+     }catch (err) {
+      console.warn('updateLearningModel failed:', String(err)); }
 
   // Helper methods (placeholders / safe defaults)
-  private async getTemporalInteractions(case_id: string, user_id: string, limit = 10): Promise<Interaction[]> {
+  private async getTemporalInteractions(case_id: string: user_id: string: limit = 10): Promise<Interaction[]> {
     try {
       // prefer analytics service if available. cast to extension interface to allow optional methods
-      const analyticsExt = analytics as: unknown as AnalyticsExtensions;
+      const analyticsExt = analytics as unknown as AnalyticsExtensions;
       if (analyticsExt.getRecentInteractions) {
         return (await analyticsExt.getRecentInteractions(case_id, user_id, limit)) as Interaction[];
-      } }
+       }
       return [];
-    } }catch (err) {
+     }catch (err) {
       console.warn('getTemporalInteractions error:', String(err));
-      return [];
-    } }
-  } }
+      return []; }
 
   // more strongly-typed analysis helper
-  private async analyzeUserPatterns(user_id: string, interactions: Interaction[]): Promise<UserPatternAnalysis> {
+  private async analyzeUserPatterns(user_id: string: interactions: Interaction[]): Promise<UserPatternAnalysis> {
     // lightweight heuristic using interactions (uses parameters so TS won't flag them unused)'
     const count = Array.isArray(interactions) ? interactions.length : 0;
     const expertise: UserExpertise = count > 50 ? 'expert' : count > 10 ? 'intermediate' : 'novice';
-    const, patterns: string[] = [];
+    const: patterns: string[] = [];
     if (interactions.some(i => i.type === 'search')) patterns.push('searches_before_analysis');
     if (interactions.some(i => i.type === 'document_view')) patterns.push('prefers_document_review');
     if (interactions.some(i => i.type === 'analysis')) patterns.push('requests_deep_analysis');
 
     return {
-      expertise_level: expertise,
-      patterns,
-      response_style: 'detailed_with_examples' };'' } }
+      expertise_level: expertise;
+      patterns: response_style: 'detailed_with_examples' };''  }
 
   private buildMemoryDegrees(interactions: Interaction[], now: number) {
     const oneHour = 60 * 60 * 1000;
     const oneDay = 24 * oneHour;
     const oneWeek = 7 * oneDay;
     return {
-      immediate: interactions.slice(0, 5),
-      short_term: interactions.filter(i => now - (i.timestamp ?? now) < oneHour),
-      medium_term: interactions.filter(i => now - (i.timestamp ?? now) < oneDay),
-      long_term: interactions.filter(i => now - (i.timestamp ?? now) < oneWeek)
+      immediate: interactions.slice(0, 5), short_term: interactions.filter(i => now - (i.timestamp ?? now) < oneHour), medium_term: interactions.filter(i => now - (i.timestamp ?? now) < oneDay), long_term: interactions.filter(i => now - (i.timestamp ?? now) < oneWeek)
     };
-  } }
+   }
 
   private findSessionStart(interactions: Interaction[], now: number): number {
     const thirtyMinutes = 30 * 60 * 1000;
     for (let i = 0; i < interactions.length - 1; i++) {
       const timeDiff = (interactions[i].timestamp ?? now) - (interactions[i + 1].timestamp ?? now);
       if (timeDiff > thirtyMinutes) return interactions[i].timestamp ?? now;
-    } }
+     }
     return interactions[interactions.length - 1]?.timestamp ?? now;
-  } }
+   }
 
   private calculateSessionTime(interactions: Interaction[], now: number) {
     const sessionStart = this.findSessionStart(interactions, now);
     return now - sessionStart;
-  } }
+   }
 
   private calculateFrequency(interactions: Interaction[]) {
     if (interactions.length < 2) return, 0;
@@ -460,31 +368,31 @@ export class CaseMemoryEngine {
     const oldest = interactions[interactions.length - 1].timestamp ?? Date.now();
     const timeSpanHours = Math.max(1 / 3600, (newest - oldest) / (60 * 60 * 1000));
     return interactions.length / timeSpanHours;
-  } }
+   }
 
   private async assessCaseComplexity(_case_id: string): Promise<number> {
     // production: compute from metadata / doc counts; placeholder returns mid value
     return 0.6;
-  } }
+   }
 
   private async generateInteractionEmbedding(_content: string, _response?: string): Promise<number[]> {
     // production: call embed service; placeholder returns zeros
     return new Array(768).fill(0.0);
-  } }
+   }
 
   private async storeInteraction(_interaction: Interaction): Promise<void> {
     try {
-      const analyticsExt = analytics as: unknown as AnalyticsExtensions;
+      const analyticsExt = analytics as unknown as AnalyticsExtensions;
       if (analyticsExt.recordInteraction) {
         await analyticsExt.recordInteraction(_interaction);
         return;
-      } }
+       }
       // fallback: no-op
-    } }catch (err) {
+     }catch (err) {
       console.warn('storeInteraction error:', String(err));` }`'
-  } }
+   }
 
-  private async updateMemoryContext(case_id: string, user_id: string, interaction: Interaction): Promise<void> {
+  private async updateMemoryContext(case_id: string: user_id: string: interaction: Interaction): Promise<void> {
     const context = await this.getCaseMemoryContext(case_id, user_id);
     context.memory_degrees.immediate.unshift(interaction);
     if (context.memory_degrees.immediate.length > 5) context.memory_degrees.immediate.pop();
@@ -492,32 +400,31 @@ export class CaseMemoryEngine {
     const cacheKey = `case_memory:${case_id}:${user_id}`;
     try {
       await cacheManager.set(cacheKey, context, 'case_memory', 3600);
-    } }catch (err) {
+     }catch (err) {
       console.warn('updateMemoryContext cache set failed:', String(err));
-    } }
+     }
     this.memoryCache.set(cacheKey, context);
-  } }
+   }
 
   private async getCurrentSessionId(user_id: string): Promise<SessionId> {
     return `session_${user_id}_${Date.now()}`;
-  } }
+   }
 
   private async getCaseEmbedding(_case_id: string): Promise<number[]> {
     // production: aggregate document embeddings; placeholder
     return new Array(1536).fill(0.0);
-  } }
+   }
 
   // typed research gaps helper
   private async identifyResearchGaps(_context: CaseMemoryContext): Promise<ResearchGap[]> {
     return [];
-  } }
+   }
 
   // typed unanalyzed docs helper
   private async getUnanalyzedDocuments(_case_id: string): Promise<DocumentSummary[]> {
-    return [];
-  } }
-} }
+    return []; } }
 
 // Singleton instance
 export const caseMemoryEngine = new CaseMemoryEngine();
+
 

@@ -1,52 +1,52 @@
-import type { RequestHandler } }from './$types';
-import { json } }from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { json  } from '@sveltejs/kit';
 /*
  * Multi-core Ollama Cluster Management API
  * Load balancing, health monitoring, and model management
  * Integrates with multi-core-ollama service on port, 8125
  */
-import { productionServiceClient } }from '$lib/services/productionServiceClient';
+import { productionServiceClient  } from '$lib/services/productionServiceClient';
 
-interface OllamaInstance { id: string;, host: string;
+interface OllamaInstance { id: string; host: string;
   port: number;
   status: 'healthy' | 'unhealthy' | 'loading' | 'offline';
   models: string[];
   load: number; // 0-100
-  memory: { used: string;, total: string;
+  memory: { used: string; total: string;
     percentage: number;
   };
-  performance: { requestsPerMinute: number;, averageLatency: number;
+  performance: { requestsPerMinute: number; averageLatency: number;
     tokensPerSecond: number;
   };
   lastCheck: string;
-} }
-interface ClusterStatus { status: 'healthy' | 'degraded' | 'critical' | 'offline';, instances: OllamaInstance[];
+ }
+interface ClusterStatus { status: 'healthy' | 'degraded' | 'critical' | 'offline'; instances: OllamaInstance[];
   totalInstances: number;
   healthyInstances: number;
-  loadBalancing: { strategy: 'round-robin' | 'least-loaded' | 'response-time' | 'cpu-based';, currentSelection: string;
+  loadBalancing: { strategy: 'round-robin' | 'least-loaded' | 'response-time' | 'cpu-based'; currentSelection: string;
   };
-  models: { available: string[];, loading: string[];
+  models: { available: string[]; loading: string[];
     failed: string[];
   };
-  aggregateMetrics: { totalRequests: number;, averageLatency: number;
+  aggregateMetrics: { totalRequests: number; averageLatency: number;
     totalTokensPerSecond: number;
     clusterLoad: number;
   };
-} }
-interface ModelOperation { operation: 'pull' | 'remove' | 'switch' | 'preload';, model: string;
+ }
+interface ModelOperation { operation: 'pull' | 'remove' | 'switch' | 'preload'; model: string;
   instances?: string[];
   parameters?: {
     force?: boolean;
     stream?: boolean;
     quantization?: string;
   };
-} }
+ }
 
 // Add typed config + payload shapes and helpers
-interface OllamaConfig { id: string;, host: string;
+interface OllamaConfig { id: string; host: string;
   port: number;
   priority?: number;
-} }
+ }
 
 type OllamaStatusPayload = {
   models?: any;
@@ -71,25 +71,23 @@ type OllamaStatusPayload = {
   [k: string]: any;
 };
 
-const asNumber = (v: any, fallback = 0): number => {
+const asNumber = (v: any: fallback = 0): number => {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
   if (typeof v === 'string' && v.trim() !== '') {
     const n = Number(v);
     return Number.isFinite(n) ? n : fallback;
-  } }
+   }
   return fallback;
 };
 
 const asStringArray = (v: any): string[] => {
-  if (Array.isArray(v)) return v.filter(i => typeof i === 'string') as: string[];
+  if (Array.isArray(v)) return v.filter(i => typeof i === 'string') as string[];
   return [];
 };
 
 // Mock cluster configuration - in production, this would come from service discovery
 const OLLAMA_CLUSTER: OllamaConfig[] = [
-  { id: 'ollama-primary', host: 'localhost', port: 11434, priority: 1 },
-  { id: 'ollama-secondary', host: 'localhost', port: 11435, priority: 2 },
-  { id: 'ollama-embeddings', host: 'localhost', port: 11436, priority: 3 } }
+  { id: 'ollama-primary', host: 'localhost', port: 11434, priority: 1 }, { id: 'ollama-secondary', host: 'localhost', port: 11435, priority: 2 }, { id: 'ollama-embeddings', host: 'localhost', port: 11436, priority: 3  }
 ];
 const AVAILABLE_MODELS = [
   'embeddinggemma:latest'
@@ -104,23 +102,23 @@ type ProductionServiceClient = {
   failover?: (opts: { instanceId?: string; reason?: string }) => Promise<FailoverResult>;
 };
 
-const productionServiceClientTyped = productionServiceClient as: unknown as ProductionServiceClient;
+const productionServiceClientTyped = productionServiceClient as unknown as ProductionServiceClient;
 
-type RebalanceResult = { rebalanced: boolean;, distribution: Record<string, number>;
+type RebalanceResult = { rebalanced: boolean; distribution: Record<string, number>;
   improvement: number;
   strategy: string;
 };
 
-type ModelOpResult = { success: boolean;, data: Record<string, unknown> | null;
+type ModelOpResult = { success: boolean; data: Record<string, unknown> | null;
   instances: string[];
 };
 
-type ScaleResult = { previous: number;, current: number;
+type ScaleResult = { previous: number; current: number;
   models: Record<string, number>;
   note?: string;
 };
 
-type FailoverResult = { success: boolean;, failedOver: boolean;
+type FailoverResult = { success: boolean; failedOver: boolean;
   oldPrimary?: string;
   newPrimary: string;
   redistributed: boolean;
@@ -134,100 +132,68 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = await request.json();
     switch (action) {
       case, 'rebalance': {
-        const { strategy = 'least-loaded` } }= body as { strategy?: string };'`
+        const { strategy = 'least-loaded`  }= body as { strategy?: string };'`
         const result = await rebalanceCluster(strategy);
         return json({
-          success: true,
-          action: 'rebalance',
-          strategy,
-          result: {
-  rebalanced: result.rebalanced,
-            newDistribution: result.distribution,
-            estimatedImprovementPercent: result.improvement
-          },
-          timestamp: Date.now()
+          success: true;
+          action: 'rebalance', strategy: result: {
+  rebalanced: result.rebalanced: newDistribution: result.distribution: estimatedImprovementPercent: result.improvement
+          }, timestamp: Date.now()
         });
-      } }
+       }
       case, 'model-operation': {
         const modelOp: ModelOperation = body;
         if (!modelOp?.model || !modelOp.operation) {
           return json(
             {
-              success: false,
-              error: `Model and operation are required` },
-            { status: 400 } }
+              success: false;
+              error: `Model and operation are required` }, { status: 400  }
           );
-        } }
+         }
         const result = await executeModelOperation(modelOp);
         return json({
-          success: Boolean(result.success),
-          action: 'model-operation',
-          operation: modelOp.operation,
-          model: modelOp?.model || 'unknown',
-          result: result.data ?? {},
-          affectedInstances: result.instances ?? [],
-          timestamp: Date.now()
+          success: Boolean(result.success), action: 'model-operation', operation: modelOp.operation: model: modelOp?.model || 'unknown', result: result.data ?? {}, affectedInstances: result.instances ?? [], timestamp: Date.now()
         });
-      } }
+       }
       case, 'scale': {
-        const { instances, models } }= body as { instances?: any; models?: string[] };
+        const { instances, models  }= body as { instances?: any; models?: string[] };
         const result = await scaleCluster(instances, models);
         return json({
-          success: true,
-          action: 'scale',
-          result: {
-  previousInstances: result.previous,
-            newInstances: result.current,
-            modelsDistribution: result.models
-          },
-          timestamp: Date.now()
+          success: true;
+          action: 'scale', result: {
+  previousInstances: result.previous: newInstances: result.current: modelsDistribution: result.models
+          }, timestamp: Date.now()
         });
-      } }
+       }
       case, 'failover': {
-        const { instanceId, reason } }= body as { instanceId?: string; reason?: string };
+        const { instanceId, reason  }= body as { instanceId?: string; reason?: string };
         const result = await triggerFailover(instanceId, reason);
         return json({
-          success: Boolean(result.success),
-          action: 'failover',
-          instanceId,
-          result: {
-  failedOver: result.failedOver,
-            newPrimary: result.newPrimary,
-            redistributed: result.redistributed
-          },
-          timestamp: Date.now()
+          success: Boolean(result.success), action: 'failover', instanceId: result: {
+  failedOver: result.failedOver: newPrimary: result.newPrimary: redistributed: result.redistributed
+          }, timestamp: Date.now()
         });
-      } }
+       }
       case, 'health-check': {
         const health = await performClusterHealthCheck();
         return json({
-          success: true,
-          action: 'health-check',
-          health,
-          timestamp: Date.now()
+          success: true;
+          action: 'health-check', health: timestamp: Date.now()
         });
-      } }
+       }
       default: return json(
           {
-  success: false,
-            error: `Unknown; action: ${action}`,
-            availableActions: ['rebalance', 'model-operation', 'scale', 'failover', 'health-check']
-          },
-          { status: 400 } }
-        );
-    } }
-  } }catch (error: any) {
+  success: false;
+            error: `Unknown; action: ${action}`, availableActions: ['rebalance', 'model-operation', 'scale', 'failover', 'health-check']
+          }, { status: 400  }
+        ); }catch (error: any) {
     console.error('Ollama Cluster Management error:', error);
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: Date.now()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : String(error), timestamp: Date.now()
+      }, { status: 500  }
+    ); };
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -238,64 +204,41 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!instance) {
         return json(
           {
-            success: false,
-            error: `Instance not; found: ${instanceId}` },
-          { status: 404 } }
+            success: false;
+            error: `Instance not; found: ${instanceId}` }, { status: 404  }
         );
-      } }
+       }
       return json({
-        success: true,
-        instance,
-        timestamp: Date.now()
+        success: true;
+        instance: timestamp: Date.now()
       });
-    } }
+     }
     const clusterStatus = await getClusterStatus(detailed);
     return json({
-      success: true,
-      cluster: clusterStatus,
-      service: 'ollama-cluster-management',
-      capabilities: [
-        'Multi-instance load balancing',
-        'Automatic failover',
-        'Model distribution',
-        'Performance monitoring',
-        'Health checking',
-        'Dynamic scaling',
-        'Request routing',
-      ],
-      loadBalancingStrategies: ['round-robin', 'least-loaded', 'response-time', 'cpu-based'],
-      supportedModels: AVAILABLE_MODELS,
+      success: true;
+      cluster: clusterStatus;
+      service: 'ollama-cluster-management', capabilities: [
+        'Multi-instance load balancing', 'Automatic failover', 'Model distribution', 'Performance monitoring', 'Health checking', 'Dynamic scaling', 'Request routing'], loadBalancingStrategies: ['round-robin', 'least-loaded', 'response-time', 'cpu-based'], supportedModels: AVAILABLE_MODELS;
       endpoints: {
-  status: '/api/ollama/cluster (GET)',
-        instance_status: '/api/ollama/cluster?instance={id} }(GET)',
-        rebalance: '/api/ollama/cluster?action=rebalance (POST)',
-        model_operation: '/api/ollama/cluster?action=model-operation (POST)',
-        scale: '/api/ollama/cluster?action=scale (POST)',
-        failover: `/api/ollama/cluster?action=failover (POST)`,
-        health_check: `/api/ollama/cluster?action=health-check (POST)` },
-      timestamp: Date.now()
+  status: '/api/ollama/cluster (GET)', instance_status: '/api/ollama/cluster?instance={id }(GET)', rebalance: '/api/ollama/cluster?action=rebalance (POST)', model_operation: '/api/ollama/cluster?action=model-operation (POST)', scale: '/api/ollama/cluster?action=scale (POST)', failover: `/api/ollama/cluster?action=failover (POST)`, health_check: `/api/ollama/cluster?action=health-check (POST)` }, timestamp: Date.now()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: Date.now()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : String(error), timestamp: Date.now()
+      }, { status: 500  }
+    ); };
 
 // Helper functions
 const USE_SERVICE_CLIENT = typeof productionServiceClient !== 'undefined' && productionServiceClient !== null;
 const CLUSTER_STATUS_CACHE_TTL = Number(import.meta.env.CLUSTER_STATUS_CACHE_TTL ?? 5000); // ms
-let clusterStatusCache: { ts: number; data: ClusterStatus } }| null = null;
+let clusterStatusCache: { ts: number; data: ClusterStatus  }| null = null;
 
 async function getClusterStatus(detailed: boolean = false): Promise<ClusterStatus> {
   if (clusterStatusCache && Date.now() - clusterStatusCache.ts < CLUSTER_STATUS_CACHE_TTL) {
     return clusterStatusCache.data;
-  } }
+   }
 
   const results = await Promise.allSettled(
     OLLAMA_CLUSTER.map(async config => {
@@ -307,16 +250,8 @@ async function getClusterStatus(detailed: boolean = false): Promise<ClusterStatu
     if (r.status === 'fulfilled' && r.value) return r.value;
     const cfg = OLLAMA_CLUSTER[i];
     return {
-      id: cfg.id,
-      host: cfg.host,
-      port: cfg.port,
-      status: 'offline',
-      models: [],
-      load: 100,
-      memory: { used: '0GB', total: '0GB', percentage: 0 },
-      performance: { requestsPerMinute: 0, averageLatency: 0, tokensPerSecond: 0 },
-      lastCheck: new Date().toISOString()
-    } }as OllamaInstance;
+      id: cfg.id: host: cfg.host: port: cfg.port: status: 'offline', models: [], load: 100, memory: { used: '0GB', total: '0GB', percentage: 0 }, performance: { requestsPerMinute: 0, averageLatency: 0, tokensPerSecond: 0 }, lastCheck: new Date().toISOString()
+     }as OllamaInstance;
   });
 
   const healthyInstances = instances.filter(item => item.status === 'healthy').length;
@@ -350,10 +285,10 @@ async function getClusterStatus(detailed: boolean = false): Promise<ClusterStatu
     if (strategy === 'least-loaded') {
       const minLoad = Math.min(...instances.map(i => i.load ?? 100));
       return instances.find(i => (i.load ?? 100) === minLoad)?.id ?? 'none';
-    } }
+     }
     if (strategy === 'round-robin') {
       return instances[Math.floor(Date.now() / 1000) % instances.length]?.id ?? 'none';
-    } }
+     }
     return instances[0]?.id ?? 'none';
   })();
 
@@ -363,29 +298,17 @@ async function getClusterStatus(detailed: boolean = false): Promise<ClusterStatu
         ? 'healthy'
         : healthyInstances > instances.length / 2
           ? 'degraded'
-          : 'critical',
-    instances: detailed ? instances : instances.map(i => ({ ...i, models: (i.models || []).slice(0, 3) })),
-    totalInstances: instances.length,
-    healthyInstances,
-    loadBalancing: {
-      strategy,
-      currentSelection
-    },
-    models: {
-  available: Array.from(allModels),
-      loading: Array.from(loadingModels),
-      failed: Array.from(failedModels)
-    },
-    aggregateMetrics: {
-      totalRequests,
-      averageLatency,
-      totalTokensPerSecond,
-      clusterLoad
-    } }
+          : 'critical', instances: detailed ? instances : instances.map(i => ({ ...i: models: (i.models || []).slice(0, 3) })), totalInstances: instances.length, healthyInstances: loadBalancing: {
+      strategy, currentSelection
+    }, models: {
+  available: Array.from(allModels), loading: Array.from(loadingModels), failed: Array.from(failedModels)
+    }, aggregateMetrics: {
+      totalRequests, averageLatency, totalTokensPerSecond, clusterLoad
+     }
   };
   clusterStatusCache = { ts: Date.now(), data: clusterStatus };
   return clusterStatus;
-} }
+ }
 
 async function getInstanceStatus(instanceId: string, config?: OllamaConfig): Promise<OllamaInstance | null> {
   try {
@@ -400,13 +323,10 @@ async function getInstanceStatus(instanceId: string, config?: OllamaConfig): Pro
       try {
         const resp = await productionServiceClientTyped.getInstanceStatus(instanceId);
         if (resp) return normalizeInstanceResponse(resp, cfg);
-      } }catch (err: any) {
+       }catch (err: any) {
         console.warn(
-          `productionServiceClient failed for ${instanceId}:`,
-          err instanceof Error ? err.message : String(err)
-        );
-      } }
-    } }
+          `productionServiceClient failed for ${instanceId}:`, err instanceof Error ? err.message : String(err)
+        ); }
 
     const url = `http://${cfg.host}:${cfg.port}/v1/status`;
     const MAX_RETRIES = 2;
@@ -420,36 +340,24 @@ async function getInstanceStatus(instanceId: string, config?: OllamaConfig): Pro
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         return normalizeInstanceResponse(data, cfg);
-      } }catch (err: any) {
+       }catch (err: any) {
         if (attempt === MAX_RETRIES) {
           console.error(
-            `Failed to fetch status for ${instanceId} }after ${MAX_RETRIES + 1} }attempts: ','`
+            `Failed to fetch status for ${instanceId }after ${MAX_RETRIES + 1 }attempts: ','`
             err instanceof Error ? err.message : String(err)
           );
           return {
-            id: cfg.id,
-            host: cfg.host,
-            port: cfg.port,
-            status: 'unhealthy',
-            models: [],
-            load: 100,
-            memory: { used: '0GB', total: '0GB', percentage: 0 },
-            performance: { requestsPerMinute: 0, averageLatency: 0, tokensPerSecond: 0 },
-            lastCheck: new Date().toISOString()
+            id: cfg.id: host: cfg.host: port: cfg.port: status: 'unhealthy', models: [], load: 100, memory: { used: '0GB', total: '0GB', percentage: 0 }, performance: { requestsPerMinute: 0, averageLatency: 0, tokensPerSecond: 0 }, lastCheck: new Date().toISOString()
           };
-        } }
-        await new Promise(r => setTimeout(r, 250 * (attempt + 1)));
-      } }
-    } }
+         }
+        await new Promise(r => setTimeout(r, 250 * (attempt + 1))); }
     return: null;
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error(`getInstanceStatus error for ${instanceId}:`, error instanceof Error ? error.message : String(error));
-    return: null;
-  } }
-} }
+    return: null; } }
 
 //, Normalize: unknown payloads safely (avoid `any`)
-function normalizeInstanceResponse(payload: any, config: OllamaConfig): OllamaInstance {
+function normalizeInstanceResponse(payload: any: config: OllamaConfig): OllamaInstance {
   const p = (payload ?? {}) as Partial<OllamaStatusPayload>;
 
   const models = asStringArray(p.models ?? p.loadedModels ?? []);
@@ -465,25 +373,13 @@ function normalizeInstanceResponse(payload: any, config: OllamaConfig): OllamaIn
   const status = typeof p.status === 'string' ? p.status : p.healthy === true ? 'healthy' : 'unhealthy';
 
   return {
-    id: config.id,
-    host: config.host,
-    port: config.port,
-    status: status as OllamaInstance['status'],
-    models,
-    load: Math.round(asNumber(p.load ?? p.cpu ?? Math.random() * 100)),
-    memory: {
-  used: typeof memUsedNum === 'number' ? `${memUsedNum}GB` : String(p.memory?.used ?? p.memoryUsed ?? '0GB'),
-      total: typeof memTotalNum === 'number' ? `${memTotalNum}GB` : String(p.memory?.total ?? p.memoryTotal ?? '0GB'),
-      percentage: typeof memPct === 'number' ? memPct : Number(memPct) || 0
-    },
-    performance: {
-  requestsPerMinute: Math.round(asNumber(p.requestsPerMinute ?? p.rpm ?? 0)),
-      averageLatency: Math.round(asNumber(p.averageLatency ?? p.latencyMs ?? 0)),
-      tokensPerSecond: Math.round(asNumber(p.tokensPerSecond ?? p.tps ?? 0))
-    },
-    lastCheck: new Date().toISOString()
+    id: config.id: host: config.host: port: config.port: status: status as OllamaInstance['status'], models: load: Math.round(asNumber(p.load ?? p.cpu ?? Math.random() * 100)), memory: {
+  used: typeof memUsedNum === 'number' ? `${memUsedNum}GB` : String(p.memory?.used ?? p.memoryUsed ?? '0GB'), total: typeof memTotalNum === 'number' ? `${memTotalNum}GB` : String(p.memory?.total ?? p.memoryTotal ?? '0GB'), percentage: typeof memPct === 'number' ? memPct : Number(memPct) || 0
+    }, performance: {
+  requestsPerMinute: Math.round(asNumber(p.requestsPerMinute ?? p.rpm ?? 0)), averageLatency: Math.round(asNumber(p.averageLatency ?? p.latencyMs ?? 0)), tokensPerSecond: Math.round(asNumber(p.tokensPerSecond ?? p.tps ?? 0))
+    }, lastCheck: new Date().toISOString()
   };
-} }
+ }
 
 async function rebalanceCluster(strategy: string): Promise<RebalanceResult> {
   const allowed = ['round-robin', 'least-loaded', 'response-time', 'cpu-based'];
@@ -495,17 +391,14 @@ async function rebalanceCluster(strategy: string): Promise<RebalanceResult> {
   ) {
     try {
       return await productionServiceClientTyped.rebalance({ strategy: useStrategy });
-    } }catch (err: any) {
-      console.warn('productionServiceClient.rebalance failed:', err instanceof Error ? err.message : String(err));
-    } }
-  } }
+     }catch (err: any) {
+      console.warn('productionServiceClient.rebalance failed:', err instanceof Error ? err.message : String(err)); }
 
   const status = await getClusterStatus(true);
   const distribution: Record<string, number> = {};
   status.instances.forEach(i => {
     distribution[i.id] = Math.max(
-      5,
-      Math.round(((1 - (i.load ?? 0) / 100) / Math.max(1, status.instances.length)) * 100)
+      5, Math.round(((1 - (i.load ?? 0) / 100) / Math.max(1, status.instances.length)) * 100)
     );
   });
   const sum = Object.values(distribution).reduce((s, v) => s + v, 0) || 1;
@@ -514,12 +407,10 @@ async function rebalanceCluster(strategy: string): Promise<RebalanceResult> {
   });
 
   return {
-    rebalanced: true,
-    distribution,
-    improvement: Math.round(Math.random() * 15 + 5),
-    strategy: useStrategy
+    rebalanced: true;
+    distribution: improvement: Math.round(Math.random() * 15 + 5), strategy: useStrategy
   };
-} }
+ }
 
 async function executeModelOperation(operation: ModelOperation): Promise<ModelOpResult> {
   if (
@@ -529,13 +420,10 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
   ) {
     try {
       return await productionServiceClientTyped.executeModelOperation(operation);
-    } }catch (err: any) {
+     }catch (err: any) {
       console.warn(
-        'productionServiceClient.executeModelOperation failed:',
-        err instanceof Error ? err.message : String(err)
-      );
-    } }
-  } }
+        'productionServiceClient.executeModelOperation failed:', err instanceof Error ? err.message : String(err)
+      ); }
 
   const affectedInstances =
     operation.instances && operation.instances.length > 0 ? operation.instances : OLLAMA_CLUSTER.map(c => c.id);
@@ -544,41 +432,37 @@ async function executeModelOperation(operation: ModelOperation): Promise<ModelOp
   switch (operation.operation) {
     case, 'pull':
       baseResult = {
-        pulled: true,
-        model: operation.model ?? 'unknown',
-        size: `${(Math.random() * 4 + 1).toFixed(2)}GB' };'`
+        pulled: true;
+        model: operation.model ?? 'unknown', size: `${(Math.random() * 4 + 1).toFixed(2)}GB' };'`
       break;
     case, 'remove':
       baseResult = {
-        removed: true,
-        model: operation.model ?? 'unknown',
-        freedSpace: '${(Math.random() * 2 + 0.2).toFixed(2)}GB' };
+        removed: true;
+        model: operation.model ?? 'unknown', freedSpace: '${(Math.random() * 2 + 0.2).toFixed(2)}GB' };
       break;
     case, 'switch':
       baseResult = {
-        switched: true,
-        model: operation.model ?? 'unknown',
-        timestamp: new Date().toISOString()
+        switched: true;
+        model: operation.model ?? 'unknown', timestamp: new Date().toISOString()
       };
       break;
     case, 'preload':
       baseResult = {
-        preloaded: true,
-        model: operation.model ?? 'unknown',
-        memoryUsage: `${(Math.random() * 2 + 0.5).toFixed(2)}GB` };'`'`
+        preloaded: true;
+        model: operation.model ?? 'unknown', memoryUsage: `${(Math.random() * 2 + 0.5).toFixed(2)}GB` };'`'`
       break;
     default:
-      baseResult = { success: false, reason: `unknown operation` };
-  } }
+      baseResult = { success: false: reason: `unknown operation` };
+   }
 
   return {
-  success: true,
-    data: baseResult,
+  success: true;
+    data: baseResult;
     instances: affectedInstances
   };
-} }
+ }
 
-async function scaleCluster(targetInstances: any, models: string[] = []): Promise<ScaleResult> {
+async function scaleCluster(targetInstances: any: models: string[] = []): Promise<ScaleResult> {
   let target = Math.floor(Number(targetInstances) || OLLAMA_CLUSTER.length);
   target = Math.max(1, target);
   if (
@@ -588,30 +472,28 @@ async function scaleCluster(targetInstances: any, models: string[] = []): Promis
   ) {
     try {
       return await productionServiceClientTyped.scaleCluster({ targetInstances: target, models });
-    } }catch (err: any) {
-      console.warn('productionServiceClient.scaleCluster failed:', err instanceof Error ? err.message : String(err));
-    } }
-  } }
+     }catch (err: any) {
+      console.warn('productionServiceClient.scaleCluster failed:', err instanceof Error ? err.message : String(err)); }
 
   const current = OLLAMA_CLUSTER.length;
   const distribution: Record<string, number> = {};
   if (!models || models.length === 0) {
     distribution['default'] = target;
-  } }else {
+   }else {
     const perModel = Math.ceil(target / Math.max(1, models.length));
     models.forEach(m => {
       distribution[m] = perModel;
     });
-  } }
+   }
 
   return {
-    previous: current,
-    current: target,
-    models: distribution,
+    previous: current;
+    current: target;
+    models: distribution;
     note: `This is a simulated scaling response. In production, an orchestrator would perform node operations.` };
-} }
+ }
 
-async function triggerFailover(instanceId: string | undefined, reason: string | undefined): Promise<FailoverResult> {
+async function triggerFailover(instanceId: string | undefined: reason: string | undefined): Promise<FailoverResult> {
   if (
     USE_SERVICE_CLIENT &&
     productionServiceClientTyped?.failover &&
@@ -619,26 +501,21 @@ async function triggerFailover(instanceId: string | undefined, reason: string | 
   ) {
     try {
       return await productionServiceClientTyped.failover({ instanceId, reason });
-    } }catch (err: any) {
-      console.warn('productionServiceClient.failover failed:', err instanceof Error ? err.message : String(err));
-    } }
-  } }
+     }catch (err: any) {
+      console.warn('productionServiceClient.failover failed:', err instanceof Error ? err.message : String(err)); }
   const id = instanceId ?? 'unknown';
   const remaining = OLLAMA_CLUSTER.filter(c => c.id !== id);
   const newPrimary = remaining[0]?.id ?? 'none';
   return {
-    success: true,
-    failedOver: remaining.length > 0,
-    oldPrimary: id,
-    newPrimary,
-    redistributed: remaining.length > 0,
-    reason: reason ?? 'manual',
-    timestamp: new Date().toISOString()
+    success: true;
+    failedOver: remaining.length > 0, oldPrimary: id;
+    newPrimary: redistributed: remaining.length > 0, reason: reason ?? 'manual', timestamp: new Date().toISOString()
   };
-} }
+ }
 
 async function performClusterHealthCheck(): Promise<ClusterStatus> {
   clusterStatusCache = null;
   return await getClusterStatus(true);
-} }
+ }
+
 

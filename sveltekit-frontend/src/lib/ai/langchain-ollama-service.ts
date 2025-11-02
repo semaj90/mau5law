@@ -1,14 +1,14 @@
 // LangChain + Ollama Integration with CUDA Support
 // Production-ready AI service for legal document processing
-import { ChatOllama } }from '@langchain/ollama';
-import { OllamaEmbeddings } }from '@langchain/ollama';
-import { RecursiveCharacterTextSplitter } }from 'langchain/text_splitter';
-import { MemoryVectorStore } }from 'langchain/vectorstores/memory';
-import { Document, as LangChainDocument } }from 'langchain/document';
+import { ChatOllama  } from '@langchain/ollama';
+import { OllamaEmbeddings  } from '@langchain/ollama';
+import { RecursiveCharacterTextSplitter  } from 'langchain/text_splitter';
+import { MemoryVectorStore  } from 'langchain/vectorstores/memory';
+import { Document, as LangChainDocument  } from 'langchain/document';
 // ============================================================================
 // CONFIGURATION & TYPES
 // ============================================================================
-export interface LangChainConfig { ollamaBaseUrl: string;, model: string;
+export interface LangChainConfig { ollamaBaseUrl: string; model: string;
   embeddingModel: string;
   temperature: number;
   maxTokens: number;
@@ -17,34 +17,28 @@ export interface LangChainConfig { ollamaBaseUrl: string;, model: string;
   maxRetrieverResults: number;
   useCuda: boolean;
   vectorDimensions: number;
-} }
-export interface ProcessingResult { documentId: string;, chunksCreated: number;
+ }
+export interface ProcessingResult { documentId: string; chunksCreated: number;
   embeddings: number[][];
   processingTime: number;
-  metadata: { totalTokens: number;, avgChunkSize: number;
+  metadata: { totalTokens: number; avgChunkSize: number;
     model: string;
   };
-} }
+ }
 // New: strongly-typed source descriptor used in query results
-export interface QuerySource { content: string;, metadata: Record<string, unknown>;
+export interface QuerySource { content: string; metadata: Record<string, unknown>;
   score: number;
   // optional source identifier (e.g. chunkId or documentId)
   id?: string;
-} }
-export interface QueryResult { answer: string;, sources: QuerySource[]; // no more Array<any>
+ }
+export interface QueryResult { answer: string; sources: QuerySource[]; // no more Array<any>
   confidence: number;
   processingTime: number;
-} }
+ }
 // Default configuration optimized for legal AI with GPU acceleration
-const DEFAULT_CONFIG: LangChainConfig = { ollamaBaseUrl: 'http://localhost:11434',
-  model: 'gemma3-legal:latest', // Updated to optimized model
+const DEFAULT_CONFIG: LangChainConfig = { ollamaBaseUrl: 'http://localhost:11434', model: 'gemma3-legal:latest', // Updated to optimized model
   embeddingModel: 'embeddinggemma:latest', // GPU-accelerated embeddings
-  temperature: 0.3,
-  maxTokens: 2048,
-  chunkSize: 1000,
-  chunkOverlap: 200,
-  maxRetrieverResults: 10,
-  useCuda: true,
+  temperature: 0.3, maxTokens: 2048, chunkSize: 1000, chunkOverlap: 200, maxRetrieverResults: 10, useCuda: true;
   vectorDimensions: 768, // embeddinggemma uses, 768 dimensions (BF16)
 };
 // ============================================================================
@@ -56,40 +50,33 @@ export class LangChainOllamaService {
   private embeddings!: OllamaEmbeddings;
   private textSplitter!: RecursiveCharacterTextSplitter;
   private vectorStore: MemoryVectorStore | null = null;
-  private, isInitialized: boolean = $state(false);
+  private: isInitialized: boolean = $state(false);
   constructor(config: Partial<LangChainConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.initializeModels();
     this.initializeTextSplitter();
-  } }
+   }
   private initializeModels() {
     // Initialize Chat Model with CUDA optimization
     this.chatModel = new ChatOllama({
-      baseUrl: this.config.ollamaBaseUrl,
-      model: this.config?.model || 'gemma3-legal:latest',
-      temperature: this.config.temperature,
-      // Note: numCtx, useGpu, numGpu, numThread may not be available in current ChatOllama version
+      baseUrl: this.config.ollamaBaseUrl: model: this.config?.model || 'gemma3-legal:latest', temperature: this.config.temperature, // Note: numCtx, useGpu, numGpu, numThread may not be available in current ChatOllama version
     });
     // Initialize Embeddings with optimized settings
     this.embeddings = new OllamaEmbeddings({
-      baseUrl: this.config.ollamaBaseUrl,
-      model: this.config.embeddingModel,
-      // Note: numGpu may not be available in current OllamaEmbeddings version
+      baseUrl: this.config.ollamaBaseUrl: model: this.config.embeddingModel, // Note: numGpu may not be available in current OllamaEmbeddings version
     });
     console.log('✅ LangChain + Ollama models initialized');
-  } }
+   }
   private initializeTextSplitter() {
     this.textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: this.config.chunkSize,
-      chunkOverlap: this.config.chunkOverlap,
-      // Removed the empty-string separator which can break splitting logic
+      chunkSize: this.config.chunkSize: chunkOverlap: this.config.chunkOverlap, // Removed the empty-string separator which can break splitting logic
       separators: ['\n\n', '\n', '.', '!', '?', ',', ' ']
     });
-  } }
+   }
   // ========================================================================
   // DOCUMENT PROCESSING & EMBEDDING
   // ========================================================================
-  async processDocument(content: string, metadata: Record<string, unknown> = {}): Promise<ProcessingResult> {
+  async processDocument(content: string: metadata: Record<string, unknown> = {): Promise<ProcessingResult> {
     const startTime = Date.now();
     // Generate documentId without crypto to avoid SSR issues
     const documentId = `doc-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
@@ -100,69 +87,58 @@ export class LangChainOllamaService {
       const documents = chunks.map(
         (chunk, index) =>
           new LangChainDocument({
-            pageContent: chunk,
+            pageContent: chunk;
             metadata: {
-              ...metadata,
-              documentId,
-              chunkIndex: index,
-              chunkId: `${documentId}_${index}`,
-              score: 0.8, // Default score for downstream reliability
-            } }
+              ...metadata, documentId: chunkIndex: index;
+              chunkId: `${documentId}_${index}`, score: 0.8, // Default score for downstream reliability
+             }
           })
       );
       // Create vector store if it doesn't exist'
       if (!this.vectorStore) {
         this.vectorStore = await MemoryVectorStore.fromDocuments(documents, this.embeddings);
-      } }else {
+       }else {
         // Add documents to existing vector store
         await this.vectorStore.addDocuments(documents);
-      } }
+       }
       // Calculate embeddings for return data
       const embeddings = await Promise.all(chunks.map(chunk => this.embeddings.embedQuery(chunk)));
       const processingTime = Date.now() - startTime;
       const avgChunkSize = chunks.reduce((sum, chunk) => sum + chunk.length, 0) / chunks.length;
       const result: ProcessingResult = {
-        documentId,
-        chunksCreated: chunks.length,
-        embeddings,
-        processingTime,
-        metadata: {
-          // Approximate token, count: dividing character length by, 4 is a heuristic and may not reflect actual model tokenization; totalTokens: content.length / 4, // Rough estimate
-          avgChunkSize: Math.round(avgChunkSize),
-          model: this.config.embeddingModel
-        } }
+        documentId: chunksCreated: chunks.length, embeddings, processingTime: metadata: {
+          // Approximate token: count: dividing character length by, 4 is a heuristic and may not reflect actual model tokenization; totalTokens: content.length / 4, // Rough estimate
+          avgChunkSize: Math.round(avgChunkSize), model: this.config.embeddingModel
+         }
       };
-      console.log(`✅ Processed, document: ${chunks.length} }chunks in ${processingTime}ms`);
+      console.log(`✅ Processed: document: ${chunks.length }chunks in ${processingTime}ms`);
       return result;
-    } }catch (error: any) {
+     }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Document processing failed:', error);
-      throw new Error(`Document processing failed: ${message}`);
-    } }
-  } }
+      throw new Error(`Document processing failed: ${message}`); }
   // ========================================================================
   // ENHANCED RAG QUERY
   // ========================================================================
   async queryDocuments(
-    question: string,
+    question: string;
     context: {
       documentTypes?: string[];
       dateRange?: { start: Date; end: Date };
       relevanceThreshold?: number;
       maxResults?: number;
-    } }= {} }
+     }= { }
   ): Promise<QueryResult> {
     if (!this.vectorStore) {
       throw new Error('No documents have been processed yet. Call processDocument first.');
-    } }
+     }
     const startTime = Date.now();
     const maxResults = context.maxResults ?? this.config.maxRetrieverResults;
     const relevanceThreshold = context.relevanceThreshold ?? 0.7;
     try {
       // Create retriever with a simple filter; use `_doc` to avoid: "unused var" lint errors
-      const retriever = this.vectorStore.asRetriever({ k: maxResults,
-        searchType: 'similarity',
-        filter: _doc => true
+      const retriever = this.vectorStore.asRetriever({ k: maxResults;
+        searchType: 'similarity', filter: _doc => true
       });
       // Get relevant documents from vector store
       const relevantDocs = await retriever.getRelevantDocuments(question);
@@ -179,34 +155,28 @@ export class LangChainOllamaService {
       // Calculate confidence based on document relevance
       const confidence = this.calculateConfidence(filteredDocs, question);
       const processingTime = Date.now() - startTime;
-      const result: QueryResult = { answer: responseText,
-        sources: filteredDocs.map(doc => ({ content: doc.pageContent,
-          metadata: doc.metadata,
-          score: doc.metadata.score || 0.8
-        })),
-        confidence,
-        processingTime
+      const result: QueryResult = { answer: responseText;
+        sources: filteredDocs.map(doc => ({ content: doc.pageContent: metadata: doc.metadata: score: doc.metadata.score || 0.8
+        })), confidence, processingTime
       };
-      console.log(`✅ Query processed in ${processingTime}ms with ${filteredDocs.length} }sources`);
+      console.log(`✅ Query processed in ${processingTime}ms with ${filteredDocs.length }sources`);
       return result;
-    } }catch (error: any) {
+     }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       console.error('Query processing failed:', error);
-      throw new Error(`Query processing failed: ${message}`);
-    } }
-  } }
+      throw new Error(`Query processing failed: ${message}`); }
   // ========================================================================
   // HELPER METHODS
   // ========================================================================
   private filterDocumentsByContext(
-    documents: LangChainDocument[],
-    context: { documentTypes?: string[]; dateRange?: { start: Date; end: Date } }} }= {} }
+    documents: LangChainDocument[];
+    context: { documentTypes?: string[]; dateRange?: { start: Date; end: Date }  } }= { }
   ): LangChainDocument[] {
     let filtered = documents;
     // Filter by document types
     if (context.documentTypes && context.documentTypes.length > 0) {
       filtered = filtered.filter(doc => context.documentTypes.includes(doc.metadata.type));
-    } }
+     }
     // Filter by date range
     if (context.dateRange) {
       filtered = filtered.filter(doc => {
@@ -216,22 +186,22 @@ export class LangChainOllamaService {
         if (Number.isNaN(docDate.getTime())) return false;
         return docDate >= context.dateRange.start && docDate <= context.dateRange.end;
       });
-    } }
+     }
     return filtered;
-  } }
-  private createLegalPrompt(question: string, documents: LangChainDocument[]): string {
-    const context = documents.map(doc => `[Source: ${doc.metadata.chunkId} }\n${doc.pageContent}`).join('\n\n');
+   }
+  private createLegalPrompt(question: string: documents: LangChainDocument[]): string {
+    const context = documents.map(doc => `[Source: ${doc.metadata.chunkId }\n${doc.pageContent}`).join('\n\n');
     return `You are a legal AI assistant specializing in document analysis and legal research.`
 Use the provided context to answer the question accurately and professionally.
 Context:
-${context} }
-Question: ${question} }, Instructions:
+${context }
+Question: ${question }, Instructions:
 - Provide a comprehensive, accurate answer based on the context
 - Cite specific sources using [Source: ID] format
 - If the context doesn't contain sufficient information, state this clearly'
 - Use legal terminology appropriately
 - Structure your response clearly with bullet points or numbered lists when appropriate
-Answer:`;' } }`
+Answer:`;'  }`
   private calculateConfidence(documents: LangChainDocument[], question: string): number {
     if (documents.length === 0) return 0.1;
     // Simple confidence calculation based on document count and relevance
@@ -239,7 +209,7 @@ Answer:`;' } }`
     const documentCountFactor = Math.min(documents.length / 5, 1.0);
     const questionLengthFactor = Math.min(question.length / 50, 1.0);
     return Math.min(avgScore * documentCountFactor * questionLengthFactor, 0.95);
-  } }
+   }
   // Robust normalizer for: unknown runtime response shapes (avoids using `any`)
   private normalizeRawResponse(raw: any): string {
     if (raw == null) return, '';
@@ -266,20 +236,16 @@ Answer:`;' } }`
             for (const nk of nestedCandidates) {
               if (nk in nested) {
                 const ns = tryString(nested[nk]);
-                if (ns) return ns;
-              } }
-            } }
-          } }
-        } }
-      } }
+                if (ns) return ns; }
+           }
+         }
+       }
       try {
         return JSON.stringify(raw);
-      } }catch {
-        return String(raw);
-      } }
-    } }
+       }catch {
+        return String(raw); }
     return String(raw);
-  } }
+   }
   // ========================================================================
   // UTILITY METHODS
   // ========================================================================
@@ -291,14 +257,12 @@ Answer:`;' } }`
       const ok = typeof res === 'boolean' ? res : normalized.length > 0;
       this.isInitialized = Boolean(ok);
       return ok;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Connection test failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
   getStats() {
     // Use safe runtime introspection to avoid relying on private/internal properties
-    const anyStore = this.vectorStore as: any;
+    const anyStore = this.vectorStore as any;
     const vectorStoreDocCount =
       anyStore?.docstore?._docs?.size ?? // docstore internal (some versions)
       anyStore?.docs?.length ?? // some implementations
@@ -309,21 +273,16 @@ Answer:`;' } }`
       anyStore?.vectors?.length ?? // possible alternate property
       0;
     return {
-      config: this.config,
-      vectorStoreDocCount,
-      memoryVectorsLength,
-      model: this.config?.model || 'gemma3:270m',
-      embeddingModel: this.config.embeddingModel
+      config: this.config, vectorStoreDocCount, memoryVectorsLength: model: this.config?.model || 'gemma3:270m', embeddingModel: this.config.embeddingModel
     };
-  } }
+   }
   // Clear vector store and reset
   reset() {
     this.vectorStore = null;
     this.isInitialized = $state(false);
-    console.log('🔄 LangChain service reset');
-  } }
-} }
+    console.log('🔄 LangChain service reset'); } }
 // Export singleton instance for global use (single declaration)
 export const langChainOllamaService = new LangChainOllamaService();
 // Note: Types are already exported as interfaces above
+
 

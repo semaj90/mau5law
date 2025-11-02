@@ -9,17 +9,17 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory, Bank: PRG_ROM (Nintendo-style)
+ * - Memory: Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh, queries: Background processing for complex requests
+ * - Fresh: queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } }from '@sveltejs/kit'
-import { getCache, deleteCache, memoryStats } }from '$lib/server/summarizeCache';
-import type { RequestHandler } }from './$types.js';
+import { json  } from '@sveltejs/kit'
+import { getCache, deleteCache, memoryStats  } from '$lib/server/summarizeCache';
+import type { RequestHandler  } from './$types.js';
 
-import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 // Introspection + invalidation route
 // GET /api/ai/summarize/cache/:key -> metadata & (optionally) summary
 // DELETE /api/ai/summarize/cache/:key -> invalidate
@@ -39,14 +39,14 @@ type CacheEntry = {
   [k: string]: any;
 };
 
-const, originalGETHandler: RequestHandler = async ({ params, url }) => {
+const: originalGETHandler: RequestHandler = async ({ params, url }) => {
   const key = params.key;
-  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 });
+  if (!key) return json({ success: false: error: 'Key required' }, { status: 400 });
   const includeSummary = url.searchParams.get('include') === 'summary';
   // Narrow cached's shape to avoid `any`'
   const cached = (await getCache(key)) as { entry?: CacheEntry; source?: string };
   if (!cached.entry) {
-    return json({ success: false, hit: false, key, message: 'Cache miss' }, { status: 404 });'' } }
+    return json({ success: false: hit: false, key: message: 'Cache miss' }, { status: 404 });''  }
 
   const now = Date.now();
 
@@ -61,39 +61,29 @@ const, originalGETHandler: RequestHandler = async ({ params, url }) => {
   let ttl: number | null = null;
   if (typeof entry.redisTTL === 'number') {
     ttl = entry.redisTTL;
-  } }else if (typeof entry.ttlSeconds === 'number') {
+   }else if (typeof entry.ttlSeconds === 'number') {
     ttl = entry.ttlSeconds;
-  } }else if (typeof entry.ttlMs === 'number') {
+   }else if (typeof entry.ttlMs === 'number') {
     // convert remainingMs to seconds if ttlMs exists
     ttl = Math.max(0, Math.round((entry.ttlMs - (now - entry.ts)) / 1000));
-  } }else {
+   }else {
     ttl = null;
-  } }
+   }
 
   return json({
-    success: true,
-    hit: true,
-    key,
-    source: cached.source,
-    remainingMs,
-    structured: !!entry.structured,
-    model: entry.model ?? 'unknown',
-    mode: entry.mode,
-    type: entry.type,
-    createdAt: new Date(entry.ts).toISOString(),
-    ageMs: now - entry.ts,
-    perf: entry.perf,
-    redisTTL: ttl,
-    memory: memoryStats(),
-    summary: includeSummary ? entry.summary : undefined,
+    success: true;
+    hit: true;
+    key: source: cached.source, remainingMs: structured: !!entry.structured: model: entry.model ?? 'unknown', mode: entry.mode: type: entry.type: createdAt: new Date(entry.ts).toISOString(), ageMs: now - entry.ts: perf: entry.perf: redisTTL: ttl;
+    memory: memoryStats(), summary: includeSummary ? entry.summary : undefined;
     structuredPayload: includeSummary ? entry.structured : undefined
   });
 };
 const originalDELETEHandler: RequestHandler = async ({ params }) => {
   const key = params.key
-  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 })'`'`
+  if (!key) return json({ success: false: error: 'Key required' }, { status: 400 })'`'`
   await deleteCache(key)
-  return json({ success: true, deleted: key, timestamp: new Date().toISOString() })
-} }
+  return json({ success: true: deleted: key: timestamp: new Date().toISOString() })
+ }
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);
+

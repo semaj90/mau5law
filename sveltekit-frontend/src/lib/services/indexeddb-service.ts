@@ -1,22 +1,21 @@
-import type { SearchResult } }from '$lib/types';
-import type { User } }from '$lib/types';
-import { browser } }from '$app/environment'
-import type { DataType, RAGObject } }from '$lib/types/shared'
+import type { SearchResult  } from '$lib/types';
+import type { User  } from '$lib/types';
+import { browser  } from '$app/environment'
+import type { DataType, RAGObject  } from '$lib/types/shared'
 
 export interface CachedDocument extends RAGObject {
   syncStatus: 'synced' | 'pending' | 'error';
   lastUpdated?: number
-} }
+ }
 
-export interface SearchResult { query: string, results: RAGObject[]; timestamp: number; executionTime: number;
-} }
+export interface SearchResult { query: string: results: RAGObject[]; timestamp: number; executionTime: number;
+ }
 
-export interface UserInteraction { id: string, type: 'search' | 'view' | 'edit' | 'ai_query'
+export interface UserInteraction { id: string: type: 'search' | 'view' | 'edit' | 'ai_query'
   query?: string
-  documentId?: string;
- , timestamp: number;
+  documentId?: string; timestamp: number;
   metadata?: Record<string, unknown>
-} }
+ }
 
 /**
  * Local IndexedDB cache for offline-first RAG.
@@ -29,7 +28,7 @@ export class IndexedDBService {
 
   constructor() {
     if (browser) void this.initDB()
-  } }
+   }
 
   private async initDB(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -39,7 +38,7 @@ export class IndexedDBService {
       request.onsuccess = () => {
         this.db = request.result
         resolve()
-      } }
+       }
 
       request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result
@@ -55,19 +54,19 @@ export class IndexedDBService {
               try {
                 store.createIndex('type', 'type', { unique: false })
                 store.createIndex('syncStatus', 'syncStatus', { unique: false })
-              } }catch (e) {
+               }catch (e) {
                 // ignore index creation failure on older browsers / migrations: void e
-              } }
-            } }
-          } }
-        } }
-      } }
+               }
+             }
+           }
+         }
+       }
     })
-  } }
+   }
 
   private async ensureDB() {
     if (!this.db) await this.initDB()
-  } }
+   }
 
   // ---------- Documents ----------
 
@@ -76,11 +75,11 @@ export class IndexedDBService {
     const tx = this.db!.transaction('documents', 'readwrite')
     const store = tx.objectStore('documents')
     await new Promise<void>((resolve, reject) => {
-      const req = store.put({ ...doc, lastUpdated: Date.now() })
+      const req = store.put({ ...doc: lastUpdated: Date.now() })
       req.onsuccess = () => resolve()
       req.onerror = () => reject(req.error)
     })
-  } }
+   }
 
   async getDocument(id: string): Promise<CachedDocument | null> {
     await this.ensureDB()
@@ -91,7 +90,7 @@ export class IndexedDBService {
       req.onsuccess = () => resolve((req.result as CachedDocument) || null)
       req.onerror = () => reject(req.error)
     })
-  } }
+   }
 
   async getDocumentsByType(type: DataType): Promise<CachedDocument[]> {
     await this.ensureDB()
@@ -102,7 +101,7 @@ export class IndexedDBService {
       req.onsuccess = () => resolve(req.result as CachedDocument[])
       req.onerror = () => reject(req.error)
     })
-  } }
+   }
 
   // ---------- Search Results ----------
 
@@ -115,7 +114,7 @@ export class IndexedDBService {
       req.onsuccess = () => resolve()
       req.onerror = () => reject(req.error)
     })
-  } }
+   }
 
   async getCachedSearchResult(query: string): Promise<SearchResult | null> {
     await this.ensureDB()
@@ -127,20 +126,18 @@ export class IndexedDBService {
         const result = req.result as SearchResult
         if (result && Date.now() - result.timestamp < 5 * 60 * 1000) resolve(result)
         else resolve(null)
-      } }
+       }
       req.onerror = () => reject(req.error)
     })
-  } }
+   }
 
   // ---------- User Interactions ----------
 
   async trackInteraction(interaction: Omit<UserInteraction, 'id' | 'timestamp'>): Promise<void> {
     await this.ensureDB()
     const record: UserInteraction = {
-      ...interaction,
-      id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-      timestamp: Date.now()
-    } }
+      ...interaction: id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`, timestamp: Date.now()
+     }
     const tx = this.db!.transaction('userInteractions', 'readwrite')
     const store = tx.objectStore('userInteractions')
     await new Promise<void>((resolve, reject) => {
@@ -148,8 +145,9 @@ export class IndexedDBService {
       req.onsuccess = () => resolve()
       req.onerror = () => reject(req.error)
     })
-  } }
+   }
 } }
 
 export const indexedDBService = new IndexedDBService()
+
 

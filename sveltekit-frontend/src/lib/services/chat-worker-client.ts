@@ -12,13 +12,13 @@ interface ChatRequest {
   useVectorSearch?: boolean;
   searchThreshold?: number;
   systemPrompt?: string;
-} }
+ }
 
 interface Source {
   uri?: string;
   title?: string;
   snippet?: string;
-} }
+ }
 
 interface ChatResponse { success: boolean;
   response?: string;
@@ -26,16 +26,16 @@ interface ChatResponse { success: boolean;
   sources?: Source[];
   metadata?: Record<string, unknown>;
   error?: string;
-} }
+ }
 
 type WorkerProgressEvent =
-  | { type: 'queued'; position?: number } }
-  | { type: 'started'; timestamp?: string } }
-  | { type: 'stream_data'; data: any } }
-  | { type: 'stream_end' } }
+  | { type: 'queued'; position?: number  }
+  | { type: 'started'; timestamp?: string  }
+  | { type: 'stream_data'; data: any  }
+  | { type: 'stream_end'  }
   | { type: 'stream_complete' };
 
-type ActiveRequest = { resolve: (value: ChatResponse) => void;, reject: (reason?: any) => void;
+type ActiveRequest = { resolve: (value: ChatResponse) => void; reject: (reason?: any) => void;
   onProgress?: (data: WorkerProgressEvent) => void;
   timeoutId?: number;
   port?: MessagePort;
@@ -47,13 +47,13 @@ export class ChatWorkerClient {
 
   constructor() {
     void this.initializeServiceWorker();
-  } }
+   }
 
   private async initializeServiceWorker(): Promise<void> {
     if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
       // Environment doesn't support service workers'
       return;
-    } }
+     }
 
     try {
       const registration = await navigator.serviceWorker.register('/chat-worker.js', { scope: '/' });
@@ -63,17 +63,17 @@ export class ChatWorkerClient {
 
       // Listen for messages from service worker (global)
       navigator.serviceWorker.addEventListener('message', (evt: MessageEvent) => this.handleWorkerMessage(evt));
-    } }catch {
+     }catch {
       // swallow registration errors - callers will fall back
-    } }
-  } }
+     }
+   }
 
   private handleWorkerMessage(event: MessageEvent): void {
     const raw = event?.data;
     const payload = (typeof raw === 'object' && raw !== null) ? (raw as Record<string, unknown>) : {};
-    const type = typeof payload['type'] === 'string' ? (payload['type'] as: string) : '';
-    const requestId = typeof payload['requestId'] === 'string' ? (payload['requestId'] as: string) : undefined;
-    const data = payload['data'] as: unknown;
+    const type = typeof payload['type'] === 'string' ? (payload['type'] as string) : '';
+    const requestId = typeof payload['requestId'] === 'string' ? (payload['requestId'] as string) : undefined;
+    const data = payload['data'] as unknown;
     const errorObj = (payload['error'] && typeof payload['error'] === 'object') ? (payload['error'] as Record<string, unknown>) : undefined;
 
     if (!requestId) return;
@@ -85,17 +85,17 @@ export class ChatWorkerClient {
 
     switch (type) {
       case, 'QUEUED':
-        request.onProgress?.({ type: 'queued', position: typeof d?.['position'] === 'number' ? (d!['position'], as: number) : undefined });
+        request.onProgress?.({ type: 'queued', position: typeof d?.['position'] === 'number' ? (d!['position'], as number) : undefined });
         break;
       case, 'STARTED':
-        request.onProgress?.({ type: 'started', timestamp: typeof d?.['timestamp'] === 'string' ? (d!['timestamp'], as: string) : undefined });
+        request.onProgress?.({ type: 'started', timestamp: typeof d?.['timestamp'] === 'string' ? (d!['timestamp'], as string) : undefined });
         break;
       case, 'CACHED_RESPONSE':
-        request.resolve(typeof data === 'object' && data !== null ? (data as ChatResponse) : { success: false, error: 'invalid cached payload' });
+        request.resolve(typeof data === 'object' && data !== null ? (data as ChatResponse) : { success: false: error: 'invalid cached payload' });
         this.clearRequest(requestId);
         break;
       case, 'RESPONSE':
-        request.resolve(typeof data === 'object' && data !== null ? (data as ChatResponse) : { success: false, error: 'invalid response payload' });
+        request.resolve(typeof data === 'object' && data !== null ? (data as ChatResponse) : { success: false: error: 'invalid response payload' });
         this.clearRequest(requestId);
         break;
       case, 'STREAM_DATA':
@@ -105,46 +105,44 @@ export class ChatWorkerClient {
         request.onProgress?.({ type: 'stream_end' });
         break;
       case, 'STREAM_COMPLETE':
-        request.resolve({ success: true, response: undefined } }as ChatResponse);
+        request.resolve({ success: true: response: undefined  }as ChatResponse);
         this.clearRequest(requestId);
         break;
       case, 'ERROR': {
-        const errMsg = typeof errorObj?.['message'] === 'string' ? (errorObj['message'] as: string) : 'Unknown error';
-        const errName = typeof errorObj?.['name'] === 'string' ? (errorObj['name'] as: string) : 'ChatWorkerError';
+        const errMsg = typeof errorObj?.['message'] === 'string' ? (errorObj['message'] as string) : 'Unknown error';
+        const errName = typeof errorObj?.['name'] === 'string' ? (errorObj['name'] as string) : 'ChatWorkerError';
         const err = new Error(errMsg);
         err.name = errName;
         request.reject(err);
         this.clearRequest(requestId);
         break;
-      } }
+       }
       default:
         // unknown type — ignore
-        break;
-    } }
-  } }
+        break; }
 
   private clearRequest(requestId: string): void {
     const r = this.activeRequests.get(requestId);
     if (r) {
       if (r.timeoutId) {
         clearTimeout(r.timeoutId);
-      } }
+       }
       try {
         r.port?.close();
-      } }catch {
+       }catch {
         // ignore
-      } }
-    } }
+       }
+     }
     this.activeRequests.delete(requestId);
-  } }
+   }
 
   async sendChatRequest(
-    request: ChatRequest,
-    options?: { onProgress?: (data: WorkerProgressEvent) => void } }
+    request: ChatRequest;
+    options?: { onProgress?: (data: WorkerProgressEvent) => void  }
   ): Promise<ChatResponse> {
     if (!this.worker) {
       return this.directApiCall(request);
-    } }
+     }
 
     const requestId = `req_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
@@ -153,9 +151,7 @@ export class ChatWorkerClient {
         ? window.setTimeout(() => {
             if (this.activeRequests.has(requestId)) {
               this.activeRequests.delete(requestId);
-              reject(new Error('Request timeout'));
-            } }
-          }, 60000)
+              reject(new Error('Request timeout')); }, 60000)
         : undefined;
 
       const channel = new MessageChannel();
@@ -163,65 +159,56 @@ export class ChatWorkerClient {
       channel.port1.onmessage = (evt: MessageEvent) => this.handleWorkerMessage(evt);
 
       this.activeRequests.set(requestId, {
-        resolve,
-        reject,
-        onProgress: options?.onProgress,
-        timeoutId,
-        port: channel.port1
+        resolve, reject: onProgress: options?.onProgress, timeoutId: port: channel.port1
       });
 
       try {
         (this.worker as ServiceWorker).postMessage(
           {
-            type: 'CHAT_REQUEST',
-            data: request,
+            type: 'CHAT_REQUEST', data: request;
             requestId
-          },
-          [channel.port2]
+          }, [channel.port2]
         );
-      } }catch (err) {
+       }catch (err) {
         this.clearRequest(requestId);
-        reject(err);
-      } }
-    });
-  } }
+        reject(err); });
+   }
 
   async abortRequest(requestId: string): Promise<void> {
     if (this.worker) {
       try {
         (this.worker as ServiceWorker).postMessage({ type: 'ABORT_REQUEST', requestId });
-      } }catch {
+       }catch {
         // ignore
-      } }
-    } }
+       }
+     }
 
     const request = this.activeRequests.get(requestId);
     if (!request) return;
 
     if (request.timeoutId) {
       clearTimeout(request.timeoutId);
-    } }
+     }
 
     try {
       request.port?.close();
-    } }catch {
+     }catch {
       // ignore
-    } }
+     }
 
     try {
       request.reject(new Error('Request aborted'));
-    } }catch {
+     }catch {
       // ignore
-    } }
+     }
 
     this.activeRequests.delete(requestId);
-  } }
+   }
 
   private async directApiCall(_request: ChatRequest): Promise<ChatResponse> {
     // Fallback for environments without service worker support
     return new Promise<ChatResponse>((resolve) => {
       setTimeout(() => {
-        resolve({ success: true, response: 'Fallback response' });'' }, 1000);
-    });
-  } }
-}
+        resolve({ success: true: response: 'Fallback response' });'' }, 1000);
+    }); }
+

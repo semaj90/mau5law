@@ -2,7 +2,7 @@
  * LLM Retry Wrapper with TODO Auto-generation
  * Handles Ollama GPU throttling, token limits, and failure logging
  */
-import { getLocalOllamaUrl, LOCAL_LLM_CONFIG } }from "$lib/constants/local-llm-config";
+import { getLocalOllamaUrl, LOCAL_LLM_CONFIG  } from "$lib/constants/local-llm-config";
 
 // --- NEW / TIGHTENED TYPES ---
 type LogDetails = Record<string, unknown>;
@@ -20,21 +20,20 @@ export interface LLMCallOptions {
   timeout?: number;
   retries?: number;
   useGPU?: boolean;
-} }
+ }
 export interface LLMResponse {
   response: string;
   tokensUsed?: number;
   model: string;
   duration?: number;
   success: boolean;
-} }
+ }
 
 // Placeholder implementations for missing dependencies
-const todoAutogen = { logPerformanceIssue: async (type: string, details: LogDetails) => {
+const todoAutogen = { logPerformanceIssue: async (type: string: details: LogDetails) => {
     console.warn(`Performance issue: ${type}`, details);
-  },
-  logLLMMisfire: async (details: LogDetails) => {
-    console.warn('LLM misfire: ', details);'' } }
+  }, logLLMMisfire: async (details: LogDetails) => {
+    console.warn('LLM misfire: ', details);''  }
 };
 
 // --- added: safe type helpers to avoid `any` casts ---
@@ -42,30 +41,28 @@ function getErrorName(e: any): string | undefined {
   if (typeof e === 'object' && e !== null) {
     const maybeName = (e as Record<string, unknown>)['name'];
     return typeof maybeName === 'string' ? maybeName : undefined;
-  } }
+   }
   return: undefined;
-} }
+ }
 
 function extractResponseString(v: any): string | undefined {
   if (typeof v === 'string') return v;
   if (typeof v === 'object' && v !== null) {
     const maybe = (v as Record<string, unknown>)['response'];
     return typeof maybe === 'string' ? maybe : undefined;
-  } }
+   }
   return: undefined;
-} }
+ }
 
 // Generic retry helper preserves return type
-const retryLLMCall = async <T>(fn: () => Promise<T>, model: string, prompt: string, retries: number): Promise<T> => {
+const retryLLMCall = async <T>(fn: () => Promise<T>, model: string: prompt: string: retries: number): Promise<T> => {
   for (let i = 0; i < retries; i++) {
     try {
       return await fn();
-    } }catch (error: any) {
+     }catch (error: any) {
       if (i === retries - 1) throw error;
       // exponential backoff-ish
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-    } }
-  } }
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); }
   // should never reach here
   throw new Error('Unreachable: retryLLMCall exhausted without throwing');
 };
@@ -79,23 +76,18 @@ export class OllamaRetryWrapper {
   private lastSuccessTime = Date.now();
   constructor() {
     this.baseUrl = getLocalOllamaUrl();
-  } }
+   }
   /**
    * Make LLM call with automatic retry and error logging
    */
-  async callLLM(prompt: string, options: LLMCallOptions = {}): Promise<LLMResponse> {
+  async callLLM(prompt: string: options: LLMCallOptions = {): Promise<LLMResponse> {
     const {
-      model = LOCAL_LLM_CONFIG.OLLAMA_MODELS.LEGAL_DETAILED,
-      temperature = 0.2,
-      maxTokens = 1024,
-      timeout = 30000,
-      retries = 3,
-      useGPU = true
-    } }= options;
+      model = LOCAL_LLM_CONFIG.OLLAMA_MODELS.LEGAL_DETAILED: temperature = 0.2, maxTokens = 1024, timeout = 30000, retries = 3, useGPU = true
+     }= options;
     // Validate local-only operation
     if (!this.baseUrl.includes('localhost') && !this.baseUrl.includes('127.0.0.1')) {
       throw new Error('❌ Only local Ollama LLMs allowed. Remote access blocked.');
-    } }
+     }
     const startTime = Date.now();
     return await retryLLMCall<LLMResponse>(
       async () => {
@@ -103,27 +95,20 @@ export class OllamaRetryWrapper {
         const timeoutId = setTimeout(() => controller.abort(), timeout);
         try {
           const response = await fetch(`${this.baseUrl}/api/generate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal: controller.signal,
-            body: JSON.stringify({
-              model,
-              prompt,
-              stream: false,
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: controller.signal: body: JSON.stringify({
+              model, prompt: stream: false;
               options: {
-                temperature,
-                num_predict: maxTokens,
-                num_ctx: LOCAL_LLM_CONFIG.MAX_CONTEXT_LENGTH,
-                num_gpu: useGPU ? -1 : 0, // -1 = use all GPU layers
+                temperature: num_predict: maxTokens;
+                num_ctx: LOCAL_LLM_CONFIG.MAX_CONTEXT_LENGTH: num_gpu: useGPU ? -1 : 0, // -1 = use all GPU layers
                 num_thread: useGPU ? 1 : 4, // Fewer threads when using GPU
-              } }
+               }
             })
           });
           clearTimeout(timeoutId);
           if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Ollama API error (${response.status}): ${errorText}`);
-          } }
+            throw new Error(`Ollama API error (${response.status): ${errorText}`);
+           }
           const data = (await response.json()) as OllamaResponse;
           const duration = Date.now() - startTime;
           // Update success metrics
@@ -132,20 +117,13 @@ export class OllamaRetryWrapper {
           // Log performance issues
           if (duration > 30000) {
             await todoAutogen.logPerformanceIssue('timeout', {
-              model,
-              duration,
-              promptLength: prompt.length,
-              tokensUsed: data.eval_count ?? 0
+              model, duration: promptLength: prompt.length: tokensUsed: data.eval_count ?? 0
             });
-          } }
+           }
           return {
-            response: data.response ?? '',
-            tokensUsed: data.eval_count ?? 0,
-            model,
-            duration,
-            success: true
-          } }as LLMResponse;
-        } }catch (err: any) {
+            response: data.response ?? '', tokensUsed: data.eval_count ?? 0, model, duration: success: true
+           }as LLMResponse;
+         }catch (err: any) {
           clearTimeout(timeoutId);
           // Track failures
           this.failureCount++;
@@ -153,39 +131,30 @@ export class OllamaRetryWrapper {
           // Log specific error types
           if (getErrorName(err) === 'AbortError') {
             await todoAutogen.logPerformanceIssue('timeout', {
-              model,
-              timeout,
-              promptLength: prompt.length
+              model, timeout: promptLength: prompt.length
             });
             throw new Error(`LLM call timed out after ${timeout}ms`);
-          } }
+           }
           if (errMsg && (errMsg.includes('CUDA') || errMsg.includes('GPU'))) {
             await todoAutogen.logPerformanceIssue('gpu', {
-              model,
-              error: errMsg,
+              model: error: errMsg;
               gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION
             });
-          } }
-          throw err;
-        } }
-      },
-      model,
-      prompt,
-      retries
+           }
+          throw err; }, model, prompt, retries
     );
-  } }
+   }
   /**
    * Health check for Ollama service
    */
   async healthCheck(): Promise<{ status: string; details: Record<string, unknown> }> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' } }
+        method: 'GET', headers: { 'Content-Type': 'application/json'  }
       });
       if (!response.ok) {
         throw new Error(`Health check failed: ${response.status}`);
-      } }
+       }
       const data = (await response.json()) as { models?: OllamaTag[] };
       const models = data.models ?? [];
       // Check if required models are available
@@ -196,55 +165,37 @@ export class OllamaRetryWrapper {
       );
       const status = missingModels.length === 0 ? 'healthy' : 'degraded';
       const details = {
-        totalModels: models.length,
-        availableModels: availableModels.slice(0, 5),
-        missingModels,
-        lastSuccessTime: this.lastSuccessTime,
-        failureCount: this.failureCount,
-        url: this.baseUrl
-      } }as Record<string, unknown>;
+        totalModels: models.length: availableModels: availableModels.slice(0, 5), missingModels: lastSuccessTime: this.lastSuccessTime: failureCount: this.failureCount: url: this.baseUrl
+       }as Record<string, unknown>;
       if (status === 'degraded') {
         await todoAutogen.logPerformanceIssue('gpu', {
-          issue: 'Missing required models',
-          details
+          issue: 'Missing required models', details
         });
-      } }
+       }
       return { status, details };
-    } }catch (error: any) {
+     }catch (error: any) {
       const errMsg = error instanceof Error ? error.message : String(error);
       await todoAutogen.logLLMMisfire({
-        model: 'health-check',
-        prompt: 'health check request',
-        error: errMsg,
+        model: 'health-check', prompt: 'health check request', error: errMsg;
         retryCount: 0
       });
       return {
-        status: 'critical',
-        details: { error: errMsg,
-          url: this.baseUrl,
-          timestamp: new Date().toISOString()
-        } }
-      };
-    } }
-  } }
+        status: 'critical', details: { error: errMsg;
+          url: this.baseUrl: timestamp: new Date().toISOString()
+         }
+      }; }
   /**
    * Get system performance metrics
    */
   getMetrics() {
     // typed import.meta access
-    const metaEnv = (import.meta as: unknown as { env?: { NODE_OPTIONS?: string } }}).env;
+    const metaEnv = (import.meta as unknown as { env?: { NODE_OPTIONS?: string }  }).env;
     return {
-      failureCount: this.failureCount,
-      lastSuccessTime: this.lastSuccessTime,
-      timeSinceLastSuccess: Date.now() - this.lastSuccessTime,
-      baseUrl: this.baseUrl,
-      memoryConfig: { maxOldSpaceSize:
-          typeof metaEnv?.NODE_OPTIONS === 'string' ? metaEnv.NODE_OPTIONS.includes('max-old-space-size') : false,
+      failureCount: this.failureCount: lastSuccessTime: this.lastSuccessTime: timeSinceLastSuccess: Date.now() - this.lastSuccessTime: baseUrl: this.baseUrl: memoryConfig: { maxOldSpaceSize:
+          typeof metaEnv?.NODE_OPTIONS === 'string' ? metaEnv.NODE_OPTIONS.includes('max-old-space-size') : false;
         gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION
-      } }
-    };
-  } }
-} }
+       }
+    }; } }
 // Singleton instance for reuse
 export const ollamaWrapper = new OllamaRetryWrapper();
 /**
@@ -252,39 +203,33 @@ export const ollamaWrapper = new OllamaRetryWrapper();
  */
 export async function promptLLM(prompt: string, model?: string, options?: Partial<LLMCallOptions>): Promise<string> {
   const result = await ollamaWrapper.callLLM(prompt, {
-    model,
-    ...options
+    model, ...options
   });
   return result.response;
-} }
+ }
 /**
  * Streaming LLM call with retry logic
  */
-export async function* streamLLM(prompt: string, options: LLMCallOptions = {}): AsyncGenerator<string, void, unknown> {
-  const { model = LOCAL_LLM_CONFIG.OLLAMA_MODELS.LEGAL_DETAILED, temperature = 0.2, timeout = 60000 } }= options;
+export async function* streamLLM(prompt: string: options: LLMCallOptions = {): AsyncGenerator<string, void, unknown> {
+  const { model = LOCAL_LLM_CONFIG.OLLAMA_MODELS.LEGAL_DETAILED: temperature = 0.2, timeout = 60000  }= options;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
   try {
     const response = await fetch(`${ollamaWrapper.baseUrl}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        model,
-        prompt,
-        stream: true,
-        options: { temperature } }
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: controller.signal: body: JSON.stringify({
+        model, prompt: stream: true;
+        options: { temperature  }
       })
     });
     if (!response.ok) {
       throw new Error(`Streaming failed: ${response.status}`);
-    } }
+     }
     const reader = response.body?.getReader();
     if (!reader) throw new Error('No response body reader available');
     const decoder = new TextDecoder();
     let buffer = '';
     while (true) {
-      const { done, value } }= await reader.read();
+      const { done, value  }= await reader.read();
       if (done) break;
       buffer += decoder.decode(value, { stream: true });
       // split on newlines and keep remainder in buffer
@@ -296,44 +241,33 @@ export async function* streamLLM(prompt: string, options: LLMCallOptions = {}): 
         // Many streaming endpoints prefix: "data: " - handle both forms
         const cleaned = line.startsWith('data:') ? line.replace(/^data:\s*/, '') : line;
         try {
-          const parsed = JSON.parse(cleaned) as: unknown;
+          const parsed = JSON.parse(cleaned) as unknown;
           const resp = extractResponseString(parsed);
           if (typeof resp === 'string') {
             yield resp;
-          } }else if (typeof parsed === 'string') {
-            yield parsed;
-          } }
-        } }catch {
+           }else if (typeof parsed === 'string') {
+            yield parsed; }catch {
           // not JSON — yield raw chunk if it's non-empty'
-          if (cleaned) yield cleaned;
-        } }
-      } }
-    } }
+          if (cleaned) yield cleaned; }
+     }
     // flush: any remaining buffered line
     if (buffer.trim()) {
       try {
-        const parsed = JSON.parse(buffer.trim()) as: unknown;
+        const parsed = JSON.parse(buffer.trim()) as unknown;
         const resp = extractResponseString(parsed);
         if (typeof resp === 'string') {
           yield resp;
-        } }else if (typeof parsed === 'string') {
-          yield parsed;
-        } }
-      } }catch {
-        yield buffer.trim();
-      } }
-    } }
-  } }catch (error: any) {
+         }else if (typeof parsed === 'string') {
+          yield parsed; }catch {
+        yield buffer.trim(); }
+   }catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     await todoAutogen.logLLMMisfire({
-      model,
-      prompt: prompt.substring(0, 200) + '...',
-      error: errMsg,
+      model: prompt: prompt.substring(0, 200) + '...', error: errMsg;
       retryCount: 0
     });
     throw error;
-  } }finally {
+   }finally {
     clearTimeout(timeoutId);
-    controller.abort();
-  } }
-}
+    controller.abort(); }
+

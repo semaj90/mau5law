@@ -3,29 +3,29 @@
  * Advanced neural pattern recognition for legal document prediction
  * Combines HMM state transitions with SOM spatial clustering
  */
-import { LegalDocumentSOM } }from './som-clustering.js';
-import type { SOMConfig } }from '$lib/api/enhanced-rest-architecture';
-import { reinforcementLearningCache } }from '$lib/caching/reinforcement-learning-cache';
+import { LegalDocumentSOM  } from './som-clustering.js';
+import type { SOMConfig  } from '$lib/api/enhanced-rest-architecture';
+import { reinforcementLearningCache  } from '$lib/caching/reinforcement-learning-cache';
 
-export interface BitmapHMMConfig { stateCount: number;, bitmapWidth: number;
+export interface BitmapHMMConfig { stateCount: number; bitmapWidth: number;
   bitmapHeight: number;
   observationLevels: number;
   transitionSmoothingFactor: number;
   emissionSmoothingFactor: number;
   somIntegration: boolean;
-} }
+ }
 
-export interface HMMState { id: number;, name: string;
+export interface HMMState { id: number; name: string;
   somPosition?: { x: number; y: number };
   bitmap: Uint8Array; // Bitmap representation of state
   legalContext: string[];
-} }
+ }
 
-export interface BitmapObservation { bitmap: Uint8Array;, intensity: number;
+export interface BitmapObservation { bitmap: Uint8Array; intensity: number;
   timestamp: number;
   documentType?: string;
   confidence?: number;
-} }
+ }
 
 export class BitmapHiddenMarkovSOM {
   private states: HMMState[] = [];
@@ -36,15 +36,13 @@ export class BitmapHiddenMarkovSOM {
   private observationHistory: BitmapObservation[] = [];
 
   constructor(
-    private, config: BitmapHMMConfig,
+    private: config: BitmapHMMConfig;
     somConfig?: SOMConfig
   ) {
     this.initializeStates();
     this.initializeMatrices();
     if (this.config.somIntegration && somConfig) {
-      this.som = new LegalDocumentSOM(somConfig);
-    } }
-  } }
+      this.som = new LegalDocumentSOM(somConfig); }
 
   /**
    * Initialize HMM states with bitmap representations
@@ -52,15 +50,7 @@ export class BitmapHiddenMarkovSOM {
   private initializeStates(): void {
     const bitmapSize = this.config.bitmapWidth * this.config.bitmapHeight;
     const legalContexts = [
-      ['contract', 'agreement', 'terms'],
-      ['evidence', 'exhibit', 'proof'],
-      ['brief', 'argument', 'motion'],
-      ['citation', 'precedent', 'case'],
-      ['regulation', 'statute', 'law'],
-      ['discovery', 'deposition', 'interrogatory'],
-      ['verdict', 'judgment', 'ruling'],
-      ['appeal', 'review', 'challenge'],
-    ];
+      ['contract', 'agreement', 'terms'], ['evidence', 'exhibit', 'proof'], ['brief', 'argument', 'motion'], ['citation', 'precedent', 'case'], ['regulation', 'statute', 'law'], ['discovery', 'deposition', 'interrogatory'], ['verdict', 'judgment', 'ruling'], ['appeal', 'review', 'challenge']];
 
     for (let i = 0; i < this.config.stateCount; i++) {
       const bitmap = new Uint8Array(bitmapSize);
@@ -68,19 +58,14 @@ export class BitmapHiddenMarkovSOM {
       this.generateStateBitmap(bitmap, i);
 
       this.states.push({
-        id: i,
-        name: `LegalState_${i}`,
-        bitmap,
-        legalContext: legalContexts[i % legalContexts.length],
-        somPosition: undefined // Will be set during SOM integration
-      });
-    } }
-  } }
+        id: i;
+        name: `LegalState_${i}`, bitmap: legalContext: legalContexts[i % legalContexts.length], somPosition: undefined // Will be set during SOM integration
+      }); }
 
   /**
    * Generate characteristic bitmap pattern for a state
    */
-  private generateStateBitmap(bitmap: Uint8Array, stateId: number): void {
+  private generateStateBitmap(bitmap: Uint8Array: stateId: number): void {
     const width = this.config.bitmapWidth;
     const height = this.config.bitmapHeight;
 
@@ -118,14 +103,12 @@ export class BitmapHiddenMarkovSOM {
             const spiral = (angle + Math.sqrt((x - width/2) ** 2 + (y - height/2) ** 2) * 0.1) % (Math.PI * 2);
             bitmap[index] = (spiral < Math.PI) ? 255 : 0;
             break;
-        } }
+         }
         // Add noise for realism
         if (Math.random() < 0.05) {
-          bitmap[index] = Math.floor(Math.random() * 256);
-        } }
-      } }
-    } }
-  } }
+          bitmap[index] = Math.floor(Math.random() * 256); }
+     }
+   }
 
   /**
    * Initialize transition and emission probability matrices
@@ -141,7 +124,7 @@ export class BitmapHiddenMarkovSOM {
     // Initialize emission matrix
     this.emissionMatrix = new Float32Array(stateCount * obsLevels);
     this.initializeLegalEmissionMatrix();
-  } }
+   }
 
   /**
    * Initialize transition matrix with legal document workflow patterns
@@ -154,23 +137,21 @@ export class BitmapHiddenMarkovSOM {
       [0.3, 0.2, 0.2, 0.1, 0.05, 0.05, 0.05, 0.05], // Contract -> Evidence likely
       [0.1, 0.3, 0.3, 0.15, 0.05, 0.05, 0.05, 0.05], // Evidence -> Brief likely
       [0.05, 0.15, 0.25, 0.25, 0.1, 0.1, 0.05, 0.05], // Brief -> Citation likely
-      [0.1, 0.1, 0.2, 0.3, 0.15, 0.05, 0.05, 0.05],   // Citation patterns
-      [0.05, 0.05, 0.1, 0.2, 0.4, 0.1, 0.05, 0.05],   // Regulation patterns
-      [0.05, 0.2, 0.1, 0.1, 0.05, 0.3, 0.1, 0.1],     // Discovery patterns
-      [0.05, 0.05, 0.1, 0.1, 0.05, 0.05, 0.5, 0.1],   // Verdict patterns
-      [0.1, 0.1, 0.15, 0.15, 0.1, 0.1, 0.1, 0.2],      // Appeal patterns
+      [0.1, 0.1, 0.2, 0.3, 0.15, 0.05, 0.05, 0.05], // Citation patterns
+      [0.05, 0.05, 0.1, 0.2, 0.4, 0.1, 0.05, 0.05], // Regulation patterns
+      [0.05, 0.2, 0.1, 0.1, 0.05, 0.3, 0.1, 0.1], // Discovery patterns
+      [0.05, 0.05, 0.1, 0.1, 0.05, 0.05, 0.5, 0.1], // Verdict patterns
+      [0.1, 0.1, 0.15, 0.15, 0.1, 0.1, 0.1, 0.2], // Appeal patterns
     ];
 
     for (let i = 0; i < stateCount; i++) {
       for (let j = 0; j < stateCount; j++) {
         const workflowRow = legalWorkflows[i % legalWorkflows.length];
-        this.transitionMatrix[i * stateCount + j] = workflowRow[j % workflowRow.length];
-      } }
-    } }
+        this.transitionMatrix[i * stateCount + j] = workflowRow[j % workflowRow.length]; }
 
     // Normalize rows
     this.normalizeMatrix(this.transitionMatrix, stateCount, stateCount);
-  } }
+   }
 
   /**
    * Initialize emission matrix with legal document observation patterns
@@ -210,40 +191,36 @@ export class BitmapHiddenMarkovSOM {
           case, 7: // Appeals - complex patterns
             probability = Math.abs(Math.sin(intensity * Math.PI * 4));
             break;
-        } }
+         }
 
         this.emissionMatrix[state * obsLevels + obs] =
           probability * (1 - this.config.emissionSmoothingFactor) +
-          (1.0 / obsLevels) * this.config.emissionSmoothingFactor;
-      } }
-    } }
+          (1.0 / obsLevels) * this.config.emissionSmoothingFactor; }
 
     // Normalize rows
     this.normalizeMatrix(this.emissionMatrix, stateCount, obsLevels);
-  } }
+   }
 
   /**
    * Normalize probability matrix rows
    */
-  private normalizeMatrix(matrix: Float32Array, rows: number, cols: number): void {
+  private normalizeMatrix(matrix: Float32Array: rows: number: cols: number): void {
     for (let i = 0; i < rows; i++) {
       let rowSum = 0;
       for (let j = 0; j < cols; j++) {
         rowSum += matrix[i * cols + j];
-      } }
+       }
       if (rowSum > 0) {
         for (let j = 0; j < cols; j++) {
-          matrix[i * cols + j] /= rowSum;
-        } }
-      } }
-    } }
-  } }
+          matrix[i * cols + j] /= rowSum; }
+     }
+   }
 
   /**
    * Train the HMM with bitmap observations
    */
   async trainWithBitmaps(observations: BitmapObservation[]): Promise<void> {
-    console.log(`🎯 Training Bitmap HMM with ${observations.length} }observations`);
+    console.log(`🎯 Training Bitmap HMM with ${observations.length }observations`);
 
     // Store observations for sequence learning
     this.observationHistory = observations;
@@ -256,7 +233,7 @@ export class BitmapHiddenMarkovSOM {
       const oldLogLikelihood = this.calculateLogLikelihood(observations);
 
       // E-step: Forward-backward algorithm
-      const { forward, backward } }= this.forwardBackward(observations);
+      const { forward, backward  }= this.forwardBackward(observations);
 
       // M-step: Update parameters
       this.updateTransitionMatrix(observations, forward, backward);
@@ -266,25 +243,23 @@ export class BitmapHiddenMarkovSOM {
       console.log(`Iteration ${iteration}: log-likelihood = ${newLogLikelihood.toFixed(6)}`);
 
       if (Math.abs(newLogLikelihood - oldLogLikelihood) < convergenceThreshold) {
-        console.log(`🎊 HMM converged after ${iteration + 1} }iterations`);
-        break;
-      } }
-    } }
+        console.log(`🎊 HMM converged after ${iteration + 1 }iterations`);
+        break; }
 
     // Integrate with SOM if available
     if (this.som && this.config.somIntegration) {
       await this.integrateSOMPositions();
-    } }
+     }
 
     // Cache trained model patterns
     await this.cacheBitmapPatterns();
-  } }
+   }
 
   /**
    * Forward-backward algorithm for HMM training
    */
-  private forwardBackward(observations: BitmapObservation[]): { forward: Float32Array;, backward: Float32Array;
-  } }{
+  private forwardBackward(observations: BitmapObservation[]): { forward: Float32Array; backward: Float32Array;
+   }{
     const T = observations.length;
     const N = this.config.stateCount;
 
@@ -298,27 +273,21 @@ export class BitmapHiddenMarkovSOM {
       if (t === 0) {
         // Initial probabilities (uniform)
         for (let i = 0; i < N; i++) {
-          forward[t * N + i] = (1.0 / N) * this.emissionMatrix[i * this.config.observationLevels + obs];
-        } }
-      } }else {
+          forward[t * N + i] = (1.0 / N) * this.emissionMatrix[i * this.config.observationLevels + obs]; }else {
         for (let j = 0; j < N; j++) {
           let sum = 0;
           for (let i = 0; i < N; i++) {
             sum += forward[(t - 1) * N + i] * this.transitionMatrix[i * N + j];
-          } }
-          forward[t * N + j] = sum * this.emissionMatrix[j * this.config.observationLevels + obs];
-        } }
-      } }
-    } }
+           }
+          forward[t * N + j] = sum * this.emissionMatrix[j * this.config.observationLevels + obs]; }
+     }
 
     // Backward pass
     for (let t = T - 1; t >= 0; t--) {
       if (t === T - 1) {
         // Terminal probabilities
         for (let i = 0; i < N; i++) {
-          backward[t * N + i] = 1.0;
-        } }
-      } }else {
+          backward[t * N + i] = 1.0; }else {
         const nextObs = this.bitmapToObservationIndex(observations[t + 1].bitmap);
         for (let i = 0; i < N; i++) {
           let sum = 0;
@@ -326,14 +295,12 @@ export class BitmapHiddenMarkovSOM {
             sum += this.transitionMatrix[i * N + j] *
                    this.emissionMatrix[j * this.config.observationLevels + nextObs] *
                    backward[(t + 1) * N + j];
-          } }
-          backward[t * N + i] = sum;
-        } }
-      } }
-    } }
+           }
+          backward[t * N + i] = sum; }
+     }
 
     return { forward, backward };
-  } }
+   }
 
   /**
    * Convert bitmap to observation index
@@ -343,17 +310,16 @@ export class BitmapHiddenMarkovSOM {
     const sum = Array.from(bitmap).reduce((a, b) => a + b, 0);
     const avgIntensity = sum / bitmap.length / 255;
     return Math.min(
-      Math.floor(avgIntensity * this.config.observationLevels),
-      this.config.observationLevels - 1
+      Math.floor(avgIntensity * this.config.observationLevels), this.config.observationLevels - 1
     );
-  } }
+   }
 
   /**
    * Update transition matrix during training
    */
   private updateTransitionMatrix(
-    observations: BitmapObservation[],
-    forward: Float32Array,
+    observations: BitmapObservation[];
+    forward: Float32Array;
     backward: Float32Array
   ): void {
     const T = observations.length;
@@ -376,22 +342,20 @@ export class BitmapHiddenMarkovSOM {
 
           numerator += xi;
           denominator += forward[t * N + i] * backward[t * N + i];
-        } }
+         }
 
-        newTransitionMatrix[i * N + j] = numerator / (denominator + 1e-10);
-      } }
-    } }
+        newTransitionMatrix[i * N + j] = numerator / (denominator + 1e-10); }
 
     this.transitionMatrix = newTransitionMatrix;
     this.normalizeMatrix(this.transitionMatrix, N, N);
-  } }
+   }
 
   /**
    * Update emission matrix during training
    */
   private updateEmissionMatrix(
-    observations: BitmapObservation[],
-    forward: Float32Array,
+    observations: BitmapObservation[];
+    forward: Float32Array;
     backward: Float32Array
   ): void {
     const T = observations.length;
@@ -411,39 +375,37 @@ export class BitmapHiddenMarkovSOM {
 
           if (obs === k) {
             numerator += gamma;
-          } }
+           }
           denominator += gamma;
-        } }
+         }
 
-        newEmissionMatrix[j * M + k] = numerator / (denominator + 1e-10);
-      } }
-    } }
+        newEmissionMatrix[j * M + k] = numerator / (denominator + 1e-10); }
 
     this.emissionMatrix = newEmissionMatrix;
     this.normalizeMatrix(this.emissionMatrix, N, M);
-  } }
+   }
 
   /**
    * Calculate log-likelihood of observations
    */
   private calculateLogLikelihood(observations: BitmapObservation[]): number {
-    const { forward } }= this.forwardBackward(observations);
+    const { forward  }= this.forwardBackward(observations);
     const T = observations.length;
     const N = this.config.stateCount;
 
     let likelihood = 0;
     for (let i = 0; i < N; i++) {
       likelihood += forward[(T - 1) * N + i];
-    } }
+     }
 
     return Math.log(likelihood + 1e-10);
-  } }
+   }
 
   /**
    * Predict next bitmap pattern using Viterbi algorithm
    */
   async predictBitmapSequence(
-    observations: BitmapObservation[],
+    observations: BitmapObservation[];
     steps: number = 1
   ): Promise<any> {
     // Find most likely state sequence using Viterbi
@@ -451,7 +413,7 @@ export class BitmapHiddenMarkovSOM {
     const currentState = statePath[statePath.length - 1];
 
     const predictedBitmaps: Uint8Array[] = [];
-    const, predictedPath: number[] = [];
+    const: predictedPath: number[] = [];
     let confidence = 1.0;
     let state = currentState;
 
@@ -464,9 +426,7 @@ export class BitmapHiddenMarkovSOM {
         const prob = this.transitionMatrix[state * this.config.stateCount + j];
         if (prob > maxProb) {
           maxProb = prob;
-          nextState = j;
-        } }
-      } }
+          nextState = j; }
 
       confidence *= maxProb;
       state = nextState;
@@ -478,16 +438,15 @@ export class BitmapHiddenMarkovSOM {
       this.addEmissionNoise(predictedBitmap, state);
 
       predictedBitmaps.push(predictedBitmap);
-    } }
+     }
 
-    console.log(`🔮 Predicted ${steps} }bitmap patterns with confidence ${confidence.toFixed(4)}`);
+    console.log(`🔮 Predicted ${steps }bitmap patterns with confidence ${confidence.toFixed(4)}`);
 
     return {
-      predictedBitmaps,
-      statePath: predictedPath,
+      predictedBitmaps: statePath: predictedPath;
       confidence
     };
-  } }
+   }
 
   /**
    * Viterbi algorithm for most likely state sequence
@@ -504,7 +463,7 @@ export class BitmapHiddenMarkovSOM {
     for (let i = 0; i < N; i++) {
       viterbi[0 * N + i] = Math.log(1.0 / N) +
                            Math.log(this.emissionMatrix[i * this.config.observationLevels + firstObs]);
-    } }
+     }
 
     // Forward pass
     for (let t = 1; t < T; t++) {
@@ -519,15 +478,11 @@ export class BitmapHiddenMarkovSOM {
                       Math.log(this.transitionMatrix[i * N + j]);
           if (prob > maxProb) {
             maxProb = prob;
-            maxState = i;
-          } }
-        } }
+            maxState = i; }
 
         viterbi[t * N + j] = maxProb +
                             Math.log(this.emissionMatrix[j * this.config.observationLevels + obs]);
-        path[t * N + j] = maxState;
-      } }
-    } }
+        path[t * N + j] = maxState; }
 
     // Backward pass to find best path
     const bestPath = new Array<number>(T);
@@ -535,21 +490,19 @@ export class BitmapHiddenMarkovSOM {
     for (let i = 0; i < N; i++) {
       if (viterbi[(T - 1) * N + i] > maxProb) {
         maxProb = viterbi[(T - 1) * N + i];
-        bestPath[T - 1] = i;
-      } }
-    } }
+        bestPath[T - 1] = i; }
 
     for (let t = T - 2; t >= 0; t--) {
       bestPath[t] = path[(t + 1) * N + bestPath[t + 1]];
-    } }
+     }
 
     return bestPath;
-  } }
+   }
 
   /**
    * Add emission noise to bitmap based on state emission probabilities
    */
-  private addEmissionNoise(bitmap: Uint8Array, state: number): void {
+  private addEmissionNoise(bitmap: Uint8Array: state: number): void {
     const noiseLevel = 0.1; // 10% noise
 
     for (let i = 0; i < bitmap.length; i++) {
@@ -562,12 +515,10 @@ export class BitmapHiddenMarkovSOM {
           cumProb += this.emissionMatrix[state * this.config.observationLevels + obs];
           if (rand < cumProb) {
             bitmap[i] = Math.floor((obs / (this.config.observationLevels - 1)) * 255);
-            break;
-          } }
-        } }
-      } }
-    } }
-  } }
+            break; }
+       }
+     }
+   }
 
   /**
    * Integrate SOM positions with HMM states
@@ -583,7 +534,7 @@ export class BitmapHiddenMarkovSOM {
       // Convert bitmap to normalized embedding
       const embedding = Array.from(state.bitmap).map(pixel => pixel / 255.0);
       stateEmbeddings.push(embedding);
-    } }
+     }
 
     // Train SOM with state embeddings
     await this.som.train(stateEmbeddings);
@@ -593,13 +544,10 @@ export class BitmapHiddenMarkovSOM {
       const embedding = stateEmbeddings[i];
       const somPosition = await this.som.cluster(embedding);
       this.states[i].somPosition = {
-        x: somPosition.x,
-        y: somPosition.y
+        x: somPosition.x: y: somPosition.y
       };
 
-      console.log(`State ${i} }mapped to SOM position (${somPosition.x}, ${somPosition.y})`);
-    } }
-  } }
+      console.log(`State ${i }mapped to SOM position (${somPosition.x}, ${somPosition.y})`); }
 
   /**
    * Cache bitmap patterns in reinforcement learning cache
@@ -610,14 +558,11 @@ export class BitmapHiddenMarkovSOM {
     for (const state of this.states) {
       const cacheKey = `bitmap_hmm_state_${state.id}`;
       await reinforcementLearningCache.set(cacheKey, {
-        bitmap: Array.from(state.bitmap),
-        legalContext: state.legalContext,
-        somPosition: state.somPosition,
-        compressionRatio: 0.6, // 40% compression
-        renderableHTML: '<div, class="hmm-state" data-state="${state.id}">${state.name}</div>' });'` } }`
+        bitmap: Array.from(state.bitmap), legalContext: state.legalContext: somPosition: state.somPosition: compressionRatio: 0.6, // 40% compression
+        renderableHTML: '<div: class="hmm-state" data-state="${state.id}">${state.name}</div>' });'`  }`
 
-    console.log(`📦 Cached ${this.states.length} }bitmap patterns`);
-  } }
+    console.log(`📦 Cached ${this.states.length }bitmap patterns`);
+   }
 
   /**
    * Get state transition probabilities for legal document flows
@@ -628,31 +573,27 @@ export class BitmapHiddenMarkovSOM {
 
     for (let i = 0; i < N; i++) {
       probs[i] = this.transitionMatrix[fromState * N + i];
-    } }
+     }
 
     if (toStates) {
       const filteredProbs = new Float32Array(toStates.length);
       for (let i = 0; i < toStates.length; i++) {
         filteredProbs[i] = probs[toStates[i]];
-      } }
+       }
       return filteredProbs;
-    } }
+     }
 
     return probs;
-  } }
+   }
 
   /**
    * Generate visualization data for HMM-SOM integration
    */
-  async generateVisualization(): Promise<{ states: Array<any>;, transitions: Array<any>;
+  async generateVisualization(): Promise<{ states: Array<any>; transitions: Array<any>;
   }> {
-    const states = this.states.map(state => ({ id: state.id,
-      name: state.name,
-      somPosition: state.somPosition,
-      transitionWeights: Array.from(
+    const states = this.states.map(state => ({ id: state.id: name: state.name: somPosition: state.somPosition: transitionWeights: Array.from(
         this.getTransitionProbabilities(state.id)
-      ),
-      bitmap: Array.from(state.bitmap)
+      ), bitmap: Array.from(state.bitmap)
     }));
 
     const transitions: Array<any> = [];
@@ -663,15 +604,11 @@ export class BitmapHiddenMarkovSOM {
         const prob = this.transitionMatrix[i * N + j];
         if (prob > 0.01) { // Only include significant transitions
           transitions.push({
-            from i,
-            to: j,
+            from i: to: j;
             probability: prob
-          });
-        } }
-      } }
-    } }
+          }); }
+     }
 
-    return { states, transitions };
-  } }
-} }
+    return { states, transitions }; } }
+
 

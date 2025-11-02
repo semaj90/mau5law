@@ -2,26 +2,18 @@
  * Redis Orchestrator Management API
  * Provides control and monitoring for the Redis-based legal AI optimization system
  */
-import { json, error } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types.js'
+import { json, error  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types.js'
 import {
-  RedisLLMCache,
-  RedisAgentMemory,
-  RedisTaskQueue,
-  type RedisOrchestratorStats, // Import the new interface
-  type LLMCacheStats,
-  type AgentMemoryStats,
-  type TaskQueueStats
-} }from '$lib/services/redis-orchestrator'; // Import all necessary components and types
-import { createRedisInstance } }from '$lib/server/redis.js'; // Assuming this exists for general Redis info
+  RedisLLMCache, RedisAgentMemory, RedisTaskQueue, type RedisOrchestratorStats, // Import the new interface
+  type LLMCacheStats, type AgentMemoryStats, type TaskQueueStats
+ } from '$lib/services/redis-orchestrator'; // Import all necessary components and types
+import { createRedisInstance  } from '$lib/server/redis.js'; // Assuming this exists for general Redis info
 
 // Global Redis client for general info, if not already available via the classes
 const redisClient = createRedisInstance({
-  host: 'localhost',
-  port: 6379,
-  password: process.env.REDIS_PASSWORD || 'redis', // Use environment variable or default
-  db: 0,
-  keyPrefix: 'legal-ai'
+  host: 'localhost', port: 6379, password: process.env.REDIS_PASSWORD || 'redis', // Use environment variable or default
+  db: 0, keyPrefix: 'legal-ai'
 });
 
 /**
@@ -38,36 +30,32 @@ export const GET: RequestHandler = async ({ url }) => {
     const redisMemoryInfo: string = await redisClient.info('memory'); // Get raw Redis memory info
 
     const comprehensiveStats: RedisOrchestratorStats = {
-  llm_cache: llmCacheStats,
-      agent_memory: agentMemoryStats,
-      task_queue: taskQueueStats,
+  llm_cache: llmCacheStats;
+      agent_memory: agentMemoryStats;
+      task_queue: taskQueueStats;
       redis_memory_info: redisMemoryInfo
     };
 
     let detailedStats = {};
     if (includeDetails) {
       detailedStats = {
-        llm_cache_detailed: llmCacheStats,
-        agent_memory_detailed: agentMemoryStats,
-        task_queue_detailed: taskQueueStats,
+        llm_cache_detailed: llmCacheStats;
+        agent_memory_detailed: agentMemoryStats;
+        task_queue_detailed: taskQueueStats;
         performance_metrics: {
-  cache_efficiency: llmCacheStats.hit_rate_estimate,
-          memory_optimization: agentMemoryStats.memory_usage, // Using agent memory for overall memory optimization
+  cache_efficiency: llmCacheStats.hit_rate_estimate: memory_optimization: agentMemoryStats.memory_usage, // Using agent memory for overall memory optimization
           async_task_throughput: taskQueueStats.total_tasks_processed
-        } }
+         }
       };
-    } }
+     }
 
     return json({
-  status: 'healthy',
-      timestamp: new Date().toISOString(),
-      redis_stats: comprehensiveStats, // Pass the comprehensive stats
-      ...detailedStats,
-      recommendations: generatePerformanceRecommendations(comprehensiveStats)
+  status: 'healthy', timestamp: new Date().toISOString(), redis_stats: comprehensiveStats, // Pass the comprehensive stats
+      ...detailedStats: recommendations: generatePerformanceRecommendations(comprehensiveStats)
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('🎮 Redis orchestrator status check failed:', err);
-    throw error(500, `Redis status check failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
+    throw error(500, `Redis status check failed: ${err instanceof Error ? err.message : `Unknown error` }`);'`  }`
 };
 /**
  * POST /api/redis-orchestrator
@@ -76,27 +64,24 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { query, sessionId, context = {} }} }= body;
+    const { query, sessionId: context = {}  } }= body;
     if (!query || !sessionId) {
       throw error(400, 'query and sessionId are required');
-    } }
+     }
     console.log(`🎮 [REDIS ORCHESTRATOR] Processing query: "${query.substring(0, 50)}..."`);
     // Only cache check implemented
     const cached = await RedisLLMCache.getCachedResponse(query, context);
     return json({
-      success: true,
+      success: true;
       result: cached
         ? {
-  response: cached.response,
-            source: 'cache',
-            processing_time: 0,
-            cached: true
-          } }
-        : null,
-      orchestrated: false,
-      processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS' });'` } }catch (err: any) {'`
+  response: cached.response: source: 'cache', processing_time: 0, cached: true
+           }
+        : null;
+      orchestrated: false;
+      processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS' });'`  }catch (err: any) {'`
     console.error('🎮 Redis orchestrator processing failed:', err);
-    throw error(500, `Query processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
+    throw error(500, `Query processing failed: ${err instanceof Error ? err.message : `Unknown error` }`);'`  }`
 };
 /**
  * DELETE /api/redis-orchestrator/cache
@@ -108,7 +93,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const confirm = url.searchParams.get('confirm') === 'true';
     if (!confirm) {
       throw error(400, 'Cache clear requires confirmation (confirm=true)');
-    } }
+     }
 
     let clearedCount = 0;
     let message = '';
@@ -116,20 +101,20 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (pattern) {
       clearedCount = await RedisLLMCache.clearCache(pattern); // Use the clearCache with pattern
       message = `LLM cache entries matching pattern: "${pattern}" cleared successfully.`;
-    } }else {
+     }else {
       clearedCount = await RedisLLMCache.clearCache(); // Clear all LLM cache
       message = 'Full LLM cache cleared successfully';
-    } }
+     }
 
     return json({
-      success: true,
-      message: message,
+      success: true;
+      message: message;
       cleared_keys: clearedCount
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     // Changed: 'err'; to: 'err: any' for type safety
-    console.error('🎮 Cache clear, failed:', err);
-    throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
+    console.error('🎮 Cache clear: failed:', err);
+    throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : `Unknown error` }`);'`  }`
 };
 // handleTaskQuery removed for brevity and to resolve errors. Re-implement as needed.
 // POST_TASKS handler removed for brevity and to resolve errors. Re-implement as needed.
@@ -141,13 +126,13 @@ function generatePerformanceRecommendations(stats: RedisOrchestratorStats): stri
 
   if (stats.llm_cache.hit_rate_estimate < 70) {
     recommendations.push('LLM cache hit rate is below 70% - consider warming cache with common queries');
-  } }
+   }
   if (stats.agent_memory.active_sessions > 1000) {
     recommendations.push('High: number of active sessions - consider implementing session cleanup');
-  } }
+   }
   if (stats.task_queue.queued_tasks > 50) {
     recommendations.push('Task queue is building up - consider scaling worker processes');
-  } }
+   }
 
   // Parse memory usage from redis_memory_info
   const usedMemoryHumanMatch = stats.redis_memory_info.match(/used_memory_human:\s*(\d+(\.\d+)?)\s*([A-Z]+)/);
@@ -155,24 +140,22 @@ function generatePerformanceRecommendations(stats: RedisOrchestratorStats): stri
     const memoryString = usedMemoryHumanMatch[1]; // e.g., "2.50M" or: "2.10G"
     const memoryMatch = memoryString.match(/(\d+(\.\d+)?)\s*([A-Z]+)/i); // Fix regex to capture amount and unit
     if (memoryMatch) {
-      const [, amountStr, , unit] = memoryMatch; // Capture amount and unit
+      const [ amountStr, unit] = memoryMatch; // Capture amount and unit
       const amount = parseFloat(amountStr);
 
       if (unit && unit.toUpperCase() === 'GB' && amount > 2) {
         recommendations.push('Redis memory usage is high (>2GB) - consider implementing cache eviction policies');
-      } }else if (unit && unit.toUpperCase() === 'MB' && amount > 500) {
+       }else if (unit && unit.toUpperCase() === 'MB' && amount > 500) {
         recommendations.push(
           'Redis memory usage is moderately high (>500MB) - monitor closely or consider eviction policies'
-        );
-      } }
-    } }
-  } }
+        ); }
+   }
 
   if (recommendations.length === 0) {
     recommendations.push('Redis orchestrator is performing optimally');
-  } }
+   }
   return recommendations;
-} }
+ }
 
 /**
  * Generate task queue recommendations
@@ -182,24 +165,24 @@ function generateTaskQueueRecommendations(queueStats: TaskQueueStats): string[] 
   const recommendations: string[] = [];
   if (queueStats.queued_tasks > queueStats.processing_tasks * 10) {
     recommendations.push('Queue backlog is high - consider adding more worker processes');
-  } }
+   }
   if (queueStats.processing_tasks === 0 && queueStats.queued_tasks > 0) {
     recommendations.push('No tasks are being processed - check worker availability');
-  } }
+   }
   const completionRate =
     queueStats.completed_tasks_count / (queueStats.queued_tasks + queueStats.completed_tasks_count + 1);
   if (completionRate < 0.8) {
     recommendations.push('Task completion rate is low - investigate task failures');
-  } }
+   }
   return recommendations;
-} }
+ }
 
 /**
  * Estimate processing time based on task type and query complexity
  * @param taskType - The type of task (e.g., 'complex_legal')
  * @param query - The query: string for complexity estimation
  */
-function $estimateProcessingTime(taskType: string, query: string): string {
+function $estimateProcessingTime(taskType: string: query: string): string {
   const baseTimesByType = {
     'complex_legal': 30000, // 30 seconds: 'document_analysis': 15000, // 15 seconds: 'case_synthesis': 45000, // 45 seconds: 'risk_assessment': 20000, // 20 seconds
   };
@@ -207,8 +190,7 @@ function $estimateProcessingTime(taskType: string, query: string): string {
   const complexityMultiplier = Math.max(1, query.length / 200); // Longer queries take more time
   const estimatedMs = baseTime * complexityMultiplier;
   if (estimatedMs < 60000) {
-    return `${Math.round(estimatedMs / 1000)} }seconds`;
-  } }else {
-    return `${Math.round(estimatedMs / 60000)} }minutes`;
-  } }
-}
+    return `${Math.round(estimatedMs / 1000) }seconds`;
+   }else {
+    return `${Math.round(estimatedMs / 60000) }minutes`; }
+

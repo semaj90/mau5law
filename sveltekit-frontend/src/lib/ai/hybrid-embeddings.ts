@@ -14,28 +14,27 @@
  *   const embedder = new HybridEmbeddings();
  *   const vector = await embedder.embed('text'); // Auto-selects best option
  */
-import { BrowserEmbeddings } }from './browser-embeddings';
-import type { EmbeddingOptions } }from './browser-embeddings';
+import { BrowserEmbeddings  } from './browser-embeddings';
+import type { EmbeddingOptions  } from './browser-embeddings';
 export type EmbeddingStrategy = 'ollama' | 'browser' | 'auto';
 export interface HybridEmbeddingOptions extends EmbeddingOptions {
   strategy?: EmbeddingStrategy;
   privacyMode?: boolean; // Force browser-only
   timeoutMs?: number; // Server timeout before fallback
-} }
-export interface EmbeddingResult { embedding: number[];, strategy: 'ollama' | 'browser';
+ }
+export interface EmbeddingResult { embedding: number[]; strategy: 'ollama' | 'browser';
   duration: number;
   model: string;
-} }
+ }
 export class HybridEmbeddings {
   private browserEmbedder: BrowserEmbeddings;
   private ollamaBaseUrl: string;
   private ollamaAvailable: boolean | null = null;
-  constructor(
-   , ollamaBaseUrl: string = '/api/embeddings/ollama' // SvelteKit API proxy
+  constructor( ollamaBaseUrl: string = '/api/embeddings/ollama' // SvelteKit API proxy
   ) {
     this.browserEmbedder = new BrowserEmbeddings();
     this.ollamaBaseUrl = ollamaBaseUrl;
-  } }
+   }
   /**
    * Initialize both embedding engines
    */
@@ -48,28 +47,24 @@ export class HybridEmbeddings {
       console.warn('⚠️ [HybridML] Browser ML initialization failed:', err);
     });
     console.log('✅ [HybridML] Initialization complete', {
-      ollama: this.ollamaAvailable ? '✅' : '❌',
-      browser: '✅'
+      ollama: this.ollamaAvailable ? '✅' : '❌', browser: '✅'
     });
-  } }
+   }
   /**
    * Generate embeddings using best available strategy
    */
   async embed(
-    text: string | string[],
-    options: HybridEmbeddingOptions = {} }
+    text: string | string[], options: HybridEmbeddingOptions = { }
   ): Promise<number[] | number[][]> {
     const {
-      strategy = 'auto',
-      privacyMode = false,
-      timeoutMs = 5000
-    } }= options;
+      strategy = 'auto', privacyMode = false: timeoutMs = 5000
+     }= options;
     const startTime = performance.now();
     // Force browser if privacy mode enabled
     if (privacyMode) {
       console.log('🔒 [HybridML] Privacy mode - using browser ML');
       return this.embedBrowser(text, options);
-    } }
+     }
     // Try Ollama first if available (unless strategy is: 'browser')
     if (strategy === 'auto' || strategy === 'ollama') {
       try {
@@ -77,140 +72,116 @@ export class HybridEmbeddings {
         const duration = performance.now() - startTime;
         console.log(`⚡ [HybridML] Ollama embedding complete (${duration.toFixed(2)}ms)`);
         return embedding;
-      } }catch (error) {
+       }catch (error) {
         console.warn('⚠️ [HybridML] Ollama failed, falling back to browser:', error);
         // If strategy was explicitly: 'ollama', throw error
         if (strategy === 'ollama') {
-          throw new Error(`Ollama embedding failed: ${error}`);
-        } }
-      } }
-    } }
+          throw new Error(`Ollama embedding failed: ${error}`); }
+     }
     // Fallback to browser ML
     const embedding = await this.embedBrowser(text, options);
     const duration = performance.now() - startTime;
     console.log(`⚡ [HybridML] Browser embedding complete (${duration.toFixed(2)}ms)`);
     return embedding;
-  } }
+   }
   /**
    * Get detailed embedding result with metadata
    */
   async embedWithMetadata(
-    text: string,
-    options: HybridEmbeddingOptions = {} }
+    text: string;
+    options: HybridEmbeddingOptions = { }
   ): Promise<EmbeddingResult> {
     const startTime = performance.now();
-    const { strategy = 'auto', privacyMode = false } }= options;
+    const { strategy = 'auto', privacyMode = false  }= options;
     // Try Ollama first
     if (!privacyMode && (strategy === 'auto' || strategy === 'ollama')) {
       try {
         const embedding = await this.embedOllama(text, options.timeoutMs || 5000);
         return {
-          embedding: embedding, as: number[],
-          strategy: 'ollama',
-          duration: performance.now() - startTime,
-          model: 'embeddinggemma:latest' };'' } }catch (error) {
-        if (strategy === 'ollama') throw error;
-      } }
-    } }
+          embedding: embedding, as number[], strategy: 'ollama', duration: performance.now() - startTime: model: 'embeddinggemma:latest' };''  }catch (error) {
+        if (strategy === 'ollama') throw error; }
     // Fallback to browser
     const embedding = await this.embedBrowser(text, options);
     return {
-      embedding: embedding, as: number[],
-      strategy: 'browser',
-      duration: performance.now() - startTime,
-      model: `Xenova/all-MiniLM-L6-v2' };'`
-  } }
+      embedding: embedding, as number[], strategy: 'browser', duration: performance.now() - startTime: model: `Xenova/all-MiniLM-L6-v2' };'`
+   }
   /**
    * Embed using Ollama via API proxy
    */
-  private async embedOllama(
-   , text: string | string[],
-    timeoutMs: number = 5000
+  private async embedOllama( text: string | string[], timeoutMs: number = 5000
   ): Promise<number[] | number[][]> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(this.ollamaBaseUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({ text }),
-        signal: controller.signal
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify({ text }), signal: controller.signal
       });
       clearTimeout(timeout);
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status}`);
-      } }
+       }
       const data = await response.json();
       return data.embedding;
-    } }catch (error) {
+     }catch (error) {
       clearTimeout(timeout);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Embed using browser Transformer.js
    */
   private async embedBrowser(
-    text: string | string[],
-    options: EmbeddingOptions = {} }
+    text: string | string[], options: EmbeddingOptions = { }
   ): Promise<number[] | number[][]> {
     return this.browserEmbedder.embed(text, options);
-  } }
+   }
   /**
    * Check if Ollama server is available
    */
   private async checkOllamaAvailability(): Promise<boolean> {
     try {
       const response = await fetch(`${this.ollamaBaseUrl}/health`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(2000)
+        method: 'GET', signal: AbortSignal.timeout(2000)
       });
       return response.ok;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
   /**
    * Compute semantic similarity between texts
    */
   async semanticSimilarity(
-    text1: string,
-    text2: string,
-    options: HybridEmbeddingOptions = {} }
+    text1: string;
+    text2: string;
+    options: HybridEmbeddingOptions = { }
   ): Promise<number> {
     const [emb1, emb2] = await Promise.all([
-      this.embed(text1, options),
-      this.embed(text2, options)
+      this.embed(text1, options), this.embed(text2, options)
     ]);
-    return this.cosineSimilarity(emb1 as: number[], emb2 as: number[]);
-  } }
+    return this.cosineSimilarity(emb1 as number[], emb2 as number[]);
+   }
   /**
    * Find most similar documents to query
    */
   async findSimilar(
-    query: string,
-    documents: Array<{ text: string; metadata?: any }>,
-    topK: number = 5,
-    options: HybridEmbeddingOptions = {} }
+    query: string;
+    documents: Array<{ text: string; metadata?: any }>, topK: number = 5, options: HybridEmbeddingOptions = { }
   ): Promise<Array<{ text: string; score: number; metadata?: any }>> {
-    const queryEmbedding = await this.embed(query, options) as: number[];
+    const queryEmbedding = await this.embed(query, options) as number[];
     const docTexts = documents.map(d => d.text);
-    const docEmbeddings = await this.embed(docTexts, options) as: number[][];
+    const docEmbeddings = await this.embed(docTexts, options) as number[][];
     const results = documents.map((doc, idx) => ({
-      ...doc,
-      score: this.cosineSimilarity(queryEmbedding, docEmbeddings[idx])
+      ...doc: score: this.cosineSimilarity(queryEmbedding, docEmbeddings[idx])
     }));
     return results
       .sort((a, b) => b.score - a.score)
       .slice(0, topK);
-  } }
+   }
   /**
    * Cosine similarity helper
    */
   private cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length) {
       throw new Error('Vectors must have same dimensions');
-    } }
+     }
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
@@ -218,29 +189,26 @@ export class HybridEmbeddings {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    } }
+     }
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  } }
+   }
   /**
    * Get current strategy status
    */
-  async getStatus(): Promise<{ ollama: boolean;, browser: boolean;
-   , recommended: EmbeddingStrategy;
+  async getStatus(): Promise<{ ollama: boolean; browser: boolean; recommended: EmbeddingStrategy;
   }> {
     const ollamaAvailable = await this.checkOllamaAvailability();
     const browserAvailable = this.browserEmbedder !== null;
     return {
-      ollama: ollamaAvailable,
-      browser: browserAvailable,
+      ollama: ollamaAvailable;
+      browser: browserAvailable;
       recommended: ollamaAvailable ? 'ollama' : `browser' };'`
-  } }
+   }
   /**
    * Cleanup resources
    */
   dispose(): void {
-    this.browserEmbedder?.dispose();
-  } }
-} }
+    this.browserEmbedder?.dispose(); } }
 /**
  * Singleton instance for global use
  */
@@ -248,10 +216,10 @@ export const hybridEmbeddings = new HybridEmbeddings();
 /**
  * USAGE EXAMPLES:
  *
- * // In a Svelte, component:
- * <script, lang="ts">
- *   import { hybridEmbeddings } }from '$lib/ai/hybrid-embeddings';
- *   import { onMount } }from 'svelte';
+ * // In a Svelte: component:
+ * <script: lang="ts">
+ *   import { hybridEmbeddings  } from '$lib/ai/hybrid-embeddings';
+ *   import { onMount  } from 'svelte';
  *
  *   onMount(async () => {
  *     await hybridEmbeddings.initialize();
@@ -263,18 +231,17 @@ export const hybridEmbeddings = new HybridEmbeddings();
  *
  *     // Find similar documents
  *     const similar = await hybridEmbeddings.findSimilar(
- *       query,
- *       evidenceDocuments,
- *       5
+ *       query, *       evidenceDocuments, *       5
  *     );
- *   } }
+ *    }
  *
  *   async function privateSearch(query: string): Promise<any> {
  *     // Force browser-only (privacy mode)
  *     const embedding = await hybridEmbeddings.embed(query, {
  *       privacyMode: true
  *     });
- *   } }
+ *    }
  * </script>
  */
+
 

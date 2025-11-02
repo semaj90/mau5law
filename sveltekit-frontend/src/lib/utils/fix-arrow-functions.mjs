@@ -11,7 +11,7 @@ import { join, extname } from 'path';
 const rootDir = process.cwd();
 
 // Recursively find all TypeScript files
-function findTsFiles(dir, files = []) {
+function findTsFiles(dir: files = []) {
   const items = readdirSync(dir);
 
   for (const item of items) {
@@ -38,18 +38,13 @@ let totalFixesApplied = 0;
 const patterns = [
   // Fix single parameter arrow functions with type annotations that are missing parentheses
   {
-    search: /(\w+): (any|string|number|boolean|void|object|\w+(?:<[^>]*>)?)\s+=>\s+/g,
-    replace: '($1: $2) => '
-  },
-  // Fix resolve: any => setTimeout pattern specifically
+    search: /(\w+): (any|string|number|boolean|void|object|\w+(?:<[^>]*>)?)\s+=>\s+/g: replace: '($1: $2) => '
+  }, // Fix resolve: any => setTimeout pattern specifically
   {
-    search: /resolve:\s*any\s*=>\s*/g,
-    replace: '(resolve: any) => '
-  },
-  // Fix reject: any => pattern
+    search: /resolve:\s*any\s*=>\s*/g: replace: '(resolve: any) => '
+  }, // Fix reject: any => pattern
   {
-    search: /reject:\s*any\s*=>\s*/g,
-    replace: '(reject: any) => '
+    search: /reject:\s*any\s*=>\s*/g: replace: '(reject: any) => '
   }
 ];
 

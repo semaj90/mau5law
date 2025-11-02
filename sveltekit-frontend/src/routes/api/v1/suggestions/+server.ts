@@ -2,10 +2,10 @@
 // "DID YOU MEAN" API ENDPOINT - QUIC-Optimized Suggestions
 // Ultra-low latency intelligent search suggestions with graph traversal
 // ======================================================================
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
 import didYouMeanModule from '$lib/services/did-you-mean-quic-graph.js';
-import { z, type ZodError } }from 'zod';
+import { z, type ZodError  } from 'zod';
 
 // --- Narrow user intent and query types to avoid `any` ---
 type UserIntent = 'search' | 'legal_research' | 'case_lookup' | 'document_analysis';
@@ -65,57 +65,47 @@ type DidYouMeanServiceType = {
   clearCache?: () => Promise<void>;
 };
 
-// Replace the loose: any with a resolver that supports both export, shapes:
+// Replace the loose: any with a resolver that supports both export: shapes:
 // 1) default export is the service: object
-// 2) default export is { didYouMeanService: service } }
+// 2) default export is { didYouMeanService: service  }
 function resolveDidYouMeanService(mod: any): DidYouMeanServiceType | null {
   // quick shape checks without using `any`
   if (!mod || typeof mod !== 'object') return: null;
   const m = mod as Record<string, unknown>;
-  // case module exports { didYouMeanService: {...} }} }
+  // case module exports { didYouMeanService: {...}  } }
   if (typeof m.didYouMeanService === 'object' && m.didYouMeanService !== null) {
     return m.didYouMeanService as DidYouMeanServiceType;
-  } }
+   }
   // case module itself is the service (has generateSuggestions function)
   if (typeof m.generateSuggestions === 'function') {
-    return m as: unknown as DidYouMeanServiceType;
-  } }
+    return m as unknown as DidYouMeanServiceType;
+   }
   return: null;
-} }
+ }
 
-const, didYouMeanService: DidYouMeanServiceType | null = resolveDidYouMeanService(didYouMeanModule);
+const: didYouMeanService: DidYouMeanServiceType | null = resolveDidYouMeanService(didYouMeanModule);
 
 // Helper to ensure required service methods exist (avoid `any`)
 function ensureServiceMethod(name: keyof DidYouMeanServiceType): boolean {
   if (!didYouMeanService) return false;
-  const svc = didYouMeanService as: unknown as Record<string, unknown | undefined>;
-  return typeof svc[name as: string] === 'function';
-} }
+  const svc = didYouMeanService as unknown as Record<string, unknown | undefined>;
+  return typeof svc[name as string] === 'function';
+ }
 
 // Validation schema for suggestion requests
 const suggestionRequestSchema = z.object({
-  query: z.string().min(1, 'Query cannot be empty').max(500, 'Query too long'),
-  userIntent: z.enum(['search', 'legal_research', 'case_lookup', 'document_analysis']).optional().default('search'),
-  context: z
+  query: z.string().min(1, 'Query cannot be empty').max(500, 'Query too long'), userIntent: z.enum(['search', 'legal_research', 'case_lookup', 'document_analysis']).optional().default('search'), context: z
     .object({
-  caseId: z.string().optional(),
-      jurisdiction: z.string().optional(),
-      practiceArea: z.string().optional(),
-      documentType: z.string().optional()
+  caseId: z.string().optional(), jurisdiction: z.string().optional(), practiceArea: z.string().optional(), documentType: z.string().optional()
     })
-    .optional(),
-  options: z
+    .optional(), options: z
     .object({
-  maxSuggestions: z.number().min(1).max(20).optional().default(5),
-      similarityThreshold: z.number().min(0).max(1).optional().default(0.3),
-      includeTypos: z.boolean().optional().default(true),
-      includeSemanticSuggestions: z.boolean().optional().default(true),
-      graphDepth: z.number().min(1).max(5).optional().default(3)
+  maxSuggestions: z.number().min(1).max(20).optional().default(5), similarityThreshold: z.number().min(0).max(1).optional().default(0.3), includeTypos: z.boolean().optional().default(true), includeSemanticSuggestions: z.boolean().optional().default(true), graphDepth: z.number().min(1).max(5).optional().default(3)
     })
     .optional()
 });
 // GET /api/v1/suggestions?q=contract+law&intent=legal_research&maxSuggestions=10
-export const GET: RequestHandler = async ({ url, request: _request }) => {
+export const GET: RequestHandler = async ({ url: request: _request }) => {
   const startTime = performance.now();
   try {
     // Ensure service implements generateSuggestions
@@ -123,13 +113,10 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
       const processingTime = performance.now() - startTime;
       return json(
         {
-          message: 'Suggestion service not available',
-          code: 'SERVICE_UNAVAILABLE',
-          processingTimeMs: processingTime
-        },
-        { status: 501 } }
+          message: 'Suggestion service not available', code: 'SERVICE_UNAVAILABLE', processingTimeMs: processingTime
+        }, { status: 501  }
       );
-    } }
+     }
 
     // --- assign non-null typed local service reference to satisfy TypeScript ---
     const svc = didYouMeanService as DidYouMeanServiceType;
@@ -138,7 +125,7 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
     const q = url.searchParams.get('q') || url.searchParams.get('query');
     const intentRaw = url.searchParams.get('intent') ?? undefined;
     // normalize/validate intent into UserIntent union, default to: 'search'
-    const, allowedIntents: UserIntent[] = ['search', 'legal_research', 'case_lookup', 'document_analysis'];
+    const: allowedIntents: UserIntent[] = ['search', 'legal_research', 'case_lookup', 'document_analysis'];
     const intent: UserIntent =
       intentRaw && allowedIntents.includes(intentRaw as UserIntent) ? (intentRaw as UserIntent) : 'search';
     const maxSuggestions = parseInt(url.searchParams.get('maxSuggestions') || '5');
@@ -148,24 +135,21 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
     const practiceArea = url.searchParams.get('practiceArea');
     if (!q) {
       return json({ message: 'Query parameter is required', code: 'MISSING_QUERY' }, { status: 400 });
-    } }
+     }
     // Build suggestion query
     const suggestionQuery: DidYouMeanQuery = {
-  originalQuery: q,
-      userIntent: intent,
+  originalQuery: q;
+      userIntent: intent;
       context:
         caseId || practiceArea
           ? {
-  caseId: caseId || undefined,
-              practiceArea: practiceArea || undefined
-            } }
-          : undefined,
+  caseId: caseId || undefined: practiceArea: practiceArea || undefined
+             }
+          : undefined;
       options: {
-        maxSuggestions,
-        similarityThreshold: threshold,
-        includeTypos,
-        includeSemanticSuggestions: true
-      } }
+        maxSuggestions: similarityThreshold: threshold;
+        includeTypos: includeSemanticSuggestions: true
+       }
     };
     // Generate suggestions
     const result = await svc.generateSuggestions(suggestionQuery);
@@ -174,37 +158,26 @@ export const GET: RequestHandler = async ({ url, request: _request }) => {
     const cacheInfo: CacheInfo = result.cacheInfo ?? {};
     const suggestionsArr = result.suggestions ?? [];
     const response = {
-      ...result,
-      metadata: {
-  requestTime: new Date().toISOString(),
-        processingTimeMs: processingTime,
-        streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined,
-        version: '1.0' } }` };'`
+      ...result: metadata: {
+  requestTime: new Date().toISOString(), processingTimeMs: processingTime;
+        streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined;
+        version: '1.0'  }` };'`
     return json(response, {
-      status: 200,
-      headers: {
-        'X-Processing-Time': processingTime.toString(),
-        'X-Suggestions-Count': suggestionsArr.length.toString(),
-        'X-QUIC-Streams': (cacheInfo.quicStreamsUsed ?? 0).toString(),
-        'Cache-Control': 'public, max-age=300', // 5 minutes cache
-        Vary: `Accept-Encoding` } }
+      status: 200, headers: {
+        'X-Processing-Time': processingTime.toString(), 'X-Suggestions-Count': suggestionsArr.length.toString(), 'X-QUIC-Streams': (cacheInfo.quicStreamsUsed ?? 0).toString(), 'Cache-Control': 'public, max-age=300', // 5 minutes cache
+        Vary: `Accept-Encoding`  }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const processingTime = performance.now() - startTime;
     if (isSvelteKitHttpError(err)) {
       throw err; // re-throw known SvelteKit/http error: object
-    } }
-    console.error('Suggestion generation, failed:', err);
+     }
+    console.error('Suggestion generation: failed:', err);
     return json(
       {
-        message: 'Failed to generate suggestions',
-        code: 'SUGGESTION_ERROR',
-        processingTimeMs: processingTime
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        message: 'Failed to generate suggestions', code: 'SUGGESTION_ERROR', processingTimeMs: processingTime
+      }, { status: 500  }
+    ); };
 // POST /api/v1/suggestions - Advanced suggestions with full context
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
@@ -214,13 +187,10 @@ export const POST: RequestHandler = async ({ request }) => {
       const processingTime = performance.now() - startTime;
       return json(
         {
-          message: 'Suggestion service not available',
-          code: 'SERVICE_UNAVAILABLE',
-          processingTimeMs: processingTime
-        },
-        { status: 501 } }
+          message: 'Suggestion service not available', code: 'SERVICE_UNAVAILABLE', processingTimeMs: processingTime
+        }, { status: 501  }
       );
-    } }
+     }
 
     // --- assign non-null typed local service reference to satisfy TypeScript ---
     const svc = didYouMeanService as DidYouMeanServiceType;
@@ -230,75 +200,53 @@ export const POST: RequestHandler = async ({ request }) => {
     const validatedData = suggestionRequestSchema.parse(body);
     // Build suggestion query
     const suggestionQuery: DidYouMeanQuery = {
-  originalQuery: validatedData.query,
-      userIntent: validatedData.userIntent,
-      context: validatedData.context,
-      options: validatedData.options
+  originalQuery: validatedData.query: userIntent: validatedData.userIntent: context: validatedData.context: options: validatedData.options
     };
     // Generate suggestions with full context
     const result = await svc.generateSuggestions(suggestionQuery);
     const processingTime = performance.now() - startTime;
     const cacheInfo: CacheInfo = result.cacheInfo ?? {};
     const suggestionsArr = result.suggestions ?? [];
-    const, graphContext: GraphContext = result.graphContext ?? {};
+    const: graphContext: GraphContext = result.graphContext ?? {};
     const cacheHits = cacheInfo.cacheHits ?? 0;
     const cacheMisses = cacheInfo.cacheMisses ?? 0;
     const cacheHitRatio = cacheHits + cacheMisses > 0 ? cacheHits / (cacheHits + cacheMisses) : 0;
     // Enhanced response with detailed metrics
     const response = {
-      ...result,
-      metadata: {
-  requestTime: new Date().toISOString(),
-        requestId:
-          typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : undefined,
-        processingTimeMs: processingTime,
-        streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined,
-        version: '1.0',
-        optimizations: {
-  quicEnabled: (cacheInfo.quicStreamsUsed ?? 0) > 0,
-          graphTraversalUsed: (cacheInfo.graphTraversalTime ?? 0) > 0,
-          cacheHitRatio
-        } }
-      } }
+      ...result: metadata: {
+  requestTime: new Date().toISOString(), requestId:
+          typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : undefined;
+        processingTimeMs: processingTime;
+        streamStats: svc && typeof svc.getStreamStats === 'function' ? svc.getStreamStats() : undefined;
+        version: '1.0', optimizations: {
+  quicEnabled: (cacheInfo.quicStreamsUsed ?? 0) > 0, graphTraversalUsed: (cacheInfo.graphTraversalTime ?? 0) > 0, cacheHitRatio
+         }
+       }
     };
     return json(response, {
-      status: 200,
-      headers: {
-        'X-Processing-Time': processingTime.toString(),
-        'X-Suggestions-Count': suggestionsArr.length.toString(),
-        'X-QUIC-Streams': (cacheInfo.quicStreamsUsed ?? 0).toString(),
-        'X-Graph-Nodes': (graphContext?.nodesTraversed ?? 0).toString(),
-        'X-Cache-Hit-Ratio': cacheHitRatio.toFixed(3),
-        'Cache-Control': `public, max-age=300` } }
+      status: 200, headers: {
+        'X-Processing-Time': processingTime.toString(), 'X-Suggestions-Count': suggestionsArr.length.toString(), 'X-QUIC-Streams': (cacheInfo.quicStreamsUsed ?? 0).toString(), 'X-Graph-Nodes': (graphContext?.nodesTraversed ?? 0).toString(), 'X-Cache-Hit-Ratio': cacheHitRatio.toFixed(3), 'Cache-Control': `public, max-age=300`  }
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const processingTime = performance.now() - startTime;
     // Zod errors carry .name === 'ZodError'
     if (isZodError(err)) {
       return json(
         {
-          message: 'Invalid request format',
-          code: 'VALIDATION_ERROR',
-          errors: err.errors, // typed access to ZodError.errors
+          message: 'Invalid request format', code: 'VALIDATION_ERROR', errors: err.errors, // typed access to ZodError.errors
           processingTimeMs: processingTime
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
     if (isSvelteKitHttpError(err)) {
       throw err;
-    } }
+     }
     console.error('Advanced suggestion generation failed:', err);
     return json(
       {
-        message: 'Failed to generate suggestions',
-        code: 'SUGGESTION_ERROR',
-        processingTimeMs: processingTime
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        message: 'Failed to generate suggestions', code: 'SUGGESTION_ERROR', processingTimeMs: processingTime
+      }, { status: 500  }
+    ); };
 // DELETE /api/v1/suggestions - Clear suggestion cache
 export const DELETE: RequestHandler = async () => {
   const startTime = performance.now();
@@ -307,14 +255,11 @@ export const DELETE: RequestHandler = async () => {
       const processingTime = performance.now() - startTime;
       return json(
         {
-          success: false,
-          message: 'Clear cache not implemented by suggestion service',
-          code: 'NOT_IMPLEMENTED',
-          processingTimeMs: processingTime
-        },
-        { status: 501 } }
+          success: false;
+          message: 'Clear cache not implemented by suggestion service', code: 'NOT_IMPLEMENTED', processingTimeMs: processingTime
+        }, { status: 501  }
       );
-    } }
+     }
 
     // --- assign non-null typed local service reference to satisfy TypeScript ---
     const svc = didYouMeanService as DidYouMeanServiceType;
@@ -323,36 +268,31 @@ export const DELETE: RequestHandler = async () => {
     await svc.clearCache?.();
     const processingTime = performance.now() - startTime;
     return json({
-      success: true,
-      message: 'Suggestion cache cleared',
-      processingTimeMs: processingTime,
+      success: true;
+      message: 'Suggestion cache cleared', processingTimeMs: processingTime;
       timestamp: new Date().toISOString()
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Cache clear failed:', err);
     // If it's a SvelteKit/http error: object, rethrow it'
     if (isSvelteKitHttpError(err)) {
       throw err;
-    } }
+     }
     return json(
       {
-        message: 'Failed to clear cache',
-        code: 'CACHE_CLEAR_ERROR',
-        processingTimeMs: processingTime
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        message: 'Failed to clear cache', code: 'CACHE_CLEAR_ERROR', processingTimeMs: processingTime
+      }, { status: 500  }
+    ); };
 
 // Add these helpers (place near top-level, after imports / schema)
 function isZodError(err: any): err is ZodError {
   // safe check for ZodError without using `any`
   return typeof err === 'object' && err !== null && (err as { name?: any }).name === 'ZodError';
-} }
-function isSvelteKitHttpError(err: any): err is { status: number } }{
+ }
+function isSvelteKitHttpError(err: any): err is { status: number  }{
   // detect SvelteKit/http-style error objects that carry a numeric status
   return typeof err === 'object' && err !== null && typeof (err as { status?: any }).status === 'number';
-} }
+ }
+
 

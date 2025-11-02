@@ -1,8 +1,8 @@
 // Database connection management with role separation
-import { drizzle } }from 'drizzle-orm/postgres-js';
-import { Pool } }from 'pg';
+import { drizzle  } from 'drizzle-orm/postgres-js';
+import { Pool  } from 'pg';
 import * as schema from './schema-postgres.js';
-import type { PostgresJsDatabase } }from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase  } from 'drizzle-orm/postgres-js';
 // Environment configuration
 const isDevelopment = process.env.NODE_ENV === 'development';
 /**
@@ -21,23 +21,19 @@ const adminConnectionString =
 // App connection pool (for normal operations)
 export const appPool = isDevelopment
   ? new Pool({
-      connectionString: appConnectionString,
+      connectionString: appConnectionString;
       max: 5, // Smaller pool for development
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000
+      idleTimeoutMillis: 30000, connectionTimeoutMillis: 10000
     })
   : new Pool({
-      connectionString: appConnectionString,
-      max: 20,
-      idleTimeoutMillis: 60000,
-      connectionTimeoutMillis: 5000
+      connectionString: appConnectionString;
+      max: 20, idleTimeoutMillis: 60000, connectionTimeoutMillis: 5000
     });
 // Admin connection pool (for migrations/extensions)
 export const adminPool = new Pool({
-  connectionString: adminConnectionString,
+  connectionString: adminConnectionString;
   max: 2, // Small pool since admin operations are infrequent
-  idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 5000
+  idleTimeoutMillis: 10000, connectionTimeoutMillis: 5000
 });
 // Drizzle instances
 export const db: PostgresJsDatabase<typeof, schema> = drizzle(appPool, { schema });
@@ -55,22 +51,18 @@ export async function testAppConnection(): Promise<boolean> {
     await client.query('SELECT 1');
     client.release();
     return true;
-  } }catch (error) {
+   }catch (error) {
     console.error('App connection failed:', error);
-    return false;
-  } }
-} }
+    return false; } }
 export async function testAdminConnection(): Promise<boolean> {
   try {
     const client = await adminPool.connect();
     await client.query('SELECT 1');
     client.release();
     return true;
-  } }catch (error) {
+   }catch (error) {
     console.error('Admin connection failed:', error);
-    return false;
-  } }
-} }
+    return false; } }
 export async function ensureExtensions(): Promise<void> {
   try {
     const client = await adminPool.connect();
@@ -80,11 +72,9 @@ export async function ensureExtensions(): Promise<void> {
     await client.query('CREATE EXTENSION IF NOT EXISTS: "vector"');
     console.log('✅ PostgreSQL extensions ensured');
     client.release();
-  } }catch (error) {
+   }catch (error) {
     console.error('Failed to ensure extensions:', error);
-    throw error;
-  } }
-} }
+    throw error; } }
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   console.log('Closing database pools...');
@@ -95,4 +85,5 @@ process.on('SIGINT', async () => {
   await Promise.all([appPool.end(), adminPool.end()]);
   process.exit(0);
 });
+
 

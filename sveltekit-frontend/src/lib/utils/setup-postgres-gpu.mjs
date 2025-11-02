@@ -16,9 +16,7 @@ console.log('🚀 Database Setup Starting...\n');
 
 async function setupDatabase() {
   const sql = postgres(DATABASE_URL, {
-    max: 1,
-    ssl: false,
-  });
+    max: 1, ssl: false});
 
   const db = drizzle(sql);
 
@@ -35,14 +33,7 @@ async function setupDatabase() {
     // Legal cases table
     await sql`
             CREATE TABLE IF NOT EXISTS legal_cases (
-                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                case_number VARCHAR(255) UNIQUE NOT NULL,
-                title VARCHAR(500) NOT NULL,
-                status VARCHAR(100) DEFAULT 'active',
-                prosecutor VARCHAR(255),
-                defendant VARCHAR(255),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, case_number VARCHAR(255) UNIQUE NOT NULL, title VARCHAR(500) NOT NULL, status VARCHAR(100) DEFAULT 'active', prosecutor VARCHAR(255), defendant VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
     console.log('   ✓ legal_cases table');
@@ -50,15 +41,7 @@ async function setupDatabase() {
     // Legal documents with 768-dim embeddings for GPU
     await sql`
             CREATE TABLE IF NOT EXISTS legal_documents (
-                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                title VARCHAR(500) NOT NULL,
-                content TEXT,
-                case_id VARCHAR(255),
-                embedding vector(768),
-                metadata JSONB DEFAULT '{}',
-                processing_method VARCHAR(50) DEFAULT 'gpu',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, title VARCHAR(500) NOT NULL, content TEXT, case_id VARCHAR(255), embedding vector(768), metadata JSONB DEFAULT '{}', processing_method VARCHAR(50) DEFAULT 'gpu', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
     console.log('   ✓ legal_documents table (768-dim embeddings)');
@@ -66,13 +49,7 @@ async function setupDatabase() {
     // Evidence table
     await sql`
             CREATE TABLE IF NOT EXISTS evidence (
-                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                case_id VARCHAR(255),
-                evidence_type VARCHAR(100),
-                description TEXT,
-                file_path VARCHAR(1000),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, case_id VARCHAR(255), evidence_type VARCHAR(100), description TEXT, file_path VARCHAR(1000), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
     console.log('   ✓ evidence table');
@@ -80,15 +57,7 @@ async function setupDatabase() {
     // Indexed files for GPU processing
     await sql`
             CREATE TABLE IF NOT EXISTS indexed_files (
-                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                file_path VARCHAR(1000) NOT NULL UNIQUE,
-                content TEXT,
-                embedding vector(768),
-                summary TEXT,
-                indexed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                processing_method VARCHAR(50) DEFAULT 'gpu',
-                gpu_processing_time_ms INTEGER,
-                metadata JSONB DEFAULT '{}'
+                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, file_path VARCHAR(1000) NOT NULL UNIQUE, content TEXT, embedding vector(768), summary TEXT, indexed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, processing_method VARCHAR(50) DEFAULT 'gpu', gpu_processing_time_ms INTEGER, metadata JSONB DEFAULT '{}'
             )
         `;
     console.log('   ✓ indexed_files table');
@@ -96,15 +65,7 @@ async function setupDatabase() {
     // User activities for recommendations
     await sql`
             CREATE TABLE IF NOT EXISTS user_activities (
-                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                user_id VARCHAR(255) NOT NULL,
-                session_id VARCHAR(255),
-                action VARCHAR(100) NOT NULL,
-                query TEXT,
-                results JSONB,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                feedback VARCHAR(50),
-                processing_time_ms INTEGER
+                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, user_id VARCHAR(255) NOT NULL, session_id VARCHAR(255), action VARCHAR(100) NOT NULL, query TEXT, results JSONB, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, feedback VARCHAR(50), processing_time_ms INTEGER
             )
         `;
     console.log('   ✓ user_activities table');
@@ -112,17 +73,7 @@ async function setupDatabase() {
     // Processing jobs for BullMQ
     await sql`
             CREATE TABLE IF NOT EXISTS processing_jobs (
-                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                job_id VARCHAR(255) UNIQUE NOT NULL,
-                job_type VARCHAR(100) NOT NULL,
-                status VARCHAR(50) DEFAULT 'pending',
-                payload JSONB,
-                result JSONB,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                started_at TIMESTAMP,
-                completed_at TIMESTAMP,
-                error_message TEXT,
-                retry_count INTEGER DEFAULT 0
+                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, job_id VARCHAR(255) UNIQUE NOT NULL, job_type VARCHAR(100) NOT NULL, status VARCHAR(50) DEFAULT 'pending', payload JSONB, result JSONB, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, started_at TIMESTAMP, completed_at TIMESTAMP, error_message TEXT, retry_count INTEGER DEFAULT 0
             )
         `;
     console.log('   ✓ processing_jobs table');
@@ -130,12 +81,7 @@ async function setupDatabase() {
     // Recommendation models
     await sql`
             CREATE TABLE IF NOT EXISTS recommendation_models (
-                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-                user_id VARCHAR(255) NOT NULL,
-                model_data BYTEA,
-                training_iterations INTEGER DEFAULT 0,
-                last_trained TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                performance_metrics JSONB DEFAULT '{}'
+                id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, user_id VARCHAR(255) NOT NULL, model_data BYTEA, training_iterations INTEGER DEFAULT 0, last_trained TIMESTAMP DEFAULT CURRENT_TIMESTAMP, performance_metrics JSONB DEFAULT '{}'
             )
         `;
     console.log('   ✓ recommendation_models table\n');
@@ -165,9 +111,7 @@ async function setupDatabase() {
       await sql`
                 INSERT INTO legal_cases (case_number, title, prosecutor, defendant, status)
                 VALUES
-                    ('CASE-2024-001', 'Contract Dispute - TechCorp vs StartupXYZ', 'Wilson & Associates', 'TechCorp Inc', 'active'),
-                    ('CASE-2024-002', 'Employment Law - Remote Work Policy', 'Labor Board', 'StartupXYZ', 'review'),
-                    ('CASE-2024-003', 'Intellectual Property - Software Patent', 'Patent Office', 'InnovateLabs', 'pending')
+                    ('CASE-2024-001', 'Contract Dispute - TechCorp vs StartupXYZ', 'Wilson & Associates', 'TechCorp Inc', 'active'), ('CASE-2024-002', 'Employment Law - Remote Work Policy', 'Labor Board', 'StartupXYZ', 'review'), ('CASE-2024-003', 'Intellectual Property - Software Patent', 'Patent Office', 'InnovateLabs', 'pending')
                 ON CONFLICT (case_number) DO NOTHING
             `;
 
@@ -179,9 +123,7 @@ async function setupDatabase() {
       await sql`
                 INSERT INTO legal_documents (title, content, case_id, embedding)
                 VALUES
-                    ('Software License Agreement', 'This agreement governs the use of proprietary software...', 'CASE-2024-001', ${embedding}::vector),
-                    ('Employee Handbook 2024', 'Comprehensive policies for remote work and employment...', 'CASE-2024-002', ${embedding}::vector),
-                    ('Patent Application #12345', 'Novel method for distributed computing optimization...', 'CASE-2024-003', ${embedding}::vector)
+                    ('Software License Agreement', 'This agreement governs the use of proprietary software...', 'CASE-2024-001', ${embedding}::vector), ('Employee Handbook 2024', 'Comprehensive policies for remote work and employment...', 'CASE-2024-002', ${embedding}::vector), ('Patent Application #12345', 'Novel method for distributed computing optimization...', 'CASE-2024-003', ${embedding}::vector)
                 ON CONFLICT DO NOTHING
             `;
 

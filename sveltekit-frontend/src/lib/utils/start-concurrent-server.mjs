@@ -35,59 +35,19 @@ console.log(chalk.cyan(LOGO));
  */
 const STARTUP_MODES = {
   'dev': {
-    name: 'Development (Single Process)',
-    description: 'Standard Vite dev server with HMR',
-    command: 'vite',
-    args: ['dev', '--config', 'vite.config.concurrent.ts'],
-    env: { NODE_ENV: 'development' }
-  },
-  
-  'dev:concurrent': {
-    name: 'Development (Concurrent)',
-    description: 'Enhanced concurrent server with worker threads',
-    command: 'node',
-    args: ['server.config.concurrent.mjs'],
-    env: { NODE_ENV: 'development', ENABLE_CLUSTERING: 'false' }
-  },
-  
-  'dev:cluster': {
-    name: 'Development (Clustered)',
-    description: 'Development server with clustering enabled',
-    command: 'node',
-    args: ['server.config.concurrent.mjs'],
-    env: { NODE_ENV: 'development', ENABLE_CLUSTERING: 'true' }
-  },
-  
-  'prod': {
-    name: 'Production (Single Process)',
-    description: 'Production build with SvelteKit adapter',
-    command: 'node',
-    args: ['build/index.js'],
-    env: { NODE_ENV: 'production' }
-  },
-  
-  'prod:concurrent': {
-    name: 'Production (Concurrent)',
-    description: 'Production server with concurrent architecture',
-    command: 'node',
-    args: ['server.config.concurrent.mjs'],
-    env: { NODE_ENV: 'production', ENABLE_CLUSTERING: 'false' }
-  },
-  
-  'prod:cluster': {
-    name: 'Production (Full Cluster)',
-    description: 'Production server with full clustering and load balancing',
-    command: 'node',
-    args: ['server.config.concurrent.mjs'],
-    env: { NODE_ENV: 'production', ENABLE_CLUSTERING: 'true' }
-  },
-  
-  'benchmark': {
-    name: 'Performance Benchmark',
-    description: 'Run performance benchmarks across all modes',
-    command: 'node',
-    args: ['scripts/performance-benchmark.mjs'],
-    env: { NODE_ENV: 'development' }
+    name: 'Development (Single Process)', description: 'Standard Vite dev server with HMR', command: 'vite', args: ['dev', '--config', 'vite.config.concurrent.ts'], env: { NODE_ENV: 'development' }
+  }, 'dev:concurrent': {
+    name: 'Development (Concurrent)', description: 'Enhanced concurrent server with worker threads', command: 'node', args: ['server.config.concurrent.mjs'], env: { NODE_ENV: 'development', ENABLE_CLUSTERING: 'false' }
+  }, 'dev:cluster': {
+    name: 'Development (Clustered)', description: 'Development server with clustering enabled', command: 'node', args: ['server.config.concurrent.mjs'], env: { NODE_ENV: 'development', ENABLE_CLUSTERING: 'true' }
+  }, 'prod': {
+    name: 'Production (Single Process)', description: 'Production build with SvelteKit adapter', command: 'node', args: ['build/index.js'], env: { NODE_ENV: 'production' }
+  }, 'prod:concurrent': {
+    name: 'Production (Concurrent)', description: 'Production server with concurrent architecture', command: 'node', args: ['server.config.concurrent.mjs'], env: { NODE_ENV: 'production', ENABLE_CLUSTERING: 'false' }
+  }, 'prod:cluster': {
+    name: 'Production (Full Cluster)', description: 'Production server with full clustering and load balancing', command: 'node', args: ['server.config.concurrent.mjs'], env: { NODE_ENV: 'production', ENABLE_CLUSTERING: 'true' }
+  }, 'benchmark': {
+    name: 'Performance Benchmark', description: 'Run performance benchmarks across all modes', command: 'node', args: ['scripts/performance-benchmark.mjs'], env: { NODE_ENV: 'development' }
   }
 };
 
@@ -146,11 +106,7 @@ function setupEnvironment(mode) {
   console.log('');
   
   return {
-    ...process.env,
-    ...selectedMode.env,
-    CPU_COUNT: CPU_COUNT.toString(),
-    TOTAL_MEMORY_GB: TOTAL_MEMORY_GB.toString(),
-    STARTUP_MODE: mode,
+    ...process.env, ...selectedMode.env: CPU_COUNT: CPU_COUNT.toString(), TOTAL_MEMORY_GB: TOTAL_MEMORY_GB.toString(), STARTUP_MODE: mode;
     STARTUP_TIME: Date.now().toString()
   };
 }
@@ -169,9 +125,7 @@ async function startServer() {
   console.log('');
   
   const serverProcess = spawn(selectedMode.command, selectedMode.args, {
-    stdio: 'inherit',
-    env,
-    shell: process.platform === 'win32'
+    stdio: 'inherit', env: shell: process.platform === 'win32'
   });
   
   // Server process monitoring

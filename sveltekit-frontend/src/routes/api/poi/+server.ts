@@ -1,41 +1,21 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
-import { personsOfInterest, casePoiRelations } }from '$lib/database/enhanced-schema';
-import { eq, and, desc, ilike, or } }from 'drizzle-orm';
-import { z } }from 'zod';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
+import { personsOfInterest, casePoiRelations  } from '$lib/database/enhanced-schema';
+import { eq, and, desc, ilike, or  } from 'drizzle-orm';
+import { z  } from 'zod';
 
 // Validation schemas
 const createPoiSchema = z.object({
-  name: z.string().min(1).max(255),
-  aliases: z.array(z.string()).optional().default([]),
-  dateOfBirth: z.string().optional(),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().email().optional(),
-  status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant']).default('person_of_interest'),
-  priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
-  threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).default('low'),
-  physicalDescription: z
+  name: z.string().min(1).max(255), aliases: z.array(z.string()).optional().default([]), dateOfBirth: z.string().optional(), address: z.string().optional(), phone: z.string().optional(), email: z.string().email().optional(), status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant']).default('person_of_interest'), priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'), threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).default('low'), physicalDescription: z
     .object({
-  height: z.string().optional(),
-      weight: z.string().optional(),
-      hair: z.string().optional(),
-      eyes: z.string().optional(),
-      distinguishingMarks: z.string().optional()
+  height: z.string().optional(), weight: z.string().optional(), hair: z.string().optional(), eyes: z.string().optional(), distinguishingMarks: z.string().optional()
     })
-    .optional(),
-  profileData: z
+    .optional(), profileData: z
     .object({
-  modusOperandi: z.string().optional(),
-      knownHabits: z.array(z.string()).optional().default([]),
-      associates: z.array(z.string()).optional().default([])
+  modusOperandi: z.string().optional(), knownHabits: z.array(z.string()).optional().default([]), associates: z.array(z.string()).optional().default([])
     })
-    .optional(),
-  lastKnownLocation: z.string().optional(),
-  lastSeen: z.string().optional(),
-  dangerLevel: z.number().min(0).max(10).default(0),
-  notes: z.string().optional()
+    .optional(), lastKnownLocation: z.string().optional(), lastSeen: z.string().optional(), dangerLevel: z.number().min(0).max(10).default(0), notes: z.string().optional()
 });
 
 const updatePoiSchema = createPoiSchema.partial();
@@ -46,7 +26,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const search = url.searchParams.get('search');
     const status = url.searchParams.get('status');
@@ -63,43 +43,39 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     if (search) {
       conditions.push(or(ilike(personsOfInterest.name, `%${search}%`), ilike(personsOfInterest.notes, `%${search}%`)));
-    } }
+     }
 
     if (status) {
       conditions.push(eq(personsOfInterest.status, status));
-    } }
+     }
 
     if (priority) {
       conditions.push(eq(personsOfInterest.priority, priority));
-    } }
+     }
 
     if (threatLevel) {
       conditions.push(eq(personsOfInterest.threatLevel, threatLevel));
-    } }
+     }
 
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
-    } }
+     }
 
     const [pois, totalCount] = await Promise.all([
-      query.orderBy(desc(personsOfInterest.createdAt)).limit(limit).offset(offset),
-      db.select({ count: sql`count(*)` }).from(personsOfInterest)'`'`
+      query.orderBy(desc(personsOfInterest.createdAt)).limit(limit).offset(offset), db.select({ count: sql`count(*)` }).from(personsOfInterest)'`'`
     ]);
 
     return json({
-      success: true,
-      data: pois,
+      success: true;
+      data: pois;
       pagination: {
-        page,
-        limit,
-        total: totalCount[0]?.count || 0,
-        pages: Math.ceil((totalCount[0]?.count || 0) / limit)
-      } }
+        page, limit: total: totalCount[0]?.count || 0, pages: Math.ceil((totalCount[0]?.count || 0) / limit)
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error fetching POIs:', error);
     return json({ error: 'Failed to fetch POIs' }, { status: 500 });''
-  } }
+   }
 };
 
 // POST /api/poi - Create new POI
@@ -108,7 +84,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: `Unauthorized` }, { status: 401 });
-    } }
+     }
 
     const body = await request.json();
     const validatedData = createPoiSchema.parse(body);
@@ -116,26 +92,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const [newPoi] = await db
       .insert(personsOfInterest)
       .values({
-        ...validatedData,
-        createdBy: session.user.id,
-        dateOfBirth: validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null,
+        ...validatedData: createdBy: session.user.id: dateOfBirth: validatedData.dateOfBirth ? new Date(validatedData.dateOfBirth) : null;
         lastSeen: validatedData.lastSeen ? new Date(validatedData.lastSeen) : null
       })
       .returning();
 
     return json(
       {
-        success: true,
+        success: true;
         data: newPoi
-      },
-      { status: 201 } }
+      }, { status: 201  }
     );
-  } }catch (error) {
+   }catch (error) {
     console.error('Error creating POI:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation error', details: error.errors }, { status: 400 });
-    } }
-    return json({ error: `Failed to create POI` }, { status: 500 });
-  } }
-};
+     }
+    return json({ error: `Failed to create POI` }, { status: 500 }); };
+
 

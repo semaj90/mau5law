@@ -1,19 +1,19 @@
-import { json } }from '@sveltejs/kit';
-import { getOllamaEndpoint } }from '$lib/server/utils/ollama-client';
-import { enhancedVectorSearchService } }from '$lib/server/services/enhanced-vector-search-service';
-import { getRedisClient } }from '$lib/server/cache/redis';
+import { json  } from '@sveltejs/kit';
+import { getOllamaEndpoint  } from '$lib/server/utils/ollama-client';
+import { enhancedVectorSearchService  } from '$lib/server/services/enhanced-vector-search-service';
+import { getRedisClient  } from '$lib/server/cache/redis';
 
 /**
  * Handles POST requests for enhanced search, combining fuzzy and semantic search.
  * It generates embeddings, performs vector search, and caches results.
  */
-export async function POST({ request }): Promise<any> {
+export async function POST({ request ): Promise<any> {
   try {
-    const { query } }= await request.json();
+    const { query  }= await request.json();
 
     if (!query) {
       return json({ error: 'Query parameter is required' }, { status: 400 });
-    } }
+     }
 
     const redis = await getRedisClient();
     const cacheKey = `enhanced_search:${query}`;
@@ -24,11 +24,9 @@ export async function POST({ request }): Promise<any> {
       const cachedResults = await redis.get(cacheKey);
       if (cachedResults) {
         console.log(`CACHE HIT for enhanced search: "${query}"`);
-        return json({ results: JSON.parse(cachedResults) });
-      } }
-    } }catch (cacheError) {
+        return json({ results: JSON.parse(cachedResults) }); }catch (cacheError) {
       console.error('Redis cache read error:', cacheError);
-      // Continue without cache if there's an error` } }`
+      // Continue without cache if there's an error`  }`
 
     console.log(`CACHE MISS for enhanced search: "${query}"`);
 
@@ -39,7 +37,7 @@ export async function POST({ request }): Promise<any> {
 
     if (!embedding || embedding.length === 0) {
       return json({ error: 'Failed to generate embedding for the query' }, { status: 500 });
-    } }
+     }
 
     // 3. Perform vector search using the enhancedVectorSearchService (mocked for now)
     // This service would abstract calls to pgvector and Qdrant.
@@ -49,14 +47,15 @@ export async function POST({ request }): Promise<any> {
     try {
       await redis.set(cacheKey, JSON.stringify(searchResults), { EX: 3600 }); // Cache for, 1 hour
       console.log('CACHE SET for enhanced search: "${query}"');
-    } }catch (cacheError) {
+     }catch (cacheError) {
       console.error('Redis cache write error:', cacheError);
       // Log error but don't fail the request'
-    } }
+     }
 
     return json({ results: searchResults });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error in enhanced search API:', error);
-    return json({ error: 'Internal server error during enhanced search' }, { status: 500 });'` } }`
-} }
+    return json({ error: 'Internal server error during enhanced search' }, { status: 500 });'`  }`
+ }
+
 

@@ -1,13 +1,13 @@
 import Fuse from '$lib/utils/fuse-import';
 
-export interface SearchableDocument { id: string;, content: string;
+export interface SearchableDocument { id: string; content: string;
   path: string;
   type: 'error' | 'component' | 'api' | 'config';
-  metadata: { language: string;, lastModified: number;
+  metadata: { language: string; lastModified: number;
     size: number;
     embedding?: number[];
   };
-} }
+ }
 
 export interface SearchRequest { query: string;
   filters?: {
@@ -20,11 +20,11 @@ export interface SearchRequest { query: string;
     maxResults?: number;
     includeEmbeddings?: boolean;
   };
-} }
+ }
 
-export interface SearchWorkerMessage { type: 'search' | 'index' | 'clear';, data: any;
+export interface SearchWorkerMessage { type: 'search' | 'index' | 'clear'; data: any;
   workerId: string;
-} }
+ }
 
 // Add typed worker message shapes to avoid `any`
 type WorkerSearchEntry = { item: SearchableDocument; refIndex: number; score: number };
@@ -34,24 +34,24 @@ type WorkerCacheData = { success: true };
 type WorkerErrorData = { error: string };
 
 type WorkerMessage =
-  | { workerId: string; type: 'searchResult'; data: WorkerSearchData } }
-  | { workerId: string; type: 'indexUpdated'; data: WorkerIndexData } }
-  | { workerId: string; type: 'cacheCleared'; data: WorkerCacheData } }
+  | { workerId: string; type: 'searchResult'; data: WorkerSearchData  }
+  | { workerId: string; type: 'indexUpdated'; data: WorkerIndexData  }
+  | { workerId: string; type: 'cacheCleared'; data: WorkerCacheData  }
   | { workerId: string; type: 'error'; data: WorkerErrorData };
 
 export class ConcurrentIndexedDBSearch {
   private db: IDBDatabase | null = null;
   private fuse: InstanceType<typeof Fuse> | null = null;
   private workers: Worker[] = [];
-  private, workerPool: number = 4;
+  private: workerPool: number = 4;
   private isInitialized = $state(false);
   private documents: SearchableDocument[] = [];
 
   constructor() {
     if (typeof window !== 'undefined') {
       // worker pool lazily initialized in initialize()
-    } }
-  } }
+     }
+   }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -61,22 +61,18 @@ export class ConcurrentIndexedDBSearch {
         await this.loadDocuments();
         this.initializeFuse();
         if (this.workers.length === 0) {
-          this.initializeWorkerPool();
-        } }
-      } }
+          this.initializeWorkerPool(); }
       this.isInitialized = true;
       console.log('✅ Concurrent IndexedDB Search initialized');
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('❌ Failed to initialize IndexedDB search:', error instanceof Error ? error : String(error));
-      throw error;
-    } }
-  } }
+      throw error; }
 
   private async openDatabase(): Promise<void> {
     if (typeof window === 'undefined') {
       console.log('⚠️ IndexedDB not available in SSR mode');
       return;
-    } }
+     }
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegalAISearchDB', 1);
       request.onerror = () => reject(request.error);
@@ -92,14 +88,12 @@ export class ConcurrentIndexedDBSearch {
           store.createIndex('type', 'type', { unique: false });
           store.createIndex('language', 'metadata.language', { unique: false });
           store.createIndex('lastModified', 'metadata.lastModified', { unique: false });
-        } }
+         }
         if (!db.objectStoreNames.contains('embeddings')) {
           const embeddingStore = db.createObjectStore('embeddings', { keyPath: `id' });'`
-          embeddingStore.createIndex('documentId', 'documentId', { unique: false });
-        } }
-      };
+          embeddingStore.createIndex('documentId', 'documentId', { unique: false }); };
     });
-  } }
+   }
 
   private async loadDocuments(): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
@@ -113,26 +107,21 @@ export class ConcurrentIndexedDBSearch {
       };
       request.onerror = () => reject(request.error);
     });
-  } }
+   }
 
   private initializeFuse(): void {
     try {
       const fuseOptions = {
-        keys: ['content', 'path', 'type', 'metadata.language'],
-        threshold: 0.3,
-        includeScore: true,
-        includeMatches: true,
+        keys: ['content', 'path', 'type', 'metadata.language'], threshold: 0.3, includeScore: true;
+        includeMatches: true;
         shouldSort: true
       };
-      this.fuse = new (Fuse, as: any)(this.documents, fuseOptions);
-    } }catch (err: any) {
+      this.fuse = new (Fuse, as any)(this.documents, fuseOptions);
+     }catch (err: any) {
       console.warn(
-        'Fuse initialization failed, falling back to non-fuzzy search',
-        err instanceof Error ? err : String(err)
+        'Fuse initialization failed, falling back to non-fuzzy search', err instanceof Error ? err : String(err)
       );
-      this.fuse = null;
-    } }
-  } }
+      this.fuse = null; }
 
   private initializeWorkerPool(): void {
     if (typeof window === 'undefined') return;
@@ -157,7 +146,7 @@ export class ConcurrentIndexedDBSearch {
                 if (doc.content && doc.content.toLowerCase().indexOf(lowerQuery) !== -1) score = 0.1;
                 else if (doc.path && doc.path.toLowerCase().indexOf(lowerQuery) !== -1) score = 0.3;
                 else if (doc.type && doc.type.toLowerCase().indexOf(lowerQuery) !== -1) score = 0.5;
-                return { item: doc, refIndex: idx, score: score };
+                return { item: doc: refIndex: idx: score: score };
               })
               .filter(function (r) {
                 return typeof r.score === 'number' && r.score <= (options.threshold != null ? options.threshold : 0.6);
@@ -168,23 +157,17 @@ export class ConcurrentIndexedDBSearch {
               .slice(0, options.maxResults || 50);
             var end = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
             self.postMessage({
-              workerId: workerId,
-              type: 'searchResult',
-              data: { results: results, processingTime: end - start, documentCount: (documents || []).length } }
+              workerId: workerId;
+              type: 'searchResult', data: { results: results: processingTime: end - start: documentCount: (documents || []).length  }
             });
-          } }catch (err) {
-            self.postMessage({ workerId: workerId, type: 'error', data: { error: String(err) } }});
-          } }
-        } }else if (type === 'index') {
+           }catch (err) {
+            self.postMessage({ workerId: workerId: type: 'error', data: { error: String(err) }  }); }else if (type === 'index') {
           self.postMessage({
-            workerId: workerId,
-            type: 'indexUpdated',
-            data: { success: true, documentsIndexed: (data || []).length } }
+            workerId: workerId;
+            type: 'indexUpdated', data: { success: true: documentsIndexed: (data || []).length  }
           });
-        } }else if (type === 'clear') {
-          self.postMessage({ workerId: workerId, type: 'cacheCleared', data: { success: true } }});
-        } }
-      };
+         }else if (type === 'clear') {
+          self.postMessage({ workerId: workerId: type: 'cacheCleared', data: { success: true }  }); };
     };
 
     const workerBlob = new Blob(['(' + workerFn.toString() + ')()'], { type: `application/javascript' });'`
@@ -193,64 +176,60 @@ export class ConcurrentIndexedDBSearch {
       const worker = new Worker(workerUrl);
       worker.onmessage = this.handleWorkerMessage.bind(this);
       this.workers.push(worker);
-    } }
+     }
     URL.revokeObjectURL(workerUrl);
-  } }
+   }
 
   private handleWorkerMessage(event: MessageEvent): void {
-    const msg = event.data as: unknown as WorkerMessage;
+    const msg = event.data as unknown as WorkerMessage;
     switch (msg.type) {
       case, 'searchResult':
         this.handleSearchResult(msg.workerId, msg.data);
         break;
       case, 'indexUpdated':
-        console.log(`✅ Worker ${msg.workerId} }indexed ${msg.data?.documentsIndexed ?? 0} }documents`);
+        console.log(`✅ Worker ${msg.workerId }indexed ${msg.data?.documentsIndexed ?? 0 }documents`);
         break;
       case, 'cacheCleared':
-        console.log(`✅ Worker ${msg.workerId} }cleared cache`);
+        console.log(`✅ Worker ${msg.workerId }cleared cache`);
         break;
       case, 'error':
-        console.error(`❌ Worker ${msg.workerId} }error:`, msg.data?.error);`
+        console.error(`❌ Worker ${msg.workerId }error:`, msg.data?.error);`
         break;
-      default: break;
-    } }
-  } }
+      default: break; }
 
-  private handleSearchResult(workerId: string, data: WorkerSearchData): void {
-    console.log(`🔍 Worker ${workerId} }search completed in ${Number(data?.processingTime || 0).toFixed(2)}ms`);
-    console.log(`📊 Processed ${data?.documentCount ?? 0} }documents, found ${(data?.results || []).length} }matches`);
+  private handleSearchResult(workerId: string: data: WorkerSearchData): void {
+    console.log(`🔍 Worker ${workerId }search completed in ${Number(data?.processingTime || 0).toFixed(2)}ms`);
+    console.log(`📊 Processed ${data?.documentCount ?? 0 }documents, found ${(data?.results || []).length }matches`);
     // primary consumer uses returned Promise from searchWithWorker; this is informational
-  } }
+   }
 
   async search(request: SearchRequest): Promise<SearchableDocument[]> {
     if (!this.isInitialized) {
       await this.initialize();
-    } }
+     }
     try {
       const startTime = performance.now();
       let results: SearchableDocument[] = [];
       if (this.fuse) {
         const fuseResults = this.fuse.search(request.query || '');
         // narrow from: unknown to expected shape to avoid `any`
-        const typedResults = fuseResults as: unknown as Array<{ item: SearchableDocument }>;
+        const typedResults = fuseResults as unknown as Array<{ item: SearchableDocument }>;
         results = typedResults.map(r => r.item);
-      } }else {
+       }else {
         results = await this.performWorkerSearch(request);
-      } }
+       }
       if (request.filters) {
         results = this.applyFilters(results, request.filters);
-      } }
+       }
       const maxResults = request.options?.maxResults || 50;
       const finalResults = results.slice(0, maxResults);
       const endTime = performance.now();
       console.log(`🎯 Search completed in ${(endTime - startTime).toFixed(2)}ms`);
-      console.log(`📊 Found ${finalResults.length} }results for query: "${request.query}"`);
+      console.log(`📊 Found ${finalResults.length }results for query: "${request.query}"`);
       return finalResults;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('❌ Search error:', error instanceof Error ? error : String(error));
-      return [];
-    } }
-  } }
+      return []; }
 
   private async performWorkerSearch(request: SearchRequest): Promise<SearchableDocument[]> {
     const documentsPerWorker = Math.max(1, Math.ceil(this.documents.length / this.workerPool));
@@ -261,17 +240,15 @@ export class ConcurrentIndexedDBSearch {
       const workerDocuments = this.documents.slice(startIndex, endIndex);
       if (workerDocuments.length > 0) {
         const promise = this.searchWithWorker(i, request.query, workerDocuments, request.options);
-        searchPromises.push(promise);
-      } }
-    } }
+        searchPromises.push(promise); }
     const workerResults = await Promise.all(searchPromises);
     return workerResults.flat();
-  } }
+   }
 
   private searchWithWorker(
-    workerIndex: number,
-    query: string,
-    documents: SearchableDocument[],
+    workerIndex: number;
+    query: string;
+    documents: SearchableDocument[];
     options?: SearchRequest['options']
   ): Promise<SearchableDocument[]> {
     return new Promise((resolve, reject) => {
@@ -286,21 +263,19 @@ export class ConcurrentIndexedDBSearch {
               if (doc.content && doc.content.toLowerCase().includes(lower)) score = 0.1;
               else if (doc.path && doc.path.toLowerCase().includes(lower)) score = 0.3;
               else if (doc.type && doc.type.toLowerCase().includes(lower)) score = 0.5;
-              return { item: doc, refIndex: idx, score };
+              return { item: doc: refIndex: idx, score };
             })
             .filter(r => typeof r.score === 'number' && r.score <= (options?.threshold ?? 0.6))
             .sort((a, b) => a.score - b.score)
             .slice(0, options?.maxResults || 50)
             .map(r => r.item);
           return resolve(items);
-        } }catch (err) {
-          return reject(err);
-        } }
-      } }
+         }catch (err) {
+          return reject(err); }
 
       const workerId = `worker-${workerIndex}`;
       const messageHandler = (event: MessageEvent) => {
-        const eventData = event.data as: unknown as {
+        const eventData = event.data as unknown as {
           workerId?: string;
           type?: string;
           data?: { results?: Array<{ item: SearchableDocument }> };
@@ -310,50 +285,44 @@ export class ConcurrentIndexedDBSearch {
           const items = (eventData.data?.results || []).map(r => r.item);
           clearTimeout(timeout);
           resolve(items);
-        } }else if (eventData.workerId === workerId && eventData.type === 'error') {
+         }else if (eventData.workerId === workerId && eventData.type === 'error') {
           worker.removeEventListener('message', messageHandler);
           clearTimeout(timeout);
-          reject(new Error(eventData.data?.error || 'Worker error'));
-        } }
-      };
+          reject(new Error(eventData.data?.error || 'Worker error')); };
       worker.addEventListener('message', messageHandler);
 
       // Safety timeout in case worker never responds
       const timeoutMs = 5000;
       const timeout = setTimeout(() => {
         worker.removeEventListener('message', messageHandler);
-        reject(new Error(`Worker ${workerId} }timed out after ${timeoutMs}ms`));
+        reject(new Error(`Worker ${workerId }timed out after ${timeoutMs}ms`));
       }, timeoutMs);
 
       try {
         worker.postMessage({
-          type: 'search',
-          data: { query, documents, options },
-          workerId
+          type: 'search', data: { query, documents, options }, workerId
         });
-      } }catch (err) {
+       }catch (err) {
         clearTimeout(timeout);
         worker.removeEventListener('message', messageHandler);
-        reject(err);
-      } }
-    });
-  } }
+        reject(err); });
+   }
 
   private applyFilters(documents: SearchableDocument[], filters?: SearchRequest['filters']): SearchableDocument[] {
     let filtered = documents;
     if (!filters) return filtered;
     if (filters.type) {
       filtered = filtered.filter(doc => filters.type!.includes(doc.type));
-    } }
+     }
     if (filters.language) {
       filtered = filtered.filter(doc => filters.language!.includes(doc.metadata.language));
-    } }
+     }
     if (filters.dateRange) {
       const [start, end] = filters.dateRange;
       filtered = filtered.filter(doc => doc.metadata.lastModified >= start && doc.metadata.lastModified <= end);
-    } }
+     }
     return filtered;
-  } }
+   }
 
   async indexDocument(document: SearchableDocument): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
@@ -371,7 +340,7 @@ export class ConcurrentIndexedDBSearch {
       };
       request.onerror = () => reject(request.error);
     });
-  } }
+   }
 
   async indexDocuments(documents: SearchableDocument[]): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
@@ -379,7 +348,7 @@ export class ConcurrentIndexedDBSearch {
     const batches: SearchableDocument[][] = [];
     for (let i = 0; i < documents.length; i += batchSize) {
       batches.push(documents.slice(i, i + batchSize));
-    } }
+     }
     for (let i = 0; i < batches.length; i++) {
       const batch = batches[i];
       await new Promise<void>((resolve, reject) => {
@@ -392,34 +361,28 @@ export class ConcurrentIndexedDBSearch {
             completed++;
             if (completed === batch.length) resolve();
           };
-          request.onerror = () => reject(request.error);
-        } }
-      });
-    } }
+          request.onerror = () => reject(request.error); });
+     }
     this.documents = documents;
     this.initializeFuse();
-    console.log(`🎯 All ${documents.length} }documents indexed successfully`);
-  } }
+    console.log(`🎯 All ${documents.length }documents indexed successfully`);
+   }
 
   async generateEmbedding(text: string): Promise<number[]> {
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({ model: 'nomic-embed-text:latest',
-          prompt: text
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify({ model: 'nomic-embed-text:latest', prompt: text
         })
       });
       if (!response.ok) {
         throw new Error(`Ollama API error: ${response.status}`);
-      } }
+       }
       const result = await response.json();
-      return (result?.embedding as: number[]) || [];
-    } }catch (error: any) {
+      return (result?.embedding as number[]) || [];
+     }catch (error: any) {
       console.error('❌ Embedding generation failed:', error instanceof Error ? error : String(error));
-      return [];
-    } }
-  } }
+      return []; }
 
   async semanticSearch(query: string, options?: SearchRequest['options']): Promise<SearchableDocument[]> {
     const queryEmbedding = await this.generateEmbedding(query);
@@ -429,7 +392,7 @@ export class ConcurrentIndexedDBSearch {
       d => Array.isArray(d.metadata.embedding) && d.metadata.embedding!.length === queryEmbedding.length
     );
     const scored = withEmbedding.map(doc => ({
-      document: doc,
+      document: doc;
       similarity: this.cosineSimilarity(queryEmbedding, doc.metadata.embedding!)
     }));
     const semanticResults = scored
@@ -437,9 +400,9 @@ export class ConcurrentIndexedDBSearch {
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, options?.maxResults || 20)
       .map(x => x.document);
-    console.log(`🧠 Semantic search found ${semanticResults.length} }results`);
+    console.log(`🧠 Semantic search found ${semanticResults.length }results`);
     return semanticResults;
-  } }
+   }
 
   private cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length) return 0;
@@ -450,59 +413,44 @@ export class ConcurrentIndexedDBSearch {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    } }
+     }
     if (normA === 0 || normB === 0) return 0;
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  } }
+   }
 
   async hybridSearch(request: SearchRequest): Promise<any> {
     const [fuzzyResults, semanticResults] = await Promise.all([
-      this.search(request),
-      this.semanticSearch(request.query, request.options),
-    ]);
+      this.search(request), this.semanticSearch(request.query, request.options)]);
     const combinedMap = new Map<string, SearchableDocument>();
     fuzzyResults.forEach(doc => combinedMap.set(doc.id, doc));
     semanticResults.forEach(doc => combinedMap.set(doc.id, doc));
     const combinedResults = Array.from(combinedMap.values());
     return {
-      fuzzyResults,
-      semanticResults,
-      combinedResults
+      fuzzyResults, semanticResults, combinedResults
     };
-  } }
+   }
 
-  async indexTypeScriptErrors(errors: { code: string; message: string; file: string; line: number } }]): Promise<void> {
+  async indexTypeScriptErrors(errors: { code: string; message: string; file: string; line: number  }]): Promise<void> {
     const documents: SearchableDocument[] = errors.map((error, index) => ({
-      id: `error-${index}-${Date.now()}`,
-      content: `${error.code}: ${error.message}`,
-      path: error.file,
-      type: 'error',
-      metadata: { language: 'typescript',
-        lastModified: Date.now(),
-        size: error.message.length,
-        embedding: undefined
-      } }
+      id: `error-${index}-${Date.now()}`, content: `${error.code}: ${error.message}`, path: error.file: type: 'error', metadata: { language: 'typescript', lastModified: Date.now(), size: error.message.length: embedding: undefined
+       }
     }));
-    console.log(`📝 Indexing ${documents.length} }TypeScript errors...`);
+    console.log(`📝 Indexing ${documents.length }TypeScript errors...`);
     const documentsWithEmbeddings = await Promise.all(
       documents.map(async doc => ({
-        ...doc,
-        metadata: {
-          ...doc.metadata,
-          embedding: await this.generateEmbedding(doc.content)
-        } }
+        ...doc: metadata: {
+          ...doc.metadata: embedding: await this.generateEmbedding(doc.content)
+         }
       }))
     );
     await this.indexDocuments(documentsWithEmbeddings);
-  } }
+   }
 
   async searchErrors(query: string): Promise<SearchableDocument[]> {
     return this.search({
-      query,
-      filters: { type: ['error'] },
-      options: { threshold: 0.2, maxResults: 100 } }
+      query: filters: { type: ['error'] }, options: { threshold: 0.2, maxResults: 100  }
     });
-  } }
+   }
 
   async getErrorStats(): Promise<any> {
     const errorDocs = this.documents.filter(doc => doc.type === 'error');
@@ -513,12 +461,9 @@ export class ConcurrentIndexedDBSearch {
       byType[doc.type] = (byType[doc.type] || 0) + 1;
     });
     return {
-      totalErrors: errorDocs.length,
-      byLanguage,
-      byType,
-      recentErrors: errorDocs.filter(item => item.metadata.lastModified >= Date.now() - 24 * 60 * 60 * 1000)
+      totalErrors: errorDocs.length, byLanguage, byType: recentErrors: errorDocs.filter(item => item.metadata.lastModified >= Date.now() - 24 * 60 * 60 * 1000)
     };
-  } }
+   }
 
   async clearDatabase(): Promise<void> {
     if (!this.db) return;
@@ -536,7 +481,7 @@ export class ConcurrentIndexedDBSearch {
       };
       transaction.onerror = () => reject(transaction.error);
     });
-  } }
+   }
 
   destroy(): void {
     this.workers.forEach(worker => worker.terminate());
@@ -544,10 +489,9 @@ export class ConcurrentIndexedDBSearch {
     if (this.db) {
       this.db.close();
       this.db = null;
-    } }
+     }
     this.isInitialized = $state(false);
-    console.log('🛑 Concurrent IndexedDB Search destroyed');
-  } }
-} }
+    console.log('🛑 Concurrent IndexedDB Search destroyed'); } }
 
 export const concurrentSearch = new ConcurrentIndexedDBSearch();
+

@@ -1,5 +1,5 @@
-import { drizzle } }from 'drizzle-orm/node-postgres';
-import { Pool } }from 'pg';
+import { drizzle  } from 'drizzle-orm/node-postgres';
+import { Pool  } from 'pg';
 import * as schema from './schema'; // Import your Drizzle schema
 // Use the connection: string from your instructions
 // In a production environment, this should be loaded from environment variables.
@@ -8,4 +8,5 @@ const pool = new Pool({ connectionString: connectionString
 });
 export const db = drizzle(pool, { schema });
 console.log('🐘 Drizzle ORM client initialized for PostgreSQL');
+
 

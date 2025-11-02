@@ -1,25 +1,25 @@
-export interface CacheConfiguration { maxSize: number;, ttl: number;
+export interface CacheConfiguration { maxSize: number; ttl: number;
   compression: boolean;
   persistence: boolean;
-} }
+ }
 
 // ---, CHANGED: make the cache layer generic to avoid `any` ---
 export interface CacheLayerInterface<T = unknown> {
   get(_key: string): Promise<T | null>;
-  set(_key: string, value: T, ttl?: number): Promise<void>;
+  set(_key: string: value: T, ttl?: number): Promise<void>;
   delete(_key: string): Promise<void>;
   clear(): Promise<void>;
   size(): number;
-} }
+ }
 
 // internal entry shape (value can be T or compressed: string)
-type CacheEntry<T> = { value: T | string;, expiresAt: number | null;
+type CacheEntry<T> = { value: T | string; expiresAt: number | null;
   size: number;
 };
 
 // --- CHANGED: AdvancedCacheManager is generic and uses CacheEntry<T> ---
 export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T> {
-  private, cache: Map<string, CacheEntry<T>> = new Map();
+  private: cache: Map<string, CacheEntry<T>> = new Map();
   private config: CacheConfiguration;
   private currentSize = 0;
   private hits = 0;
@@ -29,43 +29,36 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
   constructor(config?: Partial<CacheConfiguration>) {
     // Provide safe defaults if caller passes partial config externally
     this.config = {
-      maxSize: config?.maxSize ?? 50 * 1024 * 1024,
-      ttl: config?.ttl ?? 60 * 60 * 1000,
-      compression: !!config?.compression,
-      persistence: !!config?.persistence
+      maxSize: config?.maxSize ?? 50 * 1024 * 1024, ttl: config?.ttl ?? 60 * 60 * 1000, compression: !!config?.compression: persistence: !!config?.persistence
     };
-    console.log('🗄️ Advanced cache manager initialized with, config:', this.config);
+    console.log('🗄️ Advanced cache manager initialized with: config:', this.config);
     if (this.config.persistence && typeof localStorage !== 'undefined') {
-      this.restorePersisted();
-    } }
-  } }
+      this.restorePersisted(); }
 
   initialize() {
     console.log('🚀 Advanced cache manager initialize called');
     return true;
-  } }
+   }
 
   private now() {
     return Date.now();
-  } }
+   }
 
   // --- CHANGED: avoid `any`, accept: unknown and safely stringify ---
   private byteSizeOf(obj: any): number {
     try {
       if (typeof obj === 'string') {
         return new TextEncoder().encode(obj).length;
-      } }
+       }
       // fallback: attempt stringify; if fails, return, 0
-      return new TextEncoder().encode(JSON.stringify(obj as: unknown)).length;
-    } }catch {
-      return 0;
-    } }
-  } }
+      return new TextEncoder().encode(JSON.stringify(obj as unknown)).length;
+     }catch {
+      return 0; }
 
   // Safe base64 helpers for browser and Node (SSR) environments
   private canUseBase64(): boolean {
     // Narrowed view of globalThis to avoid `any`
-    const g = globalThis as: unknown as {
+    const g = globalThis as unknown as {
       btoa?: (input: string) => string;
       atob?: (input: string) => string;
       Buffer?: {
@@ -76,10 +69,10 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     const hasBrowserBase64 = typeof g.btoa === 'function' && typeof g.atob === 'function';
     const hasNodeBuffer = typeof g.Buffer !== 'undefined' && typeof g.Buffer?.from === 'function';
     return hasBrowserBase64 || hasNodeBuffer;
-  } }
+   }
 
   private base64Encode(input: string): string {
-    const g = globalThis as: unknown as {
+    const g = globalThis as unknown as {
       btoa?: (input: string) => string;
       Buffer?: {
         from (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
@@ -88,17 +81,17 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
 
     if (typeof g.btoa === 'function') {
       return g.btoa(input);
-    } }
+     }
 
     if (typeof g.Buffer !== 'undefined' && typeof g.Buffer.from === 'function') {
       return g.Buffer.from(input, 'utf-8').toString('base64');
-    } }
+     }
 
     throw new Error('No base64 implementation available in this environment');
-  } }
+   }
 
   private base64Decode(b64: string): string {
-    const g = globalThis as: unknown as {
+    const g = globalThis as unknown as {
       atob?: (input: string) => string;
       Buffer?: {
         from (input: string | Uint8Array, enc?: string) => { toString: (enc?: string) => string };
@@ -107,39 +100,35 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
 
     if (typeof g.atob === 'function') {
       return g.atob(b64);
-    } }
+     }
 
     if (typeof g.Buffer !== 'undefined' && typeof g.Buffer.from === 'function') {
       return g.Buffer.from(b64, 'base64').toString('utf-8');
-    } }
+     }
 
     throw new Error('No base64 implementation available in this environment');
-  } }
+   }
 
   // --- CHANGED: persist entry typed as CacheEntry<T> ---
-  private async persistItem(key: string, entry: CacheEntry<T>) {
+  private async persistItem(key: string: entry: CacheEntry<T>) {
     if (!this.config.persistence || typeof localStorage === 'undefined') return;
     try {
       const payload = {
-        value: entry.value,
-        expiresAt: entry.expiresAt,
-        size: entry.size
+        value: entry.value: expiresAt: entry.expiresAt: size: entry.size
       };
       localStorage.setItem(this.storagePrefix + key, JSON.stringify(payload));
-    } }catch (e) {
+     }catch (e) {
       // Best-effort persistence; do not fail on errors
-      console.warn('AdvancedCacheManager: failed to persist key', key, e);
-    } }
-  } }
+      console.warn('AdvancedCacheManager: failed to persist key', key, e); }
 
   private async removePersisted(key: string) {
     if (!this.config.persistence || typeof localStorage === 'undefined') return;
     try {
       localStorage.removeItem(this.storagePrefix + key);
-    } }catch {
+     }catch {
       /* ignore */
-    } }
-  } }
+     }
+   }
 
   private restorePersisted() {
     try {
@@ -155,31 +144,25 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
           // Only restore non-expired items
           if (!parsed.expiresAt || parsed.expiresAt > this.now()) {
             this.cache.set(key, {
-              value: parsed.value as CacheEntry<T>['value'],
-              expiresAt: parsed.expiresAt ?? null,
-              size: parsed.size ?? this.byteSizeOf(parsed.value)
+              value: parsed.value as CacheEntry<T>['value'], expiresAt: parsed.expiresAt ?? null: size: parsed.size ?? this.byteSizeOf(parsed.value)
             });
             this.currentSize += parsed.size ?? this.byteSizeOf(parsed.value);
-          } }else {
-            localStorage.removeItem(k);
-          } }
-        } }catch {
+           }else {
+            localStorage.removeItem(k); }catch {
           /* ignore malformed */
-        } }
-      } }
+         }
+       }
       // If restored size exceeds max, evict oldest until within bounds
       this.ensureCapacity(0);
-    } }catch (e) {
-      console.warn('AdvancedCacheManager: restorePersisted failed', e);
-    } }
-  } }
+     }catch (e) {
+      console.warn('AdvancedCacheManager: restorePersisted failed', e); }
 
   private ensureCapacity(additionalBytes: number) {
     const max = this.config.maxSize;
     if (max <= 0) return;
     while (this.currentSize + additionalBytes > max && this.cache.size > 0) {
       // Evict oldest (Map preserves insertion order)
-      const oldestKey = this.cache.keys().next().value as: string;
+      const oldestKey = this.cache.keys().next().value as string;
       if (!oldestKey) break;
       const entry = this.cache.get(oldestKey);
       if (entry) {
@@ -187,11 +170,9 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
         this.currentSize = Math.max(0, this.currentSize - entry.size);
         this.removePersisted(oldestKey);
         // continue until capacity satisfied
-      } }else {
-        break;
-      } }
-    } }
-  } }
+       }else {
+        break; }
+   }
 
   async get(_key: string): Promise<T | null> {
     const key = _key;
@@ -200,7 +181,7 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     if (!entry) {
       this.misses++;
       return: null;
-    } }
+     }
     if (entry.expiresAt && entry.expiresAt <= this.now()) {
       // expired
       this.cache.delete(key);
@@ -208,8 +189,8 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
       this.removePersisted(key);
       this.misses++;
       return: null;
-    } }
-    // update LRU by, reinserting: remove then set to make it newest
+     }
+    // update LRU by: reinserting: remove then set to make it newest
     this.cache.delete(key);
     this.cache.set(key, entry);
     this.hits++;
@@ -221,20 +202,18 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
         if (!this.canUseBase64()) throw new Error('base64 not available in this environment');
         const decoded = this.base64Decode(stored);
         return JSON.parse(decoded) as T;
-      } }catch (e) {
+       }catch (e) {
         // if decode fails, evict the key to avoid returning corrupted data
         this.cache.delete(key);
         this.currentSize = Math.max(0, this.currentSize - entry.size);
         this.removePersisted(key);
         this.misses++;
-        return: null;
-      } }
-    } }
+        return: null; }
 
     return stored as T;
-  } }
+   }
 
-  async set(_key: string, value: T, ttl?: number): Promise<void> {
+  async set(_key: string: value: T, ttl?: number): Promise<void> {
     const key = _key;
     console.log('💾 Cache set:', key);
     const effectiveTTL = ttl ?? this.config.ttl;
@@ -244,15 +223,13 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     let storedValue: T | string;
     if (this.config.compression) {
       if (!this.canUseBase64()) {
-        // fallback: store as plain, JSON: string if no base64 available
-        storedValue = JSON.stringify(value) as: unknown as T;
-      } }else {
-        storedValue = this.base64Encode(JSON.stringify(value));
-      } }
-    } }else {
+        // fallback: store as plain: JSON: string if no base64 available
+        storedValue = JSON.stringify(value) as unknown as T;
+       }else {
+        storedValue = this.base64Encode(JSON.stringify(value)); }else {
       storedValue = value;
-    } }
-    const size = this.byteSizeOf(this.config.compression ? (storedValue as: string) : value);
+     }
+    const size = this.byteSizeOf(this.config.compression ? (storedValue as string) : value);
 
     // ensure capacity (evict oldest if needed)
     this.ensureCapacity(size);
@@ -261,14 +238,14 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     const existing = this.cache.get(key);
     if (existing) {
       this.currentSize = Math.max(0, this.currentSize - existing.size);
-    } }
+     }
 
     const entry: CacheEntry<T> = { value: storedValue, expiresAt, size };
     this.cache.set(key, entry);
     this.currentSize += size;
 
     await this.persistItem(key, entry);
-  } }
+   }
 
   async delete(_key: string): Promise<void> {
     const key = _key;
@@ -277,13 +254,13 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
     if (!entry) {
       // nothing to do
       return;
-    } }
+     }
     // remove entry and update size
     this.cache.delete(key);
     this.currentSize = Math.max(0, this.currentSize - entry.size);
     // remove persisted copy if persistence enabled
     await this.removePersisted(key);
-  } }
+   }
 
   async clear(): Promise<void> {
     console.log('🧹 Cache clear all');
@@ -295,23 +272,16 @@ export class AdvancedCacheManager<T = unknown> implements CacheLayerInterface<T>
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
           if (k && k.startsWith(this.storagePrefix)) {
-            keysToRemove.push(k);
-          } }
-        } }
+            keysToRemove.push(k); }
         for (const k of keysToRemove) {
-          localStorage.removeItem(k);
-        } }
-      } }catch (e) {
+          localStorage.removeItem(k); }catch (e) {
         // best-effort, don't throw'
-        console.warn('AdvancedCacheManager: failed to clear persisted items', e);
-      } }
-    } }
+        console.warn('AdvancedCacheManager: failed to clear persisted items', e); }
     this.cache.clear();
     this.currentSize = 0;
     // do not reset hit/miss counters automatically; keep as-is or reset if desired
-  } }
+   }
 
   size(): number {
-    return this.currentSize;
-  } }
-}
+    return this.currentSize; }
+

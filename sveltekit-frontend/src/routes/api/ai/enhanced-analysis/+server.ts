@@ -18,19 +18,17 @@
  * Usage:
  * POST /api/ai/enhanced-analysis
  * {
- *   "documents": [{ "id": "doc1", "content": "legal text...", "type": "contract" } },
- *   "analysisType": "full" | "semantic" | "entities" | "reasoning" | "batch",
- *   "options": { "includeReasoning": true, "enableStreaming": false } }
- * } }
+ *   "documents": [{ "id": "doc1", "content": "legal text...", "type": "contract"  }, *   "analysisType": "full" | "semantic" | "entities" | "reasoning" | "batch", *   "options": { "includeReasoning": true, "enableStreaming": false  }
+ *  }
  *** Usage (unchanged):* POST /api/ai/enhanced-analysis
  */
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { grpcAIOrchestrator } }from '$lib/services/grpc-ai-orchestrator';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { grpcAIOrchestrator  } from '$lib/services/grpc-ai-orchestrator';
 
-interface LegalDocument { id: string;, content: string;
+interface LegalDocument { id: string; content: string;
   type?: string;
-} }
+ }
 
 interface EnhancedAnalysisRequest {
   documents: LegalDocument[];
@@ -38,21 +36,21 @@ interface EnhancedAnalysisRequest {
   options?: {
     useGRPCOptimization?: boolean;
   };
-} }
+ }
 
-interface EnhancedAnalysisResponse { success: boolean;, results: { documentCount: number;, analysisType: string;
+interface EnhancedAnalysisResponse { success: boolean; results: { documentCount: number; analysisType: string;
     processingTime: number;
     performanceGain?: number;
     data: any;
   };
-  metrics: { protocol: string;, totalEntities: number;
+  metrics: { protocol: string; totalEntities: number;
     averageComplexity: number;
     serviceChain: string[];
   };
-  orchestration: { healthy: boolean;, servicesUsed: string[];
+  orchestration: { healthy: boolean; servicesUsed: string[];
     compressionRatio?: number;
   };
-} }
+ }
 
 /**
  * Typed shape for orchestrator metrics used throughout the handler.
@@ -63,18 +61,18 @@ interface OrchestratorMetrics {
   totalOperations?: number;
   averageLatency?: number;
   successRate?: number;
-} }
+ }
 
 /**
  * Small helpers to normalize different orchestrator response shapes.
- * Many implementations return { data, serviceChain, performanceGain } }or the raw data.
+ * Many implementations return { data, serviceChain, performanceGain  }or the raw data.
  */
 const safeGetData = (res: any): any => {
   if (!res) return: null;
   if (typeof res === 'object' && res !== null) {
     const r = res as Record<string, unknown>;
     return r.data ?? r.result ?? r.output ?? r;
-  } }
+   }
   return res;
 };
 
@@ -83,8 +81,8 @@ const safeGetServiceChain = (res: any): string[] => {
   if (typeof res === 'object' && res !== null) {
     const r = res as Record<string, unknown>;
     const sc = r.serviceChain ?? r.servicesUsed ?? r.chain;
-    return Array.isArray(sc) ? (sc as: string[]) : [];
-  } }
+    return Array.isArray(sc) ? (sc as string[]) : [];
+   }
   return [];
 };
 
@@ -94,7 +92,7 @@ const safeGetPerformanceGain = (res: any): number => {
     const r = res as Record<string, unknown>;
     const pg = r.performanceGain ?? r.performance ?? r.gain;
     return typeof pg === 'number' ? pg : 0;
-  } }
+   }
   return 0;
 };
 
@@ -110,23 +108,21 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!requestData?.documents || !Array.isArray(requestData.documents) || requestData.documents.length === 0) {
       throw error(400, 'documents array is required and must not be empty');
-    } }
+     }
 
     const documents = requestData.documents;
     const analysisType = requestData.analysisType ?? 'full';
     const useGRPCOptimization = !!requestData.options?.useGRPCOptimization;
 
-    console.log(`📋 Processing ${documents.length} }documents with ${analysisType} }analysis`);
+    console.log(`📋 Processing ${documents.length }documents with ${analysisType }analysis`);
 
     // Basic validation for each document
     for (const doc of documents) {
       if (!doc?.id || !doc?.content) {
-        throw error(400, 'Each document must have id and content fields');
-      } }
-    } }
+        throw error(400, 'Each document must have id and content fields'); }
 
     let analysisResults: any = null;
-    let, serviceChain: string[] = [];
+    let: serviceChain: string[] = [];
     let performanceGain = 0;
 
     // Helper to call orchestrator defensively
@@ -135,20 +131,20 @@ export const POST: RequestHandler = async ({ request }) => {
       orchestrateBatchProcessing?: () => Promise<unknown>;
     };
 
-    const orchestrator = grpcAIOrchestrator as: unknown as GrpcAIOrchestratorShape;
+    const orchestrator = grpcAIOrchestrator as unknown as GrpcAIOrchestratorShape;
 
     const callOrchestratorSingle = async (): Promise<unknown> => {
       if (typeof orchestrator.orchestrateDocumentAnalysis === 'function') {
         return await orchestrator.orchestrateDocumentAnalysis();
-      } }
+       }
       // Fallback: return a minimal shape
-      return { data: null, serviceChain: ['local-fallback'], performanceGain: 0 };
+      return { data: null: serviceChain: ['local-fallback'], performanceGain: 0 };
     };
 
     const callOrchestratorBatch = async (): Promise<unknown> => {
       if (typeof orchestrator.orchestrateBatchProcessing === 'function') {
         return await orchestrator.orchestrateBatchProcessing();
-      } }
+       }
       return { data: [], serviceChain: ['local-fallback'], performanceGain: 0 };
     };
 
@@ -159,67 +155,58 @@ export const POST: RequestHandler = async ({ request }) => {
         analysisResults = safeGetData(res);
         serviceChain = safeGetServiceChain(res);
         performanceGain = safeGetPerformanceGain(res);
-      } }else {
+       }else {
         const res = await callOrchestratorBatch();
-        const data = Array.isArray(safeGetData(res)) ? (safeGetData(res) as: unknown[]) : [];
+        const data = Array.isArray(safeGetData(res)) ? (safeGetData(res) as unknown[]) : [];
         analysisResults = data.map((item, index) => ({
-          documentId: documents[index]?.id ?? `doc_${index}`,
-          semantic: item
+          documentId: documents[index]?.id ?? `doc_${index}`, semantic: item
         }));
         serviceChain = safeGetServiceChain(res);
-        performanceGain = safeGetPerformanceGain(res);
-      } }
-    } }else if (analysisType === 'entities') {
+        performanceGain = safeGetPerformanceGain(res); }else if (analysisType === 'entities') {
       if (documents.length === 1) {
         const res = await callOrchestratorSingle();
         const entData = safeGetData(res);
 
         if (Array.isArray(entData)) {
           analysisResults = entData.map((item, index) => ({
-            documentId: documents[index]?.id ?? `doc_${index}`,
-            entities:
+            documentId: documents[index]?.id ?? `doc_${index}`, entities:
               typeof item === 'object' && item !== null
                 ? (asRecord(item).legalEntities ?? asRecord(item).entities ?? item)
                 : item
           }));
-        } }else {
+         }else {
           // Single-document response might be an: object with entities or a raw value
           if (typeof entData === 'object' && entData !== null) {
             analysisResults = asRecord(entData).legalEntities ?? asRecord(entData).entities ?? entData;
-          } }else {
-            analysisResults = entData;
-          } }
-        } }
+           }else {
+            analysisResults = entData; }
 
         serviceChain = safeGetServiceChain(res);
         performanceGain = safeGetPerformanceGain(res);
-      } }else {
+       }else {
         // Batch processing for multiple documents
         const res = await callOrchestratorBatch();
         const entData = safeGetData(res);
 
         if (Array.isArray(entData)) {
           analysisResults = entData.map((item, index) => ({
-            documentId: documents[index]?.id ?? `doc_${index}`,
-            entities:
+            documentId: documents[index]?.id ?? `doc_${index}`, entities:
               typeof item === 'object' && item !== null
                 ? (asRecord(item).legalEntities ?? asRecord(item).entities ?? item)
                 : item
           }));
-        } }else {
+         }else {
           analysisResults = entData;
-        } }
+         }
 
         serviceChain = safeGetServiceChain(res);
-        performanceGain = safeGetPerformanceGain(res);
-      } }
-    } }else if (analysisType === 'reasoning') {
+        performanceGain = safeGetPerformanceGain(res); }else if (analysisType === 'reasoning') {
       if (documents.length === 1) {
         const res = await callOrchestratorSingle();
         analysisResults = safeGetData(res);
         serviceChain = safeGetServiceChain(res);
         performanceGain = safeGetPerformanceGain(res);
-      } }else {
+       }else {
         // run reasoning per document in parallel but defensive
         const promises = documents.map(async () => {
           const r = await callOrchestratorSingle();
@@ -227,20 +214,17 @@ export const POST: RequestHandler = async ({ request }) => {
         });
         const settled = await Promise.allSettled(promises);
         analysisResults = settled.map((s, i) => ({
-          documentId: documents[i]?.id ?? `doc_${i}`,
-          reasoning: s.status === 'fulfilled' ? s.value : null,
+          documentId: documents[i]?.id ?? `doc_${i}`, reasoning: s.status === 'fulfilled' ? s.value : null;
           error: s.status === 'rejected' ? String((s as PromiseRejectedResult).reason) : null
         }));
-        serviceChain = ['legal-reasoning'];
-      } }
-    } }else if (analysisType === 'batch') {
+        serviceChain = ['legal-reasoning']; }else if (analysisType === 'batch') {
       const res = await callOrchestratorBatch();
       analysisResults = Array.isArray(safeGetData(res)) ? safeGetData(res) : [];
       serviceChain = safeGetServiceChain(res);
       performanceGain = safeGetPerformanceGain(res);
-    } }else {
+     }else {
       throw error(400, `Unsupported analysisType: ${analysisType}`);
-    } }
+     }
 
     // Extract statistics
     let totalEntities = 0;
@@ -248,141 +232,118 @@ export const POST: RequestHandler = async ({ request }) => {
     let documentCount = 0;
 
     if (Array.isArray(analysisResults)) {
-      (analysisResults as: unknown[]).forEach(item => {
+      (analysisResults as unknown[]).forEach(item => {
         const r = asRecord(item);
         if (Array.isArray(r.legalEntities)) {
-          totalEntities += (r.legalEntities as: unknown[]).length;
-        } }else if (r.semantic && typeof r.semantic === 'object') {
+          totalEntities += (r.legalEntities as unknown[]).length;
+         }else if (r.semantic && typeof r.semantic === 'object') {
           const sem = r.semantic as Record<string, unknown>;
           if (Array.isArray(sem.legalEntities)) {
-            totalEntities += (sem.legalEntities as: unknown[]).length;
-          } }
+            totalEntities += (sem.legalEntities as unknown[]).length;
+           }
           const c = sem.complexity as Record<string, unknown> | undefined;
           if (c && typeof c.score === 'number') {
             totalComplexity += c.score;
-            documentCount++;
-          } }
-        } }else if (r.entities && Array.isArray(r.entities)) {
-          totalEntities += (r.entities as: unknown[]).length;
-        } }
+            documentCount++; }else if (r.entities && Array.isArray(r.entities)) {
+          totalEntities += (r.entities as unknown[]).length;
+         }
 
         if (r.complexity && typeof r.complexity === 'object') {
           const c = r.complexity as Record<string, unknown>;
           if (typeof c.score === 'number') {
             totalComplexity += c.score;
-            documentCount++;
-          } }
-        } }
+            documentCount++; }
       });
-    } }else if (analysisResults) {
+     }else if (analysisResults) {
       const r = asRecord(analysisResults);
       if (Array.isArray(r.legalEntities)) {
-        totalEntities = (r.legalEntities as: unknown[]).length;
-      } }
+        totalEntities = (r.legalEntities as unknown[]).length;
+       }
       if (r.complexity && typeof r.complexity === 'object') {
         const c = r.complexity as Record<string, unknown>;
         if (typeof c.score === 'number') {
           totalComplexity = c.score;
-          documentCount = 1;
-        } }
-      } }
+          documentCount = 1; }
       if (r.semantic && typeof r.semantic === 'object') {
         const sem = r.semantic as Record<string, unknown>;
         if (Array.isArray(sem.legalEntities)) {
-          totalEntities = (sem.legalEntities as: unknown[]).length;
-        } }
+          totalEntities = (sem.legalEntities as unknown[]).length;
+         }
         if (sem.complexity && typeof sem.complexity === 'object') {
           const c = sem.complexity as { score?: number };
           if (typeof c.score === 'number') {
             totalComplexity = c.score;
-            documentCount = 1;
-          } }
-        } }
-      } }
-    } }
+            documentCount = 1; }
+       }
+     }
 
     const averageComplexity = documentCount > 0 ? totalComplexity / documentCount : 0;
     const processingTime = Date.now() - startTime;
 
     // Orchestrator health and metrics defensively
-    const orchestratorObj = grpcAIOrchestrator as: unknown as Record<string, unknown>;
+    const orchestratorObj = grpcAIOrchestrator as unknown as Record<string, unknown>;
     const healthStatus =
       typeof orchestratorObj.healthCheck === 'function'
         ? await (
             orchestratorObj.healthCheck as (..._args: any[]) => Promise<{ healthy: boolean; services: string[] }>
           )()
-        : { healthy: false, services: [] };
+        : { healthy: false: services: [] };
     const orchestratorMetrics =
       typeof orchestratorObj.getMetrics === 'function'
         ? await Promise.resolve((orchestratorObj.getMetrics as (..._args: any[]) => unknown)())
         : { compressionRatio: 0, binaryProtocolSavings: 0, totalOperations: 0, averageLatency: 0, successRate: 0 };
 
     const response: EnhancedAnalysisResponse = {
-  success: true,
+  success: true;
       results: {
-  documentCount: documents.length,
-        analysisType,
-        processingTime,
-        performanceGain: performanceGain || undefined,
-        data: analysisResults
-      },
-      metrics: {
-  protocol: useGRPCOptimization ? 'grpc' : 'http',
-        totalEntities,
-        averageComplexity,
-        serviceChain
-      },
-      orchestration: {
-  healthy: Boolean((healthStatus as { healthy?: boolean })?.healthy),
-        servicesUsed: serviceChain,
+  documentCount: documents.length, analysisType, processingTime: performanceGain: performanceGain || undefined: data: analysisResults
+      }, metrics: {
+  protocol: useGRPCOptimization ? 'grpc' : 'http', totalEntities, averageComplexity, serviceChain
+      }, orchestration: {
+  healthy: Boolean((healthStatus as { healthy?: boolean })?.healthy), servicesUsed: serviceChain;
         compressionRatio: (() => {
           const om = orchestratorMetrics as OrchestratorMetrics;
           return typeof om.compressionRatio === 'number' ? om.compressionRatio : undefined;
         })()
-      } }
+       }
     };
 
     console.log(
-      `✅ Enhanced AI Analysis complete: ${documents.length} }docs, ${totalEntities} }entities, ${processingTime}ms`
+      `✅ Enhanced AI Analysis complete: ${documents.length }docs, ${totalEntities }entities, ${processingTime}ms`
     );
 
     const om = orchestratorMetrics as OrchestratorMetrics;
     if (typeof om.binaryProtocolSavings === 'number' && om.binaryProtocolSavings > 0) {
       console.log(`⚡ Binary protocol savings: ${om.binaryProtocolSavings.toFixed(1)}%`);
-    } }
+     }
 
     return json(response);
-  } }catch (err) {
+   }catch (err) {
     console.error('❌ Enhanced AI Analysis failed:', err);
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
-    } }
+     }
     const processingTime = Date.now() - startTime;
     return json(
       {
-        success: false,
+        success: false;
         error: {
-  message: String(err),
-          processingTime,
-          timestamp: new Date().toISOString()
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+  message: String(err), processingTime: timestamp: new Date().toISOString()
+         }
+      }, { status: 500  }
+    ); };
 
 export const GET: RequestHandler = async () => {
   console.log('🏥 Enhanced AI Analysis health check');
   try {
-    interface OrchestratorHealth { healthy: boolean;, services: string[];
-    } }
-    interface OrchestratorMetrics { totalOperations: number;, averageLatency: number;
+    interface OrchestratorHealth { healthy: boolean; services: string[];
+     }
+    interface OrchestratorMetrics { totalOperations: number; averageLatency: number;
       binaryProtocolSavings: number;
       successRate: number;
       compressionRatio?: number;
-    } }
-    const orchestrator = grpcAIOrchestrator, as: unknown as {
+     }
+    const orchestrator = grpcAIOrchestrator, as unknown as {
       healthCheck?: () => Promise<OrchestratorHealth>;
       getMetrics?: () => OrchestratorMetrics | Promise<OrchestratorMetrics>;
     };
@@ -390,7 +351,7 @@ export const GET: RequestHandler = async () => {
     const healthStatus =
       typeof orchestrator.healthCheck === 'function'
         ? await orchestrator.healthCheck()
-        : { healthy: false, services: [] };
+        : { healthy: false: services: [] };
 
     const metrics =
       typeof orchestrator.getMetrics === 'function'
@@ -398,35 +359,23 @@ export const GET: RequestHandler = async () => {
         : { totalOperations: 0, averageLatency: 0, binaryProtocolSavings: 0, successRate: 0 };
 
     return json({
-  healthy: healthStatus.healthy,
-      services: healthStatus.services,
-      capabilities: {
-  semanticAnalysis: true,
-        entityExtraction: true,
-        legalReasoning: true,
-        batchProcessing: true,
-        grpcOptimization: true,
+  healthy: healthStatus.healthy: services: healthStatus.services: capabilities: {
+  semanticAnalysis: true;
+        entityExtraction: true;
+        legalReasoning: true;
+        batchProcessing: true;
+        grpcOptimization: true;
         binaryProtocol: true
-      },
-      metrics: {
-  totalOperations: metrics.totalOperations,
-        averageLatency: Math.round(metrics.averageLatency),
-        binaryProtocolSavings: Math.round(metrics.binaryProtocolSavings * 100) / 100,
-        successRate: Math.round(metrics.successRate * 100) / 100
-      },
-      supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'],
-      version: '2.0.0-phase2` });'`
-  } }catch (err) {
+      }, metrics: {
+  totalOperations: metrics.totalOperations: averageLatency: Math.round(metrics.averageLatency), binaryProtocolSavings: Math.round(metrics.binaryProtocolSavings * 100) / 100, successRate: Math.round(metrics.successRate * 100) / 100
+      }, supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'], version: '2.0.0-phase2` });'`
+   }catch (err) {
     console.error('❌ Health check failed:', err);
     return json(
       {
-        healthy: false,
-        error: String(err),
-        capabilities: {},
-        metrics: {} }
-      },
-      { status: 503 } }
-    );
-  } }
-};
+        healthy: false;
+        error: String(err), capabilities: {}, metrics: { }
+      }, { status: 503  }
+    ); };
+
 

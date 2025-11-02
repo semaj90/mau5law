@@ -14,14 +14,9 @@ const __dirname = path.dirname(__filename);
 const BASE_URL = 'http://localhost:5173';
 const TEST_PDF = path.join(__dirname, '../../lawpdfs/test-document.pdf');
 
-function log(message, color = 'reset') {
+function log(message: color = 'reset') {
   const colors = {
-    reset: '\x1b[0m',
-    green: '\x1b[32m',
-    red: '\x1b[31m',
-    yellow: '\x1b[33m',
-    blue: '\x1b[34m',
-    cyan: '\x1b[36m'
+    reset: '\x1b[0m', green: '\x1b[32m', red: '\x1b[31m', yellow: '\x1b[33m', blue: '\x1b[34m', cyan: '\x1b[36m'
   };
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
@@ -61,10 +56,7 @@ async function testBasicAPI() {
   log('\n🌐 Testing Basic API Routes...', 'cyan');
   
   const routes = [
-    '/',
-    '/api/health',
-    '/evidence',
-    '/cases'
+    '/', '/api/health', '/evidence', '/cases'
   ];
   
   let passed = 0;
@@ -106,8 +98,7 @@ async function testFileUpload() {
     for (const endpoint of endpoints) {
       try {
         const response = await fetch(`${BASE_URL}${endpoint}`, {
-          method: 'POST',
-          body: formData
+          method: 'POST', body: formData
         });
         
         log(`   Testing ${endpoint} - Status: ${response.status}`, response.ok ? 'green' : 'yellow');
@@ -137,10 +128,7 @@ async function main() {
   log('=' .repeat(50), 'blue');
   
   const results = {
-    serverHealth: await testServerHealth(),
-    fileExists: await testFileExists(),
-    basicAPI: await testBasicAPI(),
-    fileUpload: await testFileUpload()
+    serverHealth: await testServerHealth(), fileExists: await testFileExists(), basicAPI: await testBasicAPI(), fileUpload: await testFileUpload()
   };
   
   log('\n📊 Test Results:', 'cyan');

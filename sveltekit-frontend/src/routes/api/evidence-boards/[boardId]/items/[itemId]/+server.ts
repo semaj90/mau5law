@@ -1,27 +1,20 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
-import { evidenceBoardItems, evidenceBoards } }from '$lib/database/enhanced-schema';
-import { eq, and } }from 'drizzle-orm';
-import { z } }from 'zod';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
+import { evidenceBoardItems, evidenceBoards  } from '$lib/database/enhanced-schema';
+import { eq, and  } from 'drizzle-orm';
+import { z  } from 'zod';
 
 const updateBoardItemSchema = z.object({
   position: z
     .object({
-  x: z.number(),
-      y: z.number()
+  x: z.number(), y: z.number()
     })
-    .optional(),
-  size: z
+    .optional(), size: z
     .object({
-  width: z.number(),
-      height: z.number()
+  width: z.number(), height: z.number()
     })
-    .optional(),
-  content: z.string().optional(),
-  metadata: z.any().optional(),
-  zIndex: z.number().optional(),
-  isVisible: z.boolean().optional()
+    .optional(), content: z.string().optional(), metadata: z.any().optional(), zIndex: z.number().optional(), isVisible: z.boolean().optional()
 });
 
 // PUT /api/evidence-boards/[boardId]/items/[itemId] - Update board item
@@ -30,9 +23,9 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
-    const { boardId, itemId } }= params;
+    const { boardId, itemId  }= params;
     const body = await request.json();
     const validatedData = updateBoardItemSchema.parse(body);
 
@@ -42,38 +35,33 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .from(evidenceBoardItems)
       .where(
         and(
-          eq(evidenceBoardItems.id, itemId),
-          eq(evidenceBoardItems.boardId, boardId),
-          eq(evidenceBoardItems.isVisible, true)
+          eq(evidenceBoardItems.id, itemId), eq(evidenceBoardItems.boardId, boardId), eq(evidenceBoardItems.isVisible, true)
         )
       );
 
     if (!existingItem) {
       return json({ error: 'Board item not found' }, { status: 404 });
-    } }
+     }
 
     // Update item
     const [updatedItem] = await db
       .update(evidenceBoardItems)
       .set({
-        ...validatedData,
-        updatedAt: new Date()
+        ...validatedData: updatedAt: new Date()
       })
       .where(eq(evidenceBoardItems.id, itemId))
       .returning();
 
     return json({
-      success: true,
+      success: true;
       data: updatedItem
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error updating board item:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation error', details: error.errors }, { status: 400 });
-    } }
-    return json({ error: 'Failed to update board item' }, { status: 500 });
-  } }
-};
+     }
+    return json({ error: 'Failed to update board item' }, { status: 500 }); };
 
 // DELETE /api/evidence-boards/[boardId]/items/[itemId] - Delete board item
 export const DELETE: RequestHandler = async ({ params, locals }) => {
@@ -81,9 +69,9 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
-    const { boardId, itemId } }= params;
+    const { boardId, itemId  }= params;
 
     // Check if item exists and belongs to board
     const [existingItem] = await db
@@ -91,32 +79,29 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       .from(evidenceBoardItems)
       .where(
         and(
-          eq(evidenceBoardItems.id, itemId),
-          eq(evidenceBoardItems.boardId, boardId),
-          eq(evidenceBoardItems.isVisible, true)
+          eq(evidenceBoardItems.id, itemId), eq(evidenceBoardItems.boardId, boardId), eq(evidenceBoardItems.isVisible, true)
         )
       );
 
     if (!existingItem) {
       return json({ error: 'Board item not found' }, { status: 404 });
-    } }
+     }
 
     // Soft delete item
     await db
       .update(evidenceBoardItems)
       .set({
-        isVisible: false,
+        isVisible: false;
         updatedAt: new Date()
       })
       .where(eq(evidenceBoardItems.id, itemId));
 
     return json({
-      success: true,
+      success: true;
       message: 'Board item deleted successfully'
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error deleting board item:', error);
-    return json({ error: 'Failed to delete board item' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to delete board item' }, { status: 500 }); };
+
 

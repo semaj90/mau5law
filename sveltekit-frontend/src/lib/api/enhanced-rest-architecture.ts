@@ -4,18 +4,18 @@ export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
-  metadata?: { timestamp: string;, version: string;
+  metadata?: { timestamp: string; version: string;
     processing_time: number;
   };
-} }
-export interface ClusteringConfig { k: number;, maxIterations: number;
+ }
+export interface ClusteringConfig { k: number; maxIterations: number;
   tolerance: number;
   algorithm: 'kmeans' | 'som' | 'hierarchical';
-} }
-export interface KMeansConfig extends ClusteringConfig { algorithm: 'kmeans';, distanceMetric: 'euclidean' | 'manhattan' | 'cosine';
+ }
+export interface KMeansConfig extends ClusteringConfig { algorithm: 'kmeans'; distanceMetric: 'euclidean' | 'manhattan' | 'cosine';
   initMethod?: 'random' | 'kmeans++';
-} }
-export interface SOMConfig extends ClusteringConfig { algorithm: 'som';, gridWidth: number;
+ }
+export interface SOMConfig extends ClusteringConfig { algorithm: 'som'; gridWidth: number;
   gridHeight: number;
   learningRate: number;
   // Add missing properties that SOM service expects
@@ -24,8 +24,8 @@ export interface SOMConfig extends ClusteringConfig { algorithm: 'som';, gridWi
   dimensions: number;
   radius?: number;
   iterations?: number; // Alias for maxIterations
-} }
-export interface DocumentCluster { id: string;, centroid: number[];
+ }
+export interface DocumentCluster { id: string; centroid: number[];
   documents: string[];
   size: number;
   label?: string;
@@ -36,52 +36,46 @@ export interface DocumentCluster { id: string;, centroid: number[];
   documentId?: string;
   embedding?: number[];
   result?: any;
-} }
-export interface ClusterResult { clusters: DocumentCluster[];, clusterId: string;
+ }
+export interface ClusterResult { clusters: DocumentCluster[]; clusterId: string;
   silhouetteScore: number;
   iterations: number;
   converged: boolean;
-} }
+ }
 export class KMeansClusterer {
   constructor(
-    public config: KMeansConfig,
+    public config: KMeansConfig;
     private client: EnhancedRESTClient = restClient
-  ) {} }
+  ) { }
   async cluster(data: number[][]): Promise<APIResponse<ClusterResult>> {
-    return this.client.cluster(data, this.config);
-  } }
-} }
+    return this.client.cluster(data, this.config); } }
 export class SelfOrganizingMap {
   constructor(
-    public config: SOMConfig,
+    public config: SOMConfig;
     private client: EnhancedRESTClient = restClient
-  ) {} }
+  ) { }
   async train(data: number[][]): Promise<APIResponse<ClusterResult>> {
     // Assuming the backend /clustering endpoint can handle SOMConfig and dispatch accordingly
-    return this.client.cluster(data, this.config);
-  } }
-} }
-export interface ClusterResultDetails { clusters: DocumentCluster[];, metrics: { silhouetteScore: number;, inertia: number;
+    return this.client.cluster(data, this.config); } }
+export interface ClusterResultDetails { clusters: DocumentCluster[]; metrics: { silhouetteScore: number; inertia: number;
     converged: boolean;
   };
-} }
+ }
 export class EnhancedRESTClient {
-  constructor(private baseURL: string = '/api') {} }
-  async post<T, U = unknown>(endpoint: string, data: U): Promise<APIResponse<T>> {
+  constructor(private baseURL: string = '/api') { }
+  async post<T: U = unknown>(endpoint: string: data: U): Promise<APIResponse<T>> {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify(data)
     });
     return response.json();
-  } }
+   }
   async get<T>(endpoint: string): Promise<APIResponse<T>> {
     const response = await fetch(`${this.baseURL}${endpoint}`);
     return response.json();
-  } }
+   }
   async cluster(data: number[][], config: ClusteringConfig): Promise<APIResponse<ClusterResult>> {
-    return this.post('/clustering', { data, config });
-  } }
-} }
+    return this.post('/clustering', { data, config }); } }
 export const restClient = new EnhancedRESTClient();
+
 

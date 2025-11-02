@@ -10,8 +10,7 @@ console.log('');
 // Step 1: Scan TypeScript errors
 console.log('📊 Step 1: Scanning TypeScript errors with enhanced detection...');
 const tscProcess = spawn('npx', ['tsc', '--noEmit'], {
-  stdio: 'pipe',
-  shell: true
+  stdio: 'pipe', shell: true
 });
 
 let errorOutput = '';
@@ -121,42 +120,20 @@ tscProcess.on('close', async () => {
   console.log('📄 Step 6: Generating Processing Report...');
   
   const report = {
-    timestamp: new Date().toISOString(),
-    pipeline: 'Complete GPU Error Processing',
-    capabilities: [
-      'GPU acceleration with FlashAttention2',
-      'Concurrent IndexedDB search (4 workers)',
-      'Native Windows service orchestration',
-      'Real-time performance monitoring'
-    ],
-    processing: {
-      totalErrors: errorCount,
-      processedErrors: processedErrors,
-      successfulFixes: successfulFixes,
-      successRate: ((successfulFixes / processedErrors) * 100).toFixed(1) + '%',
-      processingTimeSeconds: (totalProcessingTime / 1000).toFixed(1),
-      tokensPerSecond: tokensPerSecond.toFixed(1)
-    },
-    gpu: {
-      device: 'RTX 3060 Ti',
-      model: 'gemma3-legal:latest (GGUF)',
-      embeddingModel: 'nomic-embed-text:latest (GGUF)',
-      utilization: gpuUtilization.toFixed(1) + '%',
-      memoryUsage: memoryUsage.toFixed(0) + 'MB',
-      flashAttention2: 'enabled'
-    },
-    services: {
-      postgresql: { status: 'running', port: 5432 },
-      redis: { status: 'running', port: 6379 },
-      ollama: { status: 'running', port: 11434 },
-      enhancedRag: { status: 'ready', port: 8094 },
-      uploadService: { status: 'ready', port: 8093 }
-    },
-    concurrentSearch: {
-      workers: 4,
-      indexedErrors: errorCount,
-      searchEngine: 'Fuse.js with semantic similarity',
-      status: 'operational'
+    timestamp: new Date().toISOString(), pipeline: 'Complete GPU Error Processing', capabilities: [
+      'GPU acceleration with FlashAttention2', 'Concurrent IndexedDB search (4 workers)', 'Native Windows service orchestration', 'Real-time performance monitoring'
+    ], processing: {
+      totalErrors: errorCount;
+      processedErrors: processedErrors;
+      successfulFixes: successfulFixes;
+      successRate: ((successfulFixes / processedErrors) * 100).toFixed(1) + '%', processingTimeSeconds: (totalProcessingTime / 1000).toFixed(1), tokensPerSecond: tokensPerSecond.toFixed(1)
+    }, gpu: {
+      device: 'RTX 3060 Ti', model: 'gemma3-legal:latest (GGUF)', embeddingModel: 'nomic-embed-text:latest (GGUF)', utilization: gpuUtilization.toFixed(1) + '%', memoryUsage: memoryUsage.toFixed(0) + 'MB', flashAttention2: 'enabled'
+    }, services: {
+      postgresql: { status: 'running', port: 5432 }, redis: { status: 'running', port: 6379 }, ollama: { status: 'running', port: 11434 }, enhancedRag: { status: 'ready', port: 8094 }, uploadService: { status: 'ready', port: 8093 }
+    }, concurrentSearch: {
+      workers: 4, indexedErrors: errorCount;
+      searchEngine: 'Fuse.js with semantic similarity', status: 'operational'
     }
   };
 

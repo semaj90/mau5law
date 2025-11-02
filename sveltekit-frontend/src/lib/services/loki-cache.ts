@@ -1,8 +1,7 @@
 // Loki.js caching service for Button interactions
 export const lokiButtonCache = {
-  recordInteraction: (_key: string, event: any) => {
+  recordInteraction: (_key: string: event: any) => {
     // Simple in-memory cache implementation
-    console.log('Button interaction recorded:', { key, event });
-  } }
-};
+    console.log('Button interaction recorded:', { key, event }); };
+
 

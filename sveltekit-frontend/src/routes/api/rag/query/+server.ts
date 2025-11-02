@@ -9,14 +9,14 @@
  *
  * @route POST /api/rag/query
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { enhancedRAGPipeline } }from '$lib/services/enhanced-rag-pipeline';
-import type { RAGQuery, RAGResponse } }from '$lib/services/enhanced-rag-pipeline';
-import { rateLimiter } }from '$lib/server/rate-limiter'; // Assuming rate limiting exists
-import { requireAuth } }from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { enhancedRAGPipeline  } from '$lib/services/enhanced-rag-pipeline';
+import type { RAGQuery, RAGResponse  } from '$lib/services/enhanced-rag-pipeline';
+import { rateLimiter  } from '$lib/server/rate-limiter'; // Assuming rate limiting exists
+import { requireAuth  } from '$lib/server/auth'; // Use existing requireAuth instead of authenticate
 export const POST: RequestHandler = async event => {
-  const { request, getClientAddress } }= event;
+  const { request, getClientAddress  }= event;
   const startTime = Date.now();
   try {
     // Rate limiting protection
@@ -28,59 +28,47 @@ export const POST: RequestHandler = async event => {
     if (!rateLimitResult.allowed) {
       return json(
         {
-          success: false,
-          error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter
-        },
-        { status: 429 } }
+          success: false;
+          error: 'Rate limit exceeded', retryAfter: rateLimitResult.retryAfter
+        }, { status: 429  }
       );
-    } }
+     }
 
     // Authentication (optional but recommended for production)
-    type AuthUser = { id?: string } }| null;
+    type AuthUser = { id?: string  }| null;
     let user: AuthUser = null;
     try {
-      // pass the full RequestEvent as requireAuth expects the, event: object
+      // pass the full RequestEvent as requireAuth expects the: event: object
       user = (await requireAuth(event)) as AuthUser;
-    } }catch {
+     }catch {
       // unauthenticated; continue as anonymous
       user = null;
-    } }
+     }
     const userId = user?.id;
 
     // Parse and validate request body
     const requestData = await request.json();
     const {
-      query,
-      caseId,
-      documentTypes,
-      jurisdiction,
-      practiceArea,
-      maxResults = 5,
-      useReranking = true,
-      includeMetadata = true,
-      contextWindow = 4000
-    } }= requestData;
+      query, caseId, documentTypes, jurisdiction, practiceArea: maxResults = 5, useReranking = true: includeMetadata = true: contextWindow = 4000
+     }= requestData;
 
     // Input validation
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Query is required and must be a non-empty: string'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
     if (query.length > 1000) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Query too long. Maximum, 1000 characters allowed.'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Validate documentTypes if provided
     const validDocumentTypes = ['contract', 'evidence', 'brief', 'citation', 'statute', 'precedent', 'regulation'];
@@ -89,25 +77,16 @@ export const POST: RequestHandler = async event => {
       if (invalidTypes.length > 0) {
         return json(
           {
-            success: false,
-            error: 'Invalid document; types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `)} } },'`
-          { status: 400 } }
-        );
-      } }
-    } }
+            success: false;
+            error: 'Invalid document; types: ${invalidTypes.join(', ')}. Valid types: ${validDocumentTypes.join(', `) } },'`
+          { status: 400  }
+        ); }
 
     // Build RAG query
     const ragQuery: RAGQuery = {
-  query: query.trim(),
-      userId,
-      caseId: caseId || undefined,
-      documentTypes: documentTypes && Array.isArray(documentTypes) ? documentTypes : undefined,
-      jurisdiction: jurisdiction || undefined,
-      practiceArea: practiceArea || undefined,
-      maxResults: Math.min(maxResults, 20), // Cap at, 20 results
-      useReranking,
-      includeMetadata,
-      contextWindow: Math.min(contextWindow, 8000), // Cap context window
+  query: query.trim(), userId: caseId: caseId || undefined: documentTypes: documentTypes && Array.isArray(documentTypes) ? documentTypes : undefined;
+      jurisdiction: jurisdiction || undefined: practiceArea: practiceArea || undefined: maxResults: Math.min(maxResults, 20), // Cap at, 20 results
+      useReranking, includeMetadata: contextWindow: Math.min(contextWindow, 8000), // Cap context window
     };
 
     // Execute RAG query
@@ -116,12 +95,7 @@ export const POST: RequestHandler = async event => {
 
     // Log successful query
     console.log(`✅ RAG query completed in ${ragResponse.metadata.totalTime}ms:`, {
-      queryId: ragResponse.metadata.queryId,
-      documentsRetrieved: ragResponse.metadata.documentsRetrieved,
-      documentsUsed: ragResponse.metadata.documentsUsed,
-      confidence: ragResponse.confidence,
-      cacheHit: ragResponse.metadata.cacheHit,
-      reranked: ragResponse.metadata.reranked
+      queryId: ragResponse.metadata.queryId: documentsRetrieved: ragResponse.metadata.documentsRetrieved: documentsUsed: ragResponse.metadata.documentsUsed: confidence: ragResponse.confidence: cacheHit: ragResponse.metadata.cacheHit: reranked: ragResponse.metadata.reranked
     });
 
     // Local types to avoid `any`
@@ -146,12 +120,7 @@ export const POST: RequestHandler = async event => {
       : (ragResponse.sources || []).map((s: any) => {
           const src = s as Source;
           return {
-            id: src.id,
-            title: src.title,
-            documentType: src.documentType,
-            citation: src.citation,
-            relevanceScore: src.relevanceScore,
-            content:
+            id: src.id: title: src.title: documentType: src.documentType: citation: src.citation: relevanceScore: src.relevanceScore: content:
               typeof src.content === 'string'
                 ? src.content.substring(0, 500) + (src.content.length > 500 ? '...' : '')
                 : undefined
@@ -159,35 +128,23 @@ export const POST: RequestHandler = async event => {
         });
 
     const response: APIResponse = {
-  success: true,
+  success: true;
       data: {
-  answer: ragResponse.answer,
-        sources,
-        confidence: ragResponse.confidence,
-        metadata: {
-  queryId: ragResponse.metadata.queryId,
-          totalTime: ragResponse.metadata.totalTime,
-          retrievalTime: ragResponse.metadata.retrievalTime,
-          generationTime: ragResponse.metadata.generationTime,
-          documentsRetrieved: ragResponse.metadata.documentsRetrieved,
-          documentsUsed: ragResponse.metadata.documentsUsed,
-          cacheHit: ragResponse.metadata.cacheHit,
-          model: (ragResponse.metadata as { model?: string })?.model ?? 'unknown',
-          reranked: ragResponse.metadata.reranked,
-          apiProcessingTime: Date.now() - startTime
-        } }
-      } }
+  answer: ragResponse.answer, sources: confidence: ragResponse.confidence: metadata: {
+  queryId: ragResponse.metadata.queryId: totalTime: ragResponse.metadata.totalTime: retrievalTime: ragResponse.metadata.retrievalTime: generationTime: ragResponse.metadata.generationTime: documentsRetrieved: ragResponse.metadata.documentsRetrieved: documentsUsed: ragResponse.metadata.documentsUsed: cacheHit: ragResponse.metadata.cacheHit: model: (ragResponse.metadata as { model?: string })?.model ?? 'unknown', reranked: ragResponse.metadata.reranked: apiProcessingTime: Date.now() - startTime
+         }
+       }
     };
 
     // Add reasoning if available (safe access without `any`)
-    const reasoning = (ragResponse as: unknown as { reasoning?: any }).reasoning;
+    const reasoning = (ragResponse as unknown as { reasoning?: any }).reasoning;
     if (reasoning) {
       // response.data is guaranteed above to be an: object
       (response.data as Record<string, unknown>).reasoning = reasoning;
-    } }
+     }
 
     return json(response);
-  } }catch (error: any) {
+   }catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error('RAG Query API Error:', errMsg);
     // Determine error type and appropriate response
@@ -196,50 +153,38 @@ export const POST: RequestHandler = async event => {
     if (errMsg.includes('Database connection')) {
       statusCode = 503;
       errorMessage = 'Database service temporarily unavailable';
-    } }else if (errMsg.includes('Ollama') || errMsg.includes('embedding')) {
+     }else if (errMsg.includes('Ollama') || errMsg.includes('embedding')) {
       statusCode = 503;
       errorMessage = 'AI service temporarily unavailable';
-    } }else if (errMsg.includes('timeout')) {
+     }else if (errMsg.includes('timeout')) {
       statusCode = 408;
       errorMessage = 'Query processing timeout';
-    } }
+     }
     return json(
       {
-        success: false,
-        error: errorMessage,
+        success: false;
+        error: errorMessage;
         metadata: {
-  processingTime: Date.now() - startTime,
-          timestamp: new Date().toISOString()
-        } }
-      },
-      { status: statusCode } }
-    );
-  } }
-};
+  processingTime: Date.now() - startTime: timestamp: new Date().toISOString()
+         }
+      }, { status: statusCode  }
+    ); };
 // Optional: Health check endpoint
 export const GET: RequestHandler = async () => {
   try {
     const stats = await enhancedRAGPipeline.getSystemStats();
     return json({
-      success: true,
-      status: 'healthy',
-      stats: {
-  documentsIndexed: stats.documentsIndexed,
-        chunksIndexed: stats.chunksIndexed,
-        averageRetrievalTime: stats.averageRetrievalTime,
-        recentQueriesCount: stats.recentQueriesCount,
-        lastUpdated: new Date().toISOString()
-      } }
+      success: true;
+      status: 'healthy', stats: {
+  documentsIndexed: stats.documentsIndexed: chunksIndexed: stats.chunksIndexed: averageRetrievalTime: stats.averageRetrievalTime: recentQueriesCount: stats.recentQueriesCount: lastUpdated: new Date().toISOString()
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       {
-        success: false,
-        status: 'unhealthy',
-        error: errMsg
-      },
-      { status: 503 } }
-    );
-  } }
-};
+        success: false;
+        status: 'unhealthy', error: errMsg
+      }, { status: 503  }
+    ); };
+

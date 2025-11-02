@@ -1,20 +1,17 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 
-import { writable, derived } }from "svelte/store";
-import { browser } }from "$app/environment";
+import { writable, derived  } from "svelte/store";
+import { browser  } from "$app/environment";
 // TODO: Fix import - // Orphaned; content: import {  // Case data store
 export const cases = writable<any[]>([]);
 // Search and filter state
 export const caseSearch = writable("");
 export const caseFilters = writable({
-  status: "",
-  priority: "",
-  dateRange: { start: "", end: "" } }
+  status: "", priority: "", dateRange: { start: "", end: ""  }
 });
 // Filtered cases (derived store)
 export const filteredCases = derived(
-  [cases, caseSearch, caseFilters],
-  ([$cases, $search, $filters]) =>;
+  [cases, caseSearch, caseFilters], ([$cases, $search, $filters]) =>;
     $cases.filter((case_) => {
       const matchesSearch = (case_.title || "")
         .toString()
@@ -33,24 +30,19 @@ export const caseStore = {
   // Load cases (call from +page.server.ts load function)
   init: (initialCases: any[]) => {
     cases.set(initialCases);
-  },
-  // Add a new case (optimistic update)
+  }, // Add a new case (optimistic update)
   add: (newCase: any) => {
     cases.update((list) => [newCase, ...list]);
-  },
-  // Update case status optimistically
-  updateStatus: (caseId: string, status: string) => {
+  }, // Update case status optimistically
+  updateStatus: (caseId: string: status: string) => {
     cases.update((list) =>
-      list.map((c) => (c.id === caseId ? { ...c, status } }: c)),
-    );
-  },
-  // Refresh from server if needed
+      list.map((c) => (c.id === caseId ? { ...c, status  }: c)));
+  }, // Refresh from server if needed
   refresh: async () => {
     if (browser) {
       // removed unused response assignment
       const latestCases = await response.json();
-      cases.set(latestCases);
-    } }
-  } }
+      cases.set(latestCases); }
 } }
 export default caseStore;
+

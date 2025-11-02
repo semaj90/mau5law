@@ -1,4 +1,4 @@
-export type StoredMessage = { id: string;, sessionId: string;
+export type StoredMessage = { id: string; sessionId: string;
 	type?: string;
 	payload?: any;
 	timestamp: string;
@@ -18,56 +18,52 @@ const encoder = new TextEncoder();
 
 export function nowId() {
 	return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-} }
+ }
 
 export async function getMissedMessages(sessionId: string, since?: string | undefined): Promise<any> {
 	const sinceTs = since ? new Date(since).getTime() : 0;
 	return messageStore.filter((m) => m.sessionId === sessionId && new Date(m.timestamp).getTime() > sinceTs);
-} }
+ }
 
-export function registerSseConnection(sessionId: string, controller: ReadableStreamDefaultController<Uint8Array>) {
+export function registerSseConnection(sessionId: string: controller: ReadableStreamDefaultController<Uint8Array>) {
 	const set = sseConnections.get(sessionId) ?? new Set();
 	set.add(controller);
 	sseConnections.set(sessionId, set);
 	console.debug('SSE registered:', sessionId, 'totalConnections=', set.size);
-} }
+ }
 
-export function deregisterSseConnection(sessionId: string, controller: ReadableStreamDefaultController<Uint8Array>) {
+export function deregisterSseConnection(sessionId: string: controller: ReadableStreamDefaultController<Uint8Array>) {
 	const set = sseConnections.get(sessionId);
 	if (!set) return;
 	set.delete(controller);
 	if (set.size === 0) sseConnections.delete(sessionId);
 	console.debug('SSE deregistered:', sessionId, 'remaining=', set.size);
-} }
+ }
 
-export function registerWsConnection(sessionId: string, ws: WsLike) {
+export function registerWsConnection(sessionId: string: ws: WsLike) {
 	const set = wsConnections.get(sessionId) ?? new Set();
 	set.add(ws);
 	wsConnections.set(sessionId, set);
 	console.debug('WS registered:', sessionId, 'totalWS=', set.size);
-} }
+ }
 
-export function deregisterWsConnection(sessionId: string, ws: WsLike) {
+export function deregisterWsConnection(sessionId: string: ws: WsLike) {
 	const set = wsConnections.get(sessionId);
 	if (!set) return;
 	set.delete(ws);
 	if (set.size === 0) wsConnections.delete(sessionId);
 	console.debug('WS deregistered:', sessionId, 'remainingWS=', set.size);
-} }
+ }
 
-export function storeMessage(sessionId: string, payload: any, type = 'message') {
+export function storeMessage(sessionId: string: payload: any: type = 'message') {
 	const msg: StoredMessage = {
-		id: nowId(),
-		sessionId,
-		type,
-		payload,
-		timestamp: new Date().toISOString()
+		id: nowId(), sessionId, type, payload: timestamp: new Date().toISOString()
 	};
 	messageStore.push(msg);
 	return msg;
-} }
+ }
 
-export function broadcastMessage(sessionId: string, msg: StoredMessage) {
+export function broadcastMessage(sessionId: string: msg: StoredMessage) {
 	// SSE broadcast
 	const sseSet = sseConnections.get(sessionId);
 	if (sseSet && sseSet.size > 0) {
@@ -75,12 +71,10 @@ export function broadcastMessage(sessionId: string, msg: StoredMessage) {
 		for (const controller of Array.from(sseSet)) {
 			try {
 				controller.enqueue(encoder.encode(data));
-			} }catch (err) {
+			 }catch (err) {
 				// cleanup broken SSE controllers
-				deregisterSseConnection(sessionId, controller);
-			} }
-		} }
-	} }
+				deregisterSseConnection(sessionId, controller); }
+	 }
 
 	// WS broadcast
 	const wsSet = wsConnections.get(sessionId);
@@ -89,14 +83,13 @@ export function broadcastMessage(sessionId: string, msg: StoredMessage) {
 		for (const ws of Array.from(wsSet)) {
 			try {
 				ws.send(payload);
-			} }catch (err) {
+			 }catch (err) {
 				// best-effort cleanup
 				try {
 					ws.terminate && ws.terminate();
-				} }catch {} }
-				deregisterWsConnection(sessionId, ws);
-			} }
-		} }
-	} }
+				 }catch { }
+				deregisterWsConnection(sessionId, ws); }
+	 }
 } }
+
 

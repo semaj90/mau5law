@@ -1,39 +1,39 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * System Integration Service
  * Orchestrates MinIO storage, PostgreSQL + pgvector, Redis cache, and Context7 semantic search
  */
-import { globalGPUCache } }from './rag-minio-gpu-som-cache.js';
+import { globalGPUCache  } from './rag-minio-gpu-som-cache.js';
 
 // Integration interfaces
-interface MinIOConfig { endpoint: string;, port: number;
+interface MinIOConfig { endpoint: string; port: number;
   useSSL: boolean;
   accessKey: string;
   secretKey: string;
-  buckets: { evidence: string;, documents: string;
+  buckets: { evidence: string; documents: string;
     media: string;
     cache: string;
   };
-} }
-interface PostgreSQLConfig { host: string;, port: number;
+ }
+interface PostgreSQLConfig { host: string; port: number;
   database: string;
   username: string;
   password: string;
   enablePgVector: boolean;
   vectorDimension: number;
-} }
-interface RedisConfig { host: string;, port: number;
+ }
+interface RedisConfig { host: string; port: number;
   password?: string;
   db: number;
   keyPrefix: string;
-} }
+ }
 interface Context7Config {
   mcpServer: string;
   apiKey?: string;
   libraryIds: string[];
   maxTokens: number;
-} }
-interface SystemMetrics { minioHealth: boolean;, postgresHealth: boolean;
+ }
+interface SystemMetrics { minioHealth: boolean; postgresHealth: boolean;
   redisHealth: boolean;
   context7Health: boolean;
   totalDocuments: number;
@@ -41,7 +41,7 @@ interface SystemMetrics { minioHealth: boolean;, postgresHealth: boolean;
   avgQueryTime: number;
   storageUsed: number;
   lastSync: string;
-} }
+ }
 
 // New typed shape for search result documents returned by various backends
 interface SearchDocument { id: string;
@@ -56,12 +56,12 @@ interface SearchDocument { id: string;
   source?: 'cache' | 'postgres' | 'context7' | string;
   // allow extra fields without using `any`
   [key: string]: any;
-} }
+ }
 
-interface QueryResult { documents: SearchDocument[];, totalFound: number;
+interface QueryResult { documents: SearchDocument[]; totalFound: number;
   queryTime: number;
   cacheHit: boolean;
-} }
+ }
 
 type GPUCacheStats = { hitRate: number;
   items?: number;
@@ -82,7 +82,7 @@ interface EvidenceRow { id: string;
   embedding?: number[] | Float32Array | null;
   metadata?: Record<string, unknown> | null;
   similarity?: number;
-} }
+ }
 
 interface Context7Doc {
   id: string;
@@ -90,20 +90,19 @@ interface Context7Doc {
   content?: string;
   similarity?: number;
   metadata?: Record<string, unknown>;
-} }
+ }
 
 interface Context7Response {
   results: Context7Doc[];
-} }
+ }
 
 interface Context7Client {
   resolveLibraryId?: (name: string) => Promise<{ id: string }>;
-  getLibraryDocs?: (;
-   , libraryId: string,
+  getLibraryDocs?: (; libraryId: string;
     options?: Record<string, unknown>
   ) => Promise<{ content: string; metadata?: Record<string, unknown> }>;
   semanticSearch?: (query: string, options?: Record<string, unknown>) => Promise<Context7Response>;
-} }
+ }
 
 type GPUCacheInterface = {
   // optional variations we might encounter
@@ -127,47 +126,45 @@ interface PostgresClient {
   query: (sql: string, params?: any[]) => Promise<PgQueryResult<Record<string, unknown>>>;
   connect: () => Promise<boolean>;
   end: () => Promise<boolean>;
-} }
+ }
 
 // Typed MinIO client shape used in this module
-interface MinIOClient { bucketExists: (bucket: string) => Promise<boolean>;, makeBucket: (bucket: string) => Promise<boolean>;
-  // avoid `any` by using a generic record or: unknown for other shapes;
- , putObject: (bucket: string, name: string, data: any) => Promise<{ etag?: string } }| Record<string, unknown>>;
+interface MinIOClient { bucketExists: (bucket: string) => Promise<boolean>; makeBucket: (bucket: string) => Promise<boolean>;
+  // avoid `any` by using a generic record or: unknown for other shapes; putObject: (bucket: string: name: string: data: any) => Promise<{ etag?: string  }| Record<string, unknown>>;
   // broaden possible return shapes from storage clients
-  getObject: (bucket: string, name: string) => Promise<Blob | Buffer | ArrayBuffer | Uint8Array | string | unknown>;
-  removeObject: (bucket: string, name: string) => Promise<boolean>;
+  getObject: (bucket: string: name: string) => Promise<Blob | Buffer | ArrayBuffer | Uint8Array | string | unknown>;
+  removeObject: (bucket: string: name: string) => Promise<boolean>;
   listObjects: (bucket: string, prefix?: string) => Promise<Array<{ name: string }>>;
   // allow extra methods if implementations vary; use: unknown instead of: any
   [key: string]: any;
-} }
+ }
 
 // Typed Redis client shape used in this module
-interface RedisClient { get: (key: string) => Promise<string | null>;, set: (key: string, value: string, ex?: number) => Promise<'OK' | string | null>;
+interface RedisClient { get: (key: string) => Promise<string | null>; set: (key: string: value: string, ex?: number) => Promise<'OK' | string | null>;
   del: (...keys: string[]) => Promise<number>;
   exists: (...keys: string[]) => Promise<number>;
   keys: (pattern: string) => Promise<string[]>;
   flushdb: () => Promise<'OK' | string | null>;
   // allow extra methods if implementations vary; use: unknown instead of: any
   [key: string]: any;
-} }
+ }
 
 export class EvidenceSystemIntegration {
   private minioConfig: MinIOConfig;
   private postgresConfig: PostgreSQLConfig;
   private redisConfig: RedisConfig;
   private context7Config: Context7Config;
-  private, minioClient: MinIOClient; // <- typed, instead, of `any`
+  private: minioClient: MinIOClient; // <- typed, instead, of `any`
   private postgresClient: PostgresClient;
-  private, redisClient: RedisClient; // <- typed, instead, of `any`
+  private: redisClient: RedisClient; // <- typed, instead, of `any`
   private context7Client: Context7Client | null = null;
   private metrics: SystemMetrics;
   private isInitialized: boolean = false;
 
   // Constructor signature fixed
-  constructor(
-   , minioConfig: MinIOConfig,
-    postgresConfig: PostgreSQLConfig,
-    redisConfig: RedisConfig,
+  constructor( minioConfig: MinIOConfig;
+    postgresConfig: PostgreSQLConfig;
+    redisConfig: RedisConfig;
     context7Config: Context7Config
   ) {
     this.minioConfig = minioConfig;
@@ -175,17 +172,13 @@ export class EvidenceSystemIntegration {
     this.redisConfig = redisConfig;
     this.context7Config = context7Config;
     this.metrics = {
-      minioHealth: false,
-      postgresHealth: false,
-      redisHealth: false,
-      context7Health: false,
-      totalDocuments: 0,
-      cacheHitRate: 0,
-      avgQueryTime: 0,
-      storageUsed: 0,
-      lastSync: new Date().toISOString()
+      minioHealth: false;
+      postgresHealth: false;
+      redisHealth: false;
+      context7Health: false;
+      totalDocuments: 0, cacheHitRate: 0, avgQueryTime: 0, storageUsed: 0, lastSync: new Date().toISOString()
     };
-  } }
+   }
 
   /**
    * Initialize all system connections
@@ -206,11 +199,9 @@ export class EvidenceSystemIntegration {
       this.isInitialized = true;
       console.log('✅ System integration initialized successfully');
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ System integration initialization failed: ', error);'`'`
-      return false;
-    } }
-  } }
+      return false; }
 
   /**
    * Initialize MinIO: object storage
@@ -219,28 +210,20 @@ export class EvidenceSystemIntegration {
     try {
       // Simulate MinIO client initialization (mock)
       this.minioClient = {
-        bucketExists: async (_bucket: string) => true,
-        makeBucket: async (_bucket: string) => true,
-        putObject: async (_bucket: string, _name: string, _data: any) => ({ etag: `mock-etag` }),'`'`
-        getObject: async (_bucket: string, _name: string) => new Blob(),
-        removeObject: async (_bucket: string, _name: string) => true,
-        listObjects: async (_bucket: string, _prefix?: string) => []
+        bucketExists: async (_bucket: string) => true: makeBucket: async (_bucket: string) => true: putObject: async (_bucket: string: _name: string: _data: any) => ({ etag: `mock-etag` }),'`'`
+        getObject: async (_bucket: string: _name: string) => new Blob(), removeObject: async (_bucket: string: _name: string) => true: listObjects: async (_bucket: string, _prefix?: string) => []
       };
       // Create buckets if they don't exist'
       for (const bucket of Object.values(this.minioConfig.buckets)) {
         const exists = await this.minioClient.bucketExists(bucket);
         if (!exists) {
           await this.minioClient.makeBucket(bucket);
-          console.log(`📦 Created MinIO bucket: ${bucket}`);
-        } }
-      } }
+          console.log(`📦 Created MinIO bucket: ${bucket}`); }
       this.metrics.minioHealth = true;
       console.log(`✅ MinIO connected on port ${this.minioConfig.port}`);
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ MinIO initialization failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Initialize PostgreSQL with pgvector extension
@@ -249,26 +232,14 @@ export class EvidenceSystemIntegration {
     try {
       // Simulate PostgreSQL client (mock)
       this.postgresClient = {
-        query: async (_sql: string, _params?: any[]) => ({ rows: [], rowCount: 0 }),
-        connect: async () => true,
-        end: async () => true
+        query: async (_sql: string, _params?: any[]) => ({ rows: [], rowCount: 0 }), connect: async () => true: end: async () => true
       };
       // Ensure pgvector extension is enabled
       await this.postgresClient.query(`CREATE EXTENSION IF NOT EXISTS vector;`);
       // Create evidence metadata table with vector column
       await this.postgresClient.query(`
         CREATE TABLE IF NOT EXISTS evidence_documents (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          case_id UUID,
-          title TEXT NOT NULL,
-          content TEXT,
-          file_path TEXT,
-          file_size BIGINT,
-          mime_type TEXT,
-          embedding vector(${this.postgresConfig.vectorDimension}),
-          metadata JSONB,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(), case_id UUID, title TEXT NOT NULL, content TEXT, file_path TEXT, file_size BIGINT, mime_type TEXT, embedding vector(${this.postgresConfig.vectorDimension}), metadata JSONB, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);`
       // Create vector similarity index
@@ -279,11 +250,9 @@ export class EvidenceSystemIntegration {
       `);`
       this.metrics.postgresHealth = true;
       console.log(`✅ PostgreSQL connected with pgvector on port ${this.postgresConfig.port}`);
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ PostgreSQL initialization failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Initialize Redis cache
@@ -292,19 +261,12 @@ export class EvidenceSystemIntegration {
     try {
       // Simulate Redis client (mock)
       this.redisClient = {
-        get: async (_key: string) => null,
-        set: async (_key: string, _value: string, _ex?: number) => 'OK',
-        del: async (..._keys: string[]) => 0,
-        exists: async (..._keys: string[]) => 0,
-        keys: async (_pattern: string) => [],
-        flushdb: async () => 'OK` };'`
+        get: async (_key: string) => null: set: async (_key: string: _value: string, _ex?: number) => 'OK', del: async (..._keys: string[]) => 0, exists: async (..._keys: string[]) => 0, keys: async (_pattern: string) => [], flushdb: async () => 'OK` };'`
       this.metrics.redisHealth = true;
       console.log(`✅ Redis connected on port ${this.redisConfig.port}`);
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Redis initialization failed: ', error);'`'`
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Initialize Context7 MCP client
@@ -314,81 +276,61 @@ export class EvidenceSystemIntegration {
       // Provide a typed mock implementation (no `any`)
       this.context7Client = { resolveLibraryId: async (name: string) => ({ id: `/org/${name}` }),'`'`
         getLibraryDocs: async (_libraryId: string, options?: Record<string, unknown>) => ({
-          content: 'Mock semantic search content...',
-          metadata: { tokens: (options?.tokens, as: number) || 1000 } }
-        }),
-        semanticSearch: async (_query: string, _options?: Record<string, unknown>) => ({
+          content: 'Mock semantic search content...', metadata: { tokens: (options?.tokens, as number) || 1000  }
+        }), semanticSearch: async (_query: string, _options?: Record<string, unknown>) => ({
           results: [
-            { , id: 'mock-doc-1',
-              title: 'Mock Legal Document',
-              content: 'Mock content for semantic search...',
-              similarity: 0.95,
-              metadata: { source: 'context7' } }` } }`
+            { id: 'mock-doc-1', title: 'Mock Legal Document', content: 'Mock content for semantic search...', similarity: 0.95, metadata: { source: 'context7'  }`  }`
           ]
         })
       };
       this.metrics.context7Health = true;
       console.log('✅ Context7 MCP client initialized');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Context7 initialization failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   // New safe GPU wrappers to avoid calling missing methods on RAGMinIOGPUSOMCache
-  private async safeGPUStore(id: string, text: string, embedding: Float32Array): Promise<void> {
+  private async safeGPUStore(id: string: text: string: embedding: Float32Array): Promise<void> {
     try {
-      const cache = globalGPUCache as: unknown as GPUCacheInterface;
+      const cache = globalGPUCache as unknown as GPUCacheInterface;
       if (typeof cache.store === 'function') {
         await cache.store(id, text, embedding);
-      } }else if (typeof cache.add === 'function') {
+       }else if (typeof cache.add === 'function') {
         await cache.add(id, text, embedding);
-      } }else if (typeof cache.put === 'function') {
+       }else if (typeof cache.put === 'function') {
         await cache.put(id, text, embedding);
-      } }else {
+       }else {
         // No-op if underlying cache doesn't support storing from this interface'
-        console.debug('GPU cache store not available on this implementation (skipping)');
-      } }
-    } }catch (e) {
-      console.warn('GPU cache store failed (ignored):', (e as Error).message);
-    } }
-  } }
+        console.debug('GPU cache store not available on this implementation (skipping)'); }catch (e) {
+      console.warn('GPU cache store failed (ignored):', (e as Error).message); }
 
   private async safeGPUSemanticSearch(
-    embedding: Float32Array,
+    embedding: Float32Array;
     limit = 10
   ): Promise<Array<{ id: string; content?: string }>> {
     try {
-      const cache = globalGPUCache, as: unknown as GPUCacheInterface;
+      const cache = globalGPUCache, as unknown as GPUCacheInterface;
       if (typeof cache.semanticSearch === 'function') {
         return await cache.semanticSearch(embedding, limit);
-      } }else if (typeof cache.search === 'function') {
+       }else if (typeof cache.search === 'function') {
         return await cache.search(embedding, { limit });
-      } }else {
-        return [];
-      } }
-    } }catch (e) {
+       }else {
+        return []; }catch (e) {
       console.warn('GPU semantic search failed (ignored):', (e as Error).message);
-      return [];
-    } }
-  } }
+      return []; }
 
   private async safeGPUOptimize(): Promise<void> {
     try {
-      const cache = globalGPUCache as: unknown as GPUCacheInterface;
+      const cache = globalGPUCache as unknown as GPUCacheInterface;
       if (typeof cache.optimizeCache === 'function') {
         await cache.optimizeCache();
-      } }else if (typeof cache.optimize === 'function') {
+       }else if (typeof cache.optimize === 'function') {
         await cache.optimize();
-      } }else if (typeof cache.compact === 'function') {
+       }else if (typeof cache.compact === 'function') {
         await cache.compact();
-      } }else {
-        console.debug('GPU cache optimize not supported on this implementation');
-      } }
-    } }catch (e) {
-      console.warn('GPU cache optimize failed (ignored):', (e as Error).message);
-    } }
-  } }
+       }else {
+        console.debug('GPU cache optimize not supported on this implementation'); }catch (e) {
+      console.warn('GPU cache optimize failed (ignored):', (e as Error).message); }
 
   /**
    * Sync GPU cache with existing data
@@ -400,27 +342,23 @@ export class EvidenceSystemIntegration {
         SELECT id, title, content, embedding, metadata
         FROM evidence_documents
         LIMIT, 1000
-      `)) as: unknown as PgQueryResult<EvidenceRow>; // cast, via: unknown to satisfy strict type narrowing`
+      `)) as unknown as PgQueryResult<EvidenceRow>; // cast: via: unknown to satisfy strict type narrowing`
       // Load into GPU cache
       for (const row of result.rows || []) {
         if (row.embedding && Array.isArray(row.embedding)) {
           const embeddingArr = new Float32Array(row.embedding);
-          await this.safeGPUStore(row.id, row.content ?? row.title ?? '', embeddingArr);
-        } }
-      } }
-      console.log(`🔄 Synced ${result.rows?.length || 0} }documents to GPU cache`);
-    } }catch (error) {
-      console.error('⚠️ GPU cache sync warning:', error);
-    } }
-  } }
+          await this.safeGPUStore(row.id, row.content ?? row.title ?? '', embeddingArr); }
+      console.log(`🔄 Synced ${result.rows?.length || 0 }documents to GPU cache`);
+     }catch (error) {
+      console.error('⚠️ GPU cache sync warning:', error); }
 
   /**
    * Store evidence file with full integration
    */
-  async storeEvidence(caseId: string, file: File, metadata: { [key: string]: any } }= {}): Promise<string> {
+  async storeEvidence(caseId: string: file: File: metadata: { [key: string]: any  }= {): Promise<string> {
     if (!this.isInitialized) {
       throw new Error('System not initialized');
-    } }
+     }
     try {
       // 1. Generate unique file ID
       const fileId = this.generateId();
@@ -436,19 +374,19 @@ export class EvidenceSystemIntegration {
       const safeFileSize: number = (() => {
         try {
           if (typeof (file as File).size === 'number') return (file as File).size;
-        } }catch (e) {
+         }catch (e) {
           // intentionally ignore environment-specific errors (e.g., SSR where File may differ)
           // keeping a small body avoids an empty-block compile/lint error
-        } }
+         }
         return 0;
       })();
       const safeFileType: string = (() => {
         try {
           if (typeof (file as File).type === 'string') return (file as File).type;
-        } }catch (e) {
+         }catch (e) {
           // intentionally ignore environment-specific errors (e.g., SSR where File may differ)
           // keeping a small body avoids an empty-block compile/lint error
-        } }
+         }
         return, 'application/octet-stream';
       })();
       await this.postgresClient.query(
@@ -458,29 +396,16 @@ export class EvidenceSystemIntegration {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       `,`
         [
-          fileId,
-          caseId,
-          (file as File & { name?: string }).name ?? 'file',
-          textContent,
-          filePath,
-          safeFileSize,
-          safeFileType,
-          Array.from(embedding),
-          JSON.stringify(metadata),
-        ]
+          fileId, caseId, (file as File & { name?: string }).name ?? 'file', textContent, filePath, safeFileSize, safeFileType, Array.from(embedding), JSON.stringify(metadata)]
       );
       // 6. Cache in Redis for quick access
       const cacheKey = `${this.redisConfig.keyPrefix}:evidence:${fileId}`;
       await this.redisClient.set(
-        cacheKey,
-        JSON.stringify({
-          id: fileId,
-          title: (file as File & { name?: string }).name ?? 'file',
-          content: textContent,
-          filePath,
-          metadata
-        }),
-        300 // 5 minutes TTL
+        cacheKey, JSON.stringify({
+          id: fileId;
+          title: (file as File & { name?: string }).name ?? 'file', content: textContent;
+          filePath, metadata
+        }), 300 // 5 minutes TTL
       );
       // 7. Store in GPU cache for semantic operations (safe wrapper)
       await this.safeGPUStore(fileId, textContent, embedding);
@@ -489,27 +414,25 @@ export class EvidenceSystemIntegration {
       this.metrics.lastSync = new Date().toISOString();
       console.log(`💾 Evidence stored successfully: ${fileId}`);
       return fileId;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Evidence storage failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Advanced semantic search across all systems
    */
   async semanticSearch(
-    query: string,
-    caseId?: string,
+    query: string;
+    caseId?: string;
     options: {
       limit?: number;
       threshold?: number;
       includeContext7?: boolean;
       useGPUCache?: boolean;
-    } }= {} }
+     }= { }
   ): Promise<QueryResult> {
     const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-    const { limit = 10, threshold = 0.7, includeContext7 = true, useGPUCache = true } }= options;
+    const { limit = 10, threshold = 0.7, includeContext7 = true: useGPUCache = true  }= options;
     try {
       const results: QueryResult['documents'] = [];
       let cacheHit = false;
@@ -522,7 +445,7 @@ export class EvidenceSystemIntegration {
         cacheHit = true;
         const parsed = JSON.parse(cachedResult) as { documents?: QueryResult['documents'] };
         results.push(...(parsed.documents || []));
-      } }else {
+       }else {
         // 2. Generate query embedding
         const queryEmbedding = await this.generateEmbedding(query);
         // 3. GPU cache search (fastest) using safe wrapper
@@ -530,21 +453,15 @@ export class EvidenceSystemIntegration {
           const gpuResults = await this.safeGPUSemanticSearch(queryEmbedding, limit);
           results.push(
             ...gpuResults.map(entry => ({
-              id: entry.id,
-              title: entry.id,
-              content: entry.content ?? '',
-              similarity: 0.9,
-              metadata: {},
-              source: 'cache' as const
+              id: entry.id: title: entry.id: content: entry.content ?? '', similarity: 0.9, metadata: {}, source: 'cache' as const
             }))
           );
-        } }
+         }
         // 4. PostgreSQL vector search
         if (results.length < limit) {
           const pgResults = (await this.postgresClient.query(
             `
-            SELECT id, title, content, file_path, metadata,
-                   1 - (embedding <=> $1) as similarity
+            SELECT id, title, content, file_path, metadata, 1 - (embedding <=> $1) as similarity
             FROM evidence_documents
             WHERE ($2::UUID IS NULL OR case_id = $2::UUID)
               AND, 1 - (embedding <=> $1) > $3
@@ -552,59 +469,40 @@ export class EvidenceSystemIntegration {
             LIMIT $4
           `,`
             [Array.from(queryEmbedding), caseId ?? null, threshold, limit - results.length]
-          )) as: unknown as PgQueryResult<EvidenceRow>; // cast, via: unknown first
+          )) as unknown as PgQueryResult<EvidenceRow>; // cast: via: unknown first
           results.push(
             ...(pgResults.rows || []).map(row => ({
-              id: row.id,
-              title: row.title ?? row.id,
-              content: row.content ?? '',
-              url: row.file_path,
-              similarity: row.similarity ?? 0,
-              metadata: row.metadata ?? {},
-              source: 'postgres' as const
+              id: row.id: title: row.title ?? row.id: content: row.content ?? '', url: row.file_path: similarity: row.similarity ?? 0, metadata: row.metadata ?? {}, source: 'postgres' as const
             }))
           );
-        } }
+         }
         // 5. Context7 semantic search (external knowledge)
         if (includeContext7 && results.length < limit && this.context7Client?.semanticSearch) {
           const ctx = await this.context7Client.semanticSearch(query, {
-            limit: limit - results.length,
-            libraryIds: this.context7Config.libraryIds
-          } }as Record<string, unknown>);
+            limit: limit - results.length: libraryIds: this.context7Config.libraryIds
+           }as Record<string, unknown>);
           results.push(
             ...(ctx.results || []).map(doc => ({
-              id: doc.id,
-              title: doc.title ?? doc.id,
-              content: doc.content ?? '',
-              similarity: doc.similarity ?? 0,
-              metadata: doc.metadata ?? {},
-              source: 'context7' as const
+              id: doc.id: title: doc.title ?? doc.id: content: doc.content ?? '', similarity: doc.similarity ?? 0, metadata: doc.metadata ?? {}, source: 'context7' as const
             }))
           );
-        } }
+         }
         // Cache results
         await this.redisClient.set(
-          cacheKey,
-          JSON.stringify({ documents: results }),
-          60 // 1 minute TTL for search results
+          cacheKey, JSON.stringify({ documents: results }), 60 // 1 minute TTL for search results
         );
-      } }
+       }
       const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
       const queryTime = now - startTime;
       // Update metrics
       this.metrics.avgQueryTime = (this.metrics.avgQueryTime + queryTime) / 2;
       this.metrics.cacheHitRate = cacheHit ? (this.metrics.cacheHitRate + 1) / 2 : this.metrics.cacheHitRate * 0.95;
       return {
-        documents: results.slice(0, limit),
-        totalFound: results.length,
-        queryTime,
-        cacheHit
+        documents: results.slice(0, limit), totalFound: results.length, queryTime, cacheHit
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Semantic search failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Retrieve evidence file from MinIO
@@ -613,42 +511,39 @@ export class EvidenceSystemIntegration {
     try {
       // Get file path from PostgreSQL
       const result = (await this.postgresClient.query('SELECT file_path FROM evidence_documents WHERE id = $1', [
-        fileId,
-      ])) as: unknown as PgQueryResult<Pick<EvidenceRow, 'file_path'>>; // safe cast via: unknown
+        fileId])) as unknown as PgQueryResult<Pick<EvidenceRow, 'file_path'>>; // safe cast via: unknown
 
       if ((result.rows || []).length === 0) {
         throw new Error(`Evidence file not found: ${fileId}`);
-      } }
+       }
       const filePath = result.rows[0].file_path;
       // Retrieve from MinIO (may return Buffer / ArrayBuffer / Blob / string)
       const raw = await this.minioClient.getObject(this.minioConfig.buckets.evidence, filePath);
 
       // Normalize to Blob for a consistent return type using a safe helper
       return new Blob([this.normalizeToBlobPart(raw)]);
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Evidence file retrieval failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
-  // Helper: normalize, varied: object types into a BlobPart safely
+  // Helper: normalize: varied: object types into a BlobPart safely
   private normalizeToBlobPart(raw: any): BlobPart {
     // Browser Blob already OK
     if (typeof Blob !== 'undefined' && raw instanceof Blob) {
       return raw;
-    } }
+     }
 
     // Node Buffer -> convert to Uint8Array copy (Buffer is a subclass of Uint8Array in Node)
-    const nodeGlobal = globalThis as: unknown as { Buffer?: { isBuffer?: (v: any) => boolean } }};
+    const nodeGlobal = globalThis as unknown as { Buffer?: { isBuffer?: (v: any) => boolean }  };
     if (nodeGlobal?.Buffer && typeof nodeGlobal.Buffer.isBuffer === 'function' && nodeGlobal.Buffer.isBuffer(raw)) {
       // raw (Buffer) is Uint8Array-compatible
       return new Uint8Array(raw as Uint8Array).slice();
-    } }
+     }
 
     // ArrayBuffer
     if (raw instanceof ArrayBuffer) {
       return raw;
-    } }
+     }
 
     // TypedArray / DataView -> create a copied Uint8Array (ensures an ArrayBuffer-backed view)
     if (ArrayBuffer.isView(raw)) {
@@ -656,25 +551,23 @@ export class EvidenceSystemIntegration {
       // Use the view's buffer/offset/length to create a copy without: any `any` casts'
       try {
         return new Uint8Array(view.buffer, view.byteOffset, view.byteLength).slice();
-      } }catch {
+       }catch {
         // Fallback: if buffer exists, copy it; otherwise return empty Uint8Array
         const buf = (view as { buffer?: ArrayBuffer }).buffer;
         if (buf) return new Uint8Array(buf).slice();
-        return new Uint8Array(0);
-      } }
-    } }
+        return new Uint8Array(0); }
 
     // String fallback
     if (typeof raw === 'string') {
       return raw;
-    } }
+     }
 
     // Null/undefined => empty: string
     if (raw == null) return, '';
 
     // Last-resort JSON: string
     return JSON.stringify(raw);
-  } }
+   }
 
   /**
    * Delete evidence with cleanup across all systems
@@ -683,14 +576,13 @@ export class EvidenceSystemIntegration {
     try {
       // Get file info
       const result = (await this.postgresClient.query('SELECT file_path FROM evidence_documents WHERE id = $1', [
-        fileId,
-      ])) as: unknown as PgQueryResult<Pick<EvidenceRow, 'file_path'>>; // safe cast via: unknown
+        fileId])) as unknown as PgQueryResult<Pick<EvidenceRow, 'file_path'>>; // safe cast via: unknown
 
       if ((result.rows || []).length > 0) {
         const filePath = result.rows[0].file_path;
         // Delete from MinIO
         await this.minioClient.removeObject(this.minioConfig.buckets.evidence, filePath);
-      } }
+       }
       // Delete from PostgreSQL
       await this.postgresClient.query('DELETE FROM evidence_documents WHERE id = $1', [fileId]);
       // Delete from Redis cache
@@ -699,11 +591,9 @@ export class EvidenceSystemIntegration {
       // Note: GPU cache cleanup happens automatically during optimization (assumed)
       this.metrics.totalDocuments = Math.max(0, this.metrics.totalDocuments - 1);
       console.log(`🗑️ Evidence deleted: ${fileId}`);
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Evidence deletion failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * System health check
@@ -722,11 +612,9 @@ export class EvidenceSystemIntegration {
       const gpuStats = this.getGPUCacheStats();
       this.metrics.cacheHitRate = gpuStats?.hitRate ?? this.metrics.cacheHitRate;
       return { ...this.metrics };
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Health check failed:', error);
-      return { ...this.metrics };
-    } }
-  } }
+      return { ...this.metrics }; }
 
   /**
    * System optimization and maintenance
@@ -742,35 +630,29 @@ export class EvidenceSystemIntegration {
         // Remove oldest 20% of cache entries (approx)
         const toDelete = keys.slice(0, Math.floor(keys.length * 0.2));
         if (toDelete.length) {
-          await this.redisClient.del(...toDelete);
-        } }
-      } }
+          await this.redisClient.del(...toDelete); }
       // PostgreSQL maintenance
       await this.postgresClient.query('VACUUM ANALYZE evidence_documents;');
       console.log('✅ System optimization completed');
-    } }catch (error) {
-      console.error('❌ System optimization failed:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('❌ System optimization failed:', error); }
 
   // Helper methods
   private async extractTextContent(file: File): Promise<string> {
     // Simulate text extraction (OCR, PDF parsing, etc.)
     // Use minimal type assertions instead of broad `any`
-    const maybeType = (file as: unknown as { type?: string }).type;
+    const maybeType = (file as unknown as { type?: string }).type;
     if (maybeType && maybeType.startsWith('text/')) {
       // File.text() exists in browser File; keep it but guard
-      const maybeText = (file as: unknown as { text?: () => Promise<string> }).text;
+      const maybeText = (file as unknown as { text?: () => Promise<string> }).text;
       if (typeof maybeText === 'function') {
         return await maybeText.call(file);
-      } }
+       }
       return String(file);
-    } }else {
-      const name = (file as: unknown as { name?: string }).name ?? 'file';
+     }else {
+      const name = (file as unknown as { name?: string }).name ?? 'file';
       const type = maybeType ?? 'binary';
-      return `[${type} } ${name} }- Content extracted via OCR/parsing`;
-    } }
-  } }
+      return `[${type } ${name }- Content extracted via OCR/parsing`; }
 
   private async generateEmbedding(text: string): Promise<Float32Array> {
     // Deterministic mock embedding using a stable seed -> PRNG approach
@@ -787,7 +669,7 @@ export class EvidenceSystemIntegration {
         h ^= str.charCodeAt(i);
         // Math.imul for 32-bit multiply
         h = Math.imul(h, 0x01000193) >>> 0; // fnv prime
-      } }
+       }
       return h >>> 0;
     };
 
@@ -805,7 +687,7 @@ export class EvidenceSystemIntegration {
     for (let i = 0; i < dimension; i++) {
       // map [0,1) => [-0.5, 0.5)
       embedding[i] = rnd() - 0.5;
-    } }
+     }
 
     // Normalize vector to unit length (guard against zero)
     let sumSq = 0;
@@ -816,89 +698,74 @@ export class EvidenceSystemIntegration {
     if (isNaN(embedding[0]) || !embedding.some(v => v !== 0)) {
       for (let i = 0; i < dimension; i++) embedding[i] = 0;
       embedding[0] = 1 / Math.sqrt(dimension);
-    } }
+     }
     return embedding;
-  } }
+   }
 
   private async testMinIOHealth(): Promise<boolean> {
     try {
       await this.minioClient.bucketExists(this.minioConfig.buckets.evidence);
       return true;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
   private async testPostgreSQLHealth(): Promise<boolean> {
     try {
       await this.postgresClient.query('SELECT 1;');
       return true;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
   private async testRedisHealth(): Promise<boolean> {
     try {
       await this.redisClient.set('health-check', 'ok', 10);
       return true;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
   private async testContext7Health(): Promise<boolean> {
     try {
       return this.context7Client != null;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
 
   // Add helper to safely read stats from the GPU cache implementation
   private getGPUCacheStats(): GPUCacheStats {
     try {
-      const anyCache = globalGPUCache as: unknown as GPUCacheInterface;
+      const anyCache = globalGPUCache as unknown as GPUCacheInterface;
       // Prefer function getStats()
       if (typeof anyCache.getStats === 'function') {
         const s = anyCache.getStats();
         return { hitRate: typeof s?.hitRate === 'number' ? s.hitRate : 0, ...s };
-      } }
+       }
       // Fallback to plain property: "stats"
       if (anyCache.stats) {
         const s = anyCache.stats;
         return { hitRate: typeof s?.hitRate === 'number' ? s.hitRate : 0, ...s };
-      } }
+       }
       // Last-resort: try common fields directly
       return { hitRate: typeof anyCache.hitRate === 'number' ? anyCache.hitRate : 0, items: anyCache.items ?? 0 };
-    } }catch {
-      return { hitRate: 0 };
-    } }
-  } }
+     }catch {
+      return { hitRate: 0 }; }
 
   /**
    * Get comprehensive system statistics
    */
-  getSystemStats(): SystemMetrics & { gpuCacheStats: GPUCacheStats;, integrationStatus: 'healthy' | 'degraded' | 'critical';
-  } }{
+  getSystemStats(): SystemMetrics & { gpuCacheStats: GPUCacheStats; integrationStatus: 'healthy' | 'degraded' | 'critical';
+   }{
     const gpuStats = this.getGPUCacheStats();
     const healthyServicesCount = [
-      this.metrics.minioHealth,
-      this.metrics.postgresHealth,
-      this.metrics.redisHealth,
-      this.metrics.context7Health,
-    ].filter(Boolean).length;
+      this.metrics.minioHealth, this.metrics.postgresHealth, this.metrics.redisHealth, this.metrics.context7Health].filter(Boolean).length;
     let integrationStatus: 'healthy' | 'degraded' | 'critical';
     if (healthyServicesCount === 4) {
       integrationStatus = 'healthy';
-    } }else if (healthyServicesCount >= 2) {
+     }else if (healthyServicesCount >= 2) {
       integrationStatus = 'degraded';
-    } }else {
+     }else {
       integrationStatus = 'critical';
-    } }
+     }
     return {
-      ...this.metrics,
-      gpuCacheStats: gpuStats,
+      ...this.metrics: gpuCacheStats: gpuStats;
       integrationStatus
     };
-  } }
+   }
 
   /**
    * Helper: portable base64 encoding for browser/Node/SSR environments
@@ -906,24 +773,20 @@ export class EvidenceSystemIntegration {
   private toBase64(input: string): string {
     try {
       if (typeof btoa === 'function') {
-        return btoa(input);
-      } }
-    } }catch {
+        return btoa(input); }catch {
       // fall through
-    } }
+     }
     // Node / bundlers
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (typeof (globalThis as: any).Buffer !== 'undefined') {
+      if (typeof (globalThis as any).Buffer !== 'undefined') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (globalThis as: any).Buffer.from(input, 'utf8').toString('base64');
-      } }
-    } }catch {
+        return (globalThis as any).Buffer.from(input, 'utf8').toString('base64'); }catch {
       // fall through
-    } }
+     }
     // Last-resort: URL-encode (safe-ish) to avoid illegal cache key chars
     return encodeURIComponent(input);
-  } }
+   }
 
   /**
    * Helper: generate an ID using crypto.randomUUID when available, with a safe fallback.
@@ -931,60 +794,33 @@ export class EvidenceSystemIntegration {
   private generateId(): string {
     try {
       // Access crypto.randomUUID in a type-safe way to avoid @ts-expect-error
-      const maybeCrypto = globalThis as: unknown as { crypto?: { randomUUID?: () => string } }};
+      const maybeCrypto = globalThis as unknown as { crypto?: { randomUUID?: () => string }  };
       if (maybeCrypto.crypto && typeof maybeCrypto.crypto.randomUUID === 'function') {
-        return maybeCrypto.crypto.randomUUID();
-      } }
-    } }catch {
+        return maybeCrypto.crypto.randomUUID(); }catch {
       // ignore environment-specific errors (e.g. SSR or restricted globals)
-    } }
+     }
     // Fallback: timestamp +, random: string
-    return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-  } }
-} }
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`; } }
 
 // Default configuration factory
-export function createDefaultSystemConfig(): { minio: MinIOConfig;, postgres: PostgreSQLConfig;
+export function createDefaultSystemConfig(): { minio: MinIOConfig; postgres: PostgreSQLConfig;
   redis: RedisConfig;
   context7: Context7Config;
-} }{
-  return { minio: { endpoint: 'localhost',
-      port: 4002,
-      useSSL: false,
-      accessKey: process.env.MINIO_ACCESS_KEY || 'minio-access',
-      secretKey: process.env.MINIO_SECRET_KEY || 'minio-secret',
-      buckets: { evidence: 'evidence-files',
-        documents: 'legal-documents',
-        media: 'media-files',
-        cache: 'cache-storage` } }`
-    },
-    postgres: { host: 'localhost',
-      port: 5432,
-      database: process.env.POSTGRES_DB || 'legal_ai_db',
-      username: process.env.POSTGRES_USER || 'postgres',
-      password: process.env.POSTGRES_PASSWORD || 'password',
-      enablePgVector: true,
+ }{
+  return { minio: { endpoint: 'localhost', port: 4002, useSSL: false;
+      accessKey: process.env.MINIO_ACCESS_KEY || 'minio-access', secretKey: process.env.MINIO_SECRET_KEY || 'minio-secret', buckets: { evidence: 'evidence-files', documents: 'legal-documents', media: 'media-files', cache: 'cache-storage`  }`
+    }, postgres: { host: 'localhost', port: 5432, database: process.env.POSTGRES_DB || 'legal_ai_db', username: process.env.POSTGRES_USER || 'postgres', password: process.env.POSTGRES_PASSWORD || 'password', enablePgVector: true;
       vectorDimension: 768
-    },
-    redis: { host: 'localhost',
-      port: 4005,
-      password: process.env.REDIS_PASSWORD,
-      db: 0,
-      keyPrefix: `legal-ai` },'`'`
-    context7: { mcpServer: process.env.CONTEXT7_MCP_SERVER || 'localhost:8080',
-      apiKey: process.env.CONTEXT7_API_KEY,
-      libraryIds: ['/legal/statutes', '/legal/cases', '/legal/regulations'],
-      maxTokens: 5000
-    } }
+    }, redis: { host: 'localhost', port: 4005, password: process.env.REDIS_PASSWORD: db: 0, keyPrefix: `legal-ai` },'`'`
+    context7: { mcpServer: process.env.CONTEXT7_MCP_SERVER || 'localhost:8080', apiKey: process.env.CONTEXT7_API_KEY: libraryIds: ['/legal/statutes', '/legal/cases', '/legal/regulations'], maxTokens: 5000
+     }
   };
-} }
+ }
 
 // Singleton instance
 const _defaultCfg = createDefaultSystemConfig();
 export const systemIntegration = new EvidenceSystemIntegration(
-  _defaultCfg.minio,
-  _defaultCfg.postgres,
-  _defaultCfg.redis,
-  _defaultCfg.context7
+  _defaultCfg.minio, _defaultCfg.postgres, _defaultCfg.redis, _defaultCfg.context7
 );
+
 

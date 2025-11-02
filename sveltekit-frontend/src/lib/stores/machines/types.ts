@@ -1,6 +1,6 @@
-import type { User } }from '$lib/types';
-import type { Document } }from '$lib/types';
-import type { StateValue, AnyEventObject } }from 'xstate';
+import type { User  } from '$lib/types';
+import type { Document  } from '$lib/types';
+import type { StateValue, AnyEventObject  } from 'xstate';
 /**
  * XState Types for Go Microservice Integration
  */
@@ -11,7 +11,7 @@ export interface BaseMachineContext {
   error?: string;
   retryCount: number;
   timestamp: number;
-} }
+ }
 // AI Processing Context
 export interface AIProcessingContext extends BaseMachineContext {
   task: AITask;
@@ -19,97 +19,96 @@ export interface AIProcessingContext extends BaseMachineContext {
   progress: number;
   provider: string;
   confidence?: number;
-} }
-export interface AITask { id: string;, type: 'parse' | 'som-train' | 'cuda-infer' | 'embed' | 'analyze';
+ }
+export interface AITask { id: string; type: 'parse' | 'som-train' | 'cuda-infer' | 'embed' | 'analyze';
   payload: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
   estimatedDuration?: number;
-} }
-export interface AITaskResult { taskId: string;, success: boolean;
+ }
+export interface AITaskResult { taskId: string; success: boolean;
   result: any;
   duration: number;
-  metrics?: { processingTime: number;, memoryUsed: string;
+  metrics?: { processingTime: number; memoryUsed: string;
     throughput: number;
   };
-} }
+ }
 // Document Processing Context
 export interface DocumentContext extends BaseMachineContext {
   document: DocumentInfo;
   extractedFields?: ExtractedField[];
   ocrResult?: OCRResult;
   processingStage: 'upload' | 'ocr' | 'extraction' | 'validation' | 'complete';
-} }
-export interface DocumentInfo { id: string;, filename: string;
+ }
+export interface DocumentInfo { id: string; filename: string;
   type: 'pdf' | 'image' | 'text';
   size: number;
   content?: string;
-} }
-export interface ExtractedField { name: string;, value: string;
+ }
+export interface ExtractedField { name: string; value: string;
   confidence: number;
   type: 'text' | 'date' | 'number' | 'email' | 'phone';
-} }
-export interface OCRResult { text: string;, confidence: number;
+ }
+export interface OCRResult { text: string; confidence: number;
   processingTime: number;
-} }
+ }
 // Go Microservice Context
 export interface GoMicroserviceContext extends BaseMachineContext {
   endpoint: string;
   request?: GoServiceRequest;
   response?: GoServiceResponse;
   connectionStatus: 'disconnected' | 'connecting' | 'connected' | 'error';
-  healthCheck: { lastCheck: number;, status: 'healthy' | 'degraded' | 'unhealthy';
+  healthCheck: { lastCheck: number; status: 'healthy' | 'degraded' | 'unhealthy';
     responseTime?: number;
   };
-} }
-export interface GoServiceRequest { method: 'GET' | 'POST' | 'PUT' | 'DELETE';, path: string;
+ }
+export interface GoServiceRequest { method: 'GET' | 'POST' | 'PUT' | 'DELETE'; path: string;
   body?: any;
   headers?: Record<string, string>;
-} }
-export interface GoServiceResponse { status: number;, data: any;
- , headers: Record<string, string>;
+ }
+export interface GoServiceResponse { status: number; data: any; headers: Record<string, string>;
   duration: number;
-} }
+ }
 // RAG Context
 export interface RAGContext extends BaseMachineContext {
   query: RAGQuery;
   results?: RAGResult[];
   searchStage: 'analyzing' | 'searching' | 'ranking' | 'synthesizing' | 'complete';
   enhancedMode: boolean;
-} }
-export interface RAGQuery { id: string;, text: string;
+ }
+export interface RAGQuery { id: string; text: string;
   intent?: string;
   filters?: RAGFilters;
   expandedQueries?: string[];
-} }
+ }
 export interface RAGFilters {
   dateRange?: { start: string; end: string };
   documentTypes?: string[];
   confidenceThreshold?: number;
-} }
-export interface RAGResult { id: string;, content: string;
+ }
+export interface RAGResult { id: string; content: string;
   score: number;
   metadata: { [key: string]: any };
   highlights?: string[];
-} }
+ }
 // User Workflow Context
-export interface UserWorkflowContext extends BaseMachineContext { workflow: WorkflowDefinition;, currentStep: number;
+export interface UserWorkflowContext extends BaseMachineContext { workflow: WorkflowDefinition; currentStep: number;
   completedSteps: string[];
   userInputs: { [key: string]: any };
   aiSuggestions?: AISuggestion[];
-} }
-export interface WorkflowDefinition { id: string;, name: string;
+ }
+export interface WorkflowDefinition { id: string; name: string;
   steps: WorkflowStep[];
   metadata?: { [key: string]: any };
-} }
-export interface WorkflowStep { id: string;, name: string;
+ }
+export interface WorkflowStep { id: string; name: string;
   type: 'input' | 'ai_process' | 'validation' | 'review';
   required: boolean;
   config?: { [key: string]: any };
-} }
-export interface AISuggestion { type: 'field_completion' | 'next_action' | 'workflow_optimization';, confidence: number;
+ }
+export interface AISuggestion { type: 'field_completion' | 'next_action' | 'workflow_optimization'; confidence: number;
   suggestion: string;
   reasoning?: string;
-} }
+ }
 // Event Types
 export interface AIProcessingEvents { START_PROCESSING: { task: AITask };
   PROCESSING_PROGRESS: { progress: number };
@@ -117,7 +116,7 @@ export interface AIProcessingEvents { START_PROCESSING: { task: AITask };
   PROCESSING_ERROR: { error: string };
   RETRY_PROCESSING: { [key: string]: any };
   CANCEL_PROCESSING: { [key: string]: any };
-} }
+ }
 export interface DocumentEvents { UPLOAD_DOCUMENT: { file: File };
   START_OCR: { options?: any };
   OCR_COMPLETE: { result: OCRResult };
@@ -127,7 +126,7 @@ export interface DocumentEvents { UPLOAD_DOCUMENT: { file: File };
   VALIDATION_COMPLETE: { isValid: boolean };
   SAVE_DOCUMENT: { document: DocumentInfo; fields: ExtractedField[] };
   DOCUMENT_ERROR: { error: string };
-} }
+ }
 export interface GoMicroserviceEvents { CONNECT: { endpoint: string };
   CONNECTION_SUCCESS: { [key: string]: any };
   CONNECTION_ERROR: { error: string };
@@ -138,7 +137,7 @@ export interface GoMicroserviceEvents { CONNECT: { endpoint: string };
   REQUEST_SUCCESS: { response: GoServiceResponse };
   REQUEST_ERROR: { error: string };
   DISCONNECT: { [key: string]: any };
-} }
+ }
 export interface RAGEvents { START_QUERY: { query: string; options?: any };
   ANALYZE_INTENT: { query: RAGQuery };
   INTENT_ANALYZED: { intent: string; expandedQueries: string[] };
@@ -150,7 +149,7 @@ export interface RAGEvents { START_QUERY: { query: string; options?: any };
   ANSWER_SYNTHESIZED: { answer: string; sources: RAGResult[] };
   QUERY_ERROR: { error: string };
   RESET_QUERY: { [key: string]: any };
-} }
+ }
 export interface UserWorkflowEvents { START_WORKFLOW: { workflowId: string };
   NEXT_STEP: { [key: string]: any };
   PREVIOUS_STEP: { [key: string]: any };
@@ -160,7 +159,7 @@ export interface UserWorkflowEvents { START_WORKFLOW: { workflowId: string };
   COMPLETE_WORKFLOW: { [key: string]: any };
   CANCEL_WORKFLOW: { [key: string]: any };
   WORKFLOW_ERROR: { error: string };
-} }
+ }
 // Machine States
 export type AIProcessingState = 'idle' | 'processing' | 'success' | 'error' | 'cancelled';
 export type DocumentState =
@@ -183,15 +182,15 @@ export type UserWorkflowState =
   | 'cancelled'
   | 'error';
 // Service configuration
-export interface ServiceConfig { retryCount: number;, timeout: number;
- , baseURL: string;
+export interface ServiceConfig { retryCount: number; timeout: number; baseURL: string;
   headers?: Record<string, string>;
-} }
+ }
 // Machine options
 export interface MachineOptions {
   services?: { [key: string]: any };
   guards?: { [key: string]: any };
   actions?: { [key: string]: any };
   delays?: Record<string, number>;
-} }
+ }
+
 

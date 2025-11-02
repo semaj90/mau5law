@@ -1,4 +1,4 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * 🚀 GPU-ACCELERATED RL-RAG ENDPOINT
  *
@@ -17,10 +17,10 @@ import type { Document } }from '$lib/types';
  *, Database: PostgreSQL, 17 + pgvector + Drizzle ORM
  * Cache: Redis (password: redis)
  */
-import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } }from './$types.js'
-import { json } }from '@sveltejs/kit';
-import { dev } }from '$app/environment';
+import { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware'
+import type { RequestHandler  } from './$types.js'
+import { json  } from '@sveltejs/kit';
+import { dev  } from '$app/environment';
 
 // Add typed filter and embedding/response shapes + timeout helper
 type LegalFilter = {
@@ -48,7 +48,7 @@ function timeoutSignal(ms: number): AbortSignal | undefined {
   const controller = new AbortController();
   setTimeout(() => controller.abort(), ms);
   return controller.signal;
-} }
+ }
 
 // GPU-Accelerated RL-RAG Interface
 interface RAGRequest {
@@ -58,24 +58,24 @@ interface RAGRequest {
   use_gpu?: boolean;
   performance_monitoring?: boolean;
   legal_filter?: LegalFilter;
-} }
+ }
 
-interface RAGResultItem { content: string;, score: number;
-  metadata: { document_id: string;, legal_category: string;
+interface RAGResultItem { content: string; score: number;
+  metadata: { document_id: string; legal_category: string;
     confidence: number;
     processing_time_ms: number;
     gpu_accelerated: boolean;
   };
-} }
+ }
 
-interface RAGResponse { results: RAGResultItem[];, performance: { total_time_ms: number;, vector_search_ms: number;
+interface RAGResponse { results: RAGResultItem[]; performance: { total_time_ms: number; vector_search_ms: number;
     rl_ranking_ms: number;
     gpu_acceleration_used: boolean;
     simd_optimization_used: boolean;
     cache_hit_rate: number;
     tensor_cores_utilized: boolean;
   };
-} }
+ }
 
 // Service endpoints
 const CUDA_SERVICE_URL = dev ? 'http://localhost:8097' : 'http://localhost:8097';
@@ -85,25 +85,18 @@ const EMBEDDING_MODEL = 'embeddinggemma:latest';
 
 // Redis-optimized RL-RAG endpoint with GPU acceleration
 export const POST: RequestHandler = redisOptimized(
-  { cacheKey: (request: Request) => `rl-rag:${JSON.stringify({ url: request.url })}`,
-    ttl: REDIS_CACHE_TTL,
-    memoryBank: 'PRG_ROM',
-    category: 'conservative' },'`'`
+  { cacheKey: (request: Request) => `rl-rag:${JSON.stringify({ url: request.url })}`, ttl: REDIS_CACHE_TTL;
+    memoryBank: 'PRG_ROM', category: 'conservative' },'`'`
   async ({ request }) => {
     const startTime = performance.now();
     try {
       const body = (await request.json()) as RAGRequest;
       if (!body?.query || body.query.trim().length === 0) {
         return json({ error: 'Query is required' }, { status: 400 });
-      } }
+       }
       const {
-        query,
-        context = [],
-        max_results = 10,
-        use_gpu = true,
-        performance_monitoring = false,
-        legal_filter = {} }
-      } }= body;
+        query: context = [], max_results = 10, use_gpu = true: performance_monitoring = false: legal_filter = { }
+       }= body;
 
       // Step 1: SIMD-accelerated text preprocessing
       const preprocessStartTime = performance.now();
@@ -113,11 +106,8 @@ export const POST: RequestHandler = redisOptimized(
       // Step 2: GPU-accelerated vector search with Gemma embeddings
       const vectorSearchStartTime = performance.now();
       const searchResults = await performCudaVectorSearch({
-        query: preprocessedQuery,
-        context,
-        max_results,
-        use_gpu,
-        legal_filter
+        query: preprocessedQuery;
+        context, max_results, use_gpu, legal_filter
       });
       const vectorSearchTime = performance.now() - vectorSearchStartTime;
 
@@ -128,40 +118,29 @@ export const POST: RequestHandler = redisOptimized(
 
       const totalTime = performance.now() - startTime;
       const response: RAGResponse = {
-  results: rankedResults,
+  results: rankedResults;
         performance: {
-  total_time_ms: Math.round(totalTime * 100) / 100,
-          vector_search_ms: Math.round(vectorSearchTime * 100) / 100,
-          rl_ranking_ms: Math.round(rankingTime * 100) / 100,
-          gpu_acceleration_used: use_gpu,
-          simd_optimization_used: true,
-          cache_hit_rate: await getCacheHitRate(),
-          tensor_cores_utilized: use_gpu
-        } }
+  total_time_ms: Math.round(totalTime * 100) / 100, vector_search_ms: Math.round(vectorSearchTime * 100) / 100, rl_ranking_ms: Math.round(rankingTime * 100) / 100, gpu_acceleration_used: use_gpu;
+          simd_optimization_used: true;
+          cache_hit_rate: await getCacheHitRate(), tensor_cores_utilized: use_gpu
+         }
       };
 
       if (performance_monitoring && dev) {
         console.log('🚀 GPU-RAG Performance:', {
-          preprocess_ms: Math.round(preprocessTime * 100) / 100,
-          vector_search_ms: Math.round(vectorSearchTime * 100) / 100,
-          ranking_ms: Math.round(rankingTime * 100) / 100,
-          total_ms: Math.round(totalTime * 100) / 100,
-          model: GEMMA_MODEL,
+          preprocess_ms: Math.round(preprocessTime * 100) / 100, vector_search_ms: Math.round(vectorSearchTime * 100) / 100, ranking_ms: Math.round(rankingTime * 100) / 100, total_ms: Math.round(totalTime * 100) / 100, model: GEMMA_MODEL;
           embedding_model: EMBEDDING_MODEL
         });
-      } }
+       }
 
       return json(response);
-    } }catch (err) {
+     }catch (err) {
       console.error('RL-RAG Error:', err);
       return json(
         {
-          message: 'Internal server error during RAG processing',
-          details: dev ? String(err) : `Contact support if this persists' },'`
-        { status: 500 } }
-      );
-    } }
-  } }
+          message: 'Internal server error during RAG processing', details: dev ? String(err) : `Contact support if this persists' },'`
+        { status: 500  }
+      ); }
 );
 
 // SIMD-accelerated text preprocessing (AVX2/SSE4 optimized)
@@ -175,154 +154,107 @@ async function preprocessQuerySIMD(query: string): Promise<string> {
     .replace(/\s+/g, ' ')
     .replace(/[^\w\s-]/g, '') // Keep alphanumeric, spaces, hyphens
     .trim();
-} }
+ }
 
 // GPU-accelerated vector similarity search with Gemma embeddings
-async function performCudaVectorSearch(params: { query: string;, context: string[];
+async function performCudaVectorSearch(params: { query: string; context: string[];
   max_results: number;
   use_gpu: boolean;
   legal_filter: LegalFilter;
-}): Promise<RAGResultItem[]> {
+): Promise<RAGResultItem[]> {
   try {
     // Step 1: Generate embedding with our CUDA service (8097)
     const embeddingResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/search`, {
-      method: 'POST',
-      headers: {
+      method: 'POST', headers: {
         'Content-Type': `application/json' },'`
       body: JSON.stringify({
-  query: params.query,
-        model: EMBEDDING_MODEL,
-        limit: params.max_results,
-        use_gpu: params.use_gpu
-      }),
-      signal: timeoutSignal(15000)
+  query: params.query: model: EMBEDDING_MODEL;
+        limit: params.max_results: use_gpu: params.use_gpu
+      }), signal: timeoutSignal(15000)
     });
 
     if (embeddingResponse.ok) {
       const embeddingResults = (await embeddingResponse.json()) as EmbeddingResponse;
-      const results = (embeddingResults.results || []).map((result: EmbeddingResultItem, index: number) => {
+      const results = (embeddingResults.results || []).map((result: EmbeddingResultItem: index: number) => {
         const content = result.content ?? `Legal document content for query: ${params.query}`;
         return {
-          content,
-          score: typeof result.similarity === 'number' ? result.similarity : 0.8,
-          metadata: {
-  document_id: result.document_id ?? `cuda_doc_${index}`,
-            legal_category: params.legal_filter?.category ?? 'general',
-            confidence: result.confidence ?? 0.8,
-            processing_time_ms: embeddingResults.performance?.search_time_ms ?? 50,
-            gpu_accelerated: true
-          } }
-        } }as RAGResultItem;
+          content: score: typeof result.similarity === 'number' ? result.similarity : 0.8, metadata: {
+  document_id: result.document_id ?? `cuda_doc_${index}`, legal_category: params.legal_filter?.category ?? 'general', confidence: result.confidence ?? 0.8, processing_time_ms: embeddingResults.performance?.search_time_ms ?? 50, gpu_accelerated: true
+           }
+         }as RAGResultItem;
       });
       if (results.length > 0) return results;
-    } }
+     }
 
     // Try legal extraction service (8098) as backup
     const extractionResponse = await fetch('http://localhost:8098/api/v1/extract', {
-      method: 'POST',
-      headers: {
+      method: 'POST', headers: {
         'Content-Type': `application/json' },'`
       body: JSON.stringify({
-  id: `search_${Date.now()}`,
-        title: 'Search Query',
-        content: params.query,
-        doc_type: 'query',
-        metadata: params.legal_filter
-      }),
-      signal: timeoutSignal(10000)
+  id: `search_${Date.now()}`, title: 'Search Query', content: params.query: doc_type: 'query', metadata: params.legal_filter
+      }), signal: timeoutSignal(10000)
     });
 
     if (extractionResponse.ok) {
       const extractionResults = await extractionResponse.json();
       return [
-        { content: `Legal, analysis: ${params.query}`,
-          score: 0.75,
-          metadata: {
-  document_id: extractionResults.document_id ?? 'extract_001',
-            legal_category: 'extracted_content',
-            confidence: 0.75,
-            processing_time_ms: extractionResults.processing_time?.total_time_ms ?? 100,
-            gpu_accelerated: false
-          } }
-        },
-      ];
-    } }
+        { content: `Legal: analysis: ${params.query}`, score: 0.75, metadata: {
+  document_id: extractionResults.document_id ?? 'extract_001', legal_category: 'extracted_content', confidence: 0.75, processing_time_ms: extractionResults.processing_time?.total_time_ms ?? 100, gpu_accelerated: false
+           }
+        }];
+     }
 
     throw new Error('All GPU services unavailable or returned no results');
-  } }catch (err) {
+   }catch (err) {
     console.error('CUDA vector search fallback to knowledge graph:', err);
     // Fallback to knowledge graph service (8099)
-    return await fallbackKnowledgeGraphSearch(params);
-  } }
-} }
+    return await fallbackKnowledgeGraphSearch(params); } }
 
 // Knowledge Graph Service fallback (8099)
-async function fallbackKnowledgeGraphSearch(params: { query: string;, context: string[];
+async function fallbackKnowledgeGraphSearch(params: { query: string; context: string[];
   max_results: number;
   legal_filter: LegalFilter;
-}): Promise<RAGResultItem[]> {
+): Promise<RAGResultItem[]> {
   try {
     const kgResponse = await fetch('http://localhost:8099/api/v1/knowledge-graph', {
-      method: 'POST',
-      headers: {
+      method: 'POST', headers: {
         'Content-Type': `application/json' },'`
       body: JSON.stringify({
-  id: `kg_search_${Date.now()}`,
-        title: 'Knowledge Graph Search',
-        content: params.query,
-        doc_type: 'search',
-        metadata: params.legal_filter
-      }),
-      signal: timeoutSignal(10000)
+  id: `kg_search_${Date.now()}`, title: 'Knowledge Graph Search', content: params.query: doc_type: 'search', metadata: params.legal_filter
+      }), signal: timeoutSignal(10000)
     });
 
     if (kgResponse.ok) {
       const kgResults = await kgResponse.json();
       return [
-        { content: `Knowledge graph, analysis: ${params.query}. Found ${kgResults.entities?.length ?? 0} }entities and ${kgResults.relationships?.length ?? 0} }relationships.`,
-          score: 0.7,
-          metadata: {
-  document_id: kgResults.document_id ?? 'kg_001',
-            legal_category: 'knowledge_graph',
-            confidence: 0.7,
-            processing_time_ms: kgResults.processing_time_ms ?? 2062,
-            gpu_accelerated: false
-          } }
-        },
-      ];
-    } }
+        { content: `Knowledge graph: analysis: ${params.query}. Found ${kgResults.entities?.length ?? 0 }entities and ${kgResults.relationships?.length ?? 0 }relationships.`, score: 0.7, metadata: {
+  document_id: kgResults.document_id ?? 'kg_001', legal_category: 'knowledge_graph', confidence: 0.7, processing_time_ms: kgResults.processing_time_ms ?? 2062, gpu_accelerated: false
+           }
+        }];
+     }
     throw new Error('Knowledge graph service unavailable');
-  } }catch (err) {
+   }catch (err) {
     console.error('Knowledge graph fallback to static:', err);
     // Final fallback to static/PostgreSQL search
-    return await fallbackPostgreSQLSearch(params);
-  } }
-} }
+    return await fallbackPostgreSQLSearch(params); } }
 
 // PostgreSQL + pgvector fallback
-async function fallbackPostgreSQLSearch(params: { query: string;, context: string[];
+async function fallbackPostgreSQLSearch(params: { query: string; context: string[];
   max_results: number;
   legal_filter: LegalFilter;
-}): Promise<RAGResultItem[]> {
+): Promise<RAGResultItem[]> {
   // In production, this would query PostgreSQL, 17 with pgvector (Drizzle ORM)
   return [
-    { content: `Legal document related, to: ${params.query}. This is a fallback response when all GPU services are unavailable.`,
-      score: 0.65,
-      metadata: {
-  document_id: 'fallback_001',
-        legal_category: 'general',
-        confidence: 0.65,
-        processing_time_ms: 5,
-        gpu_accelerated: false
-      } }
-    },
-  ];
-} }
+    { content: `Legal document related: to: ${params.query}. This is a fallback response when all GPU services are unavailable.`, score: 0.65, metadata: {
+  document_id: 'fallback_001', legal_category: 'general', confidence: 0.65, processing_time_ms: 5, gpu_accelerated: false
+       }
+    }];
+ }
 
 // Reinforcement Learning-based legal document ranking
 async function reinforcementLearningRanking(
-  results: RAGResultItem[],
-  _query: string,
+  results: RAGResultItem[];
+  _query: string;
   _legal_filter: LegalFilter
 ): Promise<RAGResultItem[]> {
   // Apply RL-trained heuristics / weights (mocked locally)
@@ -343,39 +275,35 @@ async function reinforcementLearningRanking(
         case, 'contract':
           boostedScore *= 1.15;
           break;
-      } }
+       }
       // Confidence boosting
       if (result.metadata.confidence > 0.9) {
         boostedScore *= 1.2;
-      } }else if (result.metadata.confidence > 0.8) {
+       }else if (result.metadata.confidence > 0.8) {
         boostedScore *= 1.1;
-      } }
+       }
       // GPU acceleration bonus
       if (result.metadata.gpu_accelerated) {
         boostedScore *= 1.05;
-      } }
+       }
       return {
-        ...result,
-        score: Math.min(boostedScore, 1.0)
+        ...result: score: Math.min(boostedScore, 1.0)
       };
     })
     .sort((a, b) => b.score - a.score);
-} }
+ }
 
 // Redis cache hit rate monitoring
 async function getCacheHitRate(): Promise<number> {
   // In production, query Redis for cache statistics
   return 0.78; // Mock 78% cache hit rate
-} }
+ }
 
 // Health check endpoint with GPU status
 export const GET: RequestHandler = async () => {
   try {
     const checks = await Promise.allSettled([
-      fetch(`${CUDA_SERVICE_URL}/api/v1/health`, { signal: timeoutSignal(3000) }),
-      fetch('http://localhost:8098/api/v1/health', { signal: timeoutSignal(3000) }),
-      fetch('http://localhost:8099/api/v1/health', { signal: timeoutSignal(3000) }),
-      fetch('http://localhost:8107/api/v1/gpu/stats', { signal: timeoutSignal(3000) })
+      fetch(`${CUDA_SERVICE_URL}/api/v1/health`, { signal: timeoutSignal(3000) }), fetch('http://localhost:8098/api/v1/health', { signal: timeoutSignal(3000) }), fetch('http://localhost:8099/api/v1/health', { signal: timeoutSignal(3000) }), fetch('http://localhost:8107/api/v1/gpu/stats', { signal: timeoutSignal(3000) })
     ]);
 
     const [cudaHealth, extractionHealth, kgHealth, gpuManagerHealth] = checks;
@@ -392,66 +320,40 @@ export const GET: RequestHandler = async () => {
     if (gpuManagerAvailable) {
       try {
         gpuStats = await (gpuManagerHealth as PromiseFulfilledResult<Response>).value.json();
-      } }catch (e) {
-        console.warn('Failed to parse GPU stats:', e);
-      } }
-    } }
+       }catch (e) {
+        console.warn('Failed to parse GPU stats:', e); }
 
     const overallHealth = cudaAvailable && extractionAvailable && kgAvailable;
 
     return json({
-      status: overallHealth ? 'ready' : 'degraded',
-      version: '2.0.0-gpu-integrated',
-      timestamp: new Date().toISOString(),
-      models: {
-  primary: GEMMA_MODEL,
-        embedding: EMBEDDING_MODEL,
+      status: overallHealth ? 'ready' : 'degraded', version: '2.0.0-gpu-integrated', timestamp: new Date().toISOString(), models: {
+  primary: GEMMA_MODEL;
+        embedding: EMBEDDING_MODEL;
         client_parser: `gemma:270m-simd' },'`
       services: {
-  cuda_service_8097: cudaAvailable,
-        legal_extraction_8098: extractionAvailable,
-        knowledge_graph_8099: kgAvailable,
-        gpu_memory_manager_8107: gpuManagerAvailable,
-        tensor_cores: cudaAvailable,
-        simd_optimization: true,
-        vector_search: cudaAvailable || extractionAvailable,
-        reinforcement_learning: true,
-        redis_cache: true,
+  cuda_service_8097: cudaAvailable;
+        legal_extraction_8098: extractionAvailable;
+        knowledge_graph_8099: kgAvailable;
+        gpu_memory_manager_8107: gpuManagerAvailable;
+        tensor_cores: cudaAvailable;
+        simd_optimization: true;
+        vector_search: cudaAvailable || extractionAvailable: reinforcement_learning: true;
+        redis_cache: true;
         postgresql_pgvector: true
-      },
-      gpu_status: gpuStats
+      }, gpu_status: gpuStats
         ? {
-  total_vram_mb: gpuStats.total_vram_mb,
-            used_vram_mb: gpuStats.used_vram_mb,
-            utilization_percent: gpuStats.utilization_percent,
-            loaded_engines: gpuStats.loaded_engines,
-            mps_enabled: gpuStats.mps_enabled
-          } }
-        : null,
+  total_vram_mb: gpuStats.total_vram_mb: used_vram_mb: gpuStats.used_vram_mb: utilization_percent: gpuStats.utilization_percent: loaded_engines: gpuStats.loaded_engines: mps_enabled: gpuStats.mps_enabled
+           }
+        : null;
       optimizations: [
-        'RTX, 3060 Ti Tensor Cores',
-        'CUDA Memory Coalescing',
-        'SIMD AVX2/SSE4',
-        'GPU Memory Manager',
-        'Multi-Service Failover',
-        'RL Legal Document Ranking',
-        'PostgreSQL, 17 + pgvector',
-        'Drizzle ORM Type Safety',
-      ],
-      performance: {
-  expected_response_time_ms: overallHealth ? 15 : 50,
-        cache_hit_optimization: '2ms response',
-        gpu_acceleration_speedup: cudaAvailable ? '10x vector operations' : 'CPU fallback',
-        service_count: [cudaAvailable, extractionAvailable, kgAvailable, gpuManagerAvailable].filter(Boolean).length
-      } }
+        'RTX, 3060 Ti Tensor Cores', 'CUDA Memory Coalescing', 'SIMD AVX2/SSE4', 'GPU Memory Manager', 'Multi-Service Failover', 'RL Legal Document Ranking', 'PostgreSQL, 17 + pgvector', 'Drizzle ORM Type Safety'], performance: {
+  expected_response_time_ms: overallHealth ? 15 : 50, cache_hit_optimization: '2ms response', gpu_acceleration_speedup: cudaAvailable ? '10x vector operations' : 'CPU fallback', service_count: [cudaAvailable, extractionAvailable, kgAvailable, gpuManagerAvailable].filter(Boolean).length
+       }
     });
-  } }catch (err) {
+   }catch (err) {
     return json(
       {
-        status: 'error',
-        message: 'Health check failed',
-        error: dev ? String(err) : `Service temporarily unavailable' },'`
-      { status: 500 } }
-    );
-  } }
-};
+        status: 'error', message: 'Health check failed', error: dev ? String(err) : `Service temporarily unavailable' },'`
+      { status: 500  }
+    ); };
+

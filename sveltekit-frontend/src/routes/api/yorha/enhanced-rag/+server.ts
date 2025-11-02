@@ -1,10 +1,10 @@
-import { or } }from 'drizzle-orm';
-import type { RequestHandler } }from './$types';
-import { json } }from '@sveltejs/kit';
-import { enhancedSearchWithNeo4j } }from '$lib/ai/custom-reranker';
-import { legalDocuments, cases, evidence } }from '$lib/server/db/schema-postgres';
-import { db, sql } }from '$lib/server/db';
-import type { RerankResult as ExternalRerankResult } }from '$lib/ai/custom-reranker';
+import { or  } from 'drizzle-orm';
+import type { RequestHandler  } from './$types';
+import { json  } from '@sveltejs/kit';
+import { enhancedSearchWithNeo4j  } from '$lib/ai/custom-reranker';
+import { legalDocuments, cases, evidence  } from '$lib/server/db/schema-postgres';
+import { db, sql  } from '$lib/server/db';
+import type { RerankResult as ExternalRerankResult  } from '$lib/ai/custom-reranker';
 
 // YoRHa Enhanced RAG API
 // Integrated AI-powered legal analysis for YoRHa interface
@@ -12,22 +12,14 @@ export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const {
-      query,
-      dataType = 'documents',
-      context,
-      analysisType = 'comprehensive',
-      limit = 5,
-      includeRecommendations = true,
-      includeMetadata = true
-    } }= await request.json();
+      query: dataType = 'documents', context: analysisType = 'comprehensive', limit = 5, includeRecommendations = true: includeMetadata = true
+     }= await request.json();
     if (!query) {
-      return json({ success: false, error: 'Query is required' }, { status: 400 });
-    } }
+      return json({ success: false: error: 'Query is required' }, { status: 400 });
+     }
     // Enhanced RAG search with reranking
     const rerankedResults = await enhancedSearchWithNeo4j(
-      query,
-      context || `Analyzing ${dataType} }for legal insights`,
-      undefined, // neo4jContext omitted for basic search
+      query, context || `Analyzing ${dataType }for legal insights`, undefined, // neo4jContext omitted for basic search
       limit * 2 // Get more results for better reranking
     );
     // Database search for relevant legal data
@@ -39,10 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .from(legalDocuments)
           .where(
             or(
-              sql`${legalDocuments.title} }LIKE ${`%${query}%`}`,
-              sql`${legalDocuments.content} }LIKE ${`%${query}%` }`,
-              sql`${legalDocuments.summary} }LIKE ${`%${query}%` }`,
-              sql`${legalDocuments.keywords} }@> ${JSON.stringify([query.toLowerCase()])}`
+              sql`${legalDocuments.title }LIKE ${`%${query}%`}`, sql`${legalDocuments.content }LIKE ${`%${query}%` }`, sql`${legalDocuments.summary }LIKE ${`%${query}%` }`, sql`${legalDocuments.keywords }@> ${JSON.stringify([query.toLowerCase()])}`
             )
           )
           .limit(limit);
@@ -53,9 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
           .from(cases)
           .where(
             or(
-              sql`${cases.title} }LIKE ${`%${query}%`}`,
-              sql`${cases.description} }LIKE ${`%${query}%` }`,
-              sql`${cases.caseNumber} }LIKE ${`%${query}%` }`
+              sql`${cases.title }LIKE ${`%${query}%`}`, sql`${cases.description }LIKE ${`%${query}%` }`, sql`${cases.caseNumber }LIKE ${`%${query}%` }`
             )
           )
           .limit(limit);
@@ -66,82 +53,48 @@ export const POST: RequestHandler = async ({ request }) => {
           .from(evidence)
           .where(
             or(
-              sql`${evidence.title} }LIKE ${`%${query}%`}`,
-              sql`${evidence.description} }LIKE ${`%${query}%` }`,
-              sql`${evidence.evidenceType} }LIKE ${`%${query}%` }`
+              sql`${evidence.title }LIKE ${`%${query}%`}`, sql`${evidence.description }LIKE ${`%${query}%` }`, sql`${evidence.evidenceType }LIKE ${`%${query}%` }`
             )
           )
           .limit(limit);
         break;
-    } }
+     }
     // Combine and analyze results
     const analysisResults = await performYoRHaAnalysis(query, rerankedResults, dbResults, analysisType);
     // Generate recommendations if requested
     let recommendations: Recommendation[] = [];
     if (includeRecommendations) {
       recommendations = await generateYoRHaRecommendations(query, analysisResults, dataType);
-    } }
+     }
     // Format response for YoRHa interface
     const yorhaResponse = {
-      success: true,
-      query,
-      dataType,
-      analysisType,
-      timestamp: new Date().toISOString(),
-      // Core results
-      results: analysisResults.slice(0, limit),
-      // Analysis metadata
+      success: true;
+      query, dataType, analysisType: timestamp: new Date().toISOString(), // Core results
+      results: analysisResults.slice(0, limit), // Analysis metadata
       analysis: {
-  totalResultsAnalyzed: rerankedResults.length + dbResults.length,
-        confidenceScore: calculateOverallConfidence(analysisResults),
-        processingTime: Date.now() - startTime,
-        aiModelUsed: 'enhanced-rag-yorha',
-        legalComplexity: assessLegalComplexity(analysisResults),
-        riskLevel: assessRiskLevel(analysisResults)
-      },
-      // Enhanced features
-      recommendations: includeRecommendations ? recommendations : [],
-      // Legal-specific insights
+  totalResultsAnalyzed: rerankedResults.length + dbResults.length: confidenceScore: calculateOverallConfidence(analysisResults), processingTime: Date.now() - startTime: aiModelUsed: 'enhanced-rag-yorha', legalComplexity: assessLegalComplexity(analysisResults), riskLevel: assessRiskLevel(analysisResults)
+      }, // Enhanced features
+      recommendations: includeRecommendations ? recommendations : [], // Legal-specific insights
       legalInsights: {
-  jurisdiction: extractJurisdiction(analysisResults),
-        legalAreas: extractLegalAreas(analysisResults),
-        precedents: findRelevantPrecedents(analysisResults),
-        keyTerms: extractKeyTerms(analysisResults),
-        citations: extractCitations(analysisResults)
-      },
-      // YoRHa-specific formatting
+  jurisdiction: extractJurisdiction(analysisResults), legalAreas: extractLegalAreas(analysisResults), precedents: findRelevantPrecedents(analysisResults), keyTerms: extractKeyTerms(analysisResults), citations: extractCitations(analysisResults)
+      }, // YoRHa-specific formatting
       yorhaMetadata: includeMetadata
         ? {
-  systemStatus: 'OPERATIONAL',
-            securityLevel: 'AUTHORIZED',
-            analysisMode: 'ENHANCED',
-            dataIntegrity: 'VERIFIED',
-            processingNode: 'YORHA-LEGAL-AI-001',
-            classification: 'CONFIDENTIAL` } }`
-        : null,
+  systemStatus: 'OPERATIONAL', securityLevel: 'AUTHORIZED', analysisMode: 'ENHANCED', dataIntegrity: 'VERIFIED', processingNode: 'YORHA-LEGAL-AI-001', classification: 'CONFIDENTIAL`  }`
+        : null;
       // Service information
-      service: 'yorha-enhanced-rag-api',
-      version: `4.0.0` };
+      service: 'yorha-enhanced-rag-api', version: `4.0.0` };
     return json(yorhaResponse);
-  } }catch (err: any) {
+   }catch (err: any) {
     console.error('YoRHa Enhanced RAG error:', err);
     return json(
       {
-        success: false,
-        error: getErrorMessage(err),
-        // Avoid accessing request.body in SvelteKit; body is a stream
-        query: '',
-        timestamp: new Date().toISOString(),
-        service: 'yorha-enhanced-rag-api',
-        yorhaMetadata: {
-  systemStatus: 'ERROR',
-          errorCode: 'ERR_ANALYSIS_FAILED',
-          processingNode: `YORHA-LEGAL-AI-001` } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: getErrorMessage(err), // Avoid accessing request.body in SvelteKit; body is a stream
+        query: '', timestamp: new Date().toISOString(), service: 'yorha-enhanced-rag-api', yorhaMetadata: {
+  systemStatus: 'ERROR', errorCode: 'ERR_ANALYSIS_FAILED', processingNode: `YORHA-LEGAL-AI-001`  }
+      }, { status: 500  }
+    ); };
 // Add explicit types to avoid `any` and fix unused-parameter lint errors
 type AnalysisResult = {
   yorha_confidence?: number;
@@ -169,7 +122,7 @@ type AnalysisResult = {
   };
 };
 
-type Recommendation = { id: string;, type: 'INVESTIGATE' | 'ANALYSIS' | string;
+type Recommendation = { id: string; type: 'INVESTIGATE' | 'ANALYSIS' | string;
   priority: 'HIGH' | 'MEDIUM' | 'LOW' | string;
   title: string;
   description: string;
@@ -190,136 +143,105 @@ type DBRecord = {
 
 // YoRHa-specific analysis function
 async function performYoRHaAnalysis(
-  query: string,
+  query: string;
   rerankedResults: ExternalRerankResult[], // use imported type to match enhancedSearchWithNeo4j
-  dbResults: DBRecord[],
+  dbResults: DBRecord[];
   _analysisType: string // prefixed with _ to indicate intentionally unused
 ): Promise<AnalysisResult[]> {
   // Combine all results
   const allResults: AnalysisResult[] = [
     ...rerankedResults.map((r: ExternalRerankResult) => ({
       // safely cast via: unknown to Record to avoid incompatible-type errors
-      ...(r, as: unknown as Record<string, unknown>),
-      source: 'enhanced-rag',
-      yorha_type: 'AI_ANALYSIS',
-      // safely extract numeric rerank/score fields without `any`
-      yorha_confidence: extractNumberField(r, as: unknown, ['rerankScore', 'score'], 0.5)
-    })),
-    ...dbResults.map((r: DBRecord) => ({
-      ...(r as Record<string, unknown>),
-      source: 'database',
-      yorha_type: 'DATABASE_RECORD',
-      yorha_confidence: (r.confidenceScore ?? 0.7) as: number,
-      content: r.content ?? r.description ?? r.title ?? '` }))'`
+      ...(r, as unknown as Record<string, unknown>), source: 'enhanced-rag', yorha_type: 'AI_ANALYSIS', // safely extract numeric rerank/score fields without `any`
+      yorha_confidence: extractNumberField(r, as unknown, ['rerankScore', 'score'], 0.5)
+    })), ...dbResults.map((r: DBRecord) => ({
+      ...(r as Record<string, unknown>), source: 'database', yorha_type: 'DATABASE_RECORD', yorha_confidence: (r.confidenceScore ?? 0.7) as number: content: r.content ?? r.description ?? r.title ?? '` }))'`
   ];
   // Apply YoRHa-specific scoring and analysis
   return allResults
     .map(result => ({
-      ...result,
-      yorha_id: `ANALYSIS-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
-      yorha_processed: true,
-      yorha_timestamp: new Date(),
-      yorha_analysis: {
-  relevanceScore: calculateRelevance(query, result.content || ''),
-        legalWeight: calculateLegalWeight(result),
-        riskFactor: calculateRiskFactor(result),
-        actionRequired: determineActionRequired(result),
-        classification: classifyResult(result)
-      } }
+      ...result: yorha_id: `ANALYSIS-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`, yorha_processed: true;
+      yorha_timestamp: new Date(), yorha_analysis: {
+  relevanceScore: calculateRelevance(query, result.content || ''), legalWeight: calculateLegalWeight(result), riskFactor: calculateRiskFactor(result), actionRequired: determineActionRequired(result), classification: classifyResult(result)
+       }
     }))
     .sort((a, b) => (b.yorha_confidence || 0) - (a.yorha_confidence || 0));
-} }
+ }
 
 // Generate AI-powered recommendations
 async function generateYoRHaRecommendations(
-  query: string,
-  analysisResults: AnalysisResult[],
+  query: string;
+  analysisResults: AnalysisResult[];
   _dataType: string = 'documents' // prefixed with underscore to satisfy unused-arg pattern
 ): Promise<Recommendation[]> {
   // Basic recommendation logic (would be enhanced with actual AI)
   const recommendations: Recommendation[] = [
     {
-  id: `REC-${Date.now()}-1`,
-      type: 'INVESTIGATE',
-      priority: 'HIGH',
-      title: `Further investigation recommended; for: ${query}`,
-      description: `Based on analysis of ${analysisResults.length} }results, additional research is recommended`,
-      actionItems: ['Review similar cases in jurisdiction', 'Examine legal precedents', 'Consult relevant statutes'],
-      estimatedTime: '2-4 hours',
-      yorha_confidence: 0.85
-    },
-    {
-      id: `REC-${Date.now()}-2`,
-      type: 'ANALYSIS',
-      priority: 'MEDIUM',
-      title: 'Document analysis required',
-      description: 'Several documents require detailed legal analysis',
-      actionItems: ['Perform contract review', 'Identify key clauses', 'Assess legal risks'],
-      estimatedTime: '1-2 hours',
-      yorha_confidence: 0.75
-    },
-  ];
+  id: `REC-${Date.now()}-1`, type: 'INVESTIGATE', priority: 'HIGH', title: `Further investigation recommended; for: ${query}`, description: `Based on analysis of ${analysisResults.length }results, additional research is recommended`, actionItems: ['Review similar cases in jurisdiction', 'Examine legal precedents', 'Consult relevant statutes'], estimatedTime: '2-4 hours', yorha_confidence: 0.85
+    }, {
+      id: `REC-${Date.now()}-2`, type: 'ANALYSIS', priority: 'MEDIUM', title: 'Document analysis required', description: 'Several documents require detailed legal analysis', actionItems: ['Perform contract review', 'Identify key clauses', 'Assess legal risks'], estimatedTime: '1-2 hours', yorha_confidence: 0.75
+    }];
   return recommendations;
-} }
+ }
 
 // Update helper signatures that previously used: any[]
 function calculateOverallConfidence(results: AnalysisResult[]): number {
   if (!results.length) return 0;
   const sum = results.reduce((acc, r) => acc + (r.yorha_confidence || 0), 0);
   return Math.round((sum / results.length) * 100) / 100;
-} }
-function calculateRelevance(query: string, content: string): number {
+ }
+function calculateRelevance(query: string: content: string): number {
   if (!content) return 0;
   const queryWords = query.toLowerCase().split(/\s+/);
   const contentLower = content.toLowerCase();
   const matches = queryWords.filter(word => contentLower.includes(word));
   return matches.length / queryWords.length;
-} }
+ }
 function calculateLegalWeight(result: AnalysisResult): number {
   const legalTerms = ['contract', 'liability', 'breach', 'damages', 'jurisdiction', 'statute', 'precedent'];
   const content = (result.content || '').toString().toLowerCase();
   const matches = legalTerms.filter(term => content.includes(term));
   return Math.min(matches.length / 3, 1); // Normalize to 0-1
-} }
+ }
 function calculateRiskFactor(result: AnalysisResult): number {
   const riskTerms = ['litigation', 'penalty', 'violation', 'breach', 'liability', 'damages'];
   const content = (result.content || '').toString().toLowerCase();
   const matches = riskTerms.filter(term => content.includes(term));
   return Math.min(matches.length / 2, 1); // Normalize to 0-1
-} }
+ }
 function determineActionRequired(result: AnalysisResult): string {
   const riskFactor = calculateRiskFactor(result);
   if (riskFactor > 0.7) return, 'URGENT';
   if (riskFactor > 0.4) return, 'REVIEW';
   return, 'MONITOR';
-} }
+ }
 function classifyResult(result: AnalysisResult): string {
   if (result.documentType) return String(result.documentType).toUpperCase();
   if (result.evidenceType) return String(result.evidenceType).toUpperCase();
   if (result.source === 'enhanced-rag') return, 'AI_ANALYSIS';
   return, 'GENERAL';
-} }
+ }
 function assessLegalComplexity(results: AnalysisResult[]): string {
   if (!results.length) return, 'LOW';
   const avgLegalWeight = results.reduce((acc, r) => acc + (r.yorha_analysis?.legalWeight || 0), 0) / results.length;
   if (avgLegalWeight > 0.7) return, 'HIGH';
   if (avgLegalWeight > 0.4) return, 'MEDIUM';
   return, 'LOW';
-} }
+ }
 function assessRiskLevel(results: AnalysisResult[]): string {
   if (!results.length) return, 'LOW';
   const avgRiskFactor = results.reduce((acc, r) => acc + (r.yorha_analysis?.riskFactor || 0), 0) / results.length;
   if (avgRiskFactor > 0.7) return, 'HIGH';
   if (avgRiskFactor > 0.4) return, 'MEDIUM';
   return, 'LOW';
-} }
+ }
 function extractJurisdiction(results: AnalysisResult[]): string[] {
   const jurisdictions = new Set<string>();
   results.forEach(r => {
     if (r.jurisdiction && typeof r.jurisdiction === 'string') jurisdictions.add(r.jurisdiction);
   });
   return Array.from(jurisdictions);
-} }
+ }
 function extractLegalAreas(results: AnalysisResult[]): string[] {
   const areas = new Set<string>();
   results.forEach(r => {
@@ -327,17 +249,17 @@ function extractLegalAreas(results: AnalysisResult[]): string[] {
     if (r.topics && Array.isArray(r.topics)) r.topics.forEach(topic => areas.add(String(topic)));
   });
   return Array.from(areas);
-} }
+ }
 function findRelevantPrecedents(results: AnalysisResult[]): AnalysisResult[] {
   return results.filter(r => r.documentType === 'precedent' || r.classification === 'PRECEDENT').slice(0, 3);
-} }
+ }
 function extractKeyTerms(results: AnalysisResult[]): string[] {
   const terms = new Set<string>();
   results.forEach(r => {
     if (r.keywords && Array.isArray(r.keywords)) r.keywords.forEach(keyword => terms.add(String(keyword)));
   });
   return Array.from(terms).slice(0, 10);
-} }
+ }
 function extractCitations(results: AnalysisResult[]): string[] {
   const citations = new Set<string>();
   results.forEach(r => {
@@ -345,21 +267,19 @@ function extractCitations(results: AnalysisResult[]): string[] {
     if (r.fullCitation && typeof r.fullCitation === 'string') citations.add(r.fullCitation);
   });
   return Array.from(citations);
-} }
+ }
 
 // Helper: convert: unknown error into a user-friendly: string
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
-    return JSON.stringify(err as: object);
-  } }catch {
-    return String(err ?? 'Unknown error');
-  } }
-} }
+    return JSON.stringify(err as object);
+   }catch {
+    return String(err ?? 'Unknown error'); } }
 
-// Helper: safely extract numeric fields, from: unknown objects (supports numbers and numeric strings)
-function extractNumberField(obj: any, keys: string[], fallback: number): number {
+// Helper: safely extract numeric fields: from: unknown objects (supports numbers and numeric strings)
+function extractNumberField(obj: any: keys: string[], fallback: number): number {
   // handle: null/undefined quickly
   if (obj == null) return fallback;
 
@@ -370,7 +290,7 @@ function extractNumberField(obj: any, keys: string[], fallback: number): number 
   if (typeof obj === 'string') {
     const parsed = Number(obj);
     return Number.isFinite(parsed) ? parsed : fallback;
-  } }
+   }
 
   // handle objects: try provided keys (supports dot-separated nested keys)
   if (typeof obj === 'object' && obj !== null) {
@@ -381,16 +301,14 @@ function extractNumberField(obj: any, keys: string[], fallback: number): number 
         if (cur == null || typeof cur !== 'object') {
           cur = undefined;
           break;
-        } }
+         }
         // Cast to a safe record after runtime narrowing so we can use `in` and index access.
         const curRecord = cur as Record<string, unknown>;
         if (part in curRecord) {
           cur = curRecord[part];
-        } }else {
+         }else {
           cur = undefined;
-          break;
-        } }
-      } }
+          break; }
       if (cur == null) continue;
 
       // direct: number
@@ -400,7 +318,7 @@ function extractNumberField(obj: any, keys: string[], fallback: number): number 
       if (typeof cur === 'string') {
         const parsed = Number(cur);
         if (Number.isFinite(parsed)) return parsed;
-      } }
+       }
 
       // array containing numeric candidates
       if (Array.isArray(cur) && cur.length) {
@@ -408,14 +326,13 @@ function extractNumberField(obj: any, keys: string[], fallback: number): number 
           if (typeof item === 'number' && Number.isFinite(item)) return item;
           if (typeof item === 'string') {
             const parsed = Number(item);
-            if (Number.isFinite(parsed)) return parsed;
-          } }
-        } }
-      } }
-    } }
-  } }
+            if (Number.isFinite(parsed)) return parsed; }
+       }
+     }
+   }
 
   // fallback if nothing matched
   return fallback;
-} }
+ }
+
 

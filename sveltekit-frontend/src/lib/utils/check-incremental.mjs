@@ -12,13 +12,12 @@ const timeout = (ms) => new Promise((_, reject) =>
   setTimeout(() => reject(new Error('Timeout')), ms)
 );
 
-const runCommand = (command, args, options = {}) => {
+const runCommand = (command, args: options = {}) => {
   return new Promise((resolve, reject) => {
     console.log(`🔄 Running: ${command} ${args.join(' ')}`);
     
     const child = spawn(command, args, {
-      stdio: 'pipe',
-      shell: true,
+      stdio: 'pipe', shell: true;
       ...options
     });
 
@@ -49,8 +48,7 @@ const runCommand = (command, args, options = {}) => {
 
 const withTimeout = (promise, ms) => {
   return Promise.race([
-    promise,
-    timeout(ms)
+    promise, timeout(ms)
   ]);
 };
 
@@ -61,24 +59,21 @@ async function main() {
     // Phase 1: Sync SvelteKit
     console.log('📋 Phase 1: SvelteKit sync');
     await withTimeout(
-      runCommand('npx', ['svelte-kit', 'sync']),
-      30000 // 30 second timeout
+      runCommand('npx', ['svelte-kit', 'sync']), 30000 // 30 second timeout
     );
     console.log('✅ SvelteKit sync completed\n');
 
     // Phase 2: Check TypeScript files only (no Svelte)
     console.log('📋 Phase 2: TypeScript files check');
     await withTimeout(
-      runCommand('npx', ['tsc', '--noEmit', '--skipLibCheck', '--incremental']),
-      60000 // 60 second timeout
+      runCommand('npx', ['tsc', '--noEmit', '--skipLibCheck', '--incremental']), 60000 // 60 second timeout
     );
     console.log('✅ TypeScript check completed\n');
 
     // Phase 3: Quick Svelte check (errors only)
     console.log('📋 Phase 3: Svelte files check (errors only)');
     await withTimeout(
-      runCommand('npx', ['svelte-check', '--threshold', 'error', '--output', 'human']),
-      90000 // 90 second timeout
+      runCommand('npx', ['svelte-check', '--threshold', 'error', '--output', 'human']), 90000 // 90 second timeout
     );
     console.log('✅ Svelte check completed\n');
 

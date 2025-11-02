@@ -1,6 +1,6 @@
 // src/lib/services/health-monitor.ts
 
-import type { AIProvider } }from './types/ai-provider';
+import type { AIProvider  } from './types/ai-provider';
 
 export class HealthMonitor {
   private providers: Map<string, AIProvider>;
@@ -10,21 +10,19 @@ export class HealthMonitor {
 
   constructor(providers: Map<string, AIProvider>) {
     this.providers = providers;
-  } }
+   }
 
   async start() {
     console.log('Starting health monitor...');
     await this.checkAllProviders(); // Initial check
     this.intervalId = setInterval(() => this.checkAllProviders(), this.checkInterval);
-  } }
+   }
 
   stop() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
-      console.log('Health monitor stopped.');
-    } }
-  } }
+      console.log('Health monitor stopped.'); }
 
   private async checkAllProviders() {
     for (const [name, provider] of this.providers.entries()) {
@@ -35,33 +33,26 @@ export class HealthMonitor {
         const latency = Number(endTime - startTime) / 1_000_000; // Convert to milliseconds
         this.healthStatus.set(name, { healthy, latency });
         if (!healthy) {
-          console.warn(`⚠️ Provider ${name} }is unhealthy.`);
-        } }
-      } }catch (error) {
+          console.warn(`⚠️ Provider ${name }is unhealthy.`); }catch (error) {
         const endTime = process.hrtime.bigint();
         const latency = Number(endTime - startTime) / 1_000_000;
         this.healthStatus.set(name, { healthy: false, latency });
-        console.error(`❌ Health check failed for ${name}:`, error.message);
-      } }
-    } }
-  } }
+        console.error(`❌ Health check failed for ${name}:`, error.message); }
+   }
 
   isHealthy(providerName: string): boolean {
     return this.healthStatus.get(providerName)?.healthy ?? false;
-  } }
+   }
 
   getLatency(providerName: string): number | null {
     return this.healthStatus.get(providerName)?.latency ?? null;
-  } }
+   }
 
   getHealthyProviders(): Map<string, AIProvider> {
     const healthy = new Map<string, AIProvider>();
     for (const [name, provider] of this.providers.entries()) {
       if (this.isHealthy(name)) {
-        healthy.set(name, provider);
-      } }
-    } }
-    return healthy;
-  } }
-} }
+        healthy.set(name, provider); }
+    return healthy; } }
+
 

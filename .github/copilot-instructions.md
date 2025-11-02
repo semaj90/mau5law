@@ -29,7 +29,7 @@ Before (Deprecated)
 ⚙️ If You Need to Loop Over Components
 Old
 {#each cards as card}
-  <svelte:component this={card.component} {...card.props} />
+  <card.component {...card.props} />
 {/each}
 
 ✅ New

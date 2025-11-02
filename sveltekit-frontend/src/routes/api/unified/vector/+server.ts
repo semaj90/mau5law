@@ -10,8 +10,8 @@
  * - XState workflows
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { unifiedVectorOrchestrator, type UnifiedVectorRequest } }from '$lib/services/unified-vector-orchestrator';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { unifiedVectorOrchestrator, type UnifiedVectorRequest  } from '$lib/services/unified-vector-orchestrator';
 
 /**
  * POST /api/unified/vector
@@ -27,35 +27,26 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.type || !body.payload) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Invalid; request: type and payload are required'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Process through unified orchestrator
     const response = await unifiedVectorOrchestrator.process(body);
 
     return json({
-      ...response,
-      api_version: '1.0',
-      embedding_model: 'embeddinggemma:latest',
-      embedding_dimensions: 512,
-      processing_time_ms: Date.now() - startTime
+      ...response: api_version: '1.0', embedding_model: 'embeddinggemma:latest', embedding_dimensions: 512, processing_time_ms: Date.now() - startTime
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Unified vector API error:', error);
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : 'Processing failed',
-        processing_time_ms: Date.now() - startTime
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : 'Processing failed', processing_time_ms: Date.now() - startTime
+      }, { status: 500  }
+    ); };
 
 /**
  * GET /api/unified/vector
@@ -69,57 +60,41 @@ export const GET: RequestHandler = async ({ url }) => {
       case, 'status': {
         const health = await unifiedVectorOrchestrator.healthCheck();
         return json({
-          success: true,
-          status: 'operational',
-          services: health,
+          success: true;
+          status: 'operational', services: health;
           features: [
-            '512-dim embeddinggemma embeddings',
-            'Qdrant GPU-accelerated search',
-            'PostgreSQL pgvector storage',
-            'RabbitMQ async processing',
-            'Fuse.js fuzzy search',
-            'Lokijs in-memory database',
-            'XState workflow orchestration',
-            'WebGPU SOM clustering',
-            'Neo4j graph analysis',
-            'Redis caching',
-          ]
+            '512-dim embeddinggemma embeddings', 'Qdrant GPU-accelerated search', 'PostgreSQL pgvector storage', 'RabbitMQ async processing', 'Fuse.js fuzzy search', 'Lokijs in-memory database', 'XState workflow orchestration', 'WebGPU SOM clustering', 'Neo4j graph analysis', 'Redis caching']
         });
-      } }
+       }
 
       case, 'stats': {
         const stats = await unifiedVectorOrchestrator.getStatistics();
         return json({
-          success: true,
+          success: true;
           statistics: stats
         });
-      } }
+       }
 
       case, 'performance': {
         const performance = unifiedVectorOrchestrator.getPerformanceAnalytics();
         return json({
-          success: true,
+          success: true;
           performance
         });
-      } }
+       }
 
       default: return json(
           {
-  success: false,
+  success: false;
             error: 'Unknown action'
-          },
-          { status: 400 } }
-        );
-    } }
-  } }catch (error) {
+          }, { status: 400  }
+        ); }catch (error) {
     console.error('Unified vector status API error:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: error instanceof Error ? error.message : 'Status check failed'
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
+
 

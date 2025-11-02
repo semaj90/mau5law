@@ -1,6 +1,6 @@
 // SSR-safe wiring: connect webgpuLegalGraph.onFrame -> captureLatency + batching client
 import webgpuLegalGraph from '$lib/webgpu/webgpu-legal-graph';
-import type { LatencyEntry } }from '$lib/services/latency-logger';
+import type { LatencyEntry  } from '$lib/services/latency-logger';
 
 export function wireWebGPUToTelemetry(opts?: { clientUrl?: string }) {
   if (typeof window === 'undefined') return () => {};
@@ -13,32 +13,26 @@ export function wireWebGPUToTelemetry(opts?: { clientUrl?: string }) {
         type ClientModuleShape = {
           startSystemMonitorClient?: (opts?: { batchSize?: number; intervalMs?: number; url?: string }) => ClientStartReturn;
         };
-        const m = mod as: unknown as ClientModuleShape;
+        const m = mod as unknown as ClientModuleShape;
         const start = m.startSystemMonitorClient;
         const client = start ? start({ url: opts?.clientUrl }) : null;
         if (client && typeof client.push === 'function') {
           client.push({
-            ts: Date.now(),
-            latency: Math.round(stats.frameTime),
-            frameDelta: Math.round(stats.frameTime),
-            gpuActive: stats.gpuMemoryUsage > 0,
-            fallbackMode: stats.gpuMemoryUsage === 0,
-            note: 'webgpu-telemetry'
+            ts: Date.now(), latency: Math.round(stats.frameTime), frameDelta: Math.round(stats.frameTime), gpuActive: stats.gpuMemoryUsage > 0, fallbackMode: stats.gpuMemoryUsage === 0, note: 'webgpu-telemetry'
           });
-        } }
+         }
         // if client was created, we don't stop it here; consumer can manage lifecycle'
-      } }catch (e) {
+       }catch (e) {
         // ignore wiring failures
         // eslint-disable-next-line no-console
-        console.debug('wireWebGPUToTelemetry: failed to push telemetry', e);
-      } }
-    })();
+        console.debug('wireWebGPUToTelemetry: failed to push telemetry', e); })();
   });
 
   return () => {
     unsubscribe();
   };
-} }
+ }
 
 export default wireWebGPUToTelemetry;
+
 

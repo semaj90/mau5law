@@ -1,22 +1,17 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { cognitiveCache, as cacheManager } }from '$lib/services/cognitive-cache-integration.js';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { cognitiveCache, as cacheManager  } from '$lib/services/cognitive-cache-integration.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, iterations = 100 } }= await request.json();
+    const { action: iterations = 100  }= await request.json();
     if (action === 'benchmark') {
-      const results = { memory: { total: 0, avg: 0, iterations: 0 },
-        redis: { total: 0, avg: 0, iterations: 0 },
-        qdrant: { total: 0, avg: 0, iterations: 0 },
-        overall: { total: 0, avg: 0 } }
+      const results = { memory: { total: 0, avg: 0, iterations: 0 }, redis: { total: 0, avg: 0, iterations: 0 }, qdrant: { total: 0, avg: 0, iterations: 0 }, overall: { total: 0, avg: 0  }
       };
       const testData = {
-  timestamp: new Date().toISOString(),
-        data: new Array(100).fill(0).map((_, i) => ({ id: i, value: Math.random() })),
-        metadata: { type: 'performance-test', size: 'medium' } }
+  timestamp: new Date().toISOString(), data: new Array(100).fill(0).map((_, i) => ({ id: i: value: Math.random() })), metadata: { type: 'performance-test', size: 'medium'  }
       };
-      console.log(`Starting performance benchmark with ${iterations} }iterations...`);
+      console.log(`Starting performance benchmark with ${iterations }iterations...`);
       const overallStart = Date.now();
       // Test iterations
       for (let i = 0; i < iterations; i++) {
@@ -34,19 +29,17 @@ export const POST: RequestHandler = async ({ request }) => {
         if (totalTime < 5) {
           results.memory.total += totalTime;
           results.memory.iterations++;
-        } }else if (totalTime < 50) {
+         }else if (totalTime < 50) {
           results.redis.total += totalTime;
           results.redis.iterations++;
-        } }else {
+         }else {
           results.qdrant.total += totalTime;
           results.qdrant.iterations++;
-        } }
+         }
         results.overall.total += totalTime;
         // Verify data integrity
         if (!retrieved || JSON.stringify(retrieved) !== JSON.stringify(testData)) {
-          console.warn(`Data integrity issue at iteration ${i}`);
-        } }
-      } }
+          console.warn(`Data integrity issue at iteration ${i}`); }
       const overallTime = Date.now() - overallStart;
       // Calculate averages
       results.memory.avg = results.memory.iterations > 0 ? results.memory.total / results.memory.iterations : 0;
@@ -54,21 +47,17 @@ export const POST: RequestHandler = async ({ request }) => {
       results.qdrant.avg = results.qdrant.iterations > 0 ? results.qdrant.total / results.qdrant.iterations : 0;
       results.overall.avg = results.overall.total / iterations;
       return json({
-        success: true,
+        success: true;
         benchmark: {
-          iterations,
-          totalTime: overallTime,
-          avgTimePerOp: overallTime / iterations,
-          opsPerSecond: (iterations * 1000) / overallTime,
-          results,
-          cacheStats: cacheManager.getCacheStats()
-        } }
+          iterations: totalTime: overallTime;
+          avgTimePerOp: overallTime / iterations: opsPerSecond: (iterations * 1000) / overallTime, results: cacheStats: cacheManager.getCacheStats()
+         }
       });
-    } }
+     }
     if (action === 'stress-test') {
       const concurrency = 10;
       const opsPerWorker = Math.floor(iterations / concurrency);
-      console.log(`Starting stress test: ${concurrency} }workers, ${opsPerWorker} }ops each`);
+      console.log(`Starting stress test: ${concurrency }workers, ${opsPerWorker }ops each`);
       const stressStart = Date.now();
       const workers = [];
       for (let w = 0; w < concurrency; w++) {
@@ -77,52 +66,40 @@ export const POST: RequestHandler = async ({ request }) => {
           for (let i = 0; i < opsPerWorker; i++) {
             try {
               const key = `stress-${workerId}-${i}`;
-              const data = { workerId, iteration: i, timestamp: Date.now() };
+              const data = { workerId: iteration: i: timestamp: Date.now() };
               const opStart = Date.now();
               await cacheManager.storeJsonbDocument(key, data);
               const retrieved = await cacheManager.retrieveJsonbDocument(key);
               const opTime = Date.now() - opStart;
               workerResults.totalTime += opTime;
-              if (retrieved && (retrieved as: unknown as { workerId: number }).workerId === workerId) {
+              if (retrieved && (retrieved as unknown as { workerId: number }).workerId === workerId) {
                 workerResults.success++;
-              } }else {
-                workerResults.errors++;
-              } }
-            } }catch (error) {
-              workerResults.errors++;
-            } }
-          } }
+               }else {
+                workerResults.errors++; }catch (error) {
+              workerResults.errors++; }
           return workerResults;
         })(w);
         workers.push(workerPromise);
-      } }
+       }
       const workerResults = await Promise.all(workers);
       const stressTime = Date.now() - stressStart;
       const totals = workerResults.reduce(
         (acc, result) => ({
-          success: acc.success + result.success,
-          errors: acc.errors + result.errors,
-          totalTime: acc.totalTime + result.totalTime
-        }),
-        { success: 0, errors: 0, totalTime: 0 } }
+          success: acc.success + result.success: errors: acc.errors + result.errors: totalTime: acc.totalTime + result.totalTime
+        }), { success: 0, errors: 0, totalTime: 0  }
       );
       return json({
-        success: true,
+        success: true;
         stressTest: {
-          concurrency,
-          totalOperations: concurrency * opsPerWorker,
-          duration: stressTime,
-          opsPerSecond: (totals.success * 1000) / stressTime,
-          successRate: (totals.success / (totals.success + totals.errors)) * 100,
-          results: totals,
+          concurrency: totalOperations: concurrency * opsPerWorker: duration: stressTime;
+          opsPerSecond: (totals.success * 1000) / stressTime: successRate: (totals.success / (totals.success + totals.errors)) * 100, results: totals;
           cacheStats: cacheManager.getCacheStats()
-        } }
+         }
       });
-    } }
-    return json({ success: false, error: 'Invalid action' }, { status: 400 });'' } }catch (error: any) {
+     }
+    return json({ success: false: error: 'Invalid action' }, { status: 400 });''  }catch (error: any) {
     console.error('Performance test error:', error);
     const message = error instanceof Error ? error.message : 'An: unknown error occurred';
-    return json({ success: false, error: message }, { status: 500 });
-  } }
-};
+    return json({ success: false: error: message }, { status: 500 }); };
+
 

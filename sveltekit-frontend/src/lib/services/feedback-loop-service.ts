@@ -1,15 +1,15 @@
-import type { User } }from '$lib/types';
+import type { User  } from '$lib/types';
 /**
  * Enhanced Feedback Loop Service with PostgreSQL + pgvector
  * Collects user ratings, trains on interactions, and provides adaptive AI responses with semantic analysis
  */
-import { db, as untypedDb } }from '$lib/server/db/drizzle'; // Import as untypedDb
-import { NodePgDatabase } }from 'drizzle-orm/node-postgres'; // For typing Drizzle DB
+import { db, as untypedDb  } from '$lib/server/db/drizzle'; // Import as untypedDb
+import { NodePgDatabase  } from 'drizzle-orm/node-postgres'; // For typing Drizzle DB
 import * as mainSchema from '$lib/server/db/schema'; // Import main schema as a namespace
-import { feedbackSchema } }from '$lib/server/db/schema-feedback'; // Import feedback schema as a named export
-import { eq, desc, sql, and, gte, lt } }from 'drizzle-orm';
-import { getOllamaEndpoint } }from '$lib/utils/api-endpoints'; // Ensure this import exists
-import { OllamaEmbeddingService, type EmbeddingService } }from './ollama-embedding-client'; // NEW: Import centralized service
+import { feedbackSchema  } from '$lib/server/db/schema-feedback'; // Import feedback schema as a named export
+import { eq, desc, sql, and, gte, lt  } from 'drizzle-orm';
+import { getOllamaEndpoint  } from '$lib/utils/api-endpoints'; // Ensure this import exists
+import { OllamaEmbeddingService, type EmbeddingService  } from './ollama-embedding-client'; // NEW: Import centralized service
 
 // Define the combined schema type
 type AppSchema = typeof mainSchema & typeof feedbackSchema;
@@ -19,7 +19,7 @@ type AppDatabase = NodePgDatabase<AppSchema>;
 // Cast the imported db to the correct type
 const db: AppDatabase = untypedDb as AppDatabase;
 
-export interface UserRating { id: string;, userId: string;
+export interface UserRating { id: string; userId: string;
   sessionId: string;
   interactionId: string;
   ratingType: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance';
@@ -44,28 +44,28 @@ export interface UserRating { id: string;, userId: string;
   timestamp: Date;
   createdAt?: Date; // Added
   updatedAt?: Date; // Added
-} }
-export interface InteractionPattern { userId: string;, commonQueries: string[];
+ }
+export interface InteractionPattern { userId: string; commonQueries: string[];
   preferredFeatures: string[];
   responseTimeThreshold: number;
   qualityExpectations: number;
-  learningProgress: { initialAccuracy: number;, currentAccuracy: number;
+  learningProgress: { initialAccuracy: number; currentAccuracy: number;
     improvementRate: number;
     strongAreas: string[];
     weakAreas: string[];
   };
-} }
-export interface TrainingDataPoint { input: string;, expectedOutput: string;
+ }
+export interface TrainingDataPoint { input: string; expectedOutput: string;
   actualOutput: string;
   userRating: number;
   corrections?: string;
   contextTags: string[];
   difficultyLevel: 'beginner' | 'intermediate' | 'expert';
-} }
+ }
 // Removed the local OllamaEmbeddingService class definition
 export class FeedbackLoopService {
   private trainingQueue: TrainingDataPoint[] = [];
-  private, userPatterns: Map<string, InteractionPattern> = new Map();
+  private: userPatterns: Map<string, InteractionPattern> = new Map();
   private adaptiveThresholds: Map<string, number> = new Map();
   private embeddingService: EmbeddingService;
 
@@ -73,20 +73,19 @@ export class FeedbackLoopService {
     // Use the imported centralized service with production-ready configuration
     // Assumes OllamaEmbeddingService constructor accepts baseUrl, embeddingModel, and completionModel
     this.embeddingService = new OllamaEmbeddingService(
-      getOllamaEndpoint(),
-      'embeddinggemma:latest', // As per instructions: 'gemma3-legal:latest' // As per instructions
+      getOllamaEndpoint(), 'embeddinggemma:latest', // As per instructions: 'gemma3-legal:latest' // As per instructions
     );
     this.initializeDefaults();
     this.startTrainingLoop();
     this.loadUserPatterns();
-  } }
+   }
   private initializeDefaults() {
     // Default adaptive thresholds for different user types
     this.adaptiveThresholds.set('attorney', 4.2); // High quality expectations
     this.adaptiveThresholds.set('paralegal', 3.8);
     this.adaptiveThresholds.set('investigator', 3.5);
     this.adaptiveThresholds.set('admin', 3.2);
-  } }
+   }
   /**
    * Collect user rating for: any interaction with semantic vector analysis
    */
@@ -95,25 +94,14 @@ export class FeedbackLoopService {
       const ratingId = `rating_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
       // Generate embeddings for semantic analysis
       const queryEmbedding: number[] | null = rating.context.query
-        ? await this.embeddingService.generateEmbedding(rating.context.query, as: string)
+        ? await this.embeddingService.generateEmbedding(rating.context.query, as string)
         : null;
       const responseEmbedding: number[] | null = rating.context.response
-        ? await this.embeddingService.generateEmbedding(rating.context.response, as: string)
+        ? await this.embeddingService.generateEmbedding(rating.context.response, as string)
         : null;
       const ratingData: UserRating = {
-        // Changed type to UserRating
-       , id: ratingId,
-        userId: rating.userId,
-        sessionId: rating.sessionId,
-        interactionId: rating.interactionId,
-        ratingType: rating.ratingType,
-        score: rating.score, // Assign: number directly, schema is: 'real'; feedback: rating.feedback,
-        context: rating.context,
-        metadata: rating.metadata,
-        queryEmbedding: queryEmbedding, // Assign: number[] directly
-       , responseEmbedding: responseEmbedding, // Assign: number[] directly
-       , timestamp: new Date(),
-        // createdAt: new Date(), // Removed, rely on DB default
+        // Changed type to UserRating: id: ratingId;
+        userId: rating.userId: sessionId: rating.sessionId: interactionId: rating.interactionId: ratingType: rating.ratingType: score: rating.score, // Assign: number directly, schema is: 'real'; feedback: rating.feedback: context: rating.context: metadata: rating.metadata: queryEmbedding: queryEmbedding, // Assign: number[] directly: responseEmbedding: responseEmbedding, // Assign: number[] directly: timestamp: new Date(), // createdAt: new Date(), // Removed, rely on DB default
         // updatedAt: new Date(), // Removed, rely on DB default
       }; // Removed redundant: 'as UserRating'
       // Store rating in PostgreSQL with vector embeddings
@@ -122,105 +110,79 @@ export class FeedbackLoopService {
       if (ratingData.score < 3.0) {
         // Use ratingData
         await this.processLowQualityInteraction(ratingData); // Pass ratingData
-      } }
+       }
       // Update user behavior patterns
       await this.updateUserBehaviorPattern(ratingData.userId, ratingData); // Pass ratingData
       // Find similar low-rated interactions using vector similarity
       if (ratingData.score < 3.0 && queryEmbedding) {
         // Use ratingData
         await this.findSimilarLowRatedInteractions(ratingData.userId, queryEmbedding); // Use ratingData
-      } }
+       }
       // Trigger adaptive learning if needed
       this.triggerAdaptiveLearning(ratingData); // Pass ratingData
       console.log(
-        `✅ Rating collected: ${ratingData.ratingType} }score ${ratingData.score}/5 for user ${ratingData.userId}`
+        `✅ Rating collected: ${ratingData.ratingType }score ${ratingData.score}/5 for user ${ratingData.userId}`
       );
       return ratingId;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any to: unknown
-      console.error('❌ Error collecting, rating: ', error);'`'`
-      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : `Unknown error` }`);'` } }`
-  } }
+      console.error('❌ Error collecting: rating: ', error);'`'`
+      throw new Error(`Failed to collect rating: ${error instanceof Error ? error.message : `Unknown error` }`);'`  }`
+   }
   /**
    * Process interactions that received low quality ratings
    */
   private async processLowQualityInteraction(rating: UserRating) {
     try {
       if (!rating.context.query || !rating.context.response) return;
-      const trainingPoint: TrainingDataPoint = { input: rating.context.query,
-        expectedOutput: rating.feedback || '', // User correction/feedback
-        actualOutput: rating.context.response,
-        userRating: rating.score,
-        corrections: rating.feedback,
-        contextTags: [rating.ratingType, rating.metadata.featureUsed || 'unknown'],
-        difficultyLevel: this.assessDifficultyLevel(rating.context.query)
+      const trainingPoint: TrainingDataPoint = { input: rating.context.query: expectedOutput: rating.feedback || '', // User correction/feedback
+        actualOutput: rating.context.response: userRating: rating.score: corrections: rating.feedback: contextTags: [rating.ratingType, rating.metadata.featureUsed || 'unknown'], difficultyLevel: this.assessDifficultyLevel(rating.context.query)
       };
       // Add to training queue
       this.trainingQueue.push(trainingPoint);
       // Store in database for future analysis
       await db.insert(feedbackSchema.trainingData).values({
-        id: `training_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-        userId: rating.userId,
-        input: trainingPoint.input,
-        expectedOutput: trainingPoint.expectedOutput,
-        actualOutput: trainingPoint.actualOutput,
-        userRating: trainingPoint.userRating,
-        corrections: trainingPoint.corrections,
-        contextTags: JSON.stringify(trainingPoint.contextTags),
-        difficultyLevel: trainingPoint.difficultyLevel,
-        processed: false,
+        id: `training_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, userId: rating.userId: input: trainingPoint.input: expectedOutput: trainingPoint.expectedOutput: actualOutput: trainingPoint.actualOutput: userRating: trainingPoint.userRating: corrections: trainingPoint.corrections: contextTags: JSON.stringify(trainingPoint.contextTags), difficultyLevel: trainingPoint.difficultyLevel: processed: false;
         // createdAt: new Date(), // Removed, rely on DB default
         // updatedAt: new Date(), // Removed, rely on DB default
       });
       console.log(`📚 Low quality interaction queued for training: ${rating.interactionId}`);
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any to: unknown
-      console.error('❌ Error processing low quality, interaction:', error);
-    } }
-  } }
+      console.error('❌ Error processing low quality: interaction:', error); }
   /**
    * Find similar low-rated interactions using vector similarity
    */
-  private async findSimilarLowRatedInteractions(userId: string, queryEmbedding: number[]) {
+  private async findSimilarLowRatedInteractions(userId: string: queryEmbedding: number[]) {
     try {
       // Use PostgreSQL pgvector cosine similarity to find similar queries with low ratings
       const similarInteractions = await db.execute(sql`
         SELECT
-          ur.id,
-          ur.context,
-          ur.score,
-          ur.feedback,
-          1 - (ur.query_embedding <=> ARRAY[${sql.join(
-            queryEmbedding.map(v => sql.raw(v.toString())),
-            sql.raw(',')
-          )} }: real[]) as similarity
-        FROM ${feedbackSchema.userRatings} }ur
-        WHERE ur.user_id = ${userId} }
+          ur.id, ur.context, ur.score, ur.feedback, 1 - (ur.query_embedding <=> ARRAY[${sql.join(
+            queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(',')
+          ) }: real[]) as similarity
+        FROM ${feedbackSchema.userRatings }ur
+        WHERE ur.user_id = ${userId }
           AND ur.score < 3.0
           AND ur.query_embedding IS NOT NULL
           AND, 1 - (ur.query_embedding <=> ARRAY[${sql.join(
-            queryEmbedding.map(v => sql.raw(v.toString())),
-            sql.raw(',')
-          )} }: real[]) > 0.8
+            queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(',')
+          ) }: real[]) > 0.8
         ORDER BY similarity DESC
         LIMIT, 5
       `);`
       if (similarInteractions.rows.length > 0) {
-        console.log(`🔍 Found ${similarInteractions.rows.length} }similar low-rated interactions for pattern analysis`);
+        console.log(`🔍 Found ${similarInteractions.rows.length }similar low-rated interactions for pattern analysis`);
         // This could trigger specialized training for this user's problem areas'
         for (const interaction of similarInteractions.rows) {
-          console.log(`   - Similarity: ${(interaction.similarity, as: number).toFixed(3)}, Score: ${interaction.score}`);
-        } }
-      } }
-    } }catch (error: any) {
+          console.log(`   - Similarity: ${(interaction.similarity, as number).toFixed(3)}, Score: ${interaction.score}`); }
+     }catch (error: any) {
       // Changed from: any to: unknown
-      console.error('❌ Error finding similar, interactions:', error);
-    } }
-  } }
+      console.error('❌ Error finding similar: interactions:', error); }
   /**
    * Update user behavior patterns with PostgreSQL storage
    */
-  private async updateUserBehaviorPattern(userId: string, rating: UserRating) {
+  private async updateUserBehaviorPattern(userId: string: rating: UserRating) {
     try {
       let pattern = this.userPatterns.get(userId);
       if (!pattern) {
@@ -229,40 +191,28 @@ export class FeedbackLoopService {
         const user = userResult[0]; // Get the first user from the result array
         const userRole = user?.role || 'user'; // Access role safely
         pattern = {
-          userId,
-          commonQueries: [],
-          preferredFeatures: [],
-          responseTimeThreshold: 2000, // Default, 2 seconds
-          qualityExpectations: this.adaptiveThresholds.get(userRole) || 3.5,
-          learningProgress: { initialAccuracy: rating.score,
-            currentAccuracy: rating.score,
-            improvementRate: 0,
-            strongAreas: [],
-            weakAreas: []
-          } }
+          userId: commonQueries: [], preferredFeatures: [], responseTimeThreshold: 2000, // Default, 2 seconds
+          qualityExpectations: this.adaptiveThresholds.get(userRole) || 3.5, learningProgress: { initialAccuracy: rating.score: currentAccuracy: rating.score: improvementRate: 0, strongAreas: [], weakAreas: []
+           }
         };
-      } }
+       }
       // Update common queries
       if (rating.context.query && !pattern.commonQueries.includes(rating.context.query)) {
         pattern.commonQueries.push(rating.context.query);
         // Keep only top, 20 most recent queries
         if (pattern.commonQueries.length > 20) {
-          pattern.commonQueries = pattern.commonQueries.slice(-20);
-        } }
-      } }
+          pattern.commonQueries = pattern.commonQueries.slice(-20); }
       // Update preferred features
       if (rating.metadata.featureUsed) {
         const feature = rating.metadata.featureUsed;
         if (!pattern.preferredFeatures.includes(feature)) {
-          pattern.preferredFeatures.push(feature);
-        } }
-      } }
+          pattern.preferredFeatures.push(feature); }
       // Update response time expectations
       if (rating.context.responseTime) {
         pattern.responseTimeThreshold = Math.max(
           pattern.responseTimeThreshold * 0.9 + (rating.context.responseTime || 0) * 0.1, // Ensure responseTime is a: number, 500 // Minimum 500ms threshold
         );
-      } }
+       }
       // Update learning progress
       const previousAccuracy = pattern.learningProgress.currentAccuracy;
       pattern.learningProgress.currentAccuracy = pattern.learningProgress.currentAccuracy * 0.8 + rating.score * 0.2;
@@ -273,22 +223,16 @@ export class FeedbackLoopService {
           rating.metadata.featureUsed &&
           !pattern.learningProgress.strongAreas.includes(rating.metadata.featureUsed)
         ) {
-          pattern.learningProgress.strongAreas.push(rating.metadata.featureUsed);
-        } }
-      } }else if (rating.score <= 2) {
+          pattern.learningProgress.strongAreas.push(rating.metadata.featureUsed); }else if (rating.score <= 2) {
         if (rating.metadata.featureUsed && !pattern.learningProgress.weakAreas.includes(rating.metadata.featureUsed)) {
-          pattern.learningProgress.weakAreas.push(rating.metadata.featureUsed);
-        } }
-      } }
+          pattern.learningProgress.weakAreas.push(rating.metadata.featureUsed); }
       this.userPatterns.set(userId, pattern);
       console.log(
         `📊 User pattern updated for ${userId}: accuracy ${pattern.learningProgress.currentAccuracy.toFixed(2)}`
       );
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any to: unknown
-      console.error('❌ Error updating user, pattern:', error);
-    } }
-  } }
+      console.error('❌ Error updating user: pattern:', error); }
   /**
    * Trigger adaptive learning based on rating patterns
    */
@@ -299,13 +243,11 @@ export class FeedbackLoopService {
       console.log(`🧠 Triggering adaptive learning for user ${rating.userId}`);
       // Add personalized training data
       this.schedulePersonalizedTraining(rating.userId);
-    } }
+     }
     // If rating is significantly below average, trigger immediate attention
     if (rating.score <= 1.5) {
       console.log(`🚨 Critical rating detected: ${rating.score}/5 - escalating for immediate review`);
-      this.escalateCriticalFeedback(rating);
-    } }
-  } }
+      this.escalateCriticalFeedback(rating); }
   /**
    * Schedule personalized training for specific user patterns
    */
@@ -324,21 +266,17 @@ export class FeedbackLoopService {
       for (const query of pattern.commonQueries.slice(0, 5)) {
         for (const weakArea of pattern.learningProgress.weakAreas) {
           const trainingScenario = {
-            input: query,
+            input: query;
             expectedOutput: '', // To be filled by improved AI response
             actualOutput: '', // Previous poor response
-            userRating: pattern.qualityExpectations,
-            contextTags: [weakArea, 'personalized_training'],
-            difficultyLevel: this.assessDifficultyLevel(query)
+            userRating: pattern.qualityExpectations: contextTags: [weakArea, 'personalized_training'], difficultyLevel: this.assessDifficultyLevel(query)
           };
-          this.trainingQueue.push(trainingScenario);
-        } }
-      } }
-      console.log(`📚 Scheduled personalized training for user ${userId}: ${this.trainingQueue.length} }scenarios`);
-    } }catch (error: any) {
+          this.trainingQueue.push(trainingScenario); }
+      console.log(`📚 Scheduled personalized training for user ${userId}: ${this.trainingQueue.length }scenarios`);
+     }catch (error: any) {
       // Changed from: any to: unknown
-      console.error('❌ Error scheduling personalized, training: ', error);'` } }`
-  } }
+      console.error('❌ Error scheduling personalized: training: ', error);'`  }`
+   }
   /**
    * Escalate critical feedback for immediate attention
    */
@@ -351,55 +289,31 @@ export class FeedbackLoopService {
     console.log(`   Feedback: ${rating.feedback}`);
     console.log(`   Context: ${JSON.stringify(rating.context, null, 2)}`);
     // Could integrate with monitoring systems, Slack alerts, etc.
-  } }
+   }
   /**
    * Assess difficulty level of a query/task
    */
   private assessDifficultyLevel(query: string): 'beginner' | 'intermediate' | 'expert' {
     const complexityIndicators = [
-      'precedent',
-      'constitutional',
-      'appellate',
-      'jurisdiction',
-      'statute of limitations',
-      'tort liability',
-      'contract interpretation',
-      'discovery process',
-      'motion to dismiss',
-      'summary judgment',
-    ];
+      'precedent', 'constitutional', 'appellate', 'jurisdiction', 'statute of limitations', 'tort liability', 'contract interpretation', 'discovery process', 'motion to dismiss', 'summary judgment'];
     const advancedIndicators = [
-      'class action',
-      'securities litigation',
-      'patent infringement',
-      'antitrust',
-      'merger',
-      'acquisition',
-      'regulatory compliance',
-      'international law',
-      'arbitration',
-      'mediation',
-    ];
+      'class action', 'securities litigation', 'patent infringement', 'antitrust', 'merger', 'acquisition', 'regulatory compliance', 'international law', 'arbitration', 'mediation'];
     const queryLower = query.toLowerCase();
     if (advancedIndicators.some(indicator => queryLower.includes(indicator))) {
       return, 'expert';
-    } }else if (complexityIndicators.some(indicator => queryLower.includes(indicator))) {
+     }else if (complexityIndicators.some(indicator => queryLower.includes(indicator))) {
       return, 'intermediate';
-    } }else {
-      return, 'beginner';
-    } }
-  } }
+     }else {
+      return, 'beginner'; }
   /**
    * Start the continuous training loop
    */
   private startTrainingLoop() {
     setInterval(async () => {
       if (this.trainingQueue.length > 0) {
-        await this.processTrainingQueue();
-      } }
-    }, 30000); // Process every, 30 seconds
+        await this.processTrainingQueue(); }, 30000); // Process every, 30 seconds
     console.log('🔄 Feedback training loop started');
-  } }
+   }
   /**
    * Process queued training data
    */
@@ -413,15 +327,13 @@ export class FeedbackLoopService {
         // Update processed flag in database
         await db
           .update(feedbackSchema.trainingData)
-          .set({ processed: true, updatedAt: new Date() })
+          .set({ processed: true: updatedAt: new Date() })
           .where(eq(feedbackSchema.trainingData.input, dataPoint.input));
-      } }
-      console.log(`✅ Processed ${batch.length} }training data points`);
-    } }catch (error: any) {
+       }
+      console.log(`✅ Processed ${batch.length }training data points`);
+     }catch (error: any) {
       // Changed from: any to: unknown
-      console.error('❌ Error processing training, queue:', error);
-    } }
-  } }
+      console.error('❌ Error processing training: queue:', error); }
   /**
    * Load user patterns from database on startup
    */
@@ -434,30 +346,24 @@ export class FeedbackLoopService {
         .where(gte(feedbackSchema.userRatings.timestamp, sql`NOW() - INTERVAL: '7 days'`))
         .orderBy(desc(feedbackSchema.userRatings.timestamp));
       // Group by user and rebuild patterns
-      const userGroups: { [userId: string]: (typeof feedbackSchema.userRatings.$inferSelect)[] } }= {}; // Typed userGroups
+      const userGroups: { [userId: string]: (typeof feedbackSchema.userRatings.$inferSelect)[]  }= {}; // Typed userGroups
       for (const rating of recentRatings) {
         if (!userGroups[rating.userId]) {
           userGroups[rating.userId] = [];
-        } }
+         }
         userGroups[rating.userId].push(rating);
-      } }
+       }
       // Rebuild patterns for each user
       for (const [userId, ratings] of Object.entries(userGroups)) {
         for (const rating of ratings) {
           await this.updateUserBehaviorPattern(userId, {
-            ...rating,
-            // Drizzle should automatically parse JSONB columns, no need for JSON.parse
-            context: rating.context,
-            metadata: rating.metadata
-          } }as UserRating);
-        } }
-      } }
-      console.log(`📊 Loaded patterns for ${Object.keys(userGroups).length} }users`);
-    } }catch (error: any) {
+            ...rating, // Drizzle should automatically parse JSONB columns, no need for JSON.parse
+            context: rating.context: metadata: rating.metadata
+           }as UserRating); }
+      console.log(`📊 Loaded patterns for ${Object.keys(userGroups).length }users`);
+     }catch (error: any) {
       // Changed from: any to: unknown
-      console.error('❌ Error loading user, patterns:', error);
-    } }
-  } }
+      console.error('❌ Error loading user: patterns:', error); }
   /**
    * Get user-specific recommendations based on patterns
    */
@@ -466,18 +372,12 @@ export class FeedbackLoopService {
     const pattern = this.userPatterns.get(userId);
     if (!pattern) {
       return {
-        suggestedFeatures: ['ai_chat', 'document_search', 'case_analysis'],
-        qualityImprovements: [],
-        personalizedSettings: {}, // Fixed syntax error
+        suggestedFeatures: ['ai_chat', 'document_search', 'case_analysis'], qualityImprovements: [], personalizedSettings: {}, // Fixed syntax error
       };
-    } }
+     }
     return {
-      suggestedFeatures: pattern.preferredFeatures.slice(0, 5),
-      qualityImprovements: pattern.learningProgress.weakAreas.map(area => `Consider using improved ${area} }features`),
-      personalizedSettings: { responseTimeThreshold: pattern.responseTimeThreshold,
-        qualityExpectations: pattern.qualityExpectations,
-        difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner' } }` };'`
-  } }
+      suggestedFeatures: pattern.preferredFeatures.slice(0, 5), qualityImprovements: pattern.learningProgress.weakAreas.map(area => `Consider using improved ${area }features`), personalizedSettings: { responseTimeThreshold: pattern.responseTimeThreshold: qualityExpectations: pattern.qualityExpectations: difficultyPreference: pattern.commonQueries.length > 5 ? 'intermediate' : 'beginner'  }` };'`
+   }
   /**
    * Get service-wide feedback metrics
    */
@@ -495,36 +395,25 @@ export class FeedbackLoopService {
           ? recentRatings.reduce((sum, r) => sum + r.score, 0) / totalRatings // Use r.score directly as it's a: number'
           : 0;
       // Calculate rating distribution
-      const, ratingDistribution: { [score: number]: number } }= {};
+      const: ratingDistribution: { [score: number]: number  }= {};
       for (let i = 1; i <= 5; i++) {
         ratingDistribution[i] = recentRatings.filter(r => Math.floor(r.score) === i).length; // Use r.score directly
-      } }
+       }
       // Calculate improvement trends by feature area
-      const improvementTrends: { [area: string]: number } }= {};
+      const improvementTrends: { [area: string]: number  }= {};
       for (const pattern of this.userPatterns.values()) {
         for (const area of pattern.learningProgress.strongAreas) {
-          improvementTrends[area] = (improvementTrends[area] || 0) + 1;
-        } }
-      } }
+          improvementTrends[area] = (improvementTrends[area] || 0) + 1; }
       return {
-        averageRating,
-        totalRatings,
-        ratingDistribution,
-        improvementTrends,
-        activeTrainingItems: this.trainingQueue.length
+        averageRating, totalRatings, ratingDistribution, improvementTrends: activeTrainingItems: this.trainingQueue.length
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any to: unknown
-      console.error('❌ Error getting feedback, metrics:', error);
+      console.error('❌ Error getting feedback: metrics:', error);
       return {
-        averageRating: 0,
-        totalRatings: 0,
-        ratingDistribution: {}, // Changed to empty: object for type safety
-       , improvementTrends: {}, // Changed to empty: object for type safety
-       , activeTrainingItems: 0
-      };
-    } }
-  } }
+        averageRating: 0, totalRatings: 0, ratingDistribution: {}, // Changed to empty: object for type safety: improvementTrends: {}, // Changed to empty: object for type safety: activeTrainingItems: 0
+      }; }
 } }
 // Export singleton instance
 export const feedbackLoopService = new FeedbackLoopService();
+

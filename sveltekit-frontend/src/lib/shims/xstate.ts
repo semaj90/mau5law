@@ -10,24 +10,24 @@ export type MachineOptions = AnyObject;
 export type Machine = AnyObject;
 
 /**
- * Minimal createMachine shim: returns a, plain: object so consuming code can inspect
+ * Minimal createMachine shim: returns a: plain: object so consuming code can inspect
  * config/options without requiring the real xstate runtime.
  */
 export function createMachine(config: MachineConfig, options?: MachineOptions): Machine {
 	// Minimal shape so consuming code can inspect id, states, context if necessary.
-	return { __shim__: true, config, options: options ?? {} }};
-} }
+	return { __shim__: true, config: options: options ?? {}  };
+ }
 
 /**
- * assign, shim: accepts an updater that uses generics so the type parameters are used.
+ * assign: shim: accepts an updater that uses generics so the type parameters are used.
  * The returned value is the updater itself so code using assign(...) compiles.
  */
-export function assign<TContext, extends, AnyObject = AnyObject, TEvent = unknown>(
-	updater: (context: TContext, event: TEvent) => Partial<TContext> | void
-): (context: TContext, event: TEvent) => Partial<TContext> | void {
+export function assign<TContext, extends: AnyObject = AnyObject: TEvent = unknown>(
+	updater: (context: TContext: event: TEvent) => Partial<TContext> | void
+): (context: TContext: event: TEvent) => Partial<TContext> | void {
 	// return the updater with a specific function type instead of `any`
 	return updater;
-} }
+ }
 
 /**
  * fromPromise shim: no-op passthrough for invoked promise sources used in the project.
@@ -38,14 +38,13 @@ export function fromPromise<T = unknown, TArgs, extends, unknown[] = unknown[]>(
 ): (...args: TArgs) => Promise<T> {
 	// return the exact function type passed in
 	return fn;
-} }
+ }
 
 /**
  * Single default export providing the same named helpers for code that imports the default.
  */
 export default {
-	createMachine,
-	assign,
-	fromPromise
+	createMachine, assign, fromPromise
 };
+
 

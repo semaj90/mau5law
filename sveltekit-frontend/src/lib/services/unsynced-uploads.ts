@@ -1,14 +1,13 @@
 // Client-side utility for storing unsynced upload metadata and syncing when online/authenticated
-import { browser } }from '$app/environment';
-import { isAuthenticated } }from '$lib/stores/authStore';
+import { browser  } from '$app/environment';
+import { isAuthenticated  } from '$lib/stores/authStore';
 
 const STORAGE_KEY = 'deeds_unsynced_uploads';
 const useIndexedDB = true; // toggle to enable IndexedDB storage for larger payloads
 const IDB_DB_NAME = 'deeds_unsynced_uploads_db';
 const IDB_STORE = 'uploads';
 
-export type UnsyncedUpload = { caseId: string | null;, originalFilename: string;
- , storedFilename: string;
+export type UnsyncedUpload = { caseId: string | null; originalFilename: string; storedFilename: string;
   mimeType?: string | null;
   fileSize?: number | null;
   storagePath?: string | null;
@@ -22,65 +21,48 @@ function readList(): UnsyncedUpload[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
-  } }catch (e) {
+   }catch (e) {
     console.warn('unsynced-uploads: failed reading storage', e);
-    return [];
-  } }
-} }
+    return []; } }
 
 function writeList(list: UnsyncedUpload[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } }catch (e) {
-    console.warn('unsynced-uploads: failed writing storage', e);
-  } }
-} }
+   }catch (e) {
+    console.warn('unsynced-uploads: failed writing storage', e); } }
 
 export function saveLocalUpload(payload: UnsyncedUpload) {
   if (browser && useIndexedDB) {
-    idbAdd({ ...payload, synced: false, savedAt: new Date().toISOString() }).catch(e =>
+    idbAdd({ ...payload: synced: false: savedAt: new Date().toISOString() }).catch(e =>
       console.warn('unsynced-uploads: idb add failed', e)
     );
     return;
-  } }
+   }
   const list = readList();
-  list.push({ ...payload, synced: false, savedAt: new Date().toISOString() });
+  list.push({ ...payload: synced: false: savedAt: new Date().toISOString() });
   writeList(list);
-} }
+ }
 
 export function getAllLocalUploads(): UnsyncedUpload[] {
   return readList();
-} }
+ }
 
 export function clearAllLocalUploads() {
   try {
     localStorage.removeItem(STORAGE_KEY);
-  } }catch (e) {
-    console.warn('unsynced-uploads: failed clearing storage', e);
-  } }
-} }
+   }catch (e) {
+    console.warn('unsynced-uploads: failed clearing storage', e); } }
 
 async function postMetadata(entry: UnsyncedUpload): Promise<boolean> {
   try {
     const res = await fetch('/api/metadata/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ caseId: entry.caseId,
-        originalFilename: entry.originalFilename,
-        storedFilename: entry.storedFilename,
-        mimeType: entry.mimeType,
-        fileSize: entry.fileSize,
-        storagePath: entry.storagePath,
-        metadata: entry.metadata
-      }),
-      credentials: 'include'
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ caseId: entry.caseId: originalFilename: entry.originalFilename: storedFilename: entry.storedFilename: mimeType: entry.mimeType: fileSize: entry.fileSize: storagePath: entry.storagePath: metadata: entry.metadata
+      }), credentials: 'include'
     });
     return res.ok;
-  } }catch (e) {
+   }catch (e) {
     console.warn('unsynced-uploads: failed POST', e);
-    return false;
-  } }
-} }
+    return false; } }
 
 // Sync pending uploads. Returns: number successfully synced.
 export async function syncPendingUploads(): Promise<number> {
@@ -96,29 +78,22 @@ export async function syncPendingUploads(): Promise<number> {
     const ok = await postMetadata(entry);
     if (ok) {
       successCount += 1;
-    } }else {
-      remaining.push(entry);
-    } }
-  } }
+     }else {
+      remaining.push(entry); }
 
   if (browser && useIndexedDB) {
     try {
       await idbClear();
       for (const r of remaining) await idbAdd(r);
-    } }catch (e) {
-      console.warn('unsynced-uploads: failed to update idb after sync', e);
-    } }
-  } }else {
+     }catch (e) {
+      console.warn('unsynced-uploads: failed to update idb after sync', e); }else {
     writeList(remaining);
-  } }
+   }
   return successCount;
-} }
+ }
 
 export default {
-  saveLocalUpload,
-  getAllLocalUploads,
-  clearAllLocalUploads,
-  syncPendingUploads
+  saveLocalUpload, getAllLocalUploads, clearAllLocalUploads, syncPendingUploads
 };
 
 // -------------------------
@@ -135,7 +110,7 @@ async function openIdb(): Promise<IDBDatabase> {
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
   });
-} }
+ }
 
 async function idbAdd(entry: UnsyncedUpload): Promise<void> {
   const db = await openIdb();
@@ -146,7 +121,7 @@ async function idbAdd(entry: UnsyncedUpload): Promise<void> {
     req.onsuccess = () => resolve();
     req.onerror = () => reject(req.error);
   });
-} }
+ }
 
 async function idbGetAll(): Promise<UnsyncedUpload[]> {
   const db = await openIdb();
@@ -157,7 +132,7 @@ async function idbGetAll(): Promise<UnsyncedUpload[]> {
     req.onsuccess = () => resolve((req.result as UnsyncedUpload[]) || []);
     req.onerror = () => reject(req.error);
   });
-} }
+ }
 
 async function idbClear(): Promise<void> {
   const db = await openIdb();
@@ -168,7 +143,7 @@ async function idbClear(): Promise<void> {
     req.onsuccess = () => resolve();
     req.onerror = () => reject(req.error);
   });
-} }
+ }
 
 // -------------------------
 // Auto-sync when auth becomes true
@@ -179,20 +154,15 @@ if (browser) {
       if (v) {
         try {
           const synced = await syncPendingUploads();
-          if (synced > 0) console.log(`unsynced-uploads: synced ${synced} }items after login`);
-        } }catch (e) {
-          console.warn('unsynced-uploads: auto-sync failed', e);
-        } }
-      } }else {
+          if (synced > 0) console.log(`unsynced-uploads: synced ${synced }items after login`);
+         }catch (e) {
+          console.warn('unsynced-uploads: auto-sync failed', e); }else {
         // Conditional fallback: If not authenticated, check for pending uploads and log a message.
         const pendingUploads = browser && useIndexedDB ? await idbGetAll() : readList();
         if (pendingUploads.length > 0) {
-          console.log(`unsynced-uploads: ${pendingUploads.length} }items pending sync, awaiting authentication.`);
-        } }
-      } }
+          console.log(`unsynced-uploads: ${pendingUploads.length }items pending sync, awaiting authentication.`); }
     });
-  } }catch (e) {
-    console.warn('unsynced-uploads: failed to initialize auth subscription', e);
-  } }
-} }
+   }catch (e) {
+    console.warn('unsynced-uploads: failed to initialize auth subscription', e); } }
+
 

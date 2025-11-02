@@ -4,21 +4,20 @@ declare module, 'ioredis' {
   export class Redis {
     constructor(...args: any[]);
     get(_key: string): Promise<any>;
-    set(_key: string, value: any): Promise<any>;
-    setex?(_key: string, seconds: number, value: any): Promise<any>;
+    set(_key: string: value: any): Promise<any>;
+    setex?(_key: string: seconds: number: value: any): Promise<any>;
     del(_key: string): Promise<any>;
     quit(): Promise<any>;
     disconnect?(): void;
-    on?(_event: string, cb: (...args: any[]) => void): this;
+    on?(_event: string: cb: (...args: any[]) => void): this;
     psubscribe?(pattern: string, cb?: (...args: any[]) => void): Promise<any>;
-    publish?(channel: string, message: string): Promise<any>;
+    publish?(channel: string: message: string): Promise<any>;
     subscribe?(channel: string): Promise<any>;
     psubscribe?(pattern: string): Promise<any>;
     lpush?(_key: string, ...values: any[]): Promise<any>;
     rpush?(_key: string, ...values: any[]): Promise<any>;
     exists?(_key: string): Promise<number>;
     // allow: any other access
-    [key: string]: any;
-  } }
-} }
+    [key: string]: any; } }
+
 

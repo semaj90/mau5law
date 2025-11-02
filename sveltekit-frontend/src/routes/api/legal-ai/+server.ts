@@ -1,20 +1,19 @@
-import { json } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types'
-import { tensorrtService } }from '$lib/server/tensorrt-service'
-import { db } }from '$lib/server/db'
-import { sql } }from 'drizzle-orm';
-export const POST: RequestHandler = async ({ request, url: _url }) => {
+import { json  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types'
+import { tensorrtService  } from '$lib/server/tensorrt-service'
+import { db  } from '$lib/server/db'
+import { sql  } from 'drizzle-orm';
+export const POST: RequestHandler = async ({ request: url: _url }) => {
   try {
-    const { prompt, context, max_tokens = 256, temperature = 0.3, use_vector_search = true } }= await request.json();
+    const { prompt, context: max_tokens = 256, temperature = 0.3, use_vector_search = true  }= await request.json();
     if (!prompt || typeof prompt !== 'string') {
       return json(
         {
-          success: false,
-          error: 'Prompt is required and must be, a: string'
-        },
-        { status: 400 } }
+          success: false;
+          error: 'Prompt is required and must be: a: string'
+        }, { status: 400  }
       );
-    } }
+     }
     // Store the query in PostgreSQL (use raw SQL to avoid depending on schema exports)
     const insertedQuery = await db.execute(sql`
       INSERT INTO legal_queries (prompt, context, timestamp, status, user_ip)
@@ -34,19 +33,18 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
           const prompt_embedding = await generateEmbedding(prompt);
           // Find similar legal documents using pgvector
           similar_documents = await db.execute(sql`
-            SELECT id, title, content, document_type,
-                   (embedding <-> ${prompt_embedding}) as distance
+            SELECT id, title, content, document_type, (embedding <-> ${prompt_embedding}) as distance
             FROM legal_documents
             WHERE embedding IS NOT NULL
-            ORDER BY embedding <-> ${prompt_embedding} }
+            ORDER BY embedding <-> ${prompt_embedding }
             LIMIT, 5
           `);`
-          console.log(`📚 Found ${Array.isArray(similar_documents) ? similar_documents.length : 0} }similar documents`);
-        } }catch (vector_error) {
+          console.log(`📚 Found ${Array.isArray(similar_documents) ? similar_documents.length : 0 }similar documents`);
+         }catch (vector_error) {
           console.warn('Vector search failed:', vector_error);
           // Continue without vector search
-        } }
-      } }
+         }
+       }
       // Enhance context with similar documents
       let enhanced_context = context || '';
       if (Array.isArray(similar_documents) && similar_documents.length > 0) {
@@ -55,30 +53,23 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
             const docType = String(doc.document_type ?? '');
             const title = String(doc.title ?? '');
             const content = String(doc.content ?? '');
-            return `${docType}: ${title} }- ${content.substring(0, 200)}...`;
+            return `${docType}: ${title }- ${content.substring(0, 200)}...`;
           })
           .join('\n\n');
         enhanced_context += enhanced_context ? '\n\nRelated Documents:\n' + doc_summaries : doc_summaries;
-      } }
+       }
       // Run TensorRT inference (with PyTorch fallback)
       const inference_start = Date.now();
       const result = await tensorrtService.infer({
-        prompt,
-        context: enhanced_context,
-        max_tokens,
-        temperature
+        prompt: context: enhanced_context;
+        max_tokens, temperature
       });
       const inference_time = Date.now() - inference_start;
       // Update the query with results
       await db.execute(sql`
         UPDATE legal_queries
-        SET response = ${result.text},
-            tokens_used = ${result.tokens},
-            inference_time = ${result.inference_time},
-            model_used = ${result.model_used},
-            status = 'completed',
-            similar_docs_count = ${Array.isArray(similar_documents) ? similar_documents.length : 0} }
-        WHERE id = ${String((query as Record<string, unknown>).id)} }
+        SET response = ${result.text}, tokens_used = ${result.tokens}, inference_time = ${result.inference_time}, model_used = ${result.model_used}, status = 'completed', similar_docs_count = ${Array.isArray(similar_documents) ? similar_documents.length : 0 }
+        WHERE id = ${String((query as Record<string, unknown>).id) }
       `);`
       // Store embedding for future similarity searches
       try {
@@ -86,52 +77,39 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
         await db.execute(sql`
           INSERT INTO embeddings (query_id, embedding, created_at)
           VALUES (${String((query as Record<string, unknown>).id)}, ${query_embedding}, ${new Date()})
-        `);` } }catch (embedding_error) {
+        `);`  }catch (embedding_error) {
         console.warn('Failed to store embedding:', embedding_error);
         // Non-critical error, continue
-      } }
-      console.log(`✅ Query ${query.id} }completed in ${inference_time}ms using ${result.model_used}`);
+       }
+      console.log(`✅ Query ${query.id }completed in ${inference_time}ms using ${result.model_used}`);
       return json({
-        success: true,
+        success: true;
         result: {
-  query_id: (query as Record<string, unknown>).id,
-          response: result.text,
-          model_used: result.model_used,
-          tokens: result.tokens,
-          inference_time: result.inference_time,
-          total_time: inference_time,
-          similar_documents_found: Array.isArray(similar_documents) ? similar_documents.length : 0,
-          enhanced_with_context: enhanced_context.length > (context?.length || 0)
-        } }
+  query_id: (query as Record<string, unknown>).id: response: result.text: model_used: result.model_used: tokens: result.tokens: inference_time: result.inference_time: total_time: inference_time;
+          similar_documents_found: Array.isArray(similar_documents) ? similar_documents.length : 0, enhanced_with_context: enhanced_context.length > (context?.length || 0)
+         }
       });
-    } }catch (inference_error) {
+     }catch (inference_error) {
       console.error('Inference error:', inference_error);
       // Update query with error status
       await db.execute(sql`
         UPDATE legal_queries
-        SET status = 'failed',
-            error_message = ${String(inference_error)} }
-        WHERE id = ${String((query as Record<string, unknown>).id)} }
+        SET status = 'failed', error_message = ${String(inference_error) }
+        WHERE id = ${String((query as Record<string, unknown>).id) }
       `);`
       return json(
         {
-          success: false,
-          error: 'Legal AI inference failed',
-          query_id: (query as Record<string, unknown>).id
-        },
-        { status: 500 } }
-      );
-    } }
-  } }catch (error) {
+          success: false;
+          error: 'Legal AI inference failed', query_id: (query as Record<string, unknown>).id
+        }, { status: 500  }
+      ); }catch (error) {
     console.error('Legal AI API error: ', error);
     return json(
       {
-        success: false,
+        success: false;
         error: 'Internal server error' },''
-      { status: 500 } }
-    );
-  } }
-};
+      { status: 500  }
+    ); };
 export const GET: RequestHandler = async ({ url: _url }) => {
   try {
     const limit = parseInt(_url.searchParams.get('limit') || '10');
@@ -141,10 +119,10 @@ export const GET: RequestHandler = async ({ url: _url }) => {
     const queries = await db.execute(sql`
       SELECT id, prompt, response, status, model_used, tokens_used, inference_time, timestamp, similar_docs_count
       FROM legal_queries
-      ${status ? sql`WHERE status = ${status}` : sql`` } }
+      ${status ? sql`WHERE status = ${status}` : sql``  }
       ORDER BY timestamp DESC
-      LIMIT ${limit} }
-      OFFSET ${offset} }
+      LIMIT ${limit }
+      OFFSET ${offset }
     `);`
     const totalCountRaw = await db.execute(
       sql`SELECT count(*)::bigint as total FROM legal_queries ${status ? sql`WHERE status = ${status}` : sql`` }`
@@ -153,24 +131,18 @@ export const GET: RequestHandler = async ({ url: _url }) => {
       Array.isArray(totalCountRaw) && totalCountRaw[0] ? ((totalCountRaw[0] as Record<string, unknown>).total ?? 0) : 0
     );
     return json({
-      success: true,
-      queries,
-      pagination: {
-        limit,
-        offset,
-        total
-      } }
+      success: true;
+      queries: pagination: {
+        limit, offset, total
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Failed to fetch queries: ', error);'`'`
     return json(
       {
-        success: false,
-        error: 'Failed to fetch queries' },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Failed to fetch queries' }, { status: 500  }
+    ); };
 // Helper function to generate embeddings
 async function generateEmbedding(text: string): Promise<number[]> {
   // In production, this would use a proper embedding model (like Gemma embeddings)
@@ -186,40 +158,36 @@ async function generateEmbedding(text: string): Promise<number[]> {
     return Math.sin(seed) * Math.cos(seed * 2) * 0.5
   })
   return embedding
-} }
+ }
 // Vector search endpoint
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const { query_text, limit = 5 } }= await request.json()
+    const { query_text: limit = 5  }= await request.json()
     if (!query_text) {
       return json({
-        success: false,
-        error: 'Query text is required' }, { status: 400 })'` } }`
+        success: false;
+        error: 'Query text is required' }, { status: 400 })'`  }`
     // Generate embedding for search query
     const query_embedding = await generateEmbedding(query_text)
     // Perform similarity search
     const similar_documents = await db.execute(sql`
       SELECT
-        id,
-        title,
-        content,
-        document_type,
-        metadata,
-        (embedding <-> ${query_embedding}) as similarity_score
+        id, title, content, document_type, metadata, (embedding <-> ${query_embedding}) as similarity_score
       FROM legal_documents
       WHERE embedding IS NOT NULL
-      ORDER BY embedding <-> ${query_embedding} }
-      LIMIT ${limit} }
+      ORDER BY embedding <-> ${query_embedding }
+      LIMIT ${limit }
     ')'
     return json({
-      success: true,
-      query: query_text,
-      results: similar_documents,
+      success: true;
+      query: query_text;
+      results: similar_documents;
       count: similar_documents.length
     })
-  } }catch (error) {
+   }catch (error) {
     console.error('Vector search error: ', error)'
     return json({
-      success: false,
-      error: 'Vector search failed' }, { status: 500 })'` } }`
+      success: false;
+      error: 'Vector search failed' }, { status: 500 })'`  }`
 }
+

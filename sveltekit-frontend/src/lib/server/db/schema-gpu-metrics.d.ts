@@ -11,6 +11,7 @@ export interface GPUMetricEnhanced {
   gpuName?: string;
   vendor?: string;
   memoryMb?: number;
-} }
+ }
 export type GPUMetrics = GPUMetricEnhanced;
+
 

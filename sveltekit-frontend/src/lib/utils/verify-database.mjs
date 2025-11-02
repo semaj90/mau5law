@@ -14,9 +14,7 @@ const DATABASE_URL =
 async function verifyConnection() {
   console.log("🔍 Verifying PostgreSQL connection...");
   console.log(
-    "📍 Database URL:",
-    DATABASE_URL.replace(/\/\/.*@/, "//[credentials]@"),
-  );
+    "📍 Database URL:", DATABASE_URL.replace(/\/\/.*@/, "//[credentials]@"));
 
   let client;
 
@@ -45,8 +43,7 @@ async function verifyConnection() {
       tables.forEach((table) => console.log(`  ✓ ${table.table_name}`));
     } else {
       console.log(
-        "⚠️ No tables found - run setup-database.mjs to create schema",
-      );
+        "⚠️ No tables found - run setup-database.mjs to create schema");
     }
 
     // Check pgvector extension

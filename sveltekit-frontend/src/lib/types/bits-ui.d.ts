@@ -1,4 +1,4 @@
-import { SvelteComponentTyped } }from 'svelte';
+import { SvelteComponentTyped  } from 'svelte';
 
 declare module, 'bits-ui' {
   // ...existing code...
@@ -11,34 +11,34 @@ declare module, 'bits-ui' {
     onClick?: (e?: Event) => void;
     // Allow arbitrary props but avoid `any`
     [key: string]: any;
-  } }
-  export class Button extends SvelteComponentTyped<ButtonProps> {} }
+   }
+  export class Button extends SvelteComponentTyped<ButtonProps> { }
 
   export interface CardProps {
     class?: string;
     // Avoid `any` for index signature
     [key: string]: any;
-  } }
-  export class Card extends SvelteComponentTyped<CardProps> {} }
-  export class CardHeader extends SvelteComponentTyped<{ class?: string }> {} }
-  export class CardContent extends SvelteComponentTyped<{ class?: string }> {} }
+   }
+  export class Card extends SvelteComponentTyped<CardProps> { }
+  export class CardHeader extends SvelteComponentTyped<{ class?: string }> { }
+  export class CardContent extends SvelteComponentTyped<{ class?: string }> { }
 
-  export class Modal extends SvelteComponentTyped<{ open?: boolean; onClose?: () => void; class?: string }> {} }
-  export class Tooltip extends SvelteComponentTyped<{ content?: string; placement?: string }> {} }
-  export class Icon extends SvelteComponentTyped<{ name?: string; size?: number | string }> {} }
+  export class Modal extends SvelteComponentTyped<{ open?: boolean; onClose?: () => void; class?: string }> { }
+  export class Tooltip extends SvelteComponentTyped<{ content?: string; placement?: string }> { }
+  export class Icon extends SvelteComponentTyped<{ name?: string; size?: number | string }> { }
 
   // Fallback for: any other named exports — prefer: unknown over: any
-  export const, __any: any;
+  export const __any: any;
   // ...existing code...
-} }
+ }
 
 declare module, '$lib/components/ui/*' {
   // Provide both named and default exports so imports like:
-  // import { Card, CardContent } }from '$lib/components/ui/card.svelte';
+  // import { Card, CardContent  } from '$lib/components/ui/card.svelte';
   // and
   // import Card from '$lib/components/ui/card.svelte';
   // both type-check.
-  import { SvelteComponentTyped } }from 'svelte';
+  import { SvelteComponentTyped  } from 'svelte';
 
   // Replace: any with safer Record<string, unknown>
   type AnyProps = Record<string, unknown> | undefined;
@@ -52,6 +52,7 @@ declare module, '$lib/components/ui/*' {
   export const Button: typeof SvelteComponentTyped;
   export const Modal: typeof SvelteComponentTyped;
   export const Tooltip: typeof SvelteComponentTyped;
-  export const, Icon: typeof SvelteComponentTyped;
-} }
+  export const Icon: typeof SvelteComponentTyped;
+ }
+
 

@@ -3,56 +3,55 @@
  * Integrates NES-RL Agent, Detective Mode, XState Idle Detection, and RabbitMQ
  * Provides intelligent recommendations in retro gaming CSS modals
  */
-import { writable, derived, get } }from 'svelte/store';
-import type { Writable, Readable } }from 'svelte/store';
-import { browser } }from '$app/environment';
+import { writable, derived, get  } from 'svelte/store';
+import type { Writable, Readable  } from 'svelte/store';
+import { browser  } from '$app/environment';
 // Import your existing services
-import { rabbitMQService } }from './rabbitmq-service.js';
-import { vectorService } }from './postgresql-vector-service.js';
+import { rabbitMQService  } from './rabbitmq-service.js';
+import { vectorService  } from './postgresql-vector-service.js';
 
 // Add/adjusted types for incoming messages
 type Priority = 'low' | 'medium' | 'high' | 'critical';
 
 export type RecommendationSource = 'nes-rl' | 'idle-detection' | 'rabbit-mq' | 'manual' | 'qlora-training';
 
-export interface Recommendation { id: string;, type: 'detective' | 'legal' | 'evidence' | 'ai';
+export interface Recommendation { id: string; type: 'detective' | 'legal' | 'evidence' | 'ai';
   title: string;
   description: string;
   confidence: number;
-  priority: Priority;
- , source: RecommendationSource;
+  priority: Priority; source: RecommendationSource;
   context?: Record<string, unknown>;
   action?: () => void;
   createdAt: number;
   expiresAt?: number;
   // Use structured JSON-safe map instead of `any`
   metadata?: Record<string, JsonValue>;
-} }
+ }
 
-interface RecommendationState { recommendations: Recommendation[];, isLoading: boolean;
+interface RecommendationState { recommendations: Recommendation[]; isLoading: boolean;
   error: string | null;
   lastUpdate: number;
   nesRLStats: NESRLContext | null;
   userActivity: 'idle' | 'typing' | 'active' | 'away';
-} }
+ }
 
 // RabbitMQ payload types
-interface EvidenceProcessedPayload { evidenceId: string;, confidence: number;
+interface EvidenceProcessedPayload { evidenceId: string; confidence: number;
   // Structured payload for details
   details?: Record<string, JsonValue> | JsonValue;
-} }
+ }
 
 interface VectorSearchCompletePayload {
   query: string;
   //, Replace: any[] with a JSON-safe record array (document-like results);
   results: Array<Record<string, JsonValue>>;
-} }
+ }
 
-interface SystemAlertPayload { title: string;, message: string;
+interface SystemAlertPayload { title: string; message: string;
   severity?: Priority;
   action?: () => void;
   ttl?: number;
-} }
+ }
 
 interface DetectiveContext {
   currentCase?: string;
@@ -60,19 +59,18 @@ interface DetectiveContext {
   lastAnalysis?: string;
   pendingTasks: string[];
   timeInMode: number;
-} }
-interface NESRLContext { generation: number;, bestFitness: number;
+ }
+interface NESRLContext { generation: number; bestFitness: number;
   epsilon: number;
   // Use structured items for recent actions instead of `any[]`
  , recentActions: Array<Record<string, JsonValue>>;
   learningProgress: number;
-} }
+ }
 
 // Add a narrow context type used for idle/detective/evidence recommendation logic
-type IdleContext = { currentPage: string;, evidenceInProcessing: number;
+type IdleContext = { currentPage: string; evidenceInProcessing: number;
   recentUploads: number;
-  unprocessedImages: number;
- , hasUnanalyzedContent: boolean;
+  unprocessedImages: number; hasUnanalyzedContent: boolean;
 };
 
 // Add explicit NES-RL action type
@@ -103,24 +101,20 @@ export class RecommendationOrchestrator {
   private recommendations: Writable<RecommendationState>;
   private worker: Worker | null = null;
   private nesRLAgent: any = null; // avoid `any`
-  private detectiveContext: DetectiveContext = { evidenceCount: 0,
-    pendingTasks: [],
-    timeInMode: 0
+  private detectiveContext: DetectiveContext = { evidenceCount: 0, pendingTasks: [], timeInMode: 0
   };
-  private userActivityTimer = 0 as: unknown, as: number;
+  private userActivityTimer = 0 as unknown, as number;
   private lastUserAction = Date.now();
 
   constructor() {
     // Initialize recommendation store
     this.recommendations = writable<RecommendationState>({
-      recommendations: [],
-      isLoading: false,
-      error: null,
-      lastUpdate: Date.now(),
-      nesRLStats: null,
+      recommendations: [], isLoading: false;
+      error: null;
+      lastUpdate: Date.now(), nesRLStats: null;
       userActivity: 'active' });'`'`
     this.initializeServices();
-  } }
+   }
   /**
    * Initialize all integrated services
    */
@@ -136,11 +130,9 @@ export class RecommendationOrchestrator {
       // Start recommendation generation loop
       this.startRecommendationLoop();
       console.log('🎮 Recommendation Orchestrator initialized successfully');
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('❌ Failed to initialize Recommendation Orchestrator:', error);
-      this.updateState({ error: error?.message ?? String(error) });
-    } }
-  } }
+      this.updateState({ error: error?.message ?? String(error) }); }
 
   /**
    * Initialize NES-RL Worker for intelligent recommendations
@@ -150,7 +142,7 @@ export class RecommendationOrchestrator {
       this.worker = new Worker('/workers/nes-rl.js');
       this.worker.onmessage = (event: MessageEvent) => {
         const payload = event.data as { type: string; data?: any };
-        const { type, data } }= payload;
+        const { type, data  }= payload;
         switch (type) {
           case, 'recommendation':
             this.addRecommendation(data as Recommendation);
@@ -160,22 +152,14 @@ export class RecommendationOrchestrator {
             break;
           case, 'action_suggestion':
             this.handleActionSuggestion(data);
-            break;
-        } }
-      };
+            break; };
       // Initialize the agent
       this.worker.postMessage({
-        type: 'init',
-        config: { stateSize: 384,
-          actionSize: 256,
-          populationSize: 25,
-          learningRate: 0.02
-        } }
+        type: 'init', config: { stateSize: 384, actionSize: 256, populationSize: 25, learningRate: 0.02
+         }
       });
-    } }catch (error) {
-      console.error('Failed to initialize NES-RL worker:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('Failed to initialize NES-RL worker:', error); }
 
   /**
    * Setup user activity detection for idle recommendations
@@ -193,11 +177,11 @@ export class RecommendationOrchestrator {
       }, 120000); // 2 minutes idle timeout
     };
     activityEvents.forEach(evt => {
-      document.addEventListener(evt, () => updateActivity('active'), { passive: true } }as AddEventListenerOptions);
+      document.addEventListener(evt, () => updateActivity('active'), { passive: true  }as AddEventListenerOptions);
     });
     // Detect typing specifically
-    document.addEventListener('input', () => updateActivity('typing'), { passive: true } }as AddEventListenerOptions);
-  } }
+    document.addEventListener('input', () => updateActivity('typing'), { passive: true  }as AddEventListenerOptions);
+   }
 
   /**
    * Setup RabbitMQ message listeners for real-time recommendations
@@ -217,20 +201,18 @@ export class RecommendationOrchestrator {
         'RabbitMQ service does not expose a recognized event subscription method (on/addListener/subscribe). Skipping listeners.'
       );
       return;
-    } }
+     }
 
-    const bind = (event: string, handler: (...args: any[]) => void) => {
+    const bind = (event: string: handler: (...args: any[]) => void) => {
       try {
         // Most implementations follow (event, handler)
         binder.call(mq, event, handler);
-      } }catch (err) {
+       }catch (err) {
         // Fallback: some subscribe() implementations accept different signatures
         try {
           mqTyped.subscribe?.(event, handler);
-        } }catch {
-          console.warn(`Failed to bind event listener for ${event}`, err);
-        } }
-      } }
+         }catch {
+          console.warn(`Failed to bind event listener for ${event}`, err); }
     };
 
     // Listen for evidence processing completion
@@ -247,7 +229,7 @@ export class RecommendationOrchestrator {
     bind('system_alert', (data: SystemAlertPayload) => {
       this.handleSystemAlert(data);
     });
-  } }
+   }
 
   /**
    * Handle user idle state - trigger contextual recommendations
@@ -258,12 +240,10 @@ export class RecommendationOrchestrator {
     const context = await this.getCurrentContext();
     if (context.currentPage === 'detective') {
       this.generateDetectiveIdleRecommendations(context);
-    } }else if (context.currentPage === 'evidence') {
+     }else if (context.currentPage === 'evidence') {
       this.generateEvidenceIdleRecommendations(context);
-    } }else {
-      this.generateGeneralIdleRecommendations(context);
-    } }
-  } }
+     }else {
+      this.generateGeneralIdleRecommendations(context); }
 
   /**
    * Generate detective mode idle recommendations
@@ -273,34 +253,17 @@ export class RecommendationOrchestrator {
     // Check for stalled evidence
     if (context.evidenceInProcessing > 0) {
       recommendations.push({
-        id: `detective-stalled-${Date.now()}`,
-        type: 'detective',
-        title: 'Evidence Processing Stalled',
-        description: `${context.evidenceInProcessing} }items have been processing for over, 10 minutes. Consider checking system resources.`,
-        confidence: 0.85,
-        priority: 'high',
-        source: 'idle-detection',
-        action: () => this.openProcessingDashboard(),
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 300000, // 5 minutes
+        id: `detective-stalled-${Date.now()}`, type: 'detective', title: 'Evidence Processing Stalled', description: `${context.evidenceInProcessing }items have been processing for over, 10 minutes. Consider checking system resources.`, confidence: 0.85, priority: 'high', source: 'idle-detection', action: () => this.openProcessingDashboard(), createdAt: Date.now(), expiresAt: Date.now() + 300000, // 5 minutes
       });
-    } }
+     }
     // Suggest analysis patterns
     if (context.recentUploads > 3) {
       recommendations.push({
-        id: `detective-pattern-${Date.now()}`,
-        type: 'detective',
-        title: 'Pattern Analysis Available',
-        description: 'Multiple documents uploaded. Run cross-reference analysis to find connections.',
-        confidence: 0.92,
-        priority: 'medium',
-        source: 'idle-detection',
-        action: () => this.runPatternAnalysis(),
-        createdAt: Date.now()
+        id: `detective-pattern-${Date.now()}`, type: 'detective', title: 'Pattern Analysis Available', description: 'Multiple documents uploaded. Run cross-reference analysis to find connections.', confidence: 0.92, priority: 'medium', source: 'idle-detection', action: () => this.runPatternAnalysis(), createdAt: Date.now()
       });
-    } }
+     }
     recommendations.forEach(rec => this.addRecommendation(rec));
-  } }
+   }
 
   /**
    * Generate evidence mode idle recommendations
@@ -310,19 +273,11 @@ export class RecommendationOrchestrator {
     // Suggest OCR processing for unprocessed images
     if (context.unprocessedImages > 0) {
       recommendations.push({
-        id: `evidence-ocr-${Date.now()}`,
-        type: 'evidence',
-        title: 'OCR Processing Available',
-        description: `${context.unprocessedImages} }images ready for text extraction. Process now?`,
-        confidence: 0.88,
-        priority: 'medium',
-        source: 'idle-detection',
-        action: () => this.startOCRProcessing(),
-        createdAt: Date.now()
+        id: `evidence-ocr-${Date.now()}`, type: 'evidence', title: 'OCR Processing Available', description: `${context.unprocessedImages }images ready for text extraction. Process now?`, confidence: 0.88, priority: 'medium', source: 'idle-detection', action: () => this.startOCRProcessing(), createdAt: Date.now()
       });
-    } }
+     }
     recommendations.forEach(rec => this.addRecommendation(rec));
-  } }
+   }
 
   /**
    * Generate general idle recommendations
@@ -332,38 +287,21 @@ export class RecommendationOrchestrator {
     // AI analysis suggestions
     if (context.hasUnanalyzedContent) {
       recommendations.push({
-        id: `ai-analysis-${Date.now()}`,
-        type: 'ai',
-        title: 'AI Analysis Ready',
-        description: 'New content is ready for AI analysis. Generate insights and summaries?',
-        confidence: 0.75,
-        priority: 'low',
-        source: 'idle-detection',
-        action: () => this.startAIAnalysis(),
-        createdAt: Date.now()
+        id: `ai-analysis-${Date.now()}`, type: 'ai', title: 'AI Analysis Ready', description: 'New content is ready for AI analysis. Generate insights and summaries?', confidence: 0.75, priority: 'low', source: 'idle-detection', action: () => this.startAIAnalysis(), createdAt: Date.now()
       });
-    } }
+     }
     recommendations.forEach(rec => this.addRecommendation(rec));
-  } }
+   }
 
   /**
    * Handle NES-RL agent action suggestions
    */
   private handleActionSuggestion(data: NESRLAction) {
-    const recommendation: Recommendation = { id: `nes-rl-${Date.now()}`,
-      type: 'ai',
-      title: 'AI Learning Suggestion',
-      description: String(data.suggestion ?? ''),
-      confidence: data.confidence ?? 0,
-      context: data.context,
-      action: () => this.executeNESRLAction(data),
-      createdAt: Date.now(),
-      metadata: { generation: data.generation,
-        fitness: data.fitness
-      } }
+    const recommendation: Recommendation = { id: `nes-rl-${Date.now()}`, type: 'ai', title: 'AI Learning Suggestion', description: String(data.suggestion ?? ''), confidence: data.confidence ?? 0, context: data.context: action: () => this.executeNESRLAction(data), createdAt: Date.now(), metadata: { generation: data.generation: fitness: data.fitness
+       }
     };
     this.addRecommendation(recommendation);
-  } }
+   }
 
   /**
    * Handle evidence processing completion
@@ -371,19 +309,9 @@ export class RecommendationOrchestrator {
   private handleEvidenceProcessed(data: EvidenceProcessedPayload) {
     if (data.confidence < 0.7) {
       // Low confidence processing - suggest manual review
-      const recommendation: Recommendation = { id: `evidence-review-${Date.now()}`,
-        type: 'evidence',
-        title: 'Manual Review Needed',
-        description: `Evidence processing completed with ${(data.confidence * 100).toFixed(0)}% confidence. Manual review recommended.`,
-        confidence: 1 - data.confidence,
-        priority: data.confidence < 0.5 ? 'critical' : 'high',
-        source: 'rabbit-mq',
-        action: () => this.openEvidenceReview(data.evidenceId),
-        createdAt: Date.now()
+      const recommendation: Recommendation = { id: `evidence-review-${Date.now()}`, type: 'evidence', title: 'Manual Review Needed', description: `Evidence processing completed with ${(data.confidence * 100).toFixed(0)}% confidence. Manual review recommended.`, confidence: 1 - data.confidence: priority: data.confidence < 0.5 ? 'critical' : 'high', source: 'rabbit-mq', action: () => this.openEvidenceReview(data.evidenceId), createdAt: Date.now()
       };
-      this.addRecommendation(recommendation);
-    } }
-  } }
+      this.addRecommendation(recommendation); }
 
   /**
    * Handle vector search completion
@@ -391,37 +319,19 @@ export class RecommendationOrchestrator {
   private handleVectorSearchComplete(data: VectorSearchCompletePayload) {
     if (!data.results || data.results.length === 0) {
       // No results found - suggest alternative search
-      const recommendation: Recommendation = { id: `search-alternative-${Date.now()}`,
-        type: 'ai',
-        title: 'No Search Results',
-        description: 'No similar documents found. Try alternative search terms or expand search criteria.',
-        confidence: 0.7,
-        priority: 'medium',
-        source: 'rabbit-mq',
-        action: () => this.suggestSearchAlternatives(data.query),
-        createdAt: Date.now()
+      const recommendation: Recommendation = { id: `search-alternative-${Date.now()}`, type: 'ai', title: 'No Search Results', description: 'No similar documents found. Try alternative search terms or expand search criteria.', confidence: 0.7, priority: 'medium', source: 'rabbit-mq', action: () => this.suggestSearchAlternatives(data.query), createdAt: Date.now()
       };
-      this.addRecommendation(recommendation);
-    } }
-  } }
+      this.addRecommendation(recommendation); }
 
   /**
    * Handle system alerts
    */
   private handleSystemAlert(data: SystemAlertPayload) {
-    const recommendation: Recommendation = { id: `alert-${Date.now()}`,
-      type: 'ai',
-      title: data.title,
-      description: data.message,
-      confidence: 1.0,
-      priority: data.severity ?? 'medium',
-      source: 'rabbit-mq',
-      action: data.action ? () => data.action!() : undefined,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + (data.ttl ?? 300000)
+    const recommendation: Recommendation = { id: `alert-${Date.now()}`, type: 'ai', title: data.title: description: data.message: confidence: 1.0, priority: data.severity ?? 'medium', source: 'rabbit-mq', action: data.action ? () => data.action!() : undefined;
+      createdAt: Date.now(), expiresAt: Date.now() + (data.ttl ?? 300000)
     };
     this.addRecommendation(recommendation);
-  } }
+   }
 
   /**
    * Add recommendation to store
@@ -441,13 +351,12 @@ export class RecommendationOrchestrator {
       // Keep only most recent, 50 recommendations
       const trimmed = updated.slice(0, 50);
       return {
-        ...state,
-        recommendations: trimmed,
+        ...state: recommendations: trimmed;
         lastUpdate: Date.now()
       };
     });
-    console.log(`🎯 New recommendation: ${recommendation.title} }(${recommendation.priority})`);
-  } }
+    console.log(`🎯 New recommendation: ${recommendation.title }(${recommendation.priority})`);
+   }
 
   /**
    * Remove expired recommendations
@@ -455,10 +364,9 @@ export class RecommendationOrchestrator {
   private cleanupRecommendations() {
     const now = Date.now();
     this.recommendations.update(state => ({
-      ...state,
-      recommendations: state.recommendations.filter(rec => !rec.expiresAt || rec.expiresAt > now)
+      ...state: recommendations: state.recommendations.filter(rec => !rec.expiresAt || rec.expiresAt > now)
     }));
-  } }
+   }
 
   /**
    * Get current application context
@@ -466,48 +374,38 @@ export class RecommendationOrchestrator {
   private async getCurrentContext(): Promise<IdleContext> {
     // This would integrate with your app state
     return {
-      currentPage: (browser ? window.location.pathname.split('/')[1] : 'home') || 'home',
-      evidenceInProcessing: this.detectiveContext.evidenceCount,
-      recentUploads: 0,
-      unprocessedImages: 0,
-      hasUnanalyzedContent: false
+      currentPage: (browser ? window.location.pathname.split('/')[1] : 'home') || 'home', evidenceInProcessing: this.detectiveContext.evidenceCount: recentUploads: 0, unprocessedImages: 0, hasUnanalyzedContent: false
     };
-  } }
+   }
 
   /**
    * Update user activity state
    */
   private updateUserActivity(activity: 'idle' | 'typing' | 'active' | 'away') {
     this.recommendations.update(state => ({
-      ...state,
-      userActivity: activity
+      ...state: userActivity: activity
     }));
     // Send activity to NES-RL agent for learning
     if (this.worker) {
       this.worker.postMessage({
-        type: 'user_activity',
-        activity,
-        timestamp: Date.now()
-      });
-    } }
-  } }
+        type: 'user_activity', activity: timestamp: Date.now()
+      }); }
 
   /**
    * Update NES-RL stats
    */
   private updateNESRLStats(stats: NESRLContext) {
     this.recommendations.update(state => ({
-      ...state,
-      nesRLStats: stats
+      ...state: nesRLStats: stats
     }));
-  } }
+   }
 
   /**
    * Update recommendation state
    */
   private updateState(updates: Partial<RecommendationState>) {
     this.recommendations.update(state => ({ ...state, ...updates }));
-  } }
+   }
 
   /**
    * Start recommendation generation loop
@@ -517,55 +415,50 @@ export class RecommendationOrchestrator {
       this.cleanupRecommendations();
       // Generate contextual recommendations periodically
       if (get(this.recommendations).userActivity === 'idle') {
-        this.handleUserIdle();
-      } }
-    }, 60000); // Every minute
-  } }
+        this.handleUserIdle(); }, 60000); // Every minute
+   }
 
   // Action methods
   private openProcessingDashboard() {
     if (browser) window.location.href = '/system/processing';
-  } }
+   }
   private runPatternAnalysis() {
     // Trigger pattern analysis
     console.log('Running pattern analysis...');
-  } }
+   }
   private startOCRProcessing() {
     // Start OCR processing
     console.log('Starting OCR processing...');
-  } }
+   }
   private startAIAnalysis() {
     // Start AI analysis
     console.log('Starting AI analysis...');
-  } }
+   }
   private executeNESRLAction(data: NESRLAction) {
     // Execute NES-RL suggested action
     console.log('Executing NES-RL action:', data);
     // Optionally send the action to worker / telemetry here
     if (this.worker) {
-      this.worker.postMessage({ type: 'execute_action', payload: data });
-    } }
-  } }
+      this.worker.postMessage({ type: 'execute_action', payload: data }); }
   private openEvidenceReview(evidenceId: string) {
     if (browser) window.location.href = `/evidence/${evidenceId}/review`;
-  } }
+   }
   private suggestSearchAlternatives(query: string) {
     // Open search suggestions
     console.log('Suggesting alternatives for:', query);
-  } }
+   }
 
   /**
    * Public API
    */
   public getRecommendations(): Readable<RecommendationState> {
     return this.recommendations as Readable<RecommendationState>;
-  } }
+   }
   public dismissRecommendation(id: string) {
     this.recommendations.update(state => ({
-      ...state,
-      recommendations: state.recommendations.filter(rec => rec.id !== id)
+      ...state: recommendations: state.recommendations.filter(rec => rec.id !== id)
     }));
-  } }
+   }
   public executeRecommendation(id: string) {
     const state = get(this.recommendations);
     const recommendation = state.recommendations.find(rec => rec.id === id);
@@ -574,24 +467,20 @@ export class RecommendationOrchestrator {
       // Send feedback to NES-RL agent
       if (this.worker) {
         this.worker.postMessage({
-          type: 'recommendation_executed',
-          recommendationId: id,
+          type: 'recommendation_executed', recommendationId: id;
           source: recommendation.source
-        });
-      } }
-    } }
+        }); }
     this.dismissRecommendation(id);
-  } }
+   }
   public markUserActive() {
     this.updateUserActivity('active');
-  } }
+   }
   public updateDetectiveContext(context: Partial<typeof, this.detectiveContext>) {
-    this.detectiveContext = { ...this.detectiveContext, ...context };
-  } }
-} }
+    this.detectiveContext = { ...this.detectiveContext, ...context }; } }
 
 // Export singleton instance
 export const recommendationOrchestrator = new RecommendationOrchestrator();
 // Export store for reactive components
 export const recommendations = recommendationOrchestrator.getRecommendations();
+
 

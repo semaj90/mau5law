@@ -10,8 +10,7 @@ type ServiceStatus = {
   id?: string;
   name?: string;
   baseUrl?: string;
-  healthPath?: string;
- , status: 'healthy' | 'degraded' | 'unhealthy' | string;
+  healthPath?: string; status: 'healthy' | 'degraded' | 'unhealthy' | string;
   lastChecked?: string;
   responseTimeMs?: number;
   protocols?: string[];
@@ -32,7 +31,7 @@ export type PageServerLoad = (
     icon: string;
     description: string;
   }>;
-  routeInventory: { fileRoutesSample: string[];, counts: { config: number;, fileBased: number;
+  routeInventory: { fileRoutesSample: string[]; counts: { config: number; fileBased: number;
       api: number;
       configMissingFiles: number;
       filesMissingConfig: number;
@@ -45,11 +44,10 @@ export type PageServerLoad = (
       last_updated: string;
     };
     services: ServiceStatus[]; // replaced `Array<any>` with ServiceStatus[]
-    performance: { cpu_usage: number;, memory_usage: number;
+    performance: { cpu_usage: number; memory_usage: number;
       disk_usage: number;
     };
-  };
- , recommendedRouteLayout: RecommendedRouteLayout; // replaced `any` with concrete type
+  }; recommendedRouteLayout: RecommendedRouteLayout; // replaced `any` with concrete type
 }>;
 
 // Use the local AppParentData directly instead of non-existent Kit.AwaitedProperties

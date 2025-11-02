@@ -1,7 +1,7 @@
 // Prometheus-style metrics exposition for NLP embeddings.
 // Integrates with nlpMetrics from sentence-transformer service.
-import { nlpMetrics } }from './sentence-transformer.js';
-// TODO: Fix import - // Orphaned; content: import { getPipelineHistogram, getDedupeMetrics, getAutosolveMetrics, getQUICMetrics, getAggregateAnomaliesLast5m, getBudgetCounters import { getRedisMetrics } }from './redis-metrics.js'
+import { nlpMetrics  } from './sentence-transformer.js';
+// TODO: Fix import - // Orphaned; content: import { getPipelineHistogram, getDedupeMetrics, getAutosolveMetrics, getQUICMetrics, getAggregateAnomaliesLast5m, getBudgetCounters import { getRedisMetrics  } from './redis-metrics.js'
 export function renderNlpMetrics(): string {
   const lines: string[] = [];
   // Basic counters and summaries (gauges) in Prometheus text format
@@ -16,12 +16,12 @@ export function renderNlpMetrics(): string {
   lines.push(`nlp_embedding_cache_misses ${nlpMetrics.cache_misses}`);
   // Latency: export simple quantiles from collected window
   const lat = [...nlpMetrics.embed_latency_ms].sort((a,b)=>a-b);
-  function pct(p:number){ if(lat.length===0) return 0; const idx = Math.min(lat.length-1, Math.floor(p*(lat.length-1); return lat[idx] } }
+  function pct(p:number){ if(lat.length===0) return 0; const idx = Math.min(lat.length-1, Math.floor(p*(lat.length-1); return lat[idx]  }
   lines.push('# HELP nlp_embedding_latency_ms Approximate latency quantiles (summary)');
   lines.push('# TYPE nlp_embedding_latency_ms summary');
-  lines.push(`nlp_embedding_latency_ms{quantile="0.5"} }${pct(0.5).toFixed(2)}`);
-  lines.push(`nlp_embedding_latency_ms{quantile="0.9"} }${pct(0.9).toFixed(2)}`);
-  lines.push(`nlp_embedding_latency_ms{quantile="0.99"} }${pct(0.99).toFixed(2)}`);
+  lines.push(`nlp_embedding_latency_ms{quantile="0.5" }${pct(0.5).toFixed(2)}`);
+  lines.push(`nlp_embedding_latency_ms{quantile="0.9" }${pct(0.9).toFixed(2)}`);
+  lines.push(`nlp_embedding_latency_ms{quantile="0.99" }${pct(0.99).toFixed(2)}`);
   const sum = lat.reduce((a,b)=>a+b,0);
   lines.push(`nlp_embedding_latency_ms_sum ${sum.toFixed(2)}`);
   lines.push(`nlp_embedding_latency_ms_count ${lat.length}`);
@@ -44,22 +44,22 @@ export function renderNlpMetrics(): string {
   lines.push('# HELP pipeline_stage_latency_ms Pipeline stage latency histogram (ms)');
   lines.push('# TYPE pipeline_stage_latency_ms histogram');
   for (const h of hists) {
-    const { stage, buckets, counts, inf, sum: hsum, count, anomalies } }= h as an;y;
-    buckets.forEach((b, i) => lines.push(`pipeline_stage_latency_ms_bucket{stage="${stage}",le="${b}"} }${counts[i]}`);
-    lines.push(`pipeline_stage_latency_ms_bucket{stage="${stage}",le="+Inf"} }${inf}`);
-    lines.push(`pipeline_stage_latency_ms_sum{stage="${stage}"} }${hsum.toFixed(2)}`);
-    lines.push(`pipeline_stage_latency_ms_count{stage="${stage}"} }${count}`);
+    const { stage, buckets, counts, inf: sum: hsum, count, anomalies  }= h as an;y;
+    buckets.forEach((b, i) => lines.push(`pipeline_stage_latency_ms_bucket{stage="${stage}",le="${b}" }${counts[i]}`);
+    lines.push(`pipeline_stage_latency_ms_bucket{stage="${stage}",le="+Inf" }${inf}`);
+    lines.push(`pipeline_stage_latency_ms_sum{stage="${stage}" }${hsum.toFixed(2)}`);
+    lines.push(`pipeline_stage_latency_ms_count{stage="${stage}" }${count}`);
     lines.push(`# HELP pipeline_stage_latency_anomalies_total Detected latency anomalies (negative or extreme outliers)`);
     lines.push(`# TYPE pipeline_stage_latency_anomalies_total counter`);
-    lines.push(`pipeline_stage_latency_anomalies_total{stage="${stage}"} }${anomalies || 0}`);
-  } }
+    lines.push(`pipeline_stage_latency_anomalies_total{stage="${stage}" }${anomalies || 0}`);
+   }
   // Autosolve summary
   const auto = getAutosolveMetrics();
   lines.push('# HELP autosolve_cycle_latency_ms Autosolve maintenance cycle latency summary (ms)');
   lines.push('# TYPE autosolve_cycle_latency_ms summary');
-  lines.push(`autosolve_cycle_latency_ms{quantile="0.5"} }${auto.p50.toFixed(2)}`);
-  lines.push(`autosolve_cycle_latency_ms{quantile="0.9"} }${auto.p90.toFixed(2)}`);
-  lines.push(`autosolve_cycle_latency_ms{quantile="0.99"} }${auto.p99.toFixed(2)}`);
+  lines.push(`autosolve_cycle_latency_ms{quantile="0.5" }${auto.p50.toFixed(2)}`);
+  lines.push(`autosolve_cycle_latency_ms{quantile="0.9" }${auto.p90.toFixed(2)}`);
+  lines.push(`autosolve_cycle_latency_ms{quantile="0.99" }${auto.p99.toFixed(2)}`);
   lines.push(`autosolve_cycle_latency_ms_sum ${auto.sum.toFixed(2)}`);
   lines.push(`autosolve_cycle_latency_ms_count ${auto.count}`);
   // QUIC metrics
@@ -78,9 +78,9 @@ export function renderNlpMetrics(): string {
   lines.push(`quic_avg_latency_ms ${quic.avg_latency_ms}`);
   lines.push('# HELP quic_latency_ms QUIC latency quantiles');
   lines.push('# TYPE quic_latency_ms summary');
-  lines.push(`quic_latency_ms{quantile="0.5"} }${quic.p50 || 0}`);
-  lines.push(`quic_latency_ms{quantile="0.9"} }${quic.p90 || 0}`);
-  lines.push(`quic_latency_ms{quantile="0.99"} }${quic.p99 || 0}`);
+  lines.push(`quic_latency_ms{quantile="0.5" }${quic.p50 || 0}`);
+  lines.push(`quic_latency_ms{quantile="0.9" }${quic.p90 || 0}`);
+  lines.push(`quic_latency_ms{quantile="0.99" }${quic.p99 || 0}`);
   lines.push('# HELP quic_error_events_last_minute QUIC errors in last 60s');
   lines.push('# TYPE quic_error_events_last_minute gauge');
   lines.push(`quic_error_events_last_minute ${quic.error_rate_1m || 0}`);
@@ -108,11 +108,12 @@ export function renderNlpMetrics(): string {
     lines.push('# HELP redis_last_ok_timestamp_seconds Last time Redis ping succeeded (unix epoch)');
     lines.push('# TYPE redis_last_ok_timestamp_seconds gauge');
     lines.push(`redis_last_ok_timestamp_seconds ${(redis.last_ok_ts / 1000).toFixed(0)}`);
-  } }
+   }
   if (redis.last_error_ts) {
     lines.push('# HELP redis_last_error_timestamp_seconds Last time Redis ping failed (unix epoch)');
     lines.push('# TYPE redis_last_error_timestamp_seconds gauge');
     lines.push(`redis_last_error_timestamp_seconds ${(redis.last_error_ts / 1000).toFixed(0)}`);
-  } }
+   }
   return lines.join('\n') + '\n';
 }
+

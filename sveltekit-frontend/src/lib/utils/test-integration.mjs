@@ -4,26 +4,21 @@ console.log('🧪 COMPLETE LEGAL AI PLATFORM INTEGRATION TEST\n');
 
 const tests = [
   {
-    name: 'QUIC Tensor Server (UDP 4433)',
-    test: () => {
+    name: 'QUIC Tensor Server (UDP 4433)', test: () => {
       console.log('✅ QUIC Tensor: SOM initialized with 400 nodes');
       console.log('✅ QUIC Tensor: Worker pool with 1000 capacity');
       console.log('✅ QUIC Tensor: UDP protocol active on port 4433');
       return true;
     }
-  },
-  {
-    name: 'AI Stream 0-RTT (UDP 8546)',
-    test: () => {
+  }, {
+    name: 'AI Stream 0-RTT (UDP 8546)', test: () => {
       console.log('✅ AI Stream: 0-RTT connection resumption enabled');
       console.log('✅ AI Stream: HTTP/3 endpoint on port 8546');
       console.log('✅ AI Stream: Legal document optimization active');
       return true;
     }
-  },
-  {
-    name: 'Enhanced RAG + Context7',
-    test: async () => {
+  }, {
+    name: 'Enhanced RAG + Context7', test: async () => {
       try {
         const response = await fetch('http://localhost:8094/health');
         const data = await response.json();
@@ -36,10 +31,8 @@ const tests = [
         return false;
       }
     }
-  },
-  {
-    name: 'GPU FlashAttention2 + 8-Core Bridge',
-    test: async () => {
+  }, {
+    name: 'GPU FlashAttention2 + 8-Core Bridge', test: async () => {
       try {
         const { flashAttentionMulticoreBridge } = await import('./src/lib/integrations/flashattention-multicore-bridge.js');
         const status = flashAttentionMulticoreBridge.getStatus();
@@ -53,24 +46,19 @@ const tests = [
         return false;
       }
     }
-  },
-  {
-    name: 'NATS JetStream Messaging',
-    test: () => {
+  }, {
+    name: 'NATS JetStream Messaging', test: () => {
       console.log('✅ NATS: Core messaging on port 4225');
       console.log('✅ NATS: WebSocket support on port 4226');
       console.log('✅ NATS: JetStream persistence enabled');
       console.log('✅ NATS: Legal AI subject patterns configured');
       return true;
     }
-  },
-  {
-    name: 'SvelteKit Frontend Integration',
-    test: async () => {
+  }, {
+    name: 'SvelteKit Frontend Integration', test: async () => {
       try {
         const response = await fetch('http://localhost:5173/', { 
-          method: 'HEAD',
-          signal: AbortSignal.timeout(5000)
+          method: 'HEAD', signal: AbortSignal.timeout(5000)
         });
         console.log('✅ Frontend: SvelteKit running on port 5173');
         console.log('✅ Frontend: SSR with hooks.server.ts active');

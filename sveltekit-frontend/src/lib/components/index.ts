@@ -1,4 +1,4 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * Master Component Barrel Export
  * Legal AI Platform - SvelteKit, 2 + Svelte, 5
@@ -11,51 +11,32 @@ export * from './ui';
 // ===== QUICK ACCESS FOR COMMON COMPONENTS =====
 export {
   // Enhanced-bits components (primary)
-  Button,
-  Input,
-  Dialog,
-  Select,
-  Card,
-  Alert,
-  Label,
-  // Layout components
-  Sidebar,
-  Footer,
-  NavBar,
-  UnifiedLayout,
-  // Utilities
-  createLayoutConfig,
-  selectComponentLibrary,
-  LEGAL_AI_VARIANTS,
-  // Types
-  type LayoutVariant,
-  type LegalAITheme,
-  type ComponentLibrary,
-  type SelectOption
-} }from './ui';
-// export { SelectOption, as EnhancedSelectOption } }from './ui/enhanced-bits/index.js'; // Disabled: empty file
+  Button, Input, Dialog, Select, Card, Alert, Label, // Layout components
+  Sidebar, Footer, NavBar, UnifiedLayout, // Utilities
+  createLayoutConfig, selectComponentLibrary, LEGAL_AI_VARIANTS, // Types
+  type LayoutVariant, type LegalAITheme, type ComponentLibrary, type SelectOption
+ } from './ui';
+// export { SelectOption, as EnhancedSelectOption  } from './ui/enhanced-bits/index.js'; // Disabled: empty file
 export * from './ui/modern/index.js';
 // ===== FORM COMPONENTS =====
 // Selective form exports to avoid conflicts
-export { Form, as ComponentForm, FormStandard as ComponentFormStandard } }from './ui/form/index.js';
-export { Input, as ComponentInput } }from './ui/input/index.js';
+export { Form, as ComponentForm, FormStandard as ComponentFormStandard  } from './ui/form/index.js';
+export { Input, as ComponentInput  } from './ui/input/index.js';
 // Textarea export handled by base UI components
 // export * from './ui/textarea/index.js'
 export * from './ui/checkbox/index.js';
 export * from './ui/select/index.js';
 // Use specific exports to avoid CommonProps conflict
-export { Switch, SwitchRoot, SwitchThumb } }from './ui/switch/index.js';
-export type { SwitchProps } }from './ui/switch/index.js';
-export { Slider, SliderRoot, SliderRange, SliderThumb, SliderTick } }from './ui/slider/index.js';
-export type { SliderProps } }from './ui/slider/index.js';
+export { Switch, SwitchRoot, SwitchThumb  } from './ui/switch/index.js';
+export type { SwitchProps  } from './ui/switch/index.js';
+export { Slider, SliderRoot, SliderRange, SliderThumb, SliderTick  } from './ui/slider/index.js';
+export type { SliderProps  } from './ui/slider/index.js';
 // ===== NAVIGATION & INTERACTION =====
 export * from './ui/tabs/index.js';
 // Context menu exports handled selectively to avoid conflicts
 export {
-  Trigger as ContextMenuTrigger,
-  Content as ContextMenuContent,
-  Item as ContextMenuItem
-} }from './ui/context-menu/index.js';
+  Trigger as ContextMenuTrigger, Content as ContextMenuContent, Item as ContextMenuItem
+ } from './ui/context-menu/index.js';
 export * from './ui/dialog/index.js';
 // Tooltip exports - conditional based on availability
 // export * from './ui/tooltip/index.js'
@@ -76,16 +57,16 @@ export * from './search/index.js';
 export * from './unified/index.js';
 // ===== BUSINESS LOGIC COMPONENTS =====
 // AI & Chat Components
-export { default, as AIChat } }from './AIChat.svelte.js';
-export { default, as EnhancedLegalChat } }from './EnhancedLegalChat.svelte.js';
-export { default, as LLMAssistant } }from './LLMAssistant.svelte.js';
+export { default, as AIChat  } from './AIChat.svelte.js';
+export { default, as EnhancedLegalChat  } from './EnhancedLegalChat.svelte.js';
+export { default, as LLMAssistant  } from './LLMAssistant.svelte.js';
 export * from './ai/index.js';
 // Case Management
-export { default, as CaseCard } }from './+CaseCard.svelte.js';
-export { default, as LegalCaseManager } }from './LegalCaseManager.svelte.js';
+export { default, as CaseCard  } from './+CaseCard.svelte.js';
+export { default, as LegalCaseManager  } from './LegalCaseManager.svelte.js';
 export * from './cases/index.js';
 // Evidence & Legal
-export { default, as EvidencePanel } }from './EvidencePanel.svelte.js';
+export { default, as EvidencePanel  } from './EvidencePanel.svelte.js';
 export * from './legal/index.js';
 export * from './evidence-editor/index.js';
 // Chat & Messaging
@@ -95,7 +76,7 @@ export * from './canvas/index.js';
 // Authentication
 export * from './auth/index.js';
 // Layout & Navigation
-export { default, as NierNavigation } }from './NierNavigation.svelte.js';
+export { default, as NierNavigation  } from './NierNavigation.svelte.js';
 export * from './layout/index.js';
 // Realtime Components
 export * from './realtime/index.js';
@@ -106,36 +87,23 @@ export * from './detective/index.js';
 // Subcomponents
 export * from './subcomponents/index.js';
 // Utility Components
-export { default, as LoadingSpinner } }from './LoadingSpinner.svelte.js';
-export { default, as Typewriter } }from './Typewriter.svelte.js';
-export { default, as KeyboardShortcutProvider } }from './KeyboardShortcutProvider.svelte.js';
-export { default, as HeadlessDemo } }from './HeadlessDemo.svelte.js';
+export { default, as LoadingSpinner  } from './LoadingSpinner.svelte.js';
+export { default, as Typewriter  } from './Typewriter.svelte.js';
+export { default, as KeyboardShortcutProvider  } from './KeyboardShortcutProvider.svelte.js';
+export { default, as HeadlessDemo  } from './HeadlessDemo.svelte.js';
 // ===== COMPONENT METADATA =====
 export const COMPONENT_REGISTRY = {
-  ui: 89,
-  business: 24,
-  layout: 12,
-  ai: 8,
-  legal: 15,
-  realtime: 6,
-  total: 154
-} }as const;
+  ui: 89, business: 24, layout: 12, ai: 8, legal: 15, realtime: 6, total: 154
+ }as const;
 export const COMPONENT_CATEGORIES = ['ui', 'business', 'layout', 'ai', 'legal', 'realtime', 'utility'] as const;
 export type ComponentCategory = (typeof COMPONENT_CATEGORIES)[number];
 // ===== STORYBOOK SUPPORT =====
 export const STORYBOOK_STORIES = {
-  'Button': () => import('./ui/enhanced/Button.svelte'),
-  'Card': () => import('./ui/enhanced/Card.svelte'),
-  'Input': () => import('./ui/enhanced/Input.svelte'),
-  'Dialog': () => import('./ui/enhanced-bits/Dialog.svelte'),
-  'AIChat': () => import('./AIChat.svelte'),
-  'LegalCaseManager': () => import('./LegalCaseManager.svelte'),
-  'EvidencePanel': () => import('./EvidencePanel.svelte')
-} }as const;
+  'Button': () => import('./ui/enhanced/Button.svelte'), 'Card': () => import('./ui/enhanced/Card.svelte'), 'Input': () => import('./ui/enhanced/Input.svelte'), 'Dialog': () => import('./ui/enhanced-bits/Dialog.svelte'), 'AIChat': () => import('./AIChat.svelte'), 'LegalCaseManager': () => import('./LegalCaseManager.svelte'), 'EvidencePanel': () => import('./EvidencePanel.svelte')
+ }as const;
 // Default export for convenience
 export default {
-  COMPONENT_REGISTRY,
-  COMPONENT_CATEGORIES,
-  STORYBOOK_STORIES
+  COMPONENT_REGISTRY, COMPONENT_CATEGORIES, STORYBOOK_STORIES
 };
+
 

@@ -1,19 +1,19 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * Legal Data Composables using Svelte, 5 Runes
  * Reusable state management for legal entities, cases, evidence, and POIs
  */
 // Core legal data interfaces
-export interface LegalCase { id: string;, title: string;
+export interface LegalCase { id: string; title: string;
   status: 'active' | 'closed' | 'pending' | 'archived';
   priority: 'low' | 'medium' | 'high' | 'urgent';
   assignedTo?: string;
   createdAt: string;
   updatedAt: string;
   description?: string;
-  metadata: { [key: string]: any } }
+  metadata: { [key: string]: any  }
 } }
-export interface Evidence { id: string;, caseId: string;
+export interface Evidence { id: string; caseId: string;
   type: 'document' | 'image' | 'video' | 'audio' | 'physical' | 'digital';
   title: string;
   description?: string;
@@ -22,18 +22,17 @@ export interface Evidence { id: string;, caseId: string;
   tags: string[];
   createdAt: string;
   updatedAt: string;
-  metadata: { [key: string]: any } }
+  metadata: { [key: string]: any  }
 } }
-export interface PersonOfInterest { id: string;, name: string;
+export interface PersonOfInterest { id: string; name: string;
   alias?: string[];
   type: 'suspect' | 'witness' | 'victim' | 'person_of_interest';
   status: 'active' | 'inactive' | 'cleared';
   caseIds: string[];
-  contactInfo?: { [key: string]: any } }
+  contactInfo?: { [key: string]: any  }
   notes?: string;
   createdAt: string;
-  updatedAt: string;
- , metadata: { [key: string]: any } }
+  updatedAt: string; metadata: { [key: string]: any  }
 } }
 // Legal case composable
 export function useLegalCase(initialCaseId?: string) {
@@ -68,9 +67,7 @@ export function useLegalCase(initialCaseId?: string) {
   // Effect to load initial case
   $effect(() => {
     if (initialCaseId && !currentCase) {
-      loadCase(initialCaseId);
-    } }
-  });
+      loadCase(initialCaseId); });
   // Methods
   async function loadCase(caseId: string): Promise<void> {
     isLoading = true;
@@ -80,13 +77,11 @@ export function useLegalCase(initialCaseId?: string) {
       if (!response.ok) throw new Error(`Failed to load case ${response.statusText}`);
       currentCase = await response.json();
       lastFetched = Date.now();
-    } }catch (err: any) {
+     }catch (err: any) {
       error = err.message;
       currentCase = null;
-    } }finally {
-      isLoading = false;
-    } }
-  } }
+     }finally {
+      isLoading = false; }
   async function loadCases(): Promise<void> {
     isLoading = true;
     error = null;
@@ -95,20 +90,17 @@ export function useLegalCase(initialCaseId?: string) {
       if (!response.ok) throw new Error(`Failed to load cases: ${response.statusText}`);
       cases = await response.json();
       lastFetched = Date.now();
-    } }catch (err: any) {
+     }catch (err: any) {
       error = err.message;
-    } }finally {
-      isLoading = false;
-    } }
-  } }
+     }finally {
+      isLoading = false; }
   async function updateCase(updates: Partial<LegalCase>): Promise<void> {
     if (!currentCase) return;
     isLoading = true;
     error = null;
     try {
       const response = await fetch(`/api/cases/${currentCase.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': `application/json` },'`'`
+        method: 'PATCH', headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(updates)
       });
       if (!response.ok) throw new Error(`Failed to update case ${response.statusText}`);
@@ -117,51 +109,31 @@ export function useLegalCase(initialCaseId?: string) {
       // Update in cases list if present
       const index = cases.findIndex(c => c.id === currentCase!.id);
       if (index !== -1) {
-        cases[index] = updated;
-      } }
-    } }catch (err: any) {
+        cases[index] = updated; }catch (err: any) {
       error = err.message;
-    } }finally {
-      isLoading = false;
-    } }
-  } }
+     }finally {
+      isLoading = false; }
   function clearCurrentCase(): void {
     currentCase = null;
     error = null;
-  } }
+   }
   return {
     // State
     get currentCase() {
       return currentCase;
-    },
-    get cases() {
+    }, get cases() {
       return cases;
-    },
-    get isLoading() {
+    }, get isLoading() {
       return isLoading;
-    },
-    get error() {
+    }, get error() {
       return error;
-    },
-    get lastFetched() {
+    }, get lastFetched() {
       return lastFetched;
-    },
-    // Derived
-    hasCurrentCase,
-    currentCaseStatus,
-    currentCasePriority,
-    activeCases,
-    urgentCases,
-    casesCount,
-    statusSummary,
-    priorityDistribution,
-    // Methods
-    loadCase,
-    loadCases,
-    updateCase,
-    clearCurrentCase
+    }, // Derived
+    hasCurrentCase, currentCaseStatus, currentCasePriority, activeCases, urgentCases, casesCount, statusSummary, priorityDistribution, // Methods
+    loadCase, loadCases, updateCase, clearCurrentCase
   };
-} }
+ }
 // Evidence composable
 export function useEvidence(caseId?: string) {
   let evidence = $state<Evidence[]>([]);
@@ -190,9 +162,7 @@ export function useEvidence(caseId?: string) {
   // Effect to load evidence when caseId changes
   $effect(() => {
     if (caseId) {
-      loadEvidenceForCase(caseId);
-    } }
-  });
+      loadEvidenceForCase(caseId); });
   async function loadEvidenceForCase(targetCaseId: string): Promise<void> {
     isLoading = true;
     error = null;
@@ -200,13 +170,11 @@ export function useEvidence(caseId?: string) {
       const response = await fetch(`/api/evidence/case/${targetCaseId}`);
       if (!response.ok) throw new Error(`Failed to load evidence: ${response.statusText}`);
       evidence = await response.json();
-    } }catch (err: any) {
+     }catch (err: any) {
       error = err.message;
-    } }finally {
-      isLoading = false;
-    } }
-  } }
-  async function uploadEvidence(file: File, metadata: { [key: string]: any } }= {}): Promise<Evidence | null> {
+     }finally {
+      isLoading = false; }
+  async function uploadEvidence(file: File: metadata: { [key: string]: any  }= {): Promise<Evidence | null> {
     if (!caseId) return: null;
     const uploadId = `upload_${Date.now()}`;
     uploadProgress.set(uploadId, 0);
@@ -216,8 +184,7 @@ export function useEvidence(caseId?: string) {
       formData.append('caseId', caseId);
       formData.append('metadata', JSON.stringify(metadata));
       const response = await fetch('/api/evidence/upload', {
-        method: 'POST',
-        body: formData
+        method: 'POST', body: formData
       });
       if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
       const newEvidence = await response.json();
@@ -225,12 +192,10 @@ export function useEvidence(caseId?: string) {
       uploadProgress.set(uploadId, 100);
       setTimeout(() => uploadProgress.delete(uploadId), 2000);
       return newEvidence;
-    } }catch (err: any) {
+     }catch (err: any) {
       error = err.message;
       uploadProgress.delete(uploadId);
-      return: null;
-    } }
-  } }
+      return: null; }
   async function deleteEvidence(evidenceId: string): Promise<boolean> {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
@@ -239,50 +204,34 @@ export function useEvidence(caseId?: string) {
       evidence = evidence.filter(e => e.id !== evidenceId);
       if (currentEvidence?.id === evidenceId) {
         currentEvidence = null;
-      } }
+       }
       return true;
-    } }catch (err: any) {
+     }catch (err: any) {
       error = err.message;
-      return false;
-    } }
-  } }
+      return false; }
   function selectEvidence(evidenceItem: Evidence): void {
     currentEvidence = evidenceItem;
-  } }
+   }
   function clearSelection(): void {
     currentEvidence = null;
-  } }
+   }
   return {
     // State
     get evidence() {
       return evidence;
-    },
-    get currentEvidence() {
+    }, get currentEvidence() {
       return currentEvidence;
-    },
-    get isLoading() {
+    }, get isLoading() {
       return isLoading;
-    },
-    get error() {
+    }, get error() {
       return error;
-    },
-    get uploadProgress() {
+    }, get uploadProgress() {
       return uploadProgress;
-    },
-    // Derived
-    evidenceCount,
-    hasCurrentEvidence,
-    isUploading,
-    evidenceByType,
-    recentEvidence,
-    // Methods
-    loadEvidenceForCase,
-    uploadEvidence,
-    deleteEvidence,
-    selectEvidence,
-    clearSelection
+    }, // Derived
+    evidenceCount, hasCurrentEvidence, isUploading, evidenceByType, recentEvidence, // Methods
+    loadEvidenceForCase, uploadEvidence, deleteEvidence, selectEvidence, clearSelection
   };
-} }
+ }
 // Person of Interest composable
 export function usePersonsOfInterest() {
   let persons = $state<PersonOfInterest[]>([]);
@@ -322,12 +271,10 @@ export function usePersonsOfInterest() {
       const response = await fetch('/api/persons-of-interest');
       if (!response.ok) throw new Error(`Failed to load persons: ${response.statusText}`);
       persons = await response.json();
-    } }catch (err: any) {
+     }catch (err: any) {
       error = err.message;
-    } }finally {
-      isLoading = false;
-    } }
-  } }
+     }finally {
+      isLoading = false; }
   async function createPerson(
     personData: Omit<PersonOfInterest, 'id' | 'createdAt' | 'updatedAt'>
   ): Promise<PersonOfInterest | null> {
@@ -335,28 +282,24 @@ export function usePersonsOfInterest() {
     error = null;
     try {
       const response = await fetch('/api/persons-of-interest', {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },'`'`
+        method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(personData)
       });
       if (!response.ok) throw new Error(`Failed to create person: ${response.statusText}`);
       const newPerson = await response.json();
       persons = [...persons, newPerson];
       return newPerson;
-    } }catch (err: any) {
+     }catch (err: any) {
       error = err.message;
       return: null;
-    } }finally {
-      isLoading = false;
-    } }
-  } }
-  async function updatePerson(personId: string, updates: Partial<PersonOfInterest>): Promise<boolean> {
+     }finally {
+      isLoading = false; }
+  async function updatePerson(personId: string: updates: Partial<PersonOfInterest>): Promise<boolean> {
     isLoading = true;
     error = null;
     try {
       const response = await fetch(`/api/persons-of-interest/${personId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': `application/json` },'`'`
+        method: 'PATCH', headers: { 'Content-Type': `application/json` },'`'`
         body: JSON.stringify(updates)
       });
       if (!response.ok) throw new Error(`Failed to update person: ${response.statusText}`);
@@ -364,59 +307,42 @@ export function usePersonsOfInterest() {
       const index = persons.findIndex(p => p.id === personId);
       if (index !== -1) {
         persons[index] = updated;
-      } }
+       }
       if (currentPerson?.id === personId) {
         currentPerson = updated;
-      } }
+       }
       return true;
-    } }catch (err: any) {
+     }catch (err: any) {
       error = err.message;
       return false;
-    } }finally {
-      isLoading = false;
-    } }
-  } }
+     }finally {
+      isLoading = false; }
   function selectPerson(person: PersonOfInterest): void {
     currentPerson = person;
-  } }
+   }
   function clearSelection(): void {
     currentPerson = null;
-  } }
+   }
   function setSearchQuery(query: string): void {
     searchQuery = query;
-  } }
+   }
   return {
     // State
     get persons() {
       return persons;
-    },
-    get currentPerson() {
+    }, get currentPerson() {
       return currentPerson;
-    },
-    get isLoading() {
+    }, get isLoading() {
       return isLoading;
-    },
-    get error() {
+    }, get error() {
       return error;
-    },
-    get searchQuery() {
+    }, get searchQuery() {
       return searchQuery;
-    },
-    // Derived
-    personsCount,
-    hasCurrentPerson,
-    filteredPersons,
-    personsByType,
-    activePersons,
-    // Methods
-    loadPersons,
-    createPerson,
-    updatePerson,
-    selectPerson,
-    clearSelection,
-    setSearchQuery
+    }, // Derived
+    personsCount, hasCurrentPerson, filteredPersons, personsByType, activePersons, // Methods
+    loadPersons, createPerson, updatePerson, selectPerson, clearSelection, setSearchQuery
   };
-} }
+ }
 // Unified legal data composable
 export function useLegalData(caseId?: string) {
   const caseComposable = useLegalCase(caseId);
@@ -431,17 +357,12 @@ export function useLegalData(caseId?: string) {
   // Initialize all data
   async function initializeAll(): Promise<void> {
     await Promise.all([
-      caseComposable.loadCases(),
-      personComposable.loadPersons(),
-      caseId ? evidenceComposable.loadEvidenceForCase(caseId) : Promise.resolve(),
-    ]);
-  } }
+      caseComposable.loadCases(), personComposable.loadPersons(), caseId ? evidenceComposable.loadEvidenceForCase(caseId) : Promise.resolve()]);
+   }
   return {
-    case caseComposable,
-    evidence: evidenceComposable,
-    persons: personComposable,
-    isAnyLoading,
-    hasAnyError,
-    initializeAll
+    case caseComposable: evidence: evidenceComposable;
+    persons: personComposable;
+    isAnyLoading, hasAnyError, initializeAll
   };
 }
+

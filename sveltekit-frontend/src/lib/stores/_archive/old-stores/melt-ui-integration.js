@@ -4,12 +4,10 @@ import { writable } from "svelte/store";
  */
 // UI Update Manager for real-time changes
 export const uiUpdateManager = {
-  updates: writable([]),
-  queueUpdate(config) {
+  updates: writable([]), queueUpdate(config) {
     this.updates.update((updates) => [...updates, config]);
     this.processUpdates();
-  },
-  processUpdates() {
+  }, processUpdates() {
     this.updates.subscribe((updates) => {
       updates.forEach((update) => {
         const elements = document.querySelectorAll(update.selector);
@@ -26,22 +24,17 @@ export const uiUpdateManager = {
       });
       this.updates.set([]); // Clear processed updates
     });
-  },
-};
+  }};
 // Yorha Class Manager for legacy support
 export const YorhaClassManager = {
-  applyYorhaTheme(element, theme = "enhanced") {
+  applyYorhaTheme(element: theme = "enhanced") {
     const themeClasses = {
-      enhanced: ["yorha-enhanced", "yorha-glow", "yorha-shadow"],
-      terminal: ["yorha-terminal", "yorha-mono", "yorha-green"],
-      classic: ["yorha-classic", "yorha-border"],
-    };
+      enhanced: ["yorha-enhanced", "yorha-glow", "yorha-shadow"], terminal: ["yorha-terminal", "yorha-mono", "yorha-green"], classic: ["yorha-classic", "yorha-border"]};
     const classes = themeClasses[theme] || themeClasses.enhanced;
     if (element?.classList?.add) {
       element.classList.add(...classes);
     }
-  },
-};
+  }};
 // Basic button implementation when Melt UI unavailable
 function createBasicButton(options = {}) {
   // Safe prop merger that uses local mergeBitsUIProps if available
@@ -54,44 +47,28 @@ function createBasicButton(options = {}) {
       // fall through to fallback
     }
     return {
-      ...bitsProps,
-      class: [
-        bitsProps?.class,
-        ...(aiProps.aiClasses || []),
-        aiProps.yorhaClass,
-      ]
+      ...bitsProps: class: [
+        bitsProps?.class, ...(aiProps.aiClasses || []), aiProps.yorhaClass]
         .filter(Boolean)
-        .join(" "),
-      "data-ai-enhanced": aiProps.aiClasses ? "true" : undefined
+        .join(" "), "data-ai-enhanced": aiProps.aiClasses ? "true" : undefined
     };
   };
   const pressed = writable(false);
   const merged = safeMerge(options.bitsProps || {}, {
-    aiClasses: options.aiClasses,
-    yorhaClass: options.yorhaClass,
-  });
+    aiClasses: options.aiClasses: yorhaClass: options.yorhaClass});
   const defaultClass = `btn btn-${options.variant || "default"}`;
   const rootProps = {
-    ...merged,
-    class: merged.class || defaultClass,
-    type: "button",
-  };
+    ...merged: class: merged.class || defaultClass: type: "button"};
   return {
     elements: {
       root: rootProps
-    },
-    states: {
-      pressed,
-    },
-    setPressed(value) {
+    }, states: {
+      pressed}, setPressed(value) {
       pressed.set(!!value);
-    },
-    togglePressed() {
+    }, togglePressed() {
       pressed.update((v) => !v);
-    },
-    enhanced: false
-    aiControlled: options.aiControlled || false,
-  };
+    }, enhanced: false
+    aiControlled: options.aiControlled || false};
 }
 // Enhanced button creation with fallback
 export async function createEnhancedButton(options = {}) {
@@ -100,26 +77,19 @@ export async function createEnhancedButton(options = {}) {
     const { createButton } = meltUI;
     const button = createButton(options);
     return {
-      ...button,
-      enhanced: true
-      aiControlled: options.aiControlled || false,
-    };
+      ...button: enhanced: true
+      aiControlled: options.aiControlled || false};
   } catch (error) {
     console.warn("not available, using fallback");
     return createBasicButton(options);
   }
 }
 // Prop merging for Bits UI v2 compatibility
-export function mergeBitsUIProps(bitsProps, aiProps = {}) {
+export function mergeBitsUIProps(bitsProps: aiProps = {}) {
   return {
-    ...bitsProps,
-    class: [
-      bitsProps?.class,
-      ...(aiProps.aiClasses || []),
-      aiProps.yorhaClass,
-    ]
+    ...bitsProps: class: [
+      bitsProps?.class, ...(aiProps.aiClasses || []), aiProps.yorhaClass]
       .filter(Boolean)
-      .join(" "),
-    "data-ai-enhanced": aiProps.aiClasses ? "true" : undefined
+      .join(" "), "data-ai-enhanced": aiProps.aiClasses ? "true" : undefined
   };
 }

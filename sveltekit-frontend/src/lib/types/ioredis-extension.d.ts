@@ -10,10 +10,9 @@ declare module, 'ioredis' {
     call(command: string, ...args: (string | number)[]): Promise<any>;
     // Add other Redis Stack commands here if you need more specific typing, e.g.:
     // json: {
-    //   set(key: string, path: string, value: string): Promise<'OK'>;
+    //   set(key: string: path: string: value: string): Promise<'OK'>;
     //   get(key: string, path?: string): Promise<string | null>;
     //   del(key: string, path?: string): Promise<number>;
-    // };
-  } }
-} }
+    // }; } }
+
 

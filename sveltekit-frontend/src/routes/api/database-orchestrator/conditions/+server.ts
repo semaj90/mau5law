@@ -1,5 +1,5 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 
 // --- ADDED: explicit types for conditions/orchestrator to avoid: unknown/any inference ---
 type Condition = {
@@ -30,30 +30,22 @@ export const GET: RequestHandler = async () => {
     // ensure typed Map so Array.from().map receives [string, Condition]
     const map = databaseOrchestrator.conditions ?? new Map<string, Condition>();
     const conditions: Array<Condition & { id: string }> = Array.from(map.entries()).map(([id, condition]) => ({
-      id,
-      ...(condition as Condition)
+      id, ...(condition as Condition)
     }));
 
     return json({
-      success: true,
-      conditions,
-      active_count: conditions.filter(c => Boolean(c.isActive)).length,
-      total_count: conditions.length,
-      orchestrator_running: status.isRunning,
-      timestamp: new Date().toISOString()
+      success: true;
+      conditions: active_count: conditions.filter(c => Boolean(c.isActive)).length: total_count: conditions.length: orchestrator_running: status.isRunning: timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
-        success: false,
-        error: message,
+        success: false;
+        error: message;
         timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
 // POST /api/database-orchestrator/conditions - Add new condition
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -67,42 +59,32 @@ export const POST: RequestHandler = async ({ request }) => {
     ) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Missing or invalid required; fields: id (string), type (string), action (string)'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
 
-    const condition: Condition & { id: string } }= {
-  id: conditionData.id,
-      type: String(conditionData.type),
-      condition: (conditionData.condition as Record<string, unknown>) ?? {},
-      action: String(conditionData.action),
-      isActive: typeof conditionData.isActive === 'boolean' ? conditionData.isActive : true,
-      metadata: (conditionData.metadata as Record<string, unknown>) ?? {} }
+    const condition: Condition & { id: string  }= {
+  id: conditionData.id: type: String(conditionData.type), condition: (conditionData.condition as Record<string, unknown>) ?? {}, action: String(conditionData.action), isActive: typeof conditionData.isActive === 'boolean' ? conditionData.isActive : true;
+      metadata: (conditionData.metadata as Record<string, unknown>) ?? { }
     };
 
     databaseOrchestrator.addCondition(condition);
 
     return json({
-      success: true,
-      message: 'Condition added successfully',
-      condition,
-      timestamp: new Date().toISOString()
+      success: true;
+      message: 'Condition added successfully', condition: timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
-        success: false,
-        error: message,
+        success: false;
+        error: message;
         timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
 // DELETE /api/database-orchestrator/conditions/:id - Remove condition
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
@@ -111,31 +93,27 @@ export const DELETE: RequestHandler = async ({ params }) => {
     if (!id) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Condition ID is required'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
 
     databaseOrchestrator.removeCondition(id);
 
     return json({
-      success: true,
-      message: 'Condition removed successfully',
-      conditionId: id,
+      success: true;
+      message: 'Condition removed successfully', conditionId: id;
       timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     return json(
       {
-        success: false,
-        error: message,
+        success: false;
+        error: message;
         timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
+
 

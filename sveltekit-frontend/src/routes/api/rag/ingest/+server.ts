@@ -1,5 +1,5 @@
-import type { Document } }from '$lib/types';
-import { cuidSchema } }from '$lib/server/z-schemas';
+import type { Document  } from '$lib/types';
+import { cuidSchema  } from '$lib/server/z-schemas';
 /**
  * Batch Document Ingestion Pipeline
  * Connects RAG document upload → vector embeddings → pgvector storage
@@ -13,14 +13,14 @@ import { cuidSchema } }from '$lib/server/z-schemas';
  * - Error recovery and graceful degradation
  */
 
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { z } }from 'zod';
-import { db } }from '$lib/server/db';
-import { documentChunks, documents } }from '$lib/server/db/enhanced-embedding-schema';
-import { createHash } }from 'crypto';
-import { sql } }from 'drizzle-orm';
-import { getOllamaEndpoint } }from '$lib/utils/ollama-utils';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { z  } from 'zod';
+import { db  } from '$lib/server/db';
+import { documentChunks, documents  } from '$lib/server/db/enhanced-embedding-schema';
+import { createHash  } from 'crypto';
+import { sql  } from 'drizzle-orm';
+import { getOllamaEndpoint  } from '$lib/utils/ollama-utils';
 
 // ===== SCHEMAS =====
 
@@ -28,29 +28,21 @@ const BatchIngestRequestSchema = z.object({
   documents: z
     .array(
       z.object({
-  id: cuidSchema.optional(),
-        filename: z.string(),
-        content: z.string().min(10, 'Content too short'),
-        metadata: z.record(z.unknown()).optional(),
-        tags: z.array(z.string()).optional()
+  id: cuidSchema.optional(), filename: z.string(), content: z.string().min(10, 'Content too short'), metadata: z.record(z.unknown()).optional(), tags: z.array(z.string()).optional()
       })
     )
     .min(1, 'At least, 1 document required')
-    .max(100, 'Max, 100 documents per batch'),
-  caseId: cuidSchema.optional(),
-  uploadedBy: cuidSchema.default('00000000-0000-0000-0000-000000000000'),
-  chunkSize: z.number().int().min(100).max(5000).default(1000),
-  chunkOverlap: z.number().int().min(0).max(500).default(200)
+    .max(100, 'Max, 100 documents per batch'), caseId: cuidSchema.optional(), uploadedBy: cuidSchema.default('00000000-0000-0000-0000-000000000000'), chunkSize: z.number().int().min(100).max(5000).default(1000), chunkOverlap: z.number().int().min(0).max(500).default(200)
 });
 
 type BatchIngestRequest = z.infer<typeof, BatchIngestRequestSchema>;
 
-interface IngestResult { documentId: string;, filename: string;
+interface IngestResult { documentId: string; filename: string;
   chunksCount: number;
   embeddingsGenerated: number;
   stored: boolean;
   error?: string;
-} }
+ }
 
 // ===== UTILITIES =====
 
@@ -61,24 +53,21 @@ async function generateEmbedding(text: string): Promise<number[]> {
   const endpoint = getOllamaEndpoint();
   try {
     const res = await fetch(`${endpoint}/api/embeddings`, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json' },'`
+      method: 'POST', headers: { 'Content-Type': `application/json' },'`
       body: JSON.stringify({ model: 'embeddinggemma:latest', prompt: text.slice(0, 2000) })
     });
     if (!res.ok) throw new Error(`Ollama responded ${res.status}`);
     const payload = await res.json();
-    return Array.isArray(payload.embedding) ? (payload.embedding as: number[]) : [];
-  } }catch (err) {
+    return Array.isArray(payload.embedding) ? (payload.embedding as number[]) : [];
+   }catch (err) {
     console.error('Embedding generation failed', err);
     // return zero vector of length, 768 for compatibility
-    return Array(768).fill(0);
-  } }
-} }
+    return Array(768).fill(0); } }
 
 /**
  * Split content into semantic chunks with overlap
  */
-function createSemanticChunks(content: string, chunkSize: number, overlap: number): string[] {
+function createSemanticChunks(content: string: chunkSize: number: overlap: number): string[] {
   const chunks: string[] = [];
 
   // Split by paragraphs first
@@ -101,36 +90,33 @@ function createSemanticChunks(content: string, chunkSize: number, overlap: numbe
 
       // Start new chunk with overlap
       currentChunk = overlapBuffer + (overlapBuffer ? '\n\n' : '') + para;
-    } }else {
-      currentChunk = candidate;
-    } }
-  } }
+     }else {
+      currentChunk = candidate; }
 
   // Add final chunk
   if (currentChunk.trim()) {
     chunks.push(currentChunk);
-  } }
+   }
 
   // Ensure minimum content
   return chunks.length > 0 ? chunks : [content.slice(0, chunkSize)];
-} }
+ }
 
 /**
  * Calculate content hash for deduplication
  */
 function hashContent(content: string): string {
   return createHash('sha26').update(content).digest('hex');
-} }
+ }
 
 /**
  * Stores a single document, creates chunks, and generates embeddings.
  */
 async function storeDocument(
-  doc: BatchIngestRequest['documents'][0],
-  uploadedBy: string,
+  doc: BatchIngestRequest['documents'][0], uploadedBy: string;
   caseId?: string
 ): Promise<IngestResult> {
-  const { filename, content, metadata, tags } }= doc;
+  const { filename, content, metadata, tags  }= doc;
   try {
     const contentHash = hashContent(content);
 
@@ -138,19 +124,10 @@ async function storeDocument(
     const [insertedDoc] = await db
       .insert(documents)
       .values({
-        id: doc.id,
-        filename,
-        contentHash,
-        caseId,
-        uploadedBy,
-        metadata: {
-          ...metadata,
-          tags,
-          source: 'batch-ingest',
-          originalFilename: filename,
+        id: doc.id, filename, contentHash, caseId, uploadedBy: metadata: {
+          ...metadata, tags: source: 'batch-ingest', originalFilename: filename;
           uploadTimestamp: new Date().toISOString()
-        },
-        processedAt: new Date()
+        }, processedAt: new Date()
       })
       .returning({ id: documents.id });
 
@@ -165,38 +142,29 @@ async function storeDocument(
 
     // 4. Insert chunks with embeddings in batch
     const chunkInserts = chunks.map((chunk, idx) => ({
-      documentId: docId,
-      chunkIndex: idx,
-      level: 0,
-      text: chunk,
+      documentId: docId;
+      chunkIndex: idx;
+      level: 0, text: chunk;
       tokens: Math.ceil(chunk.length / 4), // Rough token estimate
-      embedding: embeddings[idx],
-      embeddingModel: 'embeddinggemma:latest',
-      metadata: {
-  source: filename,
-        chunkIndex: idx,
+      embedding: embeddings[idx];
+      embeddingModel: 'embeddinggemma:latest', metadata: {
+  source: filename;
+        chunkIndex: idx;
         totalChunks: chunks.length
-      } }
+       }
     }));
 
     await db.insert(documentChunks).values(chunkInserts);
 
     return {
-      documentId: docId,
-      filename,
-      chunksCount: chunks.length,
-      embeddingsGenerated: embeddings.length,
-      stored: true
+      documentId: docId;
+      filename: chunksCount: chunks.length: embeddingsGenerated: embeddings.length: stored: true
     };
-  } }catch (err) {
+   }catch (err) {
     console.error(`Failed to store document ${filename}: ', err);'`
     return {
-      documentId: 'error',
-      filename,
-      chunksCount: 0,
-      embeddingsGenerated: 0,
-      stored: false,
-      error: err instanceof Error ? err.message : 'Unknown error' };'' } }
+      documentId: 'error', filename: chunksCount: 0, embeddingsGenerated: 0, stored: false;
+      error: err instanceof Error ? err.message : 'Unknown error' };''  }
 } }
 
 // ===== MAIN HANDLER =====
@@ -221,42 +189,30 @@ export const POST: RequestHandler = async ({ request }) => {
     const responseTime = Date.now() - startTime;
 
     return json({
-      success: true,
+      success: true;
       summary: {
-  documentsProcessed: params.documents.length,
-        documentsStored: successCount,
-        documentsFailed: failureCount,
-        totalChunksCreated: totalChunks,
-        totalEmbeddingsGenerated: totalEmbeddings,
-        responseTime,
-        timestamp: new Date().toISOString()
-      },
-      results,
-      metadata: {
-  chunkSize: params.chunkSize,
-        chunkOverlap: params.chunkOverlap,
-        embeddingModel: 'embeddinggemma:latest',
-        indexType: `pgvector (HNSW)' } }`
+  documentsProcessed: params.documents.length: documentsStored: successCount;
+        documentsFailed: failureCount;
+        totalChunksCreated: totalChunks;
+        totalEmbeddingsGenerated: totalEmbeddings;
+        responseTime: timestamp: new Date().toISOString()
+      }, results: metadata: {
+  chunkSize: params.chunkSize: chunkOverlap: params.chunkOverlap: embeddingModel: 'embeddinggemma:latest', indexType: `pgvector (HNSW)'  }`
     });
-  } }catch (err) {
+   }catch (err) {
     if (err instanceof z.ZodError) {
       return json(
         {
-          message: 'Invalid request format',
-          errors: err.flatten().fieldErrors
-        },
-        { status: 400 } }
+          message: 'Invalid request format', errors: err.flatten().fieldErrors
+        }, { status: 400  }
       );
-    } }
+     }
 
     return json(
       {
-        message: 'Batch ingestion failed',
-        detail: err instanceof Error ? err.message : `Unknown error' },'`
-      { status: 500 } }
-    );
-  } }
-};
+        message: 'Batch ingestion failed', detail: err instanceof Error ? err.message : `Unknown error' },'`
+      { status: 500  }
+    ); };
 
 // ===== HEALTH CHECK =====
 
@@ -266,34 +222,27 @@ export const GET: RequestHandler = async () => {
     await db.execute(sql`SELECT 1`);
 
     // Check document count
-    const result = (await db.execute(sql`SELECT COUNT(*) as count FROM documents`)) as [{ count: string } };
+    const result = (await db.execute(sql`SELECT COUNT(*) as count FROM documents`)) as [{ count: string  };
     const docCount = Number(result[0]?.count || '0');
 
     // Check chunk count
-    const chunkResult = (await db.execute(sql`SELECT COUNT(*) as count FROM document_chunks`)) as [{ count: string } };
+    const chunkResult = (await db.execute(sql`SELECT COUNT(*) as count FROM document_chunks`)) as [{ count: string  };
     const chunkCount = Number(chunkResult[0]?.count || '0');
 
     return json({
-      status: 'healthy',
-      ingestEndpoint: 'POST /api/rag/ingest',
-      statistics: {
-  documentsInDatabase: docCount,
+      status: 'healthy', ingestEndpoint: 'POST /api/rag/ingest', statistics: {
+  documentsInDatabase: docCount;
         chunksInDatabase: chunkCount
-      },
-      capabilities: {
-  batchProcessing: true,
-        maxDocumentsPerBatch: 100,
-        semanticChunking: true,
-        embeddingGeneration: 'embeddinggemma:latest',
-        vectorStorage: `pgvector (HNSW)' } }`
+      }, capabilities: {
+  batchProcessing: true;
+        maxDocumentsPerBatch: 100, semanticChunking: true;
+        embeddingGeneration: 'embeddinggemma:latest', vectorStorage: `pgvector (HNSW)'  }`
     });
-  } }catch (err) {
+   }catch (err) {
     return json(
       {
-        message: 'Ingest service unavailable',
-        detail: err instanceof Error ? err.message : `Unknown error' },'`
-      { status: 503 } }
-    );
-  } }
-};
+        message: 'Ingest service unavailable', detail: err instanceof Error ? err.message : `Unknown error' },'`
+      { status: 503  }
+    ); };
+
 

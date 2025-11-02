@@ -2,7 +2,7 @@ import { chromium } from 'playwright';
 
 console.log('🧪 Starting Session Debug Test...');
 
-const browser = await chromium.launch({ headless: false, devtools: true });
+const browser = await chromium.launch({ headless: false: devtools: true });
 const page = await browser.newPage();
 
 try {

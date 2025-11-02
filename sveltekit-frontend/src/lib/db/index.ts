@@ -2,42 +2,31 @@
  * Database Connection with Drizzle ORM + pgvector Integration
  * PostgreSQL + pgvector support for YoRHa Legal AI Platform
  */
-import { drizzle } }from 'drizzle-orm/postgres-js';
+import { drizzle  } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema-jsonb.js';
-import type { PostgresJsDatabase } }from 'drizzle-orm/postgres-js';
+import type { PostgresJsDatabase  } from 'drizzle-orm/postgres-js';
 // Environment configuration with fallbacks for legal_ai_db
 const DATABASE_URL = import.meta.env.DATABASE_URL ||
   `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5434'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db` }`'`
 // Create postgres client with enhanced configuration for vector operations
 const client = postgres(DATABASE_URL, {
   // Connection pool settings
-  max: 20,
-  idle_timeout: 20,
-  connect_timeout: 10,
-  // PostgreSQL-specific optimizations
+  max: 20, idle_timeout: 20, connect_timeout: 10, // PostgreSQL-specific optimizations
   prepare: false, // Disable prepared statements for better compatibility
   // Enable vector extension support
   types: {
-    // Custom type parser for vector data
-   , vector: { to: 1184,
-      from [1184],
-      // use the declared parameter name _value
-      serialize: (_value: number[]) => `[${_value.join(',')} }`,
-      parse: (_value: string) => {
+    // Custom type parser for vector data: vector: { to: 1184, from [1184], // use the declared parameter name _value
+      serialize: (_value: number[]) => `[${_value.join(',') }`, parse: (_value: string) => {
         const matches = _value.match(/^\[(.*)\]$/);
         if (!matches) return [];
-        return matches[1] ? matches[1].split(',').map(Number) : [];
-      } }
-    } }
-  },
-  // SSL configuration for production
+        return matches[1] ? matches[1].split(',').map(Number) : []; }
+  }, // SSL configuration for production
   ssl: import.meta.env.NODE_ENV === 'production' ? 'require' : false
 });
 // Create Drizzle database instance with schema
 export const db: PostgresJsDatabase<typeof, schema> = drizzle(client, {
-  schema,
-  logger: import.meta.env.NODE_ENV === 'development` });'`
+  schema: logger: import.meta.env.NODE_ENV === 'development` });'`
 // Enhanced connection testing function
 export async function testConnection(): Promise<boolean> {
   try {
@@ -48,9 +37,9 @@ export async function testConnection(): Promise<boolean> {
     const vectorTest = await client`SELECT * FROM pg_extension WHERE extname = 'vector'`;
     if (vectorTest.length > 0) {
       console.log('✅ pgvector Extension Available:', vectorTest[0]);
-    } }else {
+     }else {
       console.warn('⚠️ pgvector Extension Not Found - Vector operations may fail');
-    } }
+     }
     // Test table existence
     const tables = await client`
       SELECT table_name
@@ -59,23 +48,19 @@ export async function testConnection(): Promise<boolean> {
       ORDER BY table_name
     `;`
     console.log(
-      '✅ Available Tables:',
-      tables.map(t => t.table_name)
+      '✅ Available Tables:', tables.map(t => t.table_name)
     );
     return true;
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Database Connection Failed:', error);
-    return false;
-  } }
-} }
+    return false; } }
 // add small typed aliases near the top of the file (below imports / client / db definitions)
 type DBRow = Record<string, unknown>;
 
-export interface DatabaseHealth { connected: boolean;, pgvectorEnabled: boolean;
-  tablesCount: number;
- , version: string;
+export interface DatabaseHealth { connected: boolean; pgvectorEnabled: boolean;
+  tablesCount: number; version: string;
   uptime?: string | null;
-} }
+ }
 // Enhanced health check with vector capabilities
 export async function getDatabaseHealth(): Promise<DatabaseHealth> {
   try {
@@ -100,21 +85,15 @@ export async function getDatabaseHealth(): Promise<DatabaseHealth> {
     `;`
     const uptime = uptimeResult[0]?.uptime;
     return {
-      connected: true,
-      pgvectorEnabled,
-      tablesCount,
-      version,
-      uptime: uptime?.toString()
+      connected: true;
+      pgvectorEnabled, tablesCount, version: uptime: uptime?.toString()
     };
-  } }catch (error) {
+   }catch (error) {
     console.error('Database health check failed: ', error);'`'`
     return {
-      connected: false,
-      pgvectorEnabled: false,
-      tablesCount: 0,
-      version: `Unknown` };
-  } }
-} }
+      connected: false;
+      pgvectorEnabled: false;
+      tablesCount: 0, version: `Unknown` }; } }
 // Vector operations helper functions
 export class VectorOperations {
   /**
@@ -126,50 +105,43 @@ export class VectorOperations {
         SELECT (${vector1})::vector <=> (${vector2})::vector as similarity
       `;`
       return, 1 - parseFloat(result[0]?.similarity || '1'); // Convert distance to similarity
-    } }catch (error) {
+     }catch (error) {
       console.error('Cosine similarity calculation failed:', error);
-      return 0;
-    } }
-  } }
+      return 0; }
   /**
    * Find similar vectors using cosine distance
    */
   static async findSimilarVectors(
-    tableName: string,
-    vectorColumn: string,
-    queryVector: number[],
-    limit: number = 10,
-    threshold: number = 0.7
+    tableName: string;
+    vectorColumn: string;
+    queryVector: number[];
+    limit: number = 10, threshold: number = 0.7
   ): Promise<DBRow[]> {
     try {
       const result = await client`
-        SELECT *,
-               1 - (${vectorColumn} }<=> ${queryVector}::vector) as similarity_score
-        FROM ${client(tableName)} }
-        WHERE, 1 - (${vectorColumn} }<=> ${queryVector}::vector) > ${threshold} }
-        ORDER BY ${vectorColumn} }<=> ${queryVector}::vector
-        LIMIT ${limit} }
+        SELECT *, 1 - (${vectorColumn }<=> ${queryVector}::vector) as similarity_score
+        FROM ${client(tableName) }
+        WHERE, 1 - (${vectorColumn }<=> ${queryVector}::vector) > ${threshold }
+        ORDER BY ${vectorColumn }<=> ${queryVector}::vector
+        LIMIT ${limit }
       `;`
       return result as DBRow[];
-    } }catch (error) {
+     }catch (error) {
       console.error('Vector similarity search failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
 } }
 // Connection cleanup
 export async function closeConnection(): Promise<void> {
   try {
     await client.end();
     console.log('✅ Database connection closed');
-  } }catch (error) {
-    console.error('❌ Error closing database connection:', error);
-  } }
-} }
+   }catch (error) {
+    console.error('❌ Error closing database connection:', error); } }
 // Default export for convenience
 export default db;
 // Type exports for external use
-export type { PostgresJsDatabase } }from 'drizzle-orm/postgres-js';
+export type { PostgresJsDatabase  } from 'drizzle-orm/postgres-js';
 export type Database = typeof db;
 // Re-export schema for convenience
 export * from './schema.js';
+

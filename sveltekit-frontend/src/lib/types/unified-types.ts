@@ -1,5 +1,5 @@
-import type { SearchResult } }from '$lib/types';
-import type { User } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
+import type { User  } from '$lib/types';
 /**
  * Unified Types - Consolidates duplicate type exports across the application
  * Replaces scattered type definitions with single source of truth
@@ -8,7 +8,7 @@ import type { User } }from '$lib/types';
 export interface EmbeddingResponse { embedding: number[]; model: string;
   prompt_tokens?: number;
   total_duration?: number;
-} }
+ }
 export interface GenerateResponse { response: string; model: string;
   created_at: string;
   done: boolean;
@@ -19,7 +19,7 @@ export interface GenerateResponse { response: string; model: string;
   prompt_eval_duration?: number;
   eval_count?: number;
   eval_duration?: number;
-} }
+ }
 export interface OllamaModel { name: string; size: number;
   digest: string;
   details: { format: string; family: string;
@@ -28,12 +28,12 @@ export interface OllamaModel { name: string; size: number;
   quantization_level: string;
   }; modified_at: string;
   embeddingDimension?: number; // Added for clarity on embedding models, e.g., 384 for embeddinggemma
-} }
+ }
 export interface OllamaHealthCheck { status: 'healthy' | 'unhealthy'; embedModel: boolean;
   llmModel: boolean;
   models: string[];
   error?: string;
-} }
+ }
 // ===== RAG SYSTEM TYPES =====
 export interface RAGQuery {
   query: string;
@@ -45,7 +45,7 @@ export interface RAGQuery {
   };
   limit?: number;
   threshold?: number;
-} }
+ }
 export interface RAGSource { id: string; content: string;
   title: string;
   documentType: 'contract' | 'evidence' | 'legal_brief' | 'correspondence' | 'case_law';
@@ -58,16 +58,16 @@ export interface RAGSource { id: string; content: string;
   tags?: string[];
   embeddingDimension?: number; // Added for clarity on embedding dimension in RAG sources
   };
-} }
+ }
 export interface RAGResult { source: RAGSource; score: number;
   relevance: string;
   highlights?: string[];
-} }
+ }
 export interface RAGSearchResponse { results: RAGResult[]; query: string;
   totalResults: number;
   processingTime: number;
   model: string;
-} }
+ }
 // ===== LEGAL DOMAIN TYPES =====
 export interface LegalCase { id: string; title: string;
   description: string;
@@ -81,7 +81,7 @@ export interface LegalCase { id: string; title: string;
   assignedTo?: string[];
   dueDate?: Date;
   tags?: string[];
-} }
+ }
 export interface Evidence { id: string; caseId: string;
   title: string;
   description?: string;
@@ -102,7 +102,7 @@ export interface Evidence { id: string; caseId: string;
   createdAt: Date;
   createdBy: string;
   chainOfCustody?: ChainOfCustodyEntry[];
-} }
+ }
 export interface ChainOfCustodyEntry { id: string; evidenceId: string;
   userId: string;
   action: 'created' | 'accessed' | 'modified' | 'transferred' | 'analyzed';
@@ -111,7 +111,7 @@ export interface ChainOfCustodyEntry { id: string; evidenceId: string;
   notes?: string;
   ipAddress?: string;
   userAgent?: string;
-} }
+ }
 export interface LegalDocument { id: string; caseId: string;
   evidenceId?: string;
   title: string;
@@ -126,21 +126,21 @@ export interface LegalDocument { id: string; caseId: string;
   createdAt: Date;
   processedAt?: Date;
   embeddingDimension?: number; // Added for clarity on embedding dimension in legal documents
-} }
+ }
 export interface LegalEntity { id: string; type: 'person' | 'organization' | 'location' | 'date' | 'monetary' | 'legal_reference';
   text: string;
   startPos: number;
   endPos: number;
   confidence: number;
   metadata?: { [key: string]: any };
-} }
+ }
 export interface LegalClause { id: string; type: 'liability' | 'indemnification' | 'termination' | 'confidentiality' | 'payment' | 'dispute_resolution';
   text: string;
   startPos: number;
   endPos: number;
   riskLevel: 'low' | 'medium' | 'high';
   analysis?: string;
-} }
+ }
 // ===== USER & AUTHENTICATION TYPES =====
 export interface User { id: string; email: string;
   username: string;
@@ -153,9 +153,9 @@ export interface User { id: string; email: string;
   createdAt: Date;
   lastLogin?: Date;
   isActive: boolean;
-} }
+ }
 export interface Permission { resource: string; actions: ('read' | 'write' | 'delete' | 'admin')[];
-} }
+ }
 export interface UserPreferences { theme: 'light' | 'dark' | 'auto'; language: string;
   timezone: string;
   notifications: { email: boolean; push: boolean;
@@ -163,7 +163,7 @@ export interface UserPreferences { theme: 'light' | 'dark' | 'auto'; language: s
   };
   ui: { density: 'compact' | 'comfortable' | 'spacious'; sidebarCollapsed: boolean;
   };
-} }
+ }
 export interface AuthSession { id: string; userId: string;
   token: string;
   refreshToken?: string;
@@ -171,7 +171,7 @@ export interface AuthSession { id: string; userId: string;
   ipAddress?: string;
   userAgent?: string;
   isActive: boolean;
-} }
+ }
 // ===== API & RESPONSE TYPES =====
 export interface ApiResponse<T = unknown> {
   success: boolean;
@@ -180,24 +180,24 @@ export interface ApiResponse<T = unknown> {
   message?: string;
   timestamp: string;
   requestId?: string;
-} }
+ }
 export interface PaginatedResponse<T = unknown> { data: T[]; pagination: { page: number; limit: number;
   total: number;
   pages: number;
   hasNext: boolean;
   hasPrev: boolean;
   };
-} }
+ }
 export interface ValidationError { field: string; message: string;
   code: string;
   value?: any;
-} }
+ }
 export interface ApiError { code: string; message: string;
   details?: any;
   timestamp: string;
   requestId?: string;
   validationErrors?: ValidationError[];
-} }
+ }
 // ===== SEARCH & FILTERING TYPES =====
 export interface SearchOptions {
   query?: string;
@@ -206,19 +206,19 @@ export interface SearchOptions {
   };
   pagination?: { page: number; limit: number;
   };
-} }
+ }
 export interface SearchResult<T = unknown> {
   item: T;
   score?: number;
   highlights?: string[];
   metadata?: { [key: string]: any };
-} }
+ }
 export interface SearchResponse<T = unknown> { results: SearchResult<T>[]; total: number;
   query: string;
   filters?: { [key: string]: any };
   processingTime: number;
   suggestions?: string[];
-} }
+ }
 // ===== CACHING & PERFORMANCE TYPES =====
 export interface CacheEntry<T = unknown> { key: string; value: T;
   metadata: {
@@ -229,13 +229,13 @@ export interface CacheEntry<T = unknown> { key: string; value: T;
   size: number;
   tags?: string[];
   };
-} }
+ }
 export interface CacheStats { totalEntries: number; totalSize: number;
   hitRate: number;
   missRate: number;
   evictionCount: number;
   averageAccessTime: number;
-} }
+ }
 // ===== AI ANALYSIS TYPES =====
 export interface AIAnalysisRequest { content: string; type: 'summary' | 'entities' | 'sentiment' | 'classification' | 'risk_assessment';
   context?: {
@@ -248,7 +248,7 @@ export interface AIAnalysisRequest { content: string; type: 'summary' | 'entitie
   temperature?: number;
   maxTokens?: number;
   };
-} }
+ }
 export interface AIAnalysisResponse { result: string | object; confidence: number;
   model: string;
   processingTime: number;
@@ -261,7 +261,7 @@ export interface AIAnalysisResponse { result: string | object; confidence: numbe
   tags?: string[];
   embeddingDimension?: number; // Added for clarity on embedding dimension in AI analysis response
   };
-} }
+ }
 // ===== XSTATE & WORKFLOW TYPES =====
 export interface WorkflowContext {
   caseId?: string;
@@ -272,17 +272,17 @@ export interface WorkflowContext {
   data: { [key: string]: any };
   aiRecommendations?: string[];
   confidence?: number;
-} }
+ }
 export interface WorkflowEvent {
   type: string;
   payload?: any;
   timestamp: Date;
   userId: string;
-} }
+ }
 // ===== MCP & INTEGRATION TYPES =====
 export interface MCPRequest { tool: string; parameters: { [key: string]: any };
   context?: { [key: string]: any };
-} }
+ }
 export interface MCPResponse<T = unknown> {
   success: boolean;
   result?: T;
@@ -292,12 +292,12 @@ export interface MCPResponse<T = unknown> {
   model?: string;
   tokens?: number;
   };
-} }
+ }
 export interface Context7Integration { stackAnalysis: boolean; bestPractices: boolean;
   integrationSuggestions: boolean;
   libraryDocs: boolean;
   performanceOptimization: boolean;
-} }
+ }
 // ===== FORM & VALIDATION TYPES =====
 export interface FormField { name: string; type: 'text' | 'email' | 'password' | 'number' | 'date' | 'select' | 'textarea' | 'file';
   label: string;
@@ -310,40 +310,40 @@ export interface FormField { name: string; type: 'text' | 'email' | 'password' |
   minLength?: number;
   maxLength?: number;
   };
-  options?: { value: string; label: string } }];
-} }
+  options?: { value: string; label: string  }];
+ }
 export interface FormSchema { fields: FormField[];
   validation?: { [key: string]: any };
-} }
+ }
 // ===== COMPONENT PROPS TYPES =====
 export interface BaseComponentProps {
   class?: string;
   id?: string;
   'data-testid'?: string;
-} }
+ }
 export interface DialogProps extends BaseComponentProps {
   open?: boolean;
   title?: string;
   description?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'default' | 'destructive' | 'success';
-} }
+ }
 export interface ButtonProps extends BaseComponentProps {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   disabled?: boolean;
   loading?: boolean;
   type?: 'button' | 'submit' | 'reset';
-} }
+ }
 // ===== TYPE GUARDS =====
 export function isEmbeddingResponse(obj: any): obj is EmbeddingResponse {
   return obj && typeof obj === 'object' && 'embedding' in obj && Array.isArray((obj as EmbeddingResponse).embedding);
-} }
+ }
 export function isRAGResult(obj: any): obj is RAGResult {
   return (
   obj && typeof obj === 'object' && 'source' in obj && 'score' in obj && typeof (obj as RAGResult).score === 'number'
   );
-} }
+ }
 export function isApiError(obj: any): obj is ApiError {
   return (
   obj &&
@@ -353,7 +353,7 @@ export function isApiError(obj: any): obj is ApiError {
   typeof (obj as ApiError).code === 'string' &&
   typeof (obj as ApiError).message === 'string'
   );
-} }
+ }
 export function isLegalCase(obj: any): obj is LegalCase {
   return (
   obj &&
@@ -363,7 +363,7 @@ export function isLegalCase(obj: any): obj is LegalCase {
   typeof (obj as LegalCase).id === 'string' &&
   typeof (obj as LegalCase).title === 'string'
   );
-} }
+ }
 export function isUser(obj: any): obj is User {
   return (
   obj &&
@@ -373,6 +373,7 @@ export function isUser(obj: any): obj is User {
   typeof (obj as User).id === 'string' &&
   typeof (obj as User).email === 'string'
   );
-} }
+ }
+
 
 

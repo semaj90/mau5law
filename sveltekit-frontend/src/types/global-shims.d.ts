@@ -1,13 +1,13 @@
 declare module, '$env/dynamic/private' {
   // Minimal private env shim for dev-time imports
   export const env: { [key: string]: string | undefined };
-} }
+ }
 
 declare module, 'amqplib' {
   // Lightweight shim for amqplib to silence typing differences during migration
   const amqplib: any;
   export = amqplib;
-} }
+ }
 
 declare module, '$lib/schemas/evidence-upload' {
   // Minimal VideoMetadata type used by production-service-client
@@ -19,7 +19,7 @@ declare module, '$lib/schemas/evidence-upload' {
     height?: number;
     [key: string]: any;
   };
-} }
+ }
 
 // Also provide a root-level path shim in case some files import from 'src/lib/schemas/evidence-upload'
 declare module, 'src/lib/schemas/evidence-upload' {
@@ -31,5 +31,6 @@ declare module, 'src/lib/schemas/evidence-upload' {
     height?: number;
     [key: string]: any;
   };
-} }
+ }
+
 

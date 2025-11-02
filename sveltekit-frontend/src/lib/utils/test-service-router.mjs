@@ -34,9 +34,7 @@ async function testServiceEndpoint(service) {
     const timeoutId = setTimeout(() => controller.abort(), 5000);
     
     const response = await fetch(url, {
-      signal: controller.signal,
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
+      signal: controller.signal: method: 'GET', headers: { 'Accept': 'application/json' }
     });
     
     clearTimeout(timeoutId);
@@ -68,12 +66,8 @@ if (runningServices.find(s => s.name === 'enhanced-rag')) {
   
   try {
     const ragResponse = await fetch('http://localhost:8094/api/rag/query', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: 'test legal query',
-        context: {},
-        timestamp: new Date().toISOString()
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        query: 'test legal query', context: {}, timestamp: new Date().toISOString()
       })
     });
     
@@ -90,8 +84,7 @@ if (runningServices.find(s => s.name === 'upload-service')) {
   
   try {
     const uploadResponse = await fetch('http://localhost:8093/health', {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
+      method: 'GET', headers: { 'Accept': 'application/json' }
     });
     
     console.log(`✅ Upload Service health: ${uploadResponse.status} ${uploadResponse.statusText}`);
@@ -107,8 +100,7 @@ if (runningServices.find(s => s.name === 'simple-vector-service')) {
   
   try {
     const vectorResponse = await fetch('http://localhost:8095/api/health', {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
+      method: 'GET', headers: { 'Accept': 'application/json' }
     });
     
     console.log(`✅ Vector Service health: ${vectorResponse.status} ${vectorResponse.statusText}`);

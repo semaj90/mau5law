@@ -2,9 +2,8 @@
 export function makeHttpErrorPayload(payload: any): Error {
   try {
     return new Error(typeof payload === 'string' ? payload : JSON.stringify(payload));
-  } }catch (e) {
-    return new Error(String(payload));
-  } }
-} }
+   }catch (e) {
+    return new Error(String(payload)); } }
 export default makeHttpErrorPayload;
+
 

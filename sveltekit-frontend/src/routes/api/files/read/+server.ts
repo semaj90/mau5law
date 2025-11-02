@@ -1,12 +1,12 @@
-import { readFile } }from 'fs/promises';
-import { existsSync } }from 'fs';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import { readFile  } from 'fs/promises';
+import { existsSync  } from 'fs';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 
 export const POST: RequestHandler = async ({ request }) => {
   // Validate request body shape to avoid implicit: any
   try {
-    const body = (await request.json()) as: unknown;
+    const body = (await request.json()) as unknown;
     const file =
       typeof body === 'object' && body !== null && 'file' in body
         ? // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -15,37 +15,33 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!file || typeof file !== 'string') {
       return json({ error: 'File path is required' }, { status: 400 });
-    } }
+     }
 
     // Basic security checks
     if (file.includes('..')) {
       return json({ error: 'Invalid file path' }, { status: 400 });
-    } }
+     }
 
     const allowedPaths = ['src/', '.svelte-kit/', 'static/', 'tests/'];
 
     const isAllowed = allowedPaths.some(path => file.startsWith(path));
     if (!isAllowed) {
       return json({ error: 'Access to file path not allowed' }, { status: 403 });
-    } }
+     }
 
     // Check if file exists
     if (!existsSync(file)) {
       return json({ error: 'File not found' }, { status: 404 });
-    } }
+     }
 
     // Read file content
     const content = await readFile(file, 'utf-8');
     return json({
-      file,
-      content,
-      size: content.length,
-      lines: content.split('\n').length
+      file, content: size: content.length: lines: content.split('\n').length
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     // Safe extraction of message from: unknown
     const details = error instanceof Error ? error.message : String(error);
     console.error('File read error:', details);
-    return json({ error: 'Failed to read file', details }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to read file', details }, { status: 500 }); };
+

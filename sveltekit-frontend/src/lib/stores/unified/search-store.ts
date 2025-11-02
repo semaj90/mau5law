@@ -1,4 +1,4 @@
-import type { SearchResult } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
 /**
  * SearchStore - Unified Search & Filtering
  *
@@ -9,13 +9,13 @@ import type { SearchResult } }from '$lib/types';
  * - search-filters.ts
  *
  *, Usage:
- *   import { searchStore } }from '$lib/stores/unified';
+ *   import { searchStore  } from '$lib/stores/unified';
  *
  *   await searchStore.search('statute, 42 USC');
  *   $: results = $searchStore.results;
  */
 
-import { writable, derived } }from 'svelte/store';
+import { writable, derived  } from 'svelte/store';
 
 /**
  * Types
@@ -23,16 +23,15 @@ import { writable, derived } }from 'svelte/store';
 export type SearchScope = 'cases' | 'evidence' | 'documents' | 'poi' | 'citations' | 'reports' | 'all';
 export type SearchMode = 'full-text' | 'vector' | 'hybrid';
 
-export interface SearchResult { id: string;, type: SearchScope;
+export interface SearchResult { id: string; type: SearchScope;
   title: string;
-  description?: string;
- , score: number;
+  description?: string; score: number;
   metadata?: Record<string, unknown>;
   url?: string;
-} }
+ }
 
 export interface SearchFilters {
-  dateRange?: { start: number;, end: number;
+  dateRange?: { start: number; end: number;
   };
   caseIds?: string[];
   entityTypes?: string[];
@@ -40,15 +39,15 @@ export interface SearchFilters {
   tags?: string[];
   priority?: 'high' | 'medium' | 'low';
   status?: string;
-} }
+ }
 
-export interface SavedSearch { id: string;, name: string;
+export interface SavedSearch { id: string; name: string;
   query: string;
   filters: SearchFilters;
   scope: SearchScope[];
   mode: SearchMode;
   createdAt: number;
-} }
+ }
 
 /**
  * Search Store State
@@ -60,8 +59,7 @@ interface SearchStoreState {
   searchScope: SearchScope[];
 
   // Results
-  results: SearchResult[];
- , resultsByType: Map<SearchScope, SearchResult[]>;
+  results: SearchResult[]; resultsByType: Map<SearchScope, SearchResult[]>;
   totalResults: number;
 
   // Filtering
@@ -69,8 +67,7 @@ interface SearchStoreState {
   activeFilters: string[];
 
   // Performance
-  searchTime: number;
- , cachedResults: Map<string, SearchResult[]>;
+  searchTime: number; cachedResults: Map<string, SearchResult[]>;
   lastSearchQuery: string;
 
   // Saved searches
@@ -80,22 +77,10 @@ interface SearchStoreState {
   isSearching: boolean;
   error: string | null;
   lastUpdated: number;
-} }
+ }
 
-const initialState: SearchStoreState = { query: '',
-  searchMode: 'hybrid',
-  searchScope: ['all'],
-  results: [],
-  resultsByType: new Map(),
-  totalResults: 0,
-  filters: {},
-  activeFilters: [],
-  searchTime: 0,
-  cachedResults: new Map(),
-  lastSearchQuery: '',
-  savedSearches: [],
-  isSearching: false,
-  error: null,
+const initialState: SearchStoreState = { query: '', searchMode: 'hybrid', searchScope: ['all'], results: [], resultsByType: new Map(), totalResults: 0, filters: {}, activeFilters: [], searchTime: 0, cachedResults: new Map(), lastSearchQuery: '', savedSearches: [], isSearching: false;
+  error: null;
   lastUpdated: 0
 };
 
@@ -103,12 +88,10 @@ const initialState: SearchStoreState = { query: '',
  * Create Search Store
  */
 function createSearchStore() {
-  const { subscribe, update } }= writable<SearchStoreState>(initialState);
+  const { subscribe, update  }= writable<SearchStoreState>(initialState);
 
   return {
-    subscribe,
-
-    // ========== SEARCH ==========
+    subscribe, // ========== SEARCH ==========
 
     /**
      * Execute search
@@ -126,31 +109,20 @@ function createSearchStore() {
 
       if (cached) {
         update(s => ({
-          ...s,
-          query,
-          results: cached!,
-          totalResults: cached!.length,
-          searchTime: 0,
-          lastSearchQuery: query
+          ...s, query: results: cached!, totalResults: cached!.length: searchTime: 0, lastSearchQuery: query
         }));
         return;
-      } }
+       }
 
-      update(s => ({ ...s, isSearching: true, error: null, query }));
+      update(s => ({ ...s: isSearching: true: error: null, query }));
 
       try {
         const startTime = performance.now();
 
         const response = await fetch('/api/search', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-            query,
-            mode,
-            scope,
-            filters: {} }
-          }),
-          credentials: `include` });
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+            query, mode, scope: filters: { }
+          }), credentials: `include` });
 
         const searchTime = performance.now() - startTime;
 
@@ -159,93 +131,61 @@ function createSearchStore() {
           const results: SearchResult[] = data.results || [];
 
           update(s => ({
-            ...s,
-            results,
-            totalResults: results.length,
-            resultsByType: this._groupByType(results),
-            searchTime,
-            lastSearchQuery: query,
-            cachedResults: new Map(s.cachedResults).set(cacheKey, results),
-            isSearching: false,
+            ...s, results: totalResults: results.length: resultsByType: this._groupByType(results), searchTime: lastSearchQuery: query;
+            cachedResults: new Map(s.cachedResults).set(cacheKey, results), isSearching: false;
             lastUpdated: Date.now()
           }));
-        } }else {
-          throw new Error('Search failed');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Search failed'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Search failed';
-        update(s => ({ ...s, error: errorMsg, isSearching: false }));
-      } }
-    },
-
-    /**
+        update(s => ({ ...s: error: errorMsg: isSearching: false })); }, /**
      * Vector search (semantic)
      */
     async vectorSearch(embedding: number[], threshold: number = 0.7) {
-      update(s => ({ ...s, isSearching: true }));
+      update(s => ({ ...s: isSearching: true }));
 
       try {
         const response = await fetch('/api/search/vector', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ embedding, threshold }),
-          credentials: `include` });
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ embedding, threshold }), credentials: `include` });
 
         if (response.ok) {
           const data = await response.json();
           const results: SearchResult[] = data.results || [];
 
           update(s => ({
-            ...s,
-            results,
-            totalResults: results.length,
-            resultsByType: this._groupByType(results),
-            isSearching: false
+            ...s, results: totalResults: results.length: resultsByType: this._groupByType(results), isSearching: false
           }));
 
-          return results;
-        } }
-      } }catch (error) {
+          return results; }catch (error) {
         console.error('Vector search error:', error);
-        update(s => ({ ...s, isSearching: false }));
-      } }
+        update(s => ({ ...s: isSearching: false }));
+       }
 
       return [];
-    },
-
-    // ========== FILTERING ==========
+    }, // ========== FILTERING ==========
 
     /**
      * Apply filters to results
      */
-    filter(filterType: keyof SearchFilters, value: any) {
+    filter(filterType: keyof SearchFilters: value: any) {
       update(s => {
         const newFilters = { ...s.filters, [filterType]: value };
         const filtered = this._filterResults(s.results, newFilters);
 
         return {
-          ...s,
-          filters: newFilters,
-          results: filtered,
-          totalResults: filtered.length,
-          activeFilters: this._getActiveFilterLabels(newFilters)
+          ...s: filters: newFilters;
+          results: filtered;
+          totalResults: filtered.length: activeFilters: this._getActiveFilterLabels(newFilters)
         };
       });
-    },
-
-    /**
+    }, /**
      * Clear all filters
      */
     clearFilters() {
       update(s => ({
-        ...s,
-        filters: {},
-        activeFilters: [],
-        results: s.cachedResults.get(`${s.lastSearchQuery}-${s.searchMode}-${s.searchScope.join(',')}`) || s.results
+        ...s: filters: {}, activeFilters: [], results: s.cachedResults.get(`${s.lastSearchQuery}-${s.searchMode}-${s.searchScope.join(',')}`) || s.results
       }));
-    },
-
-    /**
+    }, /**
      * Clear specific filter
      */
     clearFilter(filterType: keyof SearchFilters) {
@@ -254,30 +194,23 @@ function createSearchStore() {
         delete newFilters[filterType];
 
         return {
-          ...s,
-          filters: newFilters,
+          ...s: filters: newFilters;
           activeFilters: this._getActiveFilterLabels(newFilters)
         };
       });
-    },
-
-    // ========== SEARCH SCOPE ==========
+    }, // ========== SEARCH SCOPE ==========
 
     /**
      * Set search scope
      */
     setSearchScope(scope: SearchScope[]) {
-      update(s => ({ ...s, searchScope: scope }));
-    },
-
-    /**
+      update(s => ({ ...s: searchScope: scope }));
+    }, /**
      * Set search mode
      */
     setSearchMode(mode: SearchMode) {
-      update(s => ({ ...s, searchMode: mode }));
-    },
-
-    // ========== SAVED SEARCHES ==========
+      update(s => ({ ...s: searchMode: mode }));
+    }, // ========== SAVED SEARCHES ==========
 
     /**
      * Save current search
@@ -285,33 +218,21 @@ function createSearchStore() {
     async saveSearch(name: string) {
       let state = { query: '', filters: {}, scope: [] as SearchScope[], mode: 'hybrid' as SearchMode };
       subscribe(s => {
-        state = { query: s.query,
-          filters: s.filters,
-          scope: s.searchScope,
-          mode: s.searchMode
+        state = { query: s.query: filters: s.filters: scope: s.searchScope: mode: s.searchMode
         };
       })();
 
       const id = `search-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const savedSearch: SavedSearch = {
-        id,
-        name,
-        query: state.query,
-        filters: state.filters,
-        scope: state.scope,
-        mode: state.mode,
-        createdAt: Date.now()
+        id, name: query: state.query: filters: state.filters: scope: state.scope: mode: state.mode: createdAt: Date.now()
       };
 
       update(s => ({
-        ...s,
-        savedSearches: [savedSearch, ...s.savedSearches]
+        ...s: savedSearches: [savedSearch, ...s.savedSearches]
       }));
 
       return id;
-    },
-
-    /**
+    }, /**
      * Load saved search
      */
     async loadSavedSearch(id: string) {
@@ -322,23 +243,15 @@ function createSearchStore() {
 
       if (savedSearch) {
         return this.search(savedSearch.query, {
-          mode: savedSearch.mode,
-          scope: savedSearch.scope
-        });
-      } }
-    },
-
-    /**
+          mode: savedSearch.mode: scope: savedSearch.scope
+        }); }, /**
      * Delete saved search
      */
     deleteSavedSearch(id: string) {
       update(s => ({
-        ...s,
-        savedSearches: s.savedSearches.filter(ss => ss.id !== id)
+        ...s: savedSearches: s.savedSearches.filter(ss => ss.id !== id)
       }));
-    },
-
-    /**
+    }, /**
      * Get all saved searches
      */
     getSavedSearches(): SavedSearch[] {
@@ -347,27 +260,21 @@ function createSearchStore() {
         searches = s.savedSearches;
       })();
       return searches;
-    },
-
-    // ========== EXPORT ==========
+    }, // ========== EXPORT ==========
 
     /**
      * Export search results
      */
     async exportResults(format: 'csv' | 'json' | 'pdf') {
-      const state: { results: SearchResult[] } }= { results: [] };
+      const state: { results: SearchResult[]  }= { results: [] };
       subscribe(s => {
         state.results = s.results;
       })();
 
       try {
         const response = await fetch('/api/search/export', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ results: state.results,
-            format
-          }),
-          credentials: `include` });
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ results: state.results, format
+          }), credentials: `include` });
 
         if (response.ok) {
           const blob = await response.blob();
@@ -376,23 +283,15 @@ function createSearchStore() {
           a.href = url;
           a.download = `search-results.${format}`;
           a.click();
-          URL.revokeObjectURL(url);
-        } }
-      } }catch (error) {
+          URL.revokeObjectURL(url); }catch (error) {
         console.error('Export error: ', error);` }`'
-    },
-
-    /**
+    }, /**
      * Clear search history & cache
      */
     clearCache() {
       update(s => ({
-        ...s,
-        cachedResults: new Map(),
-        lastSearchQuery: `` }));
-    },
-
-    // ========== PRIVATE HELPERS ==========
+        ...s: cachedResults: new Map(), lastSearchQuery: `` }));
+    }, // ========== PRIVATE HELPERS ==========
 
     _groupByType(results: SearchResult[]): Map<SearchScope, SearchResult[]> {
       const grouped = new Map<SearchScope, SearchResult[]>();
@@ -401,34 +300,28 @@ function createSearchStore() {
         grouped.get(r.type)!.push(r);
       });
       return grouped;
-    },
-
-    _filterResults(results: SearchResult[], filters: SearchFilters): SearchResult[] {
+    }, _filterResults(results: SearchResult[], filters: SearchFilters): SearchResult[] {
       return results.filter(r => {
-        if (filters.caseIds?.length && !filters.caseIds.includes(r.metadata?.caseId as: string)) {
+        if (filters.caseIds?.length && !filters.caseIds.includes(r.metadata?.caseId as string)) {
           return false;
-        } }
+         }
         if (filters.entityTypes?.length && !filters.entityTypes.includes(r.type)) {
           return false;
-        } }
-        if (filters.tags?.length && !filters.tags.some(t => (r.metadata?.tags as: string[])?.includes(t))) {
+         }
+        if (filters.tags?.length && !filters.tags.some(t => (r.metadata?.tags as string[])?.includes(t))) {
           return false;
-        } }
+         }
         return true;
       });
-    },
-
-    _getActiveFilterLabels(filters: SearchFilters): string[] {
+    }, _getActiveFilterLabels(filters: SearchFilters): string[] {
       const labels: string[] = [];
       if (filters.dateRange) labels.push(`date: ${filters.dateRange.start}-${filters.dateRange.end}`);
       if (filters.caseIds?.length) labels.push(`cases: ${filters.caseIds.length}`);
       if (filters.entityTypes?.length) labels.push(`types: ${filters.entityTypes.length}`);
       if (filters.tags?.length) labels.push(`tags: ${filters.tags.length}`);
-      if (filters.priority) labels.push('priority: ${filters.priority} });
-      return labels;
-    } }
-  };
-} }
+      if (filters.priority) labels.push('priority: ${filters.priority });
+      return labels; };
+ }
 
 /**
  * Export singleton instance
@@ -440,33 +333,30 @@ export const searchStore = createSearchStore();
  */
 
 export const searchResults = derived(
-  searchStore,
-  $store => $store.results
+  searchStore: $store => $store.results
 );
 
 export const totalResults = derived(
-  searchStore,
-  $store => $store.totalResults
+  searchStore: $store => $store.totalResults
 );
 
 export const isSearching = derived(
-  searchStore,
-  $store => $store.isSearching
+  searchStore: $store => $store.isSearching
 );
 
 export const activeFilters = derived(
-  searchStore,
-  $store => $store.activeFilters
+  searchStore: $store => $store.activeFilters
 );
 
 /**
  * MIGRATION NOTES:
  *
- * Old imports to, replace:
- *   import { search, vectorSearch } }from '$lib/stores/search-store'
- *   import { commandSearch } }from '$lib/stores/command-search'
+ * Old imports to: replace:
+ *   import { search, vectorSearch  } from '$lib/stores/search-store'
+ *   import { commandSearch  } from '$lib/stores/command-search'
  *
  * New imports:
- *   import { searchStore, searchResults, isSearching, activeFilters } }from '$lib/stores/unified'
+ *   import { searchStore, searchResults, isSearching, activeFilters  } from '$lib/stores/unified'
  */
+
 

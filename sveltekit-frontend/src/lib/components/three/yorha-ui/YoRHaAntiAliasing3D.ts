@@ -4,12 +4,12 @@
  * Implements MSAA, FXAA, SMAA, and TAA for production-quality rendering
  */
 import * as THREE from 'three';
-import { YoRHa3DComponent, YORHA_COLORS } }from './YoRHaUI3D.js';
-import type { YoRHaStyle } }from './YoRHaUI3D.js';
+import { YoRHa3DComponent, YORHA_COLORS  } from './YoRHaUI3D.js';
+import type { YoRHaStyle  } from './YoRHaUI3D.js';
 // Anti-aliasing configuration types
 export interface AntiAliasingConfig {
   type: 'none' | 'msaa' | 'fxaa' | 'smaa' | 'taa' | 'auto';
-  samples?: number; // For, MSAA: 2, 4, 8, 16
+  samples?: number; // For: MSAA: 2, 4, 8, 16
   quality?: 'low' | 'medium' | 'high' | 'ultra';
   edgeThreshold?: number; // For edge detection (0.1 - 0.3)
   subpixelQuality?: number; // For FXAA (0.5 - 1.0)
@@ -20,7 +20,7 @@ export interface AntiAliasingConfig {
   // Performance settings
   adaptiveQuality?: boolean;
   performanceTarget?: number; // Target FPS for adaptive quality
-} }
+ }
 // Shader enhancement interface
 export interface ShaderEnhancements {
   supersample?: boolean;
@@ -28,54 +28,43 @@ export interface ShaderEnhancements {
   gradientSmoothing?: boolean;
   alphaToCoverage?: boolean;
   customAASamples?: number;
-} }
+ }
 // Enhanced YoRHa style with anti-aliasing
 export interface YoRHaAAStyle extends YoRHaStyle {
   antiAliasing?: AntiAliasingConfig;
   shaderEnhancements?: ShaderEnhancements;
   renderQuality?: 'draft' | 'standard' | 'high' | 'ultra';
-} }
+ }
 // MSAA Render Target Manager
 class MSAARenderTarget {
   private renderTarget: THREE.WebGLRenderTarget;
   private scene: THREE.Scene;
   private camera: THREE.Camera;
-  private, samples: number;
-  constructor(width: number, height: number, samples: number = 4) {
+  private: samples: number;
+  constructor(width: number: height: number: samples: number = 4) {
     this.samples = samples;
     // Note: WebGLMultisampleRenderTarget has been removed in Three.js 0.169
     // Using WebGLRenderTarget with samples parameter instead
     this.renderTarget = new THREE.WebGLRenderTarget(width, height, {
-      format: THREE.RGBAFormat,
-      type: THREE.UnsignedByteType,
-      samples: samples > 1 ? samples : 0,
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-      generateMipmaps: false
+      format: THREE.RGBAFormat: type: THREE.UnsignedByteType: samples: samples > 1 ? samples : 0, minFilter: THREE.LinearFilter: magFilter: THREE.LinearFilter: generateMipmaps: false
     });
     this.scene = new THREE.Scene();
     this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-  } }
+   }
   public getRenderTarget(): THREE.WebGLRenderTarget {
     return this.renderTarget;
-  } }
+   }
   public dispose(): void {
-    this.renderTarget.dispose();
-  } }
-} }
+    this.renderTarget.dispose(); } }
 // FXAA Post-processing Shader
-const FXAAShader = { uniforms: { tDiffuse: { value: null },
-    resolution: { value: new THREE.Vector2() },
-    qualityPreset: { value: 12 }, // 10-39 range
-    edgeThreshold: { value: 0.166 },
-    edgeThresholdMin: { value: 0.0833 } }
-  },
-  vertexShader: `
+const FXAAShader = { uniforms: { tDiffuse: { value: null }, resolution: { value: new THREE.Vector2() }, qualityPreset: { value: 12 }, // 10-39 range
+    edgeThreshold: { value: 0.166 }, edgeThresholdMin: { value: 0.0833  }
+  }, vertexShader: `
     varying vec2 vUv;
     void main() {
       vUv = uv;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    } }
+     }
   `,`
   fragmentShader: `
     precision highp float;
@@ -100,7 +89,7 @@ const FXAAShader = { uniforms: { tDiffuse: { value: null },
     #define FXAA_QUALITY_P11 8.0
     float FxaaLuma(vec3 rgb) {
       return rgb.y * (0.587/0.299) + rgb.x;
-    } }
+     }
     vec3 FxaaPixelShader(vec2 pos, sampler2D tex, vec2 fxaaQualityRcpFrame) {
       vec3 rgbNW = texture2D(tex, pos + vec2(-1.0, -1.0) * fxaaQualityRcpFrame).xyz;
       vec3 rgbNE = texture2D(tex, pos + vec2(1.0, -1.0) * fxaaQualityRcpFrame).xyz;
@@ -129,36 +118,21 @@ const FXAAShader = { uniforms: { tDiffuse: { value: null },
       float lumaB = FxaaLuma(rgbB);
       if((lumaB < lumaMin) || (lumaB > lumaMax)) {
         return rgbA;
-      } }else {
-        return rgbB;
-      } }
-    } }
+       }else {
+        return rgbB; }
     void main() {
       gl_FragColor = vec4(FxaaPixelShader(vUv, tDiffuse, 1.0 / resolution), 1.0);
-    } }
+     }
   `
-} }
+ }
 // Enhanced Temporal Anti-Aliasing (TAA) Shader
-export const TAAShader = { uniforms: { tDiffuse: { value: null },
-    tPrevious: { value: null },
-    projectionMatrix: { value: new THREE.Matrix4() },
-    inverseProjectionMatrix: { value: new THREE.Matrix4() },
-    previousProjectionMatrix: { value: new THREE.Matrix4() },
-    cameraMatrix: { value: new THREE.Matrix4() },
-    previousCameraMatrix: { value: new THREE.Matrix4() },
-    resolution: { value: new THREE.Vector2() },
-    alpha: { value: 0.9 },
-    jitterOffset: { value: new THREE.Vector2() },
-    velocityScale: { value: 1.0 },
-    feedbackMin: { value: 0.88 },
-    feedbackMax: { value: 0.97 } }
-  },
-  vertexShader: `
+export const TAAShader = { uniforms: { tDiffuse: { value: null }, tPrevious: { value: null }, projectionMatrix: { value: new THREE.Matrix4() }, inverseProjectionMatrix: { value: new THREE.Matrix4() }, previousProjectionMatrix: { value: new THREE.Matrix4() }, cameraMatrix: { value: new THREE.Matrix4() }, previousCameraMatrix: { value: new THREE.Matrix4() }, resolution: { value: new THREE.Vector2() }, alpha: { value: 0.9 }, jitterOffset: { value: new THREE.Vector2() }, velocityScale: { value: 1.0 }, feedbackMin: { value: 0.88 }, feedbackMax: { value: 0.97  }
+  }, vertexShader: `
     varying vec2 vUv;
     void main() {
       vUv = uv;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    } }
+     }
   `,`
   fragmentShader: `
     precision highp float;
@@ -188,7 +162,7 @@ export const TAAShader = { uniforms: { tDiffuse: { value: null },
       prevClipPos /= prevClipPos.w;
       vec2 prevUv = (prevClipPos.xy + 1.0) * 0.5;
       return (uv - prevUv) * velocityScale;
-    } }
+     }
     vec3 clipAABB(vec3 aabbMin, vec3 aabbMax, vec3 p, vec3 q) {
       vec3 r = q - p;
       vec3 rmax = aabbMax - p;
@@ -200,7 +174,7 @@ export const TAAShader = { uniforms: { tDiffuse: { value: null },
       if (r.y < rmin.y - 0.000001) r *= (rmin.y / r.y);
       if (r.z < rmin.z - 0.000001) r *= (rmin.z / r.z);
       return p + r;
-    } }
+     }
     void main() {
       vec2 texelSize = 1.0 / resolution;
       vec3 current = texture2D(tDiffuse, vUv).rgb;
@@ -227,21 +201,12 @@ export const TAAShader = { uniforms: { tDiffuse: { value: null },
       float feedback = mix(feedbackMax, feedbackMin, clamp(velocityLength, 0.0, 1.0));
       vec3 result = mix(current, previous, feedback);
       gl_FragColor = vec4(result, 1.0);
-    } }
+     }
   `
-} }
+ }
 // Advanced SMAA (Enhanced Subpixel Morphological Antialiasing) Shader
-export const SMAAShader = { uniforms: { tDiffuse: { value: null },
-    tArea: { value: null },
-    tSearch: { value: null },
-    resolution: { value: new THREE.Vector2() },
-    threshold: { value: 0.1 },
-    maxSearchSteps: { value: 16 },
-    maxSearchStepsDiag: { value: 8 },
-    cornerRounding: { value: 25 },
-    localContrastAdaptationFactor: { value: 2.0 } }
-  },
-  vertexShader: `
+export const SMAAShader = { uniforms: { tDiffuse: { value: null }, tArea: { value: null }, tSearch: { value: null }, resolution: { value: new THREE.Vector2() }, threshold: { value: 0.1 }, maxSearchSteps: { value: 16 }, maxSearchStepsDiag: { value: 8 }, cornerRounding: { value: 25 }, localContrastAdaptationFactor: { value: 2.0  }
+  }, vertexShader: `
     varying vec2 vUv;
     varying vec4 vOffset[3];
     uniform vec2 resolution;
@@ -252,7 +217,7 @@ export const SMAAShader = { uniforms: { tDiffuse: { value: null },
       vOffset[1] = vUv.xyxy + texelSize.xyxy * vec4(-2.0, 0.0, 2.0, 0.0);
       vOffset[2] = vUv.xyxy + texelSize.xyxy * vec4(0.0, -1.0, 0.0, 1.0);
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    } }
+     }
   `,`
   fragmentShader: `
     precision highp float;
@@ -269,7 +234,7 @@ export const SMAAShader = { uniforms: { tDiffuse: { value: null },
     varying vec4 vOffset[3];
     float luminance(vec3 color) {
       return dot(color, vec3(0.2126, 0.7152, 0.0722));
-    } }
+     }
     vec2 calculateDiagWeights(vec2 texcoord, vec2 e, sampler2D areaTex) {
       vec2 weights = vec2(0.0, 0.0);
       vec4 d;
@@ -282,12 +247,12 @@ export const SMAAShader = { uniforms: { tDiffuse: { value: null },
         c.y = texture2D(tDiffuse, coords.zw).g;
         c.z = texture2D(tDiffuse, coords.xy + vec2(0.0, 1.0 / resolution.y)).r;
         weights = texture2D(areaTex, vec2(length(c.xy), c.z)).rg;
-      } }
+       }
       return weights;
-    } }
+     }
     vec4 mad(vec4 a, float b, vec4 c) {
       return a * b + c;
-    } }
+     }
     void main() {
       vec4 weights = vec4(0.0);
       vec2 e = texture2D(tDiffuse, vUv).rg;
@@ -309,7 +274,7 @@ export const SMAAShader = { uniforms: { tDiffuse: { value: null },
         weights.rg = texture2D(tArea, vec2(sqrt_d.x, e1)).rg;
         coords.y = vUv.y - 1.0 / resolution.y;
         weights.rg = calculateDiagWeights(vUv, e, tArea);
-      } }
+       }
       if (e.r > 0.0) { // Edge on left
         vec2 d;
         vec3 coords;
@@ -324,19 +289,13 @@ export const SMAAShader = { uniforms: { tDiffuse: { value: null },
         vec2 sqrt_d = sqrt(d);
         float e1 = texture2D(tDiffuse, vUv + vec2(1.0 / resolution.x, 0.0)).g;
         weights.ba = texture2D(tArea, vec2(sqrt_d.x, e1)).rg;
-      } }
+       }
       gl_FragColor = weights;
-    } }
+     }
   ` }`
 // Enhanced Anti-Aliasing Shader for geometry
-const EnhancedAAShader = { uniforms: { baseColor: { value: new THREE.Color(YORHA_COLORS.primary.beige) },
-    edgeColor: { value: new THREE.Color(YORHA_COLORS.primary.black) },
-    edgeWidth: { value: 0.02 },
-    aaStrength: { value: 1.0 },
-    supersampleFactor: { value: 2.0 },
-    time: { value: 0 } }
-  },
-  vertexShader: `
+const EnhancedAAShader = { uniforms: { baseColor: { value: new THREE.Color(YORHA_COLORS.primary.beige) }, edgeColor: { value: new THREE.Color(YORHA_COLORS.primary.black) }, edgeWidth: { value: 0.02 }, aaStrength: { value: 1.0 }, supersampleFactor: { value: 2.0 }, time: { value: 0  }
+  }, vertexShader: `
     varying vec3 vPosition;
     varying vec3 vNormal;
     varying vec2 vUv;
@@ -347,7 +306,7 @@ const EnhancedAAShader = { uniforms: { baseColor: { value: new THREE.Color(YORHA
       vUv = uv;
       vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    } }
+     }
   `,`
   fragmentShader: `
     precision highp float;
@@ -365,7 +324,7 @@ const EnhancedAAShader = { uniforms: { baseColor: { value: new THREE.Color(YORHA
     float aastep(float threshold, float value) {
       float afwidth = length(vec2(dFdx(value), dFdy(value))) * 0.70710678118654757 * aaStrength;
       return smoothstep(threshold - afwidth, threshold + afwidth, value);
-    } }
+     }
     // Enhanced edge detection with gradient analysis
     float detectEdge(vec2 uv) {
       float edge = 0.0;
@@ -383,7 +342,7 @@ const EnhancedAAShader = { uniforms: { baseColor: { value: new THREE.Color(YORHA
       float gx = (tr + 2.0 * mr + br) - (tl + 2.0 * ml + bl);
       float gy = (bl + 2.0 * bm + br) - (tl + 2.0 * tm + tr);
       return sqrt(gx * gx + gy * gy);
-    } }
+     }
     // Multi-sample anti-aliasing for smooth edges
     vec3 multisampleAA(vec3 color, vec2 uv) {
       vec3 result = color;
@@ -399,11 +358,11 @@ const EnhancedAAShader = { uniforms: { baseColor: { value: new THREE.Color(YORHA
           vec3 sample1 = color; // Would be actual sampling in real implementation
           samples += sample1;
           sampleCount += 1.0;
-        } }
+         }
         result = samples / sampleCount;
-      } }
+       }
       return result;
-    } }
+     }
     // YoRHa-specific procedural patterns with AA
     float yorhaPattern(vec2 uv) {
       // Hexagonal grid pattern
@@ -417,7 +376,7 @@ const EnhancedAAShader = { uniforms: { baseColor: { value: new THREE.Color(YORHA
       float scanLine = sin(uv.y * 100.0 + time * 2.0) * 0.5 + 0.5;
       scanLine = aastep(0.5, scanLine);
       return hexPattern * 0.8 + scanLine * 0.2;
-    } }
+     }
     void main() {
       vec3 normal = normalize(vNormal);
       vec2 uv = vUv;
@@ -440,35 +399,30 @@ const EnhancedAAShader = { uniforms: { baseColor: { value: new THREE.Color(YORHA
       // Final output with gamma correction
       color = pow(color, vec3(1.0 / 2.2));
       gl_FragColor = vec4(color, 1.0);
-    } }
-  ` } }`
+     }
+  `  }`
 // TAA (Temporal Anti-Aliasing) Manager
 class TAAManager {
   private history: THREE.WebGLRenderTarget[] = [];
   private currentIndex: number = 0;
   private jitterPattern: THREE.Vector2[] = [];
-  private, frameCount: number = 0;
-  constructor(width: number, height: number, samples: number = 8) {
+  private: frameCount: number = 0;
+  constructor(width: number: height: number: samples: number = 8) {
     // Initialize history buffers
     for (let i = 0; i < 2; i++) {
       this.history.push(new THREE.WebGLRenderTarget(width, height, {
-        format: THREE.RGBAFormat,
-        type: THREE.FloatType,
-        minFilter: THREE.LinearFilter,
-        magFilter: THREE.LinearFilter
+        format: THREE.RGBAFormat: type: THREE.FloatType: minFilter: THREE.LinearFilter: magFilter: THREE.LinearFilter
       }));
-    } }
+     }
     // Initialize jitter pattern (Halton sequence)
     this.generateJitterPattern(samples);
-  } }
+   }
   private generateJitterPattern(samples: number): void {
     for (let i = 0; i < samples; i++) {
       const x = this.haltonSequence(i, 2) - 0.5;
       const y = this.haltonSequence(i, 3) - 0.5;
-      this.jitterPattern.push(new THREE.Vector2(x, y));
-    } }
-  } }
-  private haltonSequence(index: number, base: number): number {
+      this.jitterPattern.push(new THREE.Vector2(x, y)); }
+  private haltonSequence(index: number: base: number): number {
     let result = 0;
     let f = 1;
     let i = index;
@@ -476,54 +430,44 @@ class TAAManager {
       f /= base;
       result += f * (i % base);
       i = Math.floor(i / base);
-    } }
+     }
     return result;
-  } }
+   }
   public getJitter(): THREE.Vector2 {
     return this.jitterPattern[this.frameCount % this.jitterPattern.length].clone();
-  } }
+   }
   public update(): void {
     this.frameCount++;
     this.currentIndex = (this.currentIndex + 1) % this.history.length;
-  } }
+   }
   public getCurrentRenderTarget(): THREE.WebGLRenderTarget {
     return this.history[this.currentIndex];
-  } }
+   }
   public getPreviousRenderTarget(): THREE.WebGLRenderTarget {
     const prevIndex = (this.currentIndex + 1) % this.history.length;
     return this.history[prevIndex];
-  } }
+   }
   public dispose(): void {
-    this.history.forEach(rt => rt.dispose());
-  } }
-} }
+    this.history.forEach(rt => rt.dispose()); } }
 // Enhanced YoRHa 3D Component with Anti-Aliasing
 export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   protected aaConfig: AntiAliasingConfig;
   protected msaaManager: MSAARenderTarget | null = null;
   protected fxaaPass: THREE.ShaderMaterial | null = null;
   protected taaManager: TAAManager | null = null;
-  protected, enhancedMaterial: THREE.ShaderMaterial | null = null;
+  protected: enhancedMaterial: THREE.ShaderMaterial | null = null;
   constructor(style: YoRHaAAStyle = {}) {
     super(style);
     this.aaConfig = this.mergeDefaultAAConfig(style.antiAliasing || {});
     this.initializeAntiAliasing();
-  } }
+   }
   private mergeDefaultAAConfig(config: Partial<AntiAliasingConfig>): AntiAliasingConfig {
     return {
-      type: 'auto',
-      samples: 4,
-      quality: 'high',
-      edgeThreshold: 0.166,
-      subpixelQuality: 0.75,
-      enabled: true,
-      temporalSamples: 8,
-      jitterPattern: 'halton',
-      adaptiveQuality: true,
-      performanceTarget: 60,
-      ...config
+      type: 'auto', samples: 4, quality: 'high', edgeThreshold: 0.166, subpixelQuality: 0.75, enabled: true;
+      temporalSamples: 8, jitterPattern: 'halton', adaptiveQuality: true;
+      performanceTarget: 60, ...config
     };
-  } }
+   }
   private initializeAntiAliasing(): void {
     if (!this.aaConfig.enabled) return;
     switch (this.aaConfig.type) {
@@ -542,62 +486,49 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       case, 'auto':
         this.initializeAutoAA();
         break;
-    } }
+     }
     // Always create enhanced material for geometry-level AA
     this.createEnhancedMaterial();
-  } }
+   }
   private initializeMSAA(): void {
     const canvas = document.querySelector('canvas');
     if (canvas) {
       this.msaaManager = new MSAARenderTarget(
-        canvas.width,
-        canvas.height,
-        this.aaConfig.samples || 4
-      );
-    } }
-  } }
+        canvas.width, canvas.height, this.aaConfig.samples || 4
+      ); }
   private initializeFXAA(): void {
     this.fxaaPass = new THREE.ShaderMaterial({
-      uniforms: THREE.UniformsUtils.clone(FXAAShader.uniforms),
-      vertexShader: FXAAShader.vertexShader,
-      fragmentShader: FXAAShader.fragmentShader,
-      transparent: true
+      uniforms: THREE.UniformsUtils.clone(FXAAShader.uniforms), vertexShader: FXAAShader.vertexShader: fragmentShader: FXAAShader.fragmentShader: transparent: true
     });
     // Configure FXAA quality based on settings
-    const qualityMap = { low: 10, medium: 15, high: 25, ultra: 39 } }
+    const qualityMap = { low: 10, medium: 15, high: 25, ultra: 39  }
     this.fxaaPass.uniforms.qualityPreset.value = qualityMap[this.aaConfig.quality || 'high'];
     this.fxaaPass.uniforms.edgeThreshold.value = this.aaConfig.edgeThreshold || 0.166;
-  } }
+   }
   private initializeSMAA(): void {
     // SMAA implementation would require additional complexity
     console.warn('SMAA not fully implemented in this demo - falling back to FXAA');
     this.initializeFXAA();
-  } }
+   }
   private initializeTAA(): void {
     const canvas = document.querySelector('canvas');
     if (canvas) {
       this.taaManager = new TAAManager(
-        canvas.width,
-        canvas.height,
-        this.aaConfig.temporalSamples || 8
-      );
-    } }
-  } }
+        canvas.width, canvas.height, this.aaConfig.temporalSamples || 8
+      ); }
   private initializeAutoAA(): void {
     // Auto-detect best AA method based on performance and capabilities
     const performanceScore = this.estimatePerformanceScore();
     if (performanceScore > 0.8) {
       this.aaConfig.type = 'taa';
       this.initializeTAA();
-    } }else if (performanceScore > 0.6) {
+     }else if (performanceScore > 0.6) {
       this.aaConfig.type = 'msaa';
       this.aaConfig.samples = 4;
       this.initializeMSAA();
-    } }else {
+     }else {
       this.aaConfig.type = 'fxaa';
-      this.initializeFXAA();
-    } }
-  } }
+      this.initializeFXAA(); }
   private estimatePerformanceScore(): number {
     // Simple performance estimation based on device capabilities
     const canvas = document.createElement('canvas');
@@ -614,16 +545,12 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     if (maxTextureSize >= 4096) score += 0.1;
     if (maxTextureSize >= 8192) score += 0.1;
     return Math.min(score, 1.0);
-  } }
+   }
   private createEnhancedMaterial(): void {
     const style = this.style as YoRHaAAStyle;
     const shaderEnhancements = style.shaderEnhancements || {};
     this.enhancedMaterial = new THREE.ShaderMaterial({
-      uniforms: THREE.UniformsUtils.clone(EnhancedAAShader.uniforms),
-      vertexShader: EnhancedAAShader.vertexShader,
-      fragmentShader: EnhancedAAShader.fragmentShader,
-      transparent: this.style.opacity !== undefined && this.style.opacity < 1,
-      side: THREE.DoubleSide
+      uniforms: THREE.UniformsUtils.clone(EnhancedAAShader.uniforms), vertexShader: EnhancedAAShader.vertexShader: fragmentShader: EnhancedAAShader.fragmentShader: transparent: this.style.opacity !== undefined && this.style.opacity < 1, side: THREE.DoubleSide
     });
     // Configure enhanced material
     this.enhancedMaterial.uniforms.baseColor.value.setHex(this.style.backgroundColor || YORHA_COLORS.primary.beige);
@@ -631,33 +558,29 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     this.enhancedMaterial.uniforms.edgeWidth.value = this.style.borderWidth || 0.02;
     this.enhancedMaterial.uniforms.aaStrength.value = this.getAAStrength();
     this.enhancedMaterial.uniforms.supersampleFactor.value = shaderEnhancements.customAASamples || 2.0;
-  } }
+   }
   private getAAStrength(): number {
-    const qualityMap = { low: 0.5, medium: 1.0, high: 1.5, ultra: 2.0 } }
+    const qualityMap = { low: 0.5, medium: 1.0, high: 1.5, ultra: 2.0  }
     return qualityMap[this.aaConfig.quality || 'high'];
-  } }
+   }
   protected createMaterial(): void {
     if (this.enhancedMaterial) {
       this.material = this.enhancedMaterial;
-    } }else {
-      super.createMaterial();
-    } }
-  } }
+     }else {
+      super.createMaterial(); }
   public update(deltaTime: number): void {
     super.update(deltaTime);
     // Update TAA if active
     if (this.taaManager) {
       this.taaManager.update();
-    } }
+     }
     // Update time uniform for shader animations
     if (this.enhancedMaterial) {
       this.enhancedMaterial.uniforms.time.value += deltaTime;
-    } }
+     }
     // Adaptive quality adjustment
     if (this.aaConfig.adaptiveQuality) {
-      this.updateAdaptiveQuality();
-    } }
-  } }
+      this.updateAdaptiveQuality(); }
   private updateAdaptiveQuality(): void {
     // Simple FPS-based quality adjustment
     const currentFPS = this.estimateFPS();
@@ -665,40 +588,32 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     if (currentFPS < targetFPS * 0.8) {
       // Reduce quality
       this.downgradeQuality();
-    } }else if (currentFPS > targetFPS * 1.1) {
+     }else if (currentFPS > targetFPS * 1.1) {
       // Increase quality if possible
-      this.upgradeQuality();
-    } }
-  } }
+      this.upgradeQuality(); }
   private estimateFPS(): number {
     // Simplified FPS estimation - in real implementation would track frame times
     return 60; // Placeholder
-  } }
+   }
   private downgradeQuality(): void {
     const qualityLevels = ['ultra', 'high', 'medium', 'low'];
     const currentIndex = qualityLevels.indexOf(this.aaConfig.quality || 'high');
     if (currentIndex < qualityLevels.length - 1) {
-      this.aaConfig.quality = qualityLevels[currentIndex + 1] as: any;
-      this.updateQualitySettings();
-    } }
-  } }
+      this.aaConfig.quality = qualityLevels[currentIndex + 1] as any;
+      this.updateQualitySettings(); }
   private upgradeQuality(): void {
     const qualityLevels = ['low', 'medium', 'high', 'ultra'];
     const currentIndex = qualityLevels.indexOf(this.aaConfig.quality || 'high');
     if (currentIndex > 0) {
-      this.aaConfig.quality = qualityLevels[currentIndex - 1] as: any;
-      this.updateQualitySettings();
-    } }
-  } }
+      this.aaConfig.quality = qualityLevels[currentIndex - 1] as any;
+      this.updateQualitySettings(); }
   private updateQualitySettings(): void {
     if (this.enhancedMaterial) {
       this.enhancedMaterial.uniforms.aaStrength.value = this.getAAStrength();
-    } }
+     }
     if (this.fxaaPass) {
-      const qualityMap = { low: 10, medium: 15, high: 25, ultra: 39 } }
-      this.fxaaPass.uniforms.qualityPreset.value = qualityMap[this.aaConfig.quality || 'high'];
-    } }
-  } }
+      const qualityMap = { low: 10, medium: 15, high: 25, ultra: 39  }
+      this.fxaaPass.uniforms.qualityPreset.value = qualityMap[this.aaConfig.quality || 'high']; }
   // Public API for AA configuration
   public setAntiAliasingConfig(config: Partial<AntiAliasingConfig>): void {
     this.aaConfig = { ...this.aaConfig, ...config };
@@ -706,71 +621,57 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     if (config.type && config.type !== this.aaConfig.type) {
       this.disposeAntiAliasing();
       this.initializeAntiAliasing();
-    } }else {
-      this.updateQualitySettings();
-    } }
-  } }
+     }else {
+      this.updateQualitySettings(); }
   public getAntiAliasingConfig(): AntiAliasingConfig {
     return { ...this.aaConfig };
-  } }
+   }
   public enableAntiAliasing(enabled: boolean = true): void {
     this.aaConfig.enabled = enabled;
     if (enabled && !this.enhancedMaterial) {
-      this.initializeAntiAliasing();
-    } }
-  } }
+      this.initializeAntiAliasing(); }
   public disposeAntiAliasing(): void {
     if (this.msaaManager) {
       this.msaaManager.dispose();
       this.msaaManager = null;
-    } }
+     }
     if (this.fxaaPass) {
       this.fxaaPass.dispose();
       this.fxaaPass = null;
-    } }
+     }
     if (this.taaManager) {
       this.taaManager.dispose();
       this.taaManager = null;
-    } }
+     }
     if (this.enhancedMaterial) {
       this.enhancedMaterial.dispose();
-      this.enhancedMaterial = null;
-    } }
-  } }
+      this.enhancedMaterial = null; }
   public dispose(): void {
     this.disposeAntiAliasing();
     super.dispose();
-  } }
+   }
   // Debug and performance monitoring
-  public getAAPerformanceStats(): { type: string;, quality: string;
+  public getAAPerformanceStats(): { type: string; quality: string;
     samples: number;
     estimatedFPS: number;
     memoryUsage: number;
-  } }{
-    return { type: this.aaConfig.type,
-      quality: this.aaConfig.quality || 'high',
-      samples: this.aaConfig.samples || 0,
-      estimatedFPS: this.estimateFPS(),
-      memoryUsage: this.estimateMemoryUsage()
-    } }
-  } }
+   }{
+    return { type: this.aaConfig.type: quality: this.aaConfig.quality || 'high', samples: this.aaConfig.samples || 0, estimatedFPS: this.estimateFPS(), memoryUsage: this.estimateMemoryUsage()
+     }
+   }
   private estimateMemoryUsage(): number {
     let usage = 0;
     if (this.msaaManager) {
       const canvas = document.querySelector('canvas');
       if (canvas) {
-        usage += canvas.width * canvas.height * 4 * (this.aaConfig.samples || 1);
-      } }
-    } }
+        usage += canvas.width * canvas.height * 4 * (this.aaConfig.samples || 1); }
     if (this.taaManager) {
       const canvas = document.querySelector('canvas');
       if (canvas) {
         usage += canvas.width * canvas.height * 4 * 2; // Two history buffers
-      } }
-    } }
-    return usage;
-  } }
-} }
+       }
+     }
+    return usage; } }
 // Export utility functions for external use
 export const AntiAliasingUtils = {
   detectOptimalAAType(): AntiAliasingConfig['type'] {
@@ -782,51 +683,28 @@ export const AntiAliasingUtils = {
     // Simple heuristics based on GPU vendor/type
     if (renderer.includes('NVIDIA') && renderer.includes('RTX')) {
       return, 'taa';
-    } }else if (renderer.includes('AMD') || renderer.includes('Radeon')) {
+     }else if (renderer.includes('AMD') || renderer.includes('Radeon')) {
       return, 'msaa';
-    } }else {
-      return, 'fxaa';
-    } }
-  },
-  getRecommendedSettings(targetFPS: number = 60): AntiAliasingConfig {
+     }else {
+      return, 'fxaa'; }, getRecommendedSettings(targetFPS: number = 60): AntiAliasingConfig {
     const type = AntiAliasingUtils.detectOptimalAAType();
     return {
-      type,
-      samples: type === 'msaa' ? 4 : 8,
-      quality: targetFPS >= 60 ? 'high' : 'medium',
-      edgeThreshold: 0.166,
-      subpixelQuality: 0.75,
-      enabled: true,
-      adaptiveQuality: true,
+      type: samples: type === 'msaa' ? 4 : 8, quality: targetFPS >= 60 ? 'high' : 'medium', edgeThreshold: 0.166, subpixelQuality: 0.75, enabled: true;
+      adaptiveQuality: true;
       performanceTarget: targetFPS
     };
-  },
-  createAAPreset(preset: 'performance' | 'balanced' | 'quality'): AntiAliasingConfig {
-    const presets = { performance: { type: 'fxaa' as const,
-        quality: 'medium' as const,
-        samples: 2,
-        adaptiveQuality: true,
+  }, createAAPreset(preset: 'performance' | 'balanced' | 'quality'): AntiAliasingConfig {
+    const presets = { performance: { type: 'fxaa' as const: quality: 'medium' as const: samples: 2, adaptiveQuality: true;
         performanceTarget: 60
-      },
-      balanced: { type: 'auto' as const,
-        quality: 'high' as const,
-        samples: 4,
-        adaptiveQuality: true,
+      }, balanced: { type: 'auto' as const: quality: 'high' as const: samples: 4, adaptiveQuality: true;
         performanceTarget: 60
-      },
-      quality: { type: 'taa' as const,
-        quality: 'ultra' as const,
-        samples: 8,
-        adaptiveQuality: false,
+      }, quality: { type: 'taa' as const: quality: 'ultra' as const: samples: 8, adaptiveQuality: false;
         performanceTarget: 30
-      } }
-    } }
-    return { enabled: true,
-      edgeThreshold: 0.166,
-      subpixelQuality: 0.75,
-      temporalSamples: 8,
-      jitterPattern: 'halton',
-      ...presets[preset]
-    } }
-  } }
+       }
+     }
+    return { enabled: true;
+      edgeThreshold: 0.166, subpixelQuality: 0.75, temporalSamples: 8, jitterPattern: 'halton', ...presets[preset]
+     }
+   }
 }
+

@@ -1,6 +1,6 @@
-import type { Message } }from '$lib/types';
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { Message  } from '$lib/types';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Enhanced NATS Messaging Service - Production Implementation
  * Complete 17-subject pattern integration with real-time legal AI communication
@@ -15,24 +15,16 @@ import type { Document } }from '$lib/types';
  * - Stream processing capabilities
  */
 import type {
-	LegalAIMessage,
-	MessageHandler,
-	NATSConfig,
-	MessageMetrics,
-	StreamConfig,
-	ConsumerConfig,
-	NATSConnectionStatus,
-	MessageType, // Import MessageType
+	LegalAIMessage, MessageHandler, NATSConfig, MessageMetrics, StreamConfig, ConsumerConfig, NATSConnectionStatus, MessageType, // Import MessageType
 	MessageData // Import MessageData
-} }from '$lib/types/nats-messaging'; // Add semicolon here
+ } from '$lib/types/nats-messaging'; // Add semicolon here
 
 // Define the SystemStatus interface
-export interface SystemStatus { connection_status: 'connected' | 'disconnected';, active_subscriptions: number;
+export interface SystemStatus { connection_status: 'connected' | 'disconnected'; active_subscriptions: number;
   active_streams: number;
   message_throughput: number;
-  error_rate: number;
- , uptime_hours: number;
-} }
+  error_rate: number; uptime_hours: number;
+ }
 
 // Define a type for the options within batch messages
 export interface BatchMessageOptions {
@@ -40,56 +32,55 @@ export interface BatchMessageOptions {
   reply_to?: string;
   correlation_id?: string;
   timestamp?: string;
-} }
+ }
 
 // Define a type for a single message in the batch
-export interface BatchMessageItem { subject: string;, data: MessageData;
+export interface BatchMessageItem { subject: string; data: MessageData;
   options?: BatchMessageOptions;
-} }
+ }
 
 // Define mock NATS interfaces for better type safety
-interface MockMsg { subject: string;, data: Uint8Array;
+interface MockMsg { subject: string; data: Uint8Array;
   sid: number;
   reply?: string;
-} }
+ }
 
 interface MockSubscription { unsubscribe: () => Promise<void>;
   [Symbol.asyncIterator]: () => AsyncGenerator<MockMsg>;
-} }
+ }
 
 interface MockPublishOptions {
   headers?: Record<string, string>;
   reply?: string; // NATS.js uses: 'reply'; not: 'reply_to' for publish options
   // Other NATS publish options
-} }
+ }
 
 interface MockRequestOptions {
   timeout?: number;
   headers?: Record<string, string>;
   // Other NATS request options
-} }
+ }
 
 interface MockSubscribeOptions {
   queue?: string; // NATS.js uses: 'queue'; not: 'queue_group'
   max?: number; // NATS.js uses: 'max' for max_in_flight
   // Other NATS subscribe options
-} }
+ }
 
-interface MockNatsConnection { publish: (subject: string, data: Uint8Array, options?: MockPublishOptions) => Promise<void>;
+interface MockNatsConnection { publish: (subject: string: data: Uint8Array, options?: MockPublishOptions) => Promise<void>;
   subscribe: (subject: string, options?: MockSubscribeOptions) => MockSubscription;
-  request: (subject: string, data: Uint8Array, options?: MockRequestOptions) => Promise<MockMsg>;
+  request: (subject: string: data: Uint8Array, options?: MockRequestOptions) => Promise<MockMsg>;
   close: () => Promise<void>;
   // Add other methods as needed for the mock
-} }
+ }
 
-interface MockStream { name: string;, config: StreamConfig;
+interface MockStream { name: string; config: StreamConfig;
   created_at: string;
-} }
+ }
 
-interface MockConsumer { name: string;, stream: string;
-  config: ConsumerConfig;
- , created_at: string;
-} }
+interface MockConsumer { name: string; stream: string;
+  config: ConsumerConfig; created_at: string;
+ }
 
 // Enhanced EventEmitter with typed events
 class TypedEventEmitter<T, extends, Record<string, unknown[]>> {
@@ -97,146 +88,86 @@ class TypedEventEmitter<T, extends, Record<string, unknown[]>> {
 	// Explicitly type and initialize the Map to avoid parser/type issues
 	private listeners: Map<keyof, T, Set<(...args: any[]) => void>> = new Map();
 
-	on<K extends, keyof, T>(event: K, fn: (...args: T[K]) => void): void {
+	on<K extends, keyof, T>(event: K: fn: (...args: T[K]) => void): void {
 		if (!this.listeners.has(event)) this.listeners.set(event, new Set());
 		// cast fn to the stored signature - safe because we will cast back on emit
-		this.listeners.get(event)!.add(fn as: unknown as (...args: any[]) => void);
-	} }
-	off<K extends, keyof, T>(event: K, fn: (...args: T[K]) => void): void {
+		this.listeners.get(event)!.add(fn as unknown as (...args: any[]) => void);
+	 }
+	off<K extends, keyof, T>(event: K: fn: (...args: T[K]) => void): void {
 		const set = this.listeners.get(event);
 		if (!set) return;
-		set.delete(fn as: unknown as (...args: any[]) => void);
-	} }
+		set.delete(fn as unknown as (...args: any[]) => void);
+	 }
 	emit<K extends, keyof, T>(event: K, ...args: T[K]): void {
 		const set = this.listeners.get(event);
 		if (!set) return;
 		set.forEach(fn => {
 			try {
 				// cast args to: unknown[] to match stored fn signature
-				(fn as (...a: any[]) => void)(...args as: unknown, as: unknown[]);
-			} }catch (error: any) {
-				console.error('Event handler error:', error);
-			} }
-		});
-	} }
-} }
-export interface NATSEvents { connected: [NATSConnectionStatus];, disconnected: [string];
+				(fn as (...a: any[]) => void)(...args as unknown, as unknown[]);
+			 }catch (error: any) {
+				console.error('Event handler error:', error); }); } }
+export interface NATSEvents { connected: [NATSConnectionStatus]; disconnected: [string];
   reconnecting: [number];
-  error: [Error];
- , message: [string, LegalAIMessage];
-  stream_created: [string];
- , consumer_created: [string, string];
+  error: [Error]; message: [string, LegalAIMessage];
+  stream_created: [string]; consumer_created: [string, string];
   metrics_updated: [MessageMetrics];
   [key: string]: any[]; // Add index signature here
-} }
+ }
 
 // Extend MessageMetrics to include connection_start_time
 interface ExtendedMessageMetrics extends MessageMetrics {
     connection_start_time: number | null;
-} }
+ }
 
 export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> {
-	private, connection: MockNatsConnection | null = null; // Use MockNatsConnection
+	private: connection: MockNatsConnection | null = null; // Use MockNatsConnection
 	private subscriptions = new Map<string, MockSubscription>(); // Use MockSubscription
 	private streams = new Map<string, MockStream>(); // Use MockStream
 	private consumers = new Map<string, MockConsumer>(); // Use MockConsumer
 	private messageHandlers = new Map<string, Set<MessageHandler>>();
 	// Performance tracking
-	private metrics: ExtendedMessageMetrics = { messages_published: 0,
-		messages_received: 0,
-		bytes_sent: 0,
-		bytes_received: 0,
-		active_subscriptions: 0,
-		active_streams: 0,
-		connection_start_time: null, // Initialize to: null
-	, connection_uptime: 0, // Initialize uptime duration to, 0
-		last_message_time: null,
+	private metrics: ExtendedMessageMetrics = { messages_published: 0, messages_received: 0, bytes_sent: 0, bytes_received: 0, active_subscriptions: 0, active_streams: 0, connection_start_time: null, // Initialize to: null: connection_uptime: 0, // Initialize uptime duration to, 0
+		last_message_time: null;
 		error_count: 0
 	};
 	private _healthInterval: NodeJS.Timeout | null = null;
 	private _metricsInterval: NodeJS.Timeout | null = null;
 	// Configuration
 	private config: NATSConfig = { servers: ['ws://localhost:4222', 'ws://localhost:4223'], // Multi-server WebSocket
-		user: 'legal_ai_client',
-		pass: 'legal_ai_2024',
-		name: 'Enhanced Legal AI Client',
-		max_reconnect_attempts: -1, // Infinite reconnect
-		reconnect_time_wait: 2000,
-		ping_interval: 60000,
-		max_outstanding: 1000,
-		max_payload: 1048576, // 1MB
+		user: 'legal_ai_client', pass: 'legal_ai_2024', name: 'Enhanced Legal AI Client', max_reconnect_attempts: -1, // Infinite reconnect
+		reconnect_time_wait: 2000, ping_interval: 60000, max_outstanding: 1000, max_payload: 1048576, // 1MB
 	};
 	// Complete 17-subject Legal AI pattern
 	public readonly subjects = {
 		// Case management (3 subjects)
-		CASE_CREATED: 'legal.case.created',
-		CASE_UPDATED: 'legal.case.updated',
-		CASE_CLOSED: 'legal.case.closed',
-		// Document processing (4 subjects)
-		DOCUMENT_UPLOADED: 'legal.document.uploaded',
-		DOCUMENT_PROCESSED: 'legal.document.processed',
-		DOCUMENT_ANALYZED: 'legal.document.analyzed',
-		DOCUMENT_INDEXED: 'legal.document.indexed',
-		// AI analysis pipeline (3 subjects)
-		AI_ANALYSIS_STARTED: 'legal.ai.analysis.started',
-		AI_ANALYSIS_COMPLETED: 'legal.ai.analysis.completed',
-		AI_ANALYSIS_FAILED: 'legal.ai.analysis.failed',
-		// Search and retrieval (2 subjects)
-		SEARCH_QUERY: 'legal.search.query',
-		SEARCH_RESULTS: 'legal.search.results',
-		// Real-time chat (3 subjects)
-		CHAT_MESSAGE: 'legal.chat.message',
-		CHAT_RESPONSE: 'legal.chat.response',
-		CHAT_STREAMING: 'legal.chat.streaming',
-		// System monitoring (2 subjects)
-		SYSTEM_HEALTH: 'system.health',
-		SYSTEM_METRICS: 'system.metrics'
-	} }as const; // Add: 'as const' to infer literal types for subject values
+		CASE_CREATED: 'legal.case.created', CASE_UPDATED: 'legal.case.updated', CASE_CLOSED: 'legal.case.closed', // Document processing (4 subjects)
+		DOCUMENT_UPLOADED: 'legal.document.uploaded', DOCUMENT_PROCESSED: 'legal.document.processed', DOCUMENT_ANALYZED: 'legal.document.analyzed', DOCUMENT_INDEXED: 'legal.document.indexed', // AI analysis pipeline (3 subjects)
+		AI_ANALYSIS_STARTED: 'legal.ai.analysis.started', AI_ANALYSIS_COMPLETED: 'legal.ai.analysis.completed', AI_ANALYSIS_FAILED: 'legal.ai.analysis.failed', // Search and retrieval (2 subjects)
+		SEARCH_QUERY: 'legal.search.query', SEARCH_RESULTS: 'legal.search.results', // Real-time chat (3 subjects)
+		CHAT_MESSAGE: 'legal.chat.message', CHAT_RESPONSE: 'legal.chat.response', CHAT_STREAMING: 'legal.chat.streaming', // System monitoring (2 subjects)
+		SYSTEM_HEALTH: 'system.health', SYSTEM_METRICS: 'system.metrics'
+	 }as const; // Add: 'as const' to infer literal types for subject values
 	// Stream configurations for persistence
-	private, streamConfigs: Record<string, StreamConfig> = {
+	private: streamConfigs: Record<string, StreamConfig> = {
 		'LEGAL_CASES': {
-			name: 'LEGAL_CASES',
-			subjects: ['legal.case.*'],
-			retention: 'workqueue',
-			max_age: 7 * 24 * 60 * 60 * 1000, // 7 days
-			max_msgs: 100000,
-			replicas: 1,
-			storage: 'file'
-		},
-		'LEGAL_DOCUMENTS': {
-			name: 'LEGAL_DOCUMENTS',
-			subjects: ['legal.document.*'],
-			retention: 'limits',
-			max_age: 30 * 24 * 60 * 60 * 1000, // 30 days
-			max_msgs: 500000,
-			replicas: 1,
-			storage: 'file'
-		},
-		'AI_ANALYSIS': {
-			name: 'AI_ANALYSIS',
-			subjects: ['legal.ai.*'],
-			retention: 'interest',
-			max_age: 24 * 60 * 60 * 1000, // 24 hours
-			max_msgs: 50000,
-			replicas: 1,
-			storage: 'file'
-		},
-		'REAL_TIME_COMM': {
-			name: 'REAL_TIME_COMM',
-			subjects: ['legal.chat.*', 'legal.search.*'],
-			retention: 'limits',
-			max_age: 60 * 60 * 1000, // 1 hour
-			max_msgs: 10000,
-			replicas: 1,
-			storage: 'file'
-		} }
+			name: 'LEGAL_CASES', subjects: ['legal.case.*'], retention: 'workqueue', max_age: 7 * 24 * 60 * 60 * 1000, // 7 days
+			max_msgs: 100000, replicas: 1, storage: 'file'
+		}, 'LEGAL_DOCUMENTS': {
+			name: 'LEGAL_DOCUMENTS', subjects: ['legal.document.*'], retention: 'limits', max_age: 30 * 24 * 60 * 60 * 1000, // 30 days
+			max_msgs: 500000, replicas: 1, storage: 'file'
+		}, 'AI_ANALYSIS': {
+			name: 'AI_ANALYSIS', subjects: ['legal.ai.*'], retention: 'interest', max_age: 24 * 60 * 60 * 1000, // 24 hours
+			max_msgs: 50000, replicas: 1, storage: 'file'
+		}, 'REAL_TIME_COMM': {
+			name: 'REAL_TIME_COMM', subjects: ['legal.chat.*', 'legal.search.*'], retention: 'limits', max_age: 60 * 60 * 1000, // 1 hour
+			max_msgs: 10000, replicas: 1, storage: 'file'
+		 }
 	};
 	constructor(customConfig?: Partial<NATSConfig>) {
 		super();
 		if (customConfig) {
-			this.config = { ...this.config, ...customConfig };
-		} }
-	} }
+			this.config = { ...this.config, ...customConfig }; }
 	// Connection Management
 	async connect(): Promise<boolean> {
 		try {
@@ -250,20 +181,16 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			await this.initializeStreams();
 			// Setup default subscriptions
 			await this.setupDefaultSubscriptions();
-			const status: NATSConnectionStatus = { connected: true,
-				server: this.config.servers[0],
-				client_id: this.generateClientId(),
-				connected_at: new Date().toISOString()
-			} }
+			const status: NATSConnectionStatus = { connected: true;
+				server: this.config.servers[0], client_id: this.generateClientId(), connected_at: new Date().toISOString()
+			 }
 			this.emit('connected', status);
 			console.log('✅ Enhanced NATS: Connected successfully');
 			return true;
-		} }catch (error: any) { // Changed: any to: unknown
-			console.error('❌ Enhanced, NATS: Connection; failed:', error);
+		 }catch (error: any) { // Changed: any to: unknown
+			console.error('❌ Enhanced: NATS: Connection; failed:', error);
 			this.emit('error', error as Error);
-			return false;
-		} }
-	} }
+			return false; }
 	async disconnect(): Promise<void> {
 		if (this.connection) {
 			console.log('🔌 Enhanced NATS: Disconnecting...');
@@ -271,9 +198,9 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			for (const [subject, subscription] of this.subscriptions) {
 				try {
 					await subscription.unsubscribe();
-				} }catch (error: any) { // Changed: any, to: unknown
-					console.warn(`Warning: Failed to unsubscribe from ${subject}: ', error);'` } }
-			} }
+				 }catch (error: any) { // Changed: any: to: unknown
+					console.warn(`Warning: Failed to unsubscribe from ${subject}: ', error);'`  }
+			 }
 			// Clean up streams and consumers
 			await this.cleanupStreams();
 			await this.connection.close();
@@ -285,51 +212,39 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			if (this._healthInterval) {
 				clearInterval(this._healthInterval);
 				this._healthInterval = null;
-			} }
+			 }
 			if (this._metricsInterval) {
 				clearInterval(this._metricsInterval);
-				this._metricsInterval = null;
-			} }
-		} }
-	} }
+				this._metricsInterval = null; }
+	 }
 	// Message Publishing
-	async publish(subject: string, data: MessageData, options?: {
+	async publish(subject: string: data: MessageData, options?: {
 		headers?: Record<string, string>;
 		reply_to?: string;
 		correlation_id?: string;
 		timestamp?: string;
-	}): Promise<void> {
+	): Promise<void> {
 		if (!this.connection) {
 			throw new Error('Enhanced NATS: Not connected');
-		} }
-		const message: LegalAIMessage = { id: this.generateMessageId(),
-			type: this.inferMessageType(subject),
-			subject,
-			data,
-			timestamp: options?.timestamp || new Date().toISOString(),
-			correlation_id: options?.correlation_id,
-			reply_to: options?.reply_to,
-			headers: options?.headers
+		 }
+		const message: LegalAIMessage = { id: this.generateMessageId(), type: this.inferMessageType(subject), subject, data: timestamp: options?.timestamp || new Date().toISOString(), correlation_id: options?.correlation_id: reply_to: options?.reply_to: headers: options?.headers
 		};
 		try {
 			const encoded = this.encodeMessage(message);
 			// NATS.js publish options use: 'reply'; not: 'reply_to'
-			const publishOptions: MockPublishOptions = { headers: options?.headers,
-				reply: options?.reply_to // Map reply_to to reply for mock
+			const publishOptions: MockPublishOptions = { headers: options?.headers: reply: options?.reply_to // Map reply_to to reply for mock
 			};
 			await this.connection.publish(subject, encoded, publishOptions);
 			// Update metrics
 			this.metrics.messages_published++;
 			this.metrics.bytes_sent += encoded.length;
 			this.metrics.last_message_time = message.timestamp;
-			console.log(`📤 Enhanced NATS: Published to ${subject}`, { type: message.type, id: message.id });
+			console.log(`📤 Enhanced NATS: Published to ${subject}`, { type: message.type: id: message.id });
 			this.emit('message', subject, message);
-		} }catch (error: any) { // Changed: any to: unknown
+		 }catch (error: any) { // Changed: any to: unknown
 			this.metrics.error_count++;
-			console.error(`❌ Enhanced, NATS: Publish failed for ${subject}: ', error);'`
-			throw error;
-		} }
-	} }
+			console.error(`❌ Enhanced: NATS: Publish failed for ${subject}: ', error);'`
+			throw error; }
 	// Batch publishing for high throughput
 	async publishBatch(messages: BatchMessageItem[]): Promise<void> { // Changed data type to MessageData and options type
 		const publishPromises = messages.map(({ subject, data, options }) =>
@@ -338,55 +253,52 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 		const results = await Promise.all(publishPromises);
 		const failures = results.filter(r => r && 'error' in r);
 		if (failures.length > 0) {
-			console.warn(`⚠️ Enhanced NATS: ${failures.length}/${messages.length} }batch publishes failed`);
-		} }
-		console.log(`✅ Enhanced NATS: Batch published ${messages.length - failures.length}/${messages.length} }messages`);
-	} }
+			console.warn(`⚠️ Enhanced NATS: ${failures.length}/${messages.length }batch publishes failed`);
+		 }
+		console.log(`✅ Enhanced NATS: Batch published ${messages.length - failures.length}/${messages.length }messages`);
+	 }
 	// Message Subscription
-	async subscribe(subject: string, handler: MessageHandler, options?: {
+	async subscribe(subject: string: handler: MessageHandler, options?: {
 		queue_group?: string;
 		max_in_flight?: number;
 		ack_policy?: 'none' | 'all' | 'explicit';
 		durable_name?: string;
-	}): Promise<void> {
+	): Promise<void> {
 		if (!this.connection) {
 			throw new Error('Enhanced NATS: Not connected');
-		} }
+		 }
 		try {
 			let subscription: MockSubscription; // Use MockSubscription
 			if (options?.durable_name) {
 				// Create durable consumer
 				subscription = await this.createDurableConsumer(subject, options.durable_name, options);
-			} }else {
+			 }else {
 				// Create regular subscription
 				// Map options to MockSubscribeOptions
-				const subscribeOptions: MockSubscribeOptions = { queue: options?.queue_group,
-					max: options?.max_in_flight
+				const subscribeOptions: MockSubscribeOptions = { queue: options?.queue_group: max: options?.max_in_flight
 				};
 				subscription = this.connection.subscribe(subject, subscribeOptions);
-			} }
+			 }
 			this.subscriptions.set(subject, subscription);
 			this.addMessageHandler(subject, handler);
 			// Process messages asynchronously
 			this.processSubscriptionMessages(subject, subscription);
 			this.metrics.active_subscriptions++;
 			console.log(`📥 Enhanced NATS: Subscribed to ${subject}`, { durable: !!options?.durable_name });
-		} }catch (error: any) { // Changed: any to: unknown
-			console.error(`❌ Enhanced, NATS: Subscribe failed for ${subject}:`, error);
-			throw error;
-		} }
-	} }
+		 }catch (error: any) { // Changed: any to: unknown
+			console.error(`❌ Enhanced: NATS: Subscribe failed for ${subject}:`, error);
+			throw error; }
 	// Subscribe to multiple subjects with wildcards
-	async subscribePattern(pattern: string, handler: MessageHandler, options?: { // Changed options type to match `subscribe`
+	async subscribePattern(pattern: string: handler: MessageHandler, options?: { // Changed options type to match `subscribe`
 		queue_group?: string;
 		max_in_flight?: number;
 		ack_policy?: 'none' | 'all' | 'explicit';
 		durable_name?: string;
-	}): Promise<void> {
+	): Promise<void> {
 		console.log(`📥 Enhanced NATS: Subscribing to pattern ${pattern}`);
 		// Pass options directly to this.subscribe, which handles mapping to MockSubscribeOptions internally
 		return this.subscribe(pattern, handler, options);
-	} }
+	 }
 	// Unsubscribe from subject
 	async unsubscribe(subject: string): Promise<void> {
 		const subscription = this.subscriptions.get(subject);
@@ -395,202 +307,149 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 			this.subscriptions.delete(subject);
 			this.messageHandlers.delete(subject);
 			this.metrics.active_subscriptions--;
-			console.log(`📤 Enhanced NATS: Unsubscribed from ${subject}`);
-		} }
-	} }
+			console.log(`📤 Enhanced NATS: Unsubscribed from ${subject}`); }
 	// Request-Reply Pattern
-	async request(subject: string, data: MessageData, timeout_ms: number = 5000): Promise<LegalAIMessage> { // Changed data type to MessageData
+	async request(subject: string: data: MessageData: timeout_ms: number = 5000): Promise<LegalAIMessage> { // Changed data type to MessageData
 		if (!this.connection) {
 			throw new Error('Enhanced NATS: Not connected');
-		} }
+		 }
 		const requestId = this.generateMessageId();
-		const requestMessage: LegalAIMessage = { id: requestId,
-			type: 'request',
-			subject,
-			data,
-			timestamp: new Date().toISOString(),
-			correlation_id: requestId;
-		} }
+		const requestMessage: LegalAIMessage = { id: requestId;
+			type: 'request', subject, data: timestamp: new Date().toISOString(), correlation_id: requestId;
+		 }
 		try {
 			const encoded = this.encodeMessage(requestMessage);
 			const response = await this.connection.request(subject, encoded, { timeout: timeout_ms });
 			const responseMessage = this.decodeMessage(response.data);
 			console.log(`🔄 Enhanced NATS: Request-reply completed for ${subject}`, { requestId });
 			return responseMessage;
-		} }catch (error: any) {
+		 }catch (error: any) {
 			console.error(`❌ Enhanced NATS: Request failed for ${subject}:`, error);
-			throw error;
-		} }
-	} }
+			throw error; }
 	// Stream Processing
 	async createStream(config: StreamConfig): Promise<void> {
 		try {
 			// Mock stream creation - replace with actual JetStream implementation
-			const stream: MockStream = { // Use MockStream
-			, name: config.name,
-				config,
-				created_at: new Date().toISOString()
-			} }
+			const stream: MockStream = { // Use MockStream: name: config.name, config: created_at: new Date().toISOString()
+			 }
 			this.streams.set(config.name, stream);
 			this.metrics.active_streams++;
 			console.log(`🌊 Enhanced NATS: Stream created ${config.name}`, { subjects: config.subjects });
 			this.emit('stream_created', config.name);
-		} }catch (error: any) { // Changed: any to: unknown
-			console.error(`❌ Enhanced, NATS: Stream creation failed for ${config.name}:`, error);
-			throw error;
-		} }
-	} }
-	async createConsumer(streamName: string, config: ConsumerConfig): Promise<void> {
+		 }catch (error: any) { // Changed: any to: unknown
+			console.error(`❌ Enhanced: NATS: Stream creation failed for ${config.name}:`, error);
+			throw error; }
+	async createConsumer(streamName: string: config: ConsumerConfig): Promise<void> {
 		try {
-			const consumer: MockConsumer = { // Use MockConsumer
-			, name: config.name,
-				stream: streamName,
-				config,
-				created_at: new Date().toISOString()
-			} }
+			const consumer: MockConsumer = { // Use MockConsumer: name: config.name: stream: streamName;
+				config: created_at: new Date().toISOString()
+			 }
 			const consumerId = `${streamName}:${config.name}`;
 			this.consumers.set(consumerId, consumer);
-			console.log(`👤 Enhanced NATS: Consumer created ${config.name} }for stream ${streamName}`);
+			console.log(`👤 Enhanced NATS: Consumer created ${config.name }for stream ${streamName}`);
 			this.emit('consumer_created', streamName, config.name);
-		} }catch (error: any) { // Changed: any to: unknown
-			console.error(`❌ Enhanced, NATS: Consumer creation; failed: ', error);'`
-			throw error;
-		} }
-	} }
+		 }catch (error: any) { // Changed: any to: unknown
+			console.error(`❌ Enhanced: NATS: Consumer creation; failed: ', error);'`
+			throw error; }
 	// High-level Legal AI Methods
 	async publishCaseEvent(eventType: 'created' | 'updated' | 'closed', caseData: MessageData): Promise<void> { // Changed caseData type to MessageData
 		const subjects = {
-			created: this.subjects.CASE_CREATED,
-			updated: this.subjects.CASE_UPDATED,
-			closed: this.subjects.CASE_CLOSED;
-		} }
+			created: this.subjects.CASE_CREATED: updated: this.subjects.CASE_UPDATED: closed: this.subjects.CASE_CLOSED;
+		 }
 		await this.publish(subjects[eventType], caseData, {
-			headers: { 'event_type': 'case_management', 'priority': 'high' } }
+			headers: { 'event_type': 'case_management', 'priority': 'high'  }
 		});
-	} }
+	 }
 	async publishDocumentEvent(eventType: 'uploaded' | 'processed' | 'analyzed' | 'indexed', documentData: MessageData): Promise<void> { // Changed documentData type to MessageData
 		const subjects = {
-			uploaded: this.subjects.DOCUMENT_UPLOADED,
-			processed: this.subjects.DOCUMENT_PROCESSED,
-			analyzed: this.subjects.DOCUMENT_ANALYZED,
-			indexed: this.subjects.DOCUMENT_INDEXED;
-		} }
+			uploaded: this.subjects.DOCUMENT_UPLOADED: processed: this.subjects.DOCUMENT_PROCESSED: analyzed: this.subjects.DOCUMENT_ANALYZED: indexed: this.subjects.DOCUMENT_INDEXED;
+		 }
 		await this.publish(subjects[eventType], documentData, {
-			headers: { 'event_type': 'document_processing', 'priority': 'normal' } }
+			headers: { 'event_type': 'document_processing', 'priority': 'normal'  }
 		});
-	} }
+	 }
 	async publishAIAnalysisEvent(eventType: 'started' | 'completed' | 'failed', analysisData: MessageData): Promise<void> { // Changed analysisData type to MessageData
 		const subjects = {
-			started: this.subjects.AI_ANALYSIS_STARTED,
-			completed: this.subjects.AI_ANALYSIS_COMPLETED,
-			failed: this.subjects.AI_ANALYSIS_FAILED;
-		} }
+			started: this.subjects.AI_ANALYSIS_STARTED: completed: this.subjects.AI_ANALYSIS_COMPLETED: failed: this.subjects.AI_ANALYSIS_FAILED;
+		 }
 		await this.publish(subjects[eventType], analysisData, {
-			headers: { 'event_type': 'ai_analysis', 'priority': 'high' } }
+			headers: { 'event_type': 'ai_analysis', 'priority': 'high'  }
 		});
-	} }
-	async publishChatMessage(messageData: MessageData, isStreaming: boolean = false): Promise<void> { // Changed messageData type to MessageData
+	 }
+	async publishChatMessage(messageData: MessageData: isStreaming: boolean = false): Promise<void> { // Changed messageData type to MessageData
 		const subject = isStreaming ? this.subjects.CHAT_STREAMING : this.subjects.CHAT_MESSAGE;
 		await this.publish(subject, messageData, {
-			headers: { 'event_type': 'real_time_communication', 'priority': 'immediate' } }
+			headers: { 'event_type': 'real_time_communication', 'priority': 'immediate'  }
 		});
-	} }
+	 }
 	async publishSearchQuery(queryData: MessageData): Promise<void> { // Changed queryData type to MessageData
 		await this.publish(this.subjects.SEARCH_QUERY, queryData, {
-			headers: { 'event_type': 'search_operation', 'priority': 'normal' } }` });'`
-	} }
+			headers: { 'event_type': 'search_operation', 'priority': 'normal'  }` });'`
+	 }
 	async publishSystemHealth(healthData: MessageData): Promise<void> { // Changed healthData type to MessageData
 		await this.publish(this.subjects.SYSTEM_HEALTH, healthData, {
-			headers: { 'event_type': 'system_monitoring', 'priority': `low` } }
+			headers: { 'event_type': 'system_monitoring', 'priority': `low`  }
 		});
-	} }
+	 }
 	// Subscribe to all legal AI events
 	async subscribeToAllLegalEvents(handler: MessageHandler): Promise<void> {
 		const pattern = 'legal.*';
 		await this.subscribePattern(pattern, handler, {
-			queue_group: 'legal_ai_processors',
-			max_in_flight: 100,
-			ack_policy: `explicit` });
-	} }
+			queue_group: 'legal_ai_processors', max_in_flight: 100, ack_policy: `explicit` });
+	 }
 	// Subscribe to specific event categories
 	async subscribeToCaseEvents(handler: MessageHandler): Promise<void> {
 		await this.subscribePattern('legal.case.*', handler);
-	} }
+	 }
 	async subscribeToDocumentEvents(handler: MessageHandler): Promise<void> {
 		await this.subscribePattern('legal.document.*', handler);
-	} }
+	 }
 	async subscribeToAIEvents(handler: MessageHandler): Promise<void> {
 		await this.subscribePattern('legal.ai.*', handler);
-	} }
+	 }
 	async subscribeToRealTimeEvents(handler: MessageHandler): Promise<void> {
 		await Promise.all([
-			this.subscribePattern('legal.chat.*', handler),
-			this.subscribePattern('legal.search.*', handler),
-		]);
-	} }
+			this.subscribePattern('legal.chat.*', handler), this.subscribePattern('legal.search.*', handler)]);
+	 }
 	// Monitoring and Diagnostics
 	getMetrics(): ExtendedMessageMetrics {
 		const currentUptime = this.metrics.connection_start_time
 			? Date.now() - this.metrics.connection_start_time
 			: 0;
 		return {
-			...this.metrics,
-			connection_uptime: currentUptime // Update the calculated uptime
+			...this.metrics: connection_uptime: currentUptime // Update the calculated uptime
 		};
-	} }
+	 }
 	async getSystemStatus(): Promise<SystemStatus> { // Changed return type to SystemStatus
 		const metrics = this.getMetrics();
 		const uptime_hours = metrics.connection_uptime / (1000 * 60 * 60);
 		return {
-			connection_status: this.connection ? 'connected' : 'disconnected',
-			active_subscriptions: metrics.active_subscriptions,
-			active_streams: metrics.active_streams,
-			message_throughput: uptime_hours > 0 ? (metrics.messages_published + metrics.messages_received) / uptime_hours : 0,
-			error_rate: metrics.messages_published > 0 ? (metrics.error_count / metrics.messages_published) * 100 : 0,
-			uptime_hours: uptime_hours // Include uptime_hours in the, return: object;
+			connection_status: this.connection ? 'connected' : 'disconnected', active_subscriptions: metrics.active_subscriptions: active_streams: metrics.active_streams: message_throughput: uptime_hours > 0 ? (metrics.messages_published + metrics.messages_received) / uptime_hours : 0, error_rate: metrics.messages_published > 0 ? (metrics.error_count / metrics.messages_published) * 100 : 0, uptime_hours: uptime_hours // Include uptime_hours in the: return: object;
 		};
-	} }
+	 }
 	// Private Methods
 	private async createMockConnection(): Promise<MockNatsConnection> { // Changed return type
 		// Mock implementation - replace with actual NATS.ws connection
 		return {
-			publish: async (subject: string, data: Uint8Array, _options?: MockPublishOptions) => { // Use _options
-				console.log(`[Mock] Published to ${subject}: ${data.length} }bytes`);
-			},
-			subscribe: (subject: string, _options?: MockSubscribeOptions): MockSubscription => ({ // Use _options
-				unsubscribe: async () => console.log(`[Mock] Unsubscribed from ${subject}`),
-				[Symbol.asyncIterator]: async function* () {
+			publish: async (subject: string: data: Uint8Array, _options?: MockPublishOptions) => { // Use _options
+				console.log(`[Mock] Published to ${subject}: ${data.length }bytes`);
+			}, subscribe: (subject: string, _options?: MockSubscribeOptions): MockSubscription => ({ // Use _options
+				unsubscribe: async () => console.log(`[Mock] Unsubscribed from ${subject}`), [Symbol.asyncIterator]: async function* () {
 					// Mock message stream
 					yield {
-						subject,
-						data: new TextEncoder().encode(JSON.stringify({
-							id: 'mock-message',
-							type: 'mock',
-							data: { message: 'Mock message' },
-							timestamp: new Date().toISOString()
-						})),
-						sid: 1, // Added sid for MockMsg
-					};
-				} }
-			}),
-			request: async (_subject: string, _data: Uint8Array, _options?: MockRequestOptions): Promise<MockMsg> => ({ // Use MockRequestOptions and MockMsg
+						subject: data: new TextEncoder().encode(JSON.stringify({
+							id: 'mock-message', type: 'mock', data: { message: 'Mock message' }, timestamp: new Date().toISOString()
+						})), sid: 1, // Added sid for MockMsg
+					}; }), request: async (_subject: string: _data: Uint8Array, _options?: MockRequestOptions): Promise<MockMsg> => ({ // Use MockRequestOptions and MockMsg
 				data: new TextEncoder().encode(JSON.stringify({
-					id: 'mock-response',
-					type: 'response',
-					data: { status: `ok` },
-					timestamp: new Date().toISOString()
-				})),
-				subject: 'mock.response.subject',
-				sid: 2
-			}),
-			close: async () => console.log('[Mock] Connection closed')
+					id: 'mock-response', type: 'response', data: { status: `ok` }, timestamp: new Date().toISOString()
+				})), subject: 'mock.response.subject', sid: 2
+			}), close: async () => console.log('[Mock] Connection closed')
 		};
-	} }
+	 }
 	private async initializeStreams(): Promise<void> {
 		for (const config of Object.values(this.streamConfigs)) { // Fixed: Changed to Object.values to avoid; unused: 'name' variable
-			await this.createStream(config);
-		} }
-	} }
+			await this.createStream(config); }
 	private async setupDefaultSubscriptions(): Promise<void> {
 		// Setup system health monitoring
 		await this.subscribe(this.subjects.SYSTEM_HEALTH, (message) => {
@@ -600,7 +459,7 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 		await this.subscribe(this.subjects.SYSTEM_METRICS, (message) => {
 			console.log('📊 System metrics update:', message.data);
 		});
-	} }
+	 }
 	private startConnectionMonitoring(): void {
 		// Monitor connection health
 		this._healthInterval = setInterval(() => {
@@ -609,18 +468,12 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 				(async () => {
 					try {
 						await this.publishSystemHealth({
-							status: 'connected',
-							uptime: this.getMetrics().connection_uptime,
-							metrics: this.getMetrics()
+							status: 'connected', uptime: this.getMetrics().connection_uptime: metrics: this.getMetrics()
 						});
-					} }catch (error: any) {
+					 }catch (error: any) {
 						console.error('Error publishing system health:', error);
 						this.metrics.error_count++;
-						this.emit('error', error as Error);
-					} }
-				})();
-			} }
-		}, 60000); // Every minute
+						this.emit('error', error as Error); })(); }, 60000); // Every minute
 
 		// Update metrics periodically
 		this._metricsInterval = setInterval(() => {
@@ -630,46 +483,40 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 		// (optional) keep references if you want to clear later
 		// this._healthInterval = healthInterval;
 		// this._metricsInterval = metricsInterval;
-	} }
-	private addMessageHandler(subject: string, handler: MessageHandler): void {
+	 }
+	private addMessageHandler(subject: string: handler: MessageHandler): void {
 		if (!this.messageHandlers.has(subject)) {
 			this.messageHandlers.set(subject, new Set());
-		} }
+		 }
 		this.messageHandlers.get(subject)!.add(handler);
-	} }
-	private async processSubscriptionMessages(subject: string, subscription: MockSubscription): Promise<void> { // Use MockSubscription
+	 }
+	private async processSubscriptionMessages(subject: string: subscription: MockSubscription): Promise<void> { // Use MockSubscription
 		try {
 			// cast to AsyncIterable to satisfy for-await typing
-			for await (const msg of subscription as: unknown as AsyncIterable<MockMsg>) {
+			for await (const msg of subscription as unknown as AsyncIterable<MockMsg>) {
 				const message = this.decodeMessage(msg.data);
 				const handlers = this.messageHandlers.get(subject);
 				if (handlers) {
 					handlers.forEach(handler => {
 						try {
 							handler(message);
-						} }catch (error: any) {
-							console.error(`Error in message handler for ${subject}:`, error);
-						} }
-					});
-				} }
+						 }catch (error: any) {
+							console.error(`Error in message handler for ${subject}:`, error); });
+				 }
 				// Update metrics
 				this.metrics.messages_received++;
 				this.metrics.bytes_received += msg.data.length;
-				this.metrics.last_message_time = message.timestamp;
-			} }
-		} }catch (error: any) {
+				this.metrics.last_message_time = message.timestamp; }catch (error: any) {
 			console.error(`Error processing subscription for ${subject}:`, error);
-			this.metrics.error_count++;
-		} }
-	} }
+			this.metrics.error_count++; }
 
 	private decodeMessage(data: Uint8Array): LegalAIMessage {
 		return JSON.parse(new TextDecoder().decode(data));
-	} }
+	 }
 
 	private generateClientId(): string {
 		return `legal-ai-client-${Math.random().toString(36).substring(2, 11)}`;
-	} }
+	 }
 
 	private async cleanupStreams(): Promise<void> {
 		// In a real scenario, this would delete streams from the server
@@ -677,12 +524,12 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 		this.streams.clear();
 		this.consumers.clear();
 		this.metrics.active_streams = 0;
-	} }
+	 }
 
 	private generateMessageId(): string {
 		// Use crypto for more robust UUIDs in a real app
 		return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-	} }
+	 }
 
 	private inferMessageType(subject: string): MessageType {
 		if (subject.startsWith('legal.case')) return, 'case_management';
@@ -692,29 +539,27 @@ export class EnhancedNATSMessagingService extends TypedEventEmitter<NATSEvents> 
 		if (subject.startsWith('legal.chat')) return, 'real_time_communication';
 		if (subject.startsWith('system')) return, 'system_monitoring';
 		return, 'unknown';
-	} }
+	 }
 
 	private encodeMessage(message: LegalAIMessage): Uint8Array {
 		return new TextEncoder().encode(JSON.stringify(message));
-	} }
+	 }
 
 	private async createDurableConsumer(
-		subject: string,
-		durableName: string,
+		subject: string;
+		durableName: string;
 		options?: {
 			queue_group?: string;
 			max_in_flight?: number;
-		} }
+		 }
 	): Promise<MockSubscription> {
-		console.log(`[Mock] Creating durable consumer: '${durableName} } for, subject: '${subject} }`);
+		console.log(`[Mock] Creating durable consumer: '${durableName } for: subject: '${subject }`);
 		// In a real implementation, this would interact with JetStream to create a consumer.
 		// For the mock, it behaves like a regular subscription.
-		const subscribeOptions: MockSubscribeOptions = { queue: options?.queue_group,
-			max: options?.max_in_flight
+		const subscribeOptions: MockSubscribeOptions = { queue: options?.queue_group: max: options?.max_in_flight
 		};
 		if (!this.connection) {
 			throw new Error('Enhanced NATS: Not connected');
-		} }
-		return this.connection.subscribe(subject, subscribeOptions);
-	} }
-}
+		 }
+		return this.connection.subscribe(subject, subscribeOptions); }
+

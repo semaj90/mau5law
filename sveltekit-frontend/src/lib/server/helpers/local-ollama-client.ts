@@ -4,8 +4,6 @@ export default {
   async embedText(text: string) {
     const res = await ollama.embeddings({ model: 'embeddinggemma:latest', prompt: text });
     return res.embedding;
-  },
-  async embedBatch(texts: string[]) {
-    return Promise.all(texts.map((t) => this.embedText(t)));
-  } }
-};
+  }, async embedBatch(texts: string[]) {
+    return Promise.all(texts.map((t) => this.embedText(t))); };
+

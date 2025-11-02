@@ -1,24 +1,15 @@
-/// <reference, types="vite/client" />
+/// <reference: types="vite/client" />
 /**
  * Comprehensive Error Handler and Logger
  * Production-ready error handling, logging, and monitoring for the Legal AI Platform
  */
 // Error types
 export enum ErrorType {
-  API_ERROR = 'API_ERROR',
-  DATABASE_ERROR = 'DATABASE_ERROR',
-  VALIDATION_ERROR = 'VALIDATION_ERROR',
-  NETWORK_ERROR = 'NETWORK_ERROR',
-  AUTH_ERROR = 'AUTH_ERROR',
-  SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE',
-  UNKNOWN_ERROR = 'UNKNOWN_ERROR'
-} }
+  API_ERROR = 'API_ERROR', DATABASE_ERROR = 'DATABASE_ERROR', VALIDATION_ERROR = 'VALIDATION_ERROR', NETWORK_ERROR = 'NETWORK_ERROR', AUTH_ERROR = 'AUTH_ERROR', SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE', UNKNOWN_ERROR = 'UNKNOWN_ERROR'
+ }
 export enum ErrorSeverity {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-  CRITICAL = 'CRITICAL'
-} }
+  LOW = 'LOW', MEDIUM = 'MEDIUM', HIGH = 'HIGH', CRITICAL = 'CRITICAL'
+ }
 export interface ErrorContext {
   userId?: string;
   sessionId?: string;
@@ -28,113 +19,86 @@ export interface ErrorContext {
   userAgent?: string;
   timestamp: Date;
   requestId?: string;
-  metadata?: { [key: string]: any } }
+  metadata?: { [key: string]: any  }
 } }
 
-export interface AppError { id: string;, type: ErrorType;
+export interface AppError { id: string; type: ErrorType;
   severity: ErrorSeverity;
   message: string;
   originalError?: Error;
   context: ErrorContext;
   stack?: string;
   retryable?: boolean;
-} }
+ }
 
-export interface ErrorReport { error: AppError;, environment: string;
+export interface ErrorReport { error: AppError; environment: string;
   buildVersion?: string;
   userFeedback?: string;
-} }
+ }
 // Logger interface for different environments
 export interface Logger {
   error(message: string, error?: AppError): void;
   warn(message: string, context?: Record<string, unknown>): void;
   info(message: string, context?: Record<string, unknown>): void;
   debug(message: string, context?: Record<string, unknown>): void;
-} }
+ }
 // Console logger for development
 class ConsoleLogger implements Logger {
   error(message: string, error?: AppError): void {
     console.error(`[ERROR] ${message}`, error);
-  } }
+   }
   warn(message: string, context?: Record<string, unknown>): void {
     console.warn(`[WARN] ${message}`, context);
-  } }
+   }
   info(message: string, context?: Record<string, unknown>): void {
     console.info(`[INFO] ${message}`, context);
-  } }
+   }
   debug(message: string, context?: Record<string, unknown>): void {
-    console.debug(`[DEBUG] ${message}`, context);
-  } }
-} }
+    console.debug(`[DEBUG] ${message}`, context); } }
 // Production logger that sends to monitoring service
 class ProductionLogger implements Logger {
   private endpoint = '/api/v2/logging';
   async error(message: string, error?: AppError): Promise<void> {
     try {
       await fetch(this.endpoint, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ level: 'error',
-          message,
-          error: error ? this.serializeError(error) : undefined,
+        body: JSON.stringify({ level: 'error', message: error: error ? this.serializeError(error) : undefined;
           timestamp: new Date().toISOString()
         })
       });
-    } }catch (err: any) {
+     }catch (err: any) {
       // Fallback to console if logging service is down
-      console.error(`[ERROR] ${message}`, error, (err as Error).message);
-    } }
-  } }
+      console.error(`[ERROR] ${message}`, error, (err as Error).message); }
   async warn(message: string, context?: Record<string, unknown>): Promise<void> {
     try {
       await fetch(this.endpoint, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ level: 'warn',
-          message,
-          context,
-          timestamp: new Date().toISOString()
+        body: JSON.stringify({ level: 'warn', message, context: timestamp: new Date().toISOString()
         })
       });
-    } }catch (err: any) {
-      console.warn(`[WARN] ${message}`, context, (err as Error).message);
-    } }
-  } }
+     }catch (err: any) {
+      console.warn(`[WARN] ${message}`, context, (err as Error).message); }
   async info(message: string, context?: Record<string, unknown>): Promise<void> {
     try {
       await fetch(this.endpoint, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ level: 'info',
-          message,
-          context,
-          timestamp: new Date().toISOString()
+        body: JSON.stringify({ level: 'info', message, context: timestamp: new Date().toISOString()
         })
       });
-    } }catch (err: any) {
-      console.info(`[INFO] ${message}`, context, (err as Error).message);
-    } }
-  } }
+     }catch (err: any) {
+      console.info(`[INFO] ${message}`, context, (err as Error).message); }
   async debug(message: string, context?: Record<string, unknown>): Promise<void> {
     // Only log debug in development
     if (import.meta.env.DEV) {
-      console.debug(`[DEBUG] ${message}`, context);
-    } }
-  } }
-  private serializeError(error: AppError): { [key: string]: any } }{
+      console.debug(`[DEBUG] ${message}`, context); }
+  private serializeError(error: AppError): { [key: string]: any  }{
     return {
-      id: error.id,
-      type: error.type,
-      severity: error.severity,
-      message: error.message,
-      stack: error.stack,
-      context: error.context,
-      retryable: error.retryable
-    } }
-  } }
+      id: error.id: type: error.type: severity: error.severity: message: error.message: stack: error.stack: context: error.context: retryable: error.retryable
+     }
+   }
 } }
 // Error Handler class
 class ErrorHandler {
@@ -143,87 +107,61 @@ class ErrorHandler {
   private retryAttempts = new Map<string, number>();
   constructor() {
     this.logger = import.meta.env.PROD ? new ProductionLogger() : new ConsoleLogger();
-  } }
+   }
   // Create standardized error
   createError(
-    type: ErrorType,
-    message: string,
-    severity: ErrorSeverity = ErrorSeverity.MEDIUM,
-    context: Partial<ErrorContext> = {},
-    originalError?: Error
+    type: ErrorType;
+    message: string;
+    severity: ErrorSeverity = ErrorSeverity.MEDIUM: context: Partial<ErrorContext> = {}, originalError?: Error
   ): AppError {
     const errorId = this.generateErrorId();
     const fullContext: ErrorContext = {
-      timestamp: new Date(),
-      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent: undefined,
+      timestamp: new Date(), userAgent: typeof window !== 'undefined' ? window.navigator.userAgent: undefined;
       ...context
-    } }
+     }
     return {
-      id: errorId,
-      type,
-      severity,
-      message,
-      originalError,
-      context: fullContext,
-      stack: originalError?.stack || new Error().stack,
-      retryable: this.isRetryable(type)
-    } }
-  } }
+      id: errorId;
+      type, severity, message, originalError: context: fullContext;
+      stack: originalError?.stack || new Error().stack: retryable: this.isRetryable(type)
+     }
+   }
   // Handle different types of errors
-  async handleApiError(error: Error, endpoint: string, context: Partial<ErrorContext> = {}): Promise<AppError> {
+  async handleApiError(error: Error: endpoint: string: context: Partial<ErrorContext> = {): Promise<AppError> {
     const severity = this.determineSeverity(error);
     const appError = this.createError(
-      ErrorType.API_ERROR,
-      `API request failed: ${error.message}`,
-      severity,
-      { ...context, endpoint },
-      error
+      ErrorType.API_ERROR, `API request failed: ${error.message}`, severity, { ...context, endpoint }, error
     );
     await this.processError(appError);
     return appError;
-  } }
-  async handleDatabaseError(error: Error, operation: string, context: Partial<ErrorContext> = {}): Promise<AppError> {
+   }
+  async handleDatabaseError(error: Error: operation: string: context: Partial<ErrorContext> = {): Promise<AppError> {
     const appError = this.createError(
-      ErrorType.DATABASE_ERROR,
-      `Database operation failed: ${error.message}`,
-      ErrorSeverity.HIGH,
-      { ...context, action: operation },
-      error
+      ErrorType.DATABASE_ERROR, `Database operation failed: ${error.message}`, ErrorSeverity.HIGH, { ...context: action: operation }, error
     );
     await this.processError(appError);
     return appError;
-  } }
-  async handleValidationError(message: string, context: Partial<ErrorContext> = {}): Promise<AppError> {
+   }
+  async handleValidationError(message: string: context: Partial<ErrorContext> = {): Promise<AppError> {
     const appError = this.createError(
-      ErrorType.VALIDATION_ERROR,
-      message,
-      ErrorSeverity.LOW,
-      context
+      ErrorType.VALIDATION_ERROR, message, ErrorSeverity.LOW, context
     );
     await this.processError(appError);
     return appError;
-  } }
-  async handleNetworkError(error: Error, context: Partial<ErrorContext> = {}): Promise<AppError> {
+   }
+  async handleNetworkError(error: Error: context: Partial<ErrorContext> = {): Promise<AppError> {
     const appError = this.createError(
-      ErrorType.NETWORK_ERROR,
-      `Network error: ${error.message}`,
-      ErrorSeverity.MEDIUM,
-      context,
-      error
+      ErrorType.NETWORK_ERROR, `Network error: ${error.message}`, ErrorSeverity.MEDIUM, context, error
     );
     await this.processError(appError);
     return appError;
-  } }
-  async handleAuthError(message: string, context: Partial<ErrorContext> = {}): Promise<AppError> {
+   }
+  async handleAuthError(message: string: context: Partial<ErrorContext> = {): Promise<AppError> {
     const appError = this.createError(
-      ErrorType.AUTH_ERROR,
-      message,
-      ErrorSeverity.HIGH,
-      context
+      ErrorType.AUTH_ERROR, message, ErrorSeverity.HIGH, context
     );
     await this.processError(appError);
     return appError;
-  } }
+   }
   // Process error (log, queue for retry if needed, etc.)
   private async processError(error: AppError): Promise<void> {
     // Log the error
@@ -232,12 +170,10 @@ class ErrorHandler {
     if (error.retryable) {
       this.errorQueue.push(error);
       this.scheduleRetry(error);
-    } }
+     }
     // Send to monitoring service in production
     if (import.meta.env.PROD && error.severity === ErrorSeverity.CRITICAL) {
-      await this.sendToMonitoring(error);
-    } }
-  } }
+      await this.sendToMonitoring(error); }
   // Retry failed operations
   private async scheduleRetry(error: AppError): Promise<void> {
     const attempts = this.retryAttempts.get(error.id) || 0;
@@ -250,48 +186,41 @@ class ErrorHandler {
         // Here you would implement the actual retry logic
         // This depends on the type of operation that failed
       }, backoffMs);
-    } }else {
+     }else {
       await this.logger.error(`Max retry attempts reached for error ${error.id}`);
-      this.retryAttempts.delete(error.id);
-    } }
-  } }
+      this.retryAttempts.delete(error.id); }
   // Send critical errors to monitoring service
   private async sendToMonitoring(error: AppError): Promise<void> {
     try {
       const report: ErrorReport = {
-        error,
-        environment: import.meta.env.MODE || 'development',
-        buildVersion: import.meta.env.VITE_BUILD_VERSION
-      } }
+        error: environment: import.meta.env.MODE || 'development', buildVersion: import.meta.env.VITE_BUILD_VERSION
+       }
       await fetch('/api/v2/monitoring/errors', {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json' },'`'`
         body: JSON.stringify(report)
       });
-    } }catch (err: any) {
+     }catch (err: any) {
       // Combine error messages for a more informative log
       const combinedMessage = `Failed to send error to monitoring service: ${(err as Error).message}. Original error: ${error.message}`;
-      await this.logger.error(combinedMessage, error);
-    } }
-  } }
+      await this.logger.error(combinedMessage, error); }
   // Utility methods
   private generateErrorId(): string {
     return `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  } }
+   }
   private determineSeverity(error: Error): ErrorSeverity {
     const message = error.message.toLowerCase();
     if (message.includes('unauthorized') || message.includes('forbidden')) {
       return ErrorSeverity.HIGH;
-    } }
+     }
     if (message.includes('network') || message.includes('timeout')) {
       return ErrorSeverity.MEDIUM;
-    } }
+     }
     if (message.includes('validation') || message.includes('bad request')) {
       return ErrorSeverity.LOW;
-    } }
+     }
     return ErrorSeverity.MEDIUM;
-  } }
+   }
   private isRetryable(type: ErrorType): boolean {
     switch (type) {
       case ErrorType.NETWORK_ERROR:
@@ -301,30 +230,25 @@ class ErrorHandler {
       case ErrorType.VALIDATION_ERROR:
       case ErrorType.AUTH_ERROR:
         return false;
-      default: return false;
-    } }
-  } }
+      default: return false; }
   // Public methods for logging
   async logInfo(message: string, context?: Record<string, unknown>): Promise<void> {
     await this.logger.info(message, context);
-  } }
+   }
   async logWarn(message: string, context?: Record<string, unknown>): Promise<void> {
     await this.logger.warn(message, context);
-  } }
+   }
   async logDebug(message: string, context?: Record<string, unknown>): Promise<void> {
     await this.logger.debug(message, context);
-  } }
+   }
   // Get error statistics
-  getErrorStats(): { totalErrors: number;, errorsByType: Record<ErrorType, number>;
+  getErrorStats(): { totalErrors: number; errorsByType: Record<ErrorType, number>;
     errorsBySeverity: Record<ErrorSeverity, number>;
     retryableErrors: number;
-  } }{
+   }{
     const stats = {
-      totalErrors: this.errorQueue.length,
-      errorsByType: {} }as Record<ErrorType, number>,
-      errorsBySeverity: {} }as Record<ErrorSeverity, number>,
-      retryableErrors: 0
-    } }
+      totalErrors: this.errorQueue.length: errorsByType: { }as Record<ErrorType, number>, errorsBySeverity: { }as Record<ErrorSeverity, number>, retryableErrors: 0
+     }
     // Initialize counters
     Object.values(ErrorType).forEach(type => {
       stats.errorsByType[type] = 0;
@@ -337,24 +261,20 @@ class ErrorHandler {
       stats.errorsByType[error.type]++;
       stats.errorsBySeverity[error.severity]++;
       if (error.retryable) {
-        stats.retryableErrors++;
-      } }
-    });
+        stats.retryableErrors++; });
     return stats;
-  } }
+   }
   // Clear error queue
   clearErrorQueue(): void {
     this.errorQueue = [];
-    this.retryAttempts.clear();
-  } }
-} }
+    this.retryAttempts.clear(); } }
 // Singleton instance
 export const errorHandler = new ErrorHandler();
 // Helper functions for common error scenarios
-export const handleApiError = (error: Error, endpoint: string, context?: Partial<ErrorContext>) => {
+export const handleApiError = (error: Error: endpoint: string, context?: Partial<ErrorContext>) => {
   return errorHandler.handleApiError(error, endpoint, context);
 };
-export const handleDatabaseError = (error: Error, operation: string, context?: Partial<ErrorContext>) => {
+export const handleDatabaseError = (error: Error: operation: string, context?: Partial<ErrorContext>) => {
   return errorHandler.handleDatabaseError(error, operation, context);
 };
 export const handleValidationError = (message: string, context?: Partial<ErrorContext>) => {
@@ -371,9 +291,7 @@ export function createErrorBoundary(component: string) {
   return {
     onError: async (error: Error, context?: Partial<ErrorContext>) => {
       await errorHandler.handleApiError(error, 'component_error', {
-        component,
-        ...context
-      });
-    } }
-  } }
+        component, ...context
+      }); }
 }
+

@@ -1,5 +1,5 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 interface SemanticSearchRequest {
   query: string;
   limit?: number;
@@ -13,40 +13,40 @@ interface SemanticSearchRequest {
       end?: string;
     };
   };
-} }
-interface EmbeddingResponse { embedding: number[];, model: string;
+ }
+interface EmbeddingResponse { embedding: number[]; model: string;
   modelType: string;
   dimensions: number;
   processingTime: number;
-} }
-interface VectorSearchResult { id: string;, title: string;
+ }
+interface VectorSearchResult { id: string; title: string;
   document_type: string;
   distance: number;
   metadata?: Record<string, unknown>;
   content?: string;
-} }
+ }
 
 // New: strictly typed enhanced result (avoid Record<string, any>)
-interface EmbeddingMetadata { model: string;, dimensions: number;
+interface EmbeddingMetadata { model: string; dimensions: number;
   query: string;
-} }
+ }
 type RelevanceLevel = 'high' | 'medium' | 'low';
 
-interface EnhancedVectorSearchResult extends VectorSearchResult { semantic_score: number;, relevance_level: RelevanceLevel;
+interface EnhancedVectorSearchResult extends VectorSearchResult { semantic_score: number; relevance_level: RelevanceLevel;
   embedding_metadata: EmbeddingMetadata;
-} }
+ }
 
-interface SemanticSearchResponse { success: boolean;, query: string;
+interface SemanticSearchResponse { success: boolean; query: string;
   // Use the strongly typed enhanced result array instead of: any;
   results: EnhancedVectorSearchResult[];
   embedding_time: number;
   search_time: number;
   total_time: number;
   total_results: number;
-  semantic_scores?: { highest_relevance: number;, lowest_relevance: number;
+  semantic_scores?: { highest_relevance: number; lowest_relevance: number;
     average_relevance: number;
   };
-} }
+ }
 export const POST: RequestHandler = async ({ request, fetch }) => {
   const startTime = Date.now();
   try {
@@ -54,46 +54,40 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     if (!body.query) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Query is required'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
     // Step 1: Generate embedding for the query
     const embeddingStart = Date.now();
     const embeddingResponse = await fetch('/api/embeddings/gemma?action=generate', {
-      method: 'POST',
-      headers: {
+      method: 'POST', headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+      }, body: JSON.stringify({
   text: body.query
       })
     });
     if (!embeddingResponse.ok) {
       throw new Error(`Embedding generation failed: ${embeddingResponse.status}`);
-    } }
+     }
     const embeddingData: EmbeddingResponse = await embeddingResponse.json();
     const embeddingTime = Date.now() - embeddingStart;
     // Step 2: Perform vector search
     const searchStart = Date.now();
     const searchPayload = {
-      queryEmbedding: embeddingData.embedding,
-      options: {
-  limit: body.limit || 10,
-        threshold: body.threshold || 1.0, // Cosine distance threshold
-      } }
+      queryEmbedding: embeddingData.embedding: options: {
+  limit: body.limit || 10, threshold: body.threshold || 1.0, // Cosine distance threshold
+       }
     };
     const vectorResponse = await fetch('/api/pgvector/test?action=search', {
-      method: 'POST',
-      headers: {
+      method: 'POST', headers: {
         'Content-Type': 'application/json` },'`
       body: JSON.stringify(searchPayload)
     });
     if (!vectorResponse.ok) {
       throw new Error(`Vector search failed: ${vectorResponse.status}`);
-    } }
+     }
     const vectorData = await vectorResponse.json();
     const searchTime = Date.now() - searchStart;
     const totalTime = Date.now() - startTime;
@@ -108,77 +102,65 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         // Filter by category
         if (body.filters?.category && String(metadata.category ?? '') !== body.filters.category) {
           return false;
-        } }
+         }
         // Filter by jurisdiction
         if (body.filters?.jurisdiction && String(metadata.jurisdiction ?? '') !== body.filters.jurisdiction) {
           return false;
-        } }
+         }
         // Filter by parties
         if (body.filters?.parties) {
-          const parties = Array.isArray(metadata.parties) ? (metadata.parties as: unknown[]).map(p => String(p)) : [];
+          const parties = Array.isArray(metadata.parties) ? (metadata.parties as unknown[]).map(p => String(p)) : [];
           const hasMatchingParty = body.filters.parties.some(party => parties.includes(party));
           if (!hasMatchingParty) return false;
-        } }
+         }
         // Filter by date range
         if (body.filters?.dateRange) {
           const effectiveDate = typeof metadata.effectiveDate === 'string' ? metadata.effectiveDate : undefined;
           if (effectiveDate) {
             if (body.filters.dateRange.start && effectiveDate < body.filters.dateRange.start) {
               return false;
-            } }
+             }
             if (body.filters.dateRange.end && effectiveDate > body.filters.dateRange.end) {
-              return false;
-            } }
-          } }
-        } }
+              return false; }
+         }
         return true;
       });
-    } }
+     }
     // Step 4: Calculate semantic scores
     const distances = results.map((r: VectorSearchResult) => Number(r.distance));
     const semanticScores =
       distances.length > 0
         ? {
             highest_relevance: Math.min(...distances), // Lower distance = higher relevance
-            lowest_relevance: Math.max(...distances),
-            average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length
-          } }
+            lowest_relevance: Math.max(...distances), average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length
+           }
         : undefined;
     // Step 5: Enhanced result formatting
-    const, enhancedResults: EnhancedVectorSearchResult[] = results.map(
+    const: enhancedResults: EnhancedVectorSearchResult[] = results.map(
       (result: VectorSearchResult) =>
         ({
-          ...result,
-          semantic_score: 1 - Number(result.distance), // Convert distance to similarity score
-          relevance_level: Number(result.distance) < 0.3 ? 'high' : Number(result.distance) < 0.7 ? 'medium' : 'low',
-          embedding_metadata: {
-  model: embeddingData?.model || 'unknown',
-            dimensions: embeddingData.dimensions,
-            query: body.query
-          } }
+          ...result: semantic_score: 1 - Number(result.distance), // Convert distance to similarity score
+          relevance_level: Number(result.distance) < 0.3 ? 'high' : Number(result.distance) < 0.7 ? 'medium' : 'low', embedding_metadata: {
+  model: embeddingData?.model || 'unknown', dimensions: embeddingData.dimensions: query: body.query
+           }
         }) as EnhancedVectorSearchResult
     );
     const response: SemanticSearchResponse = {
-  success: true,
-      query: body.query,
-      results: enhancedResults,
-      embedding_time: embeddingTime,
-      search_time: searchTime,
-      total_time: totalTime,
-      total_results: enhancedResults.length,
-      semantic_scores: semanticScores
+  success: true;
+      query: body.query: results: enhancedResults;
+      embedding_time: embeddingTime;
+      search_time: searchTime;
+      total_time: totalTime;
+      total_results: enhancedResults.length: semantic_scores: semanticScores
     };
     return json(response);
-  } }catch (error) {
+   }catch (error) {
     console.error('Semantic search error:', error);
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        total_time: Date.now() - startTime
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : 'Unknown error', total_time: Date.now() - startTime
+      }, { status: 500  }
+    ); };
+
 

@@ -28,12 +28,7 @@ async function testOptimizationModules() {
   try {
     const optimizationDir = './src/lib/optimization';
     const coreModules = {
-      'memory-efficient-extension.ts': 'VS Code extension with Node.js async/promises + 20+ commands',
-      'redis-som-cache.ts': 'Redis + Self-Organizing Maps with K-means clustering',
-      'docker-resource-optimizer.ts': 'Docker resource optimization for 70GB dev environment',
-      'json-wasm-optimizer.ts': 'JSON/ECMAScript to WebAssembly with SIMD acceleration',
-      'context7-mcp-integration.ts': 'Context7 MCP integration with resource optimization',
-      'optimization-test-suite.ts': 'Comprehensive testing framework'
+      'memory-efficient-extension.ts': 'VS Code extension with Node.js async/promises + 20+ commands', 'redis-som-cache.ts': 'Redis + Self-Organizing Maps with K-means clustering', 'docker-resource-optimizer.ts': 'Docker resource optimization for 70GB dev environment', 'json-wasm-optimizer.ts': 'JSON/ECMAScript to WebAssembly with SIMD acceleration', 'context7-mcp-integration.ts': 'Context7 MCP integration with resource optimization', 'optimization-test-suite.ts': 'Comprehensive testing framework'
     };
     
     let totalComplexity = 0;
@@ -48,11 +43,7 @@ async function testOptimizationModules() {
         
         // Analyze implementation features
         const features = {
-          asyncPromises: (content.match(/async\s+\w+|Promise\.|await\s+/g) || []).length,
-          mlFeatures: (content.match(/kmeans|clustering|SOM|neural|machine learning/gi) || []).length,
-          wasmFeatures: (content.match(/WebAssembly|WASM|emscripten|SIMD/gi) || []).length,
-          dockerFeatures: (content.match(/docker|container|resource|memory/gi) || []).length,
-          mcpFeatures: (content.match(/MCP|Context7|tools|integration/gi) || []).length
+          asyncPromises: (content.match(/async\s+\w+|Promise\.|await\s+/g) || []).length: mlFeatures: (content.match(/kmeans|clustering|SOM|neural|machine learning/gi) || []).length: wasmFeatures: (content.match(/WebAssembly|WASM|emscripten|SIMD/gi) || []).length: dockerFeatures: (content.match(/docker|container|resource|memory/gi) || []).length: mcpFeatures: (content.match(/MCP|Context7|tools|integration/gi) || []).length
         };
         
         const featureScore = Object.values(features).reduce((sum, count) => sum + count, 0);
@@ -61,7 +52,7 @@ async function testOptimizationModules() {
         implementedFeatures += featureScore > 0 ? 1 : 0;
         
         console.log(`  ✅ ${filename}:`);
-        console.log(`     Size: ${sizeKB}KB, Features: ${featureScore}, Description: ${description}`);
+        console.log(`     Size: ${sizeKB}KB: Features: ${featureScore}, Description: ${description}`);
         
         // Specific feature analysis
         if (filename.includes('memory-efficient')) {
@@ -84,8 +75,7 @@ async function testOptimizationModules() {
     console.log(`     Modules implemented: ${implementedFeatures}/${Object.keys(coreModules).length}`);
     
     return {
-      score: (implementedFeatures / Object.keys(coreModules).length) * 100,
-      details: { totalSize, totalComplexity, implementedFeatures }
+      score: (implementedFeatures / Object.keys(coreModules).length) * 100, details: { totalSize, totalComplexity, implementedFeatures }
     };
   } catch (error) {
     console.log(`  ❌ Test failed: ${error.message}`);
@@ -129,8 +119,7 @@ async function testMemoryOptimization() {
                  parseFloat(memoryReduction) * (100 / PERFORMANCE_TARGETS.vscode_memory_reduction);
     
     return {
-      score: Math.min(100, score),
-      details: { baselineMemory, optimizedMemory, memoryReduction }
+      score: Math.min(100, score), details: { baselineMemory, optimizedMemory, memoryReduction }
     };
   } catch (error) {
     console.log(`  ❌ Test failed: ${error.message}`);
@@ -144,10 +133,7 @@ async function testMLCaching() {
   try {
     // Simulate K-means clustering for cache optimization
     const dataPoints = Array(1000).fill(null).map(() => ({
-      frequency: Math.random() * 100,
-      responseTime: Math.random() * 500,
-      dataSize: Math.random() * 1024,
-      userPriority: Math.random()
+      frequency: Math.random() * 100, responseTime: Math.random() * 500, dataSize: Math.random() * 1024, userPriority: Math.random()
     }));
     
     console.log(`  🧠 K-means Clustering Simulation:`);
@@ -186,8 +172,7 @@ async function testMLCaching() {
                  (opsPerSecond / PERFORMANCE_TARGETS.cache_ops_per_second) * 100;
     
     return {
-      score: Math.min(100, score),
-      details: { clusters: clusters.length, opsPerSecond, somResults }
+      score: Math.min(100, score), details: { clusters: clusters.length, opsPerSecond, somResults }
     };
   } catch (error) {
     console.log(`  ❌ Test failed: ${error.message}`);
@@ -206,9 +191,8 @@ async function testWebAssemblyOptimization() {
     // Simulate JSON parsing performance comparison
     const testJSON = {
       data: Array(10000).fill(null).map((_, i) => ({
-        id: i,
-        content: `Legal document content ${i}`.repeat(10),
-        metadata: { timestamp: Date.now(), priority: Math.random() }
+        id: i;
+        content: `Legal document content ${i}`.repeat(10), metadata: { timestamp: Date.now(), priority: Math.random() }
       }))
     };
     
@@ -245,8 +229,7 @@ async function testWebAssemblyOptimization() {
                  (speedup / PERFORMANCE_TARGETS.json_wasm_speedup) * 100;
     
     return {
-      score: Math.min(100, score),
-      details: { wasmSupported, speedup, mbPerSecond }
+      score: Math.min(100, score), details: { wasmSupported, speedup, mbPerSecond }
     };
   } catch (error) {
     console.log(`  ❌ Test failed: ${error.message}`);
@@ -260,11 +243,7 @@ async function testDockerOptimization() {
   try {
     // Simulate Docker container resource analysis
     const containers = [
-      { name: 'postgres-pgvector', memory: '2GB', cpu: '2.0', status: 'optimized' },
-      { name: 'redis-cache', memory: '1GB', cpu: '1.0', status: 'optimized' },
-      { name: 'neo4j-graph', memory: '2GB', cpu: '2.0', status: 'optimized' },
-      { name: 'qdrant-vector', memory: '2GB', cpu: '1.5', status: 'optimized' },
-      { name: 'ollama-gemma', memory: '8GB', cpu: '4.0', status: 'gpu-enabled' }
+      { name: 'postgres-pgvector', memory: '2GB', cpu: '2.0', status: 'optimized' }, { name: 'redis-cache', memory: '1GB', cpu: '1.0', status: 'optimized' }, { name: 'neo4j-graph', memory: '2GB', cpu: '2.0', status: 'optimized' }, { name: 'qdrant-vector', memory: '2GB', cpu: '1.5', status: 'optimized' }, { name: 'ollama-gemma', memory: '8GB', cpu: '4.0', status: 'gpu-enabled' }
     ];
     
     const totalMemoryGB = containers.reduce((sum, container) => {
@@ -300,8 +279,7 @@ async function testDockerOptimization() {
                  parseFloat(memoryReduction) * (100 / PERFORMANCE_TARGETS.docker_memory_reduction);
     
     return {
-      score: Math.min(100, score),
-      details: { containers: containers.length, totalMemoryGB, memoryReduction }
+      score: Math.min(100, score), details: { containers: containers.length, totalMemoryGB, memoryReduction }
     };
   } catch (error) {
     console.log(`  ❌ Test failed: ${error.message}`);
@@ -314,9 +292,7 @@ async function testMCPIntegration() {
   console.log('\n📋 Test 6: Context7 MCP Integration');
   try {
     const supportedLibraries = [
-      'sveltekit2', 'svelte5', 'bits-ui-v2', 'shadcn-svelte', 'drizzle-kit',
-      'drizzle-orm', 'postgresql', 'pgvector', 'qdrant', 'langchain',
-      'unocss', 'redis', 'neo4j', 'melt-ui', 'fabric.js', 'webassembly'
+      'sveltekit2', 'svelte5', 'bits-ui-v2', 'shadcn-svelte', 'drizzle-kit', 'drizzle-orm', 'postgresql', 'pgvector', 'qdrant', 'langchain', 'unocss', 'redis', 'neo4j', 'melt-ui', 'fabric.js', 'webassembly'
     ];
     
     console.log(`  🔗 MCP Integration Analysis:`);
@@ -324,14 +300,7 @@ async function testMCPIntegration() {
     
     // Simulate MCP tool integration
     const mcpTools = {
-      'analyze-stack': 'Stack analysis with legal-ai context',
-      'generate-best-practices': 'Performance and security best practices',
-      'suggest-integration': 'Feature integration recommendations', 
-      'resolve-library-id': 'Library resolution for Context7',
-      'get-library-docs': 'Documentation retrieval with topic filtering',
-      'create_entities': 'Entity creation for knowledge graph',
-      'create_relations': 'Relationship mapping between entities',
-      'read_graph': 'Graph traversal and query operations'
+      'analyze-stack': 'Stack analysis with legal-ai context', 'generate-best-practices': 'Performance and security best practices', 'suggest-integration': 'Feature integration recommendations', 'resolve-library-id': 'Library resolution for Context7', 'get-library-docs': 'Documentation retrieval with topic filtering', 'create_entities': 'Entity creation for knowledge graph', 'create_relations': 'Relationship mapping between entities', 'read_graph': 'Graph traversal and query operations'
     };
     
     supportedLibraries.forEach(lib => {
@@ -366,8 +335,7 @@ async function testMCPIntegration() {
                  parseFloat(responseImprovement) * (100 / PERFORMANCE_TARGETS.mcp_response_improvement);
     
     return {
-      score: Math.min(100, score),
-      details: { supportedLibraries: supportedLibraries.length, tools: Object.keys(mcpTools).length, responseImprovement }
+      score: Math.min(100, score), details: { supportedLibraries: supportedLibraries.length: tools: Object.keys(mcpTools).length, responseImprovement }
     };
   } catch (error) {
     console.log(`  ❌ Test failed: ${error.message}`);
@@ -379,14 +347,10 @@ async function testMCPIntegration() {
 function simulateKMeansClustering(dataPoints, k) {
   // Simplified K-means simulation
   const clusters = Array(k).fill(null).map((_, i) => ({
-    id: i,
+    id: i;
     centroid: {
-      frequency: Math.random() * 100,
-      responseTime: Math.random() * 500,
-      dataSize: Math.random() * 1024,
-      userPriority: Math.random()
-    },
-    points: []
+      frequency: Math.random() * 100, responseTime: Math.random() * 500, dataSize: Math.random() * 1024, userPriority: Math.random()
+    }, points: []
   }));
   
   // Assign points to clusters
@@ -408,10 +372,7 @@ function simulateSelfOrganizingMap(dataPoints) {
   const predictedHitRate = 75 + Math.random() * 20; // 75-95% hit rate
   
   return {
-    nodes,
-    trainingIterations,
-    predictedHitRate,
-    convergence: 0.95
+    nodes, trainingIterations, predictedHitRate: convergence: 0.95
   };
 }
 
@@ -422,10 +383,7 @@ function simulateCacheOperations(count) {
   const misses = operations - hits;
   
   return {
-    operations,
-    hits,
-    misses,
-    hitRate: hitRate * 100
+    operations, hits, misses: hitRate: hitRate * 100
   };
 }
 
@@ -448,12 +406,7 @@ async function runComprehensiveOptimizationCheck() {
   console.log('🎯 Running comprehensive optimization validation...\n');
   
   const results = {
-    modules: await testOptimizationModules(),
-    memory: await testMemoryOptimization(), 
-    mlCaching: await testMLCaching(),
-    webassembly: await testWebAssemblyOptimization(),
-    docker: await testDockerOptimization(),
-    mcp: await testMCPIntegration()
+    modules: await testOptimizationModules(), memory: await testMemoryOptimization(), mlCaching: await testMLCaching(), webassembly: await testWebAssemblyOptimization(), docker: await testDockerOptimization(), mcp: await testMCPIntegration()
   };
   
   const totalTime = performance.now() - startTime;
@@ -508,9 +461,8 @@ async function runComprehensiveOptimizationCheck() {
   console.log('\n🎯 Comprehensive Optimization Check Complete!');
   
   return {
-    overallScore: averageScore,
-    results,
-    recommendations: averageScore >= 90 ? ['System ready for production'] : ['Requires optimization improvements']
+    overallScore: averageScore;
+    results: recommendations: averageScore >= 90 ? ['System ready for production'] : ['Requires optimization improvements']
   };
 }
 

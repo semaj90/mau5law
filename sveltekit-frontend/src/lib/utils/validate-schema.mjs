@@ -23,14 +23,7 @@ async function validateSchema() {
 
     // Expected tables from Drizzle schema
     const expectedTables = [
-      "users",
-      "cases",
-      "evidence",
-      "documents",
-      "notes",
-      "ai_history",
-      "collaboration_sessions",
-    ];
+      "users", "cases", "evidence", "documents", "notes", "ai_history", "collaboration_sessions"];
 
     // Get actual tables from database
     const actualTables = await client`
@@ -68,8 +61,7 @@ async function validateSchema() {
       (name) =>
         !expectedTables.includes(name) &&
         !name.startsWith("__drizzle") &&
-        !name.startsWith("pg_"),
-    );
+        !name.startsWith("pg_"));
 
     if (unexpectedTables.length > 0) {
       console.log("\n⚠️ Unexpected tables found:");
@@ -102,10 +94,7 @@ async function validateTableStructure(client, tableName) {
     `;
 
     const requiredColumns = {
-      users: ["id", "email", "name", "role", "password_hash"],
-      cases: ["id", "title", "status", "created_by"],
-      evidence: ["id", "case_id", "title", "type", "created_by"],
-    };
+      users: ["id", "email", "name", "role", "password_hash"], cases: ["id", "title", "status", "created_by"], evidence: ["id", "case_id", "title", "type", "created_by"]};
 
     const actualColumns = columns.map((c) => c.column_name);
     const required = requiredColumns[tableName] || [];
@@ -129,8 +118,7 @@ async function testRelations(client) {
   try {
     // Test foreign key constraints
     const constraints = await client`
-      SELECT tc.constraint_name, tc.table_name, kcu.column_name, 
-             ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name
+      SELECT tc.constraint_name, tc.table_name, kcu.column_name, ccu.table_name AS foreign_table_name, ccu.column_name AS foreign_column_name
       FROM information_schema.table_constraints AS tc 
       JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
       JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name
@@ -148,8 +136,7 @@ async function testRelations(client) {
     `;
 
     console.log(
-      `✓ Relations working (sample query returned ${sampleQuery.length} rows)`,
-    );
+      `✓ Relations working (sample query returned ${sampleQuery.length} rows)`);
   } catch (error) {
     console.log(`❌ Relations test failed: ${error.message}`);
   }

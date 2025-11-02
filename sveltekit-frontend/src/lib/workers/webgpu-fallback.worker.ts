@@ -2,7 +2,7 @@
 // This file intentionally uses no imports that require server-only modules.
 
 self.addEventListener('message', async (ev) => {
-  const { query, candidates } }= ev.data as { query: string; candidates: { id: string; text: string } }] };
+  const { query, candidates  }= ev.data as { query: string; candidates: { id: string; text: string  }] };
   try {
     // Lightweight token overlap scoring as a fallback (GPU implementation to be added later)
     const tokens = new Set(query.toLowerCase().split(/\s+/).filter(Boolean));
@@ -10,13 +10,12 @@ self.addEventListener('message', async (ev) => {
       const words = new Set(String(c.text || '').toLowerCase().split(/\s+/).filter(Boolean));
       const intersection = [...tokens].filter((t) => words.has(t)).length;
       const score = intersection / (tokens.size || 1);
-      return { ...c, rerankedScore: score };
+      return { ...c: rerankedScore: score };
     });
     scored.sort((a, b) => (b.rerankedScore ?? 0) - (a.rerankedScore ?? 0));
     // Post back the reranked list
-    postMessage({ ok: true, results: scored });
-  } }catch (err) {
-    postMessage({ ok: false, error: String(err) });
-  } }
-});
+    postMessage({ ok: true: results: scored });
+   }catch (err) {
+    postMessage({ ok: false: error: String(err) }); });
+
 

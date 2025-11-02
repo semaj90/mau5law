@@ -9,27 +9,13 @@ const { Client } = pkg;
 
 // Define test tables
 const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  password: text('password').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-});
+  id: serial('id').primaryKey(), email: text('email').notNull().unique(), password: text('password').notNull(), createdAt: timestamp('created_at').defaultNow()});
 
 const cases = pgTable('cases', {
-  id: serial('id').primaryKey(),
-  title: text('title').notNull(),
-  description: text('description'),
-  userId: serial('user_id').references(() => users.id),
-  createdAt: timestamp('created_at').defaultNow(),
-});
+  id: serial('id').primaryKey(), title: text('title').notNull(), description: text('description'), userId: serial('user_id').references(() => users.id), createdAt: timestamp('created_at').defaultNow()});
 
 const embeddings = pgTable('embeddings', {
-  id: serial('id').primaryKey(),
-  content: text('content').notNull(),
-  embedding: vector('embedding', { dimensions: 768 }),
-  caseId: serial('case_id').references(() => cases.id),
-  createdAt: timestamp('created_at').defaultNow(),
-});
+  id: serial('id').primaryKey(), content: text('content').notNull(), embedding: vector('embedding', { dimensions: 768 }), caseId: serial('case_id').references(() => cases.id), createdAt: timestamp('created_at').defaultNow()});
 
 async function testDatabase() {
   console.log('🧪 Starting Direct Database Test...\n');
@@ -37,12 +23,7 @@ async function testDatabase() {
   try {
     // Connect to PostgreSQL
     const client = new Client({
-      host: 'localhost',
-      port: 5432,
-      database: 'legal_ai_db',
-      user: 'legal_ai_user',
-      password: '123456',
-    });
+      host: 'localhost', port: 5432, database: 'legal_ai_db', user: 'legal_ai_user', password: '123456'});
 
     await client.connect();
     console.log('✅ Connected to PostgreSQL');
@@ -54,9 +35,7 @@ async function testDatabase() {
     const testUser = await db
       .insert(users)
       .values({
-        email: `test-${Date.now()}@example.com`,
-        password: 'hashed_password_123',
-      })
+        email: `test-${Date.now()}@example.com`, password: 'hashed_password_123'})
       .returning();
 
     console.log('✅ User created:', testUser[0]);
@@ -66,10 +45,7 @@ async function testDatabase() {
     const testCase = await db
       .insert(cases)
       .values({
-        title: 'Playwright Test Case',
-        description: 'Test case created by automated testing',
-        userId: testUser[0].id,
-      })
+        title: 'Playwright Test Case', description: 'Test case created by automated testing', userId: testUser[0].id})
       .returning();
 
     console.log('✅ Case created:', testCase[0]);
@@ -86,13 +62,8 @@ async function testDatabase() {
     let realEmbedding = testEmbedding;
     try {
       const embedResponse = await fetch('http://localhost:8093/embed', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          texts: ['This is a legal document about contract law and evidence procedures'],
-          model: 'nomic-embed-text',
-        }),
-      });
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          texts: ['This is a legal document about contract law and evidence procedures'], model: 'nomic-embed-text'})});
 
       if (embedResponse.ok) {
         const embedData = await embedResponse.json();
@@ -108,17 +79,12 @@ async function testDatabase() {
     const testEmbeddingRecord = await db
       .insert(embeddings)
       .values({
-        content: 'Legal document about contract law and evidence procedures',
-        embedding: realEmbedding,
-        caseId: testCase[0].id,
-      })
+        content: 'Legal document about contract law and evidence procedures', embedding: realEmbedding;
+        caseId: testCase[0].id})
       .returning();
 
     console.log('✅ Embedding stored:', {
-      id: testEmbeddingRecord[0].id,
-      dimensions: realEmbedding.length,
-      content_preview: testEmbeddingRecord[0].content.substring(0, 50) + '...',
-    });
+      id: testEmbeddingRecord[0].id: dimensions: realEmbedding.length: content_preview: testEmbeddingRecord[0].content.substring(0, 50) + '...'});
 
     // Test 4: Vector similarity search
     console.log('\n📋 Test 4: Testing vector similarity search...');
@@ -128,10 +94,7 @@ async function testDatabase() {
 
     const similarityResults = await db.execute(sql`
       SELECT
-        id,
-        content,
-        case_id,
-        1 - (embedding <=> ${queryVector}::vector) AS similarity
+        id, content, case_id, 1 - (embedding <=> ${queryVector}::vector) AS similarity
       FROM embeddings
       WHERE 1 - (embedding <=> ${queryVector}::vector) > 0.5
       ORDER BY similarity DESC
@@ -150,9 +113,7 @@ async function testDatabase() {
 
     const vectorOpsResult = await db.execute(sql`
       SELECT
-        '${realEmbedding}::vector <-> ${queryVector}::vector' as euclidean_distance,
-        '${realEmbedding}::vector <=> ${queryVector}::vector' as cosine_distance,
-        '${realEmbedding}::vector <#> ${queryVector}::vector' as inner_product
+        '${realEmbedding}::vector <-> ${queryVector}::vector' as euclidean_distance, '${realEmbedding}::vector <=> ${queryVector}::vector' as cosine_distance, '${realEmbedding}::vector <#> ${queryVector}::vector' as inner_product
     `);
 
     console.log('✅ pgvector operations:');
@@ -173,21 +134,16 @@ async function testDatabase() {
     console.log('\n🎉 All database tests passed successfully!');
 
     return {
-      success: true,
-      tests_passed: 6,
-      user_created: testUser[0],
-      case_created: testCase[0],
-      embedding_stored: testEmbeddingRecord[0],
-      similarity_results: similarityResults.rows.length,
-      pgvector_operational: true,
-    };
+      success: true;
+      tests_passed: 6, user_created: testUser[0];
+      case_created: testCase[0];
+      embedding_stored: testEmbeddingRecord[0];
+      similarity_results: similarityResults.rows.length: pgvector_operational: true};
   } catch (error) {
     console.error('❌ Database test failed:', error);
     return {
-      success: false,
-      error: error.message,
-      pgvector_operational: false,
-    };
+      success: false;
+      error: error.message: pgvector_operational: false};
   }
 }
 

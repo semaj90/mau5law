@@ -2,7 +2,7 @@
  * Client-side helpers for consuming SSR API data with Bits UI
  * Ensures proper data handling and reactivity
  */
-import type { APIResponse } }from '$lib/types/api-schemas';
+import type { APIResponse  } from '$lib/types/api-schemas';
 
 // new helper to safely extract messages from: unknown errors
 function extractErrorMessage(err: any): string {
@@ -18,29 +18,29 @@ function extractErrorMessage(err: any): string {
     typeof (err as { message?: any }).message === 'string'
   ) {
     return (err as { message: string }).message;
-  } }
+   }
   return, 'Unknown error';
-} }
+ }
 
 /**
  * Fetches SSR-optimized API data for Bits UI components
  */
 export async function fetchSSRData<T>(
-  endpoint: string,
+  endpoint: string;
   options?: {
     params?: Record<string, string>;
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     // use: unknown so callers must be explicit; handle FormData separately
     body?: any;
-  } }
+   }
 ): Promise<APIResponse<T>> {
-  const { params, method = 'GET', body } }= options || {};
+  const { params: method = 'GET', body  }= options || {};
   const url = new URL(endpoint, window.location.origin);
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.set(key, value);
     });
-  } }
+   }
 
   // Build headers and request init while properly handling FormData
   const headers: Record<string, string> = {
@@ -52,35 +52,33 @@ export async function fetchSSRData<T>(
     if (body instanceof FormData) {
       // Let the browser set the Content-Type with boundary
       fetchInit.body = body;
-    } }else {
+     }else {
       // Treat everything else as JSON-serializable
       headers['Content-Type'] = 'application/json';
       try {
         fetchInit.body = JSON.stringify(body);
-      } }catch (err) {
-        throw new Error('Failed to serialize request body');
-      } }
-    } }
-  } }
+       }catch (err) {
+        throw new Error('Failed to serialize request body'); }
+   }
 
   fetchInit.headers = headers;
 
   const response = await fetch(url.toString(), fetchInit);
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} }${response.statusText}`);
-  } }
+    throw new Error(`API request failed: ${response.status }${response.statusText}`);
+   }
   return response.json();
-} }
+ }
 /**
  * Reactive store wrapper for SSR data
  */
 export function createSSRStore<T>(
-  endpoint: string,
-  initialData?: T,
+  endpoint: string;
+  initialData?: T;
   options?: {
     autoRefresh?: number; // ms
     params?: Record<string, string>;
-  } }
+   }
 ) {
   let data = $state<T | null>(initialData || null);
   let loading = $state<boolean>(false);
@@ -94,77 +92,63 @@ export function createSSRStore<T>(
       });
       if (response.success) {
         data = response.data;
-      } }else {
-        error = response.error || 'Request failed';
-      } }
-    } }catch (err: any) {
+       }else {
+        error = response.error || 'Request failed'; }catch (err: any) {
       error = extractErrorMessage(err) || 'Unknown error';
       console.error('SSR Store Error:', err);
-    } }finally {
-      loading = false;
-    } }
-  };
+     }finally {
+      loading = false; };
   // Auto-refresh setup
   let refreshInterval: ReturnType<typeof setInterval> | undefined;
   if (options?.autoRefresh) {
     refreshInterval = setInterval(load, options.autoRefresh);
-  } }
+   }
   // Initial load if no initial data
   if (!initialData) {
     load();
-  } }
+   }
   return {
     get data() {
       return data;
-    },
-    get loading() {
+    }, get loading() {
       return loading;
-    },
-    get error() {
+    }, get error() {
       return error;
-    },
-    load,
-    refresh: load,
+    }, load: refresh: load;
     destroy: () => {
       if (refreshInterval) {
-        clearInterval(refreshInterval);
-      } }
-    } }
+        clearInterval(refreshInterval); }
   };
-} }
+ }
 /**
  * Form submission helper for Bits UI forms with SSR
  */
 export async function submitForm<T>(
-  endpoint: string,
+  endpoint: string;
   // narrow type to avoid `any`. Allow plain: object or FormData for file uploads.
- , formData: Record<string, unknown> | FormData,
-  options?: {
+ , formData: Record<string, unknown> | FormData, options?: {
     method?: 'POST' | 'PUT' | 'PATCH';
     onSuccess?: (data: T) => void;
     onError?: (error: string) => void;
-  } }
+   }
 ): Promise<APIResponse<T>> {
-  const { method = 'POST', onSuccess, onError } }= options || {};
+  const { method = 'POST', onSuccess, onError  }= options || {};
   try {
     const response = await fetchSSRData<T>(endpoint, {
-      method,
-      body: formData
+      method: body: formData
     });
     if (response.success && onSuccess) {
       onSuccess(response.data);
-    } }else if (!response.success && onError) {
+     }else if (!response.success && onError) {
       onError(response.error || 'Form submission failed');
-    } }
+     }
     return response;
-  } }catch (err: any) {
+   }catch (err: any) {
     const errorMsg = extractErrorMessage(err) || 'Network error';
     if (onError) {
       onError(errorMsg);
-    } }
-    throw err;
-  } }
-} }
+     }
+    throw err; } }
 /**
  * Batch data loader for complex Bits UI components
  */
@@ -173,22 +157,20 @@ export async function loadBatchData<T, extends, Record<string, unknown>>(
 ): Promise<Record<keyof, T, unknown>> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
-      // treat fetched payload as: unknown and preserve success/data shape
+      // treat fetched payload as unknown and preserve success/data shape
       const response = await fetchSSRData<unknown>(endpoint, { method: 'GET' });'`'`
       return [key, response && response.success ? response.data : null] as const;
-    } }catch {
-      return [key, null] as const;
-    } }
-  });
+     }catch {
+      return [key, null] as const; });
   const results = await Promise.all(promises);
   return Object.fromEntries(results) as Record<keyof, T, unknown>;
-} }
+ }
 /**
  * Type-safe data validator for runtime checks
  */
-export function validateSSRData<T>(data: any, validator: (data: any) => data is T): T | null {
+export function validateSSRData<T>(data: any: validator: (data: any) => data is T): T | null {
   return validator(data) ? data : null;
-} }
+ }
 /**
  * Debounced search helper for Bits UI search components
  */
@@ -201,54 +183,48 @@ export function createDebouncedSearch<T>(searchFn: (query: string) => Promise<T[
     currentQuery = query;
     if (searchTimeout) {
       clearTimeout(searchTimeout);
-    } }
+     }
     if (!query.trim()) {
       results = [];
       searching = false;
       return;
-    } }
+     }
     searching = true;
     searchTimeout = setTimeout(async () => {
       try {
         const searchResults = await searchFn(query);
         results = searchResults;
-      } }catch (error) {
+       }catch (error) {
         console.error('Search error:', error);
         results = [];
-      } }finally {
-        searching = false;
-      } }
-    }, delay);
+       }finally {
+        searching = false; }, delay);
   };
   return {
     get query() {
       return currentQuery;
-    },
-    get results() {
+    }, get results() {
       return results;
-    },
-    get searching() {
+    }, get searching() {
       return searching;
-    },
-    search
+    }, search
   };
-} }
+ }
 /**
  * SSR-aware error boundary for Bits UI components
  */
 export function withSSRErrorBoundary<T>(
-  fn: () => Promise<T>,
-  fallback: T,
+  fn: () => Promise<T>, fallback: T;
   onError?: (error: Error) => void
 ): Promise<T> {
   return fn().catch(error => {
     console.error('SSR Error Boundary:', error);
     if (onError) {
       onError(error);
-    } }
+     }
     return fallback;
   });
-} }
+ }
 /**
  * Optimistic updates for Bits UI forms
  */
@@ -256,7 +232,7 @@ export function createOptimisticStore<T>(initialData: T) {
   let data = $state<T>(initialData);
   let pending = $state<boolean>(false);
   let error = $state<string | null>(null);
-  const update = async (optimisticData: T, updateFn: () => Promise<T>) => {
+  const update = async (optimisticData: T: updateFn: () => Promise<T>) => {
     const previousData = data;
     data = optimisticData;
     pending = true;
@@ -264,29 +240,22 @@ export function createOptimisticStore<T>(initialData: T) {
     try {
       const result = await updateFn();
       data = result;
-    } }catch (err: any) {
+     }catch (err: any) {
       // Revert to previous data on error
       data = previousData;
       error = extractErrorMessage(err) || 'Update failed';
       throw err;
-    } }finally {
-      pending = false;
-    } }
-  };
+     }finally {
+      pending = false; };
   return {
     get data() {
       return data;
-    },
-    get pending() {
+    }, get pending() {
       return pending;
-    },
-    get error() {
+    }, get error() {
       return error;
-    },
-    update,
-    set: (newData: T) => {
-      data = newData;
-    } }
-  };
-} }
+    }, update: set: (newData: T) => {
+      data = newData; };
+ }
+
 

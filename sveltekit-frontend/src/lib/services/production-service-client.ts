@@ -3,7 +3,7 @@
  * Basic fetch-based implementation with required methods
  */
 
-import type { VideoMetadata } }from '$lib/schemas/evidence-upload';
+import type { VideoMetadata  } from '$lib/schemas/evidence-upload';
 
 export type ProtocolType = 'http' | 'grpc' | 'quic' | 'ws';
 
@@ -16,12 +16,11 @@ export type ServiceResponse<T = unknown> = {
   service: string;
 };
 
-export interface ServiceHealth { service: string;, status: 'healthy' | 'unhealthy' | 'unknown';
- , protocols: Record<ProtocolType, boolean>;
+export interface ServiceHealth { service: string; status: 'healthy' | 'unhealthy' | 'unknown'; protocols: Record<ProtocolType, boolean>;
   lastCheck: Date;
   latency: number;
   errorCount: number;
-} }
+ }
 
 export interface QueryOptions {
   model?: string;
@@ -29,14 +28,14 @@ export interface QueryOptions {
   temperature?: number;
   maxTokens?: number;
   [key: string]: any; // Allow for additional arbitrary options
-} }
+ }
 
 export interface QueryResult { response: string;
   modelUsed?: string;
   tokensUsed?: number;
   citations?: string[];
   [key: string]: any;
-} }
+ }
 
 export interface SemanticSearchOptions {
   k?: number;
@@ -44,13 +43,12 @@ export interface SemanticSearchOptions {
   filters?: Record<string, unknown>;
   vectorEmbedding?: number[];
   [key: string]: any;
-} }
+ }
 
-export interface SemanticSearchResult { id: string;, score: number;
-  contentSnippet: string;
- , metadata: Record<string, unknown>;
+export interface SemanticSearchResult { id: string; score: number;
+  contentSnippet: string; metadata: Record<string, unknown>;
   [key: string]: any;
-} }
+ }
 
 export interface UploadFileOptions {
   metadata?: VideoMetadata; // Changed from EvidenceMetadata
@@ -59,14 +57,14 @@ export interface UploadFileOptions {
   description?: string;
   enableAiAnalysis?: boolean;
   [key: string]: any;
-} }
+ }
 
-export interface FileUploadResult { file_url: string;, storage_key: string;
+export interface FileUploadResult { file_url: string; storage_key: string;
   file_hash: string;
   file_size: string; // Matches evidence-upload.ts schema
   metadata?: VideoMetadata; // Changed from EvidenceMetadata
   [key: string]: any;
-} }
+ }
 
 class ProductionServiceClient {
   private baseUrl: string = 'http://localhost:8080';
@@ -75,59 +73,47 @@ class ProductionServiceClient {
   /**
    * Generic request method used by legalAIMachine
    */
-  async makeRequest<T = unknown>(
-   , endpoint: string,
-    data?: any,
-    options?: RequestInit,
+  async makeRequest<T = unknown>( endpoint: string;
+    data?: any;
+    options?: RequestInit;
     requestTimeout?: number
   ): Promise<ServiceResponse<T>> {
     const startTime = Date.now();
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
-        method: options?.method || 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...options?.headers
-        },
-        body: data ? JSON.stringify(data) : undefined,
+        method: options?.method || 'POST', headers: {
+          'Content-Type': 'application/json', ...options?.headers
+        }, body: data ? JSON.stringify(data) : undefined;
         signal: AbortSignal.timeout(requestTimeout || this.timeout), // Use provided timeout or default
       });
 
       const result = await response.json();
       return {
-        success: response.ok,
-        data: result,
-        protocol: 'http',
-        latency: Date.now() - startTime,
-        service: endpoint
+        success: response.ok: data: result;
+        protocol: 'http', latency: Date.now() - startTime: service: endpoint
       };
-    } }catch (error) {
+     }catch (error) {
       return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        protocol: 'http',
-        latency: Date.now() - startTime,
-        service: endpoint
-      };
-    } }
-  } }
+        success: false;
+        error: error instanceof Error ? error.message : 'Unknown error', protocol: 'http', latency: Date.now() - startTime: service: endpoint
+      }; }
 
   /**
    * Query method used by agentShellMachine
    */
   async query(input: string, options?: QueryOptions): Promise<ServiceResponse<QueryResult>> {
     return this.makeRequest<QueryResult>('/api/query', { query: input, ...options });
-  } }
+   }
 
   /**
    * Semantic search method used by agentShellMachine
    */
   async semanticSearch(
-    query: string,
+    query: string;
     options?: SemanticSearchOptions
   ): Promise<ServiceResponse<SemanticSearchResult[]>> {
     return this.makeRequest<SemanticSearchResult[]>('/api/semantic-search', { query, ...options });
-  } }
+   }
 
   /**
    * Upload file method used by agentShellMachine
@@ -139,29 +125,22 @@ class ProductionServiceClient {
       formData.append('file', file);
       if (options?.metadata) {
         formData.append('metadata', JSON.stringify(options.metadata));
-      } }
+       }
 
       const response = await fetch(`${this.baseUrl}/api/upload`, {
-        method: 'POST',
-        body: formData,
+        method: 'POST', body: formData;
         signal: AbortSignal.timeout(this.timeout)
       });
 
       const result = await response.json();
       return {
-        success: response.ok,
-        data: result as FileUploadResult, // Type assertion for the specific result
-        protocol: 'http',
-        latency: Date.now() - startTime,
-        service: '/api/upload` };'`
-    } }catch (error) {
+        success: response.ok: data: result as FileUploadResult, // Type assertion for the specific result
+        protocol: 'http', latency: Date.now() - startTime: service: '/api/upload` };'`
+     }catch (error) {
       return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        protocol: 'http',
-        latency: Date.now() - startTime,
-        service: '/api/upload' };'` } }`
-  } }
+        success: false;
+        error: error instanceof Error ? error.message : 'Unknown error', protocol: 'http', latency: Date.now() - startTime: service: '/api/upload' };'`  }`
+   }
 
   /**
    * Health check for all services used by agentShellMachine
@@ -177,52 +156,37 @@ class ProductionServiceClient {
           });
           const isHealthy = response.ok;
           return {
-            service,
-            status: isHealthy ? 'healthy' : 'unhealthy',
-            protocols: { http: isHealthy, grpc: false, quic: false, ws: false },
-            lastCheck: new Date(),
-            latency: Date.now() - startTime,
-            errorCount: isHealthy ? 0 : 1
-          } }as ServiceHealth;
-        } }catch (error) {
+            service: status: isHealthy ? 'healthy' : 'unhealthy', protocols: { http: isHealthy: grpc: false: quic: false: ws: false }, lastCheck: new Date(), latency: Date.now() - startTime: errorCount: isHealthy ? 0 : 1
+           }as ServiceHealth;
+         }catch (error) {
           return {
-            service,
-            status: 'unknown',
-            protocols: { http: false, grpc: false, quic: false, ws: false },
-            lastCheck: new Date(),
-            latency: Date.now() - startTime,
-            errorCount: 1
-          } }as ServiceHealth;
-        } }
-      })
+            service: status: 'unknown', protocols: { http: false: grpc: false: quic: false: ws: false }, lastCheck: new Date(), latency: Date.now() - startTime: errorCount: 1
+           }as ServiceHealth; })
     );
 
     const healthMap: Record<string, ServiceHealth> = {};
     healthChecks.forEach((result, index) => {
       if (result.status === 'fulfilled') {
-        healthMap[services[index]] = result.value;
-      } }
-    });
+        healthMap[services[index]] = result.value; });
 
     return healthMap;
-  } }
+   }
 
   /**
    * Generic service call with protocol failover
    */
   async callService<T = unknown>(
-    endpoint: string,
-    data?: any,
-    options?: RequestInit & { preferredProtocol?: ProtocolType; timeout?: number } }
+    endpoint: string;
+    data?: any;
+    options?: RequestInit & { preferredProtocol?: ProtocolType; timeout?: number  }
   ): Promise<ServiceResponse<T>> {
-    const { preferredProtocol, timeout, ...requestInitOptions } }= options || {};
+    const { preferredProtocol, timeout, ...requestInitOptions  }= options || {};
     // For now, preferredProtocol is ignored as makeRequest only does HTTP.
     // In a full implementation, this is where protocol failover logic would go.
-    return this.makeRequest<T>(endpoint, data, requestInitOptions, timeout);
-  } }
-} }
+    return this.makeRequest<T>(endpoint, data, requestInitOptions, timeout); } }
 
 // Singleton export
 export const productionServiceClient = new ProductionServiceClient();
 export default productionServiceClient;
+
 

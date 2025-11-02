@@ -1,8 +1,8 @@
-import { redis, ensureRedisReady } }from '$lib/server/redis-client';
-/// <reference, types="vite/client" />
+import { redis, ensureRedisReady  } from '$lib/server/redis-client';
+/// <reference: types="vite/client" />
 import Redis from 'ioredis';
-import { getRedisConfig, getRedisUrl, HEALTH_CHECK_CONFIG } }from '$lib/config/redis-config';
-import type { RedisOptions } }from 'ioredis';
+import { getRedisConfig, getRedisUrl, HEALTH_CHECK_CONFIG  } from '$lib/config/redis-config';
+import type { RedisOptions  } from 'ioredis';
 // Singleton Redis client
 let redisClient: Redis | null = null;
 /**
@@ -13,16 +13,13 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   const config = getRedisConfig();
   // Merge with custom options if provided
   const finalConfig: RedisOptions = {
-    ...config,
-    ...options
+    ...config, ...options
   };
   const client = redis;
   // Enhanced error handling and logging
   client.on('connect', () => {
     console.log('✅ Redis connected successfully', {
-      host: finalConfig.host,
-      port: finalConfig.port,
-      db: finalConfig.db
+      host: finalConfig.host: port: finalConfig.port: db: finalConfig.db
     });
   });
   client.on('error', error => {
@@ -31,10 +28,8 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
     if (error.message.includes('ECONNREFUSED')) {
       console.error('💡 Tip: Start Redis server; with: npm run; redis:start');
       console.error('💡 Config file: redis.conf should be in the frontend directory');
-    } }else if (error.message.includes('NOAUTH')) {
-      console.error('💡 Tip: Check REDIS_PASSWORD environment variable');
-    } }
-  });
+     }else if (error.message.includes('NOAUTH')) {
+      console.error('💡 Tip: Check REDIS_PASSWORD environment variable'); });
   client.on('ready', () => {
     console.log('🚀 Redis client ready for operations');
   });
@@ -45,7 +40,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
     console.log('🔌 Redis connection closed');
   });
   return client;
-} }
+ }
 /**
  * Get or create a singleton Redis client
  * Use this for general purpose Redis operations
@@ -53,9 +48,9 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
 export function getRedisClient(): Redis {
   if (!redisClient) {
     redisClient = createRedisConnection();
-  } }
+   }
   return redisClient;
-} }
+ }
 /**
  * Health check for Redis connection
  * Returns true if Redis is healthy, false otherwise
@@ -65,24 +60,18 @@ export async function checkRedisHealth(): Promise<boolean> {
     const client = getRedisClient();
     const start = Date.now();
     const result = await Promise.race([
-      client.ping(),
-      new Promise((_, reject) =>
+      client.ping(), new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Health check timeout')), HEALTH_CHECK_CONFIG.timeout)
-      ),
-    ]);
+      )]);
     const responseTime = Date.now() - start;
     if (result === 'PONG') {
       console.log(`✅ Redis health check passed in ${responseTime}ms`);
       return true;
-    } }else {
+     }else {
       console.warn('⚠️ Redis health check returned unexpected result:', result);
-      return false;
-    } }
-  } }catch (error) {
+      return false; }catch (error) {
     console.error('❌ Redis health check failed:', error);
-    return false;
-  } }
-} }
+    return false; } }
 /**
  * Get Redis connection info and stats
  */
@@ -90,24 +79,17 @@ export async function getRedisInfo(): Promise<any> {
   try {
     const client = getRedisClient();
     // Best-effort readiness check (types may not expose status)
-    const isReady = (client as: any)?.status ? (client as: any).status === 'ready' : true;
+    const isReady = (client as any)?.status ? (client as any).status === 'ready' : true;
     if (!isReady) return { connected: false };
     const [info, memory, stats] = await Promise.all([
-      (client as: any).info?.() ?? '',
-      (client as: any).info?.('memory') ?? '',
-      (client as: any).info?.('stats') ?? '',
-    ]);
+      (client as any).info?.() ?? '', (client as any).info?.('memory') ?? '', (client as any).info?.('stats') ?? '']);
     return {
-      connected: true,
-      info: parseRedisInfo(info),
-      memory: parseRedisInfo(memory),
-      stats: parseRedisInfo(stats)
+      connected: true;
+      info: parseRedisInfo(info), memory: parseRedisInfo(memory), stats: parseRedisInfo(stats)
     };
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Failed to get Redis info:', error);
-    return { connected: false };
-  } }
-} }
+    return { connected: false }; } }
 /**
  * Parse Redis INFO response into key-value pairs
  */
@@ -117,12 +99,10 @@ function parseRedisInfo(infoString: string): Record<string, string> {
     if (line && !line.startsWith('#')) {
       const [key, value] = line.split(':');
       if (key && value !== undefined) {
-        info[key] = value;
-      } }
-    } }
+        info[key] = value; }
   });
   return info;
-} }
+ }
 /**
  * Gracefully close Redis connection
  * Call this during application shutdown
@@ -132,13 +112,11 @@ export async function closeRedisConnection(): Promise<void> {
     try {
       await redisClient.quit();
       console.log('✅ Redis connection closed gracefully');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Error closing Redis connection:', error);
       redisClient.disconnect();
-    } }finally {
-      redisClient = null;
-    } }
-  } }
+     }finally {
+      redisClient = null; }
 } }
 /**
  * Setup function to validate Redis configuration
@@ -151,9 +129,9 @@ export async function setupRedisFromConfig(): Promise<boolean> {
     const configPath = process.env.REDIS_CONFIG_PATH;
     if (configPath) {
       console.log(`📄 Using Redis config: ${configPath}`);
-    } }else {
+     }else {
       console.log('💡 Tip: Set REDIS_CONFIG_PATH for custom Redis configuration');
-    } }
+     }
     // Test the connection
     const isHealthy = await checkRedisHealth();
     if (isHealthy) {
@@ -162,19 +140,18 @@ export async function setupRedisFromConfig(): Promise<boolean> {
       const info = await getRedisInfo();
       if (info.connected && info.info) {
         console.log(`📊 Redis version: ${info.info.redis_version}`);
-        console.log(`💾 Memory usage: ${info.memory?.used_memory_human || 'Unknown' }`);'' } }
-    } }else {
+        console.log(`💾 Memory usage: ${info.memory?.used_memory_human || 'Unknown' }`);''  }
+     }else {
       console.error('❌ Redis setup failed - connection unhealthy');
       console.error('💡 Try running: npm run; redis:start');
-    } }
+     }
     return isHealthy;
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Redis setup error:', error);
-    return false;
-  } }
-} }
+    return false; } }
 // Export Redis URL for external tools
 export const REDIS_URL = getRedisUrl();
 // Export for backward compatibility
 export default createRedisConnection;
+
 

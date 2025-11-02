@@ -14,12 +14,7 @@ console.log('📋 Test 1: Module Structure Validation');
 try {
   // Test import paths (without actual imports to avoid compilation issues)
   const moduleStructure = {
-    'memory-efficient-extension': 'VS Code extension optimization',
-    'redis-som-cache': 'Redis with Self-Organizing Maps caching',
-    'docker-resource-optimizer': 'Docker resource optimization',
-    'json-wasm-optimizer': 'JSON WebAssembly optimization',
-    'context7-mcp-integration': 'Context7 MCP integration',
-    'optimization-test-suite': 'Comprehensive test suite'
+    'memory-efficient-extension': 'VS Code extension optimization', 'redis-som-cache': 'Redis with Self-Organizing Maps caching', 'docker-resource-optimizer': 'Docker resource optimization', 'json-wasm-optimizer': 'JSON WebAssembly optimization', 'context7-mcp-integration': 'Context7 MCP integration', 'optimization-test-suite': 'Comprehensive test suite'
   };
   
   let moduleCount = 0;
@@ -40,11 +35,7 @@ try {
   
   // Simulate various optimization operations
   const operations = [
-    { name: 'VS Code command execution', duration: Math.random() * 100 },
-    { name: 'Cache access with SOM clustering', duration: Math.random() * 50 },
-    { name: 'Docker resource monitoring', duration: Math.random() * 200 },
-    { name: 'JSON WASM parsing', duration: Math.random() * 30 },
-    { name: 'Context7 MCP integration', duration: Math.random() * 150 }
+    { name: 'VS Code command execution', duration: Math.random() * 100 }, { name: 'Cache access with SOM clustering', duration: Math.random() * 50 }, { name: 'Docker resource monitoring', duration: Math.random() * 200 }, { name: 'JSON WASM parsing', duration: Math.random() * 30 }, { name: 'Context7 MCP integration', duration: Math.random() * 150 }
   ];
   
   let totalOperations = 0;
@@ -92,14 +83,7 @@ try {
 console.log('📋 Test 4: System Capabilities Assessment');
 try {
   const capabilities = {
-    'Node.js Version': process.version,
-    'Platform': process.platform,
-    'Architecture': process.arch,
-    'CPU Cores': require('os').cpus().length,
-    'Free Memory': `${(require('os').freemem() / 1024 / 1024 / 1024).toFixed(2)}GB`,
-    'Total Memory': `${(require('os').totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB`,
-    'WebAssembly Support': typeof WebAssembly !== 'undefined' ? 'Available' : 'Not Available',
-    'Worker Threads': typeof require('worker_threads') !== 'undefined' ? 'Available' : 'Not Available'
+    'Node.js Version': process.version, 'Platform': process.platform, 'Architecture': process.arch, 'CPU Cores': require('os').cpus().length, 'Free Memory': `${(require('os').freemem() / 1024 / 1024 / 1024).toFixed(2)}GB`, 'Total Memory': `${(require('os').totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB`, 'WebAssembly Support': typeof WebAssembly !== 'undefined' ? 'Available' : 'Not Available', 'Worker Threads': typeof require('worker_threads') !== 'undefined' ? 'Available' : 'Not Available'
   };
   
   for (const [capability, value] of Object.entries(capabilities)) {
@@ -159,11 +143,7 @@ try {
 console.log('📋 Test 6: Performance Benchmarks Simulation');
 try {
   const benchmarks = {
-    'VS Code Commands': Math.floor(Math.random() * 20) + 5,
-    'Cache Operations/sec': Math.floor(Math.random() * 5000) + 1000,
-    'JSON Parse Speed MB/sec': Math.floor(Math.random() * 50) + 10,
-    'Docker Optimization Time': Math.floor(Math.random() * 1000) + 100,
-    'Memory Usage': Math.floor(Math.random() * 4000) + 1000
+    'VS Code Commands': Math.floor(Math.random() * 20) + 5, 'Cache Operations/sec': Math.floor(Math.random() * 5000) + 1000, 'JSON Parse Speed MB/sec': Math.floor(Math.random() * 50) + 10, 'Docker Optimization Time': Math.floor(Math.random() * 1000) + 100, 'Memory Usage': Math.floor(Math.random() * 4000) + 1000
   };
   
   console.log('  📊 Simulated Performance Metrics:');
@@ -193,12 +173,7 @@ console.log('📊 Final Validation Summary');
 console.log('=' .repeat(50));
 
 const testResults = {
-  'Module Structure': '✅ Pass',
-  'Performance Monitoring': '✅ Pass', 
-  'Memory Management': '✅ Pass',
-  'System Capabilities': '✅ Pass',
-  'Optimization Recommendations': '✅ Pass',
-  'Performance Benchmarks': '✅ Pass'
+  'Module Structure': '✅ Pass', 'Performance Monitoring': '✅ Pass', 'Memory Management': '✅ Pass', 'System Capabilities': '✅ Pass', 'Optimization Recommendations': '✅ Pass', 'Performance Benchmarks': '✅ Pass'
 };
 
 let passCount = 0;

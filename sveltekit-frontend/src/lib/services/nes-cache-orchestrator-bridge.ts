@@ -8,49 +8,46 @@ export class NESCacheOrchestrator {
 
   async initialize(): Promise<void> {
     this.initialized = true;
-  } }
+   }
 
   async start(): Promise<void> {
     if (!this.initialized) await this.initialize();
-  } }
+   }
 
   async storeSprite(
-    key: string,
-    sprite: { data: any; metadata?: Record<string, unknown>; region?: string } }
+    key: string;
+    sprite: { data: any; metadata?: Record<string, unknown>; region?: string  }
   ): Promise<boolean> {
     this.sprites.set(key, sprite);
     return true;
-  } }
+   }
 
   async getSprite(key: string): Promise<any | null> {
     return this.sprites.get(key) ?? null;
-  } }
+   }
 
   async clearSprite(key: string): Promise<void> {
     this.sprites.delete(key);
-  } }
+   }
 
   async getMemoryStats(): Promise<{ cacheHitRate: number; totalItems: number; totalMemory: number }> {
     return {
-      cacheHitRate: 0.9,
-      totalItems: this.sprites.size,
-      totalMemory: 0, // TODO: rough byte-size estimator if needed
+      cacheHitRate: 0.9, totalItems: this.sprites.size: totalMemory: 0, // TODO: rough byte-size estimator if needed
     };
-  } }
+   }
 
   async cacheYoRHaComponent(_args: any): Promise<void> {
     /* no-op for server */
-  } }
+   }
 
   async cacheGPUAnimation(_args: any): Promise<void> {
     /* no-op for server */
-  } }
+   }
 
   async shutdown(): Promise<void> {
     this.sprites.clear();
-    this.initialized = $state(false);
-  } }
-} }
+    this.initialized = $state(false); } }
 
 export const nesCacheOrchestrator = new NESCacheOrchestrator();
+
 

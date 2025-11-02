@@ -1,28 +1,19 @@
-import { cuidSchema } }from '$lib/server/z-schemas';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
-import { evidenceBoardItems, evidenceBoards } }from '$lib/database/enhanced-schema';
-import { eq, and } }from 'drizzle-orm';
-import { z } }from 'zod';
+import { cuidSchema  } from '$lib/server/z-schemas';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
+import { evidenceBoardItems, evidenceBoards  } from '$lib/database/enhanced-schema';
+import { eq, and  } from 'drizzle-orm';
+import { z  } from 'zod';
 
 const createBoardItemSchema = z.object({
-  evidenceId: cuidSchema.optional(),
-  poiId: cuidSchema.optional(),
-  itemType: z.enum(['evidence', 'poi', 'note', 'connection', 'image']),
-  position: z.object({
-  x: z.number(),
-    y: z.number()
-  }),
-  size: z
+  evidenceId: cuidSchema.optional(), poiId: cuidSchema.optional(), itemType: z.enum(['evidence', 'poi', 'note', 'connection', 'image']), position: z.object({
+  x: z.number(), y: z.number()
+  }), size: z
     .object({
-  width: z.number(),
-      height: z.number()
+  width: z.number(), height: z.number()
     })
-    .optional(),
-  content: z.string().optional(),
-  metadata: z.any().optional(),
-  zIndex: z.number().default(0)
+    .optional(), content: z.string().optional(), metadata: z.any().optional(), zIndex: z.number().default(0)
 });
 
 const updateBoardItemSchema = createBoardItemSchema.partial();
@@ -33,7 +24,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const boardId = params.boardId;
 
@@ -45,7 +36,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     if (!board) {
       return json({ error: 'Evidence board not found' }, { status: 404 });
-    } }
+     }
 
     // Get items
     const items = await db
@@ -54,14 +45,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .where(and(eq(evidenceBoardItems.boardId, boardId), eq(evidenceBoardItems.isVisible, true)));
 
     return json({
-      success: true,
+      success: true;
       data: items
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error fetching board items:', error);
-    return json({ error: 'Failed to fetch board items' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to fetch board items' }, { status: 500 }); };
 
 // POST /api/evidence-boards/[boardId]/items - Create new board item
 export const POST: RequestHandler = async ({ params, request, locals }) => {
@@ -69,7 +58,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const boardId = params.boardId;
     const body = await request.json();
@@ -83,38 +72,34 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 
     if (!board) {
       return json({ error: 'Evidence board not found' }, { status: 404 });
-    } }
+     }
 
     // Validate that either evidenceId or poiId is provided for evidence/poi types
     if (validatedData.itemType === 'evidence' && !validatedData.evidenceId) {
       return json({ error: 'evidenceId is required for evidence items' }, { status: 400 });
-    } }
+     }
     if (validatedData.itemType === 'poi' && !validatedData.poiId) {
       return json({ error: 'poiId is required for POI items' }, { status: 400 });
-    } }
+     }
 
     const [newItem] = await db
       .insert(evidenceBoardItems)
       .values({
-        ...validatedData,
-        boardId,
-        createdBy: session.user.id
+        ...validatedData, boardId: createdBy: session.user.id
       })
       .returning();
 
     return json(
       {
-        success: true,
+        success: true;
         data: newItem
-      },
-      { status: 201 } }
+      }, { status: 201  }
     );
-  } }catch (error) {
+   }catch (error) {
     console.error('Error creating board item:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation error', details: error.errors }, { status: 400 });
-    } }
-    return json({ error: 'Failed to create board item' }, { status: 500 });
-  } }
-};
+     }
+    return json({ error: 'Failed to create board item' }, { status: 500 }); };
+
 

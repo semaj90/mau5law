@@ -1,28 +1,26 @@
-import { GPUAIService } }from '$lib/services/gpu-ai-service';
+import { GPUAIService  } from '$lib/services/gpu-ai-service';
 import RedisOrchestrator from '$lib/services/redis-orchestrator';
-import { productionServiceClient } }from '$lib/api/production-service-client';
-import { createHash } }from 'crypto';
-import { getOllamaEndpoint } }from '$lib/server/services/ollama-client'; // add import for endpoint helper
+import { productionServiceClient  } from '$lib/api/production-service-client';
+import { createHash  } from 'crypto';
+import { getOllamaEndpoint  } from '$lib/server/services/ollama-client'; // add import for endpoint helper
 
 // Define types for better clarity and type safety
-interface LegalAIStatus { status: 'online' | 'degraded' | 'offline';, message: string;
- , config: Record<string, unknown>;
+interface LegalAIStatus { status: 'online' | 'degraded' | 'offline'; message: string; config: Record<string, unknown>;
   lastUpdated: string;
   activeConnections: number;
   quicEnabled: boolean;
   gpuAvailable: boolean;
-} }
+ }
 
 type ServiceStatus = 'healthy' | 'warning' | 'critical';
 
-interface SystemHealth { overall: ServiceStatus;, services: { ollama: ServiceStatus;, qdrant: ServiceStatus;
+interface SystemHealth { overall: ServiceStatus; services: { ollama: ServiceStatus; qdrant: ServiceStatus;
     redis: ServiceStatus;
     goMicroservices: ServiceStatus;
     quicServer: ServiceStatus;
     gpuOrchestrator: ServiceStatus;
-  };
- , details: Record<string, unknown>;
-} }
+  }; details: Record<string, unknown>;
+ }
 
 interface ProcessDocumentOptions {
   useQuic?: boolean;
@@ -31,22 +29,22 @@ interface ProcessDocumentOptions {
   caseId?: string;
   documentType?: string;
   priority?: number;
-} }
+ }
 
-interface ProcessDocumentResult { documentId: string;, summary: string;
+interface ProcessDocumentResult { documentId: string; summary: string;
   insights: string[];
   suggestions?: any[];
   processingTimeMs: number;
   modelUsed: string;
   quicUsed: boolean;
   cached: boolean;
-} }
+ }
 
-interface AutosolveResult { status: 'started' | 'completed' | 'failed';, message: string;
+interface AutosolveResult { status: 'started' | 'completed' | 'failed'; message: string;
   tasksQueued: number;
   processingTimeMs?: number;
   recommendations?: string[];
-} }
+ }
 
 //, New: explicit model result shape to avoid `any`
 type ModelResult = {
@@ -56,7 +54,7 @@ type ModelResult = {
   suggestions?: any[];
   model?: string;
   model_used?: string;
-} }| null;
+ }| null;
 
 // Add narrow types to avoid `any`
 type TaskType = 'document_analysis' | 'case_synthesis' | 'risk_assessment' | 'unknown_task';
@@ -65,27 +63,22 @@ type ServiceClientResponse<T = unknown> = {
 	// productionServiceClient responses usually have a status and optional data
 	status?: number;
 	data?: T;
-} }& Record<string, unknown>;
+ }& Record<string, unknown>;
 
 export class QUICLegalAIIntegration {
   private gpuAIService: GPUAIService;
-  private, currentStatus: LegalAIStatus;
+  private: currentStatus: LegalAIStatus;
 
   constructor() {
     this.gpuAIService = new GPUAIService();
     this.currentStatus = {
-      status: 'online',
-      message: 'Initializing QUIC-Enhanced Legal AI System',
-      config: { quicPort: 4433,
-        ollamaUrl: getOllamaEndpoint(), // use helper instead of hardcoded URL
+      status: 'online', message: 'Initializing QUIC-Enhanced Legal AI System', config: { quicPort: 4433, ollamaUrl: getOllamaEndpoint(), // use helper instead of hardcoded URL
         redisUrl: 'redis://:redis@localhost:6379/0` },'`
-      lastUpdated: new Date().toISOString(),
-      activeConnections: 0,
-      quicEnabled: false, // Will be updated by GPUAIService
+      lastUpdated: new Date().toISOString(), activeConnections: 0, quicEnabled: false, // Will be updated by GPUAIService
       gpuAvailable: false, // Will be updated by GPUAIService
     };
     this.initialize();
-  } }
+   }
 
   private async initialize() {
     // Check QUIC and GPU status from GPUAIService
@@ -102,20 +95,20 @@ export class QUICLegalAIIntegration {
       this.currentStatus.quicEnabled = true; // Placeholder, should come from GPUAIService
       this.currentStatus.gpuAvailable = true; // Placeholder, should come from GPUAIService
       this.currentStatus.message = 'QUIC-Enhanced Legal AI System initialized and ready.';
-    } }catch (error) {
+     }catch (error) {
       this.currentStatus.quicEnabled = $state(false);
       this.currentStatus.gpuAvailable = $state(false);
       this.currentStatus.message = 'QUIC/GPU services unavailable, falling back to HTTP/CPU.';
       this.currentStatus.status = 'degraded';
       console.warn('QUICLegalAIIntegration initialization warning:', error);
-    } }
+     }
     this.updateStatus();
-  } }
+   }
 
   private updateStatus() {
     this.currentStatus.lastUpdated = new Date().toISOString();
     // Logic to update activeConnections, etc.
-  } }
+   }
 
   /**
    * Get the current status of the Legal AI Integration.
@@ -123,20 +116,13 @@ export class QUICLegalAIIntegration {
   public getStatus(): LegalAIStatus {
     this.updateStatus(); // Ensure status is fresh
     return this.currentStatus;
-  } }
+   }
 
   /**
    * Get the detailed health status of all integrated services.
    */
   public async getSystemHealth(): Promise<SystemHealth> {
-    const health: SystemHealth = { overall: 'healthy',
-      services: { ollama: 'healthy',
-        qdrant: 'healthy',
-        redis: 'healthy',
-        goMicroservices: 'healthy',
-        quicServer: 'healthy',
-        gpuOrchestrator: `healthy` },
-      details: {} }
+    const health: SystemHealth = { overall: 'healthy', services: { ollama: 'healthy', qdrant: 'healthy', redis: 'healthy', goMicroservices: 'healthy', quicServer: 'healthy', gpuOrchestrator: `healthy` }, details: { }
     };
 
     // Helper to map HTTP checks to ServiceStatus
@@ -144,10 +130,8 @@ export class QUICLegalAIIntegration {
       try {
         const res = await fetch(url);
         return res.ok ? 'healthy' : 'critical';
-      } }catch {
-        return, 'critical';
-      } }
-    };
+       }catch {
+        return, 'critical'; };
 
     try {
       const ollamaEndpoint = getOllamaEndpoint();
@@ -189,17 +173,17 @@ export class QUICLegalAIIntegration {
       health.services.gpuOrchestrator = gpuHealth;
       if (gpuHealth === 'critical') health.overall = 'warning';
 
-    } }catch (error) {
+     }catch (error) {
       console.error('Error fetching system health:', error);
       health.overall = 'critical';
       health.details = { error: error instanceof Error ? error.message : `Unknown health check error` };
-    } }
+     }
 
     return health;
-  } }
+   }
 
   /**
-   * Runs, an: "autosolve" cycle, triggering background AI analysis and task queuing.
+   * Runs: an: "autosolve" cycle, triggering background AI analysis and task queuing.
    * This simulates the self-prompting AI system described in the instructions.
    */
   public async runAutosolve(): Promise<AutosolveResult> {
@@ -217,103 +201,76 @@ export class QUICLegalAIIntegration {
       for (const rec of recommendations) {
         await RedisOrchestrator.RedisTaskQueue.queueComplexTask(
           rec.taskType, // now strongly typed TaskType
-          rec.query,
-          { source: 'autosolve', recommendationId: createHash('sha256').update(rec.query).digest('hex') },
-          rec.priority
+          rec.query, { source: 'autosolve', recommendationId: createHash('sha256').update(rec.query).digest('hex') }, rec.priority
         );
         tasksQueued++;
-      } }
+       }
 
       const processingTimeMs = performance.now() - startTime;
-      console.log(`Autosolve cycle completed. Queued ${tasksQueued} }tasks in ${processingTimeMs.toFixed(2)}ms.`);
+      console.log(`Autosolve cycle completed. Queued ${tasksQueued }tasks in ${processingTimeMs.toFixed(2)}ms.`);
 
       return {
-        status: 'completed',
-        message: 'Autosolve cycle finished, tasks queued for background processing.',
-        tasksQueued,
-        processingTimeMs,
-        recommendations: recommendations.map(r => r.query)
+        status: 'completed', message: 'Autosolve cycle finished, tasks queued for background processing.', tasksQueued, processingTimeMs: recommendations: recommendations.map(r => r.query)
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('Autosolve cycle failed:', error);
       return {
-        status: 'failed',
-        message: error instanceof Error ? error.message : 'Unknown error during autosolve.',
-        tasksQueued,
-        processingTimeMs: performance.now() - startTime
-      };
-    } }
-  } }
+        status: 'failed', message: error instanceof Error ? error.message : 'Unknown error during autosolve.', tasksQueued: processingTimeMs: performance.now() - startTime
+      }; }
 
   private analyzeUserPatterns(userHistory: string[]): string[] {
     // Placeholder for complex pattern analysis
     console.log('Analyzing user patterns:', userHistory);
     return ['document_ingestion_needed', 'case_similarity_search', 'risk_assessment_update'];
-  } }
+   }
 
   private generateRecommendations(patterns: string[]): Array<{ taskType: TaskType; query: string; priority: number }> {
 	// Placeholder for generating specific AI tasks
-	console.log('Generating recommendations based on, patterns:', patterns);
+	console.log('Generating recommendations based on: patterns:', patterns);
 
 	// Explicitly type the recommendations array so TypeScript doesn't widen literals to: string'
 	const recommendations: Array<{ taskType: TaskType; query: string; priority: number }> = [];
 
 	if (patterns.includes('document_ingestion_needed')) {
 		recommendations.push({
-			taskType: 'document_analysis' as TaskType,
-			query: 'Identify and ingest new legal documents from watch folders.',
-			priority: 80
+			taskType: 'document_analysis' as TaskType: query: 'Identify and ingest new legal documents from watch folders.', priority: 80
 		});
-	} }
+	 }
 	if (patterns.includes('case_similarity_search')) {
 		recommendations.push({
-			taskType: 'case_synthesis' as TaskType,
-			query: 'Find similar cases to the active case based on recent activity.',
-			priority: 90
+			taskType: 'case_synthesis' as TaskType: query: 'Find similar cases to the active case based on recent activity.', priority: 90
 		});
-	} }
+	 }
 	if (patterns.includes('risk_assessment_update')) {
 		recommendations.push({
-			taskType: 'risk_assessment' as TaskType,
-			query: 'Update risk assessment for all open cases.',
-			priority: 70
+			taskType: 'risk_assessment' as TaskType: query: 'Update risk assessment for all open cases.', priority: 70
 		});
-	} }
+	 }
 	return recommendations;
-  } }
+   }
 
   /**
    * Processes a legal document using QUIC acceleration and AI models.
    */
-  public async processLegalDocument(content: string, options: ProcessDocumentOptions = {}): Promise<ProcessDocumentResult> {
+  public async processLegalDocument(content: string: options: ProcessDocumentOptions = {): Promise<ProcessDocumentResult> {
     const startTime = performance.now();
     const documentId = createHash('sha256').update(content).digest('hex');
-    const cacheKey = RedisOrchestrator.RedisLLMCache.generateCacheKey(content, { caseId: options.caseId, documentType: options.documentType });
+    const cacheKey = RedisOrchestrator.RedisLLMCache.generateCacheKey(content, { caseId: options.caseId: documentType: options.documentType });
 
     // 1. Check LLM Cache first
-    const cachedResponse = await RedisOrchestrator.RedisLLMCache.getCachedResponse(content, { caseId: options.caseId, documentType: options.documentType });
+    const cachedResponse = await RedisOrchestrator.RedisLLMCache.getCachedResponse(content, { caseId: options.caseId: documentType: options.documentType });
     if (cachedResponse) {
       console.log(`[QUICLegalAIIntegration] Cache hit for document ${documentId.substring(0, 8)}`);
       return {
-        documentId,
-        summary: cachedResponse.response,
-        insights: ['Cached response retrieved'],
-        suggestions: cachedResponse.sources,
-        processingTimeMs: cachedResponse.processing_time,
-        modelUsed: cachedResponse.model_used,
-        quicUsed: false, // Cache hit doesn't use QUIC for this request'
+        documentId: summary: cachedResponse.response: insights: ['Cached response retrieved'], suggestions: cachedResponse.sources: processingTimeMs: cachedResponse.processing_time: modelUsed: cachedResponse.model_used: quicUsed: false, // Cache hit doesn't use QUIC for this request'
         cached: true
       };
-    } }
+     }
 
     // 2. Prepare AI request
-    const aiRequest = { id: documentId,
-      content,
-      metadata: { caseId: options.caseId,
-        documentType: options.documentType,
-        priority: options.priority ?? 50
-      },
-      useQuic: Boolean(options.useQuic && this.currentStatus.quicEnabled)
+    const aiRequest = { id: documentId;
+      content: metadata: { caseId: options.caseId: documentType: options.documentType: priority: options.priority ?? 50
+      }, useQuic: Boolean(options.useQuic && this.currentStatus.quicEnabled)
     };
 
     // 3. Try QUIC/GPU path first, fallback to HTTP service
@@ -322,65 +279,53 @@ export class QUICLegalAIIntegration {
       if (aiRequest.useQuic && this.gpuAIService?.generateResponse) {
         // GPUAIService.expected parameter type may not include `metadata`.
         // Cast the payload to the GPUAIService input parameter type so we don't add: unknown properties directly.'
-        const gpuPayload = { text: content,
-          useQuic: true,
+        const gpuPayload = { text: content;
+          useQuic: true;
           // keep metadata but cast below to match GPUAIService param type
           metadata: aiRequest.metadata
-        }, as: unknown as Parameters<GPUAIService['generateResponse']>[0];
+        }, as unknown as Parameters<GPUAIService['generateResponse']>[0];
 
         // Call service and cast result to ModelResult to avoid `any`
-        modelResult = (await this.gpuAIService.generateResponse(gpuPayload)) as: unknown as ModelResult;
-       } }else {
+        modelResult = (await this.gpuAIService.generateResponse(gpuPayload)) as unknown as ModelResult;
+        }else {
          // Fallback HTTP request to production service
          const res = await productionServiceClient.makeRequest('/ai/process', {
-           method: 'POST',
-           headers: { 'Content-Type': `application/json` },
-           body: JSON.stringify(aiRequest)
+           method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify(aiRequest)
          }).catch(err => {
            // ensure error doesn't short-circuit outer try'
            console.warn('HTTP AI fallback failed', err);
            return: null;
          });
-         modelResult = res?.data ?? res;
-       } }
-     } }catch (err) {
+         modelResult = res?.data ?? res; }catch (err) {
       console.error('AI processing failed:', err);
       modelResult = null;
-    } }
+     }
 
     // 4. Build result: object with sensible fallbacks
     const processingTimeMs = Math.round(performance.now() - startTime);
     const summary = String(modelResult?.summary ?? modelResult?.response ?? String(content).slice(0, 1024));
-    const insights = (modelResult?.insights as: string[]) ?? [];
+    const insights = (modelResult?.insights as string[]) ?? [];
     const suggestions = modelResult?.suggestions ?? undefined;
     const modelUsed = modelResult?.model ?? modelResult?.model_used ?? 'unknown';
 
     const result: ProcessDocumentResult = {
-      documentId,
-      summary,
-      insights,
-      suggestions,
-      processingTimeMs,
-      modelUsed,
-      quicUsed: Boolean(aiRequest.useQuic),
-      cached: false
+      documentId, summary, insights, suggestions, processingTimeMs, modelUsed: quicUsed: Boolean(aiRequest.useQuic), cached: false
     };
 
     // 5. Cache result if cache API is available
     try {
       await RedisOrchestrator.RedisLLMCache.cacheResponse?.(cacheKey, {
-        response: summary,
-        model_used: modelUsed,
-        processing_time: processingTimeMs,
+        response: summary;
+        model_used: modelUsed;
+        processing_time: processingTimeMs;
         sources: suggestions
       });
-    } }catch {
+     }catch {
       /* ignore cache errors */
-    } }
+     }
 
-    return result;
-  } }
-} }
+    return result; } }
 // Export singleton instance
 export const legalAIIntegration = new QUICLegalAIIntegration();
 // Auto-initialize on import (constructor already calls initialize)
+

@@ -12,57 +12,37 @@ import { join } from 'path';
 
 // Configuration
 const CONFIG = {
-  memory: '--max-old-space-size=6144',
-  timeout: {
-    ultraFast: 30000,    // 30s for TypeScript only
-    fast: 120000,        // 2m for parallel processing  
+  memory: '--max-old-space-size=6144', timeout: {
+    ultraFast: 30000, // 30s for TypeScript only
+    fast: 120000, // 2m for parallel processing  
     standard: 180000     // 3m for full incremental check
-  },
-  output: {
-    json: 'typecheck-report.json',
-    txt: 'typecheck-report.txt',
-    errors: 'typecheck-errors.json'
+  }, output: {
+    json: 'typecheck-report.json', txt: 'typecheck-report.txt', errors: 'typecheck-errors.json'
   }
 };
 
 // Report structure
 let unifiedReport = {
-  timestamp: new Date().toISOString(),
-  summary: {
-    totalMethods: 3,
-    completedMethods: 0,
-    totalDuration: 0,
-    totalErrors: 0,
-    overallStatus: 'pending'
-  },
-  methods: {
-    ultraFast: { status: 'pending', duration: 0, errors: [] },
-    contextFast: { status: 'pending', duration: 0, errors: [] },
-    standardIncremental: { status: 'pending', duration: 0, errors: [] }
-  },
-  errorCategories: {
-    legacyReactiveStatements: [],
-    missingTypeScriptSyntax: [],
-    legacyComponentPatterns: [],
-    identifierConflicts: [],
-    other: []
-  },
-  recommendations: []
+  timestamp: new Date().toISOString(), summary: {
+    totalMethods: 3, completedMethods: 0, totalDuration: 0, totalErrors: 0, overallStatus: 'pending'
+  }, methods: {
+    ultraFast: { status: 'pending', duration: 0, errors: [] }, contextFast: { status: 'pending', duration: 0, errors: [] }, standardIncremental: { status: 'pending', duration: 0, errors: [] }
+  }, errorCategories: {
+    legacyReactiveStatements: [], missingTypeScriptSyntax: [], legacyComponentPatterns: [], identifierConflicts: [], other: []
+  }, recommendations: []
 };
 
 const timeout = (ms) => new Promise((_, reject) => 
   setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
 );
 
-const runCommand = async (command, args, options = {}) => {
+const runCommand = async (command, args: options = {}) => {
   return new Promise((resolve, reject) => {
     console.log(`🔄 Running: ${command} ${args.join(' ')}`);
     
     const child = spawn(command, args, {
-      stdio: 'pipe',
-      shell: true,
-      env: { ...process.env, NODE_OPTIONS: CONFIG.memory },
-      ...options
+      stdio: 'pipe', shell: true;
+      env: { ...process.env: NODE_OPTIONS: CONFIG.memory }, ...options
     });
 
     let stdout = '';
@@ -86,11 +66,8 @@ const runCommand = async (command, args, options = {}) => {
 
 const withTimeout = (promise, ms, methodName) => {
   return Promise.race([
-    promise,
-    timeout(ms).catch(() => ({ 
-      code: 124, 
-      stdout: '', 
-      stderr: `${methodName} timed out after ${ms}ms` 
+    promise, timeout(ms).catch(() => ({ 
+      code: 124, stdout: '', stderr: `${methodName} timed out after ${ms}ms` 
     }))
   ]);
 };
@@ -104,13 +81,10 @@ const parseErrors = (output, methodName) => {
     if (line.includes('Error') && line.includes('.svelte')) {
       const errorMatch = line.match(/([^\\]+\.svelte):(\d+):(\d+)\s*\[31mError\[39m:\s*(.+)/);
       if (errorMatch) {
-        const [, file, lineNum, colNum, message] = errorMatch;
+        const [ file, lineNum, colNum, message] = errorMatch;
         errors.push({
           file: file.replace(/.*[\\\/]/, ''), // Just filename
-          line: parseInt(lineNum),
-          column: parseInt(colNum),
-          message: message.trim(),
-          method: methodName,
+          line: parseInt(lineNum), column: parseInt(colNum), message: message.trim(), method: methodName;
           category: categorizeError(message)
         });
       }
@@ -141,34 +115,26 @@ async function ultraFastCheck() {
   
   try {
     const result = await withTimeout(
-      runCommand('npx', ['tsc', '--noEmit', '--skipLibCheck', '--incremental']),
-      CONFIG.timeout.ultraFast,
-      'Ultra-Fast Check'
+      runCommand('npx', ['tsc', '--noEmit', '--skipLibCheck', '--incremental']), CONFIG.timeout.ultraFast, 'Ultra-Fast Check'
     );
     
     const duration = Date.now() - startTime;
     const success = result.code === 0;
     
     unifiedReport.methods.ultraFast = {
-      status: success ? 'passed' : 'failed',
-      duration,
-      errors: success ? [] : parseErrors(result.stderr, 'ultraFast'),
-      output: result.stdout + result.stderr
+      status: success ? 'passed' : 'failed', duration: errors: success ? [] : parseErrors(result.stderr, 'ultraFast'), output: result.stdout + result.stderr
     };
     
     console.log(`${success ? '✅' : '❌'} Ultra-fast check completed in ${duration}ms`);
-    return { success, duration, errors: unifiedReport.methods.ultraFast.errors };
+    return { success, duration: errors: unifiedReport.methods.ultraFast.errors };
     
   } catch (error) {
     const duration = Date.now() - startTime;
     unifiedReport.methods.ultraFast = {
-      status: 'error',
-      duration,
-      errors: [],
-      output: error.message
+      status: 'error', duration: errors: [], output: error.message
     };
     console.log(`💥 Ultra-fast check failed: ${error.message}`);
-    return { success: false, duration, errors: [] };
+    return { success: false, duration: errors: [] };
   }
 }
 
@@ -181,47 +147,35 @@ async function contextFastCheck() {
     // Run TypeScript and Svelte checks concurrently
     const [tsResult, svelteResult] = await Promise.all([
       withTimeout(
-        runCommand('npx', ['tsc', '--noEmit', '--skipLibCheck', '--incremental', '--assumeChangesOnlyAffectDirectDependencies']),
-        CONFIG.timeout.fast / 2,
-        'TypeScript Fast'
-      ),
-      withTimeout(
-        runCommand('npx', ['svelte-check', '--threshold', 'error', '--output', 'human', '--diagnostic-sources', 'svelte', '--no-tsconfig']),
-        CONFIG.timeout.fast / 2,
-        'Svelte Fast'
+        runCommand('npx', ['tsc', '--noEmit', '--skipLibCheck', '--incremental', '--assumeChangesOnlyAffectDirectDependencies']), CONFIG.timeout.fast / 2, 'TypeScript Fast'
+      ), withTimeout(
+        runCommand('npx', ['svelte-check', '--threshold', 'error', '--output', 'human', '--diagnostic-sources', 'svelte', '--no-tsconfig']), CONFIG.timeout.fast / 2, 'Svelte Fast'
       )
     ]);
     
     const duration = Date.now() - startTime;
     const success = tsResult.code === 0 && svelteResult.code === 0;
     const allErrors = [
-      ...parseErrors(tsResult.stderr, 'contextFast-ts'),
-      ...parseErrors(svelteResult.stderr, 'contextFast-svelte')
+      ...parseErrors(tsResult.stderr, 'contextFast-ts'), ...parseErrors(svelteResult.stderr, 'contextFast-svelte')
     ];
     
     unifiedReport.methods.contextFast = {
-      status: success ? 'passed' : 'failed',
-      duration,
-      errors: allErrors,
+      status: success ? 'passed' : 'failed', duration: errors: allErrors;
       output: {
-        typescript: tsResult.stdout + tsResult.stderr,
-        svelte: svelteResult.stdout + svelteResult.stderr
+        typescript: tsResult.stdout + tsResult.stderr: svelte: svelteResult.stdout + svelteResult.stderr
       }
     };
     
     console.log(`${success ? '✅' : '❌'} Context7 fast check completed in ${duration}ms (${allErrors.length} errors)`);
-    return { success, duration, errors: allErrors };
+    return { success, duration: errors: allErrors };
     
   } catch (error) {
     const duration = Date.now() - startTime;
     unifiedReport.methods.contextFast = {
-      status: 'error',
-      duration,
-      errors: [],
-      output: error.message
+      status: 'error', duration: errors: [], output: error.message
     };
     console.log(`💥 Context7 fast check failed: ${error.message}`);
-    return { success: false, duration, errors: [] };
+    return { success: false, duration: errors: [] };
   }
 }
 
@@ -233,9 +187,7 @@ async function standardIncrementalCheck() {
   try {
     // Phase-by-phase execution
     const phases = [
-      { name: 'SvelteKit Sync', cmd: ['svelte-kit', 'sync'], timeout: 30000 },
-      { name: 'TypeScript Check', cmd: ['tsc', '--noEmit', '--skipLibCheck', '--incremental'], timeout: 60000 },
-      { name: 'Svelte Check', cmd: ['svelte-check', '--threshold', 'error', '--output', 'human'], timeout: 90000 }
+      { name: 'SvelteKit Sync', cmd: ['svelte-kit', 'sync'], timeout: 30000 }, { name: 'TypeScript Check', cmd: ['tsc', '--noEmit', '--skipLibCheck', '--incremental'], timeout: 60000 }, { name: 'Svelte Check', cmd: ['svelte-check', '--threshold', 'error', '--output', 'human'], timeout: 90000 }
     ];
     
     let allOutput = '';
@@ -245,9 +197,7 @@ async function standardIncrementalCheck() {
     for (const phase of phases) {
       console.log(`📋 ${phase.name}...`);
       const phaseResult = await withTimeout(
-        runCommand('npx', phase.cmd),
-        phase.timeout,
-        phase.name
+        runCommand('npx', phase.cmd), phase.timeout, phase.name
       );
       
       allOutput += `\n=== ${phase.name} ===\n${phaseResult.stdout}\n${phaseResult.stderr}\n`;
@@ -262,25 +212,20 @@ async function standardIncrementalCheck() {
     const success = !phaseFailed;
     
     unifiedReport.methods.standardIncremental = {
-      status: success ? 'passed' : 'failed',
-      duration,
-      errors: allErrors,
+      status: success ? 'passed' : 'failed', duration: errors: allErrors;
       output: allOutput
     };
     
     console.log(`${success ? '✅' : '❌'} Standard incremental check completed in ${duration}ms (${allErrors.length} errors)`);
-    return { success, duration, errors: allErrors };
+    return { success, duration: errors: allErrors };
     
   } catch (error) {
     const duration = Date.now() - startTime;
     unifiedReport.methods.standardIncremental = {
-      status: 'error',
-      duration,
-      errors: [],
-      output: error.message
+      status: 'error', duration: errors: [], output: error.message
     };
     console.log(`💥 Standard incremental check failed: ${error.message}`);
-    return { success: false, duration, errors: [] };
+    return { success: false, duration: errors: [] };
   }
 }
 
@@ -292,9 +237,7 @@ const generateRecommendations = () => {
   // Performance recommendations
   if (contextFast.duration < standardIncremental.duration) {
     recommendations.push({
-      type: 'performance',
-      priority: 'high',
-      message: `Use Context7 fast check (${contextFast.duration}ms) instead of standard check (${standardIncremental.duration}ms) for ${Math.round((standardIncremental.duration - contextFast.duration) / contextFast.duration * 100)}% speed improvement`
+      type: 'performance', priority: 'high', message: `Use Context7 fast check (${contextFast.duration}ms) instead of standard check (${standardIncremental.duration}ms) for ${Math.round((standardIncremental.duration - contextFast.duration) / contextFast.duration * 100)}% speed improvement`
     });
   }
   
@@ -302,18 +245,14 @@ const generateRecommendations = () => {
   const totalErrors = unifiedReport.summary.totalErrors;
   if (totalErrors > 0) {
     recommendations.push({
-      type: 'errors',
-      priority: 'medium',
-      message: `Fix ${totalErrors} identified errors systematically, starting with legacy reactive statements`
+      type: 'errors', priority: 'medium', message: `Fix ${totalErrors} identified errors systematically, starting with legacy reactive statements`
     });
   }
   
   // TypeScript-only option
   if (ultraFast.status === 'passed') {
     recommendations.push({
-      type: 'development',
-      priority: 'low',
-      message: `Use ultra-fast check (${ultraFast.duration}ms) for quick TypeScript validation during development`
+      type: 'development', priority: 'low', message: `Use ultra-fast check (${ultraFast.duration}ms) for quick TypeScript validation during development`
     });
   }
   
@@ -323,9 +262,7 @@ const generateRecommendations = () => {
 // Consolidate all errors and categorize
 const consolidateErrors = () => {
   const allErrors = [
-    ...unifiedReport.methods.ultraFast.errors,
-    ...unifiedReport.methods.contextFast.errors,
-    ...unifiedReport.methods.standardIncremental.errors
+    ...unifiedReport.methods.ultraFast.errors, ...unifiedReport.methods.contextFast.errors, ...unifiedReport.methods.standardIncremental.errors
   ];
   
   // Remove duplicates based on file + line + message
@@ -346,8 +283,7 @@ const writeReports = async () => {
   try {
     // JSON Report
     await fs.writeFile(
-      CONFIG.output.json,
-      JSON.stringify(unifiedReport, null, 2)
+      CONFIG.output.json, JSON.stringify(unifiedReport, null, 2)
     );
     
     // TXT Report (Human-readable)
@@ -382,19 +318,13 @@ ${unifiedReport.recommendations.map(r => `${r.priority.toUpperCase()}: ${r.messa
     
     // Errors-only JSON for processing
     const errorsOnly = {
-      timestamp: unifiedReport.timestamp,
-      totalErrors: unifiedReport.summary.totalErrors,
-      categories: unifiedReport.errorCategories,
-      allErrors: [
-        ...unifiedReport.methods.ultraFast.errors,
-        ...unifiedReport.methods.contextFast.errors,
-        ...unifiedReport.methods.standardIncremental.errors
+      timestamp: unifiedReport.timestamp: totalErrors: unifiedReport.summary.totalErrors: categories: unifiedReport.errorCategories: allErrors: [
+        ...unifiedReport.methods.ultraFast.errors, ...unifiedReport.methods.contextFast.errors, ...unifiedReport.methods.standardIncremental.errors
       ]
     };
     
     await fs.writeFile(
-      CONFIG.output.errors,
-      JSON.stringify(errorsOnly, null, 2)
+      CONFIG.output.errors, JSON.stringify(errorsOnly, null, 2)
     );
     
     console.log(`\n📄 Reports written to:`);
@@ -419,9 +349,7 @@ async function main() {
     console.log('⏱️ Running all checks concurrently...');
     
     const [ultraResult, contextResult, standardResult] = await Promise.allSettled([
-      ultraFastCheck(),
-      contextFastCheck(), 
-      standardIncrementalCheck()
+      ultraFastCheck(), contextFastCheck(), standardIncrementalCheck()
     ]);
     
     // Update summary

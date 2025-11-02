@@ -1,11 +1,11 @@
-import { json } }from '@sveltejs/kit';
-import { criminals } }from '$lib/server/db/schema-postgres';
-import { db } }from '$lib/server/db/index';
-import { eq } }from 'drizzle-orm';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import { criminals  } from '$lib/server/db/schema-postgres';
+import { db  } from '$lib/server/db/index';
+import { eq  } from 'drizzle-orm';
+import type { RequestHandler  } from './$types';
 
 // Add typed payload for incoming updates/patches
-type CriminalPayload = Partial<{ firstName: string;, lastName: string;
+type CriminalPayload = Partial<{ firstName: string; lastName: string;
   middleName: string | null;
   aliases: string[];
   dateOfBirth: string | null;
@@ -36,44 +36,42 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    } }
+     }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    } }
+     }
     const criminalId = params.criminalId;
     if (!criminalId) {
       return json({ error: 'Criminal ID is required' }, { status: 400 });
-    } }
+     }
     const criminalResult = await db.select().from(criminals).where(eq(criminals.id, criminalId)).limit(1);
     if (!criminalResult.length) {
       return json({ error: 'Criminal record not found' }, { status: 404 });
-    } }
+     }
     return json(criminalResult[0]);
-  } }catch (err: any) {
+   }catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('Error fetching criminal record:', error);
-    return json({ error: 'Failed to fetch criminal record' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to fetch criminal record' }, { status: 500 }); };
 
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    } }
+     }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    } }
+     }
     const criminalId = params.criminalId;
     if (!criminalId) {
       return json({ error: 'Criminal ID is required' }, { status: 400 });
-    } }
+     }
     const data = (await request.json()) as CriminalPayload;
     // Check if criminal exists
     const existingCriminal = await db.select().from(criminals).where(eq(criminals.id, criminalId)).limit(1);
     if (!existingCriminal.length) {
       return json({ error: 'Criminal record not found' }, { status: 404 });
-    } }
+     }
     const updateData: Record<string, unknown> = {
       updatedAt: new Date()
     };
@@ -85,7 +83,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (Array.isArray(data.aliases)) updateData.aliases = data.aliases;
     if (data.dateOfBirth !== undefined) {
       updateData.dateOfBirth = data.dateOfBirth ? new Date(data.dateOfBirth) : null;
-    } }
+     }
     if (data.placeOfBirth !== undefined)
       updateData.placeOfBirth = typeof data.placeOfBirth === 'string' ? data.placeOfBirth.trim() : null;
     if (data.address !== undefined) updateData.address = typeof data.address === 'string' ? data.address.trim() : null;
@@ -121,99 +119,88 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .where(eq(criminals.id, criminalId))
       .returning();
     return json(updatedCriminal);
-  } }catch (err: any) {
+   }catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('Error updating criminal record:', error);
-    return json({ error: 'Failed to update criminal record' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to update criminal record' }, { status: 500 }); };
 
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    } }
+     }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    } }
+     }
     const criminalId = params.criminalId;
     if (!criminalId) {
       return json({ error: 'Criminal ID is required' }, { status: 400 });
-    } }
+     }
     // Check if criminal exists
     const existingCriminal = await db.select().from(criminals).where(eq(criminals.id, criminalId)).limit(1);
     if (!existingCriminal.length) {
       return json({ error: 'Criminal record not found' }, { status: 404 });
-    } }
+     }
     // Delete the criminal record (cascade will handle related records)
     const [deletedCriminal] = await db.delete(criminals).where(eq(criminals.id, criminalId)).returning();
     return json({ success: true, deletedCriminal });
-  } }catch (err: any) {
+   }catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('Error deleting criminal record:', error);
-    return json({ error: 'Failed to delete criminal record' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to delete criminal record' }, { status: 500 }); };
 
 // PATCH endpoint for partial updates (like status changes)
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
-    } }
+     }
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
-    } }
+     }
     const criminalId = params.criminalId;
     if (!criminalId) {
       return json({ error: 'Criminal ID is required' }, { status: 400 });
-    } }
+     }
     const data = (await request.json()) as CriminalPayload;
     // Check if criminal exists
     const existingCriminal = await db.select().from(criminals).where(eq(criminals.id, criminalId)).limit(1);
     if (!existingCriminal.length) {
       return json({ error: 'Criminal record not found' }, { status: 404 });
-    } }
+     }
     const updateData: Record<string, unknown> = {
       updatedAt: new Date()
     };
     // Handle specific patch operations with guards
     if (data.operation === 'updateThreatLevel') {
       updateData.threatLevel = data.threatLevel;
-    } }else if (data.operation === 'updateStatus') {
+     }else if (data.operation === 'updateStatus') {
       if (typeof data.status === 'string') updateData.status = data.status;
-    } }else if (data.operation === 'addAlias') {
-      const currentAliases = (existingCriminal[0].aliases as: string[]) || [];
+     }else if (data.operation === 'addAlias') {
+      const currentAliases = (existingCriminal[0].aliases as string[]) || [];
       if (typeof data.alias === 'string' && !currentAliases.includes(data.alias)) {
-        updateData.aliases = [...currentAliases, data.alias];
-      } }
-    } }else if (data.operation === 'removeAlias') {
-      const currentAliases = (existingCriminal[0].aliases as: string[]) || [];
+        updateData.aliases = [...currentAliases, data.alias]; }else if (data.operation === 'removeAlias') {
+      const currentAliases = (existingCriminal[0].aliases as string[]) || [];
       if (typeof data.alias === 'string') {
-        updateData.aliases = currentAliases.filter(alias => alias !== data.alias);
-      } }
-    } }else if (data.operation === 'updatePhoto') {
+        updateData.aliases = currentAliases.filter(alias => alias !== data.alias); }else if (data.operation === 'updatePhoto') {
       if (typeof data.photoUrl === 'string') updateData.photoUrl = data.photoUrl;
-    } }else if (data.operation === 'updateFingerprints') {
+     }else if (data.operation === 'updateFingerprints') {
       updateData.fingerprints = data.fingerprints;
-    } }else {
+     }else {
       // Regular field updates - guard types where appropriate
       Object.keys(data).forEach(key => {
         if (key !== 'operation' && key !== 'alias') {
           const val = (data as Record<string, unknown>)[key];
-          updateData[key] = val;
-        } }
-      });
-    } }
+          updateData[key] = val; });
+     }
     const [updatedCriminal] = await db
       .update(criminals)
       .set(updateData)
       .where(eq(criminals.id, criminalId))
       .returning();
     return json(updatedCriminal);
-  } }catch (err: any) {
+   }catch (err: any) {
     const error = err instanceof Error ? err : new Error(String(err));
     console.error('Error patching criminal record:', error);
-    return json({ error: 'Failed to update criminal record' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to update criminal record' }, { status: 500 }); };
+

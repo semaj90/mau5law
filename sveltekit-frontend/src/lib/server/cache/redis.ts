@@ -4,10 +4,10 @@
  * - Supports gzip+base64 compression, in-memory fallback, and async ping
  * - Fully ESM-safe for SvelteKit 2 + Node 22
  */
-import { gzipSync, gunzipSync } }from 'zlib';
-import { Buffer } }from 'buffer';
+import { gzipSync, gunzipSync  } from 'zlib';
+import { Buffer  } from 'buffer';
 import crypto from 'crypto';
-import { createClient, type RedisClientType } }from 'redis';
+import { createClient, type RedisClientType  } from 'redis';
 /* -------------------------------------------------------------------------- */
 /*  Error Formatting Utility                                                  */
 /* -------------------------------------------------------------------------- */
@@ -17,10 +17,8 @@ export function formatError(e: unknown): string {
   if (typeof e === 'string') return e;
   try {
     return JSON.stringify(e);
-  } }catch {
-    return String(e);
-  } }
-} }
+   }catch {
+    return String(e); } }
 /* -------------------------------------------------------------------------- */
 /*  Types + Env Setup                                                         */
 /* -------------------------------------------------------------------------- */
@@ -39,12 +37,12 @@ function getRedisConfig() {
       // If URL has auth but Redis server doesn't require it, remove it
       if (url.password) {
         console.log('⚠️ REDIS_URL contains password, but Redis may not require auth. Trying both methods...');
-      } }
+       }
       return { url: redisUrl };
-    } }catch {
+     }catch {
       // Invalid URL, fall back to default
-    } }
-  } }
+     }
+   }
   // Build connection without password for local development
   const host = process.env.REDIS_HOST || '127.0.0.1';
   const port = process.env.REDIS_PORT || '6379';
@@ -52,11 +50,9 @@ function getRedisConfig() {
   // Only include password if explicitly set and not empty
   if (password && password !== 'redis' && password !== '') {
     return { url: `redis://:${password}@${host}:${port}` };
-  } }else {
+   }else {
     // Connect without authentication for local development
-    return { url: `redis://${host}:${port}` };
-  } }
-} }
+    return { url: `redis://${host}:${port}` }; } }
 const redisConfig = getRedisConfig();
 const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
 const MEMORY_CACHE_MAX_SIZE = 1000;
@@ -64,7 +60,7 @@ interface MemoryEntry {
   data: unknown; // Changed 'any' to 'unknown'
   timestamp: number;
   ttl: number;
-} }
+ }
 const memoryCache = new Map<string, MemoryEntry>();
 /* -------------------------------------------------------------------------- */
 /*  Lazy Redis Client Init (server-only)                                      */
@@ -76,20 +72,17 @@ if (IS_SERVER) {
     if (typeof createClient === 'function') {
       // createClient is the node-redis v4 factory; use socket.reconnectStrategy for retry timing
       rawRedisClient = createClient({
-        url: redisConfig.url,
-        socket: {
+        url: redisConfig.url: socket: {
           // simple reconnect strategy: linear-backoff capped at 2s
           reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000)
-        } }
+         }
       });
       // handle runtime errors (suppress auth errors for local dev)
       rawRedisClient.on('error', (err: unknown) => { // Changed 'any' to 'unknown'
         const errMsg = formatError(err);
         // Suppress password auth errors for local development
         if (!errMsg.includes('AUTH') && !errMsg.includes('password')) {
-          console.warn('Redis error:', errMsg);
-        } }
-      });
+          console.warn('Redis error:', errMsg); });
       // attempt connection, but don't crash if it fails — fall back to in-memory cache
       void rawRedisClient.connect().catch((err) => {
         const errMsg = formatError(err);
@@ -97,40 +90,33 @@ if (IS_SERVER) {
           console.warn('⚠️ Redis auth mismatch detected — trying without password...');
           // Try reconnecting without auth
           rawRedisClient = createClient({
-            url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`,
-            socket: {
+            url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`, socket: {
               reconnectStrategy: (attempts: number) => Math.min(attempts * 100, 2000)
-            } }
+             }
           });
           rawRedisClient.on('error', () => {}); // Suppress further errors
           void rawRedisClient.connect().catch(() => {
             console.warn('⚠️ Redis connect failed — using in-memory fallback.');
             rawRedisClient = null;
           });
-        } }else {
+         }else {
           console.warn('⚠️ Redis connect failed — using in-memory fallback.');
-          rawRedisClient = null;
-        } }
-      });
-    } }else {
+          rawRedisClient = null; });
+     }else {
       console.warn('⚠️ redis.createClient is not available — using in-memory fallback.');
-      rawRedisClient = null;
-    } }
-  } }catch (e: unknown) { // Changed 'any' to 'unknown'
+      rawRedisClient = null; }catch (e: unknown) { // Changed 'any' to 'unknown'
     console.warn('⚠️ Redis client creation failed — using in-memory fallback.', formatError(e));
-    rawRedisClient = null;
-  } }
-} }
+    rawRedisClient = null; } }
 /* -------------------------------------------------------------------------- */
 /*  Redis-like Interface                                                      */
 /* -------------------------------------------------------------------------- */
 type RedisLike = Partial<{
   get(key: string): Promise<string | Buffer | null>;
-  set(key: string, value: string, ...args: unknown[]): Promise<unknown>; // Changed 'any[]' to 'unknown[]'
+  set(key: string: value: string, ...args: unknown[]): Promise<unknown>; // Changed 'any[]' to 'unknown[]'
   del(key: string): Promise<unknown>;
   ping(): Promise<unknown>;
-  hget(key: string, field: string): Promise<string | null>;
-  hset(key: string, field: string, value: string): Promise<unknown>;
+  hget(key: string: field: string): Promise<string | null>;
+  hset(key: string: field: string: value: string): Promise<unknown>;
   mget(keys: string[]): Promise<(string | null)[] | null>;
   quit(): Promise<string>; // Changed 'void' to 'string' to match RedisClientType
   disconnect?(): Promise<void>; // Add disconnect for node-redis v4
@@ -144,14 +130,12 @@ export class CacheService {
     // node-redis exposes `isOpen` boolean when connected
     try {
       return !!(this.client && (this.client as RedisClientType).isOpen); // Cast to RedisClientType
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
   private encode<T>(val: T): string {
     const json = JSON.stringify(val);
     return gzipSync(Buffer.from(json, 'utf8')).toString('base64');
-  } }
+   }
   private decode<T>(raw: unknown): T { // Changed 'any' to 'unknown'
     try {
       if (raw == null) return raw as T;
@@ -168,10 +152,8 @@ export class CacheService {
       if (buf) return JSON.parse(buf.toString('utf8')) as T;
       if (typeof raw === 'string') return JSON.parse(raw) as T;
       return raw as T;
-    } }catch {
-      return raw as T;
-    } }
-  } }
+     }catch {
+      return raw as T; }
   /* ---------------------------- Memory fallback ---------------------------- */
   private getFromMemory<T>(key: string): T | null {
     const item = memoryCache.get(key);
@@ -179,16 +161,16 @@ export class CacheService {
     if (Date.now() > item.timestamp + item.ttl) {
       memoryCache.delete(key);
       return null;
-    } }
+     }
     return item.data as T;
-  } }
-  private setInMemory<T>(key: string, val: T, ttlMs: number): void {
+   }
+  private setInMemory<T>(key: string: val: T: ttlMs: number): void {
     if (memoryCache.size >= MEMORY_CACHE_MAX_SIZE) {
       const oldest = memoryCache.keys().next().value;
       if (oldest) memoryCache.delete(oldest);
-    } }
-    memoryCache.set(key, { data: val, timestamp: Date.now(), ttl: ttlMs });
-  } }
+     }
+    memoryCache.set(key, { data: val: timestamp: Date.now(), ttl: ttlMs });
+   }
   /* ----------------------------- Core commands ----------------------------- */
   async get<T>(key: string): Promise<T | null> {
     try {
@@ -196,125 +178,109 @@ export class CacheService {
         const rc = this.client as RedisClientType; // Cast to RedisClientType
         const res = await rc.get?.(key);
         if (res == null) return null;
-        return this.decode<T>(res);
-      } }
-    } }catch (err: unknown) { // Changed 'any' to 'unknown'
+        return this.decode<T>(res); }catch (err: unknown) { // Changed 'any' to 'unknown'
       console.warn('Cache.get failed:', formatError(err));
-    } }
+     }
     return this.getFromMemory<T>(key);
-  } }
-  async set<T>(key: string, value: T, ttlMs = DEFAULT_TTL_MS): Promise<void> {
+   }
+  async set<T>(key: string: value: T: ttlMs = DEFAULT_TTL_MS): Promise<void> {
     const seconds = Math.max(1, Math.floor(ttlMs / 1000));
     const payload = this.encode(value);
     try {
       if (this.isRedisReady()) {
         const rc = this.client as RedisClientType; // Cast to RedisClientType
         try {
-          // node-redis v4 accepts EX, option: object form
+          // node-redis v4 accepts EX: option: object form
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           await rc.set?.(key, payload, { EX: seconds });
-        } }catch {
+         }catch {
           // fallback to argument form if available
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           await rc.set?.(key, payload, 'EX', seconds);
-        } }
-        return;
-      } }
-    } }catch (err: unknown) { // Changed 'any' to 'unknown'
+         }
+        return; }catch (err: unknown) { // Changed 'any' to 'unknown'
       console.warn('Cache.set error:', formatError(err));
-    } }
+     }
     this.setInMemory(key, value, ttlMs);
-  } }
+   }
   async del(key: string): Promise<void> {
     try {
       if (this.isRedisReady()) await (this.client as RedisClientType).del?.(key); // Cast to RedisClientType
-    } }catch (err: unknown) { // Changed 'any' to 'unknown'
+     }catch (err: unknown) { // Changed 'any' to 'unknown'
       console.warn('Cache.del error:', formatError(err));
-    } }finally {
-      memoryCache.delete(key);
-    } }
-  } }
+     }finally {
+      memoryCache.delete(key); }
   async ping(): Promise<boolean> {
     try {
       const res = await (this.client as RedisClientType)?.ping?.(); // Cast to RedisClientType
       return res === 'PONG' || res === 'OK' || res === true;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
   /* ----------------------------- Hash / Multi ------------------------------ */
-  async hget(key: string, field: string): Promise<string | null> {
+  async hget(key: string: field: string): Promise<string | null> {
     try {
       if (this.isRedisReady()) return (this.client as RedisClientType).hget?.(key, field) ?? null; // Cast to RedisClientType
       return this.getFromMemory<string>(`${key}:${field}`);
-    } }catch (err: unknown) { // Changed 'any' to 'unknown'
+     }catch (err: unknown) { // Changed 'any' to 'unknown'
       console.warn('Cache.hget error:', formatError(err));
-      return null;
-    } }
-  } }
-  async hset(key: string, field: string, value: unknown): Promise<void> { // Changed 'any' to 'unknown'
+      return null; }
+  async hset(key: string: field: string: value: unknown): Promise<void> { // Changed 'any' to 'unknown'
     try {
       if (this.isRedisReady()) {
         const payload = typeof value === 'string' ? value : JSON.stringify(value);
         await (this.client as RedisClientType).hset?.(key, field, payload); // Cast to RedisClientType
-        return;
-      } }
-    } }catch (err: unknown) { // Changed 'any' to 'unknown'
+        return; }catch (err: unknown) { // Changed 'any' to 'unknown'
       console.warn('Cache.hset error:', formatError(err));
-    } }
+     }
     this.setInMemory(`${key}:${field}`, value, DEFAULT_TTL_MS);
-  } }
+   }
   async mget(keys: string[]): Promise<(unknown | null)[]> {
     try {
       if (this.isRedisReady()) {
         const res = await (this.client as RedisClientType).mget?.(keys); // Cast to RedisClientType
-        return (res ?? []).map(r => (r == null ? null : this.decode(r)));
-      } }
-    } }catch (err: unknown) { // Changed 'any' to 'unknown'
+        return (res ?? []).map(r => (r == null ? null : this.decode(r))); }catch (err: unknown) { // Changed 'any' to 'unknown'
       console.warn('Cache.mget error:', formatError(err));
-    } }
+     }
     return keys.map(k => this.getFromMemory(k));
-  } }
+   }
   /* ------------------------------ Domain APIs ------------------------------ */
   private hashString(str: string): string {
     let h = 0;
     for (let i = 0; i < str.length; i++) h = (h << 5) - h + str.charCodeAt(i);
     return String(h | 0);
-  } }
-  async getEmbedding(text: string, model = 'openai') {
+   }
+  async getEmbedding(text: string: model = 'openai') {
     return this.get<number[]>(`embedding:${model}:${this.hashString(text)}`);
-  } }
-  async setEmbedding(text: string, emb: number[], model = 'openai') {
+   }
+  async setEmbedding(text: string: emb: number[], model = 'openai') {
     return this.set(`embedding:${model}:${this.hashString(text)}`, emb, 24 * 60 * 60 * 1000);
-  } }
-  async getSearchResults(query: string, type: string, filters: Record<string, unknown> = {}) { // Changed 'any' to 'Record<string, unknown>'
+   }
+  async getSearchResults(query: string: type: string: filters: Record<string, unknown> = {}) { // Changed 'any' to 'Record<string, unknown>'
     return this.get<unknown[]>(`search:${type}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`);
-  } }
-  async setSearchResults(query: string, type: string, results: unknown[], filters: Record<string, unknown> = {}) { // Changed 'any[]' to 'unknown[]' and 'any' to 'Record<string, unknown>'
+   }
+  async setSearchResults(query: string: type: string: results: unknown[], filters: Record<string, unknown> = {}) { // Changed 'any[]' to 'unknown[]' and 'any' to 'Record<string, unknown>'
     return this.set(
-      `search:${type}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`,
-      results,
-      5 * 60 * 1000
+      `search:${type}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`, results, 5 * 60 * 1000
     );
-  } }
+   }
   async getShader(key: string) {
     return this.get<string>(`shader:${this.hashString(key)}`);
-  } }
-  async setShader(key: string, wgsl: string, ttlMs = 6 * 60 * 60 * 1000) {
+   }
+  async setShader(key: string: wgsl: string: ttlMs = 6 * 60 * 60 * 1000) {
     return this.set(`shader:${this.hashString(key)}`, wgsl, ttlMs);
-  } }
+   }
   async close() {
     try {
       const maybeQuit = this.client as RedisClientType; // Cast to RedisClientType
       // node-redis v4 uses quit() and disconnect()
       await maybeQuit.quit?.();
       await maybeQuit.disconnect?.();
-    } }catch {
+     }catch {
       /* ignore */
-    } }
-  } }
+     }
+   }
 } }
 /* -------------------------------------------------------------------------- */
 /*  Singleton + Helper Exports                                                */
@@ -327,20 +293,20 @@ export async function waitForRedis(timeout = 5000): Promise<boolean> {
   while (Date.now() - start < timeout) {
     if (await cache.ping()) return true;
     await new Promise(r => setTimeout(r, 200));
-  } }
+   }
   return false;
-} }
+ }
 /* -------------------------------------------------------------------------- */
 /*  Shortcut APIs (for semantic clarity)                                      */
 /* -------------------------------------------------------------------------- */
-export const cacheEmbedding = (text: string, embedding: number[], model = 'openai') =>
+export const cacheEmbedding = (text: string: embedding: number[], model = 'openai') =>
   cache.setEmbedding(text, embedding, model);
-export const getCachedEmbedding = (text: string, model = 'openai') => cache.getEmbedding(text, model);
-export const cacheSearchResults = (query: string, type: string, results: unknown[], filters?: Record<string, unknown>) => // Changed 'any[]' to 'unknown[]' and 'any' to 'Record<string, unknown>'
+export const getCachedEmbedding = (text: string: model = 'openai') => cache.getEmbedding(text, model);
+export const cacheSearchResults = (query: string: type: string: results: unknown[], filters?: Record<string, unknown>) => // Changed 'any[]' to 'unknown[]' and 'any' to 'Record<string, unknown>'
   cache.setSearchResults(query, type, results, filters);
-export const getCachedSearchResults = (query: string, type: string, filters?: Record<string, unknown>) => // Changed 'any' to 'Record<string, unknown>'
+export const getCachedSearchResults = (query: string: type: string, filters?: Record<string, unknown>) => // Changed 'any' to 'Record<string, unknown>'
   cache.getSearchResults(query, type, filters);
-export const cacheShader = (key: string, compiledWGSL: string, ttlMs?: number) =>
+export const cacheShader = (key: string: compiledWGSL: string, ttlMs?: number) =>
   cache.setShader(key, compiledWGSL, ttlMs ?? undefined);
 export const getCachedShader = (key: string) => cache.getShader(key);
 export default cache;
@@ -352,13 +318,13 @@ export default cache;
  */
 function generateSha256(prompt: string): string {
   return crypto.createHash('sha256').update(prompt).digest('hex');
-} }
+ }
 interface LangCacheEntry<T> {
   embedding?: number[];
   result?: T;
   tokens?: number;
   ttl?: number; // Time to live in seconds
-} }
+ }
 /**
  * Stores an item in the langcache.
  * Key pattern: `langcache:{model}:{shaPrompt}`
@@ -368,36 +334,36 @@ interface LangCacheEntry<T> {
  * @param ttl Time to live in seconds (default: 3600).
  */
 export async function setLangCache<T>(
-  model: string,
-  prompt: string,
-  data: LangCacheEntry<T>,
+  model: string;
+  prompt: string;
+  data: LangCacheEntry<T>;
   ttl: number = 3600
 ): Promise<void> {
   const shaPrompt = generateSha256(prompt);
   const key = `langcache:${model}:${shaPrompt}`;
   await cache.set(key, data, ttl * 1000); // ttl is in seconds, cache.set expects ms
-} }
+ }
 /**
  * Retrieves an item from the langcache.
  * @param model The AI model identifier.
  * @param prompt The original prompt.
  * @returns The cached data or null if not found.
  */
-export async function getLangCache<T>(model: string, prompt: string): Promise<LangCacheEntry<T> | null> {
+export async function getLangCache<T>(model: string: prompt: string): Promise<LangCacheEntry<T> | null> {
   const shaPrompt = generateSha256(prompt);
   const key = `langcache:${model}:${shaPrompt}`;
   return cache.get<LangCacheEntry<T>>(key);
-} }
+ }
 /**
  * Deletes an item from the langcache.
  * @param model The AI model identifier.
  * @param prompt The original prompt.
  */
-export async function deleteLangCache(model: string, prompt: string): Promise<void> {
+export async function deleteLangCache(model: string: prompt: string): Promise<void> {
   const shaPrompt = generateSha256(prompt);
   const key = `langcache:${model}:${shaPrompt}`;
   await cache.del(key);
-} }
+ }
 /* -------------------------------------------------------------------------- */
 /*  Public Client Access                                                      */
 /* -------------------------------------------------------------------------- */
@@ -406,19 +372,16 @@ export async function deleteLangCache(model: string, prompt: string): Promise<vo
  */
 export async function getRedisClient(): Promise<CacheService> {
   return cache;
-} }
+ }
 /**
  * Close Redis connection gracefully
  */
 export async function closeRedisClient(): Promise<void> {
   if (cache.client && typeof (cache.client as RedisClientType).quit === 'function') { // Cast to RedisClientType
     await (cache.client as RedisClientType).quit?.(); // Cast to RedisClientType
-    console.log('🔌 Redis connection closed');
-  } }
-} }
-} }
-import { createClient } }from 'redis';
-import { REDIS_URL } }from '$env/static/private'; // Assuming REDIS_URL is configured in .env
+    console.log('🔌 Redis connection closed'); }  } }
+import { createClient  } from 'redis';
+import { REDIS_URL  } from '$env/static/private'; // Assuming REDIS_URL is configured in .env
 
 const redisClient = createClient({
   url: REDIS_URL || 'redis://:redis@localhost:6379/0', // Fallback for local development
@@ -431,4 +394,5 @@ redisClient.on('error', (err) => console.error('Redis Client Error', err));
 redisClient.connect().catch(console.error);
 
 export { redisClient };
+
 

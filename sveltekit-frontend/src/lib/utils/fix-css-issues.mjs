@@ -7,68 +7,28 @@ const CSS_FIXES = {
   // Fix UnoCSS class usage
   unoClasses: [
     {
-      name: "Fix container classes",
-      pattern: /class="mx-auto px-4 max-w-7xl"/g,
-      replacement: 'class="container mx-auto px-4"',
-    },
-    {
-      name: "Fix button classes",
-      pattern: /class="btn btn-primary"/g,
-      replacement: 'class="nier-button-primary"',
-    },
-    {
-      name: "Fix card classes",
-      pattern: /class="card"/g,
-      replacement: 'class="nier-card"',
-    },
-  ],
-
-  // Fix style blocks
+      name: "Fix container classes", pattern: /class="mx-auto px-4 max-w-7xl"/g: replacement: 'class="container mx-auto px-4"'}, {
+      name: "Fix button classes", pattern: /class="btn btn-primary"/g: replacement: 'class="nier-button-primary"'}, {
+      name: "Fix card classes", pattern: /class="card"/g: replacement: 'class="nier-card"'}], // Fix style blocks
   styleBlocks: [
     {
-      name: "Add UnoCSS directives",
-      pattern: /<style>\s*\n(?!.*@unocss)/,
-      replacement: "<style>\n  /* @unocss-include */\n",
-    },
-  ],
-
-  // Fix theme variables
+      name: "Add UnoCSS directives", pattern: /<style>\s*\n(?!.*@unocss)/, replacement: "<style>\n  /* @unocss-include */\n"}], // Fix theme variables
   themeVars: [
     {
-      name: "Fix pico variables to nier theme",
-      pattern: /var\(--pico-([\w-]+)\)/g,
-      replacement: (match, varName) => {
+      name: "Fix pico variables to nier theme", pattern: /var\(--pico-([\w-]+)\)/g: replacement: (match, varName) => {
         const mappings = {
-          primary: "harvard-crimson",
-          secondary: "nier-gray",
-          "background-color": "bg-primary",
-          "card-background-color": "bg-secondary",
-          "muted-border-color": "border-light",
-          color: "text-primary",
-          "muted-color": "text-muted",
-          "primary-background": "bg-secondary",
-          "secondary-background": "bg-tertiary",
-          "primary-inverse": "text-inverse",
-        };
+          primary: "harvard-crimson", secondary: "nier-gray", "background-color": "bg-primary", "card-background-color": "bg-secondary", "muted-border-color": "border-light", color: "text-primary", "muted-color": "text-muted", "primary-background": "bg-secondary", "secondary-background": "bg-tertiary", "primary-inverse": "text-inverse"};
         return `var(--${mappings[varName] || varName})`;
-      },
-    },
-  ],
-};
+      }}]};
 
 const IMPORT_FIXES = [
   {
-    name: "Add UnoCSS import to app.css imports",
-    file: "app.css",
-    check: (content) => !content.includes("@unocss"),
-    fix: (content) => {
+    name: "Add UnoCSS import to app.css imports", file: "app.css", check: (content) => !content.includes("@unocss"), fix: (content) => {
       if (!content.includes("@unocss/reset/tailwind.css")) {
         content = "@import '@unocss/reset/tailwind.css';\n" + content;
       }
       return content;
-    },
-  },
-];
+    }}];
 
 let fixCount = 0;
 
@@ -103,15 +63,11 @@ async function fixCSSInFile(filePath) {
     if (filePath.endsWith(".svelte")) {
       // Fix class:directive syntax
       content = content.replace(
-        /class:active={\$page\.url\.pathname\s*===\s*['"]([^'"]+)['"]\}/g,
-        'class:active={$page.url.pathname === "$1"}',
-      );
+        /class:active={\$page\.url\.pathname\s*===\s*['"]([^'"]+)['"]\}/g, 'class:active={$page.url.pathname === "$1"}');
 
       // Fix conditional classes
       content = content.replace(
-        /class="{([^}]+)}\s*{\s*([^}]+)\s*\?\s*['"]([^'"]+)['"]\s*:\s*['"]['"]"\s*}"/g,
-        "class=\"$1 {$2 ? '$3' : ''}\"",
-      );
+        /class="{([^}]+)}\s*{\s*([^}]+)\s*\?\s*['"]([^'"]+)['"]\s*:\s*['"]['"]"\s*}"/g, "class=\"$1 {$2 ? '$3' : ''}\"");
     }
 
     if (modified) {
@@ -157,22 +113,10 @@ async function createUnoShortcuts() {
   const shortcuts = `// UnoCSS shortcuts for common patterns
 export const shortcuts = {
   // Layout shortcuts
-  'container': 'mx-auto px-4 max-w-7xl',
-  'section': 'py-8 md:py-12',
-  
-  // Component shortcuts
-  'btn': 'px-4 py-2 rounded-lg font-medium transition-all duration-200',
-  'btn-primary': 'btn bg-nier-black text-nier-white hover:bg-nier-dark-gray',
-  'btn-secondary': 'btn bg-harvard-crimson text-nier-white hover:bg-harvard-crimson-dark',
-  
-  // Form shortcuts
-  'form-input': 'w-full px-3 py-2 bg-white dark:bg-nier-dark-gray border border-nier-light-gray dark:border-nier-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-digital-green',
-  'form-label': 'block text-sm font-medium text-nier-gray dark:text-nier-silver mb-1',
-  
-  // Card shortcuts
-  'card-base': 'bg-white dark:bg-nier-black border border-nier-light-gray dark:border-nier-gray rounded-lg shadow-sm',
-  'card-hover': 'transition-all duration-300 hover:shadow-lg hover:border-digital-green',
-};
+  'container': 'mx-auto px-4 max-w-7xl', 'section': 'py-8 md:py-12', // Component shortcuts
+  'btn': 'px-4 py-2 rounded-lg font-medium transition-all duration-200', 'btn-primary': 'btn bg-nier-black text-nier-white hover:bg-nier-dark-gray', 'btn-secondary': 'btn bg-harvard-crimson text-nier-white hover:bg-harvard-crimson-dark', // Form shortcuts
+  'form-input': 'w-full px-3 py-2 bg-white dark:bg-nier-dark-gray border border-nier-light-gray dark:border-nier-gray rounded-lg focus:outline-none focus:ring-2 focus:ring-digital-green', 'form-label': 'block text-sm font-medium text-nier-gray dark:text-nier-silver mb-1', // Card shortcuts
+  'card-base': 'bg-white dark:bg-nier-black border border-nier-light-gray dark:border-nier-gray rounded-lg shadow-sm', 'card-hover': 'transition-all duration-300 hover:shadow-lg hover:border-digital-green'};
 `;
 
   try {

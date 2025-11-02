@@ -16,12 +16,7 @@ console.log('🔧 Starting Component Export Fix...');
 
 // Track fixes
 const fixes = {
-  barrelExports: 0,
-  componentImports: 0,
-  eventHandlers: 0,
-  typeScriptSyntax: 0,
-  bitsUIProperties: 0,
-  filesModified: []
+  barrelExports: 0, componentImports: 0, eventHandlers: 0, typeScriptSyntax: 0, bitsUIProperties: 0, filesModified: []
 };
 
 /**
@@ -72,26 +67,12 @@ import Modal from "./Modal.svelte";
 import Tooltip from "./Tooltip.svelte";
 
 export {
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  Input,
-  Label,
-  Modal,
-  Tooltip
+  Badge, Button, Card, CardContent, CardFooter, CardHeader, CardTitle, Input, Label, Modal, Tooltip
 };
 
 // Re-export from enhanced-bits for direct access
 export {
-  Button as EnhancedButton,
-  Card as EnhancedCard,
-  Dialog as EnhancedDialog,
-  Select as EnhancedSelect,
-  Input as EnhancedInput
+  Button as EnhancedButton, Card as EnhancedCard, Dialog as EnhancedDialog, Select as EnhancedSelect, Input as EnhancedInput
 } from './enhanced-bits';
 
 // Legacy exports for compatibility
@@ -196,8 +177,7 @@ function fixBitsDemoImports() {
   
   // Fix imports to use local components instead of bits-ui directly
   content = content.replace(
-    `import { Dialog, Button, Select, AlertDialog } from 'bits-ui';`,
-    `import { Dialog, Button, Select } from '$lib/components/ui/enhanced-bits';
+    `import { Dialog, Button, Select, AlertDialog } from 'bits-ui';`, `import { Dialog, Button, Select } from '$lib/components/ui/enhanced-bits';
 import { AlertDialog } from 'bits-ui';`
   );
   
@@ -233,8 +213,7 @@ function fixEnhancedBitsSelectTypeScript() {
   
   // Fix interface declarations to be properly typed
   content = content.replace(
-    'interface SelectOption {',
-    'export interface SelectOption {'
+    'interface SelectOption {', 'export interface SelectOption {'
   );
   
   fs.writeFileSync(selectPath, content);
@@ -248,8 +227,7 @@ function fixEnhancedBitsSelectTypeScript() {
  */
 function fixComponentPropertyMismatches() {
   const componentFiles = [
-    'src/lib/components/BitsDemo.svelte',
-    'src/lib/components/ui/enhanced-bits/EnhancedBitsDemo.svelte'
+    'src/lib/components/BitsDemo.svelte', 'src/lib/components/ui/enhanced-bits/EnhancedBitsDemo.svelte'
   ];
   
   componentFiles.forEach(filePath => {
@@ -282,25 +260,18 @@ function fixComponentPropertyMismatches() {
 function createMissingBarrelExports() {
   const barrelFiles = [
     {
-      path: 'src/lib/components/ui/card/index.ts',
-      content: `export { default as Card } from './Card.svelte';
+      path: 'src/lib/components/ui/card/index.ts', content: `export { default as Card } from './Card.svelte';
 export { default as CardContent } from './CardContent.svelte';
 export { default as CardDescription } from './CardDescription.svelte';
 export { default as CardFooter } from './CardFooter.svelte';
 export { default as CardHeader } from './CardHeader.svelte';
 export { default as CardTitle } from './CardTitle.svelte';`
-    },
-    {
-      path: 'src/lib/components/ui/input/index.ts',
-      content: `export { default as Input } from '../Input.svelte';`
-    },
-    {
-      path: 'src/lib/components/ui/label/index.ts',
-      content: `export { default as Label } from '../Label.svelte';`
-    },
-    {
-      path: 'src/lib/components/ui/textarea/index.ts',
-      content: `export { default as Textarea } from './Textarea.svelte';`
+    }, {
+      path: 'src/lib/components/ui/input/index.ts', content: `export { default as Input } from '../Input.svelte';`
+    }, {
+      path: 'src/lib/components/ui/label/index.ts', content: `export { default as Label } from '../Label.svelte';`
+    }, {
+      path: 'src/lib/components/ui/textarea/index.ts', content: `export { default as Textarea } from './Textarea.svelte';`
     }
   ];
   
@@ -322,9 +293,7 @@ export { default as CardTitle } from './CardTitle.svelte';`
  */
 function fixSvelte5MigrationIssues() {
   const svelteFiles = [
-    'src/lib/components/BitsDemo.svelte',
-    'src/lib/components/ui/enhanced-bits/EnhancedBitsDemo.svelte',
-    'src/lib/components/ui/enhanced-bits/VectorIntelligenceDemo.svelte'
+    'src/lib/components/BitsDemo.svelte', 'src/lib/components/ui/enhanced-bits/EnhancedBitsDemo.svelte', 'src/lib/components/ui/enhanced-bits/VectorIntelligenceDemo.svelte'
   ];
   
   svelteFiles.forEach(filePath => {

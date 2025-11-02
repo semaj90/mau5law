@@ -1,7 +1,7 @@
-import { cuidSchema } }from '$lib/server/z-schemas';
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { z } }from 'zod';
+import { cuidSchema  } from '$lib/server/z-schemas';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { z  } from 'zod';
 
 // Minimal, single-file unified evidence analysis route (clean replacement).
 // This file intentionally small to avoid cascading type/lint issues during edits.
@@ -9,27 +9,24 @@ import { z } }from 'zod';
 type EvidenceItem = { id: string; filename: string };
 
 const ReqSchema = z.object({
-  evidenceIds: z.array(cuidSchema).min(1),
-  analysisScope: z
+  evidenceIds: z.array(cuidSchema).min(1), analysisScope: z
     .object({ vectorSimilarity: z.boolean().optional().default(true) })
     .optional()
-    .default({}),
-  parameters: z
+    .default({}), parameters: z
     .object({ similarityThreshold: z.number().min(0).max(1).optional().default(0.7) })
     .optional()
     .default({})
 });
 
 const mockDB: EvidenceItem[] = [
-  { id: '550e8400-e29b-41d4-a716-446655440001', filename: 'contract-breach-email.pdf' },
-  { id: '550e8400-e29b-41d4-a716-446655440002', filename: 'financial-records-Q4.xlsx' } }
+  { id: '550e8400-e29b-41d4-a716-446655440001', filename: 'contract-breach-email.pdf' }, { id: '550e8400-e29b-41d4-a716-446655440002', filename: 'financial-records-Q4.xlsx'  }
 ];
 
 function makeErrorBody(err: any) {
   if (err instanceof z.ZodError) return { message: 'Invalid request', details: err.errors };
   if (err instanceof Error) return { message: err.message };
   return { message: String(err) };
-} }
+ }
 
 async function withTimeout<T>(p: Promise<T>, ms: number) {
   let timer: ReturnType<typeof, setTimeout>;
@@ -38,10 +35,8 @@ async function withTimeout<T>(p: Promise<T>, ms: number) {
   });
   try {
     return (await Promise.race([p, to])) as T;
-  } }finally {
-    clearTimeout(timer);
-  } }
-} }
+   }finally {
+    clearTimeout(timer); } }
 
 export const POST: RequestHandler = async ({ request }) => {
   const start = Date.now();
@@ -52,40 +47,31 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!evidence.length) throw error(404, 'No evidence found');
 
     const result: any = {
-  analysisId: `unified_${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      evidenceCount: evidence.length,
-      unifiedInsights: { keyFindings: [] } }
+  analysisId: `unified_${Date.now()}`, timestamp: new Date().toISOString(), evidenceCount: evidence.length: unifiedInsights: { keyFindings: []  }
     };
 
-    // Vector, similarity: dynamic import so build/typecheck won't fail if module missing'
+    // Vector: similarity: dynamic import so build/typecheck won't fail if module missing'
     if (req.analysisScope.vectorSimilarity) {
       const mod = await import('../vector/similarity-engine.js').catch(() => null);
       if (mod?.AdvancedSimilarityEngine) {
         try {
           const sim = await withTimeout(
             mod.AdvancedSimilarityEngine.performSimilaritySearch({
-              query: 'analysis',
-              evidenceIds: req.evidenceIds,
-              threshold: req.parameters.similarityThreshold
-            }),
-            20000
+              query: 'analysis', evidenceIds: req.evidenceIds: threshold: req.parameters.similarityThreshold
+            }), 20000
           );
-          result.vectorAnalysis = { groups: (sim, as: any).clusters || [] };
-        } }catch (e) {
-          result.unifiedInsights.keyFindings.push('Vector similarity timed out or failed');
-        } }
-      } }
-    } }
+          result.vectorAnalysis = { groups: (sim, as any).clusters || [] };
+         }catch (e) {
+          result.unifiedInsights.keyFindings.push('Vector similarity timed out or failed'); }
+     }
 
     result.performance = { processingTimeMs: Date.now() - start };
     return json(result);
-  } }catch (err) {
+   }catch (err) {
     if (err instanceof z.ZodError) throw error(400, JSON.stringify(makeErrorBody(err)));
-    throw error(500, JSON.stringify(makeErrorBody(err)));
-  } }
-};
+    throw error(500, JSON.stringify(makeErrorBody(err))); };
 
 export const GET: RequestHandler = async () => {
-  return json({ capabilities: { vectorSimilarity: true }, status: { systemHealth: 'operational' } }});'' };
+  return json({ capabilities: { vectorSimilarity: true }, status: { systemHealth: 'operational' }  });'' };
+
 

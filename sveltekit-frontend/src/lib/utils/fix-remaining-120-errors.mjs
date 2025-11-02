@@ -9,48 +9,29 @@ import { readFile, writeFile } from 'fs/promises';
 const ERROR_FIXES = [
   // Fix Expression expected errors
   {
-    pattern: /(\w+):\s*,\s*$/gm,
-    replacement: '$1: undefined,'
-  },
-  
-  // Fix missing closing parentheses
+    pattern: /(\w+):\s*,\s*$/gm: replacement: '$1: undefined,'
+  }, // Fix missing closing parentheses
   {
-    pattern: /\(\s*\{[^}]*\}\s*$/gm,
-    replacement: (match) => match + ')'
-  },
-  
-  // Fix incomplete function calls
+    pattern: /\(\s*\{[^}]*\}\s*$/gm: replacement: (match) => match + ')'
+  }, // Fix incomplete function calls
   {
-    pattern: /\.\w+\(\s*$/gm,
-    replacement: (match) => match + ')'
-  },
-  
-  // Fix trailing commas that break syntax
+    pattern: /\.\w+\(\s*$/gm: replacement: (match) => match + ')'
+  }, // Fix trailing commas that break syntax
   {
-    pattern: /,(\s*[}\)])/g,
-    replacement: '$1'
-  },
-  
-  // Fix malformed object properties
+    pattern: /,(\s*[}\)])/g: replacement: '$1'
+  }, // Fix malformed object properties
   {
-    pattern: /(\w+):\s*\{[^}]*$/gm,
-    replacement: (match) => {
+    pattern: /(\w+):\s*\{[^}]*$/gm: replacement: (match) => {
       const openBraces = (match.match(/\{/g) || []).length;
       const closeBraces = (match.match(/\}/g) || []).length;
       return match + '}'.repeat(openBraces - closeBraces);
     }
-  },
-  
-  // Fix incomplete array definitions
+  }, // Fix incomplete array definitions
   {
-    pattern: /\[[^\]]*$/gm,
-    replacement: (match) => match + ']'
-  },
-  
-  // Fix missing semicolons
+    pattern: /\[[^\]]*$/gm: replacement: (match) => match + ']'
+  }, // Fix missing semicolons
   {
-    pattern: /(\w+)\s*$/gm,
-    replacement: '$1;'
+    pattern: /(\w+)\s*$/gm: replacement: '$1;'
   }
 ];
 
@@ -58,22 +39,17 @@ const FILE_SPECIFIC_FIXES = {
   'superforms-xstate-integration.ts': [
     // Fix line 95 expression expected error
     {
-      pattern: /(\$\{[^}]*)\$/g,
-      replacement: '$1}'
+      pattern: /(\$\{[^}]*)\$/g: replacement: '$1}'
     }
-  ],
-  'phase13StateMachine.ts': [
+  ], 'phase13StateMachine.ts': [
     // Fix line 678 expression expected
     {
-      pattern: /actions:\s*\[/g,
-      replacement: 'actions: ['
+      pattern: /actions:\s*\[/g: replacement: 'actions: ['
     }
-  ],
-  'enhancedLokiStore.ts': [
+  ], 'enhancedLokiStore.ts': [
     // Fix line 807 syntax issues
     {
-      pattern: /\$\{/g,
-      replacement: '{'
+      pattern: /\$\{/g: replacement: '{'
     }
   ]
 };
@@ -119,28 +95,7 @@ async function fixTypeScriptErrors(filePath) {
 
 // List of 22 files with errors
 const ERROR_FILES = [
-  'src/lib/forms/superforms-xstate-integration.ts',
-  'src/lib/services/aiServiceWorkerManager.ts',
-  'src/lib/services/caseService.ts',
-  'src/lib/services/compiler-feedback-loop.ts',
-  'src/lib/services/comprehensive-caching-service.ts',
-  'src/lib/services/comprehensive-integration.ts',
-  'src/lib/services/enhancedRAG.ts',
-  'src/lib/services/gpu-cluster-acceleration.ts',
-  'src/lib/services/nodejs-cluster-architecture.ts',
-  'src/lib/services/ocrService.ts',
-  'src/lib/services/performance-optimization-service.ts',
-  'src/lib/services/qdrantService.ts',
-  'src/lib/services/realtime-communication.ts',
-  'src/lib/state/phase13StateMachine.ts',
-  'src/lib/state/xstate-store.ts',
-  'src/lib/stores/analyticsStore.ts',
-  'src/lib/stores/enhancedLokiStore.ts',
-  'src/lib/stores/evidence-store.ts',
-  'src/lib/stores/report.ts',
-  'src/lib/stores/upload-machine.ts',
-  'src/lib/stores/user.ts',
-  'src/lib/utils/webgl-shader-cache.ts'
+  'src/lib/forms/superforms-xstate-integration.ts', 'src/lib/services/aiServiceWorkerManager.ts', 'src/lib/services/caseService.ts', 'src/lib/services/compiler-feedback-loop.ts', 'src/lib/services/comprehensive-caching-service.ts', 'src/lib/services/comprehensive-integration.ts', 'src/lib/services/enhancedRAG.ts', 'src/lib/services/gpu-cluster-acceleration.ts', 'src/lib/services/nodejs-cluster-architecture.ts', 'src/lib/services/ocrService.ts', 'src/lib/services/performance-optimization-service.ts', 'src/lib/services/qdrantService.ts', 'src/lib/services/realtime-communication.ts', 'src/lib/state/phase13StateMachine.ts', 'src/lib/state/xstate-store.ts', 'src/lib/stores/analyticsStore.ts', 'src/lib/stores/enhancedLokiStore.ts', 'src/lib/stores/evidence-store.ts', 'src/lib/stores/report.ts', 'src/lib/stores/upload-machine.ts', 'src/lib/stores/user.ts', 'src/lib/utils/webgl-shader-cache.ts'
 ];
 
 async function main() {

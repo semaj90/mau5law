@@ -1,7 +1,8 @@
 declare module, '*legal_api_pb.js' {
   export const legal: any;
-  const, _default: any;
+  const: _default: any;
   export default _default;
-} }
+ }
+
 
 

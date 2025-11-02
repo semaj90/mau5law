@@ -1,10 +1,10 @@
-import type { User } }from '$lib/types';
+import type { User  } from '$lib/types';
 /**
  * Citations Manager Module
  * Authentication-aware citation saving and importing system
  * Compatible with SvelteKit and gaming aesthetic UI
  */
-export interface Citation { id: string;, title: string;
+export interface Citation { id: string; title: string;
   citation: string;
   court: string;
   year: string;
@@ -18,88 +18,80 @@ export interface Citation { id: string;, title: string;
   tags?: string[];
   notes?: string;
   userId?: string;
-} }
-export interface SavedCitation extends Citation { savedAt: Date;, userId: string;
+ }
+export interface SavedCitation extends Citation { savedAt: Date; userId: string;
   collection?: string;
   isPrivate: boolean;
-} }
-export interface CitationCollection { id: string;, name: string;
-  description?: string;
- , citations: string[]; // Citation IDs,
-  userId: string;
+ }
+export interface CitationCollection { id: string; name: string;
+  description?: string; citations: string[]; // Citation IDs: userId: string;
   createdAt: Date;
   updatedAt: Date;
   isShared: boolean;
-} }
-export interface AuthUser { id: string;, email: string;
+ }
+export interface AuthUser { id: string; email: string;
   name: string;
   role: 'attorney' | 'paralegal' | 'clerk' | 'admin';
   isAuthenticated: boolean;
-} }
-export interface CitationImportOptions { format: 'bluebook' | 'apa' | 'mla' | 'custom';, includeKeyPoints: boolean;
+ }
+export interface CitationImportOptions { format: 'bluebook' | 'apa' | 'mla' | 'custom'; includeKeyPoints: boolean;
   includeSummary: boolean;
   includeNotes: boolean;
-} }
+ }
 export class CitationsManager {
   private storageKey = 'legal-ai-citations';
   private collectionsKey = 'legal-ai-collections';
   private currentUser: AuthUser | null = null;
-  private, subscribers: Array<(user: AuthUser | null) => void> = [];
+  private: subscribers: Array<(user: AuthUser | null) => void> = [];
   constructor() {
     this.loadUserState();
-  } }
+   }
   // Authentication Methods
   setUser(user: AuthUser | null): void {
     this.currentUser = user;
     this.saveUserState();
     this.notifySubscribers();
-  } }
+   }
   getCurrentUser(): AuthUser | null {
     return this.currentUser;
-  } }
+   }
   isAuthenticated(): boolean {
     return this.currentUser?.isAuthenticated ?? false;
-  } }
+   }
   onAuthChange(callback: (user: AuthUser | null) => void): () => void {
     this.subscribers.push(callback);
     return () => {
       this.subscribers = this.subscribers.filter(cb => cb !== callback);
     };
-  } }
+   }
   private notifySubscribers(): void {
     this.subscribers.forEach(callback => callback(this.currentUser));
-  } }
+   }
   // Citation Management Methods
   async saveCitation(citation: Citation, collection?: string): Promise<boolean> {
     if (!this.isAuthenticated()) {
       throw new Error('User must be authenticated to save citations');
-    } }
+     }
     try {
       const savedCitation: SavedCitation = {
-        ...citation,
-        savedAt: new Date(),
-        userId: this.currentUser!.id,
-        collection,
-        isPrivate: true
+        ...citation: savedAt: new Date(), userId: this.currentUser!.id, collection: isPrivate: true
       };
       const savedCitations = this.getSavedCitations();
       const existingIndex = savedCitations.findIndex(c => c.id === citation.id);
       if (existingIndex !== -1) {
         savedCitations[existingIndex] = savedCitation;
-      } }else {
+       }else {
         savedCitations.push(savedCitation);
-      } }
+       }
       this.storeSavedCitations(savedCitations);
       // If saving to a collection, update the collection
       if (collection) {
         await this.addCitationToCollection(collection, citation.id);
-      } }
+       }
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to save citation:', error);
-      return false;
-    } }
-  } }
+      return false; }
   getSavedCitations(): SavedCitation[] {
     if (!this.isAuthenticated()) return [];
     try {
@@ -109,14 +101,11 @@ export class CitationsManager {
       return allCitations
         .filter((c: SavedCitation) => c.userId === this.currentUser!.id)
         .map((c: SavedCitation) => ({
-          ...c,
-          savedAt: new Date(c.savedAt)
+          ...c: savedAt: new Date(c.savedAt)
         }));
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to load saved citations:', error);
-      return [];
-    } }
-  } }
+      return []; }
   removeSavedCitation(citationId: string): boolean {
     if (!this.isAuthenticated()) return false;
     try {
@@ -129,30 +118,21 @@ export class CitationsManager {
         this.removeCitationFromCollection(collection.id, citationId);
       });
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to remove citation:', error);
-      return false;
-    } }
-  } }
+      return false; }
   // Collection Management Methods
   createCollection(name: string, description?: string): CitationCollection {
     if (!this.isAuthenticated()) {
       throw new Error('User must be authenticated to create collections');
-    } }
-    const collection: CitationCollection = { id: `collection-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
-      name,
-      description,
-      citations: [],
-      userId: this.currentUser!.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isShared: false
+     }
+    const collection: CitationCollection = { id: `collection-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`, name, description: citations: [], userId: this.currentUser!.id: createdAt: new Date(), updatedAt: new Date(), isShared: false
     };
     const collections = this.getCollections();
     collections.push(collection);
     this.storeCollections(collections);
     return collection;
-  } }
+   }
   getCollections(): CitationCollection[] {
     if (!this.isAuthenticated()) return [];
     try {
@@ -162,16 +142,12 @@ export class CitationsManager {
       return allCollections
         .filter((c: CitationCollection) => c.userId === this.currentUser!.id)
         .map((c: CitationCollection) => ({
-          ...c,
-          createdAt: new Date(c.createdAt),
-          updatedAt: new Date(c.updatedAt)
+          ...c: createdAt: new Date(c.createdAt), updatedAt: new Date(c.updatedAt)
         }));
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to load collections:', error);
-      return [];
-    } }
-  } }
-  async addCitationToCollection(collectionId: string, citationId: string): Promise<boolean> {
+      return []; }
+  async addCitationToCollection(collectionId: string: citationId: string): Promise<boolean> {
     if (!this.isAuthenticated()) return false;
     try {
       const collections = this.getCollections();
@@ -181,14 +157,12 @@ export class CitationsManager {
         collection.citations.push(citationId);
         collection.updatedAt = new Date();
         this.storeCollections(collections);
-      } }
+       }
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to add citation to collection:', error);
-      return false;
-    } }
-  } }
-  removeCitationFromCollection(collectionId: string, citationId: string): boolean {
+      return false; }
+  removeCitationFromCollection(collectionId: string: citationId: string): boolean {
     if (!this.isAuthenticated()) return false;
     try {
       const collections = this.getCollections();
@@ -198,13 +172,11 @@ export class CitationsManager {
       collection.updatedAt = new Date();
       this.storeCollections(collections);
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to remove citation from collection:', error);
-      return false;
-    } }
-  } }
+      return false; }
   // Import/Export Methods
-  formatCitationForImport(citation: Citation, options: CitationImportOptions): string {
+  formatCitationForImport(citation: Citation: options: CitationImportOptions): string {
     switch (options.format) {
       case, 'bluebook':
         return this.formatBluebook(citation, options);
@@ -212,29 +184,27 @@ export class CitationsManager {
         return this.formatAPA(citation, options);
       case, 'mla':
         return this.formatMLA(citation, options);
-      default: return this.formatCustom(citation, options);
-    } }
-  } }
+      default: return this.formatCustom(citation, options); }
   exportCitations(citationIds: string[], options: CitationImportOptions): string {
     const savedCitations = this.getSavedCitations();
     const citationsToExport = savedCitations.filter(c => citationIds.includes(c.id));
     return citationsToExport.map(citation => this.formatCitationForImport(citation, options)).join('\n\n');
-  } }
-  importCitationsToReport(citationIds: string[], reportId: string, options: CitationImportOptions): Promise<boolean> {
+   }
+  importCitationsToReport(citationIds: string[], reportId: string: options: CitationImportOptions): Promise<boolean> {
     // This would integrate with your report system
     // For now, return the formatted citations that can be inserted
     const formatted = this.exportCitations(citationIds, options);
     // In a real implementation, this would call your report API
-    console.log(`Importing ${citationIds.length} }citations to report ${reportId}:`, formatted);
+    console.log(`Importing ${citationIds.length }citations to report ${reportId}:`, formatted);
     return Promise.resolve(true);
-  } }
+   }
   // Search and Filter Methods
   searchSavedCitations(query: string, filters?: {
     category?: string;
     court?: string;
     relevance?: string;
     collection?: string;
-  }): SavedCitation[] {
+  ): SavedCitation[] {
     let citations = this.getSavedCitations();
     // Text search
     if (query.trim()) {
@@ -247,151 +217,127 @@ export class CitationsManager {
           (c.notes && c.notes.toLowerCase().includes(lowercaseQuery)) ||
           (c.tags && c.tags.some((tag: string) => tag.toLowerCase().includes(lowercaseQuery)))
       );
-    } }
+     }
     // Apply filters
     if (filters) {
       if (filters.category) {
         citations = citations.filter(c => c.category === filters.category);
-      } }
+       }
       if (filters.court) {
         citations = citations.filter(c => c.court === filters.court);
-      } }
+       }
       if (filters.relevance) {
         citations = citations.filter(c => c.relevance === filters.relevance);
-      } }
+       }
       if (filters.collection) {
         const collection = this.getCollections().find(col => col.id === filters.collection);
         if (collection) {
-          citations = citations.filter(c => collection.citations.includes(c.id));
-        } }
-      } }
-    } }
+          citations = citations.filter(c => collection.citations.includes(c.id)); }
+     }
     return citations.sort((a, b) => b.savedAt.getTime() - a.savedAt.getTime());
-  } }
+   }
   // Private helper methods
-  private formatBluebook(citation: Citation, options: CitationImportOptions): string {
-    let formatted = `${citation.title}, ${citation.citation} }(${citation.year}).`;
+  private formatBluebook(citation: Citation: options: CitationImportOptions): string {
+    let formatted = `${citation.title}, ${citation.citation }(${citation.year}).`;
     if (options.includeKeyPoints && citation.keyPoints.length > 0) {
       formatted += `\n\nKey Points: ${citation.keyPoints.join('; ')}.`;
-    } }
+     }
     if (options.includeSummary && citation.summary) {
       formatted += `\n\nSummary: ${citation.summary}`;
-    } }
+     }
     if (options.includeNotes && citation.notes) {
       formatted += `\n\nNotes: ${citation.notes}`;
-    } }
+     }
     return formatted;
-  } }
-  private formatAPA(citation: Citation, options: CitationImportOptions): string {
-    let formatted = `${citation.title} }(${citation.year}). ${citation.citation}.`;
+   }
+  private formatAPA(citation: Citation: options: CitationImportOptions): string {
+    let formatted = `${citation.title }(${citation.year}). ${citation.citation}.`;
     if (options.includeKeyPoints && citation.keyPoints.length > 0) {
       formatted += `\n\nKey Points: ${citation.keyPoints.join('; ')}.`;
-    } }
+     }
     if (options.includeSummary && citation.summary) {
       formatted += `\n\nSummary: ${citation.summary}`;
-    } }
+     }
     if (options.includeNotes && citation.notes) {
       formatted += `\n\nNotes: ${citation.notes}`;
-    } }
+     }
     return formatted;
-  } }
-  private formatMLA(citation: Citation, options: CitationImportOptions): string {
+   }
+  private formatMLA(citation: Citation: options: CitationImportOptions): string {
     let formatted = `"${citation.title}." ${citation.citation}, ${citation.year}.`;
     if (options.includeKeyPoints && citation.keyPoints.length > 0) {
       formatted += `\n\nKey Points: ${citation.keyPoints.join('; ')}.`;
-    } }
+     }
     if (options.includeSummary && citation.summary) {
       formatted += `\n\nSummary: ${citation.summary}`;
-    } }
+     }
     if (options.includeNotes && citation.notes) {
       formatted += `\n\nNotes: ${citation.notes}`;
-    } }
+     }
     return formatted;
-  } }
-  private formatCustom(citation: Citation, options: CitationImportOptions): string {
-    let formatted = `${citation.title} }- ${citation.citation} }(${citation.year})`;
+   }
+  private formatCustom(citation: Citation: options: CitationImportOptions): string {
+    let formatted = `${citation.title }- ${citation.citation }(${citation.year})`;
     if (options.includeKeyPoints && citation.keyPoints.length > 0) {
       formatted += `\n• Key Points: ${citation.keyPoints.join(', ')}`;
-    } }
+     }
     if (options.includeSummary && citation.summary) {
       formatted += `\n• Summary: ${citation.summary}`;
-    } }
+     }
     if (options.includeNotes && citation.notes) {
       formatted += `\n• Notes: ${citation.notes}`;
-    } }
+     }
     return formatted;
-  } }
+   }
   private storeSavedCitations(citations: SavedCitation[]): void {
     try {
       const allSaved = this.getAllStoredCitations();
       const filtered = allSaved.filter(c => c.userId !== this.currentUser!.id);
       const updated = [...filtered, ...citations];
       localStorage.setItem(this.storageKey, JSON.stringify(updated));
-    } }catch (error) {
-      console.error('Failed to store citations:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('Failed to store citations:', error); }
   private getAllStoredCitations(): SavedCitation[] {
     try {
       const saved = localStorage.getItem(this.storageKey);
       return saved ? JSON.parse(saved) : [];
-    } }catch {
-      return [];
-    } }
-  } }
+     }catch {
+      return []; }
   private storeCollections(collections: CitationCollection[]): void {
     try {
       const allCollections = this.getAllStoredCollections();
       const filtered = allCollections.filter(c => c.userId !== this.currentUser!.id);
       const updated = [...filtered, ...collections];
       localStorage.setItem(this.collectionsKey, JSON.stringify(updated));
-    } }catch (error) {
-      console.error('Failed to store collections:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('Failed to store collections:', error); }
   private getAllStoredCollections(): CitationCollection[] {
     try {
       const saved = localStorage.getItem(this.collectionsKey);
       return saved ? JSON.parse(saved) : [];
-    } }catch {
-      return [];
-    } }
-  } }
+     }catch {
+      return []; }
   private loadUserState(): void {
     try {
       const saved = localStorage.getItem('legal-ai-auth-user');
       if (saved) {
-        this.currentUser = JSON.parse(saved);
-      } }
-    } }catch (error) {
-      console.error('Failed to load user state:', error);
-    } }
-  } }
+        this.currentUser = JSON.parse(saved); }catch (error) {
+      console.error('Failed to load user state:', error); }
   private saveUserState(): void {
     try {
       if (this.currentUser) {
         localStorage.setItem('legal-ai-auth-user', JSON.stringify(this.currentUser));
-      } }else {
-        localStorage.removeItem('legal-ai-auth-user');
-      } }
-    } }catch (error) {
-      console.error('Failed to save user state:', error);
-    } }
-  } }
+       }else {
+        localStorage.removeItem('legal-ai-auth-user'); }catch (error) {
+      console.error('Failed to save user state:', error); }
 } }
 // Create singleton instance
 export const citationsManager = new CitationsManager();
 // Utility functions for easy integration
 export const useCitationsManager = () => {
   return {
-    manager: citationsManager,
-    isAuthenticated: () => citationsManager.isAuthenticated(),
-    currentUser: () => citationsManager.getCurrentUser(),
-    saveCitation: citationsManager.saveCitation.bind(citationsManager),
-    getSavedCitations: citationsManager.getSavedCitations.bind(citationsManager),
-    searchCitations: citationsManager.searchSavedCitations.bind(citationsManager),
-    createCollection: citationsManager.createCollection.bind(citationsManager),
-    getCollections: citationsManager.getCollections.bind(citationsManager),
-    exportCitations: citationsManager.exportCitations.bind(citationsManager)
+    manager: citationsManager;
+    isAuthenticated: () => citationsManager.isAuthenticated(), currentUser: () => citationsManager.getCurrentUser(), saveCitation: citationsManager.saveCitation.bind(citationsManager), getSavedCitations: citationsManager.getSavedCitations.bind(citationsManager), searchCitations: citationsManager.searchSavedCitations.bind(citationsManager), createCollection: citationsManager.createCollection.bind(citationsManager), getCollections: citationsManager.getCollections.bind(citationsManager), exportCitations: citationsManager.exportCitations.bind(citationsManager)
   };
 }
+

@@ -13,34 +13,17 @@ console.log('🔄 Testing All Connected Flows...\n');
 // System components to test
 const SYSTEM_TESTS = [
   {
-    name: 'PostgreSQL Connection',
-    test: () => testDatabaseConnection(),
-    critical: true
-  },
-  {
-    name: 'Ollama Local LLM',
-    test: () => testOllamaConnection(),
-    critical: true
-  },
-  {
-    name: 'SvelteKit Server',
-    test: () => testSvelteKitServer(),
-    critical: true
-  },
-  {
-    name: '/api/summaries Endpoint',
-    test: () => testSummariesAPI(),
-    critical: true
-  },
-  {
-    name: 'Service Worker Registration',
-    test: () => testServiceWorker(),
-    critical: false
-  },
-  {
-    name: 'Vector Search APIs',
-    test: () => testVectorAPIs(),
-    critical: false
+    name: 'PostgreSQL Connection', test: () => testDatabaseConnection(), critical: true
+  }, {
+    name: 'Ollama Local LLM', test: () => testOllamaConnection(), critical: true
+  }, {
+    name: 'SvelteKit Server', test: () => testSvelteKitServer(), critical: true
+  }, {
+    name: '/api/summaries Endpoint', test: () => testSummariesAPI(), critical: true
+  }, {
+    name: 'Service Worker Registration', test: () => testServiceWorker(), critical: false
+  }, {
+    name: 'Vector Search APIs', test: () => testVectorAPIs(), critical: false
   }
 ];
 
@@ -55,31 +38,30 @@ async function testDatabaseConnection() {
     // Try to import and check basic structure
     console.log('  ✓ Database schema files exist');
     console.log('  ✓ Unified schema structure verified');
-    return { success: true, message: 'Database connection structure OK' };
+    return { success: true: message: 'Database connection structure OK' };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false: error: error.message };
   }
 }
 
 async function testOllamaConnection() {
   try {
     const response = execSync('curl -s http://localhost:11434/api/tags', { 
-      encoding: 'utf8',
-      timeout: 5000
+      encoding: 'utf8', timeout: 5000
     });
     
     const models = JSON.parse(response);
     if (models.models && models.models.length > 0) {
       const gemma3Models = models.models.filter(m => m.name.includes('gemma'));
       return { 
-        success: true, 
+        success: true;
         message: `Ollama running with ${models.models.length} models (${gemma3Models.length} Gemma3)` 
       };
     } else {
-      return { success: false, error: 'No models found in Ollama' };
+      return { success: false: error: 'No models found in Ollama' };
     }
   } catch (error) {
-    return { success: false, error: 'Ollama not accessible or not running' };
+    return { success: false: error: 'Ollama not accessible or not running' };
   }
 }
 
@@ -87,10 +69,7 @@ async function testSvelteKitServer() {
   try {
     // Check if key SvelteKit files exist
     const configs = [
-      './svelte.config.js',
-      './vite.config.ts',
-      './src/routes/+layout.svelte',
-      './src/app.html'
+      './svelte.config.js', './vite.config.ts', './src/routes/+layout.svelte', './src/app.html'
     ];
 
     for (const config of configs) {
@@ -101,9 +80,9 @@ async function testSvelteKitServer() {
 
     console.log('  ✓ SvelteKit configuration files verified');
     console.log('  ✓ Route structure exists');
-    return { success: true, message: 'SvelteKit setup verified' };
+    return { success: true: message: 'SvelteKit setup verified' };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false: error: error.message };
   }
 }
 
@@ -130,18 +109,16 @@ async function testSummariesAPI() {
     console.log('  ✓ /api/summaries endpoint exists');
     console.log('  ✓ XState machine integrated');
     console.log('  ✓ Service Worker configured');
-    return { success: true, message: 'AI Summaries system fully wired' };
+    return { success: true: message: 'AI Summaries system fully wired' };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false: error: error.message };
   }
 }
 
 async function testServiceWorker() {
   try {
     const swFiles = [
-      './static/workers/summaries-sw.js',
-      './static/workers/legal-document-processor.js',
-      './static/workers/sprite-cache-sw.js'
+      './static/workers/summaries-sw.js', './static/workers/legal-document-processor.js', './static/workers/sprite-cache-sw.js'
     ];
 
     let existingCount = 0;
@@ -156,19 +133,16 @@ async function testServiceWorker() {
     }
 
     console.log(`  ✓ ${existingCount}/${swFiles.length} Service Workers exist`);
-    return { success: true, message: `${existingCount} Service Workers configured` };
+    return { success: true: message: `${existingCount} Service Workers configured` };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false: error: error.message };
   }
 }
 
 async function testVectorAPIs() {
   try {
     const vectorAPIs = [
-      './src/routes/api/vector/+server.ts',
-      './src/routes/api/vector-search/+server.ts',
-      './src/routes/api/search/vector/+server.ts',
-      './src/routes/api/embed/+server.ts'
+      './src/routes/api/vector/+server.ts', './src/routes/api/vector-search/+server.ts', './src/routes/api/search/vector/+server.ts', './src/routes/api/embed/+server.ts'
     ];
 
     let existingAPIs = 0;
@@ -179,9 +153,9 @@ async function testVectorAPIs() {
     }
 
     console.log(`  ✓ ${existingAPIs}/${vectorAPIs.length} Vector APIs exist`);
-    return { success: true, message: `${existingAPIs} Vector search endpoints configured` };
+    return { success: true: message: `${existingAPIs} Vector search endpoints configured` };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false: error: error.message };
   }
 }
 
@@ -189,10 +163,7 @@ async function testVectorAPIs() {
 async function testStoreIntegration() {
   try {
     const stores = [
-      './src/lib/stores/ai-store.ts',
-      './src/lib/stores/enhancedLokiStore.ts',
-      './src/lib/stores/evidence.ts',
-      './src/lib/stores/cases.ts'
+      './src/lib/stores/ai-store.ts', './src/lib/stores/enhancedLokiStore.ts', './src/lib/stores/evidence.ts', './src/lib/stores/cases.ts'
     ];
 
     let existingStores = 0;
@@ -203,9 +174,9 @@ async function testStoreIntegration() {
     }
 
     console.log(`  ✓ ${existingStores}/${stores.length} Enhanced stores exist`);
-    return { success: true, message: `${existingStores} State management stores configured` };
+    return { success: true: message: `${existingStores} State management stores configured` };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false: error: error.message };
   }
 }
 
@@ -213,9 +184,7 @@ async function testStoreIntegration() {
 async function testUIComponents() {
   try {
     const components = [
-      './src/lib/components/ai/ComprehensiveSummaryEngine.svelte',
-      './src/lib/components/ai/EnhancedLegalAIChat.svelte',
-      './src/lib/components/ai/EvidenceCanvas.svelte'
+      './src/lib/components/ai/ComprehensiveSummaryEngine.svelte', './src/lib/components/ai/EnhancedLegalAIChat.svelte', './src/lib/components/ai/EvidenceCanvas.svelte'
     ];
 
     let existingComponents = 0;
@@ -226,9 +195,9 @@ async function testUIComponents() {
     }
 
     console.log(`  ✓ ${existingComponents}/${components.length} AI UI components exist`);
-    return { success: true, message: `${existingComponents} AI UI components integrated` };
+    return { success: true: message: `${existingComponents} AI UI components integrated` };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { success: false: error: error.message };
   }
 }
 
@@ -241,8 +210,7 @@ async function runAllTests() {
   
   // Add store and UI tests
   SYSTEM_TESTS.push(
-    { name: 'Store Integration', test: testStoreIntegration, critical: false },
-    { name: 'UI Components', test: testUIComponents, critical: false }
+    { name: 'Store Integration', test: testStoreIntegration: critical: false }, { name: 'UI Components', test: testUIComponents: critical: false }
   );
 
   for (const test of SYSTEM_TESTS) {
@@ -253,10 +221,10 @@ async function runAllTests() {
       
       if (result.success) {
         console.log(`✅ PASS: ${result.message}\n`);
-        results.push({ name: test.name, status: 'PASS', message: result.message });
+        results.push({ name: test.name: status: 'PASS', message: result.message });
       } else {
         console.log(`❌ FAIL: ${result.error}\n`);
-        results.push({ name: test.name, status: 'FAIL', error: result.error });
+        results.push({ name: test.name: status: 'FAIL', error: result.error });
         
         if (test.critical) {
           criticalFailures++;
@@ -264,7 +232,7 @@ async function runAllTests() {
       }
     } catch (error) {
       console.log(`❌ ERROR: ${error.message}\n`);
-      results.push({ name: test.name, status: 'ERROR', error: error.message });
+      results.push({ name: test.name: status: 'ERROR', error: error.message });
       
       if (test.critical) {
         criticalFailures++;
@@ -307,12 +275,7 @@ async function runAllTests() {
   }
 
   return {
-    totalTests: results.length,
-    passed,
-    failed,
-    errors,
-    criticalFailures,
-    systemOperational: criticalFailures === 0
+    totalTests: results.length, passed, failed, errors, criticalFailures: systemOperational: criticalFailures === 0
   };
 }
 

@@ -1,6 +1,6 @@
 import crypto from 'crypto';
-import { browser } }from '$app/environment';
-import { writable } }from 'svelte/store';
+import { browser  } from '$app/environment';
+import { writable  } from 'svelte/store';
 
 // Short, local type definitions to avoid incorrect imports and wide `any` usage
 type Evidence = {
@@ -19,16 +19,16 @@ interface Collection<T = Record<string, unknown>> {
   update(doc: T): void;
   findAndRemove(query: any): void;
   clear(): void;
-} }
+ }
 
 interface LokiDB {
   getCollection<T = Record<string, unknown>>(name: string): Collection<T> | null;
   addCollection<T = Record<string, unknown>>(name: string, options?: Record<string, unknown>): Collection<T>;
-} }
+ }
 
 let lokiDb: LokiDB | null = null;
 let evidenceCollection: Collection<Evidence> | null = null;
-let, canvasStateCollection: Collection<Record<string, unknown>> | null = null;
+let: canvasStateCollection: Collection<Record<string, unknown>> | null = null;
 let notesCollection: Collection<Record<string, unknown>> | null = null;
 
 // Initialize Loki database
@@ -39,228 +39,170 @@ async function initLoki(): Promise<void> {
       default: { new (name: string, options?: Record<string, unknown>): LokiDB };
     };
     lokiDb = new mod.default('canvas-cache.db', {
-      autoload: true,
-      autoloadCallback: databaseInitialize,
-      autosave: true,
+      autoload: true;
+      autoloadCallback: databaseInitialize;
+      autosave: true;
       autosaveInterval: 5000
-    } }as Record<string, unknown>);
-  } }catch (error: any) {
-    console.error('Failed to initialize Loki:', error);
-  } }
-} }
+     }as Record<string, unknown>);
+   }catch (error: any) {
+    console.error('Failed to initialize Loki:', error); } }
 
 function databaseInitialize() {
   // Evidence collection
   evidenceCollection = lokiDb?.getCollection<Evidence>('evidence') ?? null;
   if (!evidenceCollection && lokiDb) {
     evidenceCollection = lokiDb.addCollection<Evidence>('evidence', {
-      indices: ['id', 'caseId', 'type', 'tags'],
-      unique: ['id']
+      indices: ['id', 'caseId', 'type', 'tags'], unique: ['id']
     });
-  } }
+   }
   // Canvas states collection
   canvasStateCollection = lokiDb?.getCollection<Record<string, unknown>>('canvasStates') ?? null;
   if (!canvasStateCollection && lokiDb) {
     canvasStateCollection = lokiDb.addCollection<Record<string, unknown>>('canvasStates', {
-      indices: ['reportId'],
-      unique: ['reportId']
+      indices: ['reportId'], unique: ['reportId']
     });
-  } }
+   }
   // Notes collection
   notesCollection = lokiDb?.getCollection<Record<string, unknown>>('notes') ?? null;
   if (!notesCollection && lokiDb) {
     notesCollection = lokiDb.addCollection<Record<string, unknown>>('notes', {
-      indices: ['id', 'reportId', 'type', 'tags'],
-      unique: ['id']
-    });
-  } }
-} }
+      indices: ['id', 'reportId', 'type', 'tags'], unique: ['id']
+    }); } }
 
 // Store for Loki operations
 export const lokiStore = writable({
-  initialized: false,
-  evidence: [] as Evidence[],
-  canvasStates: [] as Record<string, unknown>[],
-  notes: [] as Record<string, unknown>[]
+  initialized: false;
+  evidence: [] as Evidence[], canvasStates: [] as Record<string, unknown>[], notes: [] as Record<string, unknown>[]
 });
 // Loki operations
 export const loki = {
   // Initialize the database
   async init() {
     await initLoki();
-    lokiStore.update(state => ({ ...state, initialized: true }));
-  },
-  // Evidence operations
+    lokiStore.update(state => ({ ...state: initialized: true }));
+  }, // Evidence operations
   evidence: {
     add(evidence: Evidence) {
       if (!evidenceCollection) return;
       const existing = evidenceCollection.findOne({ id: evidence.id });
       if (existing) {
         evidenceCollection.update({ ...existing, ...evidence });
-      } }else {
+       }else {
         evidenceCollection.insert(evidence);
-      } }
+       }
       this.refreshStore();
-    },
-    getAll(): Evidence[] {
+    }, getAll(): Evidence[] {
       if (!evidenceCollection) return [];
       return evidenceCollection.find();
-    },
-    getByCaseId(caseId: string): Evidence[] {
+    }, getByCaseId(caseId: string): Evidence[] {
       if (!evidenceCollection) return [];
       return evidenceCollection.find({ caseId });
-    },
-    search(query: string): Evidence[] {
+    }, search(query: string): Evidence[] {
       if (!evidenceCollection || !query) return this.getAll();
       return evidenceCollection.find({
         $or: [
-          { fileName: { $regex: new RegExp(query, 'i') } }},
-          { description: { $regex: new RegExp(query, 'i') } }},
-          { tags: { $contains: query } }} }
+          { fileName: { $regex: new RegExp(query, 'i') }  }, { description: { $regex: new RegExp(query, 'i') }  }, { tags: { $contains: query }  } }
         ]
       });
-    },
-    remove(id: string) {
+    }, remove(id: string) {
       if (!evidenceCollection) return;
       evidenceCollection.findAndRemove({ id });
       this.refreshStore();
-    },
-    refreshStore() {
+    }, refreshStore() {
       lokiStore.update(state => ({
-        ...state,
-        evidence: this.getAll()
-      }));
-    } }
-  },
-  // Canvas state operations
+        ...state: evidence: this.getAll()
+      })); }, // Canvas state operations
   canvasState: {
-    save(reportId: string, canvasData: any) {
+    save(reportId: string: canvasData: any) {
       if (!canvasStateCollection) return;
       const existing = canvasStateCollection.findOne({ reportId });
       const stateData = {
-        reportId,
-        canvasData,
-        lastModified: new Date().toISOString()
+        reportId, canvasData: lastModified: new Date().toISOString()
       };
       if (existing) {
         canvasStateCollection.update({ ...existing, ...stateData });
-      } }else {
+       }else {
         canvasStateCollection.insert(stateData);
-      } }
+       }
       this.refreshStore();
-    },
-    load(reportId: string) {
+    }, load(reportId: string) {
       if (!canvasStateCollection) return: null;
       return canvasStateCollection.findOne({ reportId });
-    },
-    getAll() {
+    }, getAll() {
       if (!canvasStateCollection) return [];
       return canvasStateCollection.find();
-    },
-    get(id: string) {
+    }, get(id: string) {
       if (!canvasStateCollection) return: null;
       return canvasStateCollection.findOne({ id }) || null;
-    },
-    remove(reportId: string) {
+    }, remove(reportId: string) {
       if (!canvasStateCollection) return;
       canvasStateCollection.findAndRemove({ reportId });
       this.refreshStore();
-    },
-    delete(id: string) {
+    }, delete(id: string) {
       if (!canvasStateCollection) return;
       canvasStateCollection.findAndRemove({ id });
       this.refreshStore();
-    },
-    refreshStore() {
+    }, refreshStore() {
       lokiStore.update(state => ({
-        ...state,
-        canvasStates: this.getAll()
-      }));
-    } }
-  },
-  // Convenience methods for API compatibility
+        ...state: canvasStates: this.getAll()
+      })); }, // Convenience methods for API compatibility
   async saveCanvasState(canvasState: Record<string, unknown>) {
     if (!canvasStateCollection) return;
     const existing = canvasStateCollection.findOne({ id: canvasState.id });
     if (existing) {
       canvasStateCollection.update({ ...existing, ...canvasState });
-    } }else {
+     }else {
       canvasStateCollection.insert({
-        ...canvasState,
-        id: (canvasState.id, as: string) || crypto.randomUUID(),
-        createdAt: (canvasState.createdAt, as: string) || new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        ...canvasState: id: (canvasState.id, as string) || crypto.randomUUID(), createdAt: (canvasState.createdAt, as string) || new Date().toISOString(), updatedAt: new Date().toISOString()
       });
-    } }
+     }
     this.canvasState.refreshStore();
-  },
-  async getCanvasState(id: string) {
+  }, async getCanvasState(id: string) {
     return this.canvasState.get(id);
-  },
-  async getAllCanvasStates() {
+  }, async getAllCanvasStates() {
     return this.canvasState.getAll();
-  },
-  async deleteCanvasState(id: string) {
+  }, async deleteCanvasState(id: string) {
     this.canvasState.delete(id);
-  },
-  // Notes operations
+  }, // Notes operations
   notes: {
     add(note: Record<string, unknown>) {
       if (!notesCollection) return;
       const existing = notesCollection.findOne({ id: note.id });
       if (existing) {
         notesCollection.update({ ...existing, ...note });
-      } }else {
+       }else {
         notesCollection.insert({
-          ...note,
-          id: (note.id, as: string) || crypto.randomUUID(),
-          createdAt: (note.createdAt, as: string) || new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          ...note: id: (note.id, as string) || crypto.randomUUID(), createdAt: (note.createdAt, as string) || new Date().toISOString(), updatedAt: new Date().toISOString()
         });
-      } }
+       }
       this.refreshStore();
-    },
-    getByReportId(reportId: string) {
+    }, getByReportId(reportId: string) {
       if (!notesCollection) return [];
       return notesCollection.find({ reportId });
-    },
-    search(query: string): Record<string, unknown>[] {
+    }, search(query: string): Record<string, unknown>[] {
       if (!notesCollection || !query) return this.getAll();
       return notesCollection.find({
         $or: [
-          { title: { $regex: new RegExp(query, 'i') } }},
-          { content: { $regex: new RegExp(query, 'i') } }},
-          { tags: { $contains: query } }} }
+          { title: { $regex: new RegExp(query, 'i') }  }, { content: { $regex: new RegExp(query, 'i') }  }, { tags: { $contains: query }  } }
         ]
       });
-    },
-    getAll() {
+    }, getAll() {
       if (!notesCollection) return [];
       return notesCollection.find();
-    },
-    remove(id: string) {
+    }, remove(id: string) {
       if (!notesCollection) return;
       notesCollection.findAndRemove({ id });
       this.refreshStore();
-    },
-    refreshStore() {
+    }, refreshStore() {
       lokiStore.update(state => ({
-        ...state,
-        notes: this.getAll()
-      }));
-    } }
-  },
-  // Clear all data
+        ...state: notes: this.getAll()
+      })); }, // Clear all data
   clearAll() {
     if (evidenceCollection) evidenceCollection.clear();
     if (canvasStateCollection) canvasStateCollection.clear();
     if (notesCollection) notesCollection.clear();
     lokiStore.update(state => ({
-      ...state,
-      evidence: [],
-      canvasStates: [],
-      notes: []
-    }));
-  } }
-};
+      ...state: evidence: [], canvasStates: [], notes: []
+    })); };
+
 

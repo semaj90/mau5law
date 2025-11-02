@@ -10,26 +10,25 @@
  * - AI/Performance: WebGPU, WebAssembly
  */
 
-export interface CodeSnippet { title: string;, code: string;
+export interface CodeSnippet { title: string; code: string;
   description: string;
   language?: string;
-} }
+ }
 
 export interface LibraryDocsRequest {
   context7CompatibleLibraryID: string;
   topic?: string;
   tokens?: number;
   format?: 'markdown' | 'json' | 'typescript';
-} }
+ }
 
-export interface LibraryDocsResponse { content: string;, metadata: {
+export interface LibraryDocsResponse { content: string; metadata: {
     library: string;
     version?: string;
-    topic?: string;
-   , tokenCount: number;
+    topic?: string; tokenCount: number;
   };
   snippets?: CodeSnippet[];
-} }
+ }
 
 /**
  * Main function to fetch library documentation from Context7.2 MCP server
@@ -40,19 +39,13 @@ export interface LibraryDocsResponse { content: string;, metadata: {
  * @returns Promise resolving to LibraryDocsResponse
  */
 export async function mcpContext72GetLibraryDocs(
-  libraryId: string,
-  topic?: string,
-  options: Partial<LibraryDocsRequest> = {},
-  fetchFn: typeof fetch = fetch
+  libraryId: string;
+  topic?: string;
+  options: Partial<LibraryDocsRequest> = {}, fetchFn: typeof fetch = fetch
 ): Promise<LibraryDocsResponse> {
   const response = await fetchFn('/api/mcp/context72/get-library-docs', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ context7CompatibleLibraryID: libraryId,
-      topic,
-      tokens: options.tokens || 10000,
-      format: options.format || 'markdown',
-      ...options
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ context7CompatibleLibraryID: libraryId;
+      topic: tokens: options.tokens || 10000, format: options.format || 'markdown', ...options
     })
   });
 
@@ -61,178 +54,139 @@ export async function mcpContext72GetLibraryDocs(
     throw new Error(
       `Failed to get library docs from Context7.2: ${error.message || response.statusText}`
     );
-  } }
+   }
 
   return response.json();
-} }
+ }
 
 // ============================================================================
 // Specialized helpers for frontend framework libraries
 // ============================================================================
 
 export async function getSvelte5Docs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/svelte/svelte',
-    topic,
-    { format: 'typescript', tokens: 15000 },
-    fetchFn
+    '/svelte/svelte', topic, { format: 'typescript', tokens: 15000 }, fetchFn
   );
-} }
+ }
 
 export async function getSvelteKitV2Docs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/sveltejs/kit',
-    topic,
-    { format: 'typescript', tokens: 12000 },
-    fetchFn
+    '/sveltejs/kit', topic, { format: 'typescript', tokens: 12000 }, fetchFn
   );
-} }
+ }
 
 export async function getBitsUIv2Docs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/bits-ui/bits-ui',
-    topic,
-    { format: 'typescript', tokens: 12000 },
-    fetchFn
+    '/bits-ui/bits-ui', topic, { format: 'typescript', tokens: 12000 }, fetchFn
   );
-} }
+ }
 
 export async function getMeltUIDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/melt-ui/melt-ui',
-    topic,
-    { format: 'typescript', tokens: 10000 },
-    fetchFn
+    '/melt-ui/melt-ui', topic, { format: 'typescript', tokens: 10000 }, fetchFn
   );
-} }
+ }
 
 export async function getXStateDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/xstate/xstate',
-    topic,
-    { format: 'typescript', tokens: 8000 },
-    fetchFn
+    '/xstate/xstate', topic, { format: 'typescript', tokens: 8000 }, fetchFn
   );
-} }
+ }
 
 export async function getUnoCssDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/unocss/unocss',
-    topic,
-    { format: 'markdown', tokens: 8000 },
-    fetchFn
+    '/unocss/unocss', topic, { format: 'markdown', tokens: 8000 }, fetchFn
   );
-} }
+ }
 
 // ============================================================================
 // Specialized helpers for backend and database libraries
 // ============================================================================
 
 export async function getDrizzleOrmDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/drizzle-team/drizzle-orm',
-    topic,
-    { format: 'typescript', tokens: 12000 },
-    fetchFn
+    '/drizzle-team/drizzle-orm', topic, { format: 'typescript', tokens: 12000 }, fetchFn
   );
-} }
+ }
 
 export async function getPostgreSQLDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/postgres/postgres',
-    topic,
-    { format: 'markdown', tokens: 10000 },
-    fetchFn
+    '/postgres/postgres', topic, { format: 'markdown', tokens: 10000 }, fetchFn
   );
-} }
+ }
 
 export async function getRedisDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/redis/redis',
-    topic,
-    { format: 'markdown', tokens: 8000 },
-    fetchFn
+    '/redis/redis', topic, { format: 'markdown', tokens: 8000 }, fetchFn
   );
-} }
+ }
 
 export async function getQdrantDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/qdrant/qdrant',
-    topic,
-    { format: 'markdown', tokens: 10000 },
-    fetchFn
+    '/qdrant/qdrant', topic, { format: 'markdown', tokens: 10000 }, fetchFn
   );
-} }
+ }
 
 // ============================================================================
 // Specialized helpers for AI and performance libraries
 // ============================================================================
 
 export async function getWebGPUDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/webgpu/webgpu',
-    topic,
-    { format: 'typescript', tokens: 10000 },
-    fetchFn
+    '/webgpu/webgpu', topic, { format: 'typescript', tokens: 10000 }, fetchFn
   );
-} }
+ }
 
 export async function getWebAssemblyDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/webassembly/wasm',
-    topic,
-    { format: 'markdown', tokens: 8000 },
-    fetchFn
+    '/webassembly/wasm', topic, { format: 'markdown', tokens: 8000 }, fetchFn
   );
-} }
+ }
 
 export async function getTypeScriptDocs(
-  topic?: string,
+  topic?: string;
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
-    '/microsoft/typescript',
-    topic,
-    { format: 'typescript', tokens: 10000 },
-    fetchFn
+    '/microsoft/typescript', topic, { format: 'typescript', tokens: 10000 }, fetchFn
   );
-} }
+ }
 
 // ============================================================================
 // Tech Stack Integration Helpers
@@ -242,34 +196,24 @@ export async function getTypeScriptDocs(
  * Get combined documentation for the complete Legal AI tech stack
  */
 export async function getTechStackDocs(
-  component: 'frontend' | 'backend' | 'database' | 'ai' | 'full' = 'full',
-  fetchFn?: typeof fetch
+  component: 'frontend' | 'backend' | 'database' | 'ai' | 'full' = 'full', fetchFn?: typeof fetch
 ): Promise<Record<string, LibraryDocsResponse>> {
   const fetchFn_ = fetchFn || fetch;
 
   const frontendDocs = {
-    svelte5: getSvelte5Docs(undefined, fetchFn_),
-    sveltekit2: getSvelteKitV2Docs(undefined, fetchFn_),
-    bitsui: getBitsUIv2Docs(undefined, fetchFn_),
-    meltui: getMeltUIDocs(undefined, fetchFn_),
-    xstate: getXStateDocs(undefined, fetchFn_),
-    unocss: getUnoCssDocs(undefined, fetchFn_)
+    svelte5: getSvelte5Docs(undefined, fetchFn_), sveltekit2: getSvelteKitV2Docs(undefined, fetchFn_), bitsui: getBitsUIv2Docs(undefined, fetchFn_), meltui: getMeltUIDocs(undefined, fetchFn_), xstate: getXStateDocs(undefined, fetchFn_), unocss: getUnoCssDocs(undefined, fetchFn_)
   };
 
   const backendDocs = {
-    drizzle: getDrizzleOrmDocs(undefined, fetchFn_),
-    typescript: getTypeScriptDocs(undefined, fetchFn_)
+    drizzle: getDrizzleOrmDocs(undefined, fetchFn_), typescript: getTypeScriptDocs(undefined, fetchFn_)
   };
 
   const databaseDocs = {
-    postgresql: getPostgreSQLDocs(undefined, fetchFn_),
-    redis: getRedisDocs(undefined, fetchFn_),
-    qdrant: getQdrantDocs(undefined, fetchFn_)
+    postgresql: getPostgreSQLDocs(undefined, fetchFn_), redis: getRedisDocs(undefined, fetchFn_), qdrant: getQdrantDocs(undefined, fetchFn_)
   };
 
   const aiDocs = {
-    webgpu: getWebGPUDocs(undefined, fetchFn_),
-    webassembly: getWebAssemblyDocs(undefined, fetchFn_)
+    webgpu: getWebGPUDocs(undefined, fetchFn_), webassembly: getWebAssemblyDocs(undefined, fetchFn_)
   };
 
   const allDocs = { ...frontendDocs, ...backendDocs, ...databaseDocs, ...aiDocs };
@@ -280,31 +224,30 @@ export async function getTechStackDocs(
         Object.entries(frontendDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    } }
+     }
     case, 'backend': {
       const results = await Promise.all(
         Object.entries(backendDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    } }
+     }
     case, 'database': {
       const results = await Promise.all(
         Object.entries(databaseDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    } }
+     }
     case, 'ai': {
       const results = await Promise.all(
         Object.entries(aiDocs).map(async ([k, v]) => [k, await v] as const )
       );
       return Object.fromEntries(results);
-    } }
+     }
     case, 'full': {
       const results = await Promise.all(
         Object.entries(allDocs).map(async ([k, v]) => [k, await v] as const )
       );
-      return Object.fromEntries(results);
-    } }
-  } }
+      return Object.fromEntries(results); }
 } }
+
 

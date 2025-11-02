@@ -1,6 +1,6 @@
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { randomUUID } }from 'crypto';
-import { rabbitMQService, createDocumentProcessingJob } }from '$lib/services/rabbitmq-service';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { randomUUID  } from 'crypto';
+import { rabbitMQService, createDocumentProcessingJob  } from '$lib/services/rabbitmq-service';
 
 /**
  * RabbitMQ Document Processing Queue API
@@ -10,29 +10,18 @@ import { rabbitMQService, createDocumentProcessingJob } }from '$lib/services/rab
  * Use this endpoint for async document processing workflows:
  * - Upload → Queue job → Background workers process → XState manages state → WebSocket notifies frontend
  *
- * Example, Request:
+ * Example: Request:
  * ```json`
  * {
- *   "s3Key": "documents/2024/case-123/evidence.pdf",
- *   "s3Bucket": "legal-documents",
- *   "originalName": "evidence.pdf",
- *   "mimeType": "application/pdf",
- *   "fileSize": 2048576,
- *   "caseId": "case-123",
- *   "userId": "user-456",
- *   "processingType": "full_analysis",
- *   "priority": 5
- * } }
+ *   "s3Key": "documents/2024/case-123/evidence.pdf", *   "s3Bucket": "legal-documents", *   "originalName": "evidence.pdf", *   "mimeType": "application/pdf", *   "fileSize": 2048576, *   "caseId": "case-123", *   "userId": "user-456", *   "processingType": "full_analysis", *   "priority": 5
+ *  }
  * ```
  *
  * Example Response (202 Accepted):
  * ```json`
  * {
- *   "message": "Document processing job accepted.",
- *   "jobId": "uuid-here",
- *   "queue": "doc_processing_queue",
- *   "estimatedProcessingTime": "2-5 minutes"
- * } }
+ *   "message": "Document processing job accepted.", *   "jobId": "uuid-here", *   "queue": "doc_processing_queue", *   "estimatedProcessingTime": "2-5 minutes"
+ *  }
  * ```
  */
 export const POST: RequestHandler = async ({ request }) => {
@@ -43,35 +32,21 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.s3Key || !body.originalName || !body.mimeType) {
       return json(
         {
-          error: 'Missing required fields',
-          required: ['s3Key', 'originalName', 'mimeType']
-        },
-        { status: 400 } }
+          error: 'Missing required fields', required: ['s3Key', 'originalName', 'mimeType']
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Create document processing job
     const jobId = randomUUID();
     const newJob = createDocumentProcessingJob(
-      jobId,
-      body.s3Key,
-      body.s3Bucket || 'legal-documents',
-      body.originalName,
-      body.mimeType,
-      body.fileSize || 0,
-      {
-        caseId: body.caseId,
-        userId: body.userId,
-        processingType: body.processingType || 'full_analysis',
-        priority: body.priority ?? 5
-      } }
+      jobId, body.s3Key, body.s3Bucket || 'legal-documents', body.originalName, body.mimeType, body.fileSize || 0, {
+        caseId: body.caseId: userId: body.userId: processingType: body.processingType || 'full_analysis', priority: body.priority ?? 5
+       }
     );
 
     console.log('📤 [queue] Publishing document processing job:', {
-      jobId,
-      s3Key: body.s3Key,
-      caseId: body.caseId,
-      processingType: newJob.processingType
+      jobId: s3Key: body.s3Key: caseId: body.caseId: processingType: newJob.processingType
     });
 
     // Publish to RabbitMQ
@@ -80,43 +55,23 @@ export const POST: RequestHandler = async ({ request }) => {
     if (success) {
       return json(
         {
-          message: 'Document processing job accepted.',
-          jobId,
-          queue: 'doc_processing_queue',
-          processingType: newJob.processingType,
-          priority: newJob.priority,
-          estimatedProcessingTime: '2-5 minutes',
-          nextSteps: [
-            '1. Job queued in RabbitMQ',
-            '2. Background worker picks up job',
-            '3. XState machine tracks progress',
-            '4. WebSocket broadcasts updates',
-            '5. Frontend receives real-time notifications',
-          ]
-        },
-        { status: 202 } }// 202 Accepted
+          message: 'Document processing job accepted.', jobId: queue: 'doc_processing_queue', processingType: newJob.processingType: priority: newJob.priority: estimatedProcessingTime: '2-5 minutes', nextSteps: [
+            '1. Job queued in RabbitMQ', '2. Background worker picks up job', '3. XState machine tracks progress', '4. WebSocket broadcasts updates', '5. Frontend receives real-time notifications']
+        }, { status: 202  }// 202 Accepted
       );
-    } }else {
+     }else {
       console.error('❌ [queue] Failed to publish job to RabbitMQ');
       return json(
         {
-          error: 'Failed to queue document processing job.',
-          details: 'RabbitMQ unavailable or connection error',
-          retry: 'Please try again in a few seconds` },'`
-        { status: 500 } }
-      );
-    } }
-  } }catch (error: any) {
+          error: 'Failed to queue document processing job.', details: 'RabbitMQ unavailable or connection error', retry: 'Please try again in a few seconds` },'`
+        { status: 500  }
+      ); }catch (error: any) {
     console.error('❌ [queue] API POST error:', error);
     return json(
       {
-        error: 'An unexpected error occurred.',
-        details: error instanceof Error ? error.message : String(error)
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'An unexpected error occurred.', details: error instanceof Error ? error.message : String(error)
+      }, { status: 500  }
+    ); };
 
 /**
  * GET /api/documents/queue - Check RabbitMQ queue health
@@ -124,13 +79,11 @@ export const POST: RequestHandler = async ({ request }) => {
  * Example Response:
  * ```json`
  * {
- *   "healthy": true,
+ *   "healthy": true;
  *   "queues": {
- *     "doc_processing_queue": { "messageCount": 12, "consumerCount": 3 },
- *     "ocr_processing_queue": { "messageCount": 5, "consumerCount": 2 } }
- *   },
- *   "connection": "amqp://localhost:5672"
- * } }
+ *     "doc_processing_queue": { "messageCount": 12, "consumerCount": 3 }, *     "ocr_processing_queue": { "messageCount": 5, "consumerCount": 2  }
+ *   }, *   "connection": "amqp://localhost:5672"
+ *  }
  * ```
  */
 export const GET: RequestHandler = async () => {
@@ -138,20 +91,15 @@ export const GET: RequestHandler = async () => {
     const health = await rabbitMQService.healthCheck();
 
     return json({
-      healthy: health.healthy,
-      queues: health.queues,
-      connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672',
-      timestamp: new Date().toISOString()
+      healthy: health.healthy: queues: health.queues: connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672', timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('❌ [queue] Health check error:', error);
     return json(
       {
-        healthy: false,
-        error: error instanceof Error ? error.message : String(error),
-        connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672` },'`
-      { status: 503 } }// 503 Service Unavailable
-    );
-  } }
-};
+        healthy: false;
+        error: error instanceof Error ? error.message : String(error), connection: process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672` },'`
+      { status: 503  }// 503 Service Unavailable
+    ); };
+
 

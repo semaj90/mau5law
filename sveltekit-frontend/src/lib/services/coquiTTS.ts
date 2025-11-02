@@ -1,7 +1,7 @@
 // Coqui TTS browser integration for SvelteKit
 // Attempts to use a custom TTS service endpoint, with a fallback to the browser's SpeechSynthesis API.'
-// Usage: import { speakWithCoqui } }from './coquiTTS.js'
-import { env } }from '$env/dynamic/public';
+// Usage: import { speakWithCoqui  } from './coquiTTS.js'
+import { env  } from '$env/dynamic/public';
 
 /**
  * Gets the custom TTS service endpoint from environment variables.
@@ -11,7 +11,7 @@ function getTtsEndpoint(): string | undefined {
 	// In SvelteKit, public env vars must be prefixed with PUBLIC_ and are available in `env`.
 	// The variable name PUBLIC_TTS_URL is an assumption based on convention.
 	return env.PUBLIC_TTS_URL;
-} }
+ }
 
 /**
  * Loads and prepares the TTS engine. For the browser fallback, this ensures voices are loaded.
@@ -22,17 +22,13 @@ export function loadCoquiTTS(): Promise<void> {
 		if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
 			if (window.speechSynthesis.getVoices().length > 0) {
 				resolve();
-			} }else {
+			 }else {
 				window.speechSynthesis.onvoiceschanged = () => {
 					resolve();
-				};
-			} }
-		} }else {
+				}; }else {
 			// Resolve even if not supported, speak function will handle it.
-			resolve();
-		} }
-	});
-} }
+			resolve(); });
+ }
 
 /**
  * Speaks the given text using a custom TTS service or the browser's built-in TTS as a fallback.'
@@ -51,7 +47,7 @@ export async function speakWithCoqui(text: string): Promise<void> {
 			const response = await fetch(url.toString());
 			if (!response.ok) {
 				throw new Error(`TTS service request failed with status ${response.status}`);
-			} }
+			 }
 			const audioBlob = await response.blob();
 			const audioUrl = URL.createObjectURL(audioBlob);
 			const audio = new Audio(audioUrl);
@@ -68,16 +64,14 @@ export async function speakWithCoqui(text: string): Promise<void> {
 				audio.play().catch(reject);
 			});
 			return;
-		} }catch (error) {
-			console.error('Custom TTS service request failed. Falling back to browser TTS.', error);
-		} }
-	} }
+		 }catch (error) {
+			console.error('Custom TTS service request failed. Falling back to browser TTS.', error); }
 
 	// Fallback to browser's SpeechSynthesis API'
 	if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
 		if (!ttsEndpoint) {
 			console.warn('Custom TTS service not configured (PUBLIC_TTS_URL). Falling back to browser TTS.');
-		} }
+		 }
 		return new Promise((resolve, reject) => {
 			const utterance = new SpeechSynthesisUtterance(text);
 			utterance.onend = () => resolve();
@@ -87,10 +81,9 @@ export async function speakWithCoqui(text: string): Promise<void> {
 			};
 			window.speechSynthesis.speak(utterance);
 		});
-	} }else {
+	 }else {
 		const errorMsg = 'No TTS service available.';
 		console.error(errorMsg);
-		return Promise.reject(new Error(errorMsg));
-	} }
-} }
+		return Promise.reject(new Error(errorMsg)); } }
+
 

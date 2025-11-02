@@ -1,5 +1,5 @@
-import type { Case } }from '$lib/types';
-import { writable, get } }from 'svelte/store';
+import type { Case  } from '$lib/types';
+import { writable, get  } from 'svelte/store';
 
 /**
  * Loki-style mock service for Sidebar
@@ -16,7 +16,7 @@ export interface Item {
   content?: string;
   tags?: string[];
   [key: string]: any;
-} }
+ }
 
 export interface RefreshableCollection {
   refreshStore(): void;
@@ -24,36 +24,27 @@ export interface RefreshableCollection {
   getAll(): Item[];
   getByCaseId(caseId: string): Item[];
   search(query: string): Item[];
-} }
+ }
 
-interface LokiStore { evidence: Item[];, notes: Item[];
+interface LokiStore { evidence: Item[]; notes: Item[];
   canvasStates: Item[];
-} }
+ }
 
 // --- Global reactive store --- //
-export const lokiStore = writable<LokiStore>({ evidence: [],
-  notes: [],
-  canvasStates: []
+export const lokiStore = writable<LokiStore>({ evidence: [], notes: [], canvasStates: []
 });
 
 // --- Helper: create mock data for dev preview --- //
 function createMockData(): LokiStore {
   return {
     evidence: [
-      { id: 'ev1', fileName: 'contract.pdf', description: 'Legal contract', tags: ['legal', 'pdf'] },
-      { id: 'ev2', fileName: 'photo.png', description: 'Evidence photo', tags: ['image'] },
-      { id: 'ev3', fileName: 'email.txt', description: 'Client email thread', tags: ['email', 'client'] },
-    ],
-    notes: [
-      { id: 'n1', title: 'Case summary', content: 'Important points...', tags: ['summary'] },
-      { id: 'n2', title: 'Todo list', content: 'Follow up with witness...', tags: ['task'] } }
-    ],
-    canvasStates: [
-      { id: 'c1', title: 'Scene Diagram', content: 'Canvas layout v1', tags: ['canvas'] },
-      { id: 'c2', title: 'Relationship Map', content: 'Linked suspects', tags: ['map'] } }
+      { id: 'ev1', fileName: 'contract.pdf', description: 'Legal contract', tags: ['legal', 'pdf'] }, { id: 'ev2', fileName: 'photo.png', description: 'Evidence photo', tags: ['image'] }, { id: 'ev3', fileName: 'email.txt', description: 'Client email thread', tags: ['email', 'client'] }], notes: [
+      { id: 'n1', title: 'Case summary', content: 'Important points...', tags: ['summary'] }, { id: 'n2', title: 'Todo list', content: 'Follow up with witness...', tags: ['task']  }
+    ], canvasStates: [
+      { id: 'c1', title: 'Scene Diagram', content: 'Canvas layout v1', tags: ['canvas'] }, { id: 'c2', title: 'Relationship Map', content: 'Linked suspects', tags: ['map']  }
     ]
   };
-} }
+ }
 
 // --- Collection factory --- //
 function makeCollection(type: keyof LokiStore): RefreshableCollection {
@@ -63,34 +54,24 @@ function makeCollection(type: keyof LokiStore): RefreshableCollection {
       const mock = createMockData();
       lokiStore.set(mock);
       console.info(`[lokiStore] refreshed ${type}`);
-    },
-
-    add(item: Item) {
+    }, add(item: Item) {
       lokiStore.update((state) => {
         state[type] = [...state[type], item];
         return state;
       });
-    },
-
-    getAll() {
+    }, getAll() {
       return get(lokiStore)[type];
-    },
-
-    getByCaseId(caseId: string) {
+    }, getByCaseId(caseId: string) {
       return get(lokiStore)[type].filter((i) => i.caseId === caseId);
-    },
-
-    search(query: string) {
+    }, search(query: string) {
       const q = query.toLowerCase();
       return get(lokiStore)[type].filter((i) =>
         Object.values(i)
           .join(' ')
           .toLowerCase()
           .includes(q)
-      );
-    } }
-  };
-} }
+      ); };
+ }
 
 // --- Stub service with three collections --- //
 export const loki = {
@@ -98,9 +79,7 @@ export const loki = {
     const mock = createMockData();
     lokiStore.set(mock);
     console.log('[loki] initialized mock data');
-  },
-  evidence: makeCollection('evidence'),
-  notes: makeCollection('notes'),
-  canvasStates: makeCollection('canvasStates')
+  }, evidence: makeCollection('evidence'), notes: makeCollection('notes'), canvasStates: makeCollection('canvasStates')
 };
+
 

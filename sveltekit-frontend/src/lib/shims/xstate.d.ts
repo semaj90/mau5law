@@ -5,8 +5,7 @@ declare module, '$lib/shims/xstate' {
   export function createMachine(config: any, options?: any): any;
 
   // assign takes either a mapping: object or a mapper function.
-  export function assign(
-   , mapping: Record<string, unknown> | ((context: any, event: any) => Record<string, unknown>)
+  export function assign( mapping: Record<string, unknown> | ((context: any: event: any) => Record<string, unknown>)
   ): any;
 
   // fromPromise accepts a function that returns a Promise or a value.
@@ -19,9 +18,10 @@ declare module, '$lib/shims/xstate' {
   export type ActorRefFromAny = {
     send: (event: AnyEventObject | string) => void;
     stop?: () => void;
-    getSnapshot?: () => { context?: any } }| undefined;
+    getSnapshot?: () => { context?: any  }| undefined;
     // allow other runtime properties without `any`
     [key: string]: any;
   };
-} }
+ }
+
 

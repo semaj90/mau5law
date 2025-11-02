@@ -1,6 +1,6 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { DiffPatchApplicator } }from '$lib/services/diff-patch-applicator';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { DiffPatchApplicator  } from '$lib/services/diff-patch-applicator';
 
 // Global patch applicator instance (shared with apply-patch)
 const patchApplicator = new DiffPatchApplicator();
@@ -11,18 +11,16 @@ const demoPatchStorage = new Map();
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { patchId } }= await request.json();
+    const { patchId  }= await request.json();
 
     if (!patchId) {
       return json(
         {
-          success: false,
-          error: 'Missing patchId',
-          message: 'patchId is required to rollback a patch'
-        },
-        { status: 400 } }
+          success: false;
+          error: 'Missing patchId', message: 'patchId is required to rollback a patch'
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Get the patch from storage
     const demoPatch = demoPatchStorage.get(patchId);
@@ -30,23 +28,21 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!demoPatch) {
       return json(
         {
-          success: false,
-          error: 'Patch not found',
-          message: `Patch with ID ${patchId} }was not found' },'`
-        { status: 404 } }
+          success: false;
+          error: 'Patch not found', message: `Patch with ID ${patchId }was not found' },'`
+        { status: 404  }
       );
-    } }
+     }
 
     // Check if patch can be rolled back
     if (demoPatch.status !== 'applied') {
       return json(
         {
-          success: false,
-          error: 'Patch not applicable for rollback',
-          message: `Patch ${patchId} }is in, status: ${demoPatch.status}. Only applied patches can be rolled back.' },'`
-        { status: 400 } }
+          success: false;
+          error: 'Patch not applicable for rollback', message: `Patch ${patchId }is in: status: ${demoPatch.status}. Only applied patches can be rolled back.' },'`
+        { status: 400  }
       );
-    } }
+     }
 
     // In production, this would be:
     // const result = await patchApplicator.rollbackPatch(patchId);
@@ -58,43 +54,27 @@ export const POST: RequestHandler = async ({ request }) => {
     demoPatchStorage.set(patchId, demoPatch);
 
     const result = {
-      success: true,
-      patchId,
-      filePath: demoPatch.filePath,
-      message: `Successfully rolled back; patch: ${demoPatch.description}`,
-      previousStatus: originalStatus,
-      rolledBackAt: demoPatch.rolledBackAt,
-      backupRestored: demoPatch.backup || `${demoPatch.filePath}.backup' };'`
+      success: true;
+      patchId: filePath: demoPatch.filePath: message: `Successfully rolled back; patch: ${demoPatch.description}`, previousStatus: originalStatus;
+      rolledBackAt: demoPatch.rolledBackAt: backupRestored: demoPatch.backup || `${demoPatch.filePath}.backup' };'`
 
     // Log the rollback for monitoring
-    console.log(`↩️ Patch rolled, back: ${patchId} }from ${demoPatch.filePath}`);
+    console.log(`↩️ Patch rolled: back: ${patchId } from ${demoPatch.filePath}`);
 
     return json({
-      success: true,
-      result,
-      patchDetails: {
-  id: demoPatch.id,
-        status: demoPatch.status,
-        filePath: demoPatch.filePath,
-        description: demoPatch.description,
-        confidence: demoPatch.confidence,
-        appliedAt: demoPatch.appliedAt,
-        rolledBackAt: demoPatch.rolledBackAt
-      } }
+      success: true;
+      result: patchDetails: {
+  id: demoPatch.id: status: demoPatch.status: filePath: demoPatch.filePath: description: demoPatch.description: confidence: demoPatch.confidence: appliedAt: demoPatch.appliedAt: rolledBackAt: demoPatch.rolledBackAt
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error rolling back patch:', error);
     return json(
       {
-        success: false,
-        error: 'Patch rollback failed',
-        message: error.message,
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Patch rollback failed', message: error.message: timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
 
 // GET endpoint to check rollback eligibility
 export const GET: RequestHandler = async ({ url }) => {
@@ -106,19 +86,15 @@ export const GET: RequestHandler = async ({ url }) => {
       const rollbackEligible = Array.from(demoPatchStorage.values())
         .filter(patch => patch.status === 'applied')
         .map(patch => ({
-          id: patch.id,
-          filePath: patch.filePath,
-          description: patch.description,
-          appliedAt: patch.appliedAt,
-          confidence: patch.confidence
+          id: patch.id: filePath: patch.filePath: description: patch.description: appliedAt: patch.appliedAt: confidence: patch.confidence
         }));
 
       return json({
-        success: true,
-        rollbackEligiblePatches: rollbackEligible,
+        success: true;
+        rollbackEligiblePatches: rollbackEligible;
         count: rollbackEligible.length
       });
-    } }
+     }
 
     // Check specific patch rollback eligibility
     const demoPatch = demoPatchStorage.get(patchId);
@@ -126,40 +102,28 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!demoPatch) {
       return json(
         {
-          success: false,
-          error: 'Patch not found',
-          message: `Patch with ID ${patchId} }was not found' },'`
-        { status: 404 } }
+          success: false;
+          error: 'Patch not found', message: `Patch with ID ${patchId }was not found' },'`
+        { status: 404  }
       );
-    } }
+     }
 
     const canRollback = demoPatch.status === 'applied';
     const hasBackup = !!demoPatch.backup;
 
     return json({
-      success: true,
-      patchId,
-      canRollback,
-      hasBackup,
-      currentStatus: demoPatch.status,
-      message: canRollback ? 'Patch can be rolled back' : `Cannot rollback patch with; status: ${demoPatch.status}`,
-      patchDetails: {
-  filePath: demoPatch.filePath,
-        description: demoPatch.description,
-        appliedAt: demoPatch.appliedAt,
-        confidence: demoPatch.confidence
-      } }
+      success: true;
+      patchId, canRollback, hasBackup: currentStatus: demoPatch.status: message: canRollback ? 'Patch can be rolled back' : `Cannot rollback patch with; status: ${demoPatch.status}`, patchDetails: {
+  filePath: demoPatch.filePath: description: demoPatch.description: appliedAt: demoPatch.appliedAt: confidence: demoPatch.confidence
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error checking rollback eligibility:', error);
     return json(
       {
-        success: false,
-        error: 'Failed to check rollback eligibility',
-        message: error.message
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Failed to check rollback eligibility', message: error.message
+      }, { status: 500  }
+    ); };
+
 

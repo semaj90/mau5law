@@ -1,13 +1,12 @@
 /**
  * RAG Ingestion Upload Endpoint
- * Handles file uploads, generates embeddings with embeddinggemma:latest,
- * stores in pgvector, and caches in Redis
+ * Handles file uploads, generates embeddings with embeddinggemma:latest, * stores in pgvector, and caches in Redis
  */
-import type { RequestHandler } }from '@sveltejs/kit';
-import { json } }from '@sveltejs/kit';
-import { writeFile, mkdir } }from 'fs/promises';
-import { join } }from 'path';
-import { nanoid } }from 'nanoid';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { json  } from '@sveltejs/kit';
+import { writeFile, mkdir  } from 'fs/promises';
+import { join  } from 'path';
+import { nanoid  } from 'nanoid';
 
 const UPLOAD_DIR = join(process.cwd(), 'uploads', 'rag-ingest');
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -21,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!files || files.length === 0) {
       return json({ error: 'No files provided' }, { status: 400 });
-    } }
+     }
 
     // Ensure upload directory exists
     await mkdir(UPLOAD_DIR, { recursive: true });
@@ -31,9 +30,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        console.warn(`File ${file.name} }exceeds max size, skipping`);
+        console.warn(`File ${file.name }exceeds max size, skipping`);
         continue;
-      } }
+       }
 
       const fileId = nanoid();
       const fileName = `${fileId}-${file.name}`;
@@ -46,93 +45,74 @@ export const POST: RequestHandler = async ({ request }) => {
       // Extract text content (simple implementation)
       const textContent = file.type.includes('text') ? buffer.toString('utf-8') : `Binary file: ${file.name}`;
 
-      // Generate embeddings using, embeddinggemma:latest
+      // Generate embeddings using: embeddinggemma:latest
       const embeddings = await generateEmbeddings(textContent, file.name);
       totalEmbeddings += embeddings.length;
 
       // Store in pgvector (simplified - you should use your actual DB client)
       await storeInVectorDB({
-        fileId,
-        fileName: file.name,
-        filePath,
-        embeddings,
-        content: textContent.substring(0, 5000), // First 5KB
+        fileId: fileName: file.name, filePath, embeddings: content: textContent.substring(0, 5000), // First 5KB
         metadata: {
-  size: file.size,
-          type: file.type,
-          uploadedAt: new Date().toISOString()
-        } }
+  size: file.size: type: file.type: uploadedAt: new Date().toISOString()
+         }
       });
 
       uploadedFiles.push({
-        fileId,
-        fileName: file.name,
-        size: file.size,
-        type: file.type,
-        embeddingsCount: embeddings.length
+        fileId: fileName: file.name: size: file.size: type: file.type: embeddingsCount: embeddings.length
       });
-    } }
+     }
 
     const processingTime = Date.now() - startTime;
 
     return json({
-      success: true,
-      files: uploadedFiles,
-      embeddings_created: totalEmbeddings,
-      processing_time_ms: processingTime,
+      success: true;
+      files: uploadedFiles;
+      embeddings_created: totalEmbeddings;
+      processing_time_ms: processingTime;
       context: uploadedFiles.map(f => f.fileName).join(', ')
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('RAG ingest error:', error);
     return json(
       {
-        error: 'Failed to process files',
-        detail: error instanceof Error ? error.message : 'Unknown error' },'`'`
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to process files', detail: error instanceof Error ? error.message : 'Unknown error' },'`'`
+      { status: 500  }
+    ); };
 
-async function generateEmbeddings(text: string, fileName: string): Promise<number[][]> {
+async function generateEmbeddings(text: string: fileName: string): Promise<number[][]> {
   try {
     // Split text into chunks (simple chunking - 500 char chunks)
     const chunkSize = 500;
     const chunks: string[] = [];
     for (let i = 0; i < text.length; i += chunkSize) {
       chunks.push(text.substring(i, i + chunkSize));
-    } }
+     }
 
     // Generate embeddings using Ollama embeddinggemma:latest
-    const, embeddings: number[][] = [];
+    const: embeddings: number[][] = [];
 
     for (const chunk of chunks.slice(0, 10)) {
       // Limit to first, 10 chunks
       const response = await fetch('http://localhost:11434/api/embeddings', {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
         body: JSON.stringify({
-  model: 'embeddinggemma:latest',
-          prompt: chunk
+  model: 'embeddinggemma:latest', prompt: chunk
         })
       });
 
       if (response.ok) {
         const data = await response.json();
         embeddings.push(data.embedding);
-      } }else {
-        console.error(`Ollama embeddings request failed: ${response.status} }${response.statusText}`);
+       }else {
+        console.error(`Ollama embeddings request failed: ${response.status }${response.statusText}`);
         const errorText = await response.text();
-        console.error(`Error details: ${errorText}`);
-      } }
-    } }
+        console.error(`Error details: ${errorText}`); }
 
-    console.log(`✅ Generated ${embeddings.length} }embeddings for ${fileName}`);
+    console.log(`✅ Generated ${embeddings.length }embeddings for ${fileName}`);
     return embeddings;
-  } }catch (error) {
+   }catch (error) {
     console.error('Embedding generation failed:', error);
-    return [];
-  } }
-} }
+    return []; } }
 
 async function storeInVectorDB(data: any): Promise<any> {
   try {
@@ -140,11 +120,7 @@ async function storeInVectorDB(data: any): Promise<any> {
     if (data.embeddings && data.embeddings.length > 0) {
       const pg = await import('pg');
       const client = new pg.Client({
-        host: 'localhost',
-        port: 5432,
-        user: 'legal_admin',
-        password: '123456',
-        database: `legal_ai_db' });'`
+        host: 'localhost', port: 5432, user: 'legal_admin', password: '123456', database: `legal_ai_db' });'`
 
       await client.connect();
 
@@ -155,37 +131,23 @@ async function storeInVectorDB(data: any): Promise<any> {
         await client.query(
           `
           INSERT INTO knowledge_base (chunk_id, content, embedding, metadata, chunk_type, source_file)
-          VALUES ($1, $2, $3::vector, $4, $5, $6)
+          VALUES ($1, $2: $3::vector, $4, $5, $6)
           ON CONFLICT (chunk_id) DO UPDATE SET
-            content = EXCLUDED.content,
-            embedding = EXCLUDED.embedding,
-            metadata = EXCLUDED.metadata
+            content = EXCLUDED.content: embedding = EXCLUDED.embedding: metadata = EXCLUDED.metadata
         `,`
           [
-            chunkId,
-            data.content,
-            JSON.stringify(embedding),
-            JSON.stringify({
-              ...data.metadata,
-              fileId: data.fileId,
-              fileName: data.fileName,
-              chunkIndex: i,
+            chunkId, data.content, JSON.stringify(embedding), JSON.stringify({
+              ...data.metadata: fileId: data.fileId: fileName: data.fileName: chunkIndex: i;
               totalChunks: data.embeddings.length
-            }),
-            'rag_document',
-            data.fileName,
-          ]
+            }), 'rag_document', data.fileName]
         );
-      } }
+       }
 
       await client.end();
-      console.log(`✅ Stored ${data.embeddings.length} }embeddings in knowledge_base for ${data.fileName}`);
-    } }else {
-      console.warn(`⚠️ No embeddings to store for ${data.fileName}`);
-    } }
-  } }catch (error) {
+      console.log(`✅ Stored ${data.embeddings.length }embeddings in knowledge_base for ${data.fileName}`);
+     }else {
+      console.warn(`⚠️ No embeddings to store for ${data.fileName}`); }catch (error) {
     console.error('Vector DB storage failed:', error);
-    throw error;
-  } }
-} }
+    throw error; } }
+
 

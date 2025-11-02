@@ -1,35 +1,28 @@
-import type { RequestHandler } }from './$types.js';
+import type { RequestHandler  } from './$types.js';
 // Debug endpoint to check and create users
-import { json } }from '@sveltejs/kit';
-import { users } }from '$lib/server/db/schema-postgres';
-import { eq } }from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import { users  } from '$lib/server/db/schema-postgres';
+import { eq  } from 'drizzle-orm';
 export async function GET(): Promise<any> {
   try {
     // Check if users exist
     const existingUsers = await db
       .select({
-        id: users.id,
-        email: users.email,
-        role: users.role,
-        isActive: users.isActive,
-        hasPassword: users.hashedPassword
+        id: users.id: email: users.email: role: users.role: isActive: users.isActive: hasPassword: users.hashedPassword
       })
       .from(users);
     return json({
-      success: true,
-      users: existingUsers,
+      success: true;
+      users: existingUsers;
       count: existingUsers.length
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
       {
-        success: false,
+        success: false;
         error: error.message
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+      }, { status: 500  }
+    ); } }
 export async function POST(): Promise<any> {
   try {
     // Update existing users with proper password hashes
@@ -40,26 +33,23 @@ export async function POST(): Promise<any> {
       .update(users)
       .set({ hashedPassword: adminHash })
       .where(eq(users.email, 'admin@legal.ai'))
-      .returning({ id: users.id, email: users.email, role: users.role });
+      .returning({ id: users.id: email: users.email: role: users.role });
     // Update test@legal.ai
     const updatedTest = await db
       .update(users)
       .set({ hashedPassword: testHash })
       .where(eq(users.email, 'test@legal.ai'))
-      .returning({ id: users.id, email: users.email, role: users.role });
+      .returning({ id: users.id: email: users.email: role: users.role });
     return json({
-      success: true,
-      message: 'Demo users updated with proper passwords',
-      users: [...updatedAdmin, ...updatedTest]
+      success: true;
+      message: 'Demo users updated with proper passwords', users: [...updatedAdmin, ...updatedTest]
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
       {
-        success: false,
+        success: false;
         error: error.message
-      },
-      { status: 500 } }
-    );
-  } }
-} }
+      }, { status: 500  }
+    ); } }
+
 

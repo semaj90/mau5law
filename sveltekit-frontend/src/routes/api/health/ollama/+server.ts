@@ -1,5 +1,5 @@
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
   try {
@@ -19,45 +19,25 @@ export const GET: RequestHandler = async () => {
       if (response.ok) {
         const data = await response.json();
         return json({
-          status: 'healthy',
-          service: 'ollama',
-          message: 'Ollama service is running',
-          details: {
-  url: ollamaUrl,
-            models: data.models?.length || 0,
-            available: true
-          },
-          timestamp: new Date().toISOString()
+          status: 'healthy', service: 'ollama', message: 'Ollama service is running', details: {
+  url: ollamaUrl;
+            models: data.models?.length || 0, available: true
+          }, timestamp: new Date().toISOString()
         });
-      } }else {
-        throw new Error(`HTTP ${response.status}`);
-      } }
-    } }catch (fetchError: any) {
+       }else {
+        throw new Error(`HTTP ${response.status}`); }catch (fetchError: any) {
       return json(
         {
-          status: 'unavailable',
-          service: 'ollama',
-          message: 'Ollama service not reachable',
-          details: {
-  url: ollamaUrl,
-            error: fetchError.message,
-            available: false
-          },
-          timestamp: new Date().toISOString()
-        },
-        { status: 503 } }
-      );
-    } }
-  } }catch (error: any) {
+          status: 'unavailable', service: 'ollama', message: 'Ollama service not reachable', details: {
+  url: ollamaUrl;
+            error: fetchError.message: available: false
+          }, timestamp: new Date().toISOString()
+        }, { status: 503  }
+      ); }catch (error: any) {
     return json(
       {
-        status: 'error',
-        service: 'ollama',
-        error: error.message || 'Health check failed',
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        status: 'error', service: 'ollama', error: error.message || 'Health check failed', timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
+
 

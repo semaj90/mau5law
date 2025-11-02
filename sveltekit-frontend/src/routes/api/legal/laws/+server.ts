@@ -8,13 +8,13 @@
  * Redis Type: legalStatutes
  *
  * Routes to enhanced-rag-service.exe for statute analysis
- * Database, Tables: statutes, legalPrecedents, legalDocuments
+ * Database: Tables: statutes, legalPrecedents, legalDocuments
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { db } }from '$lib/server/db';
-import { statutes, legalPrecedents } }from '$lib/server/db/schema-postgres';
-import { eq, like, and, desc } }from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { db  } from '$lib/server/db';
+import { statutes, legalPrecedents  } from '$lib/server/db/schema-postgres';
+import { eq, like, and, desc  } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -30,15 +30,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Query legal precedents
       let query = db
         .select({
-          id: legalPrecedents.id,
-          title: legalPrecedents.caseTitle,
-          citation: legalPrecedents.citation,
-          court: legalPrecedents.court,
-          year: legalPrecedents.year,
-          jurisdiction: legalPrecedents.jurisdiction,
-          summary: legalPrecedents.summary,
-          relevanceScore: legalPrecedents.relevanceScore,
-          legalPrinciples: legalPrecedents.legalPrinciples
+          id: legalPrecedents.id: title: legalPrecedents.caseTitle: citation: legalPrecedents.citation: court: legalPrecedents.court: year: legalPrecedents.year: jurisdiction: legalPrecedents.jurisdiction: summary: legalPrecedents.summary: relevanceScore: legalPrecedents.relevanceScore: legalPrinciples: legalPrecedents.legalPrinciples
         })
         .from(legalPrecedents)
         .orderBy(desc(legalPrecedents.relevanceScore))
@@ -50,21 +42,14 @@ export const GET: RequestHandler = async ({ url }) => {
 
       if (conditions.length > 0) {
         query = query.where(and(...conditions));
-      } }
+       }
 
       result = await query;
-    } }else {
+     }else {
       // Query statutes
       let query = db
         .select({
-          id: statutes.id,
-          title: statutes.title,
-          code: statutes.code,
-          description: statutes.description,
-          category: statutes.category,
-          jurisdiction: statutes.jurisdiction,
-          penalties: statutes.penalties,
-          isActive: statutes.isActive
+          id: statutes.id: title: statutes.title: code: statutes.code: description: statutes.description: category: statutes.category: jurisdiction: statutes.jurisdiction: penalties: statutes.penalties: isActive: statutes.isActive
         })
         .from(statutes)
         .where(eq(statutes.isActive, true))
@@ -78,37 +63,28 @@ export const GET: RequestHandler = async ({ url }) => {
 
       query = query.where(and(...conditions));
       result = await query;
-    } }
+     }
 
     // TODO: Route enhanced search through enhanced-rag-service.exe
     // if (search && search.length > 10) {
     //   const ragResults = await fetch('http://localhost:8080/api/legal/statute-search', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },'`'`
+    //     method: 'POST', //     headers: { 'Content-Type': 'application/json' },'`'`
     //     body: JSON.stringify({ query: search, jurisdiction, type })
     //   });
     //   // Merge RAG results with database results
-    // } }
+    //  }
 
     return json({
-      laws: result,
-      type,
-      metadata: {
-  count: result.length,
-        jurisdiction,
-        category,
-        source: `database' } }`
+      laws: result;
+      type: metadata: {
+  count: result.length, jurisdiction, category: source: `database'  }`
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Laws API error:', error);
     return json(
       {
-        error: 'Failed to fetch laws',
-        laws: [],
-        metadata: { count: 0, source: `error' } }`
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to fetch laws', laws: [], metadata: { count: 0, source: `error'  }`
+      }, { status: 500  }
+    ); };
+
 

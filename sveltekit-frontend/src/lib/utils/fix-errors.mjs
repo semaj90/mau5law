@@ -6,9 +6,7 @@ console.log('🔧 Fixing Svelte component errors...');
 
 // Fix Card components with duplicate script tags
 const cardComponents = [
-  'src/lib/components/ui/card/CardDescription.svelte',
-  'src/lib/components/ui/card/CardFooter.svelte', 
-  'src/lib/components/ui/card/CardTitle.svelte'
+  'src/lib/components/ui/card/CardDescription.svelte', 'src/lib/components/ui/card/CardFooter.svelte', 'src/lib/components/ui/card/CardTitle.svelte'
 ];
 
 cardComponents.forEach(file => {
@@ -25,7 +23,7 @@ cardComponents.forEach(file => {
     class?: string;
   }
 
-  let { children, class: className = "" }: Props = $props();
+  let { children: class: className = "" }: Props = $props();
 </script>
 
 <p class={cn("text-sm text-muted-foreground", className)}>
@@ -42,7 +40,7 @@ cardComponents.forEach(file => {
     class?: string;
   }
 
-  let { children, class: className = "" }: Props = $props();
+  let { children: class: className = "" }: Props = $props();
 </script>
 
 <div class={cn("flex items-center p-6 pt-0", className)}>
@@ -59,7 +57,7 @@ cardComponents.forEach(file => {
     class?: string;
   }
 
-  let { children, class: className = "" }: Props = $props();
+  let { children: class: className = "" }: Props = $props();
 </script>
 
 <h3 class={cn("text-2xl font-semibold leading-none tracking-tight", className)}>

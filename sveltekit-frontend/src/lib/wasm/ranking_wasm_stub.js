@@ -10,9 +10,7 @@ export default {
       /* ignore */
     }
     return new Uint8Array(); // worker will fallback if empty
-  },
-  unpack_rankings(u8arr) {
+  }, unpack_rankings(u8arr) {
     // return JSON string; empty implementation
     return JSON.stringify({ results: [], query: '', totalResults: 0, timestamp: Date.now(), version: 1 });
-  },
-};
+  }};

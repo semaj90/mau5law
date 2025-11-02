@@ -1,16 +1,16 @@
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { invokeContextualChain } }from '$lib/server/ai/contextual-gpu-chain';
-import { getTopAdapter, recordAdapterUsage } }from '$lib/server/adapter-ranking';
-import { createRedisClient } }from '$lib/server/redis-client';
-import { getNeo4jDriver } }from '$lib/server/neo4j-client';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { invokeContextualChain  } from '$lib/server/ai/contextual-gpu-chain';
+import { getTopAdapter, recordAdapterUsage  } from '$lib/server/adapter-ranking';
+import { createRedisClient  } from '$lib/server/redis-client';
+import { getNeo4jDriver  } from '$lib/server/neo4j-client';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const body = await request.json();
   const input = typeof body?.input === 'string' ? body.input : undefined;
   if (!input?.trim()) {
     throw error(400, 'input is required');
-  } }
+   }
 
   // Defensive: try to pick an adapter but continue if unavailable
   const redis = createRedisClient();
@@ -21,19 +21,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const top = await getTopAdapter(redis);
     if (top) {
       adapterId = top.id;
-      adapterScore = top.score ?? 0;
-    } }
-  } }catch (e) {
+      adapterScore = top.score ?? 0; }catch (e) {
     console.warn('adapter selection failed, continuing with default adapter', e);
-  } }
+   }
 
-  const maybeLocals = locals as { user?: { id?: string } }} }| undefined;
-  const userId = (body?.userId as: string | undefined) ?? maybeLocals?.user?.id;
+  const maybeLocals = locals as { user?: { id?: string }  } }| undefined;
+  const userId = (body?.userId as string | undefined) ?? maybeLocals?.user?.id;
   const response = await invokeContextualChain(input, userId);
 
   // Best-effort: record usage asynchronously
   recordAdapterUsage(neo4j, String(userId ?? 'anonymous'), adapterId, adapterScore).catch(() => undefined);
 
-  return json({ response, adapter: adapterId });
+  return json({ response: adapter: adapterId });
 };
+
 

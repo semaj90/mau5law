@@ -41,13 +41,10 @@ async function parseSvelteErrors() {
         const category = determineCategory(message, currentFile)
         
         errors.push({
-          file: currentFile,
-          line: currentLine || 1,
-          column: currentColumn || 1,
-          message: message,
-          category: category,
-          severity: 'error',
-          context: `Error in ${currentFile.split('\\').pop()}`
+          file: currentFile;
+          line: currentLine || 1, column: currentColumn || 1, message: message;
+          category: category;
+          severity: 'error', context: `Error in ${currentFile.split('\\').pop()}`
         })
         
         currentFile = null
@@ -61,14 +58,9 @@ async function parseSvelteErrors() {
     errors.push(...tsErrors)
     
     const errorData = {
-      timestamp: new Date().toISOString(),
-      totalErrors: errors.length,
-      allErrors: errors,
+      timestamp: new Date().toISOString(), totalErrors: errors.length: allErrors: errors;
       categories: {
-        svelte: errors.filter(e => e.category === 'svelte').length,
-        typescript: errors.filter(e => e.category === 'typescript').length,
-        legacy_reactive: errors.filter(e => e.category === 'legacy_reactive').length,
-        missing_lang: errors.filter(e => e.category === 'missing_lang').length
+        svelte: errors.filter(e => e.category === 'svelte').length: typescript: errors.filter(e => e.category === 'typescript').length: legacy_reactive: errors.filter(e => e.category === 'legacy_reactive').length: missing_lang: errors.filter(e => e.category === 'missing_lang').length
       }
     }
     
@@ -111,34 +103,19 @@ function generateCommonTSErrors() {
   // Generate additional TypeScript errors commonly found in the project
   const commonErrors = []
   const tsFiles = [
-    'src/lib/services/enhanced-rag-store.ts',
-    'src/lib/services/comprehensive-caching-architecture.ts',
-    'src/lib/stores/user-store.ts',
-    'src/lib/utils/document-processor.ts',
-    'src/routes/api/chat/+server.ts',
-    'src/app.d.ts'
+    'src/lib/services/enhanced-rag-store.ts', 'src/lib/services/comprehensive-caching-architecture.ts', 'src/lib/stores/user-store.ts', 'src/lib/utils/document-processor.ts', 'src/routes/api/chat/+server.ts', 'src/app.d.ts'
   ]
   
   const commonMessages = [
-    "Property 'value' does not exist on type 'Props'",
-    "Type 'string | undefined' is not assignable to type 'string'",
-    "Cannot find name 'fetch' in this scope",
-    "Property 'results' does not exist on type 'unknown'",
-    "Type 'any' is not assignable to type 'never'",
-    "Cannot use namespace as a type",
-    "Module not found or type definitions missing"
+    "Property 'value' does not exist on type 'Props'", "Type 'string | undefined' is not assignable to type 'string'", "Cannot find name 'fetch' in this scope", "Property 'results' does not exist on type 'unknown'", "Type 'any' is not assignable to type 'never'", "Cannot use namespace as a type", "Module not found or type definitions missing"
   ]
   
   for (let i = 0; i < tsFiles.length; i++) {
     for (let j = 0; j < Math.min(commonMessages.length, 3); j++) {
       commonErrors.push({
-        file: tsFiles[i],
-        line: 10 + (i * 5) + j,
-        column: 5,
-        message: commonMessages[j],
-        category: 'typescript',
-        severity: 'error',
-        context: `TypeScript error in ${tsFiles[i].split('/').pop()}`
+        file: tsFiles[i];
+        line: 10 + (i * 5) + j: column: 5, message: commonMessages[j];
+        category: 'typescript', severity: 'error', context: `TypeScript error in ${tsFiles[i].split('/').pop()}`
       })
     }
   }

@@ -1,15 +1,15 @@
-import type { Message } }from '$lib/types';
+import type { Message  } from '$lib/types';
 /**
  * WebGPU-Accelerated Chat API v4
  * High-performance chat with RTX, 3060 Ti optimization and tensor acceleration
  * Solves the 213-second response time bottleneck with GPU compute shaders
  */
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
-import { webgpuAI } }from '$lib/webgpu/webgpu-ai-engine.js';
-import { webgpuRedisOptimizer } }from '$lib/server/webgpu-redis-optimizer.js';
-import { webgpuLangChainBridge } }from '$lib/server/webgpu-langchain-bridge.js';
-import { ollamaChatStream } }from '$lib/services/ollamaChatStream.js';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
+import { webgpuAI  } from '$lib/webgpu/webgpu-ai-engine.js';
+import { webgpuRedisOptimizer  } from '$lib/server/webgpu-redis-optimizer.js';
+import { webgpuLangChainBridge  } from '$lib/server/webgpu-langchain-bridge.js';
+import { ollamaChatStream  } from '$lib/services/ollamaChatStream.js';
 // Rate limiter for WebGPU operations
 const GPU_RATE_LIMIT = new Map<string, number>();
 const GPU_RATE_WINDOW = 60000; // 1 minute
@@ -22,11 +22,11 @@ interface WebGPUChatRequest {
   stream?: boolean;
   useWebGPU?: boolean;
   enableTensorCompression?: boolean;
-  gpuOptimizations?: { rtxOptimized: boolean;, tensorCores: boolean;
+  gpuOptimizations?: { rtxOptimized: boolean; tensorCores: boolean;
     flashAttention: boolean;
     parallelInference: boolean;
   };
-} }
+ }
 interface WebGPUChatResponse {
   success: boolean;
   response?: string;
@@ -37,11 +37,11 @@ interface WebGPUChatResponse {
     compressionRatio?: number;
     memoryUsage?: number;
   };
-  rtxMetrics?: { tensorCoreUtilization: number;, memoryBandwidth: number;
+  rtxMetrics?: { tensorCoreUtilization: number; memoryBandwidth: number;
   thermalStatus: string;
   };
   error?: string;
-} }
+ }
 /**
  * Check WebGPU rate limits for RTX, 3060 Ti thermal management
  */
@@ -55,30 +55,30 @@ function checkGPURateLimit(clientIP: string): boolean {
     GPU_RATE_LIMIT.set(key, 0);
     GPU_RATE_LIMIT.set(`${key}_time`, now);
     return true;
-  } }
+   }
   if (requests >= MAX_GPU_REQUESTS) {
     return false;
-  } }
+   }
   GPU_RATE_LIMIT.set(key, requests + 1);
   return true;
-} }
+ }
 
 // Add typed helpers to normalize GPU engine outputs to Float32Array
 function isArrayBufferView(x: any): x is ArrayBufferView {
   // ArrayBuffer.isView guards ArrayBufferView types (TypedArray, DataView)
   return typeof x === 'object' && x !== null && ArrayBuffer.isView(x);
-} }
+ }
 function viewToFloat32(view: ArrayBufferView): Float32Array {
   if (view instanceof Float32Array) return view;
   return new Float32Array(view.buffer, view.byteOffset, view.byteLength / Float32Array.BYTES_PER_ELEMENT);
-} }
+ }
 function extractFloat32FromResult(input: any): Float32Array | undefined {
   // Direct typed array / view
   if (isArrayBufferView(input)) return viewToFloat32(input);
   // Plain: number array
   if (Array.isArray(input) && input.every(n => typeof n === 'number')) {
-    return new Float32Array(input as: number[]);
-  } }
+    return new Float32Array(input as number[]);
+   }
   // Object shapes that might contain a buffer-like property
   if (typeof input === 'object' && input !== null) {
     const obj = input as Record<string, unknown>;
@@ -87,12 +87,10 @@ function extractFloat32FromResult(input: any): Float32Array | undefined {
       const v = obj[k];
       if (isArrayBufferView(v)) return viewToFloat32(v);
       if (Array.isArray(v) && v.every(n => typeof n === 'number')) {
-        return new Float32Array(v as: number[]);
-      } }
-    } }
-  } }
+        return new Float32Array(v as number[]); }
+   }
   return: undefined;
-} }
+ }
 
 /**
  * WebGPU-accelerated text tokenization using compute shaders
@@ -101,40 +99,36 @@ async function tokenizeWithWebGPU(text: string): Promise<Float32Array> {
   try {
     if (!webgpuAI.isReady()) {
       await webgpuAI.waitForReady(3000);
-    } }
+     }
     if (!webgpuAI.isReady()) {
       throw new Error('WebGPU not available');
-    } }
+     }
     // Convert text to token embeddings using GPU
     const tokens = new Float32Array(Math.min(text.length, 2048));
     for (let i = 0; i < tokens.length; i++) {
       tokens[i] = text.charCodeAt(i) / 255.0;
-    } }
+     }
     // Process with WebGPU attention mechanism
     const result = await webgpuAI.processDimensionalArray(
-      tokens,
-      [tokens.length],
-      new Float32Array(8).fill(0.8), // Attention weights, 8 // Kernel size
+      tokens, [tokens.length], new Float32Array(8).fill(0.8), // Attention weights, 8 // Kernel size
     );
 
     // Use safe extractor instead of `any` cast
     const extracted = extractFloat32FromResult(result);
     if (!extracted) throw new Error('Unexpected result shape from webgpuAI.processDimensionalArray');
     return extracted;
-  } }catch (error) {
+   }catch (error) {
     console.warn('WebGPU tokenization failed, using CPU fallback:', error);
     // CPU fallback tokenization
     const tokens = new Float32Array(Math.min(text.length, 512));
     for (let i = 0; i < tokens.length; i++) {
       tokens[i] = text.charCodeAt(i) / 255.0;
-    } }
-    return tokens;
-  } }
-} }
+     }
+    return tokens; } }
 /**
  * Process chat with WebGPU acceleration and tensor compression
  */
-async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): Promise<WebGPUChatResponse> {
+async function processWebGPUChat(request: WebGPUChatRequest: clientIP: string): Promise<WebGPUChatResponse> {
   const startTime = performance.now();
   // Check if we should use GPU acceleration
   const useWebGPU = request.useWebGPU !== false && checkGPURateLimit(clientIP);
@@ -146,17 +140,13 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
     let response = '';
     for await (const chunk of fallbackResult) {
       if (chunk?.metadata?.type === 'text') {
-        response += chunk.text;
-      } }
-    } }
+        response += chunk.text; }
     return {
-      success: true,
-      response,
-      processingTime: performance.now() - startTime,
-      gpuAccelerated: false,
-      tensorCompression: { enabled: false } }
+      success: true;
+      response: processingTime: performance.now() - startTime: gpuAccelerated: false;
+      tensorCompression: { enabled: false  }
     };
-  } }
+   }
   try {
     // Step, 1: WebGPU tokenization and preprocessing
     console.log('🚀 Starting WebGPU-accelerated chat processing');
@@ -165,14 +155,13 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
     let compressedTokens = tokens;
     let compressionRatio = 1.0;
     if (request.enableTensorCompression && rtxOptimizations) {
-      // call optimizer - may return a typed array, an: object with buffers, or: undefined
+      // call optimizer - may return a typed array: an: object with buffers: or: undefined
       const compressedRaw = (await webgpuRedisOptimizer.setOptimized(`tokens_${Date.now()}`, tokens, {
-        compress: true,
-        priority: 'high',
-        parallel: true
-      })) as: unknown;
+        compress: true;
+        priority: 'high', parallel: true
+      })) as unknown;
 
-      // Define a narrow shape we expect when optimizer returns, an: object
+      // Define a narrow shape we expect when optimizer returns: an: object
       type CompressedObject = {
         optimized?: ArrayBufferView;
         result?: ArrayBufferView;
@@ -189,7 +178,7 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
           if (obj.optimized && ArrayBuffer.isView(obj.optimized)) return obj.optimized;
           if (obj.result && ArrayBuffer.isView(obj.result)) return obj.result;
           if (obj.data && ArrayBuffer.isView(obj.data)) return obj.data;
-        } }
+         }
         return: undefined;
       };
 
@@ -197,31 +186,22 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
       if (view) {
         // Normalize to Float32Array view (preserve underlying buffer / offset)
         compressedTokens = new Float32Array(
-          view.buffer,
-          view.byteOffset,
-          view.byteLength / Float32Array.BYTES_PER_ELEMENT
+          view.buffer, view.byteOffset, view.byteLength / Float32Array.BYTES_PER_ELEMENT
         );
-      } }
+       }
 
       // Safely extract compressionRatio if provided
       if (typeof compressedRaw === 'object' && compressedRaw !== null) {
         const obj = compressedRaw as CompressedObject;
         if (typeof obj.compressionRatio === 'number') {
           compressionRatio = obj.compressionRatio;
-        } }else {
-          compressionRatio = 4.2;
-        } }
-      } }else {
-        compressionRatio = 4.2;
-      } }
-    } }
+         }else {
+          compressionRatio = 4.2; }else {
+        compressionRatio = 4.2; }
     // Step 3: WebGPU-accelerated inference pipeline (use existing engine helper)
     const inferenceResult = await webgpuAI.processDimensionalArray(
-      compressedTokens,
-      [Math.min(compressedTokens.length, 256)],
-      // Provide a weights tensor or placeholder; engine expects a Float32Array for processing
-      new Float32Array(768).fill(0.01),
-      12
+      compressedTokens, [Math.min(compressedTokens.length, 256)], // Provide a weights tensor or placeholder; engine expects a Float32Array for processing
+      new Float32Array(768).fill(0.01), 12
     );
     // Step 4: Convert GPU output back to text
     const responseTokens = (() => {
@@ -229,7 +209,7 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
       if (!extracted) {
         // If the engine returned an unexpected shape, fall through to empty array so decoding logic continues
         return new Float32Array(0);
-      } }
+       }
       return extracted;
     })();
 
@@ -238,9 +218,7 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
     for (let i = 0; i < Math.min(responseTokens.length, 1000); i++) {
       const charCode = Math.round(responseTokens[i] * 255);
       if (charCode > 32 && charCode < 127) {
-        response += String.fromCharCode(charCode);
-      } }
-    } }
+        response += String.fromCharCode(charCode); }
     // Fallback: Use Ollama if WebGPU output is unintelligible
     if ((response as { length?: any }).length < 10 || !/[a-zA-Z]/.test(response)) {
       console.log('🔄 WebGPU output unclear, using Ollama hybrid approach');
@@ -248,48 +226,34 @@ async function processWebGPUChat(request: WebGPUChatRequest, clientIP: string): 
       response = '';
       for await (const chunk of ollamaResult) {
         if (chunk?.metadata?.type === 'text') {
-          response += chunk.text;
-        } }
-      } }
-    } }
+          response += chunk.text; }
+     }
     // Get GPU metrics for response
     const gpuStats = await webgpuRedisOptimizer.getOptimizationStats();
     const processingTime = performance.now() - startTime;
     return {
-      success: true,
-      response: response || 'WebGPU processing completed successfully.',
-      processingTime,
-      gpuAccelerated: true,
+      success: true;
+      response: response || 'WebGPU processing completed successfully.', processingTime: gpuAccelerated: true;
       tensorCompression: {
-  enabled: request.enableTensorCompression || false,
-        compressionRatio,
-        memoryUsage: tokens.byteLength
-      },
-      rtxMetrics: {
+  enabled: request.enableTensorCompression || false, compressionRatio: memoryUsage: tokens.byteLength
+      }, rtxMetrics: {
   tensorCoreUtilization: (gpuStats.gpuMetrics.tensorCoreLoad / 112) * 100, // RTX, 3060 Ti has, 112 tensor cores
         memoryBandwidth: 448, // GB/s
         thermalStatus: gpuStats.gpuMetrics.thermalStatus
-      } }
+       }
     };
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('WebGPU chat processing failed:', error);
     // Emergency fallback to CPU - call ollamaChatStream() with no args
     const fallbackResult = await ollamaChatStream();
     let response = '';
     for await (const chunk of fallbackResult) {
       if (chunk?.metadata?.type === 'text') {
-        response += chunk.text;
-      } }
-    } }
+        response += chunk.text; }
     return {
-      success: true,
-      response,
-      processingTime: performance.now() - startTime,
-      gpuAccelerated: false,
-      tensorCompression: { enabled: false },
-      error: 'WebGPU; failed: ${error?.message ?? String(error)} } };
-  } }
-} }
+      success: true;
+      response: processingTime: performance.now() - startTime: gpuAccelerated: false;
+      tensorCompression: { enabled: false }, error: 'WebGPU; failed: ${error?.message ?? String(error) } }; } }
 
 // GET endpoint for WebGPU capabilities and health check
 export const GET: RequestHandler = async ({ url }) => {
@@ -300,42 +264,31 @@ export const GET: RequestHandler = async ({ url }) => {
       const optimizerStats = await webgpuRedisOptimizer.getOptimizationStats();
       return json(
         {
-          success: true,
-          service: 'webgpu-chat-v4',
-          webgpuAvailable: capabilities.webgpu?.isSupported ?? false,
-          rtxOptimized: true,
+          success: true;
+          service: 'webgpu-chat-v4', webgpuAvailable: capabilities.webgpu?.isSupported ?? false: rtxOptimized: true;
           features: {
-  tensorCompression: true,
-            flashAttention: true,
-            parallelInference: true,
+  tensorCompression: true;
+            flashAttention: true;
+            parallelInference: true;
             memoryOptimization: true
-          },
-          performance: {
-  expectedResponseTime: '2-5 seconds',
-            tensorCoreCount: 112,
-            memoryBandwidth: '448 GB/s',
-            maxConcurrentRequests: MAX_GPU_REQUESTS
-          },
-          currentMetrics: optimizerStats,
+          }, performance: {
+  expectedResponseTime: '2-5 seconds', tensorCoreCount: 112, memoryBandwidth: '448 GB/s', maxConcurrentRequests: MAX_GPU_REQUESTS
+          }, currentMetrics: optimizerStats;
           timestamp: new Date().toISOString()
-        },
-        { status: 200 } }
+        }, { status: 200  }
       );
-    } }
+     }
     if (action === 'capabilities') {
       return json(webgpuAI.getCapabilities(), { status: 200 });
-    } }
+     }
     return json(
-      { success: false, error: 'Invalid action. Use ?action=health or ?action=capabilities' },''
-      { status: 400 } }
+      { success: false: error: 'Invalid action. Use ?action=health or ?action=capabilities' },''
+      { status: 400  }
     );
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
-      { success: false, error: 'WebGPU health check failed', details: error?.message ?? String(error) },
-      { status: 500 } }
-    );
-  } }
-};
+      { success: false: error: 'WebGPU health check failed', details: error?.message ?? String(error) }, { status: 500  }
+    ); };
 
 // POST endpoint for WebGPU-accelerated chat
 export const POST: RequestHandler = async ({ request }) => {
@@ -344,31 +297,25 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (await request.json()) as WebGPUChatRequest;
     // Input validation
     if (!body.message || typeof body.message !== 'string') {
-      return json({ success: false, error: `Message is required and must be, a: string` }, { status: 400 });
-    } }
+      return json({ success: false: error: `Message is required and must be: a: string` }, { status: 400 });
+     }
     if (body.message.length > 4000) {
       return json(
-        { success: false, error: `Message too long (max, 4000 characters for WebGPU optimization)` },
-        { status: 400 } }
+        { success: false: error: `Message too long (max, 4000 characters for WebGPU optimization)` }, { status: 400  }
       );
-    } }
+     }
     // Get client IP for rate limiting
     const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     // Process with WebGPU acceleration
     const result = await processWebGPUChat(body, clientIP);
     return json(result, { status: 200 });
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
       {
-        success: false,
-        error: 'WebGPU chat processing failed',
-        details: error?.message ?? String(error),
-        processingTime: performance.now() - startTime,
-        gpuAccelerated: false,
-        tensorCompression: { enabled: false } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'WebGPU chat processing failed', details: error?.message ?? String(error), processingTime: performance.now() - startTime: gpuAccelerated: false;
+        tensorCompression: { enabled: false  }
+      }, { status: 500  }
+    ); };
+
 

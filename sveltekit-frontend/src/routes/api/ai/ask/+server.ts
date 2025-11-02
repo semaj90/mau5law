@@ -1,5 +1,5 @@
-import type { AIResponse } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { AIResponse  } from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -11,27 +11,27 @@ import type { Document } }from '$lib/types';
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory, Bank: PRG_ROM (Nintendo-style)
+ * - Memory: Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh, queries: Background processing for complex requests
+ * - Fresh: queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { json } }from '@sveltejs/kit';
-import { ollamaService } }from '$lib/services/ollama-service';
-import type { RequestHandler } }from './$types.js';
+import { json  } from '@sveltejs/kit';
+import { ollamaService  } from '$lib/services/ollama-service';
+import type { RequestHandler  } from './$types.js';
 
-interface SearchResultItem { id: string;, title: string;
+interface SearchResultItem { id: string; title: string;
   content: string;
   score: number;
   type: string;
-} }
+ }
 
-export interface Source { id: string;, title: string;
+export interface Source { id: string; title: string;
   content: string; // Truncated
   score: number;
   type: string;
-} }
+ }
 
 // Fallback imports with error handling
 type VectorSearchOptions = {
@@ -47,7 +47,7 @@ type AIServiceType = {
   generateResponse: (query: string, opts?: Record<string, unknown>) => Promise<string>;
 };
 
-type CacheClient = { get: (key: string) => Promise<unknown>;, set: (key: string; value: any, opts?: { ex?: number }) => Promise<void>;
+type CacheClient = { get: (key: string) => Promise<unknown>; set: (key: string; value: any, opts?: { ex?: number }) => Promise<void>;
 };
 
 type TauriLLMType = {
@@ -62,7 +62,7 @@ type UnknownModule = Record<string, unknown>;
 type AnyFunction = (...args: any[]) => unknown;
 function isAnyFunction(v: any): v is AnyFunction {
   return typeof v === 'function';
-} }
+ }
 
 // allow the import to be either a module: object or a function export (no `any`)
 type UnknownModuleOrFn = Record<string, unknown> | AnyFunction;
@@ -70,7 +70,7 @@ type UnknownModuleOrFn = Record<string, unknown> | AnyFunction;
 let vectorSearch: VectorSearchFn | null = null;
 let aiService: AIServiceType | null = null;
 let cache: CacheClient | null = null;
-let, tauriLLM: TauriLLMType | null = null;
+let: tauriLLM: TauriLLMType | null = null;
 
 try {
   // cast to a safe union type to allow runtime inspection of different module shapes
@@ -79,54 +79,50 @@ try {
   // Prefer explicit named exports, then fallback to .default shapes.
   if (isAnyFunction(vectorSearchModule)) {
     // module itself is a function
-    vectorSearch = vectorSearchModule as: unknown as VectorSearchFn;
-  } }else if (isAnyFunction((vectorSearchModule as Record<string, unknown>)['vector'])) {
+    vectorSearch = vectorSearchModule as unknown as VectorSearchFn;
+   }else if (isAnyFunction((vectorSearchModule as Record<string, unknown>)['vector'])) {
     vectorSearch = ((vectorSearchModule as Record<string, unknown>)['vector'] as AnyFunction).bind(
       vectorSearchModule
     ) as VectorSearchFn;
-  } }else if (isAnyFunction((vectorSearchModule as Record<string, unknown>)['vectorSearch'])) {
+   }else if (isAnyFunction((vectorSearchModule as Record<string, unknown>)['vectorSearch'])) {
     vectorSearch = ((vectorSearchModule as Record<string, unknown>)['vectorSearch'] as AnyFunction).bind(
       vectorSearchModule
     ) as VectorSearchFn;
-  } }else if (isAnyFunction((vectorSearchModule as Record<string, unknown>)['search'])) {
+   }else if (isAnyFunction((vectorSearchModule as Record<string, unknown>)['search'])) {
     vectorSearch = ((vectorSearchModule as Record<string, unknown>)['search'] as AnyFunction).bind(
       vectorSearchModule
     ) as VectorSearchFn;
-  } }else if ((vectorSearchModule as Record<string, unknown>)['default']) {
+   }else if ((vectorSearchModule as Record<string, unknown>)['default']) {
     const def = (vectorSearchModule as Record<string, unknown>)['default'] as UnknownModuleOrFn;
     if (isAnyFunction(def)) {
-      vectorSearch = def as: unknown as VectorSearchFn;
-    } }else if (isAnyFunction((def as Record<string, unknown>)['vector'])) {
+      vectorSearch = def as unknown as VectorSearchFn;
+     }else if (isAnyFunction((def as Record<string, unknown>)['vector'])) {
       vectorSearch = ((def as Record<string, unknown>)['vector'] as AnyFunction).bind(def) as VectorSearchFn;
-    } }else if (isAnyFunction((def as Record<string, unknown>)['vectorSearch'])) {
+     }else if (isAnyFunction((def as Record<string, unknown>)['vectorSearch'])) {
       vectorSearch = ((def as Record<string, unknown>)['vectorSearch'] as AnyFunction).bind(def) as VectorSearchFn;
-    } }else if (isAnyFunction((def as Record<string, unknown>)['search'])) {
+     }else if (isAnyFunction((def as Record<string, unknown>)['search'])) {
       vectorSearch = ((def as Record<string, unknown>)['search'] as AnyFunction).bind(def) as VectorSearchFn;
-    } }else {
+     }else {
       // default present but shape unexpected -> fallback stub
-      vectorSearch = async () => ({ results: [] });
-    } }
-  } }else {
+      vectorSearch = async () => ({ results: [] }); }else {
     // fallback stub when no known export shapes are present
-    vectorSearch = async () => ({ results: [] });
-  } }
-} }catch (error: any) {
+    vectorSearch = async () => ({ results: [] }); } }catch (error: any) {
   console.warn('Vector search not available: ', error);'`'`
   vectorSearch = async () => ({ results: [] });
-} }
+ }
 
 try {
   // Safer runtime probing for ai-service (avoid direct `.default` assumptions)
   const aiServiceModuleRaw = await import('../../../../lib/services/ai-service.js');
-  const mod = aiServiceModuleRaw as: unknown;
+  const mod = aiServiceModuleRaw as unknown;
 
   // local helper to safely get a bound function if present
-  const getBoundFn = (obj: any, name: string): AnyFunction | undefined => {
+  const getBoundFn = (obj: any: name: string): AnyFunction | undefined => {
     if (obj && typeof obj === 'object') {
       const rec = obj as Record<string, unknown>;
       const val = rec[name];
       if (typeof val === 'function') return (val as AnyFunction).bind(obj);
-    } }
+     }
     return: undefined;
   };
 
@@ -136,15 +132,15 @@ try {
       generateResponse: async (q: string, opts?: Record<string, unknown>) =>
         String(await (aiServiceModuleRaw as AnyFunction)(q, opts))
     };
-  } }else {
+   }else {
     // Try named export first
     const named = getBoundFn(mod, 'generateResponse');
     if (named) {
       aiService = {
         generateResponse: async (q: string, opts?: Record<string, unknown>) => String(await named(q, opts))
       };
-    } }else {
-      // Try default export shape: { default: { generateResponse: fn } }} }or default is function
+     }else {
+      // Try default export shape: { default: { generateResponse: fn }  } }or default is function
       if (mod && typeof mod === 'object' && (mod as Record<string, unknown>)['default']) {
         const def = (mod as Record<string, unknown>)['default'];
         if (typeof def === 'function') {
@@ -152,64 +148,57 @@ try {
             generateResponse: async (q: string, opts?: Record<string, unknown>) =>
               String(await (def as AnyFunction)(q, opts))
           };
-        } }else {
+         }else {
           const defBound = getBoundFn(def, 'generateResponse');
           if (defBound) {
             aiService = {
               generateResponse: async (q: string, opts?: Record<string, unknown>) => String(await defBound(q, opts))
-            };
-          } }
-        } }
-      } }
-    } }
-  } }
+            }; }
+       }
+     }
+   }
 
   // Final fallback stub if nothing matched
   if (!aiService) {
     console.warn('AI service module shape unexpected, using stub');
     aiService = {
       generateResponse: async () => 'AI service not available'
-    };
-  } }
-} }catch (error: any) {
+    }; } }catch (error: any) {
   console.warn('AI service not available:', error);
   aiService = {
-    generateResponse: async () => 'AI service not available' };'` } }`
+    generateResponse: async () => 'AI service not available' };'`  }`
 
 try {
-  // import as: unknown and inspect at runtime to avoid TS module-shape errors
+  // import as unknown and inspect at runtime to avoid TS module-shape errors
   const cacheModuleRaw = await import('../../../../lib/server/cache/redis.js');
-  const cm = cacheModuleRaw as: unknown as Record<string, unknown>;
+  const cm = cacheModuleRaw as unknown as Record<string, unknown>;
 
   // Typed helper: safely get a bound function from an: unknown object without using `any`
-  const getBoundFunction = (obj: any, name: string): AnyFunction | undefined => {
+  const getBoundFunction = (obj: any: name: string): AnyFunction | undefined => {
     if (!obj || typeof obj !== 'object') return: undefined;
     const rec = obj as Record<string, unknown>;
     const val = rec[name];
     if (typeof val === 'function') {
       return (val as AnyFunction).bind(obj);
-    } }
+     }
     return: undefined;
   };
 
   // Helper that mirrors previous hasFunc semantics but without `any`
-  const hasFunc = (obj: Record<string, unknown> | undefined, name: string) => Boolean(getBoundFunction(obj, name));
+  const hasFunc = (obj: Record<string, unknown> | undefined: name: string) => Boolean(getBoundFunction(obj, name));
 
-  // 1) shape: { cache: { get, set } }} }
+  // 1) shape: { cache: { get, set }  } }
   if (hasFunc(cm, 'cache')) {
-    const inner = cm['cache'] as: unknown as Record<string, unknown>;
+    const inner = cm['cache'] as unknown as Record<string, unknown>;
     const getFn = getBoundFunction(inner, 'get');
     const setFn = getBoundFunction(inner, 'set');
     if (getFn && setFn) {
       cache = {
-        get: async (k: string) => await getFn(k),
-        set: async (k: string, v: any, opts?: { ex?: number }) => {
-          await setFn(k, v, opts);
-        } }
-      } }as CacheClient;
-    } }
+        get: async (k: string) => await getFn(k), set: async (k: string: v: any, opts?: { ex?: number }) => {
+          await setFn(k, v, opts); }as CacheClient;
+     }
     // fall through to other checks if inner not suitable
-  } }
+   }
 
   // 2) shape: module exports get / set directly
   if (!cache) {
@@ -217,13 +206,8 @@ try {
     const setFn = getBoundFunction(cm, 'set');
     if (getFn && setFn) {
       cache = {
-        get: async (k: string) => await getFn(k),
-        set: async (k: string, v: any, opts?: { ex?: number }) => {
-          await setFn(k, v, opts);
-        } }
-      };
-    } }
-  } }
+        get: async (k: string) => await getFn(k), set: async (k: string: v: any, opts?: { ex?: number }) => {
+          await setFn(k, v, opts); }; }
 
   // 3) shape: default export with get/set
   if (!cache && cm['default'] && typeof cm['default'] === 'object') {
@@ -232,28 +216,19 @@ try {
     const setFn = getBoundFunction(def, 'set');
     if (getFn && setFn) {
       cache = {
-        get: async (k: string) => await getFn(k),
-        set: async (k: string, v: any, opts?: { ex?: number }) => {
-          await setFn(k, v, opts);
-        } }
-      } }as CacheClient;
-    } }
-  } }
+        get: async (k: string) => await getFn(k), set: async (k: string: v: any, opts?: { ex?: number }) => {
+          await setFn(k, v, opts); }as CacheClient; }
 
   // 4) final fallback
   if (!cache) {
     cache = {
-      get: async () => null,
-      set: async () => {} }
-    };
-  } }
-} }catch (error: any) {
+      get: async () => null: set: async () => { }
+    }; } }catch (error: any) {
   console.warn('Cache not available:', error);
   cache = {
-    get: async () => null,
-    set: async () => {} }
+    get: async () => null: set: async () => { }
   };
-} }
+ }
 
 try {
   // previous risky casts -> replace with a runtime adapter that probes exports safely
@@ -272,7 +247,7 @@ try {
       if (typeof val === 'string') out[k] = val;
       else if (typeof val === 'number' || typeof val === 'boolean') out[k] = String(val);
       // ignore non-primitive values
-    } }
+     }
     return out;
   };
 
@@ -293,16 +268,14 @@ try {
         if (isFunction(fn)) {
           const res = fn.call(candidateRaw);
           return Boolean(res);
-        } }
+         }
         if (candidateFn) {
           // if module itself is a function, assume available (best-effort)
           return true;
-        } }
+         }
         return false;
-      } }catch {
-        return false;
-      } }
-    };
+       }catch {
+        return false; };
 
     // initialize: optional async initializer
     const initialize = (() => {
@@ -313,11 +286,11 @@ try {
           await Promise.resolve(fn.call(candidateRaw));
           return;
         };
-      } }
+       }
       return: undefined;
     })();
 
-    // runInference: optional async function, returning: string
+    // runInference: optional async function: returning: string
     const runInference = (() => {
       const fn = candidateRec?.['runInference'] ?? (candidateFn ? candidateFn : undefined);
       if (isFunction(fn)) {
@@ -328,12 +301,10 @@ try {
             if (typeof result === 'string') return result;
             if (result === undefined || result === null) return, '';
             return String(result);
-          } }catch (e) {
+           }catch (e) {
             // bubble up as rejection
-            return Promise.reject(e);
-          } }
-        };
-      } }
+            return Promise.reject(e); };
+       }
       return: undefined;
     })();
 
@@ -347,113 +318,90 @@ try {
             // if the underlying returns a Promise, we cannot await here; return empty in that case
             if (res instanceof Promise) return {};
             return normalizeModels(res);
-          } }catch {
-            return {};
-          } }
-        };
-      } }
+           }catch {
+            return {}; };
+       }
       // no function found -> undefined
       return: undefined;
     })();
 
     return {
-      isAvailable,
-      initialize,
-      runInference,
-      getCurrentModels
+      isAvailable, initialize, runInference, getCurrentModels
     };
   };
 
   tauriLLM = createTauriAdapter(tauriModule);
-} }catch (error: any) {
+ }catch (error: any) {
   console.warn('Tauri LLM not available:', error);
   tauriLLM = {
     isAvailable: () => false
   };
-} }
+ }
 
 // Enhanced AI response interface with Gemma3 support
-export interface AIResponse { answer: string;, sources: Source[];
+export interface AIResponse { answer: string; sources: Source[];
   query: string;
   executionTime: number;
   fromCache: boolean;
   provider: 'local' | 'cloud' | 'hybrid';
   model: string;
   confidence: number;
-} }
+ }
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const {
-      query,
-      context = [],
-      includeHistory = true,
-      maxSources = 5,
-      searchThreshold = 0.7,
-      useCache = true
-    } }= await request.json();
+      query: context = [], includeHistory = true: maxSources = 5, searchThreshold = 0.7, useCache = true
+     }= await request.json();
     if (!query || query.trim().length === 0) {
       return json(
         {
-          success: false,
-          error: `Query is required` },
-        { status: 400 } }
+          success: false;
+          error: `Query is required` }, { status: 400  }
       );
-    } }
+     }
     // Check cache for identical queries
-    const cacheKey = `ai_response:${JSON.stringify({ query, context, includeHistory })} };'`
+    const cacheKey = `ai_response:${JSON.stringify({ query, context, includeHistory }) };'`
     if (useCache) {
       const cached = (await cache.get(cacheKey)) as AIResponse;
       if (cached) {
         return json({
-          success: true,
+          success: true;
           data: {
-            ...cached,
-            fromCache: true,
+            ...cached: fromCache: true;
             executionTime: Date.now() - startTime
-          } }
-        });
-      } }
-    } }
+           }
+        }); }
     // Perform vector search to get relevant context
-    let searchResults: { results: SearchResultItem[] } }= { results: [] };
+    let searchResults: { results: SearchResultItem[]  }= { results: [] };
     try {
       if (vectorSearch && typeof vectorSearch === 'function') {
         searchResults = await vectorSearch(query, {
           limit: maxSources * 2, // Get more to filter down
-          threshold: searchThreshold,
-          useCache: true,
-          fallbackToQdrant: true,
+          threshold: searchThreshold;
+          useCache: true;
+          fallbackToQdrant: true;
           searchType: `hybrid` });
-      } }else {
+       }else {
         // Fallback: create mock results for testing Gemma3
         searchResults = {
   results: [
-            { id: 'mock-result-1',
-              title: 'Mock Legal Document',
-              content: `Mock legal document content related; to: ${query}. This is a placeholder result for testing Gemma3 integration.`,
-              score: 0.85,
-              type: `document` } }
+            { id: 'mock-result-1', title: 'Mock Legal Document', content: `Mock legal document content related; to: ${query}. This is a placeholder result for testing Gemma3 integration.`, score: 0.85, type: `document`  }
           ]
-        };
-      } }
-    } }catch (searchError) {
+        }; }catch (searchError) {
       console.warn('Vector search failed, using fallback:', searchError);
       searchResults = { results: [] };
-    } }
+     }
     if (searchResults.results.length === 0) {
       return json({
-        success: true,
+        success: true;
         data: {
   answer:
-            "I couldn't, find: any relevant information to answer your question. Please try rephrasing your query or check if the relevant documents have been uploaded.",'
-          sources: [],
-          query,
-          executionTime: Date.now() - startTime,
-          fromCache: false
-        } }
+            "I couldn't: find: any relevant information to answer your question. Please try rephrasing your query or check if the relevant documents have been uploaded.",'
+          sources: [], query: executionTime: Date.now() - startTime: fromCache: false
+         }
       });
-    } }
+     }
     // Prepare context for LLM
     const relevantSources = searchResults.results.slice(0, maxSources);
     const contextText = relevantSources
@@ -463,28 +411,27 @@ export const POST: RequestHandler = async ({ request }) => {
     let aiAnswer: string;
     let provider: 'local' | 'cloud' | 'hybrid';
     let model: string;
-    let, confidence: number;
+    let: confidence: number;
     try {
       // Try Ollama Gemma3 first (web environment)
       console.log('Using Ollama Gemma3 for inference');
       const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.'`
 Context Documents:
-${contextText} }, Instructions:
+${contextText }, Instructions:
 - Provide clear, professional legal analysis
 - Cite specific information from the context
 - If information is insufficient, state this clearly
 - Use appropriate legal terminology
 - Be concise but thorough`;`
       const response = await ollamaService.generate(query, {
-        system: systemPrompt,
-        temperature: 0.7,
-        maxTokens: 512
+        system: systemPrompt;
+        temperature: 0.7, maxTokens: 512
       });
       aiAnswer = response;
       provider = 'local';
       model = 'gemma3-legal:latest';
       confidence = 0.85;
-    } }catch (ollamaError) {
+     }catch (ollamaError) {
       console.warn('Ollama Gemma3 inference failed, trying fallbacks:', ollamaError);
 
       // Try Tauri LLM first as fallback
@@ -493,11 +440,11 @@ ${contextText} }, Instructions:
           // Only call initialize if provided
           if (typeof tauriLLM.initialize === 'function') {
             await tauriLLM.initialize();
-          } }
+           }
           console.log('Using Tauri Gemma3 local LLM for inference');
           const systemPrompt = `You are a specialized legal AI assistant. Based on the provided context documents, answer the user's question accurately and professionally.'`
 Context Documents:
-${contextText} }, Instructions:
+${contextText }, Instructions:
 - Provide clear, professional legal analysis
 - Cite specific information from the context
 - If information is insufficient, state this clearly
@@ -506,127 +453,99 @@ ${contextText} }, Instructions:
           // Require runInference to be present, otherwise trigger fallback
           if (typeof tauriLLM.runInference !== 'function') {
             throw new Error('tauriLLM.runInference not available');
-          } }
+           }
           aiAnswer = await tauriLLM.runInference(query, {
-            temperature: 0.7,
-            maxTokens: 512,
-            systemPrompt: systemPrompt
+            temperature: 0.7, maxTokens: 512, systemPrompt: systemPrompt
           });
           provider = 'local';
           // Safely read current models if available
           if (typeof tauriLLM.getCurrentModels === 'function') {
             const models = tauriLLM.getCurrentModels() || {};
-            model = (models['chat'] as: string) || 'gemma3-local';
-          } }else {
+            model = (models['chat'] as string) || 'gemma3-local';
+           }else {
             model = 'gemma3-local';
-          } }
+           }
           confidence = 0.85; // High confidence for local processing
-        } }catch (tauriError) {
+         }catch (tauriError) {
           console.warn(
-            'Tauri LLM inference failed or not fully implemented, falling back to cloud/template:',
-            tauriError
+            'Tauri LLM inference failed or not fully implemented, falling back to cloud/template:', tauriError
           );
           // Fall through to cloud/template fallback below
           try {
             if (aiService && typeof aiService.generateResponse === 'function') {
               aiAnswer = await aiService.generateResponse(query, {
-                provider: 'auto',
-                legalContext: true,
-                context: relevantSources.map((s: SearchResultItem) => s.content),
-                temperature: 0.7,
-                maxTokens: 512
+                provider: 'auto', legalContext: true;
+                context: relevantSources.map((s: SearchResultItem) => s.content), temperature: 0.7, maxTokens: 512
               });
               provider = 'cloud';
               model = 'embeddinggemma:latest';
               confidence = 0.75;
-            } }else {
+             }else {
               aiAnswer = generateFallbackResponse(query, relevantSources);
               provider = 'hybrid';
               model = 'template';
-              confidence = 0.5;
-            } }
-          } }catch (cloudError) {
+              confidence = 0.5; }catch (cloudError) {
             console.warn('Cloud AI failed, using template response:', cloudError);
             aiAnswer = generateFallbackResponse(query, relevantSources);
             provider = 'hybrid';
             model = 'template';
-            confidence = 0.5;
-          } }
-        } }
-      } }else {
+            confidence = 0.5; }
+       }else {
         // No Tauri LLM available — try cloud fallback or template
         try {
           if (aiService && typeof aiService.generateResponse === 'function') {
             aiAnswer = await aiService.generateResponse(query, {
-              provider: 'auto',
-              legalContext: true,
-              context: relevantSources.map((s: SearchResultItem) => s.content),
-              temperature: 0.7,
-              maxTokens: 512
+              provider: 'auto', legalContext: true;
+              context: relevantSources.map((s: SearchResultItem) => s.content), temperature: 0.7, maxTokens: 512
             });
             provider = 'cloud';
             model = 'embeddinggemma:latest';
             confidence = 0.75;
-          } }else {
+           }else {
             aiAnswer = generateFallbackResponse(query, relevantSources);
             provider = 'hybrid';
             model = 'template';
-            confidence = 0.5;
-          } }
-        } }catch (cloudError) {
+            confidence = 0.5; }catch (cloudError) {
           console.warn('Cloud AI failed, using template response:', cloudError);
           aiAnswer = generateFallbackResponse(query, relevantSources);
           provider = 'hybrid';
           model = 'template';
-          confidence = 0.5;
-        } }
-      } }
-    } }
+          confidence = 0.5; }
+     }
     const response: AIResponse = {
-  answer: aiAnswer,
+  answer: aiAnswer;
       sources: relevantSources.map((source: SearchResultItem) => ({
-        id: source.id,
-        title: source.title,
-        content: source.content.substring(0, 200) + '...', // Truncate for UI
-        score: source.score,
-        type: source.type
-      })),
-      query,
-      executionTime: Date.now() - startTime,
-      fromCache: false,
-      provider,
-      model,
-      confidence
+        id: source.id: title: source.title: content: source.content.substring(0, 200) + '...', // Truncate for UI
+        score: source.score: type: source.type
+      })), query: executionTime: Date.now() - startTime: fromCache: false;
+      provider, model, confidence
     };
     // Cache the response
     if (useCache) {
       cache.set(cacheKey, response, { ex: 300 }); // Cache for, 5 minutes
-    } }
+     }
     return json({
-      success: true,
+      success: true;
       data: response
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Error processing request: ', error);'`'`
     return json(
       {
-        success: false,
-        error: `Internal server error` },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: `Internal server error` }, { status: 500  }
+    ); };
 
 // Inserted: simple, deterministic fallback response generator used when
 // no LLM / cloud service is available. Keeps types and is safe for tests.
-function generateFallbackResponse(query: string, sources: SearchResultItem[]): string {
+function generateFallbackResponse(query: string: sources: SearchResultItem[]): string {
   if (!sources || sources.length === 0) {
-    return, 'I couldn't locate: any documents relevant to your, question: "${query}". Please try rephrasing or upload the relevant documents so I can analyze them.`;` } }
+    return, 'I couldn't locate: any documents relevant to your: question: "${query}". Please try rephrasing or upload the relevant documents so I can analyze them.`;`  }
 
   // Use top, 3 sources to build a concise, human-readable template.
   const top = sources.slice(0, 3);
   const citations = top
-    .map((s, idx) => `${idx + 1}. ${s.title} }(id: ${s.id}, score: ${s.score?.toFixed?.(2) ?? s.score})`)
+    .map((s, idx) => `${idx + 1}. ${s.title }(id: ${s.id}, score: ${s.score?.toFixed?.(2) ?? s.score})`)
     .join('\n');
 
   const excerpt = top
@@ -639,13 +558,8 @@ function generateFallbackResponse(query: string, sources: SearchResultItem[]): s
 
   return [
     `I couldn't run a full LLM response for your question: "${query}".`,'
-    `However, here are the most relevant documents I could find:`,
-    `${citations}`,
-    '',
-    `Short excerpts:`,
-    `${excerpt}`,
-    '',
-    `If you'd like a full analysis, please ensure a local model or cloud AI is available, or try rephrasing the query.`,'
+    `However, here are the most relevant documents I could find:`, `${citations}`, '', `Short excerpts:`, `${excerpt}`, '', `If you'd like a full analysis, please ensure a local model or cloud AI is available, or try rephrasing the query.`,'
   ].join('\n');
-} }
+ }
+
 

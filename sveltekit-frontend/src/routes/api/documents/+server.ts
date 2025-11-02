@@ -2,15 +2,15 @@
  * Documents API with pgvector integration
  * Handles document CRUD operations with vector embeddings
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from '@sveltejs/kit';
-import { db } }from '$lib/server/db/connection';
-import { documents, cases } }from '$lib/server/schema/documents';
-import { eq, desc, and, sql } }from 'drizzle-orm';
-import { createEmbedding } }from '$lib/services/embedding-service';
-import { redis } }from '$lib/server/redis';
-import type { Document, NewDocument } }from '$lib/server/schema/documents';
-import type { SQL } }from 'drizzle-orm'; // <-- added, type, import
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { db  } from '$lib/server/db/connection';
+import { documents, cases  } from '$lib/server/schema/documents';
+import { eq, desc, and, sql  } from 'drizzle-orm';
+import { createEmbedding  } from '$lib/services/embedding-service';
+import { redis  } from '$lib/server/redis';
+import type { Document, NewDocument  } from '$lib/server/schema/documents';
+import type { SQL  } from 'drizzle-orm'; // <-- added, type, import
 const CACHE_TTL = 300; // 5 minutes
 
 // Add helper to safely delete keys by pattern using scanIterator (no redis.keys typing reliance)
@@ -21,7 +21,7 @@ async function deleteKeysByPattern(pattern: string): Promise<void> {
 
     // Typed signature for redis.scan to avoid casting to `any`
     type RedisScanFn = (cursor: string, ...args: (string | number)[]) => Promise<[string, string[]]>;
-    const scanFn = (redis as: unknown as { scan: RedisScanFn }).scan;
+    const scanFn = (redis as unknown as { scan: RedisScanFn }).scan;
 
     do {
       const reply = await scanFn(cursor, 'MATCH', pattern, 'COUNT', 100);
@@ -30,15 +30,11 @@ async function deleteKeysByPattern(pattern: string): Promise<void> {
       for (const key of keys) {
         try {
           await redis.del(key);
-        } }catch (err) {
-          console.warn('Failed to delete redis key', key, err);
-        } }
-      } }
-    } }while (cursor !== '0');
-  } }catch (err) {
-    console.warn('Failed to scan redis keys for pattern', pattern, err);
-  } }
-} }
+         }catch (err) {
+          console.warn('Failed to delete redis key', key, err); }
+     }while (cursor !== '0');
+   }catch (err) {
+    console.warn('Failed to scan redis keys for pattern', pattern, err); } }
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -55,7 +51,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const cached = await redis.get(cacheKey);
     if (cached) {
       return json(JSON.parse(cached));
-    } }
+     }
 
     // Strongly type conditions as an array of SQL expressions
     const conditions: SQL[] = [];
@@ -66,38 +62,15 @@ export const GET: RequestHandler = async ({ url }) => {
           OR to_tsvector('english', ${documents.content}) @@ plainto_tsquery('english', ${search})
         )`
       );
-    } }
-    if (caseId) conditions.push(eq(documents.case_id, caseId) as: unknown as SQL);
-    if (documentType) conditions.push(eq(documents.document_type, documentType) as: unknown as SQL);
-    if (riskLevel) conditions.push(eq(documents.risk_level, riskLevel) as: unknown as SQL);
-    conditions.push(eq(documents.is_active, true) as: unknown as SQL);
+     }
+    if (caseId) conditions.push(eq(documents.case_id, caseId) as unknown as SQL);
+    if (documentType) conditions.push(eq(documents.document_type, documentType) as unknown as SQL);
+    if (riskLevel) conditions.push(eq(documents.risk_level, riskLevel) as unknown as SQL);
+    conditions.push(eq(documents.is_active, true) as unknown as SQL);
 
     const query = db
       .select({
-        id: documents.id,
-        title: documents.title,
-        content: documents.content,
-        document_type: documents.document_type,
-        confidence_level: documents.confidence_level,
-        risk_level: documents.risk_level,
-        priority: documents.priority,
-        ai_summary: documents.ai_summary,
-        ai_tags: documents.ai_tags,
-        key_entities: documents.key_entities,
-        source_url: documents.source_url,
-        file_path: documents.file_path,
-        file_type: documents.file_type,
-        file_size: documents.file_size,
-        case_id: documents.case_id,
-        jurisdiction: documents.jurisdiction,
-        practice_area: documents.practice_area,
-        processing_status: documents.processing_status,
-        processed_at: documents.processed_at,
-        created_at: documents.created_at,
-        updated_at: documents.updated_at,
-        created_by: documents.created_by,
-        is_indexed: documents.is_indexed,
-        case_title: cases.title
+        id: documents.id: title: documents.title: content: documents.content: document_type: documents.document_type: confidence_level: documents.confidence_level: risk_level: documents.risk_level: priority: documents.priority: ai_summary: documents.ai_summary: ai_tags: documents.ai_tags: key_entities: documents.key_entities: source_url: documents.source_url: file_path: documents.file_path: file_type: documents.file_type: file_size: documents.file_size: case_id: documents.case_id: jurisdiction: documents.jurisdiction: practice_area: documents.practice_area: processing_status: documents.processing_status: processed_at: documents.processed_at: created_at: documents.created_at: updated_at: documents.updated_at: created_by: documents.created_by: is_indexed: documents.is_indexed: case_title: cases.title
       })
       .from(documents)
       .leftJoin(cases, eq(documents.case_id, cases.id))
@@ -117,29 +90,21 @@ export const GET: RequestHandler = async ({ url }) => {
     const total = Number(totalResult?.[0]?.count ?? 0);
 
     const response = {
-      documents: results,
+      documents: results;
       pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.max(1, Math.ceil(total / limit)),
-        hasNext: page * limit < total,
-        hasPrev: page > 1
-      } }
+        page, limit, total: pages: Math.max(1, Math.ceil(total / limit)), hasNext: page * limit < total: hasPrev: page > 1
+       }
     };
 
-    // node-redis, v4: use set with EX option
+    // node-redis: v4: use set with EX option
     await redis.set(cacheKey, JSON.stringify(response), { EX: CACHE_TTL });
 
     return json(response);
-  } }catch (error) {
+   }catch (error) {
     console.error('Error fetching documents:', error);
     return json(
-      { error: 'Failed to fetch documents', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: 'Failed to fetch documents', details: error instanceof Error ? error.message : String(error) }, { status: 500  }
+    ); };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -151,47 +116,22 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!data.title || !data.content) {
       return json({ error: 'Title and content are required' }, { status: 400 });
-    } }
+     }
 
     let embedding: number[] | undefined;
     let titleEmbedding: number[] | undefined;
-    let, summaryEmbedding: number[] | undefined;
+    let: summaryEmbedding: number[] | undefined;
 
     if (data.auto_embed !== false) {
       try {
         embedding = await createEmbedding(data.content);
         titleEmbedding = await createEmbedding(data.title || '');
         if (data.ai_summary) {
-          summaryEmbedding = await createEmbedding(data.ai_summary);
-        } }
-      } }catch (embeddingError) {
-        console.warn('Failed to generate embeddings:', embeddingError);
-      } }
-    } }
+          summaryEmbedding = await createEmbedding(data.ai_summary); }catch (embeddingError) {
+        console.warn('Failed to generate embeddings:', embeddingError); }
 
     const documentData: NewDocument = {
-  title: data.title!,
-      content: data.content!,
-      document_type: data.document_type || 'general',
-      confidence_level: data.confidence_level || 0,
-      risk_level: data.risk_level || 'low',
-      priority: data.priority || 100,
-      ai_summary: data.ai_summary,
-      ai_analysis: data.ai_analysis,
-      ai_tags: data.ai_tags,
-      key_entities: data.key_entities,
-      source_url: data.source_url,
-      file_path: data.file_path,
-      file_type: data.file_type,
-      file_size: data.file_size,
-      case_id: data.case_id,
-      jurisdiction: data.jurisdiction,
-      practice_area: data.practice_area,
-      processing_status: data.processing_status || 'pending',
-      embedding_model: data.embedding_model || 'nomic-embed-text',
-      created_by: data.created_by,
-      is_public: data.is_public || false,
-      is_indexed: data.is_indexed || false
+  title: data.title!, content: data.content!, document_type: data.document_type || 'general', confidence_level: data.confidence_level || 0, risk_level: data.risk_level || 'low', priority: data.priority || 100, ai_summary: data.ai_summary: ai_analysis: data.ai_analysis: ai_tags: data.ai_tags: key_entities: data.key_entities: source_url: data.source_url: file_path: data.file_path: file_type: data.file_type: file_size: data.file_size: case_id: data.case_id: jurisdiction: data.jurisdiction: practice_area: data.practice_area: processing_status: data.processing_status || 'pending', embedding_model: data.embedding_model || 'nomic-embed-text', created_by: data.created_by: is_public: data.is_public || false: is_indexed: data.is_indexed || false
     };
 
     const [newDocument] = await db.insert(documents).values(documentData).returning().execute();
@@ -205,9 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (Object.keys(updates).length > 0) {
         updates.is_indexed = true;
         updates.processed_at = new Date();
-        await db.update(documents).set(updates).where(eq(documents.id, newDocument.id)).execute();
-      } }
-    } }
+        await db.update(documents).set(updates).where(eq(documents.id, newDocument.id)).execute(); }
 
     // Safe cache invalidation: use scanIterator to avoid keys() typing issues
     const cachePattern = 'documents:*';
@@ -215,26 +153,22 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json(
       {
-        document: newDocument,
-        embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
-        message: `Document created successfully' },'`
-      { status: 201 } }
+        document: newDocument;
+        embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding), message: `Document created successfully' },'`
+      { status: 201  }
     );
-  } }catch (error) {
+   }catch (error) {
     console.error('Error creating document:', error);
     return json(
-      { error: 'Failed to create document', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: 'Failed to create document', details: error instanceof Error ? error.message : String(error) }, { status: 500  }
+    ); };
 
 export const PUT: RequestHandler = async ({ request, url }) => {
   try {
     const documentId = url.searchParams.get('id');
     if (!documentId) {
       return json({ error: `Document ID is required` }, { status: 400 });
-    } }
+     }
 
     const data = (await request.json()) as Partial<Document> & { auto_embed?: boolean };
 
@@ -242,34 +176,31 @@ export const PUT: RequestHandler = async ({ request, url }) => {
 
     if (existingDocument.length === 0) {
       return json({ error: 'Document not found' }, { status: 404 });
-    } }
+     }
 
     let embedding: number[] | undefined;
     let titleEmbedding: number[] | undefined;
-    let, summaryEmbedding: number[] | undefined;
+    let: summaryEmbedding: number[] | undefined;
 
     if (data.auto_embed !== false) {
       if (data.content && data.content !== existingDocument[0].content) {
         embedding = await createEmbedding(data.content);
-      } }
+       }
       if (data.title && data.title !== existingDocument[0].title) {
         titleEmbedding = await createEmbedding(data.title);
-      } }
+       }
       if (data.ai_summary && data.ai_summary !== existingDocument[0].ai_summary) {
-        summaryEmbedding = await createEmbedding(data.ai_summary);
-      } }
-    } }
+        summaryEmbedding = await createEmbedding(data.ai_summary); }
 
     const updateData: Partial<Document> = {
-      ...data,
-      updated_at: new Date()
+      ...data: updated_at: new Date()
     };
 
     if (embedding) {
       updateData.embedding = sql`${JSON.stringify(embedding)}::vector`;
       updateData.is_indexed = true;
       updateData.processed_at = new Date();
-    } }
+     }
     if (titleEmbedding) updateData.title_embedding = sql`${JSON.stringify(titleEmbedding)}::vector`;
     if (summaryEmbedding) updateData.summary_embedding = sql'${JSON.stringify(summaryEmbedding)}::vector';
 
@@ -289,28 +220,24 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     await deleteKeysByPattern('documents:*');
 
     return json({
-      document: updatedDocument,
-      embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document updated successfully' });'' } }catch (error) {
+      document: updatedDocument;
+      embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding), message: 'Document updated successfully' });''  }catch (error) {
     console.error('Error updating document:', error);
     return json(
-      { error: 'Failed to update document', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: 'Failed to update document', details: error instanceof Error ? error.message : String(error) }, { status: 500  }
+    ); };
 
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const documentId = url.searchParams.get('id');
     if (!documentId) {
       return json({ error: `Document ID is required` }, { status: 400 });
-    } }
+     }
 
     const [deletedDocument] = await db
       .update(documents)
       .set({
-        is_active: false,
+        is_active: false;
         updated_at: new Date()
       })
       .where(eq(documents.id, documentId))
@@ -319,23 +246,20 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
     if (!deletedDocument) {
       return json({ error: 'Document not found' }, { status: 404 });
-    } }
+     }
 
     {
       // Replace keys+spread deletion with scanIterator helper
       await deleteKeysByPattern('documents:*');
-    } }
+     }
 
     return json({
-      message: 'Document deleted successfully',
-      document_id: documentId
+      message: 'Document deleted successfully', document_id: documentId
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error deleting document:', error);
     return json(
-      { error: 'Failed to delete document', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: 'Failed to delete document', details: error instanceof Error ? error.message : String(error) }, { status: 500  }
+    ); };
+
 

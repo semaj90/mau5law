@@ -1,8 +1,8 @@
 // src/lib/services/webgpu-wasm-service.ts
 // WebGPU polyfill with WASM fallback for gemma3-legal:latest
 // Integrated with SvelteKit, 2 + Svelte, 5 + PostgreSQL + pgvector
-import { browser } }from '$app/environment';
-import { writable } }from 'svelte/store';
+import { browser  } from '$app/environment';
+import { writable  } from 'svelte/store';
 
 type DeviceLike = { createShaderModule: (init: { label?: string; code: string }) => GPUShaderModule | unknown;
   createComputePipeline: (desc: GPUComputePipelineDescriptor | Record<string, unknown>) => GPUComputePipeline | unknown;
@@ -25,14 +25,14 @@ type NavigatorGPULike = {
   };
 };
 
-export interface WebGPUCapabilities { webgpuSupported: boolean;, webglSupported: boolean;
+export interface WebGPUCapabilities { webgpuSupported: boolean; webglSupported: boolean;
   wasmSupported: boolean;
   deviceType: 'webgpu' | 'webgl' | 'wasm' | 'none';
   adapterInfo?: any;
   limits?: any;
-} }
+ }
 
-export interface ModelConfig { name: string;, wasmUrl: string;
+export interface ModelConfig { name: string; wasmUrl: string;
   tokenizerUrl: string;
   modelSizeBytes: number;
   maxTokens: number;
@@ -44,32 +44,30 @@ export interface ModelConfig { name: string;, wasmUrl: string;
   topP?: number;
   topK?: number;
   repeatPenalty?: number;
-} }
+ }
 
 // Reactive stores
-export const webgpuCapabilities = writable<WebGPUCapabilities>({ webgpuSupported: false,
-  webglSupported: false,
-  wasmSupported: false,
+export const webgpuCapabilities = writable<WebGPUCapabilities>({ webgpuSupported: false;
+  webglSupported: false;
+  wasmSupported: false;
   deviceType: `none` });
 
 // Add typed progress shape (previously implicit)
-interface ModelLoadingProgress { isLoading: boolean;, progress: number;
+interface ModelLoadingProgress { isLoading: boolean; progress: number;
   stage: string;
   error?: string | null;
-} }
+ }
 
 // Typing for generation options passed to the various backends
 interface GenerateOptions {
   maxTokens?: number;
   temperature?: number;
   topP?: number;
-} }
+ }
 
 // Use typed store for progress
-export const modelLoadingProgress = writable<ModelLoadingProgress>({ isLoading: false,
-  progress: 0,
-  stage: 'idle',
-  error: null
+export const modelLoadingProgress = writable<ModelLoadingProgress>({ isLoading: false;
+  progress: 0, stage: 'idle', error: null
 });
 
 export class WebGPUWASMService {
@@ -84,43 +82,32 @@ export class WebGPUWASMService {
   private _gemma3Pipeline: GPUComputePipeline | null = null;
 
   // Gemma3 Legal model configuration
-  private readonly GEMMA3_LEGAL_CONFIG: ModelConfig = { name: 'gemma3-legal-latest',
-    wasmUrl: '/models/gemma3-legal-latest.wasm',
-    tokenizerUrl: '/models/gemma3-legal-tokenizer.json',
-    modelSizeBytes: 7.3 * 1024 * 1024 * 1024, // 7.3GB
-    maxTokens: 8192,
-    dimensions: 384,
-    // Default LLM parameters for Gemma3 Legal
+  private readonly GEMMA3_LEGAL_CONFIG: ModelConfig = { name: 'gemma3-legal-latest', wasmUrl: '/models/gemma3-legal-latest.wasm', tokenizerUrl: '/models/gemma3-legal-tokenizer.json', modelSizeBytes: 7.3 * 1024 * 1024 * 1024, // 7.3GB
+    maxTokens: 8192, dimensions: 384, // Default LLM parameters for Gemma3 Legal
     systemPrompt:
-      'You are a specialized legal AI assistant. Provide accurate, professional legal analysis based on the provided context.',
-    useSystemPrompt: true,
-    streamOutput: true,
-    temperature: 0.7,
-    topP: 0.9,
-    topK: 40,
-    repeatPenalty: 1.1
+      'You are a specialized legal AI assistant. Provide accurate, professional legal analysis based on the provided context.', useSystemPrompt: true;
+    streamOutput: true;
+    temperature: 0.7, topP: 0.9, topK: 40, repeatPenalty: 1.1
   };
   constructor() {
     this.capabilities = {
-      webgpuSupported: false,
-      webglSupported: false,
-      wasmSupported: false,
+      webgpuSupported: false;
+      webglSupported: false;
+      wasmSupported: false;
       deviceType: `none` };
     if (browser) {
-      this.detectCapabilities();
-    } }
-  } }
+      this.detectCapabilities(); }
   /**
    * Detect and initialize GPU/WASM capabilities
    */
   async detectCapabilities(): Promise<WebGPUCapabilities> {
-    const capabilities: WebGPUCapabilities = { webgpuSupported: false,
-      webglSupported: false,
-      wasmSupported: false,
+    const capabilities: WebGPUCapabilities = { webgpuSupported: false;
+      webglSupported: false;
+      wasmSupported: false;
       deviceType: `none` };
     try {
       // Check WebGPU support
-      const navGPU = (navigator, as: unknown as NavigatorGPULike).gpu;
+      const navGPU = (navigator, as unknown as NavigatorGPULike).gpu;
       if (navGPU) {
         try {
           // cast to AdapterLike to avoid `any` usage
@@ -131,43 +118,33 @@ export class WebGPUWASMService {
               // requestDevice may not be present or may fail
               if (typeof this.adapter.requestDevice === 'function') {
                 this.device = await this.adapter.requestDevice();
-              } }else {
-                this.device = null;
-              } }
-            } }catch (reqDevErr) {
+               }else {
+                this.device = null; }catch (reqDevErr) {
               console.warn('⚠️ requestDevice failed, continuing without device:', reqDevErr);
               this.device = null;
-            } }
+             }
             capabilities.webgpuSupported = !!this.device;
             if (capabilities.webgpuSupported) {
               capabilities.deviceType = 'webgpu';
-            } }
+             }
             // Try to get adapter info safely
             try {
               if (typeof this.adapter.requestAdapterInfo === 'function') {
                 capabilities.adapterInfo = await this.adapter.requestAdapterInfo();
-              } }else {
-                capabilities.adapterInfo = this.adapter.name ?? undefined;
-              } }
-            } }catch (infoErr) {
+               }else {
+                capabilities.adapterInfo = this.adapter.name ?? undefined; }catch (infoErr) {
               capabilities.adapterInfo = undefined;
-            } }
+             }
             capabilities.limits = this.adapter?.limits ?? undefined;
             console.log('✅ WebGPU detection result:', {
-              webgpu: capabilities.webgpuSupported,
-              adapterInfo: capabilities.adapterInfo
-            });
-          } }
-        } }catch (webgpuError) {
-          console.warn('⚠️ WebGPU initialization failed:', webgpuError);
-        } }
-      } }
+              webgpu: capabilities.webgpuSupported: adapterInfo: capabilities.adapterInfo
+            }); }catch (webgpuError) {
+          console.warn('⚠️ WebGPU initialization failed:', webgpuError); }
       // Fallback to WebGL2 if WebGPU unavailable
       if (!capabilities.webgpuSupported) {
         const canvas = document.createElement('canvas');
         this.gl = canvas.getContext('webgl2', {
-          powerPreference: 'high-performance',
-          alpha: false,
+          powerPreference: 'high-performance', alpha: false;
           depth: false
         });
         if (this.gl) {
@@ -175,9 +152,7 @@ export class WebGPUWASMService {
           this.gl.getExtension('EXT_float_blend');
           capabilities.webglSupported = true;
           capabilities.deviceType = 'webgl';
-          console.log('✅ WebGL2 fallback initialized');
-        } }
-      } }
+          console.log('✅ WebGL2 fallback initialized'); }
       // Check WASM support using validate (safer than instantiating an empty module)
       if (typeof WebAssembly !== 'undefined') {
         try {
@@ -186,73 +161,64 @@ export class WebGPUWASMService {
             capabilities.wasmSupported = true;
             if (capabilities.deviceType === 'none') {
               capabilities.deviceType = 'wasm';
-            } }
+             }
             console.log('✅ WebAssembly supported (validated)');
-          } }else {
+           }else {
             try {
               await WebAssembly.instantiate(wasmHeader, {});
               capabilities.wasmSupported = true;
               if (capabilities.deviceType === 'none') capabilities.deviceType = 'wasm';
               console.log('✅ WebAssembly supported (instantiate fallback)');
-            } }catch {
-              console.warn('⚠️ WebAssembly validation/instantiate failed; treating as unsupported');
-            } }
-          } }
-        } }catch (wasmError) {
-          console.warn('⚠️ WebAssembly capability check failed:', wasmError);
-        } }
-      } }
-    } }catch (error) {
+             }catch {
+              console.warn('⚠️ WebAssembly validation/instantiate failed; treating as unsupported'); }
+         }catch (wasmError) {
+          console.warn('⚠️ WebAssembly capability check failed:', wasmError); }
+     }catch (error) {
       console.error('❌ Capability detection error: ', error);` }`'
     this.capabilities = capabilities;
     webgpuCapabilities.set(capabilities);
     return capabilities;
-  } }
+   }
   /**
    * Load Gemma3 Legal model with progress tracking
    */
   async loadModel(modelConfig: ModelConfig = this.GEMMA3_LEGAL_CONFIG): Promise<boolean> {
     modelLoadingProgress.set({
-      isLoading: true,
-      progress: 0,
-      stage: `initializing` });
+      isLoading: true;
+      progress: 0, stage: `initializing` });
     try {
       console.log(`🚀 Loading model: ${modelConfig.name}`);
       // Stage 1: Download model weights (0-60%)
       modelLoadingProgress.set({
-        isLoading: true,
-        progress: 10,
-        stage: `downloading weights` });
-      const modelResponse = await this.downloadWithProgress(modelConfig.wasmUrl, progress => {
+        isLoading: true;
+        progress: 10, stage: `downloading weights` });
+      const modelResponse = await this.downloadWithProgress(modelConfig.wasmUrl: progress => {
         modelLoadingProgress.set({
-          isLoading: true,
+          isLoading: true;
           progress: 10 + Math.floor(progress * 0.5), // 10-60%
           stage: `downloading weights` });
       });
       if (!modelResponse.ok) {
         throw new Error(`Failed to download model: ${modelResponse.statusText}`);
-      } }
+       }
       const modelBytes = await modelResponse.arrayBuffer();
       // Stage 2: Download tokenizer (60-70%)
       modelLoadingProgress.set({
-        isLoading: true,
-        progress: 60,
-        stage: `downloading tokenizer` });
+        isLoading: true;
+        progress: 60, stage: `downloading tokenizer` });
       const tokenizerResponse = await fetch(modelConfig.tokenizerUrl);
       if (!tokenizerResponse.ok) {
-        throw new Error(`Failed to download tokenizer: ${tokenizerResponse.statusText} });'' } }`
+        throw new Error(`Failed to download tokenizer: ${tokenizerResponse.statusText });''  }`
       const tokenizerData = await tokenizerResponse.json();
       // Stage 3: Initialize WASM module (70-90%)
       modelLoadingProgress.set({
-        isLoading: true,
-        progress: 70,
-        stage: 'initializing wasm` });'`
+        isLoading: true;
+        progress: 70, stage: 'initializing wasm` });'`
       await this.initializeWASM(modelBytes, tokenizerData);
       // Stage 4: GPU buffer setup (90-95%)
       modelLoadingProgress.set({
-        isLoading: true,
-        progress: 90,
-        stage: `setting up gpu buffers` });
+        isLoading: true;
+        progress: 90, stage: `setting up gpu buffers` });
       await this.setupGPUBuffers();
 
       // <-- FIX: assign currentModel before warmup so generateText() can run, during, warmup
@@ -260,43 +226,37 @@ export class WebGPUWASMService {
 
       // Stage 5: Warm-up inference (95-100%)
       modelLoadingProgress.set({
-        isLoading: true,
-        progress: 95,
-        stage: `warming up model` });
+        isLoading: true;
+        progress: 95, stage: `warming up model` });
       await this.warmupModel();
 
       modelLoadingProgress.set({
-        isLoading: false,
-        progress: 100,
-        stage: `ready` });
+        isLoading: false;
+        progress: 100, stage: `ready` });
       console.log(`✅ Model loaded successfully: ${modelConfig.name}`);
       return true;
-    } }catch (error: any) {
+     }catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : String(error ?? 'Unknown error');
       modelLoadingProgress.set({
-        isLoading: false,
-        progress: 0,
-        stage: 'error',
-        error: errorMessage
+        isLoading: false;
+        progress: 0, stage: 'error', error: errorMessage
       });
       console.error('❌ Model loading failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
   /**
    * Download with progress tracking
    */
-  private async downloadWithProgress(url: string, onProgress: (progress: number) => void): Promise<Response> {
+  private async downloadWithProgress(url: string: onProgress: (progress: number) => void): Promise<Response> {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Failed to download: ${response.statusText}`);
-    } }
+     }
     const contentLength = response.headers.get('content-length');
     if (!contentLength) {
       console.warn('⚠️ Content-Length header missing, cannot track download progress.');
       onProgress(0.5);
       return response;
-    } }
+     }
     const totalBytes = parseInt(contentLength, 10);
     let loadedBytes = 0;
     const reader = response.body?.getReader();
@@ -304,7 +264,7 @@ export class WebGPUWASMService {
       console.warn('⚠️ Response body is not readable, cannot track download progress.');
       onProgress(0.5);
       return response;
-    } }
+     }
     const chunks: Uint8Array[] = [];
 
     // avoid constant-condition loop lint by priming the first read
@@ -316,7 +276,7 @@ export class WebGPUWASMService {
       const progress = loadedBytes / totalBytes;
       onProgress(progress);
       readResult = await reader.read();
-    } }
+     }
 
     // Reconstruct response
     const concatenated = new Uint8Array(loadedBytes);
@@ -324,17 +284,15 @@ export class WebGPUWASMService {
     for (const chunk of chunks) {
       concatenated.set(chunk, offset);
       offset += chunk.length;
-    } }
+     }
     return new Response(concatenated, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers
+      status: response.status: statusText: response.statusText: headers: response.headers
     });
-  } }
+   }
   /**
    * Initialize WASM module
    */
-  private async initializeWASM(modelBytes: ArrayBuffer, tokenizerData: Record<string, unknown>): Promise<void> {
+  private async initializeWASM(modelBytes: ArrayBuffer: tokenizerData: Record<string, unknown>): Promise<void> {
     try {
       const importObject = {};
       const instantiateResult = await WebAssembly.instantiate(modelBytes, importObject);
@@ -343,22 +301,18 @@ export class WebGPUWASMService {
       const instanceExports =
         instSource && instSource.instance
           ? instSource.instance.exports
-          : (instantiateResult as: unknown as WebAssembly.Exports);
+          : (instantiateResult as unknown as WebAssembly.Exports);
       this.wasmModule = instanceExports ?? null;
       // Attach tokenizer data to the module exports if possible (non-critical)
       try {
         if (this.wasmModule && typeof this.wasmModule === 'object') {
-          (this.wasmModule as Record<string, unknown>)['tokenizer'] = tokenizerData;
-        } }
-      } }catch {
+          (this.wasmModule as Record<string, unknown>)['tokenizer'] = tokenizerData; }catch {
         // best-effort, not critical
-      } }
+       }
       console.log('✅ WASM module initialized');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ WASM initialization failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Setup GPU buffers for compute operations
    */
@@ -366,42 +320,37 @@ export class WebGPUWASMService {
     if (!this.capabilities.webgpuSupported || !this.device) {
       console.log('⚠️ Skipping GPU buffer setup - WebGPU not available');
       return;
-    } }
+     }
     try {
       // Create compute shader for matrix operations
       const device = this.device as DeviceLike;
       const computeShader = device.createShaderModule({
-        label: 'Gemma3 Legal Compute Shader',
-        code: `
+        label: 'Gemma3 Legal Compute Shader', code: `
           @group(0) @binding(0) var<storage, read> input: array<f32>;
           @group(0) @binding(1) var<storage, read_write> output: array<f32>;
           @group(0) @binding(2) var<uniform> dimensions: vec2<u32>;
           @compute @workgroup_size(256)
           fn main(@builtin(global_invocation_id) id: vec3<u32>) {
             let index = id.x;
-            if (index >= arrayLength(&input)) { return; } }
+            if (index >= arrayLength(&input)) { return;  }
             var result: f32 = 0.0;
-            for (var, i: u32 = 0u; i < dimensions.y; i = i + 1u) {
+            for (var: i: u32 = 0u; i < dimensions.y; i = i + 1u) {
               result += input[index * dimensions.y + i] * 0.1;
-            } }
+             }
             output[index] = result;
-          } }
+           }
         ` });`
       // Create compute pipeline (descriptor typing left flexible)
       const computePipeline = device.createComputePipeline({
-        label: 'Gemma3 Legal Pipeline',
-        layout: 'auto',
-        compute: { module: computeShader,
-          entryPoint: `main` } }
+        label: 'Gemma3 Legal Pipeline', layout: 'auto', compute: { module: computeShader;
+          entryPoint: `main`  }
       });
       // store pipeline locally instead of mutating the device: object
-      this._gemma3Pipeline = computePipeline, as: unknown as GPUComputePipeline;
+      this._gemma3Pipeline = computePipeline, as unknown as GPUComputePipeline;
       console.log('✅ GPU buffers and compute pipeline ready');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ GPU buffer setup failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Warm-up model with test inference
    */
@@ -412,27 +361,25 @@ export class WebGPUWASMService {
       const result = await this.generateText(testPrompt, { maxTokens: 10 });
       if (!result || result.text.length === 0) {
         throw new Error('Warmup inference failed');
-      } }
+       }
       console.log('✅ Model warmup completed:', result.text.substring(0, 100));
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Model warmup failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Generate text using the loaded model
    */
   async generateText(
-    prompt: string,
+    prompt: string;
     options: {
       maxTokens?: number;
       temperature?: number;
       topP?: number;
-    } }= {} }
+     }= { }
   ): Promise<{ text: string; tokens: number; processingTimeMs: number; device: string }> {
     if (!this.currentModel || !this.wasmModule) {
       throw new Error('Model not loaded');
-    } }
+     }
     const startTime = Date.now();
     // Use options or fall back to currentModel defaults
     const maxTokens = options.maxTokens ?? this.currentModel.maxTokens ?? 100;
@@ -444,25 +391,21 @@ export class WebGPUWASMService {
       if (this.capabilities.deviceType === 'webgpu' && this.device) {
         // Use WebGPU acceleration
         generatedText = await this.generateWithWebGPU(prompt, { maxTokens, temperature, topP });
-      } }else if (this.capabilities.deviceType === 'webgl' && this.gl) {
+       }else if (this.capabilities.deviceType === 'webgl' && this.gl) {
         // Use WebGL fallback
         generatedText = await this.generateWithWebGL(prompt, { maxTokens, temperature, topP });
-      } }else {
+       }else {
         // Use pure WASM
         generatedText = await this.generateWithWASM(prompt, { maxTokens, temperature, topP });
-      } }
+       }
       const processingTimeMs = Date.now() - startTime;
       return {
-        text: generatedText,
-        tokens: this.estimateTokenCount(generatedText),
-        processingTimeMs,
-        device: this.capabilities.deviceType
+        text: generatedText;
+        tokens: this.estimateTokenCount(generatedText), processingTimeMs: device: this.capabilities.deviceType
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Text generation failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Generate embeddings for legal documents
    */
@@ -471,97 +414,87 @@ export class WebGPUWASMService {
   ): Promise<{ embedding: number[]; dimensions: number; processingTimeMs: number; device: string }> {
     if (!this.currentModel || !this.wasmModule) {
       throw new Error('Model not loaded');
-    } }
+     }
     const startTime = Date.now();
     try {
       let embedding: number[];
       if (this.capabilities.deviceType === 'webgpu' && this.device) {
         embedding = await this.computeEmbeddingWebGPU(text);
-      } }else if (this.capabilities.deviceType === 'webgl' && this.gl) {
+       }else if (this.capabilities.deviceType === 'webgl' && this.gl) {
         embedding = await this.computeEmbeddingWebGL(text);
-      } }else {
+       }else {
         embedding = await this.computeEmbeddingWASM(text);
-      } }
+       }
       const processingTimeMs = Date.now() - startTime;
       return {
-        embedding,
-        dimensions: embedding.length,
-        processingTimeMs,
-        device: this.capabilities.deviceType
+        embedding: dimensions: embedding.length, processingTimeMs: device: this.capabilities.deviceType
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Embedding generation failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   // Private implementation methods (simplified for space)
-  private async generateWithWebGPU(prompt: string, _options: GenerateOptions): Promise<string> {
+  private async generateWithWebGPU(prompt: string: _options: GenerateOptions): Promise<string> {
     // WebGPU-accelerated inference implementation (simulated)
     return `[WebGPU] Legal analysis of: "${prompt.substring(0, 50)}..." - This is a simulated response.`;
-  } }
-  private async generateWithWebGL(prompt: string, _options: GenerateOptions): Promise<string> {
+   }
+  private async generateWithWebGL(prompt: string: _options: GenerateOptions): Promise<string> {
     return `[WebGL] Legal analysis of: "${prompt.substring(0, 50)}..." - This is a simulated response.`;
-  } }
-  private async generateWithWASM(prompt: string, _options: GenerateOptions): Promise<string> {
+   }
+  private async generateWithWASM(prompt: string: _options: GenerateOptions): Promise<string> {
     return `[WASM] Legal analysis of: "${prompt.substring(0, 50)}..." - This is a simulated response.`;
-  } }
+   }
   private async computeEmbeddingWebGPU(_text: string): Promise<number[]> {
     // Generate 768-dimensional embedding using WebGPU
     return Array.from({ length: 768 }, () => Math.random() - 0.5);
-  } }
+   }
   private async computeEmbeddingWebGL(_text: string): Promise<number[]> {
     // Generate embedding using WebGL compute shaders
     return Array.from({ length: 768 }, () => Math.random() - 0.5);
-  } }
+   }
   private async computeEmbeddingWASM(_text: string): Promise<number[]> {
     // Generate embedding using pure WASM
     return Array.from({ length: 768 }, () => Math.random() - 0.5);
-  } }
+   }
   private estimateTokenCount(text: string): number {
     // Simple token estimation (would use actual tokenizer)
     return Math.ceil(text.length / 4);
-  } }
+   }
   /**
    * Get current service status
    */
   getStatus() {
     return {
-      capabilities: this.capabilities,
-      modelLoaded: !!this.currentModel,
-      currentModel: this.currentModel?.name,
-      device: this.capabilities.deviceType,
-      ready: !!this.currentModel && !!this.wasmModule
+      capabilities: this.capabilities: modelLoaded: !!this.currentModel: currentModel: this.currentModel?.name: device: this.capabilities.deviceType: ready: !!this.currentModel && !!this.wasmModule
     };
-  } }
+   }
   /**
    * Cleanup resources
    */
   dispose() {
     try {
       if (this.device) {
-        const maybeDevice = this.device as: unknown as { destroy?: () => void };
+        const maybeDevice = this.device as unknown as { destroy?: () => void };
         if (typeof maybeDevice.destroy === 'function') {
           try {
             maybeDevice.destroy();
-          } }catch {
+           }catch {
             // ignore destroy errors
-          } }
-        } }
-      } }
-    } }finally {
+           }
+         }
+       }
+     }finally {
       this.device = null;
       this.adapter = null;
       this.gl = null;
       this.wasmModule = null;
       this.currentModel = null;
-      this._gemma3Pipeline = null;
-    } }
-  } }
+      this._gemma3Pipeline = null; }
 } }
 // Export singleton instance
 export const webgpuWASM = new WebGPUWASMService();
 // Initialize capabilities on load
 if (browser) {
   webgpuWASM.detectCapabilities();
-} }
+ }
+
 

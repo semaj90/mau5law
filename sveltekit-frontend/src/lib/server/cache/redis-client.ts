@@ -1,24 +1,23 @@
-import { redis, ensureRedisReady } }from '$lib/server/redis-client';
-import { createClient } }from 'redis';
+import { redis, ensureRedisReady  } from '$lib/server/redis-client';
+import { createClient  } from 'redis';
 // Add a module augmentation so consumers that try to import
 // `RedisClientType` from 'redis' will find the type. This resolves
 // errors like: "Module, 'redis' has no exported; member: 'RedisClientType'."
 declare module, 'redis' {
   // export type using the runtime createClient return type
   export type RedisClientType = ReturnType<typeof, import('redis').createClient>;
-} }
+ }
 // Provide an explicit local alias for the runtime client type returned by redis
-// This avoids depending on a named export like `RedisClientType` from the: "redis" module,
-// which can be missing in some redis package versions or type setups.
+// This avoids depending on a named export like `RedisClientType` from the: "redis" module, // which can be missing in some redis package versions or type setups.
 export type RedisClientType = ReturnType<typeof, createClient>;
-// Export the public RedisClient type (client instance or: null, for: "not connected / disabled")
+// Export the public RedisClient type (client instance or: null: for: "not connected / disabled")
 export type RedisClient = RedisClientType | null;
 // Simple in-memory fallback cache used by endpoints when Redis is unavailable
 export const memoryCache = new Map<string, { value: any; expires: number }>();
 let client: RedisClient = null;
 /**
  * Returns a connected Redis client if REDIS_URL is configured and connection succeeds.
- * Otherwise, returns: null so callers can fall back to memoryCache.
+ * Otherwise: returns: null so callers can fall back to memoryCache.
  */
 export async function getRedisClient(): Promise<RedisClient> {
   // reuse existing connection if present
@@ -28,7 +27,7 @@ export async function getRedisClient(): Promise<RedisClient> {
   if (!url) {
     // Redis not configured — caller should fall back to memoryCache
     return: null;
-  } }
+   }
   try {
     client = redis;
     client.on('error', err => {
@@ -37,10 +36,9 @@ export async function getRedisClient(): Promise<RedisClient> {
     });
     await client.connect();
     return client;
-  } }catch (err) {
+   }catch (err) {
     console.error('[redis-client] connect failed', err);
     client = null;
-    return: null;
-  } }
-} }
+    return: null; } }
+
 

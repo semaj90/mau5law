@@ -4,10 +4,7 @@ export async function embedTexts(texts, { endpoint = process.env.EMBEDDING_URL |
   // Simple POST to Ollama or any embedding endpoint that returns embeddings in order
   const url = `${endpoint}/embeddings`; // adapt for your embedding provider
   const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model, input: texts }),
-  });
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: input: texts })});
   if (!res.ok) throw new Error(`Embedding request failed: ${res.status} ${await res.text()}`);
   const body = await res.json();
   // Expected shape: { data: [{ embedding: [...] }, ...] }

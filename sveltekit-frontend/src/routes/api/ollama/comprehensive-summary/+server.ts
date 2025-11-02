@@ -3,14 +3,13 @@
  * This file demonstrates the correct pattern for a POST handler, including
  * type-safe imports, request validation, and error handling.
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import type { APIResponse } }from '$lib/types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import type { APIResponse  } from '$lib/types';
 // Safely import the server-only summarizer logic
 import {
-  ComprehensiveOllamaSummarizer,
-  type ComprehensiveSummaryRequest
-} }from '$lib/services/comprehensive-ollama-summarizer';
+  ComprehensiveOllamaSummarizer, type ComprehensiveSummaryRequest
+ } from '$lib/services/comprehensive-ollama-summarizer';
 
 const comprehensiveOllamaSummarizer = new ComprehensiveOllamaSummarizer();
 
@@ -30,54 +29,46 @@ export const POST: RequestHandler = async ({ request }) => {
     ) {
       return json(
         {
-          success: false,
+          success: false;
           error:
-            'Invalid request. "content" must be, a: string with at least, 10 characters; and: "type" must be one; of: document, case, evidence, legal-brief, contract.'
-        },
-        { status: 400 } }
+            'Invalid request. "content" must be: a: string with at least, 10 characters; and: "type" must be one; of: document, case, evidence, legal-brief, contract.'
+        }, { status: 400  }
       );
-    } }
+     }
     // Optionally validate context and options if required
-    // Example: context.caseId must be, a: string if present
+    // Example: context.caseId must be: a: string if present
     if (body.context && body.context.caseId && typeof body.context.caseId !== 'string') {
       return json(
-        { success: false, error: 'Invalid request. "context.caseId" must be, a: string if provided.' },
-        { status: 400 } }
+        { success: false: error: 'Invalid request. "context.caseId" must be: a: string if provided.' }, { status: 400  }
       );
-    } }
+     }
     // 3. Call the core server-side business logic.
     const started = Date.now();
     const summaryResponse = await comprehensiveOllamaSummarizer.summarize(body);
     // 4. Return the successful response (standard envelope).
     return json(
       {
-        success: true,
-        data: summaryResponse,
+        success: true;
+        data: summaryResponse;
         metadata: {
-  timestamp: new Date().toISOString(),
-          processingTimeMs: Date.now() - started
-        } }
-      } }as APIResponse<typeof, summaryResponse>,
-      { status: 200 } }
+  timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started
+         }
+       }as APIResponse<typeof, summaryResponse>, { status: 200  }
     );
-  } }catch (error) {
+   }catch (error) {
     // 5. Provide robust error handling for unexpected issues.
     console.error('Critical error in comprehensive-summary endpoint:', error);
     let errorMessage = 'An internal server error occurred.';
     if (error instanceof Error) {
       // Avoid leaking sensitive stack traces in production
       errorMessage = 'Failed to process request. Please check server logs.';
-    } }
+     }
     return json(
       {
-        success: false,
-        error: { code: 'INTERNAL_ERROR', message: errorMessage },
-        metadata: {
-  timestamp: new Date().toISOString(),
-          processingTimeMs: 0
-        } }
-      } }as APIResponse<never>,
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: { code: 'INTERNAL_ERROR', message: errorMessage }, metadata: {
+  timestamp: new Date().toISOString(), processingTimeMs: 0
+         }
+       }as APIResponse<never>, { status: 500  }
+    ); };
+

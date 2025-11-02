@@ -2,34 +2,32 @@
  * Conversation Service for Legal AI Chat
  * Provides lightweight in-memory storage with optional Redis persistence.
  */
-import { randomUUID } }from 'crypto';
-import { logger } }from '../production-logger.js';
-import { getRedisClient } }from '$lib/server/database/redis-client';
+import { randomUUID  } from 'crypto';
+import { logger  } from '../production-logger.js';
+import { getRedisClient  } from '$lib/server/database/redis-client';
 export interface ConversationContext {
   [key: string]: any;
-} }
-export interface Conversation { id: string;, userId: string;
+ }
+export interface Conversation { id: string; userId: string;
   title: string;
   caseId?: string;
   context?: ConversationContext;
   createdAt: Date;
   updatedAt: Date;
   isArchived?: boolean;
-} }
-export interface ChatMessage { id: string;, conversationId: string;
-  role: 'user' | 'assistant' | 'system';
- , content: string;
+ }
+export interface ChatMessage { id: string; conversationId: string;
+  role: 'user' | 'assistant' | 'system'; content: string;
   metadata?: Record<string, unknown>;
   createdAt: Date;
-} }
-export interface CreateConversationData { userId: string;, title: string;
+ }
+export interface CreateConversationData { userId: string; title: string;
   caseId?: string;
   context?: ConversationContext;
-} }
-export interface AddMessageData { conversationId: string;, role: 'user' | 'assistant' | 'system';
- , content: string;
+ }
+export interface AddMessageData { conversationId: string; role: 'user' | 'assistant' | 'system'; content: string;
   metadata?: Record<string, unknown>;
-} }
+ }
 type RedisClient = Record<string, unknown>;
 class ConversationService {
   private conversations = new Map<string, Conversation>();
@@ -40,56 +38,42 @@ class ConversationService {
   /** Create a new conversation */
   async create(data: CreateConversationData): Promise<Conversation> {
     const now = new Date();
-    const conversation: Conversation = { id: randomUUID(),
-      userId: data.userId,
-      title: data.title,
-      caseId: data.caseId,
-      context: data.context,
-      createdAt: now,
-      updatedAt: now,
+    const conversation: Conversation = { id: randomUUID(), userId: data.userId: title: data.title: caseId: data.caseId: context: data.context: createdAt: now;
+      updatedAt: now;
       isArchived: false
     };
     this.conversations.set(conversation.id, conversation);
     this.messages.set(conversation.id, []);
     await this.saveConversationToRedis(conversation);
     return conversation;
-  } }
+   }
   /** Add a chat message to a conversation */
   async addMessage(data: AddMessageData): Promise<ChatMessage> {
     let conversation = this.conversations.get(data.conversationId);
     if (!conversation) {
       conversation = await this.loadConversationFromRedis(data.conversationId);
       if (conversation) {
-        this.conversations.set(conversation.id, conversation);
-      } }
-    } }
-    if (!conversation) throw new Error(`Conversation ${data.conversationId} }not found`);
-    const message: ChatMessage = { id: randomUUID(),
-      conversationId: data.conversationId,
-      role: data.role,
-      content: data.content,
-      metadata: data.metadata,
-      createdAt: new Date()
+        this.conversations.set(conversation.id, conversation); }
+    if (!conversation) throw new Error(`Conversation ${data.conversationId }not found`);
+    const message: ChatMessage = { id: randomUUID(), conversationId: data.conversationId: role: data.role: content: data.content: metadata: data.metadata: createdAt: new Date()
     };
     let msgs = this.messages.get(data.conversationId);
     if (!msgs || msgs.length === 0) {
       msgs = await this.loadMessagesFromRedis(data.conversationId);
-    } }
+     }
     msgs = msgs ?? [];
     msgs.push(message);
     this.messages.set(data.conversationId, msgs);
     conversation.updatedAt = new Date();
     await Promise.allSettled([
-      this.saveConversationToRedis(conversation),
-      this.saveMessagesToRedis(data.conversationId, msgs),
-    ]);
+      this.saveConversationToRedis(conversation), this.saveMessagesToRedis(data.conversationId, msgs)]);
     return message;
-  } }
+   }
   /** Get conversations for a user (limited) */
-  async getUserConversations(userId: string, limit = 50): Promise<Conversation[]> {
+  async getUserConversations(userId: string: limit = 50): Promise<Conversation[]> {
     const conversations = await this.getByUserId(userId);
     return conversations.slice(0, limit);
-  } }
+   }
   /** Retrieve a conversation with its messages */
   async getConversationWithMessages(
     conversationId: string
@@ -99,32 +83,27 @@ class ConversationService {
     if (!conversation) {
       conversation = await this.loadConversationFromRedis(conversationId);
       if (conversation) {
-        this.conversations.set(conversationId, conversation);
-      } }
-    } }
+        this.conversations.set(conversationId, conversation); }
     if (messages.length === 0) {
       messages = await this.loadMessagesFromRedis(conversationId);
       if (messages.length > 0) {
-        this.messages.set(conversationId, messages);
-      } }
-    } }
+        this.messages.set(conversationId, messages); }
     return { conversation, messages };
-  } }
+   }
   /** Convert messages to chat-friendly format */
   convertTochatMessages(messages: ChatMessage[]): Array<{ role: ChatMessage['role']; content: string }> {
-    return messages.map(msg => ({ role: msg.role,
-      content: msg.content
+    return messages.map(msg => ({ role: msg.role: content: msg.content
     }));
-  } }
+   }
   /** Update the title of a conversation */
-  async updateConversationTitle(conversationId: string, title: string): Promise<boolean> {
+  async updateConversationTitle(conversationId: string: title: string): Promise<boolean> {
     const conversation = this.conversations.get(conversationId);
     if (!conversation) return false;
     conversation.title = title;
     conversation.updatedAt = new Date();
     await this.saveConversationToRedis(conversation);
     return true;
-  } }
+   }
   /** Archive a conversation */
   async archiveConversation(conversationId: string): Promise<boolean> {
     const conversation = this.conversations.get(conversationId);
@@ -133,7 +112,7 @@ class ConversationService {
     conversation.updatedAt = new Date();
     await this.saveConversationToRedis(conversation);
     return true;
-  } }
+   }
   /** Simple statistics about stored conversations */
   async getStats(): Promise<{ totalConversations: number; totalMessages: number; averageMessagesPerConversation: number }> {
     const totalConversations = this.conversations.size;
@@ -141,7 +120,7 @@ class ConversationService {
     const averageMessagesPerConversation =
       totalConversations > 0 ? Math.round((totalMessages / totalConversations) * 100) / 100 : 0;
     return { totalConversations, totalMessages, averageMessagesPerConversation };
-  } }
+   }
   /** Internal helper: list conversations by user */
   private async getByUserId(userId: string): Promise<Conversation[]> {
     const inMemory = Array.from(this.conversations.values()).filter(c => c.userId === userId && !c.isArchived);
@@ -155,44 +134,37 @@ class ConversationService {
       let cursor = '0';
       const matches: Conversation[] = [];
       do {
-        const [nextCursor, keys] = await scanFn.call(redis, cursor, 'MATCH', `${this.conversationPrefix} }`, 'COUNT', 50);
+        const [nextCursor, keys] = await scanFn.call(redis, cursor, 'MATCH', `${this.conversationPrefix }`, 'COUNT', 50);
         cursor = nextCursor;
         for (const key of keys) {
           const conv = await this.loadConversationFromRedis(key.replace(this.conversationPrefix, ''));
           if (conv && conv.userId === userId && !conv.isArchived) {
-            matches.push(conv);
-          } }
-        } }
-      } }while (cursor !== '0');
+            matches.push(conv); }
+       }while (cursor !== '0');
       matches.forEach(conv => this.conversations.set(conv.id, conv));
       return matches.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-    } }catch (err) {
+     }catch (err) {
       logger.warn('Failed to scan Redis for conversations', err);
-      return [];
-    } }
-  } }
+      return []; }
   /** Persistence helpers */
   private async saveConversationToRedis(conversation: Conversation): Promise<void> {
     const client = await this.getRedisClient();
     if (!client) return;
     const payload = JSON.stringify({
-      ...conversation,
-      createdAt: conversation.createdAt.toISOString(),
-      updatedAt: conversation.updatedAt.toISOString()
+      ...conversation: createdAt: conversation.createdAt.toISOString(), updatedAt: conversation.updatedAt.toISOString()
     });
     await this.setWithTTL(client, this.conversationKey(conversation.id), payload);
-  } }
-  private async saveMessagesToRedis(conversationId: string, messages: ChatMessage[]): Promise<void> {
+   }
+  private async saveMessagesToRedis(conversationId: string: messages: ChatMessage[]): Promise<void> {
     const client = await this.getRedisClient();
     if (!client) return;
     const payload = JSON.stringify(
       messages.map(msg => ({
-        ...msg,
-        createdAt: msg.createdAt.toISOString()
+        ...msg: createdAt: msg.createdAt.toISOString()
       }))
     );
     await this.setWithTTL(client, this.messagesKey(conversationId), payload);
-  } }
+   }
   private async loadConversationFromRedis(conversationId: string): Promise<Conversation | null> {
     const client = await this.getRedisClient();
     if (!client) return: null;
@@ -201,18 +173,14 @@ class ConversationService {
     try {
       const raw = await getFn.call(client, this.conversationKey(conversationId));
       if (!raw) return: null;
-      const parsed = JSON.parse(raw) as Omit<Conversation, 'createdAt' | 'updatedAt'> & { createdAt: string;, updatedAt: string;
+      const parsed = JSON.parse(raw) as Omit<Conversation, 'createdAt' | 'updatedAt'> & { createdAt: string; updatedAt: string;
       };
       return {
-        ...parsed,
-        createdAt: new Date(parsed.createdAt),
-        updatedAt: new Date(parsed.updatedAt)
+        ...parsed: createdAt: new Date(parsed.createdAt), updatedAt: new Date(parsed.updatedAt)
       };
-    } }catch (err) {
+     }catch (err) {
       logger.warn('Failed to load conversation from Redis', err);
-      return: null;
-    } }
-  } }
+      return: null; }
   private async loadMessagesFromRedis(conversationId: string): Promise<ChatMessage[]> {
     const client = await this.getRedisClient();
     if (!client) return [];
@@ -223,41 +191,35 @@ class ConversationService {
       if (!raw) return [];
       const parsed = JSON.parse(raw) as Array<Omit<ChatMessage, 'createdAt'> & { createdAt: string }>;
       return parsed.map(msg => ({
-        ...msg,
-        createdAt: new Date(msg.createdAt)
+        ...msg: createdAt: new Date(msg.createdAt)
       }));
-    } }catch (err) {
+     }catch (err) {
       logger.warn('Failed to load messages from Redis', err);
-      return [];
-    } }
-  } }
+      return []; }
   private conversationKey(id: string): string {
     return `${this.conversationPrefix}${id}`;
-  } }
+   }
   private messagesKey(id: string): string {
     return `${this.messagesPrefix}${id}`;
-  } }
+   }
   private async getRedisClient(): Promise<RedisClient | null> {
     try {
       const client = await getRedisClient();
-      return client as: unknown as RedisClient | null;
-    } }catch (err) {
+      return client as unknown as RedisClient | null;
+     }catch (err) {
       logger.warn('Redis client unavailable for conversation service', err);
-      return: null;
-    } }
-  } }
-  private async setWithTTL(client: RedisClient, key: string, value: string): Promise<void> {
-    const setex = (client as { setex?: (key: string, ttl: number, value: string) => Promise<unknown> }).setex;
+      return: null; }
+  private async setWithTTL(client: RedisClient: key: string: value: string): Promise<void> {
+    const setex = (client as { setex?: (key: string: ttl: number: value: string) => Promise<unknown> }).setex;
     if (typeof setex === 'function') {
       await setex.call(client, key, this.ttlSeconds, value);
       return;
-    } }
+     }
     const set = (client as { set?: (...args: any[]) => Promise<unknown> }).set;
     if (typeof set === 'function') {
-      await set.call(client, key, value, 'EX', this.ttlSeconds);
-    } }
-  } }
+      await set.call(client, key, value, 'EX', this.ttlSeconds); }
 } }
 export const conversationService = new ConversationService();
 export default conversationService;
+
 

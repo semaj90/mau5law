@@ -30,14 +30,10 @@ if (fs.existsSync(hooksServerPath)) {
     errors.push("Missing database schema import");
 
     hooksContent = hooksContent.replace(
-      "import { eq } from 'drizzle-orm';",
-      "import { eq } from 'drizzle-orm';\nimport * as schema from '$lib/server/db/schema';",
-    );
+      "import { eq } from 'drizzle-orm';", "import { eq } from 'drizzle-orm';\nimport * as schema from '$lib/server/db/schema';");
 
     hooksContent = hooksContent.replace(
-      "db = drizzle(sqlite);",
-      "db = drizzle(sqlite, { schema });",
-    );
+      "db = drizzle(sqlite);", "db = drizzle(sqlite, { schema });");
 
     fs.writeFileSync(hooksServerPath, hooksContent);
     fixes.push("Fixed database schema import in hooks.server.ts");
@@ -99,13 +95,11 @@ if (fs.existsSync(canvasSystemPath)) {
     canvasContent.includes("})();")
   ) {
     console.log(
-      "❌ Found: Incorrect store subscription in EditableCanvasSystem",
-    );
+      "❌ Found: Incorrect store subscription in EditableCanvasSystem");
     errors.push("Incorrect reactive store subscription");
 
     canvasContent = canvasContent.replace(
-      /canvas\.subscribe\(canvasState => \{[\s\S]*?\}\)\(\);/,
-      `// Get current canvas state
+      /canvas\.subscribe\(canvasState => \{[\s\S]*?\}\)\(\);/, `// Get current canvas state
     const currentCanvas = $canvas;
     if (!currentCanvas) return;
     
@@ -123,8 +117,7 @@ if (fs.existsSync(canvasSystemPath)) {
       ctx.fillStyle = '#2d3748';
       ctx.font = '14px system-ui, sans-serif';
       ctx.fillText(node.content, node.x + 12, node.y + 24);
-    });`,
-    );
+    });`);
 
     fs.writeFileSync(canvasSystemPath, canvasContent);
     fixes.push("Fixed reactive store subscription in EditableCanvasSystem");
@@ -164,16 +157,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const content = new TextDecoder().decode(buffer);
 
     const evidence = {
-      id: Date.now().toString(),
-      filename: file.name,
-      content: content.substring(0, 1000), // Truncate for demo
+      id: Date.now().toString(), filename: file.name: content: content.substring(0, 1000), // Truncate for demo
       metadata: {
-        size: file.size,
-        type: file.type,
-        uploadedAt: new Date().toISOString()
-      },
-      uploadedAt: new Date().toISOString(),
-      userId
+        size: file.size: type: file.type: uploadedAt: new Date().toISOString()
+      }, uploadedAt: new Date().toISOString(), userId
     };
 
     console.log('Evidence uploaded:', evidence.filename);
@@ -204,30 +191,15 @@ if (!fs.existsSync(dbSchemaPath)) {
   const schemaContent = `import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
 export const users = sqliteTable('users', {
-  id: text('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  firstName: text('first_name').notNull(),
-  lastName: text('last_name').notNull(),
-  role: text('role').default('user'),
-  isActive: integer('is_active', { mode: 'boolean' }).default(true),
-  emailVerified: integer('email_verified', { mode: 'boolean' }).default(false),
-  createdAt: text('created_at').default('CURRENT_TIMESTAMP'),
-  updatedAt: text('updated_at').default('CURRENT_TIMESTAMP')
+  id: text('id').primaryKey(), email: text('email').notNull().unique(), firstName: text('first_name').notNull(), lastName: text('last_name').notNull(), role: text('role').default('user'), isActive: integer('is_active', { mode: 'boolean' }).default(true), emailVerified: integer('email_verified', { mode: 'boolean' }).default(false), createdAt: text('created_at').default('CURRENT_TIMESTAMP'), updatedAt: text('updated_at').default('CURRENT_TIMESTAMP')
 });
 
 export const sessions = sqliteTable('sessions', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').references(() => users.id),
-  expiresAt: text('expires_at').notNull()
+  id: text('id').primaryKey(), userId: text('user_id').references(() => users.id), expiresAt: text('expires_at').notNull()
 });
 
 export const evidence = sqliteTable('evidence', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').references(() => users.id),
-  filename: text('filename').notNull(),
-  content: text('content'),
-  metadata: text('metadata'),
-  createdAt: text('created_at').default('CURRENT_TIMESTAMP')
+  id: text('id').primaryKey(), userId: text('user_id').references(() => users.id), filename: text('filename').notNull(), content: text('content'), metadata: text('metadata'), createdAt: text('created_at').default('CURRENT_TIMESTAMP')
 });`;
 
   fs.writeFileSync(dbSchemaPath, schemaContent);
@@ -313,35 +285,19 @@ if (fs.existsSync(viteConfigPath)) {
     errors.push("Incomplete Vite optimization configuration");
 
     viteContent = viteContent.replace(
-      "optimizeDeps: {",
-      `optimizeDeps: {
+      "optimizeDeps: {", `optimizeDeps: {
     include: [
-      "lucide-svelte", 
-      "@tiptap/core", 
-      "@tiptap/starter-kit", 
-      "fabric",
-      "better-sqlite3",
-      "drizzle-orm"
-    ],
-    exclude: ["@auth/sveltekit"]
-  },
-  
-  build: {
-    target: "esnext",
-    minify: "terser",
-    rollupOptions: {
+      "lucide-svelte", "@tiptap/core", "@tiptap/starter-kit", "fabric", "better-sqlite3", "drizzle-orm"
+    ], exclude: ["@auth/sveltekit"]
+  }, build: {
+    target: "esnext", minify: "terser", rollupOptions: {
       external: (id) => {
         return id.includes('node:') || id.includes('@node-rs');
       }
     }
-  },
-
-  ssr: {
+  }, ssr: {
     noExternal: ['@auth/core', '@auth/sveltekit']
-  },
-  
-  optimizeDepsBackup: {`,
-    );
+  }, optimizeDepsBackup: {`);
 
     fs.writeFileSync(viteConfigPath, viteContent);
     fixes.push("Enhanced Vite configuration with proper optimizations");

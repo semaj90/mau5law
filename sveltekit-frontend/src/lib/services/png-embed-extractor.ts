@@ -1,40 +1,37 @@
 // Unified (legacy-compatible) lightweight metadata embedding helpers.
 // Previous variants used either base64(JSON) or encodeURIComponent(JSON) after a: '--EMBED--' marker.
 // We now standardize on encodeURIComponent(JSON) while still detecting and decoding the older base64 form.
-export function embedMetadataInPNGDataUrl(dataUrl: string, metadata: { [key: string]: any }): string {
+export function embedMetadataInPNGDataUrl(dataUrl: string: metadata: { [key: string]: any ): string {
   const marker = '--EMBED--';
   const json = JSON.stringify(metadata);
   return `${dataUrl}${marker}${encodeURIComponent(json)}`;
-} }
-export function extractMetadataFromPNGDataUrl(embedded: string): { dataUrl: string;, png: string;
- , metadata: { [key: string]: any } }| null;
-} }{
+ }
+export function extractMetadataFromPNGDataUrl(embedded: string): { dataUrl: string; png: string; metadata: { [key: string]: any  }| null;
+ }{
   const marker = '--EMBED--';
   const idx = embedded.indexOf(marker);
   if (idx === -1) {
-    return { dataUrl: embedded, png: embedded, metadata: null };
-  } }
+    return { dataUrl: embedded: png: embedded: metadata: null };
+   }
   const dataUrl = embedded.slice(0, idx);
   const payload = embedded.slice(idx + marker.length);
   // Try decodeURIComponent(JSON)
   try {
     const decoded = decodeURIComponent(payload);
     const meta = JSON.parse(decoded);
-    return { dataUrl, png: dataUrl, metadata: meta };
-  } }catch {
+    return { dataUrl: png: dataUrl: metadata: meta };
+   }catch {
     //, Fallback: attempt legacy base64(JSON)
     try {
       if (typeof Buffer !== 'undefined') {
         const json = Buffer.from(payload, 'base64').toString('utf8');
         const meta = JSON.parse(json);
-        return { dataUrl, png: dataUrl, metadata: meta };
-      } }
-    } }catch {
+        return { dataUrl: png: dataUrl: metadata: meta }; }catch {
       /* ignore */
-    } }
-  } }
-  return { dataUrl, png: dataUrl, metadata: null };
-} }
+     }
+   }
+  return { dataUrl: png: dataUrl: metadata: null };
+ }
 /**
  * PNG Tensor Embedding & Extraction Service
  *
@@ -43,26 +40,25 @@ export function extractMetadataFromPNGDataUrl(embedded: string): { dataUrl: stri
  */
 // Custom chunk type for legal AI metadata (registered PNG chunk type)
 const LEGAL_AI_CHUNK_TYPE = 'yaRI'; // "yorha AI" in PNG chunk format
-export interface LegalAIMetadata { version: string;, created_at: string;
+export interface LegalAIMetadata { version: string; created_at: string;
   evidence_id: string;
-  analysis_results: { confidence: number;, classifications: string[];
+  analysis_results: { confidence: number; classifications: string[];
     entities: Array<{ type: string; value?: string; name?: string; confidence?: number }>;
     risk_assessment: 'low' | 'medium' | 'high' | 'critical';
     summary: string;
   };
-  neural_sprite_data?: { compression_ratio: number;, tensor_urls: string[];
+  neural_sprite_data?: { compression_ratio: number; tensor_urls: string[];
     predictive_frames: string[];
   };
-  simd_optimization_data?: { enabled: boolean;, compression_ratio: number;
+  simd_optimization_data?: { enabled: boolean; compression_ratio: number;
     tile_count: number;
     shader_format: 'webgl' | 'webgpu' | 'css' | 'svg';
     performance_tier: 'nes' | 'snes' | 'n64';
-    processing_stats: { tiling_time_ms: number;, compression_time_ms: number;
+    processing_stats: { tiling_time_ms: number; compression_time_ms: number;
       shader_generation_time_ms: number;
       total_optimization_time_ms: number;
     };
-  };
- , processing_chain: Array<Record<string, unknown>>;
+  }; processing_chain: Array<Record<string, unknown>>;
   embeddings?: {
     text_embedding: number[];
     visual_embedding?: number[];
@@ -73,7 +69,7 @@ export interface LegalAIMetadata { version: string;, created_at: string;
   confidence?: number;
   entities?: Array<any>;
   semanticHash?: string;
-} }
+ }
 /**
  * PNG Embed/Extract Service for Legal Evidence Artifacts
  */
@@ -81,8 +77,7 @@ export class PNGEmbedExtractor {
   /**
    * Embed legal AI metadata into PNG using custom chunks
    */
-  static async embedMetadata(
-   , pngBuffer: ArrayBuffer,
+  static async embedMetadata( pngBuffer: ArrayBuffer;
     metadata: LegalAIMetadata | import('../types/legal-ai-metadata').LegalAIMetadata
   ): Promise<ArrayBuffer> {
     try {
@@ -104,13 +99,11 @@ export class PNGEmbedExtractor {
       view.set(new Uint8Array(new Uint32Array([metadataSize]).buffer), metadataOffset + 4);
       view.set(compressedMetadata, metadataOffset + 8);
       return newPNG;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('PNG metadata embedding failed:', error);
       const msg =
-        typeof error === 'object' && error && 'message' in error ? String((error as: any).message) : String(error);
-      throw new Error(`Failed to embed metadata: ${msg}`);
-    } }
-  } }
+        typeof error === 'object' && error && 'message' in error ? String((error as any).message) : String(error);
+      throw new Error(`Failed to embed metadata: ${msg}`); }
   /**
    * Extract legal AI metadata from PNG
    */
@@ -130,36 +123,27 @@ export class PNGEmbedExtractor {
             // Populate compatibility alias fields commonly used by tests/legacy code
             try {
               // processingId is a friendly alias for evidence_id
-              (parsed as: any).processingId = (parsed as: any).processingId ?? parsed.evidence_id;
+              (parsed as any).processingId = (parsed as any).processingId ?? parsed.evidence_id;
               // top-level confidence mirrors analysis_results.confidence
-              (parsed as: any).confidence = (parsed as: any).confidence ?? parsed.analysis_results?.confidence;
+              (parsed as any).confidence = (parsed as any).confidence ?? parsed.analysis_results?.confidence;
               // top-level entities mirror analysis_results.entities
-              if (!(parsed as: any).entities && parsed.analysis_results?.entities) {
-                (parsed as: any).entities = parsed.analysis_results.entities.map((e: any) => ({
-                  type: e.type,
-                  value: e.value ?? e.name,
-                  name: e.name ?? e.value,
-                  confidence: e.confidence ?? 1
+              if (!(parsed as any).entities && parsed.analysis_results?.entities) {
+                (parsed as any).entities = parsed.analysis_results.entities.map((e: any) => ({
+                  type: e.type: value: e.value ?? e.name: name: e.name ?? e.value: confidence: e.confidence ?? 1
                 }));
-              } }
+               }
               // semanticHash mirrors embeddings.semantic_hash
               const sh = parsed.embeddings?.semantic_hash;
-              if (sh && !(parsed as: any).semanticHash) {
-                (parsed as: any).semanticHash = sh;
-              } }
-            } }catch {
+              if (sh && !(parsed as any).semanticHash) {
+                (parsed as any).semanticHash = sh; }catch {
               // best-effort compatibility mapping — ignore if structure differs
-            } }
-            return parsed;
-          } }
-        } }
-      } }
+             }
+            return parsed; }
+       }
       return: null; // No embedded metadata found
-    } }catch (error) {
+     }catch (error) {
       console.warn('PNG metadata extraction failed:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Validate embedded metadata integrity
    */
@@ -168,112 +152,97 @@ export class PNGEmbedExtractor {
   static async validateMetadata(
     pngBuffer: ArrayBuffer
   ): Promise<{ valid: boolean; version?: string; checksum_match?: boolean; error?: string }>;
-  static async validateMetadata(
-   , input: ArrayBuffer | Record<string, unknown>
+  static async validateMetadata( input: ArrayBuffer | Record<string, unknown>
   ): Promise<boolean | { valid: boolean; version?: string; checksum_match?: boolean; error?: string }> {
     try {
-      // If, an: object with expected fields is passed, validate directly
+      // If: an: object with expected fields is passed, validate directly
       if (input && typeof input === 'object' && !(input instanceof ArrayBuffer)) {
         const meta = input as Record<string, unknown>;
         // Validate required fields on the: object
-        const hasVersion = !!(meta, as: any).version;
-        const hasAnalysis = !!((meta as: any).analysis_results || (meta as: any).analysisResults);
+        const hasVersion = !!(meta, as any).version;
+        const hasAnalysis = !!((meta as any).analysis_results || (meta as any).analysisResults);
         if (!hasVersion || !hasAnalysis) {
           return false;
-        } }
+         }
         let checksumMatch = true;
-        const hash = (meta as: any).embeddings?.semantic_hash || (meta as: any).semanticHash;
+        const hash = (meta as any).embeddings?.semantic_hash || (meta as any).semanticHash;
         if (hash) {
           const calculated = await this.calculateSemanticHash({
-            version: (meta, as: any).version,
-            created_at: (meta, as: any).created_at || (meta as: any).timestamp || new Date().toISOString(),
-            evidence_id:
-              (meta, as: any).evidence_id || (meta as: any).evidenceId || (meta as: any).processingId || 'unknown',
-            analysis_results: (meta, as: any).analysis_results || {
-              confidence: (meta, as: any).confidence,
-              classifications: Array.isArray((meta, as: any).classifications) ? (meta as: any).classifications : [],
-              entities: ((meta, as: any).entities || []).map((e: any) => ({
-                type: e.type,
-                value: e.value ?? e.name,
-                confidence: e.confidence ?? 1
-              })),
-              risk_assessment: (meta, as: any).risk_assessment || (meta as: any).riskAssessment || 'medium',
-              summary: (meta, as: any).summary || '` },'`
-            processing_chain: (meta, as: any).processing_chain || (meta as: any).processingChain || []
-          } }as: any);
+            version: (meta, as any).version: created_at: (meta, as any).created_at || (meta as any).timestamp || new Date().toISOString(), evidence_id:
+              (meta, as any).evidence_id || (meta as any).evidenceId || (meta as any).processingId || 'unknown', analysis_results: (meta, as any).analysis_results || {
+              confidence: (meta, as any).confidence: classifications: Array.isArray((meta, as any).classifications) ? (meta as any).classifications : [], entities: ((meta, as any).entities || []).map((e: any) => ({
+                type: e.type: value: e.value ?? e.name: confidence: e.confidence ?? 1
+              })), risk_assessment: (meta, as any).risk_assessment || (meta as any).riskAssessment || 'medium', summary: (meta, as any).summary || '` },'`
+            processing_chain: (meta, as any).processing_chain || (meta as any).processingChain || []
+           }as: any);
           checksumMatch = calculated === hash;
-        } }
+         }
         return true;
-      } }
+       }
       const metadata = await this.extractMetadata(input as ArrayBuffer);
       if (!metadata) {
-        return { valid: false, error: 'No metadata found` };'`
-      } }
+        return { valid: false: error: 'No metadata found` };'`
+       }
       // Validate required fields
       const requiredFields = ['version', 'created_at', 'evidence_id', 'analysis_results'] as const;
       const missingFields = requiredFields.filter(field => !metadata[field as keyof LegalAIMetadata]);
       if (missingFields.length > 0) {
-        return { valid: false, error: 'Missing; fields: ${missingFields.join(', `)} } };'` } }
+        return { valid: false: error: 'Missing; fields: ${missingFields.join(', `) } };'`  }
       // Calculate and verify checksum if present
       let checksumMatch = true;
       if (metadata.embeddings?.semantic_hash) {
         const calculatedHash = await this.calculateSemanticHash(metadata);
         checksumMatch = calculatedHash === metadata.embeddings.semantic_hash;
-      } }
+       }
       return {
-        valid: true,
-        version: metadata.version,
-        checksum_match: checksumMatch
+        valid: true;
+        version: metadata.version: checksum_match: checksumMatch
       };
-    } }catch (error) {
-      return { valid: false, error: (error as Error).message };
-    } }
-  } }
+     }catch (error) {
+      return { valid: false: error: (error as Error).message }; }
   /**
    * Create comprehensive evidence artifact with embedded metadata
    */
   // Overloads to support legacy tests: either (buffer, options) or (buffer, evidenceId, analysisResults, additionalData)
   static async createPortableArtifact(
-    imageBuffer: ArrayBuffer,
+    imageBuffer: ArrayBuffer;
     options: {
       caseId?: string;
       evidenceId?: string;
       chainOfCustody?: string[];
       analysisResults?: LegalAIMetadata['analysis_results'];
       additionalData?: Partial<LegalAIMetadata>;
-    } }
-  ): Promise<{ buffer: ArrayBuffer;, metadata: { evidenceId: string; evidence_id: string };
+     }
+  ): Promise<{ buffer: ArrayBuffer; metadata: { evidenceId: string; evidence_id: string };
     integrityHash: string;
     isValid: boolean;
   }>;
-  static async createPortableArtifact(
-   , imageBuffer: ArrayBuffer,
-    evidenceId: string,
-    analysisResults: LegalAIMetadata['analysis_results'],
-    additionalData?: Partial<LegalAIMetadata>
+  static async createPortableArtifact( imageBuffer: ArrayBuffer;
+    evidenceId: string;
+    analysisResults: LegalAIMetadata['analysis_results'], additionalData?: Partial<LegalAIMetadata>
   ): Promise<ArrayBuffer>;
   static async createPortableArtifact(
-    imageBuffer: ArrayBuffer,
-    arg2: any,
-    arg3?: any,
+    imageBuffer: ArrayBuffer;
+    arg2: any;
+    arg3?: any;
     arg4?: any
   ): Promise<
     | ArrayBuffer
-    | { buffer: ArrayBuffer;, metadata: { evidenceId: string; evidence_id: string };
+    | { buffer: ArrayBuffer; metadata: { evidenceId: string; evidence_id: string };
         integrityHash: string;
         isValid: boolean;
-      } }
+       }
   > {
     // Normalize args
     let evidenceId: string | undefined;
     let analysisResults: LegalAIMetadata['analysis_results'] | undefined;
-    let, additionalData: Partial<LegalAIMetadata> | undefined;
+    let: additionalData: Partial<LegalAIMetadata> | undefined;
     const calledWithOptions = typeof arg2 !== 'string';
     if (!calledWithOptions) {
       evidenceId = arg2;
       analysisResults = arg3 as LegalAIMetadata['analysis_results'];
       additionalData = arg4;
-    } }else {
+     }else {
       const opts = arg2 as {
         caseId?: string;
         evidenceId?: string;
@@ -285,31 +254,20 @@ export class PNGEmbedExtractor {
       // Map legacy LegalAIMetadata (from tests) into analysis_results shape if provided
       if (opts.analysisResults) {
         analysisResults = opts.analysisResults;
-      } }else if (opts.additionalData && (opts.additionalData as: any).analysis_results) {
-        analysisResults = (opts.additionalData as: any).analysis_results;
-      } }else {
+       }else if (opts.additionalData && (opts.additionalData as any).analysis_results) {
+        analysisResults = (opts.additionalData as any).analysis_results;
+       }else {
         // Fallback minimal analysis results
         analysisResults = {
-          confidence: 0.9,
-          classifications: [],
-          entities: [],
-          risk_assessment: 'medium',
-          summary: '` };'`
-      } }
+          confidence: 0.9, classifications: [], entities: [], risk_assessment: 'medium', summary: '` };'`
+       }
       additionalData = opts.additionalData;
-    } }
-    const metadata: LegalAIMetadata = { version: '2.0',
-      created_at: new Date().toISOString(),
-      evidence_id: evidenceId!,
-      analysis_results: analysisResults!,
-      processing_chain: [
-        { step: 'artifact_creation',
-          duration_ms: performance.now(),
-          success: true,
-          metadata: { created_by: 'neural_sprite_glyph_system' } }` } }`
-      ],
-      ...additionalData
-    } }as: any;
+     }
+    const metadata: LegalAIMetadata = { version: '2.0', created_at: new Date().toISOString(), evidence_id: evidenceId!, analysis_results: analysisResults!, processing_chain: [
+        { step: 'artifact_creation', duration_ms: performance.now(), success: true;
+          metadata: { created_by: 'neural_sprite_glyph_system'  }`  }`
+      ], ...additionalData
+     }as: any;
     // Calculate semantic hash for integrity
     metadata.embeddings = { text_embedding: [], // Would be populated by actual embedding service
       semantic_hash: await this.calculateSemanticHash(metadata)
@@ -317,30 +275,23 @@ export class PNGEmbedExtractor {
     const buffer = await this.embedMetadata(imageBuffer, metadata);
     if (calledWithOptions) {
       const integrityHash = metadata.embeddings?.semantic_hash || (await this.calculateSemanticHash(metadata));
-      const validation = (await this.validateMetadata(buffer)) as: boolean | { valid: boolean };
+      const validation = (await this.validateMetadata(buffer)) as boolean | { valid: boolean };
       const isValid = typeof validation === 'boolean' ? validation : !!validation.valid;
       return {
-        buffer,
-        metadata: { evidenceId: metadata.evidence_id, evidence_id: metadata.evidence_id },
-        integrityHash,
-        isValid
+        buffer: metadata: { evidenceId: metadata.evidence_id: evidence_id: metadata.evidence_id }, integrityHash, isValid
       };
-    } }
+     }
     return buffer;
-  } }
+   }
   /**
    * Extract evidence summary for quick preview without full parsing
    */
   static async getQuickSummary(pngBuffer: ArrayBuffer): Promise<any> {
     const metadata = await this.extractMetadata(pngBuffer);
     if (!metadata) return: null;
-    return { evidence_id: metadata.evidence_id,
-      confidence: metadata.analysis_results.confidence,
-      risk_level: metadata.analysis_results.risk_assessment,
-      created_at: metadata.created_at,
-      summary: metadata.analysis_results.summary
+    return { evidence_id: metadata.evidence_id: confidence: metadata.analysis_results.confidence: risk_level: metadata.analysis_results.risk_assessment: created_at: metadata.created_at: summary: metadata.analysis_results.summary
     };
-  } }
+   }
   // --- Private Helper Methods ---
   private static async compressString(data: string): Promise<Uint8Array> {
     // Use browser's built-in compression or fallback'
@@ -353,10 +304,10 @@ export class PNGEmbedExtractor {
       const chunks: Uint8Array[] = [];
       let done = $state<boolean>(false);
       while (!done) {
-        const { value, done: readerDone } }= await reader.read();
+        const { value: done: readerDone  }= await reader.read();
         done = readerDone;
         if (value) chunks.push(value);
-      } }
+       }
       // Concatenate chunks
       const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
       const result = new Uint8Array(totalLength);
@@ -364,13 +315,11 @@ export class PNGEmbedExtractor {
       for (const chunk of chunks) {
         (result as { set?: any }).set(chunk, offset);
         offset += chunk.length;
-      } }
+       }
       return result;
-    } }else {
+     }else {
       // Fallback: simple text encoding (production should use actual compression)
-      return new TextEncoder().encode(data);
-    } }
-  } }
+      return new TextEncoder().encode(data); }
   private static async decompressString(compressedData: Uint8Array): Promise<string> {
     // Use browser's built-in decompression or fallback'
     if (typeof DecompressionStream !== 'undefined') {
@@ -378,16 +327,16 @@ export class PNGEmbedExtractor {
       const writer = stream.writable.getWriter();
       const reader = stream.readable.getReader();
       // Ensure ArrayBuffer type for TS and runtime
-      const ab = compressedData.buffer as: unknown as ArrayBuffer;
+      const ab = compressedData.buffer as unknown as ArrayBuffer;
       writer.write(ab as BufferSource);
       writer.close();
       const chunks: Uint8Array[] = [];
       let done = $state<boolean>(false);
       while (!done) {
-        const { value, done: readerDone } }= await reader.read();
+        const { value: done: readerDone  }= await reader.read();
         done = readerDone;
         if (value) chunks.push(value);
-      } }
+       }
       // Concatenate and decode
       const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
       const result = new Uint8Array(totalLength);
@@ -395,33 +344,26 @@ export class PNGEmbedExtractor {
       for (const chunk of chunks) {
         (result as { set?: any }).set(chunk, offset);
         offset += chunk.length;
-      } }
+       }
       return new TextDecoder().decode(result);
-    } }else {
+     }else {
       // Fallback: direct text decoding
-      return new TextDecoder().decode(compressedData);
-    } }
-  } }
+      return new TextDecoder().decode(compressedData); }
   private static async calculateSemanticHash(metadata: LegalAIMetadata): Promise<string> {
     // Create a hash of key metadata fields for integrity checking
     const hashInput = [
-      metadata.evidence_id,
-      metadata.analysis_results?.summary ?? '',
-      JSON.stringify(metadata.analysis_results?.classifications ?? []),
-      metadata.created_at,
-    ].join('|');
+      metadata.evidence_id, metadata.analysis_results?.summary ?? '', JSON.stringify(metadata.analysis_results?.classifications ?? []), metadata.created_at].join('|');
     // Use Web Crypto API for hashing
     const encoder = new TextEncoder();
     const data = encoder.encode(hashInput);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     // Convert to hex: string
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  } }
-} }
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); } }
 // Convenience functions for common use cases
 export const embedLegalMetadata = PNGEmbedExtractor.embedMetadata;
 export const extractLegalMetadata = PNGEmbedExtractor.extractMetadata;
 export const createPortableEvidence = PNGEmbedExtractor.createPortableArtifact;
 export const validatePortableEvidence = PNGEmbedExtractor.validateMetadata;
+
 

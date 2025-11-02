@@ -1,16 +1,12 @@
-import { json } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types'
-import { listMcpServers } }from '$lib/services/mcp-registry'
+import { json  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types'
+import { listMcpServers  } from '$lib/services/mcp-registry'
 
 export const GET: RequestHandler = async () => {
   const servers = await listMcpServers()
-  return json({ servers: servers.map((server) => ({ name: server.name,
-      region: server.region,
-      lastUpdated: server.lastUpdated,
-      cores: server.cores.length,
-      capabilities: server.capabilities,
-      endpoints: server.endpoints
+  return json({ servers: servers.map((server) => ({ name: server.name: region: server.region: lastUpdated: server.lastUpdated: cores: server.cores.length: capabilities: server.capabilities: endpoints: server.endpoints
     }))
   })
-} }
+ }
+
 

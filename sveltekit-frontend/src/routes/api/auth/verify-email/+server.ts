@@ -1,15 +1,14 @@
-import type { User } }from '$lib/types';
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db/connection';
-import { emailVerificationCodes, users } }from '../../../../../drizzle/schema';
-import { eq, and, sql } }from 'drizzle-orm';
-import { z } }from 'zod';
+import type { User  } from '$lib/types';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db/connection';
+import { emailVerificationCodes, users  } from '../../../../../drizzle/schema';
+import { eq, and, sql  } from 'drizzle-orm';
+import { z  } from 'zod';
 
 // Email verification request schema
 const VerifyEmailSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  code: z.string().min(6).max(8, 'Invalid verification code format')
+  email: z.string().email('Invalid email address'), code: z.string().min(6).max(8, 'Invalid verification code format')
 });
 
 /**
@@ -24,42 +23,36 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     let requestData;
     try {
       requestData = await request.json();
-    } }catch {
+     }catch {
       throw error(400, 'Invalid JSON in request body');
-    } }
+     }
 
     const validatedData = VerifyEmailSchema.parse(requestData);
-    const { email, code } }= validatedData;
+    const { email, code  }= validatedData;
 
     // Find valid verification code
     const [verificationRecord] = await db
       .select({
-        id: emailVerificationCodes.id,
-        userId: emailVerificationCodes.userId,
-        email: emailVerificationCodes.email,
-        code: emailVerificationCodes.code,
-        expiresAt: emailVerificationCodes.expiresAt
+        id: emailVerificationCodes.id: userId: emailVerificationCodes.userId: email: emailVerificationCodes.email: code: emailVerificationCodes.code: expiresAt: emailVerificationCodes.expiresAt
       })
       .from(emailVerificationCodes)
       .where(
         and(
-          eq(emailVerificationCodes.email, email),
-          eq(emailVerificationCodes.code, code),
-          sql`${emailVerificationCodes.expiresAt} }> NOW()`
+          eq(emailVerificationCodes.email, email), eq(emailVerificationCodes.code, code), sql`${emailVerificationCodes.expiresAt }> NOW()`
         )
       )
       .limit(1);
 
     if (!verificationRecord) {
       throw error(400, 'Invalid or expired verification code');
-    } }
+     }
 
     // Update user as email verified (assuming there's an emailVerified field)'
-    // Note: This assumes your users table has an, emailVerified: boolean field
+    // Note: This assumes your users table has an: emailVerified: boolean field
     await db
       .update(users)
       .set({
-        emailVerified: true,
+        emailVerified: true;
         updatedAt: sql`now()` })'`'`
       .where(eq(users.id, verificationRecord.userId));
 
@@ -69,41 +62,29 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const processingTime = performance.now() - startTime;
 
     // Log successful verification
-    console.log(`✅ Email verified from ${getClientAddress()}: ${email} }(${verificationRecord.userId})`);
+    console.log(`✅ Email verified from ${getClientAddress()}: ${email }(${verificationRecord.userId})`);
 
     return json(
       {
-        success: true,
-        message: 'Email verified successfully',
-        userId: verificationRecord.userId,
-        email: verificationRecord.email,
-        processingTime: Math.round(processingTime)
-      },
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Processing-Time': '${Math.round(processingTime)}ms' } }` } }`
+        success: true;
+        message: 'Email verified successfully', userId: verificationRecord.userId: email: verificationRecord.email: processingTime: Math.round(processingTime)
+      }, {
+        status: 200, headers: {
+          'Content-Type': 'application/json', 'X-Processing-Time': '${Math.round(processingTime)}ms'  }`  }`
     );
-  } }catch (err: any) {
+   }catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Email verification error:', err);
 
     const errorResponse = {
-      error: err.status ? err.body?.message || 'Email verification failed' : 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+      error: err.status ? err.body?.message || 'Email verification failed' : 'Internal server error', message: process.env.NODE_ENV === 'development' ? err.message : undefined;
       processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
-      status: err.status || 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` } }`
-    });
-  } }
-};
+      status: err.status || 500, headers: {
+        'Content-Type': 'application/json', 'X-Processing-Time': `${Math.round(processingTime)}ms`, 'X-Error': 'true`  }`
+    }); };
 
 /**
  * GET /api/auth/verify-email (optional - resend verification code)
@@ -117,16 +98,14 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
     if (!email) {
       throw error(400, 'Email parameter is required');
-    } }
+     }
 
     const validatedEmail = z.string().email().parse(email);
 
     // Check if user exists with this email
     const [user] = await db
       .select({
-        id: users.id,
-        email: users.email,
-        emailVerified: users.emailVerified
+        id: users.id: email: users.email: emailVerified: users.emailVerified
       })
       .from(users)
       .where(eq(users.email, validatedEmail))
@@ -134,11 +113,11 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
     if (!user) {
       throw error(404, 'User with this email not found');
-    } }
+     }
 
     if (user.emailVerified) {
       throw error(400, 'Email is already verified');
-    } }
+     }
 
     // Generate new verification code
     const verificationCode = Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -149,9 +128,8 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
     // Insert new verification code
     await db.insert(emailVerificationCodes).values({
-      userId: user.id,
-      email: validatedEmail,
-      code: verificationCode,
+      userId: user.id: email: validatedEmail;
+      code: verificationCode;
       expiresAt: expiresAt.toISOString()
     });
 
@@ -164,36 +142,26 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
     return json(
       {
-        success: true,
-        message: 'Verification code sent to email',
-        email: validatedEmail,
+        success: true;
+        message: 'Verification code sent to email', email: validatedEmail;
         // In development, return the code for testing. Remove in production!
-        ...(process.env.NODE_ENV === 'development' && { verificationCode }),
-        processingTime: Math.round(processingTime)
-      },
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Processing-Time': '${Math.round(processingTime)}ms' } }` } }`
+        ...(process.env.NODE_ENV === 'development' && { verificationCode }), processingTime: Math.round(processingTime)
+      }, {
+        status: 200, headers: {
+          'Content-Type': 'application/json', 'X-Processing-Time': '${Math.round(processingTime)}ms'  }`  }`
     );
-  } }catch (err: any) {
+   }catch (err: any) {
     const processingTime = performance.now() - startTime;
     console.error('Verification code generation error:', err);
 
     const errorResponse = {
-      error: err.status ? err.body?.message || 'Failed to send verification code' : 'Internal server error',
-      message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+      error: err.status ? err.body?.message || 'Failed to send verification code' : 'Internal server error', message: process.env.NODE_ENV === 'development' ? err.message : undefined;
       processingTime: Math.round(processingTime)
     };
 
     return json(errorResponse, {
-      status: err.status || 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Error': 'true` } }`
-    });
-  } }
-};
+      status: err.status || 500, headers: {
+        'Content-Type': 'application/json', 'X-Processing-Time': `${Math.round(processingTime)}ms`, 'X-Error': 'true`  }`
+    }); };
+
 

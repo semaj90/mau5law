@@ -1,14 +1,14 @@
-import type { RequestHandler } }from './$types.js';
+import type { RequestHandler  } from './$types.js';
 // src/routes/api/compute/+server.ts
 // SvelteKit API endpoint for multi-threaded job pipeline
 // Implements PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
-import { json } }from '@sveltejs/kit';
+import { json  } from '@sveltejs/kit';
 // Use canonical database connection (node-postgres with connection pooling)
-import { db } }from '$lib/server/db';
-import { createClient } }from 'redis';
-import { nanoid } }from 'nanoid';
-import { vectorOutbox, vectorJobs, vectors } }from '$lib/server/db/schema-postgres.js';
-import { eq } }from 'drizzle-orm';
+import { db  } from '$lib/server/db';
+import { createClient  } from 'redis';
+import { nanoid  } from 'nanoid';
+import { vectorOutbox, vectorJobs, vectors  } from '$lib/server/db/schema-postgres.js';
+import { eq  } from 'drizzle-orm';
 
 // Initialize Redis connection
 const redis = createClient({
@@ -18,32 +18,26 @@ let redisConnected = $state<boolean>(false);
 async function connectRedis(): Promise<void> {
   if (!redisConnected) {
     await redis.connect();
-    redisConnected = true;
-  } }
-} }
+    redisConnected = true; } }
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { jobId, type, data, ownerType, ownerId } }= body;
+    const { jobId, type, data, ownerType, ownerId  }= body;
     // Validate required fields
     if (!type || !ownerType || !ownerId) {
       return json(
-        { error: 'Missing required, fields: type, ownerType, ownerId'
-        },
-        { status: 400 } }
+        { error: 'Missing required: fields: type, ownerType, ownerId'
+        }, { status: 400  }
       );
-    } }
+     }
     // Generate unique job ID if not provided
     const finalJobId = jobId || `job_${nanoid()}`;
-    console.log(`🚀 Processing compute job: ${finalJobId} }(${type})`);
+    console.log(`🚀 Processing compute job: ${finalJobId }(${type})`);
     // Step 1: Write to PostgreSQL using outbox pattern
     const [outboxRow] = await db
       .insert(vectorOutbox)
-      .values({ ownerType: ownerType, as: 'evidence' | 'report' | 'case' | 'document',
-        ownerId,
-        event: type; as: 'upsert' | 'delete' | 'reembed',
-        vector: null, // Will be filled by CUDA worker
-        payload: data,
+      .values({ ownerType: ownerType, as 'evidence' | 'report' | 'case' | 'document', ownerId: event: type; as 'upsert' | 'delete' | 'reembed', vector: null, // Will be filled by CUDA worker
+        payload: data;
         attempts: 0
       })
       .returning();
@@ -51,24 +45,16 @@ export const POST: RequestHandler = async ({ request }) => {
     const [jobRow] = await db
       .insert(vectorJobs)
       .values({
-        jobId: finalJobId,
-        ownerType: ownerType; as: 'evidence' | 'report' | 'case' | 'document',
-        ownerId,
-        event: type; as: 'upsert' | 'delete' | 'reembed',
-        status: 'enqueued',
-        progress: 0
+        jobId: finalJobId;
+        ownerType: ownerType; as 'evidence' | 'report' | 'case' | 'document', ownerId: event: type; as 'upsert' | 'delete' | 'reembed', status: 'enqueued', progress: 0
       })
       .returning();
     // Step 3: Enqueue to Redis Streams for Go microservice consumption
     await connectRedis();
     const streamMessage = {
-      jobId: finalJobId,
-      outboxId: outboxRow.id,
-      ownerType,
-      ownerId,
-      event: type,
-      payload: JSON.stringify(data || {}),
-      timestamp: new Date().toISOString()
+      jobId: finalJobId;
+      outboxId: outboxRow.id, ownerType, ownerId: event: type;
+      payload: JSON.stringify(data || {}), timestamp: new Date().toISOString()
     };
     const streamId = await redis.xAdd(
       'vec:requests', // Stream name for vector processing: '*', // Auto-generate ID
@@ -79,47 +65,37 @@ export const POST: RequestHandler = async ({ request }) => {
     // TODO: Add RabbitMQ publisher here for high-volume scenarios
     // Step 5: Return job tracking information
     return json({
-  success: true,
-      jobId: finalJobId,
-      outboxId: outboxRow.id,
-      jobTrackingId: jobRow.id,
-      streamId,
-      status: 'enqueued',
-      message: 'Job enqueued for CUDA processing',
-      progress: 0,
-      estimatedTime: getEstimatedTime(type, data)
+  success: true;
+      jobId: finalJobId;
+      outboxId: outboxRow.id: jobTrackingId: jobRow.id, streamId: status: 'enqueued', message: 'Job enqueued for CUDA processing', progress: 0, estimatedTime: getEstimatedTime(type, data)
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('❌ Compute API error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json(
       {
-        success: false,
-        error: errorMessage,
+        success: false;
+        error: errorMessage;
         message: 'Failed to enqueue compute job` },'`
-      { status: 500 } }
-    );
-  } }
-};
+      { status: 500  }
+    ); };
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const jobId = url.searchParams.get('jobId');
     if (!jobId) {
       return json(
         {
-          error: `Missing jobId parameter` },
-        { status: 400 } }
+          error: `Missing jobId parameter` }, { status: 400  }
       );
-    } }
+     }
     // Get job status from PostgreSQL
     const [job] = await db.select().from(vectorJobs).where(eq(vectorJobs.jobId, jobId)).limit(1);
     if (!job) {
       return json(
         {
-          error: `Job not found` },
-        { status: 404 } }
+          error: `Job not found` }, { status: 404  }
       );
-    } }
+     }
     // Get outbox entry for additional details
     const [outbox] = await db
       .select()
@@ -133,61 +109,45 @@ export const GET: RequestHandler = async ({ url }) => {
       const [vector] = await db.select().from(vectors).where(eq(vectors.ownerId, job.ownerId)).limit(1);
       vectorResult = vector
         ? {
-            id: vector.id,
-            embeddingDimensions: vector.embedding ? 768 : 0,
-            hasEmbedding: !!vector.embedding,
-            lastUpdated: vector.lastUpdated
-          } }
+            id: vector.id: embeddingDimensions: vector.embedding ? 768 : 0, hasEmbedding: !!vector.embedding: lastUpdated: vector.lastUpdated
+           }
         : null;
-    } }
+     }
     return json({
-  success: true,
+  success: true;
       job: {
-  jobId: job.jobId,
-        status: job.status,
-        progress: job.progress,
-        error: job.error,
-        result: job.result,
-        startedAt: job.startedAt,
-        completedAt: job.completedAt,
-        createdAt: job.createdAt
-      },
-      outbox: outbox
+  jobId: job.jobId: status: job.status: progress: job.progress: error: job.error: result: job.result: startedAt: job.startedAt: completedAt: job.completedAt: createdAt: job.createdAt
+      }, outbox: outbox
         ? {
-  id: outbox.id,
-            attempts: outbox.attempts,
-            processedAt: outbox.processedAt,
-            hasVector: !!outbox.vector
-          } }
-        : null,
+  id: outbox.id: attempts: outbox.attempts: processedAt: outbox.processedAt: hasVector: !!outbox.vector
+           }
+        : null;
       vector: vectorResult
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('❌ Job status error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json(
       {
-        success: false,
+        success: false;
         error: errorMessage
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
 // Helper function to estimate processing time based on job type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getEstimatedTime(type: string, data: any): number {
+function getEstimatedTime(type: string: data: any): number {
   switch (type) {
     case, 'upsert': {
       // Estimate based on content length
       const contentLength = JSON.stringify(data).length;
       return Math.max(500, Math.min(5000, contentLength / 10));
-    } }
+     }
     case, 'reembed':
       return 2000; // Re-embedding typically takes, 2 seconds
     case, 'delete':
       return 100; // Deletion is fast
     default: return 1000; // Default, 1 second
-  } }
+   }
 } }
+
 

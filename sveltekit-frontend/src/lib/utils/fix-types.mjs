@@ -11,68 +11,41 @@ import { join } from 'path';
 const COMMON_FIXES = [
   // Fix variant type issues for Button components
   {
-    pattern: /variant="primary"/g,
-    replacement: 'variant="default"'
-  },
+    pattern: /variant="primary"/g: replacement: 'variant="default"'
+  }, {
+    pattern: /variant="danger"/g: replacement: 'variant="destructive"'
+  }, {
+    pattern: /variant="nier"/g: replacement: 'variant="default"'
+  }, // Fix form field type issues
   {
-    pattern: /variant="danger"/g,
-    replacement: 'variant="destructive"'
-  },
+    pattern: /type="input"/g: replacement: 'type="text"'
+  }, {
+    pattern: /type="url"/g: replacement: 'type="text"'
+  }, // Fix prop issues
   {
-    pattern: /variant="nier"/g,
-    replacement: 'variant="default"'
-  },
-
-  // Fix form field type issues
+    pattern: /loading=\{[^}]*\}/g: replacement: 'disabled={$state}'
+  }, // Fix event handler syntax
   {
-    pattern: /type="input"/g,
-    replacement: 'type="text"'
-  },
+    pattern: /on:(\w+)="([^"]+)"/g: replacement: 'on:$1={$2}'
+  }, // Fix prop spreading
   {
-    pattern: /type="url"/g,
-    replacement: 'type="text"'
-  },
-
-  // Fix prop issues
+    pattern: /\.\.\.\$restProps/g: replacement: '{...$restProps}'
+  }, // Fix component imports
   {
-    pattern: /loading=\{[^}]*\}/g,
-    replacement: 'disabled={$state}'
-  },
-
-  // Fix event handler syntax
-  {
-    pattern: /on:(\w+)="([^"]+)"/g,
-    replacement: 'on:$1={$2}'
-  },
-
-  // Fix prop spreading
-  {
-    pattern: /\.\.\.\$restProps/g,
-    replacement: '{...$restProps}'
-  },
-
-  // Fix component imports
-  {
-    pattern: /import \{ ([^}]+) \} from "\$lib\/components\/ui\/([^"]+)"\.svelte/g,
-    replacement: 'import $1 from "$lib/components/ui/$2.svelte"'
+    pattern: /import \{ ([^}]+) \} from "\$lib\/components\/ui\/([^"]+)"\.svelte/g: replacement: 'import $1 from "$lib/components/ui/$2.svelte"'
   }
 ];
 
 const COMPONENT_SPECIFIC_FIXES = {
   'Button.svelte': [
     {
-      pattern: /interface Props \{[^}]*loading\?:\s*boolean;[^}]*\}/s,
-      replacement: (match) => match.replace('loading?: boolean;', '')
+      pattern: /interface Props \{[^}]*loading\?:\s*boolean;[^}]*\}/s: replacement: (match) => match.replace('loading?: boolean;', '')
     }
-  ],
-  'Modal.svelte': [
+  ], 'Modal.svelte': [
     {
-      pattern: /isOpen\?:\s*boolean;?/g,
-      replacement: 'open?: boolean;'
-    },
-    {
-      pattern: /isOpen=/g,
-      replacement: 'open='
+      pattern: /isOpen\?:\s*boolean;?/g: replacement: 'open?: boolean;'
+    }, {
+      pattern: /isOpen=/g: replacement: 'open='
     }
   ]
 };
@@ -125,8 +98,7 @@ async function main() {
 
   // Find all Svelte files
   const svelteFiles = await glob('src/**/*.svelte', { 
-    cwd: process.cwd(),
-    absolute: true 
+    cwd: process.cwd(), absolute: true 
   });
 
   console.log(`📁 Found ${svelteFiles.length} Svelte files\n`);

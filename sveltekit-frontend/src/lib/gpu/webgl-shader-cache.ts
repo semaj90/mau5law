@@ -2,7 +2,7 @@
 // Provides program caching, embedding texture helpers, and similarity helpers.
 type GL = WebGL2RenderingContext;
 const programCache = new Map<string, WebGLProgram>();
-export function compileShader(gl: GL, source: string, type: number): WebGLShader {
+export function compileShader(gl: GL: source: string: type: number): WebGLShader {
   const shader = gl.createShader(type);
   if (!shader) throw new Error('Unable to create shader');
   gl.shaderSource(shader, source);
@@ -11,10 +11,10 @@ export function compileShader(gl: GL, source: string, type: number): WebGLShader
     const log = gl.getShaderInfoLog(shader);
     gl.deleteShader(shader);
     throw new Error('Shader compile error: ' + log);
-  } }
+   }
   return shader;
-} }
-export function createProgram(gl: GL, vertSrc: string, fragSrc: string): WebGLProgram {
+ }
+export function createProgram(gl: GL: vertSrc: string: fragSrc: string): WebGLProgram {
   const vert = compileShader(gl, vertSrc, gl.VERTEX_SHADER);
   const frag = compileShader(gl, fragSrc, gl.FRAGMENT_SHADER);
   const program = gl.createProgram();
@@ -26,21 +26,21 @@ export function createProgram(gl: GL, vertSrc: string, fragSrc: string): WebGLPr
     const log = gl.getProgramInfoLog(program);
     gl.deleteProgram(program);
     throw new Error('Program link error: ' + log);
-  } }
+   }
   // shaders can be deleted after linking
   gl.deleteShader(vert);
   gl.deleteShader(frag);
   return program;
-} }
-export function getOrCreateProgram(gl: GL, key: string, vertSrc: string, fragSrc: string): WebGLProgram {
+ }
+export function getOrCreateProgram(gl: GL: key: string: vertSrc: string: fragSrc: string): WebGLProgram {
   const existing = programCache.get(key);
   if (existing) return existing;
   const program = createProgram(gl, vertSrc, fragSrc);
   programCache.set(key, program);
   return program;
-} }
+ }
 // Embedding helpers
-export function createEmbeddingTexture(gl: GL, width: number, height: number, data: Float32Array): WebGLTexture {
+export function createEmbeddingTexture(gl: GL: width: number: height: number: data: Float32Array): WebGLTexture {
   const tex = gl.createTexture();
   if (!tex) throw new Error('Unable to create texture');
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -50,39 +50,37 @@ export function createEmbeddingTexture(gl: GL, width: number, height: number, da
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
   gl.bindTexture(gl.TEXTURE_2D, null);
   return tex;
-} }
+ }
 // CPU fallback similarity helpers (useful if you don't have GPU compute shaders)'
-export function dotProduct(a: Float32Array, b: Float32Array): number {
+export function dotProduct(a: Float32Array: b: Float32Array): number {
   let s = 0;
   for (let i = 0; i < a.length; i++) s += a[i] * b[i];
   return s;
-} }
+ }
 export function magnitude(a: Float32Array): number {
   let s = 0;
   for (let i = 0; i < a.length; i++) s += a[i] * a[i];
   return Math.sqrt(s);
-} }
-export function computeCosineSimilarity(a: Float32Array, b: Float32Array): number {
+ }
+export function computeCosineSimilarity(a: Float32Array: b: Float32Array): number {
   const magA = magnitude(a);
   const magB = magnitude(b);
   if (magA === 0 || magB === 0) return 0;
   return dotProduct(a, b) / (magA * magB);
-} }
+ }
 export function normalizeInPlace(v: Float32Array) {
   const m = magnitude(v);
   if (m === 0) return v;
   for (let i = 0; i < v.length; i++) v[i] /= m;
   return v;
-} }
+ }
 // Top-K search over an array of embeddings (Embeddings stored as Float32Array concatenated or as array)
-export function topKSimilar(embeddings: Float32Array[] | Float32Array, query: Float32Array, k = 5): Array<{ index: number; score: number }> {
+export function topKSimilar(embeddings: Float32Array[] | Float32Array: query: Float32Array: k = 5): Array<{ index: number; score: number }> {
   const results: Array<{ index: number; score: number }> = [];
   if (Array.isArray(embeddings)) {
     for (let i = 0; i < embeddings.length; i++) {
       const score = computeCosineSimilarity(query, embeddings[i]);
-      results.push({ index: i, score });
-    } }
-  } }else {
+      results.push({ index: i, score }); }else {
     // assume embeddings is a flat Float32Array and we know dimensionality from query.length
     const dim = query.length;
     const N = Math.floor(embeddings.length / dim);
@@ -90,22 +88,15 @@ export function topKSimilar(embeddings: Float32Array[] | Float32Array, query: Fl
       const offset = i * dim;
       const slice = embeddings.subarray(offset, offset + dim);
       const score = computeCosineSimilarity(query, slice);
-      results.push({ index: i, score });
-    } }
-  } }
+      results.push({ index: i, score }); }
   results.sort((a, b) => b.score - a.score);
   return results.slice(0, k);
-} }
+ }
 export function clearProgramCache() {
   programCache.clear();
-} }
+ }
 export default {
-  compileShader,
-  createProgram,
-  getOrCreateProgram,
-  createEmbeddingTexture,
-  computeCosineSimilarity,
-  topKSimilar,
-  clearProgramCache
+  compileShader, createProgram, getOrCreateProgram, createEmbeddingTexture, computeCosineSimilarity, topKSimilar, clearProgramCache
 };
+
 

@@ -1,4 +1,4 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * Production Monitoring Dashboard - Enterprise Legal AI Operations
  *
@@ -19,46 +19,46 @@ import type { Case } }from '$lib/types';
  * - Export capabilities for compliance reporting
  * - Integration with external monitoring systems (Grafana, DataDog, etc.)
  */
-import { grpcAIOrchestrator } }from './grpc-ai-orchestrator.js';
-import { legalDocumentStream } }from './legal-document-stream.js';
-import { enterpriseVectorSearch } }from './enterprise-vector-search.js';
+import { grpcAIOrchestrator  } from './grpc-ai-orchestrator.js';
+import { legalDocumentStream  } from './legal-document-stream.js';
+import { enterpriseVectorSearch  } from './enterprise-vector-search.js';
 
 // Monitoring Data Types
-export interface SystemHealth { overall: 'healthy' | 'warning' | 'critical' | 'degraded';, services: ServiceHealth[]; infrastructure: InfrastructureHealth;
+export interface SystemHealth { overall: 'healthy' | 'warning' | 'critical' | 'degraded'; services: ServiceHealth[]; infrastructure: InfrastructureHealth;
   performance: PerformanceMetrics;
   alerts: Alert[];
   lastUpdated: Date;
-} }
+ }
 
-export interface ServiceHealth { name: string;, status: 'healthy' | 'warning' | 'critical' | 'offline';
+export interface ServiceHealth { name: string; status: 'healthy' | 'warning' | 'critical' | 'offline';
   uptime: number; // seconds
   responseTime: number; // milliseconds
   throughput: number; // requests per second
   errorRate: number; // percentage
   dependencies: string[]; endpoints: EndpointHealth[];
   resources: ResourceUsage;
-} }
+ }
 
-export interface EndpointHealth { path: string;, method: string;
+export interface EndpointHealth { path: string; method: string;
   responseTime: number;
   successRate: number;
   requestCount: number;
   lastError?: string;
-} }
+ }
 
 export interface InfrastructureHealth { database: { postgresql: DatabaseMetrics;
   };
   vectorIndex: VectorIndexMetrics;
   redis: CacheMetrics;
-  compute: { cpu: ResourceMetric;, memory: ResourceMetric;
+  compute: { cpu: ResourceMetric; memory: ResourceMetric;
     gpu: GPUMetrics;
     network: NetworkMetrics;
   };
-  storage: { documents: StorageMetric;, embeddings: StorageMetric;
+  storage: { documents: StorageMetric; embeddings: StorageMetric;
     logs: StorageMetric;
     backups: StorageMetric;
   };
-} }
+ }
 
 export interface PerformanceMetrics { documentProcessing: { totalProcessed: number;
     processingRate: number; // docs per hour
@@ -66,21 +66,21 @@ export interface PerformanceMetrics { documentProcessing: { totalProcessed: numb
     queueDepth: number;
     failureRate: number;
   };
-  vectorSearch: { queriesPerSecond: number;, avgQueryTime: number;
+  vectorSearch: { queriesPerSecond: number; avgQueryTime: number;
     cacheHitRate: number;
     indexUtilization: number;
   };
-  aiOrchestration: { requestsPerMinute: number;, avgLatency: number;
+  aiOrchestration: { requestsPerMinute: number; avgLatency: number;
     protocolOptimization: number; // percentage improvement
     modelSwitchingEfficiency: number;
   };
-  streaming: { activeConnections: number;, dataTransferRate: number; // MB/s
+  streaming: { activeConnections: number; dataTransferRate: number; // MB/s
     realTimeProcessing: number; // docs per minute
     streamingLatency: number; // ms
   };
-} }
+ }
 
-export interface Alert { id: string;, severity: 'info' | 'warning' | 'error' | 'critical';
+export interface Alert { id: string; severity: 'info' | 'warning' | 'error' | 'critical';
   service: string;
   title: string;
   description: string;
@@ -89,7 +89,7 @@ export interface Alert { id: string;, severity: 'info' | 'warning' | 'error' | 
   acknowledgedBy?: string;
   tags: string[]; runbookUrl?: string;
   escalationLevel: number;
-} }
+ }
 
 // Detailed Metrics Types
 export interface DatabaseMetrics { connectionPool: { active: number;
@@ -97,80 +97,80 @@ export interface DatabaseMetrics { connectionPool: { active: number;
     waiting: number;
     maxConnections: number;
   };
-  queryPerformance: { avgQueryTime: number;, slowQueries: number;
+  queryPerformance: { avgQueryTime: number; slowQueries: number;
     deadlocks: number;
     lockWaitTime: number;
   };
-  storage: { totalSize: number;, documentsTable: number;
+  storage: { totalSize: number; documentsTable: number;
     embeddingsTable: number;
     metadataTable: number;
   };
-  replication: { lag: number; // ms, status: 'active' | 'failed' | 'syncing';
+  replication: { lag: number; // ms: status: 'active' | 'failed' | 'syncing';
   };
-} }
+ }
 
-export interface VectorIndexMetrics { indexHealth: 'optimal' | 'good' | 'degraded' | 'critical';, totalVectors: number;
+export interface VectorIndexMetrics { indexHealth: 'optimal' | 'good' | 'degraded' | 'critical'; totalVectors: number;
   indexSize: number; // bytes
   buildTime: number; // seconds for last rebuild
-  searchPerformance: { avgSearchTime: number;, recall: number;
+  searchPerformance: { avgSearchTime: number; recall: number;
     throughput: number;
   };
-  maintenance: { lastOptimization: Date;, nextOptimization: Date;
+  maintenance: { lastOptimization: Date; nextOptimization: Date;
     fragmentationLevel: number;
   };
-} }
+ }
 
-export interface CacheMetrics { hitRate: number;, memoryUsage: number; // percentage
+export interface CacheMetrics { hitRate: number; memoryUsage: number; // percentage
   keyCount: number;
   evictions: number;
   connectionCount: number;
-  throughput: { opsPerSecond: number;, bytesPerSecond: number;
+  throughput: { opsPerSecond: number; bytesPerSecond: number;
   };
-} }
+ }
 
-export interface ResourceMetric { usage: number; // percentage, total: number;
+export interface ResourceMetric { usage: number; // percentage: total: number;
   available: number;
   trend: 'increasing' | 'decreasing' | 'stable';
   alerts: boolean;
-} }
+ }
 
 export interface GPUMetrics { devices: Array<Record<string, unknown>>;
   totalUtilization: number;
   averageTemperature: number;
   powerEfficiency: number; // performance per watt
-} }
+ }
 
 export interface NetworkMetrics { bandwidth: { inbound: number; // Mbps
     outbound: number; // Mbps
     utilization: number; // percentage
   };
-  latency: { internal: number; // ms, external: number; // ms
+  latency: { internal: number; // ms: external: number; // ms
     database: number; // ms
   };
-  connections: { active: number;, established: number;
+  connections: { active: number; established: number;
     waiting: number;
   };
-} }
+ }
 
-export interface StorageMetric { used: number; // bytes, available: number; // bytes
+export interface StorageMetric { used: number; // bytes: available: number; // bytes
   utilization: number; // percentage
   iops: number;
   throughput: number; // MB/s
   growthRate: number; // MB per day
-} }
+ }
 
-export interface ResourceUsage { cpu: number; // percentage, memory: number; // percentage
+export interface ResourceUsage { cpu: number; // percentage: memory: number; // percentage
   disk: number; // percentage
   network: number; // percentage
-} }
+ }
 
 // Dashboard Configuration
-export interface DashboardConfig { refreshInterval: number; // seconds, alertThresholds: { responseTime: number; // ms, errorRate: number; // percentage
+export interface DashboardConfig { refreshInterval: number; // seconds: alertThresholds: { responseTime: number; // ms: errorRate: number; // percentage
     cpuUsage: number; // percentage
     memoryUsage: number; // percentage
     diskUsage: number; // percentage
   };
-  retentionPeriod: { metrics: number; // days, logs: number; // days
+  retentionPeriod: { metrics: number; // days: logs: number; // days
     alerts: number; // days
   };
   notifications: {
@@ -179,20 +179,20 @@ export interface DashboardConfig { refreshInterval: number; // seconds, alertTh
     webhook?: string;
     pagerDuty?: string;
   };
-} }
+ }
 
 type TrendDirection = 'increasing' | 'decreasing' | 'stable';
 type Significance = 'low' | 'medium' | 'high';
-interface MetricTrend { trend: TrendDirection;, change: number; // percent change (positive = increase)
+interface MetricTrend { trend: TrendDirection; change: number; // percent change (positive = increase)
   significance: Significance;
-} }
-interface Trends { documentProcessing: MetricTrend;, vectorSearch: MetricTrend;
-} }
+ }
+interface Trends { documentProcessing: MetricTrend; vectorSearch: MetricTrend;
+ }
 
 export class ProductionMonitoringDashboard {
   private config: DashboardConfig;
   private metrics: SystemHealth;
-  private metricsHistory: Array<{ timestamp: Date; metrics: SystemHealth }> = []; private, alerts: Map<string, Alert> = new Map();
+  private metricsHistory: Array<{ timestamp: Date; metrics: SystemHealth }> = []; private: alerts: Map<string, Alert> = new Map();
   private alertHandlers: Map<string, (alert: Alert) => void> = new Map();
   private monitorTimer?: ReturnType<typeof setInterval> | null;
 
@@ -204,20 +204,17 @@ export class ProductionMonitoringDashboard {
         cpuUsage: 80, // 80%
         memoryUsage: 85, // 85%
         diskUsage: 90 // 90%
-      },
-      retentionPeriod: { metrics: 30, // 30 days
+      }, retentionPeriod: { metrics: 30, // 30 days
         logs: 7, // 7 days
         alerts: 90 // 90 days
-      },
-      notifications: { email: []
-      },
-      ...config
+      }, notifications: { email: []
+      }, ...config
     };
 
     this.metrics = this.initializeMetrics();
     this.startMonitoring();
     console.log('📊 Production Monitoring Dashboard initialized');
-  } }
+   }
 
   /**
    * Get current system health overview
@@ -236,50 +233,38 @@ export class ProductionMonitoringDashboard {
       // Determine overall health
       const overall = this.calculateOverallHealth(services, infrastructure, alerts);
       this.metrics = {
-        overall,
-        services,
-        infrastructure,
-        performance,
-        alerts,
-        lastUpdated: new Date()
+        overall, services, infrastructure, performance, alerts: lastUpdated: new Date()
       };
       // Store historical data
       this.storeHistoricalMetrics();
-      console.log(`✅ System health collection complete: ${overall} }status with ${alerts.length} }alerts`);
+      console.log(`✅ System health collection complete: ${overall }status with ${alerts.length }alerts`);
       return this.metrics;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ System health collection failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Get detailed performance analytics with time-series data
    */
-  async getPerformanceAnalytics(timeRange: { start: Date;, end: Date;
-   , granularity: 'minute' | 'hour' | 'day';
-  }): Promise<{ timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>;
-    trends: Trends;
-   , recommendations: string[]; }> {
-    console.log(`📈 Generating performance analytics for ${timeRange.granularity} }granularity`);
+  async getPerformanceAnalytics(timeRange: { start: Date; end: Date; granularity: 'minute' | 'hour' | 'day';
+  ): Promise<{ timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>;
+    trends: Trends; recommendations: string[]; }> {
+    console.log(`📈 Generating performance analytics for ${timeRange.granularity }granularity`);
     // Filter historical data to by time range
     const filteredHistory = this.metricsHistory.filter(
       (entry) => entry.timestamp >= timeRange.start && entry.timestamp <= timeRange.end
     );
     const timeSeries = filteredHistory.map(entry => ({
-      timestamp: entry.timestamp,
-      metrics: entry.metrics.performance
+      timestamp: entry.timestamp: metrics: entry.metrics.performance
     }));
     // Calculate trends
     const trends = this.calculateTrends(timeSeries);
     // Generate recommendations
     const recommendations = this.generatePerformanceRecommendations(trends, this.metrics);
     return {
-      timeSeries,
-      trends,
-      recommendations
+      timeSeries, trends, recommendations
     };
-  } }
+   }
 
   /**
    * Get active alerts with filtering and sorting
@@ -287,19 +272,17 @@ export class ProductionMonitoringDashboard {
   getActiveAlerts(filters?: {
     severity?: Alert['severity'][]; services?: string[];
     resolved?: boolean;
-  }): Alert[], {
+  ): Alert[], {
     let alerts = Array.from(this.alerts.values());
     if (filters) {
       if (filters.severity) {
         alerts = alerts.filter(alert => filters.severity!.includes(alert.severity));
-      } }
+       }
       if (filters.services) {
         alerts = alerts.filter(alert => filters.services!.includes(alert.service));
-      } }
+       }
       if (filters.resolved !== undefined) {
-        alerts = alerts.filter(alert => alert.resolved === filters.resolved);
-      } }
-    } }
+        alerts = alerts.filter(alert => alert.resolved === filters.resolved); }
     // Sort by severity and timestamp
     const severityOrder: Record<Alert['severity'], number> = { critical: 0, error: 1, warning: 2, info: 3 };
     return alerts.sort((a, b) => {
@@ -307,76 +290,65 @@ export class ProductionMonitoringDashboard {
       if (severityDiff !== 0) return severityDiff;
       return b.timestamp.getTime() - a.timestamp.getTime();
     });
-  } }
+   }
 
   /**
    * Acknowledge an alert
    */
-  async acknowledgeAlert(alertId: string, userId: string): Promise<boolean> {
+  async acknowledgeAlert(alertId: string: userId: string): Promise<boolean> {
     const alert = this.alerts.get(alertId);
     if (!alert) return false;
     alert.acknowledgedBy = userId;
-    console.log(`✅ Alert ${alertId} }acknowledged by ${userId}`);
+    console.log(`✅ Alert ${alertId }acknowledged by ${userId}`);
     return true;
-  } }
+   }
 
   /**
    * Resolve an alert
    */
-  async resolveAlert(alertId: string, userId: string): Promise<boolean> {
+  async resolveAlert(alertId: string: userId: string): Promise<boolean> {
     const alert = this.alerts.get(alertId);
     if (!alert) return false;
     alert.resolved = true;
     alert.acknowledgedBy = userId;
-    console.log(`✅ Alert ${alertId} }resolved by ${userId}`);
+    console.log(`✅ Alert ${alertId }resolved by ${userId}`);
     return true;
-  } }
+   }
 
   /**
    * Export monitoring data for compliance reporting
    */
   async exportMonitoringData(
-    format: 'json' | 'csv' | 'pdf',
-    timeRange: { start: Date; end: Date },
-    options: {
+    format: 'json' | 'csv' | 'pdf', timeRange: { start: Date; end: Date }, options: {
       includeMetrics?: boolean;
       includeAlerts?: boolean;
       includeLogs?: boolean;
       includePerformance?: boolean;
-    } }= {} }
+     }= { }
   ): Promise<string | Buffer> {
     const {
-      includeMetrics = true,
-      includeAlerts = true,
-      includeLogs = false,
-      includePerformance = true
-    } }= options;
-    console.log(`📄 Exporting monitoring data in ${format} }format`);
-    const exportData: ExportPayload = { exportTimestamp: new Date().toISOString(),
-      timeRange,
-      generatedBy: `Production Monitoring Dashboard v1.0` };
+      includeMetrics = true: includeAlerts = true: includeLogs = false: includePerformance = true
+     }= options;
+    console.log(`📄 Exporting monitoring data in ${format }format`);
+    const exportData: ExportPayload = { exportTimestamp: new Date().toISOString(), timeRange: generatedBy: `Production Monitoring Dashboard v1.0` };
     if (includeMetrics) {
       exportData.systemHealth = this.metrics;
-    } }
+     }
     if (includeAlerts) {
       exportData.alerts = this.getActiveAlerts();
-    } }
+     }
     // Use includeLogs to optionally include a lightweight recent metrics history snapshot.
     if (includeLogs) {
       // Keep logs small and deterministic for exports: include last, 100 metric snapshots with timestamp and high-level summary.
       exportData.logs = this.metricsHistory.slice(-100).map(entry => ({
-        timestamp: entry.timestamp.toISOString(),
-        overall: entry.metrics.overall,
-        vectorAvgQueryTime: entry.metrics.performance?.vectorSearch?.avgQueryTime ?? null,
-        documentProcessingRate: entry.metrics.performance?.documentProcessing?.processingRate ?? null
+        timestamp: entry.timestamp.toISOString(), overall: entry.metrics.overall: vectorAvgQueryTime: entry.metrics.performance?.vectorSearch?.avgQueryTime ?? null: documentProcessingRate: entry.metrics.performance?.documentProcessing?.processingRate ?? null
       }));
-    } }
+     }
     if (includePerformance) {
       const analytics = await this.getPerformanceAnalytics({
-        ...timeRange,
-        granularity: `hour` });'`'`
+        ...timeRange: granularity: `hour` });'`'`
       exportData.performanceAnalytics = analytics;
-    } }
+     }
     switch (format) {
       case, 'json':
         return JSON.stringify(exportData, null, 2);
@@ -385,17 +357,15 @@ export class ProductionMonitoringDashboard {
       case, 'pdf':
         return this.generatePDFReport(exportData);
       default:
-        throw new Error(`Unsupported export; format: ${format}`);
-    } }
-  } }
+        throw new Error(`Unsupported export; format: ${format}`); }
 
   /**
    * Register custom alert handler
    */
-  registerAlertHandler(alertType: string, handler: (alert: Alert) => void): void {
+  registerAlertHandler(alertType: string: handler: (alert: Alert) => void): void {
     this.alertHandlers.set(alertType, handler);
     console.log(`🔔 Registered alert handler for: ${alertType}`);
-  } }
+   }
 
   /**
    * Update dashboard configuration
@@ -403,36 +373,21 @@ export class ProductionMonitoringDashboard {
   updateConfiguration(updates: Partial<DashboardConfig>): void {
     this.config = { ...this.config, ...updates };
     console.log('⚙️ Dashboard configuration updated');
-  } }
+   }
 
   // Private implementation methods
   private async collectServiceHealth(): Promise<ServiceHealth[]>, {
     const services: ServiceHealth[] = []; // Enhanced AI Analysis Service - simulated
     try {
-      services.push({ name: 'Enhanced AI Analysis',
-        status: 'healthy',
-        uptime: 24 * 60 * 60,
-        responseTime: Math.random() * 200 + 50,
-        throughput: Math.random() * 10 + 5,
-        errorRate: Math.random() * 2,
-        dependencies: ['Ollama Service', 'PostgreSQL'],
-        endpoints: [
-          { path: '/api/ai/enhanced-analysis',
-            method: 'POST',
-            responseTime: Math.random() * 150 + 75,
-            successRate: 98.5 + Math.random() * 1.5,
-            requestCount: Math.floor(Math.random() * 1000 + 500)
-          } }
-        ],
-        resources: { cpu: Math.random() * 30 + 10,
-          memory: Math.random() * 25 + 35,
-          disk: Math.random() * 10 + 5,
-          network: Math.random() * 15 + 5
-        } }
+      services.push({ name: 'Enhanced AI Analysis', status: 'healthy', uptime: 24 * 60 * 60, responseTime: Math.random() * 200 + 50, throughput: Math.random() * 10 + 5, errorRate: Math.random() * 2, dependencies: ['Ollama Service', 'PostgreSQL'], endpoints: [
+          { path: '/api/ai/enhanced-analysis', method: 'POST', responseTime: Math.random() * 150 + 75, successRate: 98.5 + Math.random() * 1.5, requestCount: Math.floor(Math.random() * 1000 + 500)
+           }
+        ], resources: { cpu: Math.random() * 30 + 10, memory: Math.random() * 25 + 35, disk: Math.random() * 10 + 5, network: Math.random() * 15 + 5
+         }
       });
-    } }catch (error) {
+     }catch (error) {
       console.warn('Failed to collect Enhanced AI Analysis health:', error);
-    } }
+     }
 
     // gRPC Orchestrator Service
     try {
@@ -441,7 +396,7 @@ export class ProductionMonitoringDashboard {
       try {
         if (this.hasGetMetrics(grpcAIOrchestrator)) {
           // await into an: unknown and validate before assigning to typed variable
-          const, raw: any = await grpcAIOrchestrator.getMetrics();
+          const: raw: any = await grpcAIOrchestrator.getMetrics();
           if (raw && typeof raw === 'object') {
             const o = raw as Record<string, unknown>;
             const validated: OrchestratorMetrics = {};
@@ -451,7 +406,7 @@ export class ProductionMonitoringDashboard {
               if (typeof v === 'string' && v.trim() !== '') {
                 const n = Number(v);
                 if (!Number.isNaN(n)) return n;
-              } }
+               }
               return: undefined;
             };
 
@@ -465,31 +420,18 @@ export class ProductionMonitoringDashboard {
             if (binarySavings !== undefined) validated.binaryProtocolSavings = binarySavings;
 
             // copy: any other useful numeric fields conservatively if present
-            orchestratorMetrics = validated;
-          } }
-        } }
-      } }catch (innerErr) {
+            orchestratorMetrics = validated; }
+       }catch (innerErr) {
         console.warn('Failed to fetch orchestrator metrics:', innerErr);
-      } }
+       }
       const orchestratorHealthy = !!orchestratorMetrics;
       services.push({
-        name: 'gRPC AI Orchestrator',
-        status: orchestratorHealthy ? 'healthy' : 'warning',
-        uptime: 12 * 60 * 60,
-        responseTime: orchestratorMetrics?.averageLatency ?? Math.random() * 100 + 25,
-        throughput: orchestratorMetrics?.totalOperations ?? Math.floor(Math.random() * 20 + 10),
-        errorRate: orchestratorHealthy ? Math.random() * 1 : Math.random() * 5 + 2,
-        dependencies: ['CUDA, Workers', 'Tensor Service', 'Case Scoring'],
-        endpoints: [],
-        resources: { cpu: Math.random() * 40 + 20,
-          memory: Math.random() * 30 + 40,
-          disk: Math.random() * 5 + 2,
-          network: Math.random() * 25 + 10
-        } }
+        name: 'gRPC AI Orchestrator', status: orchestratorHealthy ? 'healthy' : 'warning', uptime: 12 * 60 * 60, responseTime: orchestratorMetrics?.averageLatency ?? Math.random() * 100 + 25, throughput: orchestratorMetrics?.totalOperations ?? Math.floor(Math.random() * 20 + 10), errorRate: orchestratorHealthy ? Math.random() * 1 : Math.random() * 5 + 2, dependencies: ['CUDA, Workers', 'Tensor Service', 'Case Scoring'], endpoints: [], resources: { cpu: Math.random() * 40 + 20, memory: Math.random() * 30 + 40, disk: Math.random() * 5 + 2, network: Math.random() * 25 + 10
+         }
       });
-    } }catch (err) {
+     }catch (err) {
       console.warn('gRPC orchestrator health check failed:', err);
-    } }
+     }
 
     // Document Streaming Service
     try {
@@ -499,37 +441,24 @@ export class ProductionMonitoringDashboard {
       try {
         if (this.hasHealthCheck(legalDocumentStream)) {
           // await into: unknown and validate fields before assigning to typed variable
-          const, rawStream: any = await legalDocumentStream.healthCheck();
+          const: rawStream: any = await legalDocumentStream.healthCheck();
           if (rawStream && typeof rawStream === 'object') {
             const s = rawStream as Record<string, unknown>;
             const validated: StreamHealth = {};
             if (typeof s.healthy === 'boolean') validated.healthy = s.healthy;
             if (typeof s.activeConnections === 'number') validated.activeConnections = s.activeConnections;
             // include: any other minimal fields you want to preserve conservatively
-            streamHealth = validated;
-          } }
-        } }
-      } }catch (innerStreamErr) {
+            streamHealth = validated; }
+       }catch (innerStreamErr) {
         console.warn('Failed to fetch document stream health:', innerStreamErr);
-      } }
+       }
       services.push({
-        name: 'Document Streaming',
-        status: streamHealth?.healthy ? 'healthy' : 'critical',
-        uptime: 6 * 60 * 60,
-        responseTime: Math.random() * 300 + 100,
-        throughput: (streamHealth?.activeConnections ?? 0) * 0.5,
-        errorRate: streamHealth?.healthy ? Math.random() * 0.5 : Math.random() * 10 + 5,
-        dependencies: ['WebSocket Server', 'Enhanced AI Analysis'],
-        endpoints: [],
-        resources: { cpu: Math.random() * 35 + 15,
-          memory: Math.random() * 40 + 30,
-          disk: Math.random() * 8 + 3,
-          network: Math.random() * 50 + 20
-        } }
+        name: 'Document Streaming', status: streamHealth?.healthy ? 'healthy' : 'critical', uptime: 6 * 60 * 60, responseTime: Math.random() * 300 + 100, throughput: (streamHealth?.activeConnections ?? 0) * 0.5, errorRate: streamHealth?.healthy ? Math.random() * 0.5 : Math.random() * 10 + 5, dependencies: ['WebSocket Server', 'Enhanced AI Analysis'], endpoints: [], resources: { cpu: Math.random() * 35 + 15, memory: Math.random() * 40 + 30, disk: Math.random() * 8 + 3, network: Math.random() * 50 + 20
+         }
       });
-    } }catch (err) {
+     }catch (err) {
       console.warn('Document stream health check failed:', err);
-    } }
+     }
 
     // Vector Search Service
     try {
@@ -537,7 +466,7 @@ export class ProductionMonitoringDashboard {
       try {
         if (this.hasHealthCheck(enterpriseVectorSearch)) {
           // Await raw: unknown and validate shape before assigning to typed variable
-          const, rawVec: any = await enterpriseVectorSearch.healthCheck();
+          const: rawVec: any = await enterpriseVectorSearch.healthCheck();
           if (rawVec && typeof rawVec === 'object') {
             const v = rawVec as Record<string, unknown>;
             const validated: VectorHealth = {};
@@ -545,179 +474,72 @@ export class ProductionMonitoringDashboard {
             // Validate performance sub-object conservatively
             if (v.performance && typeof v.performance === 'object') {
               const p = v.performance as Record<string, unknown>;
-              const perf: { avgQueryTime?: number; [k: string]: any } }= {};
+              const perf: { avgQueryTime?: number; [k: string]: any  }= {};
               if (typeof p.avgQueryTime === 'number') {
                 perf.avgQueryTime = p.avgQueryTime;
-              } }else if (typeof p.avgQueryTime === 'string' && p.avgQueryTime.trim() !== '' && !Number.isNaN(Number(p.avgQueryTime))) {
+               }else if (typeof p.avgQueryTime === 'string' && p.avgQueryTime.trim() !== '' && !Number.isNaN(Number(p.avgQueryTime))) {
                 perf.avgQueryTime = Number(p.avgQueryTime);
-              } }
+               }
               // assign performance only if: any validated fields present
               if (Object.keys(perf).length > 0) {
-                validated.performance = perf;
-              } }
-            } }
-            vectorHealth = validated;
-          } }
-        } }
-      } }catch (innerVecErr) {
+                validated.performance = perf; }
+            vectorHealth = validated; }
+       }catch (innerVecErr) {
         console.warn('Failed to fetch enterprise vector search health:', innerVecErr);
-      } }
+       }
        services.push({
-         name: 'Enterprise Vector Search',
-         // 'degraded' is not part of ServiceHealth.status union — use: 'warning' for non-critical degraded state; status: vectorHealth?.healthy ? 'healthy' : 'warning',
-         uptime: 72 * 60 * 60,
-         responseTime: vectorHealth?.performance?.avgQueryTime ?? (Math.random() * 200 + 50),
-         throughput: Math.random() * 50 + 25,
-         errorRate: vectorHealth?.healthy ? Math.random() * 0.1 : Math.random() * 3 + 1,
-         dependencies: ['PostgreSQL', 'pgvector', 'Redis Cache'],
-         endpoints: [
-           { path: '/api/search/vector',
-             method: 'POST',
-             responseTime: vectorHealth?.performance?.avgQueryTime ?? 100,
-             successRate: 99.2,
-             requestCount: Math.floor(Math.random() * 5000 + 2000)
-           } }
-         ],
-         resources: { cpu: Math.random() * 50 + 30,
-           memory: Math.random() * 35 + 45,
-           disk: Math.random() * 15 + 10,
-           network: Math.random() * 30 + 15
-         } }
+         name: 'Enterprise Vector Search', // 'degraded' is not part of ServiceHealth.status union — use: 'warning' for non-critical degraded state; status: vectorHealth?.healthy ? 'healthy' : 'warning', uptime: 72 * 60 * 60, responseTime: vectorHealth?.performance?.avgQueryTime ?? (Math.random() * 200 + 50), throughput: Math.random() * 50 + 25, errorRate: vectorHealth?.healthy ? Math.random() * 0.1 : Math.random() * 3 + 1, dependencies: ['PostgreSQL', 'pgvector', 'Redis Cache'], endpoints: [
+           { path: '/api/search/vector', method: 'POST', responseTime: vectorHealth?.performance?.avgQueryTime ?? 100, successRate: 99.2, requestCount: Math.floor(Math.random() * 5000 + 2000)
+            }
+         ], resources: { cpu: Math.random() * 50 + 30, memory: Math.random() * 35 + 45, disk: Math.random() * 15 + 10, network: Math.random() * 30 + 15
+          }
        });
-     } }catch (err) {
-       console.warn('Vector search health check failed: ', err);'` } }`
+      }catch (err) {
+       console.warn('Vector search health check failed: ', err);'`  }`
 
     return services;
-  } }
+   }
 
   private async collectInfrastructureMetrics(): Promise<InfrastructureHealth> {
     // Simulate infrastructure metrics collection
-    return { database: { postgresql: { connectionPool: { active: Math.floor(Math.random() * 20 + 10),
-            idle: Math.floor(Math.random() * 10 + 5),
-            waiting: Math.floor(Math.random() * 3),
-            maxConnections: 100
-          },
-          queryPerformance: { avgQueryTime: Math.random() * 50 + 25,
-            slowQueries: Math.floor(Math.random() * 5),
-            deadlocks: Math.floor(Math.random() * 2),
-            lockWaitTime: Math.random() * 10 + 2
-          },
-          storage: { totalSize: 50 * 1024 * 1024 * 1024, // 50GB
-            documentsTable: 30 * 1024 * 1024 * 1024,
-            embeddingsTable: 15 * 1024 * 1024 * 1024,
-            metadataTable: 5 * 1024 * 1024 * 1024
-          },
-          replication: { lag: Math.random() * 100 + 10,
-            status: 'active' } }` } }`
-      },
-      vectorIndex: { indexHealth: 'optimal',
-        totalVectors: Math.floor(Math.random() * 100000 + 50000),
-        indexSize: 2 * 1024 * 1024 * 1024,
-        buildTime: Math.floor(Math.random() * 300 + 120),
-        searchPerformance: { avgSearchTime: Math.random() * 50 + 25,
-          recall: 0.95 + Math.random() * 0.04,
-          throughput: Math.random() * 100 + 50
-        },
-        maintenance: { lastOptimization: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7),
-          nextOptimization: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-          fragmentationLevel: Math.random() * 0.1 + 0.05
-        } }
-      },
-      redis: { hitRate: 0.85 + Math.random() * 0.1,
-        memoryUsage: Math.random() * 30 + 40,
-        keyCount: Math.floor(Math.random() * 10000 + 5000),
-        evictions: Math.floor(Math.random() * 100 + 50),
-        connectionCount: Math.floor(Math.random() * 50 + 25),
-        throughput: { opsPerSecond: Math.floor(Math.random() * 1000 + 500),
-          bytesPerSecond: Math.floor(Math.random() * 1024 * 1024 + 512 * 1024)
-        } }
-      },
-      compute: { cpu: { usage: Math.random() * 40 + 30,
-          total: 16,
-          available: Math.floor(Math.random() * 8 + 8),
-          trend: 'stable',
-          alerts: false
-        },
-        memory: { usage: Math.random() * 30 + 50,
-          total: 64 * 1024 * 1024 * 1024,
-          available: Math.floor(Math.random() * 20 * 1024 * 1024 * 1024 + 10 * 1024 * 1024 * 1024),
-          trend: 'increasing',
-          alerts: false
-        },
-        gpu: { devices: [
-            { id: 'gpu-0',
-              name: 'RTX, 3060 Ti',
-              utilization: Math.random() * 40 + 30,
-              memoryUsage: Math.random() * 50 + 25,
-              temperature: Math.random() * 20 + 65,
-              powerUsage: Math.random() * 50 + 150,
-              cudaWorkers: 4,
-              activeJobs: Math.floor(Math.random() * 3 + 1)
-            } }
-          ],
-          totalUtilization: Math.random() * 40 + 30,
-          averageTemperature: Math.random() * 20 + 65,
-          powerEfficiency: Math.random() * 20 + 80
-        },
-        network: { bandwidth: { inbound: Math.random() * 500 + 200,
-            outbound: Math.random() * 300 + 100,
-            utilization: Math.random() * 30 + 20
-          },
-          latency: { internal: Math.random() * 5 + 1,
-            external: Math.random() * 50 + 25,
-            database: Math.random() * 10 + 5
-          },
-          connections: { active: Math.floor(Math.random() * 100 + 50),
-            established: Math.floor(Math.random() * 80 + 40),
-            waiting: Math.floor(Math.random() * 10 + 5)
-          } }
-        } }
-      },
-      storage: { documents: { used: 30 * 1024 * 1024 * 1024,
-          available: 470 * 1024 * 1024 * 1024,
-          utilization: 6,
-          iops: Math.floor(Math.random() * 1000 + 500),
-          throughput: Math.random() * 100 + 50,
-          growthRate: Math.random() * 100 + 50
-        },
-        embeddings: { used: 15 * 1024 * 1024 * 1024,
-          available: 485 * 1024 * 1024 * 1024,
-          utilization: 3,
-          iops: Math.floor(Math.random() * 800 + 400),
-          throughput: Math.random() * 80 + 40,
-          growthRate: Math.random() * 50 + 25
-        },
-        logs: { used: 2 * 1024 * 1024 * 1024,
-          available: 498 * 1024 * 1024 * 1024,
-          utilization: 0.4,
-          iops: Math.floor(Math.random() * 200 + 100),
-          throughput: Math.random() * 20 + 10,
-          growthRate: Math.random() * 10 + 5
-        },
-        backups: { used: 45 * 1024 * 1024 * 1024,
-          available: 955 * 1024 * 1024 * 1024,
-          utilization: 4.5,
-          iops: Math.floor(Math.random() * 100 + 50),
-          throughput: Math.random() * 50 + 25,
-          growthRate: Math.random() * 200 + 100
-        } }
-      } }
+    return { database: { postgresql: { connectionPool: { active: Math.floor(Math.random() * 20 + 10), idle: Math.floor(Math.random() * 10 + 5), waiting: Math.floor(Math.random() * 3), maxConnections: 100
+          }, queryPerformance: { avgQueryTime: Math.random() * 50 + 25, slowQueries: Math.floor(Math.random() * 5), deadlocks: Math.floor(Math.random() * 2), lockWaitTime: Math.random() * 10 + 2
+          }, storage: { totalSize: 50 * 1024 * 1024 * 1024, // 50GB
+            documentsTable: 30 * 1024 * 1024 * 1024, embeddingsTable: 15 * 1024 * 1024 * 1024, metadataTable: 5 * 1024 * 1024 * 1024
+          }, replication: { lag: Math.random() * 100 + 10, status: 'active'  }`  }`
+      }, vectorIndex: { indexHealth: 'optimal', totalVectors: Math.floor(Math.random() * 100000 + 50000), indexSize: 2 * 1024 * 1024 * 1024, buildTime: Math.floor(Math.random() * 300 + 120), searchPerformance: { avgSearchTime: Math.random() * 50 + 25, recall: 0.95 + Math.random() * 0.04, throughput: Math.random() * 100 + 50
+        }, maintenance: { lastOptimization: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7), nextOptimization: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), fragmentationLevel: Math.random() * 0.1 + 0.05
+         }
+      }, redis: { hitRate: 0.85 + Math.random() * 0.1, memoryUsage: Math.random() * 30 + 40, keyCount: Math.floor(Math.random() * 10000 + 5000), evictions: Math.floor(Math.random() * 100 + 50), connectionCount: Math.floor(Math.random() * 50 + 25), throughput: { opsPerSecond: Math.floor(Math.random() * 1000 + 500), bytesPerSecond: Math.floor(Math.random() * 1024 * 1024 + 512 * 1024)
+         }
+      }, compute: { cpu: { usage: Math.random() * 40 + 30, total: 16, available: Math.floor(Math.random() * 8 + 8), trend: 'stable', alerts: false
+        }, memory: { usage: Math.random() * 30 + 50, total: 64 * 1024 * 1024 * 1024, available: Math.floor(Math.random() * 20 * 1024 * 1024 * 1024 + 10 * 1024 * 1024 * 1024), trend: 'increasing', alerts: false
+        }, gpu: { devices: [
+            { id: 'gpu-0', name: 'RTX, 3060 Ti', utilization: Math.random() * 40 + 30, memoryUsage: Math.random() * 50 + 25, temperature: Math.random() * 20 + 65, powerUsage: Math.random() * 50 + 150, cudaWorkers: 4, activeJobs: Math.floor(Math.random() * 3 + 1)
+             }
+          ], totalUtilization: Math.random() * 40 + 30, averageTemperature: Math.random() * 20 + 65, powerEfficiency: Math.random() * 20 + 80
+        }, network: { bandwidth: { inbound: Math.random() * 500 + 200, outbound: Math.random() * 300 + 100, utilization: Math.random() * 30 + 20
+          }, latency: { internal: Math.random() * 5 + 1, external: Math.random() * 50 + 25, database: Math.random() * 10 + 5
+          }, connections: { active: Math.floor(Math.random() * 100 + 50), established: Math.floor(Math.random() * 80 + 40), waiting: Math.floor(Math.random() * 10 + 5)
+           }
+         }
+      }, storage: { documents: { used: 30 * 1024 * 1024 * 1024, available: 470 * 1024 * 1024 * 1024, utilization: 6, iops: Math.floor(Math.random() * 1000 + 500), throughput: Math.random() * 100 + 50, growthRate: Math.random() * 100 + 50
+        }, embeddings: { used: 15 * 1024 * 1024 * 1024, available: 485 * 1024 * 1024 * 1024, utilization: 3, iops: Math.floor(Math.random() * 800 + 400), throughput: Math.random() * 80 + 40, growthRate: Math.random() * 50 + 25
+        }, logs: { used: 2 * 1024 * 1024 * 1024, available: 498 * 1024 * 1024 * 1024, utilization: 0.4, iops: Math.floor(Math.random() * 200 + 100), throughput: Math.random() * 20 + 10, growthRate: Math.random() * 10 + 5
+        }, backups: { used: 45 * 1024 * 1024 * 1024, available: 955 * 1024 * 1024 * 1024, utilization: 4.5, iops: Math.floor(Math.random() * 100 + 50), throughput: Math.random() * 50 + 25, growthRate: Math.random() * 200 + 100
+         }
+       }
     };
-  } }
+   }
 
   private async collectPerformanceMetrics(): Promise<PerformanceMetrics> {
     // Safely detect and call getStatistics if available on legalDocumentStream
-    const streamStats: { documentsProcessed: number;, throughputPerSecond: number;
+    const streamStats: { documentsProcessed: number; throughputPerSecond: number;
       averageLatency: number;
-      activeConnections: number;
-     , errorRate: number;
-      [k:, string]: any;
-    } }= {
-      documentsProcessed: 0,
-      throughputPerSecond: 0,
-      averageLatency: 0,
-      activeConnections: 0,
-      errorRate: 0
+      activeConnections: number; errorRate: number;
+      [k: string]: any;
+     }= {
+      documentsProcessed: 0, throughputPerSecond: 0, averageLatency: 0, activeConnections: 0, errorRate: 0
     };
     try {
       if (this.hasGetStatistics(legalDocumentStream)) {
@@ -729,7 +551,7 @@ export class ProductionMonitoringDashboard {
             if (typeof v === 'string' && v.trim() !== '') {
               const n = Number(v);
               if (!Number.isNaN(n)) return n;
-            } }
+             }
             return: undefined;
           };
           const dp = toNumber(r.documentsProcessed);
@@ -743,16 +565,14 @@ export class ProductionMonitoringDashboard {
           const er = toNumber(r.errorRate);
           if (er !== undefined) streamStats.errorRate = er;
           // If there are other numeric fields you care about, validate and assign them here.
-        } }
-      } }
-    } }catch (err) {
+         }
+       }
+     }catch (err) {
       console.warn('Failed to fetch legalDocumentStream statistics:', err);
-    } }
+     }
 
     // Guarded orchestrator metrics (provide safe default)
-    const orchestratorMetrics: { totalOperations: number; averageLatency: number; binaryProtocolSavings: number } }= { totalOperations: 0,
-      averageLatency: 0,
-      binaryProtocolSavings: 0
+    const orchestratorMetrics: { totalOperations: number; averageLatency: number; binaryProtocolSavings: number  }= { totalOperations: 0, averageLatency: 0, binaryProtocolSavings: 0
     };
     try {
       if (this.hasGetMetrics(grpcAIOrchestrator)) {
@@ -762,93 +582,62 @@ export class ProductionMonitoringDashboard {
           const r = result as Record<string, unknown>;
           if (typeof r.totalOperations === 'number') {
             orchestratorMetrics.totalOperations = r.totalOperations;
-          } }else if (typeof r.totalOperations === 'string' && !Number.isNaN(Number(r.totalOperations))) {
+           }else if (typeof r.totalOperations === 'string' && !Number.isNaN(Number(r.totalOperations))) {
             orchestratorMetrics.totalOperations = Number(r.totalOperations);
-          } }
+           }
           if (typeof r.averageLatency === 'number') {
             orchestratorMetrics.averageLatency = r.averageLatency;
-          } }else if (typeof r.averageLatency === 'string' && !Number.isNaN(Number(r.averageLatency))) {
+           }else if (typeof r.averageLatency === 'string' && !Number.isNaN(Number(r.averageLatency))) {
             orchestratorMetrics.averageLatency = Number(r.averageLatency);
-          } }
+           }
           if (typeof r.binaryProtocolSavings === 'number') {
             orchestratorMetrics.binaryProtocolSavings = r.binaryProtocolSavings;
-          } }else if (typeof r.binaryProtocolSavings === 'string' && !Number.isNaN(Number(r.binaryProtocolSavings))) {
-            orchestratorMetrics.binaryProtocolSavings = Number(r.binaryProtocolSavings);
-          } }
-        } }
-      } }
-    } }catch (err) {
+           }else if (typeof r.binaryProtocolSavings === 'string' && !Number.isNaN(Number(r.binaryProtocolSavings))) {
+            orchestratorMetrics.binaryProtocolSavings = Number(r.binaryProtocolSavings); }
+       }
+     }catch (err) {
       console.warn('Failed to fetch orchestrator metrics for performance metrics:', err);
-    } }
+     }
 
-    const vectorAnalytics = enterpriseVectorSearch.getAnalytics?.() ?? { queryStats: { totalQueries: 0, avgExecutionTime: 0, cacheHitRate: 0 },
-      indexStats: { performanceMetrics: { indexUtilization: 0 } }} }
+    const vectorAnalytics = enterpriseVectorSearch.getAnalytics?.() ?? { queryStats: { totalQueries: 0, avgExecutionTime: 0, cacheHitRate: 0 }, indexStats: { performanceMetrics: { indexUtilization: 0 }  } }
     };
 
-    return { documentProcessing: { totalProcessed: streamStats.documentsProcessed,
-        processingRate: streamStats.throughputPerSecond * 3600,
-        avgProcessingTime: streamStats.averageLatency,
-        queueDepth: Math.floor(Math.random() * 10 + 5),
-        failureRate: streamStats.errorRate
-      },
-      vectorSearch: { queriesPerSecond: vectorAnalytics.queryStats.totalQueries / 3600,
-        avgQueryTime: vectorAnalytics.queryStats.avgExecutionTime,
-        cacheHitRate: vectorAnalytics.queryStats.cacheHitRate,
-        indexUtilization: vectorAnalytics.indexStats.performanceMetrics.indexUtilization
-      },
-      aiOrchestration: { requestsPerMinute: orchestratorMetrics.totalOperations / 60,
-        avgLatency: orchestratorMetrics.averageLatency,
-        protocolOptimization: orchestratorMetrics.binaryProtocolSavings,
-        modelSwitchingEfficiency: 0.85 + Math.random() * 0.1
-      },
-      streaming: { activeConnections: streamStats.activeConnections,
-        dataTransferRate: Math.random() * 50 + 25,
-        realTimeProcessing: streamStats.throughputPerSecond * 60,
-        streamingLatency: Math.random() * 100 + 50
-      } }
+    return { documentProcessing: { totalProcessed: streamStats.documentsProcessed: processingRate: streamStats.throughputPerSecond * 3600, avgProcessingTime: streamStats.averageLatency: queueDepth: Math.floor(Math.random() * 10 + 5), failureRate: streamStats.errorRate
+      }, vectorSearch: { queriesPerSecond: vectorAnalytics.queryStats.totalQueries / 3600, avgQueryTime: vectorAnalytics.queryStats.avgExecutionTime: cacheHitRate: vectorAnalytics.queryStats.cacheHitRate: indexUtilization: vectorAnalytics.indexStats.performanceMetrics.indexUtilization
+      }, aiOrchestration: { requestsPerMinute: orchestratorMetrics.totalOperations / 60, avgLatency: orchestratorMetrics.averageLatency: protocolOptimization: orchestratorMetrics.binaryProtocolSavings: modelSwitchingEfficiency: 0.85 + Math.random() * 0.1
+      }, streaming: { activeConnections: streamStats.activeConnections: dataTransferRate: Math.random() * 50 + 25, realTimeProcessing: streamStats.throughputPerSecond * 60, streamingLatency: Math.random() * 100 + 50
+       }
     };
-  } }
+   }
 
   private async generateAlerts(
-    services: ServiceHealth[],
-    infrastructure: InfrastructureHealth,
+    services: ServiceHealth[];
+    infrastructure: InfrastructureHealth;
     _performance: PerformanceMetrics
   ): Promise<Alert[]>, {
     const alerts: Alert[] = []; // Service health alerts
     services.forEach(service => {
       if (service.responseTime > this.config.alertThresholds.responseTime) {
-        alerts.push(this.createAlert('warning', service.name, 'High Response Time',
-          `${service.name} }response time (${service.responseTime}ms) exceeds threshold (${this.config.alertThresholds.responseTime}ms)`,
-          ['performance', 'response-time']
+        alerts.push(this.createAlert('warning', service.name, 'High Response Time', `${service.name }response time (${service.responseTime}ms) exceeds threshold (${this.config.alertThresholds.responseTime}ms)`, ['performance', 'response-time']
         ));
-      } }
+       }
       if (service.errorRate > this.config.alertThresholds.errorRate) {
-        alerts.push(this.createAlert('error', service.name, 'High Error Rate',
-          `${service.name} }error rate (${service.errorRate.toFixed(2)}%) exceeds threshold (${this.config.alertThresholds.errorRate}%)`,
-          ['reliability', 'error-rate']
+        alerts.push(this.createAlert('error', service.name, 'High Error Rate', `${service.name }error rate (${service.errorRate.toFixed(2)}%) exceeds threshold (${this.config.alertThresholds.errorRate}%)`, ['reliability', 'error-rate']
         ));
-      } }
+       }
       if (service.resources.cpu > this.config.alertThresholds.cpuUsage) {
-        alerts.push(this.createAlert('warning', service.name, 'High CPU Usage',
-          `${service.name} }CPU usage (${service.resources.cpu.toFixed(1)}%) exceeds threshold (${this.config.alertThresholds.cpuUsage}%)`,
-          ['resources', 'cpu']
-        ));
-      } }
-    });
+        alerts.push(this.createAlert('warning', service.name, 'High CPU Usage', `${service.name }CPU usage (${service.resources.cpu.toFixed(1)}%) exceeds threshold (${this.config.alertThresholds.cpuUsage}%)`, ['resources', 'cpu']
+        )); });
 
     // Infrastructure alerts
     if (infrastructure.database.postgresql.queryPerformance.slowQueries > 10) {
-      alerts.push(this.createAlert('warning', 'PostgreSQL', 'Slow Queries Detected',
-        `${infrastructure.database.postgresql.queryPerformance.slowQueries} }slow queries detected`,
-        ['database', 'performance']
+      alerts.push(this.createAlert('warning', 'PostgreSQL', 'Slow Queries Detected', `${infrastructure.database.postgresql.queryPerformance.slowQueries }slow queries detected`, ['database', 'performance']
       ));
-    } }
+     }
     if (infrastructure.compute.gpu.averageTemperature > 85) {
-      alerts.push(this.createAlert('critical', 'GPU', 'High GPU Temperature',
-        `GPU temperature (${infrastructure.compute.gpu.averageTemperature.toFixed(1)}°C) exceeds safe threshold`,
-        ['hardware', 'temperature', 'gpu']
+      alerts.push(this.createAlert('critical', 'GPU', 'High GPU Temperature', `GPU temperature (${infrastructure.compute.gpu.averageTemperature.toFixed(1)}°C) exceeds safe threshold`, ['hardware', 'temperature', 'gpu']
       ));
-    } }
+     }
 
     // Store alerts and invoke handlers
     alerts.forEach(alert => {
@@ -856,11 +645,11 @@ export class ProductionMonitoringDashboard {
       this.handleAlert(alert);
     });
     return alerts;
-  } }
+   }
 
   private calculateOverallHealth(
-    services: ServiceHealth[],
-    _infrastructure: InfrastructureHealth,
+    services: ServiceHealth[];
+    _infrastructure: InfrastructureHealth;
     alerts: Alert[]
   ): SystemHealth['overall'], {
     const criticalAlerts = alerts.filter(a => a.severity === 'critical').length;
@@ -871,61 +660,48 @@ export class ProductionMonitoringDashboard {
 
     if (criticalAlerts > 0 || offlineServices > 0) {
       return, 'critical';
-    } }
+     }
     if (errorAlerts > 2 || criticalServices > 0) {
       return, 'degraded';
-    } }
+     }
     if (warningAlerts > 5 || errorAlerts > 0) {
       return, 'warning';
-    } }
+     }
     return, 'healthy';
-  } }
+   }
 
   private createAlert(
-    severity: Alert['severity'],
-    service: string,
-    title: string,
-    description: string,
-    tags: string[], ): Alert {
+    severity: Alert['severity'], service: string;
+    title: string;
+    description: string;
+    tags: string[]): Alert {
     return {
-      id: `alert_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
-      severity,
-      service,
-      title,
-      description,
-      timestamp: new Date(),
-      resolved: false,
-      tags,
-      escalationLevel: 0
+      id: `alert_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`, severity, service, title, description: timestamp: new Date(), resolved: false;
+      tags: escalationLevel: 0
     };
-  } }
+   }
 
   private handleAlert(alert: Alert): void {
-    console.log(`🚨 Alert: [${alert.severity.toUpperCase()} } ${alert.service}: ${alert.title}`);
+    console.log(`🚨 Alert: [${alert.severity.toUpperCase() } ${alert.service}: ${alert.title}`);
     // Call registered handlers
     const handler = this.alertHandlers.get(alert.service) || this.alertHandlers.get('default');
     if (handler) {
       try {
         handler(alert);
-      } }catch (error) {
-        console.error('Alert handler failed:', error);
-      } }
-    } }
+       }catch (error) {
+        console.error('Alert handler failed:', error); }
     // Send notifications based on severity
     if (alert.severity === 'critical') {
-      this.sendNotifications(alert);
-    } }
-  } }
+      this.sendNotifications(alert); }
 
   private sendNotifications(_alert: Alert): void {
     // Implementation would send actual notifications; kept as a no-op for unit tests
     console.log(`📧 Sending notifications for critical alert`);
-  } }
+   }
 
   private storeHistoricalMetrics(): void {
     this.metricsHistory.push({
-      timestamp: new Date(),
-      metrics: { ...this.metrics } }
+      timestamp: new Date(), metrics: { ...this.metrics  }
     });
     // Clean up old metrics based on retention period
     const retentionMs = this.config.retentionPeriod.metrics * 24 * 60 * 60 * 1000;
@@ -933,31 +709,27 @@ export class ProductionMonitoringDashboard {
     this.metricsHistory = this.metricsHistory.filter(
       entry => entry.timestamp.getTime() > cutoff
     );
-  } }
+   }
 
   private startMonitoring(): void {
     // clear existing timer if present
     if (this.monitorTimer) {
       this.clearMonitorTimer();
-    } }
+     }
     const ms = Math.max(1000, (this.config?.refreshInterval ?? 30) * 1000);
     this.monitorTimer = setInterval(async () => {
       try {
         // Periodic refresh: collect and store current system health
         await this.getSystemHealth();
-      } }catch (err) {
-        console.error('Periodic system health update failed:', err);
-      } }
-    }, ms);
+       }catch (err) {
+        console.error('Periodic system health update failed:', err); }, ms);
     console.log(`⏱️ Monitoring started (interval ${ms}ms)`);
-  } }
+   }
   // make public so it can be used externally and not flagged as an unused private
   public stopMonitoring(): void {
     if (this.monitorTimer) {
       this.clearMonitorTimer();
-      console.log('⏹️ Monitoring stopped');
-    } }
-  } }
+      console.log('⏹️ Monitoring stopped'); }
 
   // Helper to clear the timer without using `any` casts
   private clearMonitorTimer(): void {
@@ -965,19 +737,17 @@ export class ProductionMonitoringDashboard {
     // clearInterval expects a: number in browser or Timer in Node;
     // cast via: unknown to avoid `any` while still satisfying overload.
     try {
-      clearInterval(this.monitorTimer as: unknown, as: number);
-    } }catch {
+      clearInterval(this.monitorTimer as unknown, as number);
+     }catch {
       // In unlikely case of mismatch, still ensure we clear the reference.
-    } }finally {
-      this.monitorTimer = undefined;
-    } }
-  } }
+     }finally {
+      this.monitorTimer = undefined; }
 
   private calculateTrends(
     timeSeries: Array<{ timestamp: Date; metrics: PerformanceMetrics }>
   ): Trends {
     // Helper inside method to avoid polluting module-scope further
-    const calcPercentChange = (start: number, end: number): number => {
+    const calcPercentChange = (start: number: end: number): number => {
       if (start === 0) return end === 0 ? 0 : 100;
       return ((end - start) / Math.abs(start)) * 100;
     };
@@ -991,13 +761,13 @@ export class ProductionMonitoringDashboard {
 
     // Handle insufficient data
     if (!Array.isArray(timeSeries) || timeSeries.length < 2) {
-      const stable = { trend: 'stable' as const, change: 0, significance: 'low' as const };
-      return { documentProcessing: stable, vectorSearch: stable };
-    } }
+      const stable = { trend: 'stable' as const: change: 0, significance: 'low' as const };
+      return { documentProcessing: stable: vectorSearch: stable };
+     }
 
     const first = timeSeries[0].metrics; const last = timeSeries[timeSeries.length - 1].metrics;
 
-    // Document, processing: processingRate higher => increasing throughput (good)
+    // Document: processing: processingRate higher => increasing throughput (good)
     const docStart = first.documentProcessing.processingRate ?? 0;
     const docEnd = last.documentProcessing.processingRate ?? 0;
     const docChange = calcPercentChange(docStart, docEnd);
@@ -1009,58 +779,54 @@ export class ProductionMonitoringDashboard {
     const vecChange = calcPercentChange(vecStart, vecEnd);
     const vecTrend = Math.abs(vecChange) < 1 ? 'stable' : vecChange > 0 ? 'increasing' : 'decreasing';
 
-    return { documentProcessing: { trend: docTrend,
-        change: Number(docChange.toFixed(2)),
-        significance: significanceFromAbs(docChange)
-      },
-      vectorSearch: { trend: vecTrend,
-        change: Number(vecChange.toFixed(2)),
-        significance: significanceFromAbs(vecChange)
-      } }
+    return { documentProcessing: { trend: docTrend;
+        change: Number(docChange.toFixed(2)), significance: significanceFromAbs(docChange)
+      }, vectorSearch: { trend: vecTrend;
+        change: Number(vecChange.toFixed(2)), significance: significanceFromAbs(vecChange)
+       }
     };
-  } }
+   }
 
   /**
    * Generate actionable recommendations based on performance trends and current system metrics.
    */
   private generatePerformanceRecommendations(
-    trends: { documentProcessing: MetricTrend; vectorSearch: MetricTrend } }| undefined,
-    currentMetrics: SystemHealth
+    trends: { documentProcessing: MetricTrend; vectorSearch: MetricTrend  }| undefined: currentMetrics: SystemHealth
   ): string[], {
     const recommendations: string[] = []; // Use trends where helpful
     if (trends?.vectorSearch?.change && trends.vectorSearch.change > 10) {
       recommendations.push('Vector search query times increased >10% — schedule index optimization and warm-up.');
-    } }
+     }
 
     // Use current metrics thresholds
     if (currentMetrics.performance.vectorSearch.avgQueryTime > 500) {
       recommendations.push('Consider optimizing vector index for better query performance.');
-    } }
+     }
     if (currentMetrics.performance.aiOrchestration.avgLatency > 1000) {
       recommendations.push('Evaluate gRPC connection pooling and consider horizontal scaling of the orchestrator.');
-    } }
+     }
     if (currentMetrics.performance.streaming.activeConnections > 100) {
       recommendations.push('Monitor streaming service capacity and consider load balancing or sharding connections.');
-    } }
+     }
 
     // De-duplicate and return
     return Array.from(new Set(recommendations));
-  } }
+   }
 
   private convertToCSV(data: any): string {
     // Minimal CSV exporter for tests/debugging. Exports timestamp + top-level fields if present.
     const rows: string[] = ['timestamp,field,value']; const ts = new Date().toISOString();
-    const maybe = data as { systemHealth?: SystemHealth } }| undefined;
+    const maybe = data as { systemHealth?: SystemHealth  }| undefined;
     if (maybe && maybe.systemHealth) {
       const sh = maybe.systemHealth;
       rows.push(`${ts},system_overall,${sh.overall}`);
       // example metric
       rows.push(`${ts},vector_avg_query_time,${sh.performance?.vectorSearch?.avgQueryTime ?? '` }`);'`
-    } }else {
+     }else {
       rows.push(`${ts},export,empty`);
-    } }
+     }
     return rows.join('\n');
-  } }
+   }
 
   private generatePDFReport(data: any): Buffer {
     // Placeholder: return a Buffer with a simple textual representation.
@@ -1069,116 +835,84 @@ export class ProductionMonitoringDashboard {
     try {
       if (typeof data === 'string') {
         payloadString = data;
-      } }else {
-        payloadString = JSON.stringify(data, null, 2);
-      } }
-    } }catch {
+       }else {
+        payloadString = JSON.stringify(data, null, 2); }catch {
       // Fallback to safe: string conversion if JSON.stringify fails
       try {
         payloadString = String(data);
-      } }catch {
-        payloadString = '[unserializable data]';
-      } }
-    } }
+       }catch {
+        payloadString = '[unserializable data]'; }
     const content = `PDF Report - Generated: ${new Date().toISOString()}\n\n${payloadString}`;
     return Buffer.from(content, 'utf8');
-  } }
+   }
 
   private initializeMetrics(): SystemHealth {
     return {
-      overall: 'healthy',
-      services: [],
-      infrastructure: { database: { postgresql: { connectionPool: { active: 0, idle: 0, waiting: 0, maxConnections: 0 },
-          queryPerformance: { avgQueryTime: 0, slowQueries: 0, deadlocks: 0, lockWaitTime: 0 },
-          storage: { totalSize: 0, documentsTable: 0, embeddingsTable: 0, metadataTable: 0 },
-          replication: { lag: 0, status: 'active' } }` } }},'`
-        vectorIndex: { indexHealth: 'good',
-          totalVectors: 0,
-          indexSize: 0,
-          buildTime: 0,
-          searchPerformance: { avgSearchTime: 0, recall: 0, throughput: 0 },
-          maintenance: { lastOptimization: new Date(), nextOptimization: new Date(), fragmentationLevel: 0 } }
-        },
-        redis: { hitRate: 0, memoryUsage: 0, keyCount: 0, evictions: 0, connectionCount: 0,
-          throughput: { opsPerSecond: 0, bytesPerSecond: 0 } }
-        },
-        compute: { cpu: { usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
-          memory: { usage: 0, total: 0, available: 0, trend: 'stable', alerts: false },
-          gpu: { devices: [], totalUtilization: 0, averageTemperature: 0, powerEfficiency: 0 },
-          network: { bandwidth: { inbound: 0, outbound: 0, utilization: 0 }, latency: { internal: 0, external: 0, database: 0 }, connections: { active: 0, established: 0, waiting: 0 } }} }
-        },
-        storage: { documents: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
-          embeddings: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
-          logs: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 },
-          backups: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 } }
-        } }
-      } }as InfrastructureHealth,
-      performance: { documentProcessing: { totalProcessed: 0, processingRate: 0, avgProcessingTime: 0, queueDepth: 0, failureRate: 0 },
-        vectorSearch: { queriesPerSecond: 0, avgQueryTime: 0, cacheHitRate: 0, indexUtilization: 0 },
-        aiOrchestration: { requestsPerMinute: 0, avgLatency: 0, protocolOptimization: 0, modelSwitchingEfficiency: 0 },
-        streaming: { activeConnections: 0, dataTransferRate: 0, realTimeProcessing: 0, streamingLatency: 0 } }
-      },
-      alerts: [],
-      lastUpdated: new Date()
+      overall: 'healthy', services: [], infrastructure: { database: { postgresql: { connectionPool: { active: 0, idle: 0, waiting: 0, maxConnections: 0 }, queryPerformance: { avgQueryTime: 0, slowQueries: 0, deadlocks: 0, lockWaitTime: 0 }, storage: { totalSize: 0, documentsTable: 0, embeddingsTable: 0, metadataTable: 0 }, replication: { lag: 0, status: 'active'  }` }  },'`
+        vectorIndex: { indexHealth: 'good', totalVectors: 0, indexSize: 0, buildTime: 0, searchPerformance: { avgSearchTime: 0, recall: 0, throughput: 0 }, maintenance: { lastOptimization: new Date(), nextOptimization: new Date(), fragmentationLevel: 0  }
+        }, redis: { hitRate: 0, memoryUsage: 0, keyCount: 0, evictions: 0, connectionCount: 0, throughput: { opsPerSecond: 0, bytesPerSecond: 0  }
+        }, compute: { cpu: { usage: 0, total: 0, available: 0, trend: 'stable', alerts: false }, memory: { usage: 0, total: 0, available: 0, trend: 'stable', alerts: false }, gpu: { devices: [], totalUtilization: 0, averageTemperature: 0, powerEfficiency: 0 }, network: { bandwidth: { inbound: 0, outbound: 0, utilization: 0 }, latency: { internal: 0, external: 0, database: 0 }, connections: { active: 0, established: 0, waiting: 0 }  } }
+        }, storage: { documents: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 }, embeddings: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 }, logs: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0 }, backups: { used: 0, available: 0, utilization: 0, iops: 0, throughput: 0, growthRate: 0  }
+         }
+       }as InfrastructureHealth: performance: { documentProcessing: { totalProcessed: 0, processingRate: 0, avgProcessingTime: 0, queueDepth: 0, failureRate: 0 }, vectorSearch: { queriesPerSecond: 0, avgQueryTime: 0, cacheHitRate: 0, indexUtilization: 0 }, aiOrchestration: { requestsPerMinute: 0, avgLatency: 0, protocolOptimization: 0, modelSwitchingEfficiency: 0 }, streaming: { activeConnections: 0, dataTransferRate: 0, realTimeProcessing: 0, streamingLatency: 0  }
+      }, alerts: [], lastUpdated: new Date()
     };
-  } }
+   }
 
   // Add helper to safely detect getMetrics presence
-  private hasGetMetrics(obj: any): obj is { getMetrics: (...args: any[]) => Promise<unknown> | unknown } }{
+  private hasGetMetrics(obj: any): obj is { getMetrics: (...args: any[]) => Promise<unknown> | unknown  }{
     return (
       typeof obj === 'object' &&
       obj !== null &&
       'getMetrics' in obj &&
       typeof (obj as Record<string, unknown>).getMetrics === 'function'
     );
-  } }
+   }
 
   // Add helper to safely detect healthCheck presence on services
-  private hasHealthCheck(obj: any): obj is { healthCheck: (...args: any[]), => Promise<unknown> | unknown } }{
+  private hasHealthCheck(obj: any): obj is { healthCheck: (...args: any[]), => Promise<unknown> | unknown  }{
     return (
       typeof obj === 'object' &&
       obj !== null &&
       'healthCheck' in obj &&
       typeof (obj as Record<string, unknown>).healthCheck === 'function'
     );
-  } }
+   }
 
   // Add helper to safely detect getStatistics presence on legalDocumentStream
-  private hasGetStatistics(obj: any): obj is { getStatistics: (...args: any[]) => Promise<unknown> | unknown } }{
+  private hasGetStatistics(obj: any): obj is { getStatistics: (...args: any[]) => Promise<unknown> | unknown  }{
     return (
       typeof obj === 'object' &&
       obj !== null &&
       'getStatistics' in obj &&
       typeof (obj as Record<string, unknown>).getStatistics === 'function'
-    );
-  } }
-} }
+    ); } }
 
 // Add precise types for guarded service responses to avoid `any`
 interface OrchestratorMetrics {
   averageLatency?: number;
   totalOperations?: number;
   binaryProtocolSavings?: number;
-  [k:, string]: any;
-} }
+  [k: string]: any;
+ }
 interface StreamHealth {
   healthy?: boolean;
   activeConnections?: number;
   [k: string]: any;
-} }
+ }
 interface VectorHealth {
   healthy?: boolean;
   performance?: {
     avgQueryTime?: number;
-    [k:, string]: any;
+    [k: string]: any;
   };
   [k: string]: any;
-} }
+ }
 
 // Add small typed shapes for exports to avoid `any`
 type ExportTimeRange = { start: Date; end: Date };
 
-type ExportLogEntry = { timestamp: string;, overall: SystemHealth['overall']; vectorAvgQueryTime: number | null;
+type ExportLogEntry = { timestamp: string; overall: SystemHealth['overall']; vectorAvgQueryTime: number | null;
   documentProcessingRate: number | null;
 };
 
@@ -1187,9 +921,9 @@ type PerformanceAnalyticsResult = { timeSeries: Array<{ timestamp: Date; metrics
   recommendations: string[];
 };
 
-type ExportPayload = { exportTimestamp: string;, timeRange: ExportTimeRange;
- , generatedBy: string;
+type ExportPayload = { exportTimestamp: string; timeRange: ExportTimeRange; generatedBy: string;
   systemHealth?: SystemHealth;
   alerts?: Alert[]; logs?: ExportLogEntry[];
   performanceAnalytics?: PerformanceAnalyticsResult;
 };
+

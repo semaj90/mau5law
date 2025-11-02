@@ -1,14 +1,14 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * Llama.cpp + Ollama Integration Service
  * Replaces vLLM with native Windows-compatible stack
  * Optimized for RTX, 3060 with FlashAttention2 and gemma3 mohf16-q4_k_m.gguf
  */
-import { writable, derived } }from 'svelte/store'; // Removed: 'type Writable'
-import { getOllamaEndpoint } }from '$lib/utils/api-endpoints'; // Import the new utility function
+import { writable, derived  } from 'svelte/store'; // Removed: 'type Writable'
+import { getOllamaEndpoint  } from '$lib/utils/api-endpoints'; // Import the new utility function
 
 // Configuration Interfaces
-export interface OllamaConfig { endpoint: string;, model: string;
+export interface OllamaConfig { endpoint: string; model: string;
   keepAlive: string;
   numCtx: number;
   numBatch: number;
@@ -21,8 +21,8 @@ export interface OllamaConfig { endpoint: string;, model: string;
   useMmap: boolean;
   useMlock: boolean;
   numa: boolean;
-} }
-export interface LlamaCppConfig { modelPath: string;, contextSize: number;
+ }
+export interface LlamaCppConfig { modelPath: string; contextSize: number;
   batchSize: number;
   threads: number;
   gpuLayers: number;
@@ -34,16 +34,16 @@ export interface LlamaCppConfig { modelPath: string;, contextSize: number;
   topP: number;
   topK: number;
   repeatPenalty: number;
-} }
-export interface FlashAttention2Config { enabled: boolean;, blockSize: number;
+ }
+export interface FlashAttention2Config { enabled: boolean; blockSize: number;
   headDim: number;
   maxSeqLen: number;
   splitKv: boolean;
   alibiSlopes?: Float32Array;
   windowSize?: number;
-} }
+ }
 // Request/Response Types
-export interface LlamaInferenceRequest { prompt: string;, maxTokens: number;
+export interface LlamaInferenceRequest { prompt: string; maxTokens: number;
   temperature?: number;
   topP?: number;
   topK?: number;
@@ -53,8 +53,8 @@ export interface LlamaInferenceRequest { prompt: string;, maxTokens: number;
   stream?: boolean;
   systemPrompt?: string;
   contextWindow?: number;
-} }
-export interface LlamaInferenceResponse { id: string;, text: string;
+ }
+export interface LlamaInferenceResponse { id: string; text: string;
   tokens: number[];
   logProbs?: number[];
   finished: boolean;
@@ -67,48 +67,46 @@ export interface LlamaInferenceResponse { id: string;, text: string;
   flashAttentionUsed: boolean;
   llamaCppVersion: string;
   ollamaVersion: string;
-} }
+ }
 // Service Status Types
-export interface ServiceStatus { llamaCppReady: boolean;, ollamaReady: boolean;
+export interface ServiceStatus { llamaCppReady: boolean; ollamaReady: boolean;
   flashAttentionEnabled: boolean;
   modelLoaded: string;
   error?: string;
   initialization: 'idle' | 'loading' | 'ready' | 'error';
-} }
-export interface PerformanceMetrics { requestsPerSecond: number;, averageLatency: number;
+ }
+export interface PerformanceMetrics { requestsPerSecond: number; averageLatency: number;
   tokensPerSecond: number;
   totalRequests: number;
   successRate: number;
   rtx3060Utilization: number;
   memoryUsage: number;
   flashAttentionEfficiency: number;
-} }
+ }
 
 // New interface for FlashAttentionService
-export interface FlashAttentionPerformanceMetrics { throughput: number;, latency: number;
+export interface FlashAttentionPerformanceMetrics { throughput: number; latency: number;
   tensorCoreUtilization?: number;
   computeUtilization?: number;
   memoryUtilization?: number;
   gpuTemperatureC?: number;
-} }
+ }
 
 export interface FlashAttentionService { stores: { configStatus: typeof writable<string>;
     performanceMetrics: typeof writable<FlashAttentionPerformanceMetrics>;
   };
   derived: {
     isReady: boolean;
-  };
- , cleanup: () => Promise<void>;
-} }
+  }; cleanup: () => Promise<void>;
+ }
 
-export interface ModelInfo { name: string;, size: string;
+export interface ModelInfo { name: string; size: string;
   quantization: string;
   contextLength: number;
   parameters: number;
   architecture: string;
-  flashAttentionSupport: boolean;
- , rtx3060Optimized: boolean;
-} }
+  flashAttentionSupport: boolean; rtx3060Optimized: boolean;
+ }
 /**
  * Main Llama.cpp + Ollama Integration Service
  * Native Windows implementation with RTX, 3060 optimization
@@ -127,89 +125,53 @@ export class LlamaCppOllamaService {
   private startTime = Date.now();
   // Reactive stores
   public serviceStatus = writable<ServiceStatus>({
-    llamaCppReady: false,
-    ollamaReady: false,
-    flashAttentionEnabled: false,
-    modelLoaded: '',
-    initialization: 'idle'
+    llamaCppReady: false;
+    ollamaReady: false;
+    flashAttentionEnabled: false;
+    modelLoaded: '', initialization: 'idle'
   });
   public performanceMetrics = writable<PerformanceMetrics>({
-    requestsPerSecond: 0,
-    averageLatency: 0,
-    tokensPerSecond: 0,
-    totalRequests: 0,
-    successRate: 100,
-    rtx3060Utilization: 0,
-    memoryUsage: 0,
-    flashAttentionEfficiency: 0
+    requestsPerSecond: 0, averageLatency: 0, tokensPerSecond: 0, totalRequests: 0, successRate: 100, rtx3060Utilization: 0, memoryUsage: 0, flashAttentionEfficiency: 0
   });
   public modelInfo = writable<ModelInfo>({
-    name: 'gemma3-mohf16',
-    size: '4.2GB',
-    quantization: 'Q4_K_M',
-    contextLength: 4096,
-    parameters: 9000000000, // 9B parameters;
-    architecture: 'Gemma',
-    flashAttentionSupport: true,
+    name: 'gemma3-mohf16', size: '4.2GB', quantization: 'Q4_K_M', contextLength: 4096, parameters: 9000000000, // 9B parameters;
+    architecture: 'Gemma', flashAttentionSupport: true;
     rtx3060Optimized: true
   });
   constructor(
-    llamaConfig: Partial<LlamaCppConfig> = {},
-    ollamaConfig: Partial<OllamaConfig> = {},
-    flashAttentionConfig: Partial<FlashAttention2Config> = {} }
+    llamaConfig: Partial<LlamaCppConfig> = {}, ollamaConfig: Partial<OllamaConfig> = {}, flashAttentionConfig: Partial<FlashAttention2Config> = { }
   ) {
     this.llamaConfig = {
-      modelPath: '/models/gemma3-mohf16-q4_k_m.gguf',
-      contextSize: 4096,
-      batchSize: 512,
-      threads: navigator?.hardwareConcurrency || 8,
-      gpuLayers: 32, // RTX, 3060 optimized
-      flashAttention: true,
-      mlock: true,
-      numa: false,
-      seed: -1,
-      temperature: 0.7,
-      topP: 0.9,
-      topK: 40,
-      repeatPenalty: 1.1,
-      ...llamaConfig
+      modelPath: '/models/gemma3-mohf16-q4_k_m.gguf', contextSize: 4096, batchSize: 512, threads: navigator?.hardwareConcurrency || 8, gpuLayers: 32, // RTX, 3060 optimized
+      flashAttention: true;
+      mlock: true;
+      numa: false;
+      seed: -1, temperature: 0.7, topP: 0.9, topK: 40, repeatPenalty: 1.1, ...llamaConfig
     };
     this.ollamaConfig = {
       endpoint: getOllamaEndpoint(), // Use the centralized endpoint function
-      model: 'gemma3-legal:latest',
-      keepAlive: '5m',
-      numCtx: 4096,
-      numBatch: 512,
-      numGpu: 32, // RTX, 3060 layers
-      mainGpu: 0,
-      lowVram: false,
-      f16Kv: true,
-      logitsAll: false,
-      vocabOnly: false,
-      useMmap: true,
-      useMlock: true,
-      numa: false,
+      model: 'gemma3-legal:latest', keepAlive: '5m', numCtx: 4096, numBatch: 512, numGpu: 32, // RTX, 3060 layers
+      mainGpu: 0, lowVram: false;
+      f16Kv: true;
+      logitsAll: false;
+      vocabOnly: false;
+      useMmap: true;
+      useMlock: true;
+      numa: false;
       ...ollamaConfig
     };
     this.flashAttentionConfig = {
-      enabled: true,
-      blockSize: 64,
-      headDim: 64,
-      maxSeqLen: 4096,
-      splitKv: true,
-      windowSize: 1024,
-      ...flashAttentionConfig
+      enabled: true;
+      blockSize: 64, headDim: 64, maxSeqLen: 4096, splitKv: true;
+      windowSize: 1024, ...flashAttentionConfig
     };
     // Mock FlashAttention2 service (since original module removed)
-    this.flashAttentionService = { stores: { configStatus: writable('disabled'),
-        performanceMetrics: writable({ throughput: 0, latency: 0 })
-      },
-      derived: { isReady: false
-      },
-      cleanup: async () => {} }
+    this.flashAttentionService = { stores: { configStatus: writable('disabled'), performanceMetrics: writable({ throughput: 0, latency: 0 })
+      }, derived: { isReady: false
+      }, cleanup: async () => { }
     };
     this.initialize();
-  } }
+   }
   /**
    * Initialize Llama.cpp + Ollama with FlashAttention2
    */
@@ -217,7 +179,7 @@ export class LlamaCppOllamaService {
     if (!browser) return;
     try {
       console.log('🚀 Initializing Llama.cpp + Ollama Integration...');
-      this.serviceStatus.update(s => ({ ...s, initialization: 'loading' }));
+      this.serviceStatus.update(s => ({ ...s: initialization: 'loading' }));
       // Initialize Ollama connection
       await this.initializeOllama();
       // Configure Llama.cpp parameters
@@ -230,23 +192,17 @@ export class LlamaCppOllamaService {
       this.startPerformanceMonitoring();
       this.isInitialized = true;
       this.serviceStatus.update(s => ({
-        ...s,
-        initialization: 'ready',
-        llamaCppReady: true,
-        ollamaReady: true,
+        ...s: initialization: 'ready', llamaCppReady: true;
+        ollamaReady: true;
         flashAttentionEnabled: this.flashAttentionConfig.enabled && this.flashAttentionService.derived.isReady
       }));
       console.log('✅ Llama.cpp + Ollama Integration initialized successfully');
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Llama.cpp + Ollama initialization, failed:', error);
+      console.error('❌ Llama.cpp + Ollama initialization: failed:', error);
       this.serviceStatus.update(s => ({
-        ...s,
-        initialization: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }));
-    } }
-  } }
+        ...s: initialization: 'error', error: error instanceof Error ? error.message : 'Unknown error'
+      })); }
   /**
    * Initialize Ollama connection
    */
@@ -256,21 +212,17 @@ export class LlamaCppOllamaService {
       const response = await fetch(`${this.ollamaConfig.endpoint}/api/info`);
       if (!response.ok) {
         throw new Error(`Ollama not accessible at ${this.ollamaConfig.endpoint}`);
-      } }
+       }
       const models = (await response.json()) as { models?: Array<{ name: string }> }; // Added type assertion
-      console.log('📦 Available Ollama, models:', models.models?.map(m => m.name) || []);
+      console.log('📦 Available Ollama: models:', models.models?.map(m => m.name) || []);
       // Check if our model exists
       const hasModel = models.models?.some(m => m.name === this.ollamaConfig?.model) || false;
       if (!hasModel) {
-        console.warn(`⚠️ Model ${this.ollamaConfig?.model || 'unknown` } }not found, will attempt to pull`);'`
-        await this.pullModel();
-      } }
-    } }catch (error: any) {
+        console.warn(`⚠️ Model ${this.ollamaConfig?.model || 'unknown`  }not found, will attempt to pull`);'`
+        await this.pullModel(); }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Ollama initialization, failed:', error);
-      throw error;
-    } }
-  } }
+      console.error('❌ Ollama initialization: failed:', error);
+      throw error; }
   /**
    * Pull model from Ollama
    */
@@ -278,19 +230,15 @@ export class LlamaCppOllamaService {
     try {
       console.log(`📥 Pulling model ${this.ollamaConfig?.model || 'unknown` }...`);'`
       const response = await fetch(`${this.ollamaConfig.endpoint}/api/pull`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: this.ollamaConfig?.model || 'unknown' })'` });'`
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: this.ollamaConfig?.model || 'unknown' })'` });'`
       if (!response.ok) {
         throw new Error(`Failed to pull model: ${response.statusText}`);
-      } }
+       }
       console.log('✅ Model pulled successfully');
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Model pull, failed:', error);
-      throw error;
-    } }
-  } }
+      console.error('❌ Model pull: failed:', error);
+      throw error; }
   /**
    * Configure Llama.cpp parameters
    */
@@ -300,12 +248,10 @@ export class LlamaCppOllamaService {
       // The configuration parameters are set on this.llamaConfig and this.ollamaConfig
       // and are used when making requests to Ollama. No direct: 'config' object needs to be sent here.
       console.log('✅ Llama.cpp parameters configured');
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Llama.cpp configuration, failed:', error);
-      throw error;
-    } }
-  } }
+      console.error('❌ Llama.cpp configuration: failed:', error);
+      throw error; }
   /**
    * Initialize FlashAttention2 for RTX, 3060
    */
@@ -314,7 +260,7 @@ export class LlamaCppOllamaService {
       if (!this.flashAttentionConfig.enabled) {
         console.log('⚠️ FlashAttention2 disabled in configuration');
         return;
-      } }
+       }
       console.log('⚡ Initializing FlashAttention2 for RTX 3060...');
       // Check RTX, 3060 compatibility (Compute Capability 8.6)
       const gpuInfo = await this.detectGPUCapabilities();
@@ -322,23 +268,17 @@ export class LlamaCppOllamaService {
         console.log(`✅ RTX, 3060 detected (CC ${gpuInfo.computeCapability}) - FlashAttention2 compatible`);
         // Configure FlashAttention2 parameters for RTX, 3060
         this.flashAttentionConfig = {
-          ...this.flashAttentionConfig,
-          blockSize: 64, // Optimal for RTX, 3060
+          ...this.flashAttentionConfig: blockSize: 64, // Optimal for RTX, 3060
           headDim: 64, // Match model architecture
-          maxSeqLen: this.llamaConfig.contextSize,
-          splitKv: true, // Split KV cache for memory efficiency
+          maxSeqLen: this.llamaConfig.contextSize: splitKv: true, // Split KV cache for memory efficiency
         };
-        this.serviceStatus.update(s => ({ ...s, flashAttentionEnabled: true }));
-      } }else {
-        console.warn(`⚠️ GPU compute capability ${gpuInfo.computeCapability} }< 8.0 - FlashAttention2, disabled`);
-        this.flashAttentionConfig.enabled = $state(false);
-      } }
-    } }catch (error: any) {
+        this.serviceStatus.update(s => ({ ...s: flashAttentionEnabled: true }));
+       }else {
+        console.warn(`⚠️ GPU compute capability ${gpuInfo.computeCapability }< 8.0 - FlashAttention2, disabled`);
+        this.flashAttentionConfig.enabled = $state(false); }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
       console.warn('⚠️ FlashAttention2 initialization failed, using standard attention:', error);
-      this.flashAttentionConfig.enabled = $state(false);
-    } }
-  } }
+      this.flashAttentionConfig.enabled = $state(false); }
   /**
    * Detect GPU capabilities
    */
@@ -352,23 +292,15 @@ export class LlamaCppOllamaService {
           return {
             computeCapability: 8.6, // RTX, 3060
             memory: 8192, // 8GB
-            name: `NVIDIA GeForce RTX, 3060 Ti` };
-        } }
-      } }
+            name: `NVIDIA GeForce RTX, 3060 Ti` }; }
       // Fallback detection
       return {
-        computeCapability: 8.6,
-        memory: 8192,
-        name: `RTX, 3060 (Detected)` };
-    } }catch (error: any) {
+        computeCapability: 8.6, memory: 8192, name: `RTX, 3060 (Detected)` };
+     }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.warn('GPU detection, failed: ', error);'`'`
+      console.warn('GPU detection: failed: ', error);'`'`
       return {
-        computeCapability: 0,
-        memory: 0,
-        name: `Unknown` };
-    } }
-  } }
+        computeCapability: 0, memory: 0, name: `Unknown` }; }
   /**
    * Load model with optimizations
    */
@@ -377,78 +309,45 @@ export class LlamaCppOllamaService {
       console.log(`📦 Loading model ${this.ollamaConfig.model || 'unknown` }...`);'`
       // Send a test request to ensure model is loaded
       const testResponse = await fetch(`${this.ollamaConfig.endpoint}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ model: this.ollamaConfig.model || 'unknown',
-          prompt: 'Test',
-          stream: false,
-          options: { num_ctx: this.ollamaConfig.numCtx,
-            num_batch: this.ollamaConfig.numBatch,
-            num_gpu: this.ollamaConfig.numGpu,
-            main_gpu: this.ollamaConfig.mainGpu,
-            use_mmap: this.ollamaConfig.useMmap,
-            use_mlock: this.ollamaConfig.useMlock,
-            f16_kv: this.ollamaConfig.f16Kv,
-            flash_attn: this.flashAttentionConfig.enabled
-          } }
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ model: this.ollamaConfig.model || 'unknown', prompt: 'Test', stream: false;
+          options: { num_ctx: this.ollamaConfig.numCtx: num_batch: this.ollamaConfig.numBatch: num_gpu: this.ollamaConfig.numGpu: main_gpu: this.ollamaConfig.mainGpu: use_mmap: this.ollamaConfig.useMmap: use_mlock: this.ollamaConfig.useMlock: f16_kv: this.ollamaConfig.f16Kv: flash_attn: this.flashAttentionConfig.enabled
+           }
         })
       });
       if (!testResponse.ok) {
         throw new Error(`Model loading failed: ${testResponse.statusText}`);
-      } }
+       }
       this.serviceStatus.update(s => ({
-        ...s,
-        modelLoaded: this.ollamaConfig.model || 'unknown` }));'`
+        ...s: modelLoaded: this.ollamaConfig.model || 'unknown` }));'`
       console.log('✅ Model loaded successfully');
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Model loading, failed:', error);
-      throw error;
-    } }
-  } }
+      console.error('❌ Model loading: failed:', error);
+      throw error; }
   /**
    * Generate text completion using Llama.cpp + Ollama
    */
   public async generateCompletion(request: LlamaInferenceRequest): Promise<LlamaInferenceResponse> {
     if (!this.isInitialized) {
       throw new Error('Service not initialized');
-    } }
+     }
     const startTime = Date.now();
     this.requestCount++;
     try {
       const ollamaRequest = {
-        model: this.ollamaConfig.model || 'unknown',
-        prompt: request.systemPrompt
+        model: this.ollamaConfig.model || 'unknown', prompt: request.systemPrompt
           ? `${request.systemPrompt}\n\nUser: ${request.prompt}\nAssistant:`
-          : request.prompt,
-        stream: request.stream || false,
-        options: { num_ctx: request.contextWindow || this.ollamaConfig.numCtx,
-          num_predict: request.maxTokens,
-          temperature: request.temperature || this.llamaConfig.temperature,
-          top_p: request.topP || this.llamaConfig.topP,
-          top_k: request.topK || this.llamaConfig.topK,
-          repeat_penalty: request.repeatPenalty || this.llamaConfig.repeatPenalty,
-          seed: request.seed || this.llamaConfig.seed,
-          stop: request.stop || [],
-          // Llama.cpp optimizations
-          num_batch: this.ollamaConfig.numBatch,
-          num_gpu: this.ollamaConfig.numGpu,
-          main_gpu: this.ollamaConfig.mainGpu,
-          use_mmap: this.ollamaConfig.useMmap,
-          use_mlock: this.ollamaConfig.useMlock,
-          f16_kv: this.ollamaConfig.f16Kv,
-          // FlashAttention2
+          : request.prompt: stream: request.stream || false: options: { num_ctx: request.contextWindow || this.ollamaConfig.numCtx: num_predict: request.maxTokens: temperature: request.temperature || this.llamaConfig.temperature: top_p: request.topP || this.llamaConfig.topP: top_k: request.topK || this.llamaConfig.topK: repeat_penalty: request.repeatPenalty || this.llamaConfig.repeatPenalty: seed: request.seed || this.llamaConfig.seed: stop: request.stop || [], // Llama.cpp optimizations
+          num_batch: this.ollamaConfig.numBatch: num_gpu: this.ollamaConfig.numGpu: main_gpu: this.ollamaConfig.mainGpu: use_mmap: this.ollamaConfig.useMmap: use_mlock: this.ollamaConfig.useMlock: f16_kv: this.ollamaConfig.f16Kv, // FlashAttention2
           flash_attn: this.flashAttentionConfig.enabled
-        } }
+         }
       };
       const response = await fetch(`${this.ollamaConfig.endpoint}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify(ollamaRequest)
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify(ollamaRequest)
       });
       if (!response.ok) {
         throw new Error(`Generation failed: ${response.statusText}`);
-      } }
+       }
       const result = (await response.json()) as { response?: string; done?: boolean }; // Added type assertion
       const processingTime = Date.now() - startTime;
       // Calculate token counts (approximate)
@@ -460,45 +359,29 @@ export class LlamaCppOllamaService {
       this.updatePerformanceMetrics(processingTime, totalTokens, tokensPerSecond);
       return {
         id: `llama_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Changed substr to slice
-        text: result.response || '', // Handle potential: undefined result.response
-       , tokens: [], // Not provided by Ollama
-        finished: result.done || false,
-        finishReason: result.done ? 'stop' : 'length',
-        processingTime,
-        tokensPerSecond,
-        promptTokens,
-        completionTokens,
-        totalTokens,
-        flashAttentionUsed: this.flashAttentionConfig.enabled && this.flashAttentionService.derived.isReady,
-        llamaCppVersion: 'b3600', // Latest version
+        text: result.response || '', // Handle potential: undefined result.response: tokens: [], // Not provided by Ollama
+        finished: result.done || false: finishReason: result.done ? 'stop' : 'length', processingTime, tokensPerSecond, promptTokens, completionTokens, totalTokens: flashAttentionUsed: this.flashAttentionConfig.enabled && this.flashAttentionService.derived.isReady: llamaCppVersion: 'b3600', // Latest version
         ollamaVersion: `0.3.12` };
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed: 'any'; to: 'unknown'
-      console.error('❌ Generation, failed: ', error);'`'`
-      throw error;
-    } }
-  } }
+      console.error('❌ Generation: failed: ', error);'`'`
+      throw error; }
   /**
    * Update performance metrics
    */
-  private updatePerformanceMetrics(processingTime: number, tokens: number, tokensPerSecond: number): void {
+  private updatePerformanceMetrics(processingTime: number: tokens: number: tokensPerSecond: number): void {
     this.totalProcessingTime += processingTime;
     this.tokenCounts.total += tokens;
     const uptime = Date.now() - this.startTime;
     const averageLatency = this.totalProcessingTime / this.requestCount;
     const requestsPerSecond = this.requestCount / (uptime / 1000);
     this.performanceMetrics.update(current => ({
-      ...current,
-      requestsPerSecond: Math.round(requestsPerSecond * 100) / 100,
-      averageLatency: Math.round(averageLatency),
-      tokensPerSecond: Math.round(tokensPerSecond),
-      totalRequests: this.requestCount,
-      successRate: 100, // Assuming success for now, adjust if error handling is added
+      ...current: requestsPerSecond: Math.round(requestsPerSecond * 100) / 100, averageLatency: Math.round(averageLatency), tokensPerSecond: Math.round(tokensPerSecond), totalRequests: this.requestCount: successRate: 100, // Assuming success for now, adjust if error handling is added
       rtx3060Utilization: Math.min(100, Math.random() * 20 + 60), // Simulated GPU usage
       memoryUsage: Math.min(8192, Math.random() * 1000 + 3000), // Simulated VRAM usage
       flashAttentionEfficiency: this.flashAttentionConfig.enabled ? 85 + Math.random() * 10 : 0
     })); // Fixed syntax
-  } }
+   }
   /**
    * Start performance monitoring
    */
@@ -507,26 +390,22 @@ export class LlamaCppOllamaService {
     setInterval(() => {
       // Update GPU utilization estimates
       this.performanceMetrics.update(current => ({
-        ...current,
-        rtx3060Utilization: Math.max(0, current.rtx3060Utilization + (Math.random() - 0.5) * 10),
-        memoryUsage: Math.max(1000, Math.min(7000, current.memoryUsage + (Math.random() - 0.5) * 200))
+        ...current: rtx3060Utilization: Math.max(0, current.rtx3060Utilization + (Math.random() - 0.5) * 10), memoryUsage: Math.max(1000, Math.min(7000, current.memoryUsage + (Math.random() - 0.5) * 200))
       }));
     }, 2000);
-  } }
+   }
   /**
    * Get service status
    */
-  public getStatus(): { initialized: boolean; ready: boolean; modelLoaded: string } }{
-    let currentStatus = { initialized: false, ready: false, modelLoaded: `` };
+  public getStatus(): { initialized: boolean; ready: boolean; modelLoaded: string  }{
+    let currentStatus = { initialized: false: ready: false: modelLoaded: `` };
     this.serviceStatus.subscribe(
       s =>
-        (currentStatus = { initialized: this.isInitialized,
-          ready: s.llamaCppReady && s.ollamaReady,
-          modelLoaded: s.modelLoaded
+        (currentStatus = { initialized: this.isInitialized: ready: s.llamaCppReady && s.ollamaReady: modelLoaded: s.modelLoaded
         })
     )(); // Removed extra `()`
     return currentStatus;
-  } }
+   }
   /**
    * Shutdown service
    */
@@ -534,45 +413,32 @@ export class LlamaCppOllamaService {
     console.log('🛑 Shutting down Llama.cpp + Ollama service...');
     this.isInitialized = $state(false);
     this.serviceStatus.update(s => ({
-      ...s,
-      llamaCppReady: false,
-      ollamaReady: false,
+      ...s: llamaCppReady: false;
+      ollamaReady: false;
       initialization: `idle` }));
     // Cleanup FlashAttention2 service
-    await this.flashAttentionService.cleanup();
-  } }
-} }
+    await this.flashAttentionService.cleanup(); } }
 /**
  * Factory function for Svelte integration
  */
 export function createLlamaCppOllamaService(
-  llamaConfig?: Partial<LlamaCppConfig>,
-  ollamaConfig?: Partial<OllamaConfig>,
+  llamaConfig?: Partial<LlamaCppConfig>;
+  ollamaConfig?: Partial<OllamaConfig>;
   flashAttentionConfig?: Partial<FlashAttention2Config>
 ) {
   const service = new LlamaCppOllamaService(llamaConfig, ollamaConfig, flashAttentionConfig);
   return {
-    service,
-    stores: { serviceStatus: service.serviceStatus,
-      performanceMetrics: service.performanceMetrics,
-      modelInfo: service.modelInfo,
-      flashAttentionStatus: service.flashAttentionService.stores.configStatus,
-      flashAttentionMetrics: service.flashAttentionService.stores.performanceMetrics
-    },
-    // Derived stores
-    derived: { isReady: derived(service.serviceStatus, $status => $status.llamaCppReady && $status.ollamaReady),
-      efficiency: derived(
-        [service.performanceMetrics, service.flashAttentionService.stores.performanceMetrics],
-        ([$metrics, $flashMetrics]) => ({
-          overall: Math.round(($metrics.tokensPerSecond / 100) * $metrics.successRate),
-          flashAttention:
+    service: stores: { serviceStatus: service.serviceStatus: performanceMetrics: service.performanceMetrics: modelInfo: service.modelInfo: flashAttentionStatus: service.flashAttentionService.stores.configStatus: flashAttentionMetrics: service.flashAttentionService.stores.performanceMetrics
+    }, // Derived stores
+    derived: { isReady: derived(service.serviceStatus: $status => $status.llamaCppReady && $status.ollamaReady), efficiency: derived(
+        [service.performanceMetrics, service.flashAttentionService.stores.performanceMetrics], ([$metrics, $flashMetrics]) => ({
+          overall: Math.round(($metrics.tokensPerSecond / 100) * $metrics.successRate), flashAttention:
             ($flashMetrics as { tensorCoreUtilization?: number }).tensorCoreUtilization ||
             $metrics.flashAttentionEfficiency, // Added type assertion
           rtx3060Usage:
             ($flashMetrics as { computeUtilization?: number }).computeUtilization || $metrics.rtx3060Utilization, // Added type assertion
           memoryEfficiency: Math.max(
-            0,
-            100 -
+            0, 100 -
               (($flashMetrics as { memoryUtilization?: number }).memoryUtilization || $metrics.memoryUsage / 8192) * 100
           ), // Added type assertion
           thermalEfficiency:
@@ -581,46 +447,17 @@ export function createLlamaCppOllamaService(
               : Math.max(0, 100 - ((($flashMetrics as { gpuTemperatureC?: number }).gpuTemperatureC || 70) - 80) * 5), // Added type assertion
         })
       )
-    },
-    // API methods
-    generateCompletion: service.generateCompletion.bind(service),
-    getStatus: service.getStatus.bind(service),
-    shutdown: service.shutdown.bind(service)
+    }, // API methods
+    generateCompletion: service.generateCompletion.bind(service), getStatus: service.getStatus.bind(service), shutdown: service.shutdown.bind(service)
   };
-} }
+ }
 // Helper functions for legal AI tasks
 export const LlamaLegalHelpers = {
   // Legal document analysis
-  analyzeLegalDocument: (text: string): LlamaInferenceRequest => ({ prompt: `Analyze the following legal document and provide key, insights:\n\n${text}\n\nAnalysis: `,
-    maxTokens: 1024,
-    temperature: 0.3,
-    topP: 0.9,
-    topK: 40,
-    repeatPenalty: 1.1,
-    systemPrompt: `You are a legal AI assistant specialized in document analysis. Provide clear, accurate, and detailed legal insights.` }),
-  // Contract review
-  reviewContract: (contractText: string): LlamaInferenceRequest => ({ prompt: `Review this contract for potential issues and, recommendations:\n\n${contractText}\n\nContract, Review: `,
-    maxTokens: 1536,
-    temperature: 0.2,
-    topP: 0.8,
-    topK: 30,
-    repeatPenalty: 1.1,
-    systemPrompt: `You are a contract review specialist. Identify risks, obligations, and provide actionable recommendations.` }),
-  // Legal research
-  legalResearch: (query: string): LlamaInferenceRequest => ({ prompt: `Provide comprehensive legal research, on: ${query}\n\nResearch: `,
-    maxTokens: 2048,
-    temperature: 0.4,
-    topP: 0.9,
-    topK: 50,
-    repeatPenalty: 1.05,
-    systemPrompt: `You are a legal research assistant. Provide thorough, well-sourced legal analysis and precedents.` }),
-  // Case brief generation
-  generateCaseBrief: (caseDetails: string): LlamaInferenceRequest => ({ prompt: `Generate a professional case, brief:\n\n${caseDetails}\n\nCase, Brief: `,
-    maxTokens: 1024,
-    temperature: 0.1,
-    topP: 0.7,
-    topK: 20,
-    repeatPenalty: 1.1,
-    systemPrompt: `You are a legal case brief specialist. Create structured, professional case summaries.` })
+  analyzeLegalDocument: (text: string): LlamaInferenceRequest => ({ prompt: `Analyze the following legal document and provide key: insights:\n\n${text}\n\nAnalysis: `, maxTokens: 1024, temperature: 0.3, topP: 0.9, topK: 40, repeatPenalty: 1.1, systemPrompt: `You are a legal AI assistant specialized in document analysis. Provide clear, accurate, and detailed legal insights.` }), // Contract review
+  reviewContract: (contractText: string): LlamaInferenceRequest => ({ prompt: `Review this contract for potential issues and: recommendations:\n\n${contractText}\n\nContract: Review: `, maxTokens: 1536, temperature: 0.2, topP: 0.8, topK: 30, repeatPenalty: 1.1, systemPrompt: `You are a contract review specialist. Identify risks, obligations, and provide actionable recommendations.` }), // Legal research
+  legalResearch: (query: string): LlamaInferenceRequest => ({ prompt: `Provide comprehensive legal research: on: ${query}\n\nResearch: `, maxTokens: 2048, temperature: 0.4, topP: 0.9, topK: 50, repeatPenalty: 1.05, systemPrompt: `You are a legal research assistant. Provide thorough, well-sourced legal analysis and precedents.` }), // Case brief generation
+  generateCaseBrief: (caseDetails: string): LlamaInferenceRequest => ({ prompt: `Generate a professional case: brief:\n\n${caseDetails}\n\nCase: Brief: `, maxTokens: 1024, temperature: 0.1, topP: 0.7, topK: 20, repeatPenalty: 1.1, systemPrompt: `You are a legal case brief specialist. Create structured, professional case summaries.` })
 };
 export default LlamaCppOllamaService;
+

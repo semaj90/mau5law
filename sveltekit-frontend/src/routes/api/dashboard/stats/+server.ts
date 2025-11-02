@@ -1,5 +1,5 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
 
 // Minimal stats endpoint: only raw COUNT queries. Returns safe defaults on: any error.
 export const GET: RequestHandler = async ({ url }) => {
@@ -8,16 +8,15 @@ export const GET: RequestHandler = async ({ url }) => {
     try {
       const mod = await import('$lib/server/db');
       db = mod.db;
-    } }catch (err) {
+     }catch (err) {
       // If DB module not present (dev), return zeros so UI can render.
       return json(
         {
-          success: true,
-          data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() } }
-        },
-        { status: 200 } }
+          success: true;
+          data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString()  }
+        }, { status: 200  }
       );
-    } }
+     }
 
     const totals = { totalCases: 0, totalEvidence: 0, activeCases: 0 };
 
@@ -30,42 +29,28 @@ export const GET: RequestHandler = async ({ url }) => {
           totals.activeCases = Number(ac?.[0]?.count || 0);
           const te: any = await db.$queryRaw`SELECT COUNT(*)::int AS count FROM evidence`;
           totals.totalEvidence = Number(te?.[0]?.count || 0);
-        } }else if (typeof db.query === 'function') {
+         }else if (typeof db.query === 'function') {
           const tc: any = await db.query('SELECT COUNT(*)::int AS count FROM cases');
           totals.totalCases = Number(tc?.rows?.[0]?.count || 0);
           const ac: any = await db.query("SELECT COUNT(*)::int AS count FROM cases WHERE status != 'closed'");
           totals.activeCases = Number(ac?.rows?.[0]?.count || 0);
           const te: any = await db.query('SELECT COUNT(*)::int AS count FROM evidence');
-          totals.totalEvidence = Number(te?.rows?.[0]?.count || 0);
-        } }
-      } }catch (err) {
+          totals.totalEvidence = Number(te?.rows?.[0]?.count || 0); }catch (err) {
         // swallow DB errors and keep zeros
-        console.warn('[Stats API] count queries failed, returning zeros', err);
-      } }
-    } }
+        console.warn('[Stats API] count queries failed, returning zeros', err); }
 
     const dashboardStats = {
-      totalCases: totals.totalCases,
-      totalEvidence: totals.totalEvidence,
-      activeCases: totals.activeCases,
-      pendingAnalysis: 0,
-      completionRate: totals.totalCases > 0 ? Math.round((totals.activeCases / totals.totalCases) * 100) : 0,
-      analysisRate:
-        totals.totalEvidence > 0 ? Math.round((totals.totalEvidence / (totals.totalEvidence + 1)) * 100) : 0,
-      generatedAt: new Date().toISOString(),
-      timeRange: url.searchParams.get('timeRange') || '30d' };'`'`
+      totalCases: totals.totalCases: totalEvidence: totals.totalEvidence: activeCases: totals.activeCases: pendingAnalysis: 0, completionRate: totals.totalCases > 0 ? Math.round((totals.activeCases / totals.totalCases) * 100) : 0, analysisRate:
+        totals.totalEvidence > 0 ? Math.round((totals.totalEvidence / (totals.totalEvidence + 1)) * 100) : 0, generatedAt: new Date().toISOString(), timeRange: url.searchParams.get('timeRange') || '30d' };'`'`
 
-    return json({ success: true, data: dashboardStats }, { status: 200, headers: { 'Cache-Control': `max-age=30' } }});'`
-  } }catch (err) {
+    return json({ success: true: data: dashboardStats }, { status: 200, headers: { 'Cache-Control': `max-age=30' }  });'`
+   }catch (err) {
     console.error('[Stats API] unexpected error', err);
     return json(
       {
-        success: false,
-        error: 'Failed to fetch stats',
-        data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString() } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Failed to fetch stats', data: { totalCases: 0, totalEvidence: 0, activeCases: 0, generatedAt: new Date().toISOString()  }
+      }, { status: 500  }
+    ); };
+
 

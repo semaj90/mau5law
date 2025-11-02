@@ -1,19 +1,15 @@
-import type { Case } }from '$lib/types';
-import { cuidSchema } }from '$lib/server/z-schemas';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
-import { evidenceBoards, cases } }from '$lib/database/enhanced-schema';
-import { eq, and, desc } }from 'drizzle-orm';
-import { z } }from 'zod';
+import type { Case  } from '$lib/types';
+import { cuidSchema  } from '$lib/server/z-schemas';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
+import { evidenceBoards, cases  } from '$lib/database/enhanced-schema';
+import { eq, and, desc  } from 'drizzle-orm';
+import { z  } from 'zod';
 
 const createEvidenceBoardSchema = z.object({
-  caseId: cuidSchema,
-  name: z.string().min(1).max(255),
-  description: z.string().optional(),
-  layout: z.any().optional(),
-  settings: z.any().optional(),
-  isPublic: z.boolean().default(false)
+  caseId: cuidSchema;
+  name: z.string().min(1).max(255), description: z.string().optional(), layout: z.any().optional(), settings: z.any().optional(), isPublic: z.boolean().default(false)
 });
 
 // GET /api/evidence-boards - List evidence boards
@@ -22,7 +18,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const caseId = url.searchParams.get('caseId');
     const page = parseInt(url.searchParams.get('page') || '1');
@@ -31,7 +27,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     let query = db
       .select({
-        board: evidenceBoards,
+        board: evidenceBoards;
         case cases
       })
       .from(evidenceBoards)
@@ -40,19 +36,17 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     if (caseId) {
       query = query.where(and(eq(evidenceBoards.caseId, caseId), eq(evidenceBoards.isActive, true)));
-    } }
+     }
 
     const boards = await query.orderBy(desc(evidenceBoards.createdAt)).limit(limit).offset(offset);
 
     return json({
-      success: true,
+      success: true;
       data: boards
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error fetching evidence boards:', error);
-    return json({ error: 'Failed to fetch evidence boards' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to fetch evidence boards' }, { status: 500 }); };
 
 // POST /api/evidence-boards - Create new evidence board
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -60,7 +54,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const body = await request.json();
     const validatedData = createEvidenceBoardSchema.parse(body);
@@ -70,29 +64,26 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (!caseRecord) {
       return json({ error: 'Case not found' }, { status: 404 });
-    } }
+     }
 
     const [newBoard] = await db
       .insert(evidenceBoards)
       .values({
-        ...validatedData,
-        createdBy: session.user.id
+        ...validatedData: createdBy: session.user.id
       })
       .returning();
 
     return json(
       {
-        success: true,
+        success: true;
         data: newBoard
-      },
-      { status: 201 } }
+      }, { status: 201  }
     );
-  } }catch (error) {
+   }catch (error) {
     console.error('Error creating evidence board:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation error', details: error.errors }, { status: 400 });
-    } }
-    return json({ error: 'Failed to create evidence board' }, { status: 500 });
-  } }
-};
+     }
+    return json({ error: 'Failed to create evidence board' }, { status: 500 }); };
+
 

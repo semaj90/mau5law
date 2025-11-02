@@ -5,11 +5,11 @@
  * This service provides the solid foundation that feeds real data
  * to the CHR-ROM pre-computation system for pattern generation
  */
-import type { LegalDocument, ProcessingResult, EntityExtraction } }from '../types/legal.js';
-import { chrROMPrecomputation } }from './chr-rom-precomputation.js';
-import { redisWebGPUIntegration } }from '../integrations/redis-webgpu-simd-integration.js';
+import type { LegalDocument, ProcessingResult, EntityExtraction  } from '../types/legal.js';
+import { chrROMPrecomputation  } from './chr-rom-precomputation.js';
+import { redisWebGPUIntegration  } from '../integrations/redis-webgpu-simd-integration.js';
 // Drizzle schema interfaces (based on your legal AI database structure)
-export interface DrizzleLegalDocument { id: string;, title: string;
+export interface DrizzleLegalDocument { id: string; title: string;
   content: string;
   document_type: 'contract' | 'nda' | 'agreement' | 'lease' | 'compliance';
   upload_date: Date;
@@ -19,30 +19,29 @@ export interface DrizzleLegalDocument { id: string;, title: string;
   metadata: any; // JSONB field
   created_at: Date;
   updated_at: Date;
-} }
+ }
 
-export interface DrizzleDocumentAnalysis { id: string;, document_id: string;
+export interface DrizzleDocumentAnalysis { id: string; document_id: string;
   analysis_type: 'risk_assessment' | 'entity_extraction' | 'classification' | 'summary';
   result: any; // JSONB field
   confidence_score: number;
   processing_time_ms: number;
   created_at: Date;
-} }
+ }
 
-export interface DrizzleEntityExtraction { id: string;, document_id: string;
+export interface DrizzleEntityExtraction { id: string; document_id: string;
   entity_type: 'person' | 'organization' | 'location' | 'date' | 'amount' | 'contract_term';
   entity_value: string;
   confidence: number;
   position_start: number;
   position_end: number;
   created_at: Date;
-} }
-export interface DrizzleDocumentEmbedding { id: string;, document_id: string;
+ }
+export interface DrizzleDocumentEmbedding { id: string; document_id: string;
   embedding_type: 'document' | 'chunk' | 'summary';
   embedding_vector: number[]; // Vector field
-  chunk_index?: number;
- , created_at: Date;
-} }
+  chunk_index?: number; created_at: Date;
+ }
 // CHR-ROM data transformation pipeline
 export class DrizzleCHRROMBridge {
   private initialized = $state(false);
@@ -60,11 +59,9 @@ export class DrizzleCHRROMBridge {
       await this.setupChangeListeners();
       this.initialized = true;
       console.log('✅ Drizzle CHR-ROM Bridge initialized');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Drizzle CHR-ROM Bridge initialization failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Load recent documents for CHR-ROM pattern generation
    */
@@ -74,60 +71,22 @@ export class DrizzleCHRROMBridge {
     //   .where(gte(legal_documents.updated_at, sql`NOW() - INTERVAL: '7 days'`)
     //   .orderBy(desc(legal_documents.updated_at)
     const mockDocuments: DrizzleLegalDocument[] = [
-      { id: 'doc_001',
-        title: 'Software Development Agreement - TechCorp',
-        content: 'This Software Development Agreement is entered into between...',
-        document_type: 'agreement',
-        upload_date: new Date('2024-01-15'),
-        file_path: '/docs/agreements/techcorp_dev_agreement.pdf',
-        file_size: 245760,
-        processing_status: 'completed',
-        metadata: { parties: ['TechCorp Inc.', 'DevStudio LLC'],
-          value: 150000,
-          duration_months: 12,
-          jurisdiction: 'Delaware' },'`'`
-        created_at: new Date('2024-01-15T10:30:00Z'),
-        updated_at: new Date('2024-01-15T11:45:00Z')
-      },
-      {
-        id: 'doc_002',
-        title: 'Non-Disclosure Agreement - Startup Ventures',
-        content: 'This Non-Disclosure Agreement governs the confidential information...',
-        document_type: 'nda',
-        upload_date: new Date('2024-01-16'),
-        file_path: '/docs/ndas/startup_ventures_nda.pdf',
-        file_size: 128945,
-        processing_status: 'completed',
-        metadata: { parties: ['Startup Ventures Inc.', 'Innovation Labs'],
-          confidentiality_period: 24,
-          jurisdiction: `California' },'`
-        created_at: new Date('2024-01-16T09:15:00Z'),
-        updated_at: new Date('2024-01-16T10:20:00Z')
-      },
-      {
-        id: 'doc_003',
-        title: 'Commercial Lease Agreement - Office Space',
-        content: 'This Commercial Lease Agreement is for the premises located at...',
-        document_type: 'lease',
-        upload_date: new Date('2024-01-17'),
-        file_path: '/docs/leases/commercial_office_lease.pdf',
-        file_size: 189345,
-        processing_status: 'processing',
-        metadata: { property_address: '123 Business Ave, Suite 400',
-          monthly_rent: 8500,
-          lease_term_months: 36,
-          security_deposit: 17000
-        },
-        created_at: new Date('2024-01-17T14:20:00Z'),
-        updated_at: new Date('2024-01-17T14:20:00Z')
-      } }
+      { id: 'doc_001', title: 'Software Development Agreement - TechCorp', content: 'This Software Development Agreement is entered into between...', document_type: 'agreement', upload_date: new Date('2024-01-15'), file_path: '/docs/agreements/techcorp_dev_agreement.pdf', file_size: 245760, processing_status: 'completed', metadata: { parties: ['TechCorp Inc.', 'DevStudio LLC'], value: 150000, duration_months: 12, jurisdiction: 'Delaware' },'`'`
+        created_at: new Date('2024-01-15T10:30:00Z'), updated_at: new Date('2024-01-15T11:45:00Z')
+      }, {
+        id: 'doc_002', title: 'Non-Disclosure Agreement - Startup Ventures', content: 'This Non-Disclosure Agreement governs the confidential information...', document_type: 'nda', upload_date: new Date('2024-01-16'), file_path: '/docs/ndas/startup_ventures_nda.pdf', file_size: 128945, processing_status: 'completed', metadata: { parties: ['Startup Ventures Inc.', 'Innovation Labs'], confidentiality_period: 24, jurisdiction: `California' },'`
+        created_at: new Date('2024-01-16T09:15:00Z'), updated_at: new Date('2024-01-16T10:20:00Z')
+      }, {
+        id: 'doc_003', title: 'Commercial Lease Agreement - Office Space', content: 'This Commercial Lease Agreement is for the premises located at...', document_type: 'lease', upload_date: new Date('2024-01-17'), file_path: '/docs/leases/commercial_office_lease.pdf', file_size: 189345, processing_status: 'processing', metadata: { property_address: '123 Business Ave, Suite 400', monthly_rent: 8500, lease_term_months: 36, security_deposit: 17000
+        }, created_at: new Date('2024-01-17T14:20:00Z'), updated_at: new Date('2024-01-17T14:20:00Z')
+       }
     ];
     // Store in cache for quick access
     for (const doc of mockDocuments) {
       this.documentCache.set(doc.id, doc);
-    } }
-    console.log(`📄 Loaded ${mockDocuments.length} }documents for CHR-ROM processing`);
-  } }
+     }
+    console.log(`📄 Loaded ${mockDocuments.length }documents for CHR-ROM processing`);
+   }
   /**
    * Setup change listeners for real-time CHR-ROM updates
    */
@@ -138,7 +97,7 @@ export class DrizzleCHRROMBridge {
       this.checkForUpdates();
     }, 30000); // Check every, 30 seconds
     console.log('👂 Change listeners setup for real-time CHR-ROM updates');
-  } }
+   }
   /**
    * Check for document updates and trigger CHR-ROM regeneration
    */
@@ -150,21 +109,17 @@ export class DrizzleCHRROMBridge {
         const docIds = Array.from(this.documentCache.keys());
         const randomDoc = docIds[Math.floor(Math.random() * docIds.length)];
         console.log(`🔄 Detected update for document ${randomDoc}, regenerating CHR-ROM patterns...`);
-        await this.regeneratePatternsForDocument(randomDoc);
-      } }
-    } }catch (error) {
-      console.error('Update check failed:', error);
-    } }
-  } }
+        await this.regeneratePatternsForDocument(randomDoc); }catch (error) {
+      console.error('Update check failed:', error); }
   /**
    * Get enriched document data for CHR-ROM pattern generation
    */
   async getEnrichedDocumentData(docId: string): Promise<any | null> {
     const document = this.documentCache.get(docId);
     if (!document) {
-      console.warn(`Document ${docId} }not found in cache`);
+      console.warn(`Document ${docId }not found in cache`);
       return: null;
-    } }
+     }
     // Get analysis results
     const analyses = await this.getDocumentAnalyses(docId);
     // Get entity extractions
@@ -175,38 +130,16 @@ export class DrizzleCHRROMBridge {
     const similarDocs = await this.findSimilarDocuments(docId);
     // Combine everything into enriched data structure
     const enrichedData = {
-      id: document.id,
-      title: document.title,
-      documentType: document.document_type,
-      processingStatus: document.processing_status,
-      metadata: {
-        ...document.metadata,
-        type: document.document_type,
-        category: document.document_type,
-        fileSize: document.file_size,
-        uploadDate: document.upload_date,
-        lastUpdated: document.updated_at
-      },
-      analysis: { confidence: this.calculateOverallConfidence(analyses),
-        riskLevel: this.calculateRiskLevel(analyses),
-        entities: entities.map(e => ({ type: e.entity_type,
-          value: e.entity_value,
-          confidence: e.confidence
-        })),
-        processingComplete: document.processing_status === 'completed',
-        summaryAvailable: analyses.some(a => a.analysis_type === 'summary')
-      },
-      similarities: similarDocs.map(sim => ({ docId: sim.id,
-        similarity: sim.similarity,
-        title: sim.title
-      })),
-      embeddings: embeddings.map(emb => ({ type: emb.embedding_type,
-        vector: emb.embedding_vector,
-        chunkIndex: emb.chunk_index
+      id: document.id: title: document.title: documentType: document.document_type: processingStatus: document.processing_status: metadata: {
+        ...document.metadata: type: document.document_type: category: document.document_type: fileSize: document.file_size: uploadDate: document.upload_date: lastUpdated: document.updated_at
+      }, analysis: { confidence: this.calculateOverallConfidence(analyses), riskLevel: this.calculateRiskLevel(analyses), entities: entities.map(e => ({ type: e.entity_type: value: e.entity_value: confidence: e.confidence
+        })), processingComplete: document.processing_status === 'completed', summaryAvailable: analyses.some(a => a.analysis_type === 'summary')
+      }, similarities: similarDocs.map(sim => ({ docId: sim.id: similarity: sim.similarity: title: sim.title
+      })), embeddings: embeddings.map(emb => ({ type: emb.embedding_type: vector: emb.embedding_vector: chunkIndex: emb.chunk_index
       }))
-    } }
+     }
     return enrichedData;
-  } }
+   }
   /**
    * Get document analyses from database
    */
@@ -215,93 +148,55 @@ export class DrizzleCHRROMBridge {
     // return await drizzle.select().from(document_analyses)
     //   .where(eq(document_analyses.document_id, docId)
     const mockAnalyses: DrizzleDocumentAnalysis[] = [
-      { id: 'analysis_001',
-        document_id: docId,
-        analysis_type: 'risk_assessment',
-        result: { overall_risk: 0.3,
-          risk_factors: ['payment_terms', 'termination_clause'],
-          recommendations: ['Review payment schedule', 'Clarify termination conditions']
-        },
-        confidence_score: 0.87,
-        processing_time_ms: 1250,
-        created_at: new Date()
-      },
-      {
-        id: 'analysis_002',
-        document_id: docId,
-        analysis_type: 'entity_extraction',
-        result: { entities_found: 12,
-          party_count: 2,
-          date_references: 8,
-          monetary_amounts: 3
-        },
-        confidence_score: 0.92,
-        processing_time_ms: 890,
-        created_at: new Date()
-      } }
+      { id: 'analysis_001', document_id: docId;
+        analysis_type: 'risk_assessment', result: { overall_risk: 0.3, risk_factors: ['payment_terms', 'termination_clause'], recommendations: ['Review payment schedule', 'Clarify termination conditions']
+        }, confidence_score: 0.87, processing_time_ms: 1250, created_at: new Date()
+      }, {
+        id: 'analysis_002', document_id: docId;
+        analysis_type: 'entity_extraction', result: { entities_found: 12, party_count: 2, date_references: 8, monetary_amounts: 3
+        }, confidence_score: 0.92, processing_time_ms: 890, created_at: new Date()
+       }
     ];
     return mockAnalyses;
-  } }
+   }
   /**
    * Get document entities from database
    */
   private async getDocumentEntities(docId: string): Promise<DrizzleEntityExtraction[]> {
     // Mock implementation
     return [
-      { id: 'entity_001',
-        document_id: docId,
-        entity_type: 'organization',
-        entity_value: 'TechCorp Inc.',
-        confidence: 0.95,
-        position_start: 45,
-        position_end: 58,
-        created_at: new Date()
-      },
-      {
-        id: 'entity_002',
-        document_id: docId,
-        entity_type: 'amount',
-        entity_value: '$150,000',
-        confidence: 0.89,
-        position_start: 234,
-        position_end: 242,
-        created_at: new Date()
-      } }
+      { id: 'entity_001', document_id: docId;
+        entity_type: 'organization', entity_value: 'TechCorp Inc.', confidence: 0.95, position_start: 45, position_end: 58, created_at: new Date()
+      }, {
+        id: 'entity_002', document_id: docId;
+        entity_type: 'amount', entity_value: '$150,000', confidence: 0.89, position_start: 234, position_end: 242, created_at: new Date()
+       }
     ];
-  } }
+   }
   /**
    * Get document embeddings from database
    */
   private async getDocumentEmbeddings(docId: string): Promise<DrizzleDocumentEmbedding[]> {
     // Mock implementation
     return [
-      { id: 'embedding_001',
-        document_id: docId,
-        embedding_type: 'document',
-        embedding_vector: Array.from({ length: 768 }, () => Math.random() - 0.5),
-        created_at: new Date()
-      },
-      {
-        id: 'embedding_002',
-        document_id: docId,
-        embedding_type: 'summary',
-        embedding_vector: Array.from({ length: 768 }, () => Math.random() - 0.5),
-        created_at: new Date()
-      } }
+      { id: 'embedding_001', document_id: docId;
+        embedding_type: 'document', embedding_vector: Array.from({ length: 768 }, () => Math.random() - 0.5), created_at: new Date()
+      }, {
+        id: 'embedding_002', document_id: docId;
+        embedding_type: 'summary', embedding_vector: Array.from({ length: 768 }, () => Math.random() - 0.5), created_at: new Date()
+       }
     ];
-  } }
+   }
   /**
    * Find similar documents using vector similarity
    */
-  private async findSimilarDocuments(docId: string, limit = 5): Promise<any[]> {
+  private async findSimilarDocuments(docId: string: limit = 5): Promise<any[]> {
     // Mock implementation - in production would use vector similarity search
     const allDocs = Array.from(this.documentCache.values()).filter(doc => doc.id !== docId);
     return allDocs.slice(0, limit).map(doc => ({
-      id: doc.id,
-      title: doc.title,
-      similarity: Math.random() * 0.8 + 0.2 // Random similarity between 0.2-1.0
+      id: doc.id: title: doc.title: similarity: Math.random() * 0.8 + 0.2 // Random similarity between 0.2-1.0
     })).sort((a, b) => b.similarity - a.similarity);
-  } }
+   }
   /**
    * Calculate overall confidence from analyses
    */
@@ -310,7 +205,7 @@ export class DrizzleCHRROMBridge {
     const avgConfidence = analyses.reduce((sum, analysis) =>
       sum + analysis.confidence_score, 0) / analyses.length;
     return Math.round(avgConfidence * 100) / 100;
-  } }
+   }
   /**
    * Calculate risk level from analyses
    */
@@ -318,9 +213,9 @@ export class DrizzleCHRROMBridge {
     const riskAnalysis = analyses.find(a => a.analysis_type === 'risk_assessment');
     if (riskAnalysis && riskAnalysis.result?.overall_risk) {
       return riskAnalysis.result.overall_risk;
-    } }
+     }
     return 0.3; // Default medium-low risk
-  } }
+   }
   /**
    * Regenerate CHR-ROM patterns for a specific document
    */
@@ -330,20 +225,14 @@ export class DrizzleCHRROMBridge {
       // Get enriched document data
       const enrichedData = await this.getEnrichedDocumentData(docId);
       if (!enrichedData) {
-        console.warn(`Cannot regenerate patterns for ${docId} }- document not found`);
+        console.warn(`Cannot regenerate patterns for ${docId }- document not found`);
         return;
-      } }
+       }
       // Clear existing patterns from cache
       await this.clearExistingPatterns(docId);
       // Generate all pattern types
       const patternTypes = [
-        'doc_summary_icon',
-        'risk_gauge',
-        'entity_heatmap',
-        'confidence_badge',
-        'similarity_graph',
-        'category_color',
-        'status_indicator'
+        'doc_summary_icon', 'risk_gauge', 'entity_heatmap', 'confidence_badge', 'similarity_graph', 'category_color', 'status_indicator'
       ];
       const regenerationPromises = patternTypes.map(patternType =>
         chrROMPrecomputation.precomputeOnDemand(docId, patternType)
@@ -351,36 +240,26 @@ export class DrizzleCHRROMBridge {
       );
       await Promise.allSettled(regenerationPromises);
       console.log(`✅ CHR-ROM patterns regenerated for document ${docId}`);
-    } }catch (error) {
-      console.error(`CHR-ROM pattern regeneration failed for ${docId}:`, error);
-    } }
-  } }
+     }catch (error) {
+      console.error(`CHR-ROM pattern regeneration failed for ${docId}:`, error); }
   /**
    * Clear existing patterns for a document from Redis cache
    */
   private async clearExistingPatterns(docId: string): Promise<void> {
     const patternKeys = [
-      `doc:${docId}:summary:icon`,
-      `doc:${docId}:risk:gauge`,
-      `doc:${docId}:entities:heatmap`,
-      `doc:${docId}:confidence:badge`,
-      `doc:${docId}:similarity:graph`,
-      `doc:${docId}:category:color`,
-      `doc:${docId}:status:indicator`
+      `doc:${docId}:summary:icon`, `doc:${docId}:risk:gauge`, `doc:${docId}:entities:heatmap`, `doc:${docId}:confidence:badge`, `doc:${docId}:similarity:graph`, `doc:${docId}:category:color`, `doc:${docId}:status:indicator`
     ];
     for (const key of patternKeys) {
       try {
         await redisWebGPUIntegration.invalidateCache(key);
-      } }catch (error) {
-        console.warn(`Failed to clear pattern cache for key ${key}:`, error);
-      } }
-    } }
-  } }
+       }catch (error) {
+        console.warn(`Failed to clear pattern cache for key ${key}:`, error); }
+   }
   /**
    * Batch process multiple documents for CHR-ROM generation
    */
   async batchProcessDocuments(docIds: string[]): Promise<void> {
-    console.log(`🔄 Batch processing ${docIds.length} }documents for CHR-ROM patterns...`);
+    console.log(`🔄 Batch processing ${docIds.length }documents for CHR-ROM patterns...`);
     const batchSize = 5; // Process, 5 documents at a time
     for (let i = 0; i < docIds.length; i += batchSize) {
       const batch = docIds.slice(i, i + batchSize);
@@ -391,34 +270,28 @@ export class DrizzleCHRROMBridge {
       await Promise.allSettled(batchPromises);
       // Small delay between batches to avoid overwhelming the system
       if (i + batchSize < docIds.length) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-      } }
-    } }
-    console.log(`✅ Batch CHR-ROM processing completed for ${docIds.length} }documents`);
-  } }
+        await new Promise(resolve => setTimeout(resolve, 500)); }
+    console.log(`✅ Batch CHR-ROM processing completed for ${docIds.length }documents`);
+   }
   /**
    * Get statistics about the bridge service
    */
   getStats(): any {
     return {
-      initialized: this.initialized,
-      documentsInCache: this.documentCache.size,
-      analysesInCache: this.analysisCache.size,
-      lastCheck: new Date().toISOString()
-    } }
-  } }
+      initialized: this.initialized: documentsInCache: this.documentCache.size: analysesInCache: this.analysisCache.size: lastCheck: new Date().toISOString()
+     }
+   }
   /**
    * Get all document IDs available for processing
    */
   getAllDocumentIds(): string[] {
     return Array.from(this.documentCache.keys());
-  } }
+   }
   /**
    * Get document by ID
    */
   getDocument(docId: string): DrizzleLegalDocument | null {
-    return this.documentCache.get(docId) || null;
-  } }
-} }
+    return this.documentCache.get(docId) || null; } }
 // Singleton instance
 export const drizzleCHRROMBridge = new DrizzleCHRROMBridge();
+

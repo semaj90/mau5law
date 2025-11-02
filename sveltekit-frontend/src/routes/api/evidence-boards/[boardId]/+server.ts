@@ -1,22 +1,14 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
 import {
-  evidenceBoards,
-  evidenceBoardItems,
-  evidenceBoardConnections,
-  evidence,
-  personsOfInterest
-} }from '$lib/database/enhanced-schema';
-import { eq, and } }from 'drizzle-orm';
-import { z } }from 'zod';
+  evidenceBoards, evidenceBoardItems, evidenceBoardConnections, evidence, personsOfInterest
+ } from '$lib/database/enhanced-schema';
+import { eq, and  } from 'drizzle-orm';
+import { z  } from 'zod';
 
 const updateEvidenceBoardSchema = z.object({
-  name: z.string().min(1).max(255).optional(),
-  description: z.string().optional(),
-  layout: z.any().optional(),
-  settings: z.any().optional(),
-  isPublic: z.boolean().optional()
+  name: z.string().min(1).max(255).optional(), description: z.string().optional(), layout: z.any().optional(), settings: z.any().optional(), isPublic: z.boolean().optional()
 });
 
 // GET /api/evidence-boards/[boardId] - Get evidence board with items and connections
@@ -25,7 +17,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const boardId = params.boardId;
 
@@ -37,13 +29,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     if (!board) {
       return json({ error: 'Evidence board not found' }, { status: 404 });
-    } }
+     }
 
     // Get board items with related data
     const items = await db
       .select({
-        item: evidenceBoardItems,
-        evidence: evidence,
+        item: evidenceBoardItems;
+        evidence: evidence;
         poi: personsOfInterest
       })
       .from(evidenceBoardItems)
@@ -58,18 +50,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .where(and(eq(evidenceBoardConnections.boardId, boardId), eq(evidenceBoardConnections.isVisible, true)));
 
     return json({
-      success: true,
+      success: true;
       data: {
-        board,
-        items,
-        connections
-      } }
+        board, items, connections
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error fetching evidence board:', error);
-    return json({ error: 'Failed to fetch evidence board' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to fetch evidence board' }, { status: 500 }); };
 
 // PUT /api/evidence-boards/[boardId] - Update evidence board
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
@@ -77,7 +65,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const boardId = params.boardId;
     const body = await request.json();
@@ -91,30 +79,27 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     if (!existingBoard) {
       return json({ error: 'Evidence board not found' }, { status: 404 });
-    } }
+     }
 
     // Update board
     const [updatedBoard] = await db
       .update(evidenceBoards)
       .set({
-        ...validatedData,
-        updatedAt: new Date()
+        ...validatedData: updatedAt: new Date()
       })
       .where(eq(evidenceBoards.id, boardId))
       .returning();
 
     return json({
-      success: true,
+      success: true;
       data: updatedBoard
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error updating evidence board:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation error', details: error.errors }, { status: 400 });
-    } }
-    return json({ error: 'Failed to update evidence board' }, { status: 500 });
-  } }
-};
+     }
+    return json({ error: 'Failed to update evidence board' }, { status: 500 }); };
 
 // DELETE /api/evidence-boards/[boardId] - Delete evidence board
 export const DELETE: RequestHandler = async ({ params, locals }) => {
@@ -122,7 +107,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const boardId = params.boardId;
 
@@ -134,13 +119,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
     if (!existingBoard) {
       return json({ error: 'Evidence board not found' }, { status: 404 });
-    } }
+     }
 
     // Soft delete board and all related items
     await db
       .update(evidenceBoards)
       .set({
-        isActive: false,
+        isActive: false;
         updatedAt: new Date()
       })
       .where(eq(evidenceBoards.id, boardId));
@@ -149,7 +134,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     await db
       .update(evidenceBoardItems)
       .set({
-        isVisible: false,
+        isVisible: false;
         updatedAt: new Date()
       })
       .where(eq(evidenceBoardItems.boardId, boardId));
@@ -158,18 +143,17 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     await db
       .update(evidenceBoardConnections)
       .set({
-        isVisible: false,
+        isVisible: false;
         updatedAt: new Date()
       })
       .where(eq(evidenceBoardConnections.boardId, boardId));
 
     return json({
-      success: true,
+      success: true;
       message: 'Evidence board deleted successfully'
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error deleting evidence board:', error);
-    return json({ error: 'Failed to delete evidence board' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to delete evidence board' }, { status: 500 }); };
+
 

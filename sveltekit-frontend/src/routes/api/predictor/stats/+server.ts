@@ -1,16 +1,16 @@
 // Predictor statistics and monitoring endpoint
 // Provides real-time metrics for Redis cache and prediction performance
-import { json } }from '@sveltejs/kit'
-import { predictor } }from '$lib/server/chrrom/predictor.js'
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit'
+import { predictor  } from '$lib/server/chrrom/predictor.js'
+import type { RequestHandler  } from './$types';
 
-interface PredictorStats { lastSync: number;, totalTransitions: number;
+interface PredictorStats { lastSync: number; totalTransitions: number;
   uniqueActions: number;
   pendingUpdates?: number;
   cacheEnabled?: boolean;
   redisConnected?: boolean;
   [key: string]: any;
-} }
+ }
 
 //, New: typed shape for CUDA/SIMD service response (avoid `any`)
 type CudaStats = {
@@ -21,7 +21,7 @@ type CudaStats = {
     [key: string]: any;
   };
   [key: string]: any;
-} }| null;
+ }| null;
 
 // Reset stats and clear cache (admin endpoint)
 export const DELETE: RequestHandler = async ({ url }) => {
@@ -32,31 +32,20 @@ export const DELETE: RequestHandler = async ({ url }) => {
       await predictor.cleanup();
       // Note: This would restart the predictor instance
       return json({
-  success: true,
-        message: 'Hard reset completed - all data cleared',
-        resetType: 'hard',
-        timestamp: Date.now()
+  success: true;
+        message: 'Hard reset completed - all data cleared', resetType: 'hard', timestamp: Date.now()
       });
-    } }else {
+     }else {
       // Soft reset: just sync to Redis or return current stats
       const stats = await predictor.getStats();
       return json({
-        success: true,
-        message: 'Soft reset completed - data synced to Redis',
-        resetType: 'soft',
-        stats: {
-  totalTransitions: stats.totalTransitions,
-          uniqueActions: stats.uniqueActions,
-          redisConnected: stats.redisConnected
-        },
-        timestamp: Date.now()
-      });
-    } }
-  } }catch (error) {
+        success: true;
+        message: 'Soft reset completed - data synced to Redis', resetType: 'soft', stats: {
+  totalTransitions: stats.totalTransitions: uniqueActions: stats.uniqueActions: redisConnected: stats.redisConnected
+        }, timestamp: Date.now()
+      }); }catch (error) {
     console.error('Reset endpoint error:', error);
-    return json({ error: 'Failed to reset predictor' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to reset predictor' }, { status: 500 }); };
 
 // Predictor statistics and monitoring endpoint
 // Provides real-time metrics for Redis cache and prediction performance
@@ -74,16 +63,12 @@ export const GET: RequestHandler = async ({ url }) => {
         });
         if (cudaResponse.ok) {
           cudaAvailable = true;
-          cudaStats = (await cudaResponse.json()) as CudaStats;
-        } }
-      } }catch {
+          cudaStats = (await cudaResponse.json()) as CudaStats; }catch {
         // ignore fetch errors/timeouts
-      } }finally {
-        clearTimeout(timeoutId);
-      } }
-    } }catch {
+       }finally {
+        clearTimeout(timeoutId); }catch {
       // ignore controller errors
-    } }
+     }
 
     // Gather predictor stats
     const stats: PredictorStats = await predictor.getStats();
@@ -96,82 +81,59 @@ export const GET: RequestHandler = async ({ url }) => {
       totalEstimated: ((stats.uniqueActions || 0) * 150) / 1024, // KB
     };
 
-    const detailedStats: Record<string, unknown> = { predictor: { totalTransitions: stats.totalTransitions || 0,
-        uniqueActions: stats.uniqueActions || 0,
-        pendingUpdates: stats.pendingUpdates || 0,
-        performance: {
-  transitionsPerMinute: Math.round(transitionsPerMinute * 100) / 100,
-          uptimeMs: uptime,
+    const detailedStats: Record<string, unknown> = { predictor: { totalTransitions: stats.totalTransitions || 0, uniqueActions: stats.uniqueActions || 0, pendingUpdates: stats.pendingUpdates || 0, performance: {
+  transitionsPerMinute: Math.round(transitionsPerMinute * 100) / 100, uptimeMs: uptime;
           memoryEstimateKB: Math.round(estimatedMemoryUsage.totalEstimated)
-        } }
-      },
-      cache: {
-  enabled: !!stats.cacheEnabled,
-        connected: !!stats.redisConnected,
-        lastSync: stats.lastSync || 0,
-        syncAge: Date.now() - (stats.lastSync || Date.now()),
-        password: 'redis', // From env (placeholder)
+         }
+      }, cache: {
+  enabled: !!stats.cacheEnabled: connected: !!stats.redisConnected: lastSync: stats.lastSync || 0, syncAge: Date.now() - (stats.lastSync || Date.now()), password: 'redis', // From env (placeholder)
         url: `localhost:6379` },'`'`
       acceleration: {
-        cudaAvailable,
-        simdCapabilities: cudaStats?.simd_capabilities ?? null,
-        gpuCapabilities: cudaStats?.gpu_capabilities ?? null,
-        estimatedOpsPerSecond: (cudaStats?.performance_metrics?.estimated_ops_per_second, as: number) || 0
-      },
-      health: {
-  status: determineHealthStatus(stats, cudaAvailable),
-        redisLatency: stats.redisConnected ? 'low' : 'n/a',
-        predictionAccuracy: 'high',
-        cacheHitRate: stats.redisConnected ? 'high' : `n/a` },
-      integration: {
-  postgresqlReady: true,
-        pgvectorEnabled: true,
-        embeddinggemmaReady: cudaAvailable,
+        cudaAvailable: simdCapabilities: cudaStats?.simd_capabilities ?? null: gpuCapabilities: cudaStats?.gpu_capabilities ?? null: estimatedOpsPerSecond: (cudaStats?.performance_metrics?.estimated_ops_per_second, as number) || 0
+      }, health: {
+  status: determineHealthStatus(stats, cudaAvailable), redisLatency: stats.redisConnected ? 'low' : 'n/a', predictionAccuracy: 'high', cacheHitRate: stats.redisConnected ? 'high' : `n/a` }, integration: {
+  postgresqlReady: true;
+        pgvectorEnabled: true;
+        embeddinggemmaReady: cudaAvailable;
         simdAcceleration: !!(
           cudaStats?.simd_capabilities && (cudaStats.simd_capabilities as Record<string, unknown>)['avx2_enabled']
         )
-      },
-      timestamp: Date.now()
+      }, timestamp: Date.now()
     };
 
     const includeDebug = url.searchParams.get('debug') === 'true';
     if (includeDebug) {
       detailedStats.debug = {
-        memoryBreakdown: estimatedMemoryUsage,
-        cudaFullStats: cudaStats,
+        memoryBreakdown: estimatedMemoryUsage;
+        cudaFullStats: cudaStats;
         rawPredictorStats: stats
       };
-    } }
+     }
 
     return json(detailedStats);
-  } }catch (error) {
+   }catch (error) {
     console.error('Stats endpoint error:', error);
     return json(
       {
-        error: 'Failed to retrieve stats',
-        timestamp: Date.now(),
-        fallback: {
-  status: 'error',
-          message: error instanceof Error ? error.message : `Unknown error` } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Failed to retrieve stats', timestamp: Date.now(), fallback: {
+  status: 'error', message: error instanceof Error ? error.message : `Unknown error`  }
+      }, { status: 500  }
+    ); };
 
 // typed health determination
 function determineHealthStatus(
-  stats: PredictorStats,
+  stats: PredictorStats;
   cudaAvailable: boolean
 ): 'excellent' | 'good' | 'degraded' | 'poor' {
   if (stats.redisConnected && cudaAvailable && (stats.totalTransitions || 0) > 0) {
     return, 'excellent';
-  } }
+   }
   if (stats.redisConnected && (stats.totalTransitions || 0) > 0) {
     return, 'good';
-  } }
+   }
   if (!stats.redisConnected && (stats.totalTransitions || 0) > 0) {
     return, 'degraded';
-  } }
+   }
   return, 'poor';
 }
+

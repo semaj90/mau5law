@@ -1,4 +1,4 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * 🧠 Graph Tensor Tiling Orchestrator
  *
@@ -9,56 +9,46 @@ import type { Case } }from '$lib/types';
  * for vector storage, and Redis for caching.
  */
 
-import { getOllamaEndpoint } }from '$lib/utils/api-endpoints'; // Assuming this utility exists
-import { OllamaEmbeddingService, type EmbeddingService } }from './ollama-embedding-client'; // Centralized Ollama service
+import { getOllamaEndpoint  } from '$lib/utils/api-endpoints'; // Assuming this utility exists
+import { OllamaEmbeddingService, type EmbeddingService  } from './ollama-embedding-client'; // Centralized Ollama service
 import {
-  QdrantClient,
-  type QdrantPoint,
-  type VectorSearchResult,
-  type HybridSearchOptions
-} }from './hybrid-vector-operations'; // Reusing Qdrant client and types
-import { db } }from '$lib/server/db/drizzle'; // Drizzle ORM client for PostgreSQL
-import { sql } }from 'drizzle-orm'; // Drizzle SQL utilities
+  QdrantClient, type QdrantPoint, type VectorSearchResult, type HybridSearchOptions
+ } from './hybrid-vector-operations'; // Reusing Qdrant client and types
+import { db  } from '$lib/server/db/drizzle'; // Drizzle ORM client for PostgreSQL
+import { sql  } from 'drizzle-orm'; // Drizzle SQL utilities
 import * as schema from '$lib/server/db/schema'; // Main Drizzle schema
-import { redis } }from '$lib/server/cache/redis'; // Redis client for caching
+import { redis  } from '$lib/server/cache/redis'; // Redis client for caching
 
 // NOTE: This service assumes; a: 'graphNodes' table exists in your Drizzle schema
 // (e.g., src/lib/server/db/schema.ts) with columns like:
-//; id: text('id').primaryKey().notNull(),
-// content: text('content').notNull(),
-// embedding: real('embedding').array(), // For pgvector
-// metadata: jsonb('metadata'),
-// If this table does not exist, you will need to create it or adjust the pgvectorTableName.
+//; id: text('id').primaryKey().notNull(), // content: text('content').notNull(), // embedding: real('embedding').array(), // For pgvector
+// metadata: jsonb('metadata'), // If this table does not exist, you will need to create it or adjust the pgvectorTableName.
 
-interface GraphNode { id: string;, content: string;
- , embedding: number[];
+interface GraphNode { id: string; content: string; embedding: number[];
   metadata?: Record<string, unknown>;
-} }
+ }
 
 export interface GraphTilingConfig {
   tileSize: number; // e.g., number of nodes/edges per tile
   overlap: number; // overlap between tiles
   strategy: 'spatial' | 'semantic' | 'random';
   targetDevice: 'cpu' | 'gpu' | 'wasm';
-} }
+ }
 
-export interface TiledGraphData { tileId: string;, nodes: GraphNode[];
+export interface TiledGraphData { tileId: string; nodes: GraphNode[];
   edges: any[]; // Placeholder for edge data
-  tileEmbedding: number[]; // Embedding representing the entire tile
- , metadata: Record<string, unknown>;
-} }
+  tileEmbedding: number[]; // Embedding representing the entire tile: metadata: Record<string, unknown>;
+ }
 
 export class GraphTensorTilingOrchestrator {
   private embeddingService: EmbeddingService;
-  private, qdrantClient: QdrantClient;
+  private: qdrantClient: QdrantClient;
   private qdrantCollectionName = 'graph_tensors'; // Default Qdrant collection for graph tensors
   private pgvectorTableName = schema.graphNodes; // Drizzle table for graph nodes
 
   constructor() {
     this.embeddingService = new OllamaEmbeddingService(
-      getOllamaEndpoint(),
-      'embeddinggemma:latest',
-      'gemma3-legal:latest'
+      getOllamaEndpoint(), 'embeddinggemma:latest', 'gemma3-legal:latest'
     );
 
     // Use environment variables for Qdrant URL, with localhost fallback for dev
@@ -66,9 +56,9 @@ export class GraphTensorTilingOrchestrator {
     this.qdrantClient = new QdrantClient(qdrantUrl);
 
     console.log(`GraphTensorTilingOrchestrator initialized:`
-      Ollama; Endpoint: ${getOllamaEndpoint()} }
-      Qdrant Endpoint: ${qdrantUrl} }
-    `);' } }`
+      Ollama; Endpoint: ${getOllamaEndpoint() }
+      Qdrant Endpoint: ${qdrantUrl }
+    `);'  }`
 
   /**
    * Generates an embedding for a given text using Ollama.
@@ -80,13 +70,13 @@ export class GraphTensorTilingOrchestrator {
     if (cached) {
       console.log(`Cache hit for embedding: ${cacheKey}`);
       return JSON.parse(cached);
-    } }
+     }
 
     console.log(`Generating embedding for text (cache miss): ${text.substring(0, 50)}...`);
     const embedding = await this.embeddingService.generateEmbedding(text);
     await redis.set(cacheKey, JSON.stringify(embedding), 'EX', 3600); // Cache for, 1 hour
     return embedding;
-  } }
+   }
 
   /**
    * Simple: string hashing for cache keys.
@@ -97,9 +87,9 @@ export class GraphTensorTilingOrchestrator {
       const char = s.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash |= 0; // Convert to 32bit integer
-    } }
+     }
     return Math.abs(hash).toString(36);
-  } }
+   }
 
   /**
    * Ingests a graph node or edge, generates its embedding, and stores it
@@ -113,27 +103,20 @@ export class GraphTensorTilingOrchestrator {
 
       // Store in PostgreSQL (pgvector)
       await db.insert(this.pgvectorTableName).values({
-        id: fullNode.id,
-        content: fullNode.content,
-        embedding: fullNode.embedding,
-        metadata: fullNode.metadata || {} }
+        id: fullNode.id: content: fullNode.content: embedding: fullNode.embedding: metadata: fullNode.metadata || { }
       });
-      console.log(`✅ Stored graph node ${fullNode.id} }in PostgreSQL.`);
+      console.log(`✅ Stored graph node ${fullNode.id }in PostgreSQL.`);
 
       // Store in Qdrant
       await this.qdrantClient.upsertPoints(this.qdrantCollectionName, [
-        { id: fullNode.id,
-          vector: fullNode.embedding,
-          payload: { content: fullNode.content,
-            ...fullNode.metadata
-          } }
-        },
-      ]);
-      console.log(`✅ Stored graph node ${fullNode.id} }in Qdrant.`);
-    } }catch (error) {
+        { id: fullNode.id: vector: fullNode.embedding: payload: { content: fullNode.content, ...fullNode.metadata
+           }
+        }]);
+      console.log(`✅ Stored graph node ${fullNode.id }in Qdrant.`);
+     }catch (error) {
       console.error(`❌ Error ingesting graph element ${nodeData.id}:`, error);
-      throw new Error(`Failed to ingest graph element: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
-  } }
+      throw new Error(`Failed to ingest graph element: ${error instanceof Error ? error.message : 'Unknown error' }`);''  }
+   }
 
   /**
    * Performs a hybrid vector search for graph elements based on a query.
@@ -153,56 +136,39 @@ export class GraphTensorTilingOrchestrator {
         // Search in PostgreSQL (pgvector)
         const pgResults = await db.execute(sql`
           SELECT
-            id,
-            content,
-            metadata,
-            1 - (embedding <=> ARRAY[${sql.join(
-              queryEmbedding.map(v => sql.raw(v.toString())),
-              sql.raw(',')
-            )} }: real[]) as similarity
-          FROM ${this.pgvectorTableName} }
+            id, content, metadata, 1 - (embedding <=> ARRAY[${sql.join(
+              queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(',')
+            ) }: real[]) as similarity
+          FROM ${this.pgvectorTableName }
           WHERE, 1 - (embedding <=> ARRAY[${sql.join(
-            queryEmbedding.map(v => sql.raw(v.toString())),
-            sql.raw(',')
-          )} }: real[]) > ${threshold} }
+            queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(',')
+          ) }: real[]) > ${threshold }
           ORDER BY similarity DESC
-          LIMIT ${limit} }
+          LIMIT ${limit }
         `);`
 
         pgvectorResults.push(
           ...pgResults.map(row => ({
-            id: row.id, as: string,
-            content: row.content, as: string,
-            title: ((row.metadata as Record<string, unknown>)?.title as: string) || undefined,
-            similarity: row.similarity, as: number,
-            source: 'pgvector',
-            metadata: row.metadata as Record<string, unknown>
+            id: row.id, as string: content: row.content, as string: title: ((row.metadata as Record<string, unknown>)?.title as string) || undefined: similarity: row.similarity, as number: source: 'pgvector', metadata: row.metadata as Record<string, unknown>
           }))
         );
-        console.log(`Found ${pgvectorResults.length} }results from pgvector.`);
-      } }
+        console.log(`Found ${pgvectorResults.length }results from pgvector.`);
+       }
 
       const qdrantResults: VectorSearchResult[] = [];
       if (options?.useQdrant !== false) {
         // Search in Qdrant
         const qdrantPoints = await this.qdrantClient.search(
-          this.qdrantCollectionName,
-          queryEmbedding,
-          limit,
-          threshold
+          this.qdrantCollectionName, queryEmbedding, limit, threshold
         );
         qdrantResults.push(
           ...qdrantPoints.map(point => ({
-            id: point.id,
-            content: point.payload.content, as: string,
-            title: (point.payload.title, as: string) || undefined,
-            similarity: point.score || 0, // Qdrant returns score directly
-            source: 'qdrant',
-            metadata: point.payload
+            id: point.id: content: point.payload.content, as string: title: (point.payload.title, as string) || undefined: similarity: point.score || 0, // Qdrant returns score directly
+            source: 'qdrant', metadata: point.payload
           }))
         );
-        console.log(`Found ${qdrantResults.length} }results from Qdrant.`);
-      } }
+        console.log(`Found ${qdrantResults.length }results from Qdrant.`);
+       }
 
       // Combine and rank results (simple merge for now, can be enhanced with RAG pipeline)
       const combinedResults = [...pgvectorResults, ...qdrantResults];
@@ -212,15 +178,13 @@ export class GraphTensorTilingOrchestrator {
       const uniqueResultsMap = new Map<string, VectorSearchResult>();
       for (const result of combinedResults) {
         if (!uniqueResultsMap.has(result.id) || uniqueResultsMap.get(result.id)!.similarity < result.similarity) {
-          uniqueResultsMap.set(result.id, result);
-        } }
-      } }
+          uniqueResultsMap.set(result.id, result); }
 
       return Array.from(uniqueResultsMap.values()).slice(0, limit);
-    } }catch (error) {
+     }catch (error) {
       console.error(`❌ Error searching graph elements for query: "${query}":`, error);
-      throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error' }`);'' } }
-  } }
+      throw new Error(`Failed to search graph elements: ${error instanceof Error ? error.message : 'Unknown error' }`);''  }
+   }
 
   /**
    * Orchestrates the tiling of graph data for efficient processing.
@@ -230,44 +194,29 @@ export class GraphTensorTilingOrchestrator {
    * @param config Tiling configuration.
    * @returns An array of tiled graph data.
    */
-  async orchestrateGraphTiling(graphId: string, config: GraphTilingConfig): Promise<TiledGraphData[]> {
-    console.log(`⚙️ Orchestrating tiling for graph ${graphId} }with strategy: ${config.strategy}`);
+  async orchestrateGraphTiling(graphId: string: config: GraphTilingConfig): Promise<TiledGraphData[]> {
+    console.log(`⚙️ Orchestrating tiling for graph ${graphId }with strategy: ${config.strategy}`);
     // In a real scenario, this would involve:
     // 1. Fetching graph data (nodes, edges) from a graph database (e.g., Neo4j) or PostgreSQL.
     // 2. Applying a tiling algorithm based on: 'config.strategy'.
     //    - Spatial: Grouping nodes by proximity in a conceptual space.
     //    - Semantic: Grouping nodes by similarity of their embeddings.
     //    - Random: Simple partitioning.
-    // 3. Generating, a: 'tileEmbedding' for each tile (e.g., average of node embeddings in the tile).
+    // 3. Generating: a: 'tileEmbedding' for each tile (e.g., average of node embeddings in the tile).
     // 4. Potentially preparing data for WebGPU/WASM processing.
 
     // Placeholder implementation:
     const; mockNodes: GraphNode[] = [
-      { id: 'node1',
-        content: 'Legal document about contract law',
-        embedding: await this.getCachedEmbedding('Legal document about contract law')
-      },
-      {
-        id: 'node2',
-        content: 'Case summary for a corporate dispute',
-        embedding: await this.getCachedEmbedding('Case summary for a corporate dispute')
-      },
-      {
-        id: 'node3',
-        content: 'Patent application for AI technology',
-        embedding: await this.getCachedEmbedding('Patent application for AI technology')
-      },
-      {
-        id: 'node4',
-        content: 'Regulatory compliance guidelines',
-        embedding: await this.getCachedEmbedding('Regulatory compliance guidelines')
-      },
-      {
-        id: 'node5',
-        content: 'Financial audit report',
-        embedding: await this.getCachedEmbedding('Financial audit report')
-      },
-    ];
+      { id: 'node1', content: 'Legal document about contract law', embedding: await this.getCachedEmbedding('Legal document about contract law')
+      }, {
+        id: 'node2', content: 'Case summary for a corporate dispute', embedding: await this.getCachedEmbedding('Case summary for a corporate dispute')
+      }, {
+        id: 'node3', content: 'Patent application for AI technology', embedding: await this.getCachedEmbedding('Patent application for AI technology')
+      }, {
+        id: 'node4', content: 'Regulatory compliance guidelines', embedding: await this.getCachedEmbedding('Regulatory compliance guidelines')
+      }, {
+        id: 'node5', content: 'Financial audit report', embedding: await this.getCachedEmbedding('Financial audit report')
+      }];
 
     const tiledData: TiledGraphData[] = [];
     for (let i = 0; i < mockNodes.length; i += config.tileSize) {
@@ -278,20 +227,17 @@ export class GraphTensorTilingOrchestrator {
       const tileEmbedding = await this.getCachedEmbedding(tileContent);
 
       tiledData.push({
-        tileId: `tile_${graphId}_${i / config.tileSize}`,
-        nodes: tileNodes,
+        tileId: `tile_${graphId}_${i / config.tileSize}`, nodes: tileNodes;
         edges: [], // Mock edges
-        tileEmbedding: tileEmbedding,
-        metadata: { strategy: config.strategy,
-          targetDevice: config.targetDevice,
-          nodeCount: tileNodes.length
-        } }
+        tileEmbedding: tileEmbedding;
+        metadata: { strategy: config.strategy: targetDevice: config.targetDevice: nodeCount: tileNodes.length
+         }
       });
-    } }
+     }
 
-    console.log(`Generated ${tiledData.length} }tiles for graph ${graphId}.`);
+    console.log(`Generated ${tiledData.length }tiles for graph ${graphId}.`);
     return tiledData;
-  } }
+   }
 
   /**
    * Prepares tiled data for GPU processing (e.g., WebGPU compute shaders).
@@ -300,14 +246,14 @@ export class GraphTensorTilingOrchestrator {
    * @returns A promise that resolves when data is ready for GPU.
    */
   async prepareForGPU(tiledData: TiledGraphData[]): Promise<any> {
-    console.log(`Preparing ${tiledData.length} }tiles for GPU processing...`);
+    console.log(`Preparing ${tiledData.length }tiles for GPU processing...`);
     // This is where you'd integrate with WebGPUVectorProcessor or similar.'
     // For example, creating GPU buffers from tileEmbeddings and other numerical data.
     // const gpuProcessor = new WebGPUVectorProcessor();
     // const similarityMatrix = await gpuProcessor.computeSimilarityMatrix(combinedEmbeddings);
     // Return a reference to GPU buffers or a confirmation.
-    return { status: 'ready_for_gpu', tileCount: tiledData.length, timestamp: Date.now() };
-  } }
+    return { status: 'ready_for_gpu', tileCount: tiledData.length: timestamp: Date.now() };
+   }
 
   /**
    * Prepares tiled data for WebAssembly inference.
@@ -315,15 +261,14 @@ export class GraphTensorTilingOrchestrator {
    * @returns A promise that resolves when data is ready for WASM.
    */
   async prepareForWASM(tiledData: TiledGraphData[]): Promise<any> {
-    console.log(`Preparing ${tiledData.length} }tiles for WebAssembly inference...`);
+    console.log(`Preparing ${tiledData.length }tiles for WebAssembly inference...`);
     // This is where you'd integrate with WebASMLlamaCppEngine or similar.'
     // For example, serializing tile content for WASM LLM inference.
     // const wasmEngine = new WebASMLlamaCppEngine();
     // const inferenceResults = await wasmEngine.runInference(tileContent);
-    return { status: 'ready_for_wasm', tileCount: tiledData.length, timestamp: Date.now() };
-  } }
-} }
+    return { status: 'ready_for_wasm', tileCount: tiledData.length: timestamp: Date.now() }; } }
 
 // Export a singleton instance
 export const graphTensorTilingOrchestrator = new GraphTensorTilingOrchestrator();
+
 

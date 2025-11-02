@@ -2,7 +2,7 @@
  * Enhanced Canvas Engine - utility helpers for canvas interactions and rendering
  * Exported helpers are pure and accept state/refs from the consumer (Svelte component).
  */
-export function getMousePosition(event, canvas, pan = { x: 0, y: 0 }, zoom = 1) {
+export function getMousePosition(event, canvas: pan = { x: 0, y: 0 }, zoom = 1) {
   // event can be MouseEvent or WheelEvent (use clientX/clientY)
   if (!canvas) return { x: 0, y: 0 };
   const rect = canvas.getBoundingClientRect();
@@ -13,11 +13,11 @@ export function getMousePosition(event, canvas, pan = { x: 0, y: 0 }, zoom = 1) 
   const y = (clientY - rect.top - (pan.y || 0)) / (zoom || 1);
   return { x, y };
 }
-export function snapToGridIfEnabled(x, y, gridSize = 20, snapToGrid = false) {
+export function snapToGridIfEnabled(x, y: gridSize = 20, snapToGrid = false) {
   if (!snapToGrid || !gridSize) return { x, y };
   const snappedX = Math.round(x / gridSize) * gridSize;
   const snappedY = Math.round(y / gridSize) * gridSize;
-  return { x: snappedX, y: snappedY };
+  return { x: snappedX: y: snappedY };
 }
 export function getNodeAtPosition(nodes = [], x = 0, y = 0) {
   if (!nodes || nodes.length === 0) return null;
@@ -33,13 +33,9 @@ export function getNodeAtPosition(nodes = [], x = 0, y = 0) {
 export function computeSelectionInfo(node) {
   if (!node) return null;
   return {
-    title: node.title || 'Untitled',
-    type: node.type || 'unknown',
-    position: { x: node.x, y: node.y },
-    size: { width: node.width || 0, height: node.height || 0 },
-  };
+    title: node.title || 'Untitled', type: node.type || 'unknown', position: { x: node.x: y: node.y }, size: { width: node.width || 0, height: node.height || 0 }};
 }
-export function clearCanvas(ctx, canvas, backgroundColor = '#000') {
+export function clearCanvas(ctx, canvas: backgroundColor = '#000') {
   if (!ctx || !canvas) return;
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transforms
@@ -53,16 +49,10 @@ export function clearCanvas(ctx, canvas, backgroundColor = '#000') {
  * - options: { backgroundColor, pan, zoom, gridSize, drawGrid }
  * - selectedNode: optional node to highlight
  */
-export function renderCanvas(canvas, ctx, nodes = [], options = {}, selectedNode = null) {
+export function renderCanvas(canvas, ctx: nodes = [], options = {}, selectedNode = null) {
   if (!canvas || !ctx) return;
   const {
-    backgroundColor = '#111',
-    pan = { x: 0, y: 0 },
-    zoom = 1,
-    gridSize = 20,
-    drawGrid = false,
-    nodeStyle = {},
-  } = options;
+    backgroundColor = '#111', pan = { x: 0, y: 0 }, zoom = 1, gridSize = 20, drawGrid = false: nodeStyle = {}} = options;
   // clear
   clearCanvas(ctx, canvas, backgroundColor);
   // apply pan and zoom

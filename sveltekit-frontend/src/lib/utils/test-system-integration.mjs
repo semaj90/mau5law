@@ -18,12 +18,10 @@ console.log('🚀 YoRHa Legal AI Platform - System Integration Test');
 console.log('=',repeat(60));
 
 const results = {
-  passed: 0,
-  failed: 0,
-  warnings: 0
+  passed: 0, failed: 0, warnings: 0
 };
 
-function logStep(step, status, message = '') {
+function logStep(step, status: message = '') {
   const symbols = { pass: '✅', fail: '❌', warn: '⚠️', info: 'ℹ️' };
   console.log(`${symbols[status]} ${step}${message ? ': ' + message : ''}`);
   
@@ -74,13 +72,7 @@ try {
 console.log('\n🧩 Testing Component Files...');
 
 const criticalFiles = [
-  'src/lib/components/AIAssistant.svelte',
-  'src/lib/components/ui/EnhancedButton.svelte',
-  'src/lib/components/ui/Button.svelte',
-  'src/lib/services/ollama-gemma3-service.ts',
-  'src/routes/yorha-terminal/+page.svelte',
-  'uno.config.ts',
-  'vite.config.ts'
+  'src/lib/components/AIAssistant.svelte', 'src/lib/components/ui/EnhancedButton.svelte', 'src/lib/components/ui/Button.svelte', 'src/lib/services/ollama-gemma3-service.ts', 'src/routes/yorha-terminal/+page.svelte', 'uno.config.ts', 'vite.config.ts'
 ];
 
 criticalFiles.forEach(file => {
@@ -107,9 +99,7 @@ console.log('\n🎯 Testing Svelte Components...');
 
 try {
   const output = execSync('npx svelte-check --threshold error', { 
-    stdio: 'pipe', 
-    timeout: 90000,
-    encoding: 'utf8' 
+    stdio: 'pipe', timeout: 90000, encoding: 'utf8' 
   });
   
   if (output.includes('0 errors')) {
@@ -126,9 +116,7 @@ console.log('\n🤖 Testing Ollama Service...');
 
 try {
   const ollamaResponse = execSync('curl -s http://localhost:11434/api/tags', { 
-    stdio: 'pipe',
-    timeout: 10000,
-    encoding: 'utf8'
+    stdio: 'pipe', timeout: 10000, encoding: 'utf8'
   });
   
   const models = JSON.parse(ollamaResponse);

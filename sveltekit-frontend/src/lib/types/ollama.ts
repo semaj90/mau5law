@@ -1,5 +1,5 @@
 // sveltekit-frontend/src/lib/types/ollama.ts
-export interface OllamaConfig { baseUrl: string;, chatModel: string;
+export interface OllamaConfig { baseUrl: string; chatModel: string;
   embeddingModel: string;
   model: string; // Generic model field
   url: string; // Generic URL field
@@ -8,5 +8,6 @@ export interface OllamaConfig { baseUrl: string;, chatModel: string;
   temperature: number;
   numCtx: number;
   numPredict: number;
-} }
+ }
+
 

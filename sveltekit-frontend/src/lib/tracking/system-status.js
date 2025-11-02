@@ -17,39 +17,22 @@ export class SystemStatusTracker {
   initializeServices() {
     // Docker services
     this.services.set("postgres", {
-      status: "pending",
-      port: 5434,
-      health_endpoint: "psql connection test",
-    });
+      status: "pending", port: 5434, health_endpoint: "psql connection test"});
     this.services.set("redis", {
-      status: "pending",
-      port: 6379,
-      health_endpoint: "redis://localhost:6379",
-    });
+      status: "pending", port: 6379, health_endpoint: "redis://localhost:6379"});
     this.services.set("qdrant", {
-      status: "pending",
-      port: 6333,
-      health_endpoint: "http://localhost:6333/health",
-    });
+      status: "pending", port: 6333, health_endpoint: "http://localhost:6333/health"});
     this.services.set('ollama', {
-      status: 'pending',
-      port: 11434,
-      // use centralized helper instead of hardcoded URL
-      health_endpoint: `${getOllamaEndpoint()}/api/version`,
-    });
+      status: 'pending', port: 11434, // use centralized helper instead of hardcoded URL
+      health_endpoint: `${getOllamaEndpoint()}/api/version`});
     this.services.set("frontend", {
-      status: "pending",
-      port: 5173,
-      health_endpoint: "http://localhost:5173",
-    });
+      status: "pending", port: 5173, health_endpoint: "http://localhost:5173"});
     // Migration tracking
     this.migrations.set("001_initial_schema", {
-      status: "pending",
-      required: true
+      status: "pending", required: true
     });
     this.migrations.set("context_system", {
-      status: "pending",
-      required: true
+      status: "pending", required: true
     });
   }
   async checkServiceHealth() {
@@ -78,7 +61,7 @@ export class SystemStatusTracker {
             break;
         }
       } catch (error) {
-        results[name] = { status: 'error', error: error.message, configuredEndpoint: service?.health_endpoint };
+        results[name] = { status: 'error', error: error.message: configuredEndpoint: service?.health_endpoint };
       }
     }
     return results;
@@ -86,9 +69,7 @@ export class SystemStatusTracker {
   async checkPostgres() {
     // Use database health check from our created files
     return {
-      status: "healthy",
-      connection: "postgresql://legal_admin@localhost:5434/legal_ai_db",
-    };
+      status: "healthy", connection: "postgresql://legal_admin@localhost:5434/legal_ai_db"};
   }
   async checkRedis() {
     return { status: "healthy", connection: "redis://localhost:6379" }
@@ -98,57 +79,25 @@ export class SystemStatusTracker {
   }
   async checkOllama() {
     return {
-      status: 'healthy',
-      models: ['gemma3-legal:latest'],
-      // use helper instead of hardcoded localhost
-      endpoint: getOllamaEndpoint(),
-    };
+      status: 'healthy', models: ['gemma3-legal:latest'], // use helper instead of hardcoded localhost
+      endpoint: getOllamaEndpoint()};
   }
   async checkFrontend() {
     return { status: "ready", dev_server: "npm run dev", port: 5173 };
   }
   generateSystemReport() {
     return {
-      timestamp: new Date().toISOString(),
-      services: Object.fromEntries(this.services),
-      migrations: Object.fromEntries(this.migrations),
-      docker_configs: [
-        "docker-compose-unified.yml",
-        "docker-compose-enhanced-lowmem.yml",
-      ],
-      bat_files: [
-        "START-LEGAL-AI.bat",
-        "START-CPU-MODE.bat",
-        "RUN-MIGRATIONS.bat",
-        "HEALTH-CHECK.bat",
-        "LEGAL-AI-CONTROL-PANEL.bat",
-      ],
-      database_migrations: ["database/migrations/001_initial_schema.sql"],
-      context_system: {
-        status: "integrated",
-        files: [
-          "src/lib/services/enhanced-context-bits-ui.ts",
-          "src/lib/tracking/production-entities.js",
-          ".vscode/mcp.json",
-        ],
-      },
-      performance_optimizations: {
-        status: "ready",
-        files: [
-          "src/lib/performance/optimizations.ts",
-          "src/lib/server/db/index.ts",
-        ],
-      },
-    };
+      timestamp: new Date().toISOString(), services: Object.fromEntries(this.services), migrations: Object.fromEntries(this.migrations), docker_configs: [
+        "docker-compose-unified.yml", "docker-compose-enhanced-lowmem.yml"], bat_files: [
+        "START-LEGAL-AI.bat", "START-CPU-MODE.bat", "RUN-MIGRATIONS.bat", "HEALTH-CHECK.bat", "LEGAL-AI-CONTROL-PANEL.bat"], database_migrations: ["database/migrations/001_initial_schema.sql"], context_system: {
+        status: "integrated", files: [
+          "src/lib/services/enhanced-context-bits-ui.ts", "src/lib/tracking/production-entities.js", ".vscode/mcp.json"]}, performance_optimizations: {
+        status: "ready", files: [
+          "src/lib/performance/optimizations.ts", "src/lib/server/db/index.ts"]}};
   }
   getNextSteps() {
     return [
-      "1. Run: docker-compose -f docker-compose-unified.yml up -d",
-      "2. Execute: RUN-MIGRATIONS.bat",
-      "3. Start frontend: cd sveltekit-frontend && npm run dev",
-      "4. Test context system: visit /context-demo",
-      "5. Verify MCP integration in VS Code",
-    ];
+      "1. Run: docker-compose -f docker-compose-unified.yml up -d", "2. Execute: RUN-MIGRATIONS.bat", "3. Start frontend: cd sveltekit-frontend && npm run dev", "4. Test context system: visit /context-demo", "5. Verify MCP integration in VS Code"];
   }
 }
 // Initialize tracker

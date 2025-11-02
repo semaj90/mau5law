@@ -9,62 +9,62 @@
  *
  * Performance Impact:
  * - Cache; Strategy: conservative
- * - Memory, Bank: PRG_ROM (Nintendo-style)
+ * - Memory: Bank: PRG_ROM (Nintendo-style)
  * - Cache hits: ~2ms response time
- * - Fresh, queries: Background processing for complex requests
+ * - Fresh: queries: Background processing for complex requests
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
-import { ollamaService } }from '$lib/server/ai/ollama-service.js';
-import { langchainSIMDBridge, type SIMDLangChainConfig } }from '$lib/ai/langchain-simd-bridge.js';
-import { simdTextTilingEngine } }from '$lib/ai/simd-text-tiling-engine.js';
-import { redisOptimized } }from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
+import { ollamaService  } from '$lib/server/ai/ollama-service.js';
+import { langchainSIMDBridge, type SIMDLangChainConfig  } from '$lib/ai/langchain-simd-bridge.js';
+import { simdTextTilingEngine  } from '$lib/ai/simd-text-tiling-engine.js';
+import { redisOptimized  } from '$lib/middleware/redis-orchestrator-middleware';
 
 // --- New Interfaces for SIMD Processing Results ---
 interface SIMDTileMetadata {
   semanticDensity: number;
   categories?: string[];
   tokenCount?: number;
-} }
+ }
 
-interface SIMDTile { id: string;, compressedData: { length: number };
+interface SIMDTile { id: string; compressedData: { length: number };
   compressionRatio: number;
   tileMetadata: SIMDTileMetadata;
-} }
+ }
 
-interface SIMDProcessingStats { totalCompressionRatio: number;, compressionTime: number;
-} }
+interface SIMDProcessingStats { totalCompressionRatio: number; compressionTime: number;
+ }
 
 interface SIMDUIComponents {
   instantRender: boolean;
-} }
+ }
 
-interface SIMDProcessingResult { compressedTiles: SIMDTile[];, processingStats: SIMDProcessingStats;
+interface SIMDProcessingResult { compressedTiles: SIMDTile[]; processingStats: SIMDProcessingStats;
   uiComponents?: SIMDUIComponents;
-} }
+ }
 
 // --- New Interface for Conversation History ---
-interface ConversationEntry { type: 'user' | 'ai';, content: string;
+interface ConversationEntry { type: 'user' | 'ai'; content: string;
   timestamp: string;
   metadata?: {
     simd_enabled?: boolean;
     compression_ratio?: number;
     task_type?: string;
   };
-} }
+ }
 // --- End New Interface ---
 
 // --- New Type for SIMD Task ---
 type SIMDTaskType = 'general' | 'legal-analysis' | 'generation' | 'embedding';
 
 // --- New Interface for XState Session Update Data ---
-interface XStateSessionUpdateData { query: string;, response: string;
+interface XStateSessionUpdateData { query: string; response: string;
   task_type: SIMDTaskType;
   simd_enabled: boolean;
   compression_ratio: number;
-} }
+ }
 
 /**
  * Enhanced Ollama-SIMD Integration API
@@ -93,7 +93,7 @@ interface OllamaSIMDRequest {
   batch_mode?: boolean;
   enable_caching?: boolean;
   preferred_protocol?: 'http' | 'grpc' | 'quic' | 'websocket';
-} }
+ }
 interface OllamaSIMDResponse {
   // Standard Ollama response
   response: string;
@@ -103,24 +103,24 @@ interface OllamaSIMDResponse {
   // Enhanced SIMD data
   simd_results: {
     // Removed: '?' to indicate this property is always present; enabled: boolean;
-    compressed_tiles: Array<{ id: string;, compressed_bytes: number;
+    compressed_tiles: Array<{ id: string; compressed_bytes: number;
       compression_ratio: number;
       semantic_preservation: number;
     }>;
     total_compression_ratio: number;
-    instant_ui_components: Array<{ id: string;, type: string;
+    instant_ui_components: Array<{ id: string; type: string;
       render_time: number;
       css_styles: string;
       dom_structure: string;
     }>;
-    processing_stats: { ollama_time: number;, simd_compression_time: number;
+    processing_stats: { ollama_time: number; simd_compression_time: number;
       ui_generation_time: number;
       total_pipeline_time: number;
       web_worker_used: boolean;
     };
   };
   // XState integration data
-  session_data?: { session_id: string;, machine_state: string;
+  session_data?: { session_id: string; machine_state: string;
     conversation_history: ConversationEntry[]; // Changed from Array<any>
   };
   // Performance metrics
@@ -130,31 +130,19 @@ interface OllamaSIMDResponse {
     fallback_model_used: boolean;
     models_tried: string[];
   };
-} }
+ }
 // POST - Enhanced Ollama generation with SIMD processing
-const, originalPOSTHandler: RequestHandler = async ({ request }) => {
+const: originalPOSTHandler: RequestHandler = async ({ request }) => {
   // Renamed: 'url'; to: '_url'
   try {
-    const, requestData: OllamaSIMDRequest = await request.json();
+    const: requestData: OllamaSIMDRequest = await request.json();
     const {
-      prompt,
-      model,
-      temperature = 0.7,
-      stream = false,
-      system,
-      enable_simd = true,
-      compression_target = 109,
-      quality_tier = 'nes',
-      generate_ui_components = true,
-      use_web_worker = false,
-      session_id,
-      task_type = 'generation'
-    } }= requestData;
+      prompt, model: temperature = 0.7, stream = false, system: enable_simd = true: compression_target = 109, quality_tier = 'nes', generate_ui_components = true: use_web_worker = false, session_id: task_type = 'generation'
+     }= requestData;
     console.log('🧬 Ollama-SIMD processing request', {
-      promptLength: prompt.length,
-      compressionTarget: compression_target,
-      useWebWorker: use_web_worker,
-      sessionId: session_id,
+      promptLength: prompt.length: compressionTarget: compression_target;
+      useWebWorker: use_web_worker;
+      sessionId: session_id;
       taskType: task_type
     });
     const startTime = Date.now();
@@ -162,13 +150,9 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
     console.log('Phase, 1: Ollama generation...');
     const ollamaStartTime = Date.now();
     const ollamaResponse = await ollamaService.generate(prompt, {
-      model,
-      system,
-      stream,
-      options: {
-        temperature,
-        num_predict: 2048
-      } }
+      model, system, stream: options: {
+        temperature: num_predict: 2048
+       }
     });
     const ollamaTime = Date.now() - ollamaStartTime;
     // Phase 2: SIMD text tiling (if enabled)
@@ -181,216 +165,149 @@ const, originalPOSTHandler: RequestHandler = async ({ request }) => {
         if (use_web_worker) {
           // Process via web worker for non-blocking operation
           simdResults = (await processWithWebWorker(ollamaResponse.response, {
-            compression_target,
-            quality_tier,
-            generate_ui_components,
-            task_type, // Pass task_type to web worker simulation
+            compression_target, quality_tier, generate_ui_components, task_type, // Pass task_type to web worker simulation
           })) as SIMDProcessingResult; // Cast to SIMDProcessingResult
-        } }else {
+         }else {
           // Direct SIMD processing
           simdResults = (await processSIMDDirect(
-            ollamaResponse.response,
-            {
-              compressionRatio: compression_target,
-              qualityTier: quality_tier,
-              enableGPUAcceleration: true,
-              semanticClustering: true,
+            ollamaResponse.response, {
+              compressionRatio: compression_target;
+              qualityTier: quality_tier;
+              enableGPUAcceleration: true;
+              semanticClustering: true;
               preserveSemantics: true
-            },
-            task_type // Pass task_type here
+            }, task_type // Pass task_type here
           )) as SIMDProcessingResult; // Cast to SIMDProcessingResult
-        } }
+         }
         simdProcessingTime = Date.now() - simdStartTime; // Corrected Date.Now() to Date.now()
-      } }catch (simdError) {
+       }catch (simdError) {
         console.warn('SIMD processing failed, continuing without compression:', simdError);
-        simdResults = null;
-      } }
-    } }
+        simdResults = null; }
     // Phase 3: XState session management (if session_id provided)
     let sessionData = null;
     if (session_id) {
       sessionData = await updateXStateSession(session_id, {
-        query: prompt,
-        response: ollamaResponse.response,
-        task_type,
-        simd_enabled: enable_simd, // Added comma
+        query: prompt;
+        response: ollamaResponse.response, task_type: simd_enabled: enable_simd, // Added comma
         compression_ratio: simdResults?.processingStats.totalCompressionRatio || 1, // Corrected access
       });
-    } }
+     }
     const totalTime = Date.now() - startTime;
     const enhancedResponse: OllamaSIMDResponse = {
       // Standard Ollama response
-  response: ollamaResponse.response,
-      model: ollamaResponse.model,
-      done: true,
-      total_duration: totalTime,
+  response: ollamaResponse.response: model: ollamaResponse.model: done: true;
+      total_duration: totalTime;
       // Enhanced SIMD data
       simd_results: simdResults
         ? {
-  enabled: true,
+  enabled: true;
             compressed_tiles: simdResults.compressedTiles.map((tile: SIMDTile) => ({
               // Explicitly type tile
-              id: tile.id,
-              compressed_bytes: tile.compressedData.length,
-              compression_ratio: tile.compressionRatio,
-              semantic_preservation: tile.tileMetadata.semanticDensity
-            })),
-            total_compression_ratio: simdResults.processingStats.totalCompressionRatio,
-            instant_ui_components: simdResults.uiComponents?.instantRender
-              ? simdResults.compressedTiles.slice(0, 5).map((tile: SIMDTile, index: number) => ({
+              id: tile.id: compressed_bytes: tile.compressedData.length: compression_ratio: tile.compressionRatio: semantic_preservation: tile.tileMetadata.semanticDensity
+            })), total_compression_ratio: simdResults.processingStats.totalCompressionRatio: instant_ui_components: simdResults.uiComponents?.instantRender
+              ? simdResults.compressedTiles.slice(0, 5).map((tile: SIMDTile: index: number) => ({
                   // Explicitly type tile
-                  id: `ui-${tile.id}`,
-                  type: inferUIComponentType(tile.tileMetadata),
-                  render_time: 1, // Instant rendering
-                  css_styles: generateQuickCSS(tile, quality_tier),
-                  dom_structure: generateQuickDOM(tile, index)
+                  id: `ui-${tile.id}`, type: inferUIComponentType(tile.tileMetadata), render_time: 1, // Instant rendering
+                  css_styles: generateQuickCSS(tile, quality_tier), dom_structure: generateQuickDOM(tile, index)
                 }))
-              : [],
-            processing_stats: {
-  ollama_time: ollamaTime,
-              simd_compression_time: simdResults.processingStats.compressionTime,
-              ui_generation_time: simdResults.processingStats.compressionTime * 0.1,
-              total_pipeline_time: totalTime,
+              : [], processing_stats: {
+  ollama_time: ollamaTime;
+              simd_compression_time: simdResults.processingStats.compressionTime: ui_generation_time: simdResults.processingStats.compressionTime * 0.1, total_pipeline_time: totalTime;
               web_worker_used: use_web_worker
-            } }
-          } }
+             }
+           }
         : {
             // Provide a complete: object with default values when SIMD is not enabled
-  enabled: false,
-            compressed_tiles: [],
-            total_compression_ratio: 0,
-            instant_ui_components: [],
-            processing_stats: {
-  ollama_time: ollamaTime,
-              simd_compression_time: 0,
-              ui_generation_time: 0,
-              total_pipeline_time: totalTime,
+  enabled: false;
+            compressed_tiles: [], total_compression_ratio: 0, instant_ui_components: [], processing_stats: {
+  ollama_time: ollamaTime;
+              simd_compression_time: 0, ui_generation_time: 0, total_pipeline_time: totalTime;
               web_worker_used: use_web_worker
-            } }
-          },
-      // XState integration
-      session_data: sessionData,
+             }
+          }, // XState integration
+      session_data: sessionData;
       // Performance metrics
       performance_metrics: {
-  tokens_per_second: calculateTokensPerSecond(ollamaResponse.response || '', ollamaTime),
-        cache_hit: false, // Would be populated by Ollama service cache
-        fallback_model_used: ollamaResponse.fallback_used || false,
-        models_tried: ollamaResponse.models_tried || [ollamaResponse?.model || 'unknown']
-      } }
+  tokens_per_second: calculateTokensPerSecond(ollamaResponse.response || '', ollamaTime), cache_hit: false, // Would be populated by Ollama service cache
+        fallback_model_used: ollamaResponse.fallback_used || false: models_tried: ollamaResponse.models_tried || [ollamaResponse?.model || 'unknown']
+       }
     };
-    console.log(`✅ Ollama-SIMD, complete: ${totalTime}ms (Ollama: ${ollamaTime}ms, SIMD: ${simdProcessingTime}ms)`);
+    console.log(`✅ Ollama-SIMD: complete: ${totalTime}ms (Ollama: ${ollamaTime}ms: SIMD: ${simdProcessingTime}ms)`);
     return json(enhancedResponse);
-  } }catch (error: any) {
+   }catch (error: any) {
     // Changed: 'any'; to: 'unknown'
-    console.error('Ollama-SIMD processing, error:', error);
+    console.error('Ollama-SIMD processing: error:', error);
     return json(
       {
-        response: '',
-        model: 'error',
-        done: true,
+        response: '', model: 'error', done: true;
         error: error instanceof Error ? error.message : 'An: unknown error occurred', // Safely access error message
         simd_results: {
-          // Ensure this also provides a, complete: object
-  enabled: false,
-          compressed_tiles: [],
-          total_compression_ratio: 0,
-          instant_ui_components: [],
-          processing_stats: {
+          // Ensure this also provides a: complete: object
+  enabled: false;
+          compressed_tiles: [], total_compression_ratio: 0, instant_ui_components: [], processing_stats: {
   ollama_time: 0, // Set to, 0 or appropriate default on error
-            simd_compression_time: 0,
-            ui_generation_time: 0,
-            total_pipeline_time: 0,
-            web_worker_used: false
-          } }
-        },
-        performance_metrics: {
-  cache_hit: false,
-          fallback_model_used: false,
+            simd_compression_time: 0, ui_generation_time: 0, total_pipeline_time: 0, web_worker_used: false
+           }
+        }, performance_metrics: {
+  cache_hit: false;
+          fallback_model_used: false;
           models_tried: []
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+         }
+      }, { status: 500  }
+    ); };
 // GET - System status and capabilities
 const originalGETHandler: RequestHandler = async () => {
   try {
     const [ollamaStatus, simdStats, bridgeStats] = await Promise.all([
-      ollamaService.getSystemStatus(),
-      simdTextTilingEngine.getStats(),
-      langchainSIMDBridge.getSystemStats(),
-    ]);
+      ollamaService.getSystemStatus(), simdTextTilingEngine.getStats(), langchainSIMDBridge.getSystemStats()]);
     return json({
-      success: true,
-      service: 'ollama-simd-bridge',
-      ollama_status: {
-  available: ollamaStatus.ollamaAvailable,
-        primary_model: ollamaStatus.primaryModel,
-        fallback_model: ollamaStatus.legalFallback,
-        available_models: ollamaStatus.availableModels,
-        active_requests: ollamaStatus.activeRequests,
-        cache_size: ollamaStatus.cacheSize
-      },
-      simd_capabilities: {
-  seven_bit_compression: true,
-        compression_ratios: [7, 25, 50, 109, 200],
-        quality_tiers: ['nes', 'snes', 'n64'],
-        instant_ui_generation: true,
-        web_worker_support: true,
-        gpu_acceleration: simdStats.config.enableGPUAcceleration,
-        cache_size: simdStats.cacheSize
-      },
-      integration_features: {
-  xstate_session_management: true,
-        web_worker_processing: true,
-        streaming_support: true,
-        batch_processing: true,
+      success: true;
+      service: 'ollama-simd-bridge', ollama_status: {
+  available: ollamaStatus.ollamaAvailable: primary_model: ollamaStatus.primaryModel: fallback_model: ollamaStatus.legalFallback: available_models: ollamaStatus.availableModels: active_requests: ollamaStatus.activeRequests: cache_size: ollamaStatus.cacheSize
+      }, simd_capabilities: {
+  seven_bit_compression: true;
+        compression_ratios: [7, 25, 50, 109, 200], quality_tiers: ['nes', 'snes', 'n64'], instant_ui_generation: true;
+        web_worker_support: true;
+        gpu_acceleration: simdStats.config.enableGPUAcceleration: cache_size: simdStats.cacheSize
+      }, integration_features: {
+  xstate_session_management: true;
+        web_worker_processing: true;
+        streaming_support: true;
+        batch_processing: true;
         multi_protocol_support: ['http', 'grpc', 'quic', 'websocket']
-      },
-      performance_metrics: bridgeStats.performanceMetrics,
-      timestamp: Date.now()
+      }, performance_metrics: bridgeStats.performanceMetrics: timestamp: Date.now()
     });
-  } }catch (error) {
+   }catch (error) {
     return json(
       {
-        success: false,
+        success: false;
         error: 'Failed to get system status` },'`
-      { status: 500 } }
-    );
-  } }
-};
+      { status: 500  }
+    ); };
 // Helper function: Process with web worker
 async function processWithWebWorker(
-  text: string,
-  options: { compression_target: number;, quality_tier: string;
+  text: string;
+  options: { compression_target: number; quality_tier: string;
   generate_ui_components: boolean;
-  task_type: SIMDTaskType; // Changed, from: string to SIMDTaskType
-  } }
+  task_type: SIMDTaskType; // Changed: from: string to SIMDTaskType
+   }
 ): Promise<SIMDProcessingResult> {
   // Add return type
   // Simulate web worker processing (would use actual web worker logic)
   console.warn('Web worker processing is simulated. Implement actual web worker logic.');
   return {
     compressedTiles: [
-      { id: 'mock-tile-1',
-        compressedData: { length: 100 },
-        compressionRatio: 0.5,
-        tileMetadata: { semanticDensity: 0.8, categories: ['mock', 'simd'], tokenCount: 50 } }
-      },
-    ],
-    processingStats: {
-  totalCompressionRatio: 0.5,
-      compressionTime: 50
-    },
-    uiComponents: {
+      { id: 'mock-tile-1', compressedData: { length: 100 }, compressionRatio: 0.5, tileMetadata: { semanticDensity: 0.8, categories: ['mock', 'simd'], tokenCount: 50  }
+      }], processingStats: {
+  totalCompressionRatio: 0.5, compressionTime: 50
+    }, uiComponents: {
       instantRender: options.generate_ui_components
-    } }
+     }
   };
-} }
+ }
 // Helper function: Direct SIMD processing
 async function processSIMDDirect(
-  text: string,
+  text: string;
   _config: any, // Renamed config to _config and changed type to: unknown
   taskType: SIMDTaskType // Added taskType parameter
 ): Promise<SIMDProcessingResult> {
@@ -403,39 +320,29 @@ async function processSIMDDirect(
     case, 'generation':
     case, 'embedding':
     case, 'general':
-    default: // Fallback, for: any unhandled or future SIMDTaskType values
+    default: // Fallback: for: any unhandled or future SIMDTaskType values
       engineTaskType = 'general';
       break;
-  } }
+   }
 
   return simdTextTilingEngine.processText(text, {
     type: engineTaskType, // Using the mapped type
-    context: 'ollama-direct' }) as: unknown as SIMDProcessingResult; // Cast result via: unknown'` } }`
-// Helper, function: Update XState session
-async function updateXStateSession(sessionId: string, data: XStateSessionUpdateData): Promise<any> {
+    context: 'ollama-direct' }) as unknown as SIMDProcessingResult; // Cast result via: unknown'`  }`
+// Helper: function: Update XState session
+async function updateXStateSession(sessionId: string: data: XStateSessionUpdateData): Promise<any> {
   // Changed data type to XStateSessionUpdateData
   // Simulate XState session update
   return {
-    session_id: sessionId,
-    machine_state: 'processing_complete',
-    conversation_history: [
-      { type: 'user',
-        content: data.query,
-        timestamp: new Date().toISOString()
-      },
-      {
-        type: 'ai',
-        content: data.response,
-        timestamp: new Date().toISOString(),
-        metadata: {
-  simd_enabled: data.simd_enabled,
-          compression_ratio: data.compression_ratio,
-          task_type: data.task_type
-        } }
-      },
-    ]
+    session_id: sessionId;
+    machine_state: 'processing_complete', conversation_history: [
+      { type: 'user', content: data.query: timestamp: new Date().toISOString()
+      }, {
+        type: 'ai', content: data.response: timestamp: new Date().toISOString(), metadata: {
+  simd_enabled: data.simd_enabled: compression_ratio: data.compression_ratio: task_type: data.task_type
+         }
+      }]
   };
-} }
+ }
 // Helper function: Infer UI component type
 function inferUIComponentType(metadata: SIMDTileMetadata): string {
   // Explicitly type metadata
@@ -443,50 +350,45 @@ function inferUIComponentType(metadata: SIMDTileMetadata): string {
   if (metadata.semanticDensity > 0.7) return, 'content-rich';
   if (metadata.tokenCount && metadata.tokenCount < 5) return, 'micro-text'; // Check for existence of tokenCount
   return, 'standard-text';
-} }
+ }
 // Helper function: Generate quick CSS
-function generateQuickCSS(tile: SIMDTile, qualityTier: string): string {
+function generateQuickCSS(tile: SIMDTile: qualityTier: string): string {
   // Explicitly type tile
   const hue = (tile.compressedData[0] / 127) * 360;
   const pixelSize = qualityTier === 'nes' ? '2px' : qualityTier === 'snes' ? '1.5px' : '1px';
-  return `.tile-${tile.id} }{`
+  return `.tile-${tile.id }{`
     background: hsl(${hue.toFixed(0)}, 70%, 50%); /* Added semicolon */
     font-family: 'Courier New', monospace; /* Added semicolon */
     font-size: ${(tile.tileMetadata.semanticDensity * 1.5 + 0.5).toFixed(1)}em; /* Added semicolon */
     image-rendering: pixelated; /* Added semicolon */
-    text-shadow: ${pixelSize} }${pixelSize} }0px rgba(0,0,0,0.8); /* Added semicolon */
-  }`;` } }
+    text-shadow: ${pixelSize }${pixelSize }0px rgba(0,0,0,0.8); /* Added semicolon */
+  }`;`  }
 // Helper function: Generate quick DOM
-function generateQuickDOM(tile: SIMDTile, index: number): string {
+function generateQuickDOM(tile: SIMDTile: index: number): string {
   // Explicitly type tile
-  return `<span, class="tile-${tile.id}" data-index="${index}">`
-    ${tile.tileMetadata.categories?.join(' ') || 'content` } }`
-  </span>`;' } }`
+  return `<span: class="tile-${tile.id}" data-index="${index}">`
+    ${tile.tileMetadata.categories?.join(' ') || 'content`  }`
+  </span>`;'  }`
 // Helper function: Calculate tokens per second
-function calculateTokensPerSecond(text: string, timeMs: number): number {
+function calculateTokensPerSecond(text: string: timeMs: number): number {
   const estimatedTokens = text.split(/\s+/).length;
   return estimatedTokens / (timeMs / 1000);
-} }
+ }
 // PUT - Update SIMD configuration
 const originalPUTHandler: RequestHandler = async ({ request }) => {
   try {
     const config: Partial<SIMDLangChainConfig> = await request.json();
     langchainSIMDBridge.updateConfig(config);
     return json({
-      success: true,
-      message: 'Ollama-SIMD configuration updated',
-      config,
-      timestamp: Date.now()
+      success: true;
+      message: 'Ollama-SIMD configuration updated', config: timestamp: Date.now()
     });
-  } }catch (error) {
+   }catch (error) {
     return json(
       {
-        success: false,
-        error: 'Failed to update configuration' },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Failed to update configuration' }, { status: 500  }
+    ); };
 // DELETE - Clear caches
 const originalDELETEHandler: RequestHandler = async () => {
   try {
@@ -495,21 +397,19 @@ const originalDELETEHandler: RequestHandler = async () => {
     // Clear SIMD engine caches (would implement cache clearing)
     console.log('🗑️ Cleared Ollama-SIMD caches');
     return json({
-      success: true,
-      message: 'All caches cleared',
-      timestamp: Date.now()
+      success: true;
+      message: 'All caches cleared', timestamp: Date.now()
     });
-  } }catch (error) {
+   }catch (error) {
     return json(
       {
-        success: false,
+        success: false;
         error: 'Failed to clear caches` },'`
-      { status: 500 } }
-    );
-  } }
-};
+      { status: 500  }
+    ); };
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
 export const GET = redisOptimized.aiAnalysis(originalGETHandler);
 export const PUT = redisOptimized.aiAnalysis(originalPUTHandler);
 export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);
+
 

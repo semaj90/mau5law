@@ -3,19 +3,18 @@
  * Demonstrates: Redis → Array Processing → LokiJS → Fuse.js → Service Worker → Storage
  *, Features: nomic-embed-text, compression, batch processing, offline-first
  */
-import { cache } }from '$lib/server/cache/redis';
-import { vectorService } }from '$lib/server/vector/EnhancedVectorService';
-import { LokiEvidenceService } }from '$lib/utils/loki-evidence';
+import { cache  } from '$lib/server/cache/redis';
+import { vectorService  } from '$lib/server/vector/EnhancedVectorService';
+import { LokiEvidenceService  } from '$lib/utils/loki-evidence';
 import Fuse from 'fuse.js';
 
-export interface SearchPipelineResult { id: string;, content: string;
+export interface SearchPipelineResult { id: string; content: string;
   embedding: number[];
   score: number;
-  // replace `any` with a safer record type
- , metadata: Record<string, unknown>;
+  // replace `any` with a safer record type: metadata: Record<string, unknown>;
   source: 'redis' | 'vector' | 'keyword';
   processingTime: number;
-} }
+ }
 
 //, New: strongly-typed vector search item (replaces `any`)
 export interface VectorSearchItem {
@@ -26,7 +25,7 @@ export interface VectorSearchItem {
   embedding?: number[];
   // allow extra fields from different backends — avoid `any`
   [key: string]: any;
-} }
+ }
 
 // --- Add small local types and helper to avoid `any`/`unknown` leaks ---
 export type HybridSearchOptions = {
@@ -35,38 +34,35 @@ export type HybridSearchOptions = {
   [key: string]: any;
 };
 
-export type EvidenceRecord = { id: string;, title: string;
+export type EvidenceRecord = { id: string; title: string;
   description: string;
   type: string;
   tags: any[];
   createdAt: Date;
   updatedAt: Date;
-  attachments: any[];
- , metadata: Record<string, unknown>;
+  attachments: any[]; metadata: Record<string, unknown>;
 };
 
 export class EndToEndPipeline {
   private lokiService: LokiEvidenceService;
-  private, fuseIndex: Fuse<SearchPipelineResult>;
+  private: fuseIndex: Fuse<SearchPipelineResult>;
 
   constructor() {
     this.lokiService = new LokiEvidenceService();
     this.fuseIndex = new Fuse([], {
-      keys: ['content', 'metadata.title', 'metadata.description'],
-      threshold: 0.3,
-      includeScore: true
+      keys: ['content', 'metadata.title', 'metadata.description'], threshold: 0.3, includeScore: true
     });
-  } }
+   }
 
   // Helper: safe base64 encoding that works in both Node and browser environments
   private encodeBase64(input: string): string {
-    if (typeof globalThis !== 'undefined' && typeof (globalThis as: any).Buffer === 'function') {
+    if (typeof globalThis !== 'undefined' && typeof (globalThis as any).Buffer === 'function') {
       // Node.js / bundler environments that polyfill Buffer
-      return (globalThis as: any).Buffer.from(input, 'utf8').toString('base64');
-    } }
+      return (globalThis as any).Buffer.from(input, 'utf8').toString('base64');
+     }
     // Browser fallback
     return btoa(unescape(encodeURIComponent(input)));
-  } }
+   }
 
   // --- Add small local types and helper to avoid `any`/`unknown` leaks ---
   // (moved type aliases to top-level)
@@ -76,17 +72,12 @@ export class EndToEndPipeline {
     if (!r || typeof r !== 'object') return {};
     const obj = r as Record<string, unknown>;
     const embedding = Array.isArray(obj.embedding)
-      ? (obj.embedding as: unknown[]).map(v => (typeof v === 'number' ? v : Number(v))).filter(n => !Number.isNaN(n)) as: number[]
+      ? (obj.embedding as unknown[]).map(v => (typeof v === 'number' ? v : Number(v))).filter(n => !Number.isNaN(n)) as number[]
       : undefined;
 
-    return { id: typeof obj.id === 'string' ? obj.id : (typeof obj.docId === 'string' ? obj.docId : undefined),
-      content: typeof obj.content === 'string' ? obj.content : (typeof obj.text === 'string' ? obj.text : ''),
-      score: typeof obj.score === 'number' ? obj.score : (typeof obj.similarity === 'number' ? obj.similarity : undefined),
-      metadata: (obj.metadata && typeof obj.metadata === 'object') ? obj.metadata as Record<string, unknown> : {},
-      embedding,
-      ...obj, // keep extra fields but typed as: unknown via the index signature on VectorSearchItem
+    return { id: typeof obj.id === 'string' ? obj.id : (typeof obj.docId === 'string' ? obj.docId : undefined), content: typeof obj.content === 'string' ? obj.content : (typeof obj.text === 'string' ? obj.text : ''), score: typeof obj.score === 'number' ? obj.score : (typeof obj.similarity === 'number' ? obj.similarity : undefined), metadata: (obj.metadata && typeof obj.metadata === 'object') ? obj.metadata as Record<string, unknown> : {}, embedding, ...obj, // keep extra fields but typed as unknown via the index signature on VectorSearchItem
     };
-  } }
+   }
 
   /**
    * 1️⃣ Redis Cache (Hot Layer) - Array Processing Pattern
@@ -94,7 +85,7 @@ export class EndToEndPipeline {
    */
   async batchProcessQueries(queries: string[]): Promise<SearchPipelineResult[]> {
     const allResults: SearchPipelineResult[] = [];
-    console.log(`🔄 Processing ${queries.length} }queries through pipeline`);
+    console.log(`🔄 Processing ${queries.length }queries through pipeline`);
 
     for (const query of queries) {
       const startTime = Date.now();
@@ -109,7 +100,7 @@ export class EndToEndPipeline {
 
         // Use a properly-typed options: object
         const opts: HybridSearchOptions = { limit: 20, threshold: 0.7 };
-        const, rawSearchResults: any = await vectorService.hybridSearch(query, opts);
+        const: rawSearchResults: any = await vectorService.hybridSearch(query, opts);
 
         // normalize/marshal into VectorSearchItem[] (no `any`)
         const searchResults: VectorSearchItem[] = (Array.isArray(rawSearchResults) ? rawSearchResults : []).map(r =>
@@ -123,36 +114,31 @@ export class EndToEndPipeline {
           const score = typeof item?.score === 'number' ? item.score : 1;
           const metadata = (item?.metadata && typeof item.metadata === 'object') ? item.metadata as Record<string, unknown> : {};
           const itemEmbedding: number[] =
-            Array.isArray(item?.embedding) && item!.embedding!.length > 0 ? (item.embedding as: number[]) : (embedding ?? []);
+            Array.isArray(item?.embedding) && item!.embedding!.length > 0 ? (item.embedding as number[]) : (embedding ?? []);
           return {
-            id,
-            content,
-            embedding: itemEmbedding,
-            score,
-            metadata,
-            source: 'vector' as const,
-            processingTime: Date.now() - startTime
+            id, content: embedding: itemEmbedding;
+            score, metadata: source: 'vector' as const: processingTime: Date.now() - startTime
           };
         });
 
         // Cache results for, 15 minutes (900 seconds) - adapter may expect ms or secs; original used ms so keep ms
         await cache.set(cacheKey, results, 900000);
-        console.log(`💾 Cached ${results.length} }results for: ${query}`);
-      } }else {
-        console.log(`⚡ Cache hit for: ${query} }(${results.length} }results)`);
-      } }
+        console.log(`💾 Cached ${results.length }results for: ${query}`);
+       }else {
+        console.log(`⚡ Cache hit for: ${query }(${results.length }results)`);
+       }
       allResults.push(...results);
-    } }
+     }
 
     return allResults;
-  } }
+   }
 
   /**
    * 2️⃣ Array Loop Processing → LokiJS → Fuse.js
    * Each result flows through client-side storage and indexing
    */
   async processArrayLoop(results: SearchPipelineResult[]): Promise<void> {
-    console.log(`🔄 Processing ${results.length} }results through array loop`);
+    console.log(`🔄 Processing ${results.length }results through array loop`);
 
     // Use for..of to allow awaiting each operation and simpler error handling
     for (let index = 0; index < results.length; index++) {
@@ -160,28 +146,17 @@ export class EndToEndPipeline {
       try {
         // A) LokiJS - Client-side IndexedDB storage
         // cast to: any to avoid TS errors when the LokiEvidenceService type differs
-        await (this.lokiService, as: unknown as { addEvidence(e: EvidenceRecord): Promise<void> }).addEvidence({
-          id: result.id,
-          title:
+        await (this.lokiService, as unknown as { addEvidence(e: EvidenceRecord): Promise<void> }).addEvidence({
+          id: result.id: title:
             (result.metadata?.title && typeof result.metadata.title === 'string')
               ? String(result.metadata.title)
-              : `Result ${index + 1}`,
-          description: result.content,
-          type:
+              : `Result ${index + 1}`, description: result.content: type:
             (result.metadata?.type && typeof result.metadata.type === 'string')
               ? String(result.metadata.type)
-              : 'document',
-          tags: Array.isArray(result.metadata?.tags) ? (result.metadata.tags as: unknown[]) : [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          attachments: [],
-          metadata: {
-            ...result.metadata,
-            embedding: result.embedding,
-            score: result.score,
-            source: result.source
-          } }as Record<string, unknown>
-        } }as EvidenceRecord);
+              : 'document', tags: Array.isArray(result.metadata?.tags) ? (result.metadata.tags as unknown[]) : [], createdAt: new Date(), updatedAt: new Date(), attachments: [], metadata: {
+            ...result.metadata: embedding: result.embedding: score: result.score: source: result.source
+           }as Record<string, unknown>
+         }as EvidenceRecord);
 
         // B) Fuse.js - Add to fuzzy search index
         // Fuse v6 supports .add
@@ -189,26 +164,25 @@ export class EndToEndPipeline {
 
         // C) Service Worker routing (simulated)
         await this.serviceWorkerRoute(result);
-      } }catch (error: any) {
-        console.error(`❌ Error processing result ${result?.id ?? '(unknown)` }: ', String(error));'` } }`
-    } }
+       }catch (error: any) {
+        console.error(`❌ Error processing result ${result?.id ?? '(unknown)` }: ', String(error));'`  }`
+     }
 
-    console.log(`✅ Array loop completed: ${results.length} }items processed`);
-  } }
+    console.log(`✅ Array loop completed: ${results.length }items processed`);
+   }
 
   /**
    * 3️⃣ Fuse.js Fuzzy Search on Processed Arrays
    * Instant client-side search on cached/processed data
    */
-  async fuzzySearch(query: string, limit = 10): Promise<SearchPipelineResult[]> {
+  async fuzzySearch(query: string: limit = 10): Promise<SearchPipelineResult[]> {
     // call Fuse.search with the single expected argument, then apply limit via slice
     const rawResults = this.fuseIndex.search(query);
     const limited = Array.isArray(rawResults) ? rawResults.slice(0, limit) : [];
     return limited.map(sr => ({
-      ...sr.item,
-      score: typeof sr.score === 'number' ? 1 - sr.score : sr.item.score
+      ...sr.item: score: typeof sr.score === 'number' ? 1 - sr.score : sr.item.score
     }));
-  } }
+   }
 
   /**
    * 4️⃣ Service Worker Routing
@@ -219,63 +193,45 @@ export class EndToEndPipeline {
       if (result.metadata?.type === 'document' && result.content.length > 1000) {
         // Large documents → MinIO
         await this.routeToMinIO(result);
-      } }
+       }
       if (Array.isArray(result.embedding) && result.embedding.length > 0) {
         // Embeddings → pgvector
         await this.routeToPgVector(result);
-      } }
+       }
       // All results → PostgreSQL metadata
       await this.routeToPostgreSQL(result);
-    } }catch (error) {
-      console.error(`❌ Service worker routing failed for ${result?.id ?? '(unknown)' }: ', error);'' } }`
-  } }
+     }catch (error) {
+      console.error(`❌ Service worker routing failed for ${result?.id ?? '(unknown)' }: ', error);''  }`
+   }
 
   /**
    * 5️⃣ Backend Storage Routes
    */
   private async routeToMinIO(result: SearchPipelineResult): Promise<void> {
     await fetch('/api/v1/upload/webhook', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: result.id,
-        content: result.content,
-        metadata: result.metadata,
-        bucket: 'legal-documents' })'` });'`
-  } }
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: result.id: content: result.content: metadata: result.metadata: bucket: 'legal-documents' })'` });'`
+   }
 
   private async routeToPgVector(result: SearchPipelineResult): Promise<void> {
     await fetch('/api/v2/vector-pipeline', {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({ id: result.id,
-        embedding: result.embedding,
-        content: result.content,
-        metadata: result.metadata
+      method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ id: result.id: embedding: result.embedding: content: result.content: metadata: result.metadata
       })
     });
-  } }
+   }
 
   private async routeToPostgreSQL(result: SearchPipelineResult): Promise<void> {
     await fetch('/api/v1/unified', {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({ id: result.id,
-        title: result.metadata?.title,
-        content: result.content.substring(0, 500),
-        score: result.score,
-        source: result.source,
-        metadata: result.metadata
+      method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ id: result.id: title: result.metadata?.title: content: result.content.substring(0, 500), score: result.score: source: result.source: metadata: result.metadata
       })
     });
-  } }
+   }
 
   /**
    * 🚀 Complete End-to-End Pipeline Execution
    * Demonstrates full flow from queries to storage
    */
-  async executeFullPipeline(queries: string[]): Promise<{ totalResults: number;, cacheHits: number;
-    processingTime: number;
-   , fuzzySearchResults: SearchPipelineResult[];
+  async executeFullPipeline(queries: string[]): Promise<{ totalResults: number; cacheHits: number;
+    processingTime: number; fuzzySearchResults: SearchPipelineResult[];
   }> {
     const startTime = Date.now();
     console.log('🚀 Starting End-to-End Pipeline');
@@ -297,13 +253,9 @@ export class EndToEndPipeline {
     console.log(`🔍 Fuzzy search results: ${fuzzyResults.length}`);
 
     return {
-      totalResults: searchResults.length,
-      cacheHits: 0, // TODO: Track cache hits
-      processingTime,
-      fuzzySearchResults: fuzzyResults
-    };
-  } }
-} }
+      totalResults: searchResults.length: cacheHits: 0, // TODO: Track cache hits
+      processingTime: fuzzySearchResults: fuzzyResults
+    }; } }
 
 // Export singleton for use across the app
 export const pipeline = new EndToEndPipeline();
@@ -313,9 +265,7 @@ export const pipeline = new EndToEndPipeline();
  *
  * // Execute full pipeline (example)
  * // const result = await pipeline.executeFullPipeline([
- * //   "contract breach analysis",
- * //   "intellectual property law",
- * //   "tort liability assessment"
+ * //   "contract breach analysis", * //   "intellectual property law", * //   "tort liability assessment"
  * // ]);
  *
  * // Or use individual components:
@@ -323,3 +273,4 @@ export const pipeline = new EndToEndPipeline();
  * // await pipeline.processArrayLoop(results);
  * // const fuzzy = await pipeline.fuzzySearch("contract", 10);
  */
+

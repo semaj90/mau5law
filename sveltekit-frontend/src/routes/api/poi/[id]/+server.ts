@@ -1,41 +1,20 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
-import { personsOfInterest, casePoiRelations, cases } }from '$lib/database/enhanced-schema';
-import { eq, and } }from 'drizzle-orm';
-import { z } }from 'zod';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
+import { personsOfInterest, casePoiRelations, cases  } from '$lib/database/enhanced-schema';
+import { eq, and  } from 'drizzle-orm';
+import { z  } from 'zod';
 
 const updatePoiSchema = z.object({
-  name: z.string().min(1).max(255).optional(),
-  aliases: z.array(z.string()).optional(),
-  dateOfBirth: z.string().optional(),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().email().optional(),
-  status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant']).optional(),
-  priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
-  threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).optional(),
-  physicalDescription: z
+  name: z.string().min(1).max(255).optional(), aliases: z.array(z.string()).optional(), dateOfBirth: z.string().optional(), address: z.string().optional(), phone: z.string().optional(), email: z.string().email().optional(), status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant']).optional(), priority: z.enum(['low', 'medium', 'high', 'critical']).optional(), threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).optional(), physicalDescription: z
     .object({
-  height: z.string().optional(),
-      weight: z.string().optional(),
-      hair: z.string().optional(),
-      eyes: z.string().optional(),
-      distinguishingMarks: z.string().optional()
+  height: z.string().optional(), weight: z.string().optional(), hair: z.string().optional(), eyes: z.string().optional(), distinguishingMarks: z.string().optional()
     })
-    .optional(),
-  profileData: z
+    .optional(), profileData: z
     .object({
-  modusOperandi: z.string().optional(),
-      knownHabits: z.array(z.string()).optional(),
-      associates: z.array(z.string()).optional()
+  modusOperandi: z.string().optional(), knownHabits: z.array(z.string()).optional(), associates: z.array(z.string()).optional()
     })
-    .optional(),
-  lastKnownLocation: z.string().optional(),
-  lastSeen: z.string().optional(),
-  dangerLevel: z.number().min(0).max(10).optional(),
-  notes: z.string().optional(),
-  isActive: z.boolean().optional()
+    .optional(), lastKnownLocation: z.string().optional(), lastSeen: z.string().optional(), dangerLevel: z.number().min(0).max(10).optional(), notes: z.string().optional(), isActive: z.boolean().optional()
 });
 
 // GET /api/poi/[id] - Get specific POI with case relationships
@@ -44,7 +23,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const poiId = params.id;
 
@@ -53,12 +32,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     if (!poi) {
       return json({ error: 'POI not found' }, { status: 404 });
-    } }
+     }
 
     // Get case relationships
     const caseRelations = await db
       .select({
-        relation: casePoiRelations,
+        relation: casePoiRelations;
         case: cases
       })
       .from(casePoiRelations)
@@ -66,17 +45,14 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       .where(and(eq(casePoiRelations.poiId, poiId), eq(casePoiRelations.isActive, true)));
 
     return json({
-      success: true,
+      success: true;
       data: {
-        ...poi,
-        caseRelations
-      } }
+        ...poi, caseRelations
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error fetching POI:', error);
-    return json({ error: 'Failed to fetch POI' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to fetch POI' }, { status: 500 }); };
 
 // PUT /api/poi/[id] - Update POI
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
@@ -84,7 +60,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const poiId = params.id;
     const body = await request.json();
@@ -95,16 +71,16 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     if (!existingPoi) {
       return json({ error: 'POI not found' }, { status: 404 });
-    } }
+     }
 
     // Prepare update data
     const updateData: any = { ...validatedData };
     if (validatedData.dateOfBirth) {
       updateData.dateOfBirth = new Date(validatedData.dateOfBirth);
-    } }
+     }
     if (validatedData.lastSeen) {
       updateData.lastSeen = new Date(validatedData.lastSeen);
-    } }
+     }
     updateData.updatedAt = new Date();
 
     const [updatedPoi] = await db
@@ -114,17 +90,15 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       .returning();
 
     return json({
-      success: true,
+      success: true;
       data: updatedPoi
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error updating POI:', error);
     if (error instanceof z.ZodError) {
       return json({ error: 'Validation error', details: error.errors }, { status: 400 });
-    } }
-    return json({ error: 'Failed to update POI' }, { status: 500 });
-  } }
-};
+     }
+    return json({ error: 'Failed to update POI' }, { status: 500 }); };
 
 // DELETE /api/poi/[id] - Soft delete POI
 export const DELETE: RequestHandler = async ({ params, locals }) => {
@@ -132,7 +106,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const session = await locals.auth();
     if (!session?.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     const poiId = params.id;
 
@@ -141,24 +115,23 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
     if (!existingPoi) {
       return json({ error: 'POI not found' }, { status: 404 });
-    } }
+     }
 
     // Soft delete by setting isActive to false
     await db
       .update(personsOfInterest)
       .set({
-        isActive: false,
+        isActive: false;
         updatedAt: new Date()
       })
       .where(eq(personsOfInterest.id, poiId));
 
     return json({
-      success: true,
+      success: true;
       message: 'POI deleted successfully'
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error deleting POI:', error);
-    return json({ error: 'Failed to delete POI' }, { status: 500 });
-  } }
-};
+    return json({ error: 'Failed to delete POI' }, { status: 500 }); };
+
 

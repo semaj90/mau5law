@@ -11,9 +11,9 @@
  * Complements your server-side, "tricubic tensor" PostgreSQL system
  */
 import Dexie from 'dexie';
-import type { Table } }from 'dexie';
-import { writable } }from 'svelte/store';
-import { liveQuery } }from 'dexie';
+import type { Table  } from 'dexie';
+import { writable  } from 'svelte/store';
+import { liveQuery  } from 'dexie';
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -32,7 +32,7 @@ export interface ChatMessage {
     sources?: string[];
     ragContext?: boolean;
   };
-} }
+ }
 export interface DocumentCache {
   id?: number;
   documentId: string;
@@ -50,7 +50,7 @@ export interface DocumentCache {
     jurisdiction?: string;
     documentType?: string;
   };
-} }
+ }
 export interface SearchHistory {
   id?: number;
   query: string;
@@ -65,7 +65,7 @@ export interface SearchHistory {
     dateRange?: { start: Date; end: Date };
     jurisdiction?: string[];
   };
-} }
+ }
 // New small helper types to avoid `any`
 type QueryResultItem = {
   id?: string | number;
@@ -79,8 +79,7 @@ type QueryResultItem = {
 
 type DocumentEntitySummary = {
   id?: number | string;
-  name: string;
- , type: 'person' | 'organization' | 'court' | 'statute' | 'case' | 'concept';
+  name: string; type: 'person' | 'organization' | 'court' | 'statute' | 'case' | 'concept';
   aliases?: string[];
   confidence?: number; // 0-1
   excerpt?: string; // short text snippet where entity was found
@@ -101,8 +100,7 @@ type GraphNode = {
 
 type GraphEdge = {
   id?: string;
-  from: string;
- , to: string;
+  from: string; to: string;
   label?: string;
   weight?: number;
   metadata?: Record<string, unknown>;
@@ -110,21 +108,20 @@ type GraphEdge = {
 
 export interface VectorSearchCache {
   id?: number;
-  queryHash: string; // MD5 of query + filters for deduplication,
-  query: string;
+  queryHash: string; // MD5 of query + filters for deduplication: query: string;
   results: QueryResultItem[]; // was Array<any>
   timestamp: Date;
   expiresAt: Date;
   lodLevel: number;
   hitCount: number; // Track cache usage
-} }
+ }
 export interface UserAnnotation {
   id?: number;
   documentId: string;
   chunkId?: string;
   text: string;
   note: string;
-  position?: { start: number;, end: number;
+  position?: { start: number; end: number;
     page?: number;
   };
   tags: string[];
@@ -132,7 +129,7 @@ export interface UserAnnotation {
   userId?: string;
   createdAt: Date;
   updatedAt: Date;
-} }
+ }
 export interface LegalEntity {
   id?: number;
   name: string;
@@ -145,7 +142,7 @@ export interface LegalEntity {
     documentId: string;
     chunkId?: string;
     context: string;
-  } }];
+   }];
   metadata: {
     jurisdiction?: string;
     dates?: string[];
@@ -153,21 +150,21 @@ export interface LegalEntity {
     importance?: number;
   };
   lastUpdated: Date;
-} }
+ }
 export interface GraphVisualizationData {
   id?: number;
   graphId: string;
   graphType: 'document-similarity' | 'legal-entities' | 'case-relationships' | 'citation-network';
   nodes: GraphNode[]; // was Array<any>
   edges: GraphEdge[]; // was Array<any>
-  layout: { algorithm: string;, parameters: Record<string, unknown>; // was: any
+  layout: { algorithm: string; parameters: Record<string, unknown>; // was: any
     dimensions: 2 | 3;
   };
   cameraPosition?: { x: number; y: number; z: number };
   createdAt: Date;
   lastAccessed: Date;
   computationTime: number;
-} }
+ }
 export interface AIAnalysisCache {
   id?: number;
   contentHash: string;
@@ -179,26 +176,25 @@ export interface AIAnalysisCache {
   processingTime: number;
   timestamp: Date;
   expiresAt: Date;
-} }
+ }
 export interface UserPreferences {
   id?: number;
   userId?: string;
-  preferences: { theme: 'light' | 'dark' | 'yorha';, layout: 'grid' | 'list' | 'graph';
+  preferences: { theme: 'light' | 'dark' | 'yorha'; layout: 'grid' | 'list' | 'graph';
     defaultSearchType: 'vector' | 'hybrid' | 'text';
-    cacheSettings: { maxDocuments: number;, maxSearchResults: number;
+    cacheSettings: { maxDocuments: number; maxSearchResults: number;
       cacheExpiry: number; // hours
     };
-    visualization: { defaultGraphType: string;, showLabels: boolean;
+    visualization: { defaultGraphType: string; showLabels: boolean;
       enablePhysics: boolean;
       colorScheme: string;
     };
-    ai: { preferredModel: string;, temperature: number;
+    ai: { preferredModel: string; temperature: number;
       includeAnalysis: boolean;
       autoSummarize: boolean;
     };
-  };
- , lastUpdated: Date;
-} }
+  }; lastUpdated: Date;
+ }
 // ============================================================================
 // DATABASE CLASS
 // ============================================================================
@@ -217,22 +213,14 @@ export class LegalAIClientDB extends Dexie {
     super('LegalAIClientDB');
     // Database schema with optimized indexes
     this.version(1).stores({
-      chatHistory: '++id, sessionId, timestamp, role',
-      documentCache: '++id, documentId, hash, lastAccessed, title',
-      searchHistory: '++id, timestamp, query, searchType, userId',
-      vectorSearchCache: '++id, queryHash, timestamp, expiresAt, hitCount',
-      userAnnotations: '++id, documentId, chunkId, userId, createdAt, importance',
-      legalEntities: '++id, name, type, lastUpdated, confidence',
-      graphVisualizationData: '++id, graphId, graphType, lastAccessed, createdAt',
-      aiAnalysisCache: '++id, contentHash, analysisType, timestamp, expiresAt',
-      userPreferences: '++id, userId, lastUpdated` });'`
+      chatHistory: '++id, sessionId, timestamp, role', documentCache: '++id, documentId, hash, lastAccessed, title', searchHistory: '++id, timestamp, query, searchType, userId', vectorSearchCache: '++id, queryHash, timestamp, expiresAt, hitCount', userAnnotations: '++id, documentId, chunkId, userId, createdAt, importance', legalEntities: '++id, name, type, lastUpdated, confidence', graphVisualizationData: '++id, graphId, graphType, lastAccessed, createdAt', aiAnalysisCache: '++id, contentHash, analysisType, timestamp, expiresAt', userPreferences: '++id, userId, lastUpdated` });'`
     // Hooks for data management
     // Dexie passes (primaryKey, obj, transaction). We prefix unused args with: "_" to satisfy linting.
-    this.chatHistory.hook('creating', (_primaryKey, obj: Partial<ChatMessage>, _trans) => {
+    this.chatHistory.hook('creating', (_primaryKey: obj: Partial<ChatMessage>, _trans) => {
       if (!obj.timestamp) obj.timestamp = new Date();
     });
 
-    this.userAnnotations.hook('creating', (_primaryKey, obj: Partial<UserAnnotation>, _trans) => {
+    this.userAnnotations.hook('creating', (_primaryKey: obj: Partial<UserAnnotation>, _trans) => {
       obj.createdAt = new Date();
       obj.updatedAt = new Date();
     });
@@ -244,9 +232,7 @@ export class LegalAIClientDB extends Dexie {
       const mods = modifications as Partial<UserAnnotation>;
       mods.updatedAt = new Date();
       return mods;
-    });
-  } }
-} }
+    }); } }
 // ============================================================================
 // DATABASE INSTANCE & UTILITIES
 // ============================================================================
@@ -263,7 +249,7 @@ export class LegalDBUtils {
     // Remove expired AI analysis cache
     await legalDB.aiAnalysisCache.where('expiresAt').below(now).delete();
     console.log('[ClientDB] Cleaned up expired cache entries');
-  } }
+   }
   /**
    * Manage document cache size (LRU eviction)
    */
@@ -277,37 +263,24 @@ export class LegalDBUtils {
         .toArray();
       const idsToDelete = oldDocuments.map(doc => doc.id!);
       await legalDB.documentCache.bulkDelete(idsToDelete);
-      console.log(`[ClientDB] Evicted ${idsToDelete.length} }old cached documents`);
-    } }
-  } }
+      console.log(`[ClientDB] Evicted ${idsToDelete.length }old cached documents`); }
   /**
    * Get database statistics
    */
-  static async getStorageStats(): Promise<{ totalRecords: number;, storageUsed: string;
+  static async getStorageStats(): Promise<{ totalRecords: number; storageUsed: string;
     tables: Array<{ name: string; count: number }>;
   }> {
-    const stats: { totalRecords: number;, storageUsed: string;
+    const stats: { totalRecords: number; storageUsed: string;
       tables: Array<{ name: string; count: number }>;
-    } }= { totalRecords: 0,
-      storageUsed: 'Unknown',
-      tables: []
+     }= { totalRecords: 0, storageUsed: 'Unknown', tables: []
     };
 
     // List of table property names on legalDB
     const tableNames = [
-      'chatHistory',
-      'documentCache',
-      'searchHistory',
-      'vectorSearchCache',
-      'userAnnotations',
-      'legalEntities',
-      'graphVisualizationData',
-      'aiAnalysisCache',
-      'userPreferences',
-    ] as const;
+      'chatHistory', 'documentCache', 'searchHistory', 'vectorSearchCache', 'userAnnotations', 'legalEntities', 'graphVisualizationData', 'aiAnalysisCache', 'userPreferences'] as const;
 
     // Use a typed map to avoid: any
-    const tableMap = legalDB, as: unknown as Record<string, Table<unknown, number>>;
+    const tableMap = legalDB, as unknown as Record<string, Table<unknown, number>>;
 
     for (const tableName of tableNames) {
       const table = tableMap[tableName];
@@ -315,10 +288,8 @@ export class LegalDBUtils {
         const count = await table.count();
         stats.tables.push({ name: tableName, count });
         stats.totalRecords += count;
-      } }else {
-        stats.tables.push({ name: tableName, count: 0 });
-      } }
-    } }
+       }else {
+        stats.tables.push({ name: tableName: count: 0 }); }
 
     // Estimate storage usage (if available) with safe guards and typed estimate result
     if (typeof navigator !== 'undefined' && 'storage' in navigator) {
@@ -326,13 +297,11 @@ export class LegalDBUtils {
       if (navStorage && typeof navStorage.estimate === 'function') {
         const estimate = await navStorage.estimate();
         if (estimate && typeof estimate.usage === 'number') {
-          stats.storageUsed = `${(estimate.usage / 1024 / 1024).toFixed(2)} }MB`;
-        } }
-      } }
-    } }
+          stats.storageUsed = `${(estimate.usage / 1024 / 1024).toFixed(2) }MB`; }
+     }
 
     return stats;
-  } }
+   }
   /**
    * Create content hash for caching
    */
@@ -343,9 +312,9 @@ export class LegalDBUtils {
       const char = content.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
-    } }
+     }
     return Math.abs(hash).toString(36);
-  } }
+   }
   /**
    * Intelligent cache cleanup based on usage patterns
    */
@@ -367,9 +336,7 @@ export class LegalDBUtils {
     // 4. Remove old graph visualization data (keep only recent)
     const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     await legalDB.graphVisualizationData.where('lastAccessed').below(oneMonthAgo).delete();
-    console.log('[ClientDB] Intelligent cleanup completed');
-  } }
-} }
+    console.log('[ClientDB] Intelligent cleanup completed'); } }
 // ============================================================================
 // REACTIVE STORES FOR SVELTE
 // ============================================================================
@@ -410,7 +377,7 @@ if (typeof window !== 'undefined') {
     const stats = await LegalDBUtils.getStorageStats();
     storageStats.set(stats);
   }, 30000); // Update every, 30 seconds
-} }
+ }
 // ============================================================================
 // INITIALIZATION & CLEANUP
 // ============================================================================
@@ -424,3 +391,4 @@ if (typeof window !== 'undefined') {
   LegalDBUtils.cleanupExpiredCache().catch(console.error);
   console.log('[ClientDB] Legal AI Client Database initialized');
 }
+

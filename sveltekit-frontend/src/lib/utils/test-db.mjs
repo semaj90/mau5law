@@ -4,9 +4,7 @@ import pkg from 'pg';
 const { Pool } = pkg;
 
 const dbConfigs = [
-  'postgresql://postgres:123456@localhost:5432/legal_ai_db',
-  'postgresql://postgres:postgres@localhost:5432/legal_ai_db',
-  'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
+  'postgresql://postgres:123456@localhost:5432/legal_ai_db', 'postgresql://postgres:postgres@localhost:5432/legal_ai_db', 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
 ];
 
 async function testConnection() {
@@ -17,9 +15,8 @@ async function testConnection() {
       console.log(`\n📡 Testing: ${config.replace(/:[^:@]*@/, ':****@')}`);
       
       const pool = new Pool({ 
-        connectionString: config,
-        connectionTimeoutMillis: 5000,
-        idleTimeoutMillis: 5000
+        connectionString: config;
+        connectionTimeoutMillis: 5000, idleTimeoutMillis: 5000
       });
       
       const result = await pool.query('SELECT version() as version, current_database() as database;');

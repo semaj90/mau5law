@@ -1,9 +1,9 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { env } }from '$env/dynamic/private'; // For server-side environment variables
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { env  } from '$env/dynamic/private'; // For server-side environment variables
 
 // Mock interfaces for demonstration purposes, these should ideally be imported from a shared types file
-interface PrecedentMatch { id: string;, title: string;
+interface PrecedentMatch { id: string; title: string;
   citation: string;
   court: string;
   jurisdiction: string;
@@ -19,28 +19,20 @@ interface PrecedentMatch { id: string;, title: string;
   recentCitations: number;
   distinguishingFactors: string[];
   applicabilityScore: number;
-  strengthIndicators: { factualAlignment: number;, legalPrinciples: number;
+  strengthIndicators: { factualAlignment: number; legalPrinciples: number;
     jurisdictionalRelevance: number;
     temporalRelevance: number;
   };
-} }
+ }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const {
-      searchQuery,
-      caseFactPattern,
-      selectedJurisdiction,
-      selectedCourtLevel,
-      selectedPracticeArea
-    } }= await request.json();
+      searchQuery, caseFactPattern, selectedJurisdiction, selectedCourtLevel, selectedPracticeArea
+     }= await request.json();
 
     console.log('Received precedent matching request:', {
-      searchQuery,
-      caseFactPattern,
-      selectedJurisdiction,
-      selectedCourtLevel,
-      selectedPracticeArea
+      searchQuery, caseFactPattern, selectedJurisdiction, selectedCourtLevel, selectedPracticeArea
     });
 
     // --- Docker / Env Production Wiring Example ---
@@ -52,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const redisUrl = env.REDIS_URL || 'redis://:redis@localhost:6379/0';
     const minioEndpoint = env.MINIO_ENDPOINT || 'http://localhost:9000';
 
-    console.log(`Using Ollama, endpoint: ${ollamaUrl}`);
+    console.log(`Using Ollama: endpoint: ${ollamaUrl}`);
     console.log(`Using Qdrant endpoint: ${qdrantUrl}`);
     console.log(`Using Database endpoint: ${databaseUrl}`);
     console.log(`Using Redis endpoint: ${redisUrl}`);
@@ -62,8 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // 1. Generate embeddings for the query/fact pattern using Ollama
     //    Example:
     //    const embeddingResponse = await fetch(`${ollamaUrl}/api/embeddings`, {
-    //      method: 'POST',
-    //      headers: { 'Content-Type': 'application/json' },'`'`
+    //      method: 'POST', //      headers: { 'Content-Type': 'application/json' },'`'`
     //      body: JSON.stringify({ model: 'nomic-embed-text', prompt: searchQuery || caseFactPattern })
     //    });
     //    const embeddingData = await embeddingResponse.json();
@@ -71,97 +62,48 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // 2. Perform vector search using Qdrant or pgvector (Drizzle ORM)
     //    Example using a hypothetical enhancedVectorSearchService from instructions:
-    //    import { enhancedVectorSearchService } }from '$lib/server/db/drizzle-vector-config';
+    //    import { enhancedVectorSearchService  } from '$lib/server/db/drizzle-vector-config';
     //    const vectorSearchResults = await enhancedVectorSearchService.searchDocuments(embedding, {
-    //      limit: 10,
-    //      filters: { jurisdiction: selectedJurisdiction, practice_area: selectedPracticeArea } }
+    //      limit: 10, //      filters: { jurisdiction: selectedJurisdiction: practice_area: selectedPracticeArea  }
     //    });
 
     // 3. Refine results, build reasoning chains, etc.
     //    This would involve more complex logic, potentially calling other Go microservices
     //    via productionServiceClient as mentioned in instructions.
-    //    import { productionServiceClient } }from '$lib/api/production-service-client';
+    //    import { productionServiceClient  } from '$lib/api/production-service-client';
     //    const goServiceResult = await productionServiceClient.makeRequest('enhanced-rag', { /* ... */ });
 
     // Mock results for demonstration
     const mockMatches: PrecedentMatch[] = [
       {
-  id: 'API-CASE-2023-001',
-        title: 'API: State v. Johnson - Contract Interpretation Under Duress',
-        citation: '847 F.3d, 234 (5th Cir. 2023)',
-        court: '5th Circuit Court of Appeals',
-        jurisdiction: 'Federal',
-        dateDecided: '2023-08-15',
-        similarityScore: 0.95,
-        factualSimilarity: 0.93,
-        legalSimilarity: 0.97,
-        precedentialValue: 'BINDING',
-        keyFacts: [
-          'API: Contract signed under financial duress',
-          'API: Unequal bargaining power between parties'
-        ],
-        legalHolding: 'API: Contracts entered under economic duress are voidable when the duress was a substantial factor.',
-        reasoningChain: ['API: Economic duress requires proof of coercive circumstances'],
-        citationCount: 160,
-        recentCitations: 25,
-        distinguishingFactors: [],
-        applicabilityScore: 0.92,
-        strengthIndicators: {
-  factualAlignment: 93,
-          legalPrinciples: 97,
-          jurisdictionalRelevance: 88,
-          temporalRelevance: 99
-        } }
-      },
-      {
-        id: 'API-CASE-2022-087',
-        title: 'API: Martinez v. Global Corp - Unconscionable Contract Terms',
-        citation: '623 F.Supp.3d, 445 (S.D. Cal. 2022)',
-        court: 'U.S. District Court Southern District of California',
-        jurisdiction: 'Federal',
-        dateDecided: '2022-11-22',
-        similarityScore: 0.88,
-        factualSimilarity: 0.86,
-        legalSimilarity: 0.90,
-        precedentialValue: 'PERSUASIVE',
-        keyFacts: [
-          'API: Adhesion contract with no negotiation',
-          'API: Complex legal language'
-        ],
-        legalHolding: 'API: Contract terms may be unconscionable where there is both procedural and substantive unconscionability.',
-        reasoningChain: ['API: Procedural unconscionability from lack of meaningful choice'],
-        citationCount: 80,
-        recentCitations: 15,
-        distinguishingFactors: ['API: Different factual context (consumer vs. commercial)'],
-        applicabilityScore: 0.80,
-        strengthIndicators: {
-  factualAlignment: 80,
-          legalPrinciples: 90,
-          jurisdictionalRelevance: 75,
-          temporalRelevance: 88
-        } }
-      } }
+  id: 'API-CASE-2023-001', title: 'API: State v. Johnson - Contract Interpretation Under Duress', citation: '847 F.3d, 234 (5th Cir. 2023)', court: '5th Circuit Court of Appeals', jurisdiction: 'Federal', dateDecided: '2023-08-15', similarityScore: 0.95, factualSimilarity: 0.93, legalSimilarity: 0.97, precedentialValue: 'BINDING', keyFacts: [
+          'API: Contract signed under financial duress', 'API: Unequal bargaining power between parties'
+        ], legalHolding: 'API: Contracts entered under economic duress are voidable when the duress was a substantial factor.', reasoningChain: ['API: Economic duress requires proof of coercive circumstances'], citationCount: 160, recentCitations: 25, distinguishingFactors: [], applicabilityScore: 0.92, strengthIndicators: {
+  factualAlignment: 93, legalPrinciples: 97, jurisdictionalRelevance: 88, temporalRelevance: 99
+         }
+      }, {
+        id: 'API-CASE-2022-087', title: 'API: Martinez v. Global Corp - Unconscionable Contract Terms', citation: '623 F.Supp.3d, 445 (S.D. Cal. 2022)', court: 'U.S. District Court Southern District of California', jurisdiction: 'Federal', dateDecided: '2022-11-22', similarityScore: 0.88, factualSimilarity: 0.86, legalSimilarity: 0.90, precedentialValue: 'PERSUASIVE', keyFacts: [
+          'API: Adhesion contract with no negotiation', 'API: Complex legal language'
+        ], legalHolding: 'API: Contract terms may be unconscionable where there is both procedural and substantive unconscionability.', reasoningChain: ['API: Procedural unconscionability from lack of meaningful choice'], citationCount: 80, recentCitations: 15, distinguishingFactors: ['API: Different factual context (consumer vs. commercial)'], applicabilityScore: 0.80, strengthIndicators: {
+  factualAlignment: 80, legalPrinciples: 90, jurisdictionalRelevance: 75, temporalRelevance: 88
+         }
+       }
     ];
 
     // Simulate some delay for API processing
     await new Promise(resolve => setTimeout(resolve, 1500));
 
     return json({
-      success: true,
-      query: searchQuery || caseFactPattern,
-      filters: { selectedJurisdiction, selectedCourtLevel, selectedPracticeArea },
-      matches: mockMatches,
+      success: true;
+      query: searchQuery || caseFactPattern: filters: { selectedJurisdiction, selectedCourtLevel, selectedPracticeArea }, matches: mockMatches;
       totalMatches: mockMatches.length
     });
 
-  } }catch (error) {
+   }catch (error) {
     console.error('API Error in precedent-matching:', error);
     return json({
-      success: false,
-      message: error instanceof Error ? error.message : 'An: unknown error occurred',
-      matches: [],
-      totalMatches: 0
-    }, { status: 500 });
-  } }
-};
+      success: false;
+      message: error instanceof Error ? error.message : 'An: unknown error occurred', matches: [], totalMatches: 0
+    }, { status: 500 }); };
+
 

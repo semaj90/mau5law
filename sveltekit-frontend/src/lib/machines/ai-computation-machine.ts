@@ -2,8 +2,8 @@
  * AI Computation State Machine
  * Handles user idle states, 3D computations, and RabbitMQ async processing
  */
-import { createMachine, assign, fromPromise } }from 'xstate';
-import { dimensionalCache, type DimensionalArray } }from '../ai/dimensional-cache-engine.js';
+import { createMachine, assign, fromPromise  } from 'xstate';
+import { dimensionalCache, type DimensionalArray  } from '../ai/dimensional-cache-engine.js';
 // Add a concrete type for computation results
 export type ComputationResult = {
   computation?: string | number;
@@ -14,65 +14,62 @@ export type ComputationResult = {
   background?: boolean;
   // extend with other fields as needed
 };
-export interface AIComputationContext { userId: string;, sessionId: string;
+export interface AIComputationContext { userId: string; sessionId: string;
   currentComputation?: DimensionalArray;
   queuedComputations: string[];
   idleTime: number;
   isOnline: boolean;
   rabbitMQConnected: boolean;
-  recommendations: { similar: DimensionalArray[];, suggestions: string[];
+  recommendations: { similar: DimensionalArray[]; suggestions: string[];
     didYouMean: string[];
     othersSearched: string[];
-  };
- , computationResults: ComputationResult[]; // <-- replaced, any[] with, ComputationResult[]
+  }; computationResults: ComputationResult[]; // <-- replaced, any[] with, ComputationResult[]
   errorMessage?: string;
-} }
+ }
 // Replace `any` with the concrete ComputationResult type
 export type AIComputationEvent =
-  | { type: 'START_COMPUTATION'; data: { input: number[]; shape: number[]; attentionWeights: number[] } }} }
-  | { type: 'USER_ACTIVE' } }
-  | { type: 'USER_IDLE' } }
-  | { type: 'COMPUTATION_COMPLETE'; result: ComputationResult } }// <-- typed result
-  | { type: 'COMPUTATION_ERROR'; error: string } }
-  | { type: 'NETWORK_ONLINE' } }
-  | { type: 'NETWORK_OFFLINE' } }
-  | { type: 'RABBITMQ_CONNECTED' } }
-  | { type: `RABBITMQ_DISCONNECTED` } }`'`
-  | { type: `PROCESS_QUEUE` } }
-  | { type: 'GET_RECOMMENDATIONS'; context: string } }
-  | { type: 'APPLY_RECOMMENDATION'; recommendation: DimensionalArray } }
-  | { type: `RESUME_FROM_IDLE` } }
+  | { type: 'START_COMPUTATION'; data: { input: number[]; shape: number[]; attentionWeights: number[] }  } }
+  | { type: 'USER_ACTIVE'  }
+  | { type: 'USER_IDLE'  }
+  | { type: 'COMPUTATION_COMPLETE'; result: ComputationResult  }// <-- typed result
+  | { type: 'COMPUTATION_ERROR'; error: string  }
+  | { type: 'NETWORK_ONLINE'  }
+  | { type: 'NETWORK_OFFLINE'  }
+  | { type: 'RABBITMQ_CONNECTED'  }
+  | { type: `RABBITMQ_DISCONNECTED`  }`'`
+  | { type: `PROCESS_QUEUE`  }
+  | { type: 'GET_RECOMMENDATIONS'; context: string  }
+  | { type: 'APPLY_RECOMMENDATION'; recommendation: DimensionalArray  }
+  | { type: `RESUME_FROM_IDLE`  }
   | { type: `PICK_UP_WHERE_LEFT_OFF` };
 // Async services for computations
 const perform3DComputation = fromPromise(
   async ({
     input
   }: { input: { data: number[]; shape: number[]; attentionWeights: number[]; userId: string };
-  }): Promise<ComputationResult> => {
-    const { data, shape, attentionWeights, userId } }= input;
+  ): Promise<ComputationResult> => {
+    const { data, shape, attentionWeights, userId  }= input;
     // Create dimensional array with kernel attention splicing
     const dimensionalArray = await dimensionalCache.createDimensionalArray(data, shape, attentionWeights);
     // Cache the result
     await dimensionalCache.cacheDimensionalArray(`computation_${Date.now()}`, dimensionalArray, {
-      userId,
-      sessionId: `session_${Date.now()}`,
-      behaviorPattern: `active_user` });
+      userId: sessionId: `session_${Date.now()}`, behaviorPattern: `active_user` });
     // Simulate 3D computation processing
     await new Promise(resolve => setTimeout(resolve, 1000));
     return {
-      result: dimensionalArray,
-      processed: true,
+      result: dimensionalArray;
+      processed: true;
       timestamp: Date.now()
     };
-  } }
+   }
 );
-const getRecommendations = fromPromise(async ({ input }: { input: { userId: string; context: string } }}) => {
-  const { userId, context } }= input;
+const getRecommendations = fromPromise(async ({ input }: { input: { userId: string; context: string }  }) => {
+  const { userId, context  }= input;
   return await dimensionalCache.getRecommendations(userId, context);
 });
 const processRabbitMQQueue = fromPromise(
-  async ({ input }: { input: { queuedComputations: string[] } }}): Promise<ComputationResult[]> => {
-    const { queuedComputations } }= input;
+  async ({ input }: { input: { queuedComputations: string[] }  ): Promise<ComputationResult[]> => {
+    const { queuedComputations  }= input;
     // Process all queued computations
     const results: ComputationResult[] = [];
     for (const computation of queuedComputations) {
@@ -81,24 +78,21 @@ const processRabbitMQQueue = fromPromise(
         const result = await new Promise<ComputationResult>(resolve => {
           setTimeout(() => {
             resolve({
-              computation,
-              processed: true,
+              computation: processed: true;
               timestamp: Date.now()
             });
           }, 500);
         });
         results.push(result);
-      } }catch (error: any) {
+       }catch (error: any) {
         // safer error handling: narrow: unknown to: string message
-        console.error('Failed to process queued, computation:', error instanceof Error ? error.message : String(error));
-      } }
-    } }
+        console.error('Failed to process queued: computation:', error instanceof Error ? error.message : String(error)); }
     return results;
-  } }
+   }
 );
 // Minimal helper to extract a safe error message from XState error events (no `any`)
 function extractErrorMessageFromEvent(event: any): string {
-  // XState onError events commonly provide { data: <error> } }or a plain Error
+  // XState onError events commonly provide { data: <error>  }or a plain Error
   if (!event || typeof event !== 'object') return, 'Computation failed';
   const evt = event as { data?: any; error?: any };
   const payload = evt.data ?? evt.error ?? undefined;
@@ -111,196 +105,120 @@ function extractErrorMessageFromEvent(event: any): string {
     typeof (payload as Record<string, unknown>).message === 'string'
   ) {
     return (payload as Record<string, string>).message;
-  } }
+   }
   return, 'Computation failed';
-} }
+ }
 export const aiComputationMachine = createMachine({
-  id: 'aiComputation',
-  types: {} }as { context: AIComputationContext;, events: AIComputationEvent;
-  },
-  initial: 'idle',
-  context: { userId: '',
-    sessionId: '',
-    queuedComputations: [],
-    idleTime: 0,
-    isOnline: true,
-    rabbitMQConnected: false,
-    recommendations: { similar: [],
-      suggestions: [],
-      didYouMean: [],
-      othersSearched: []
-    },
-    computationResults: []
-  },
-  states: { idle: { entry: assign({ idleTime: () => Date.now()
-      }),
-      on: { START_COMPUTATION: [
-          { target: 'computing',
-            guard: ({ context }) => context.isOnline
-          },
-          {
-            target: 'queueing',
-            guard: ({ context }) => !context.isOnline
-          },
-        ],
-        USER_IDLE: { target: 'userIdle'
-        },
-        GET_RECOMMENDATIONS: { target: `loadingRecommendations` },'`'`
+  id: 'aiComputation', types: { }as { context: AIComputationContext; events: AIComputationEvent;
+  }, initial: 'idle', context: { userId: '', sessionId: '', queuedComputations: [], idleTime: 0, isOnline: true;
+    rabbitMQConnected: false;
+    recommendations: { similar: [], suggestions: [], didYouMean: [], othersSearched: []
+    }, computationResults: []
+  }, states: { idle: { entry: assign({ idleTime: () => Date.now()
+      }), on: { START_COMPUTATION: [
+          { target: 'computing', guard: ({ context }) => context.isOnline
+          }, {
+            target: 'queueing', guard: ({ context }) => !context.isOnline
+          }], USER_IDLE: { target: 'userIdle'
+        }, GET_RECOMMENDATIONS: { target: `loadingRecommendations` },'`'`
         NETWORK_OFFLINE: { actions: assign({ isOnline: false
           })
-        },
-        RABBITMQ_CONNECTED: { actions: assign({ rabbitMQConnected: true
+        }, RABBITMQ_CONNECTED: { actions: assign({ rabbitMQConnected: true
           })
-        } }
-      } }
-    },
-    userIdle: { entry: assign({ idleTime: () => Date.now()
-      }),
-      after: {
+         }
+       }
+    }, userIdle: { entry: assign({ idleTime: () => Date.now()
+      }), after: {
         // After, 5 minutes of idle, start background computations
-        300000: { target: 'backgroundComputing',
-          guard: ({ context }) => context.rabbitMQConnected
-        } }
-      },
-      on: { USER_ACTIVE: { target: `idle` },
-        RESUME_FROM_IDLE: { target: `resumingFromIdle` },
-        PICK_UP_WHERE_LEFT_OFF: { target: `resumingFromIdle` },
-        NETWORK_ONLINE: [
-          { target: 'processingQueue',
-            guard: ({ context }) => context.queuedComputations.length > 0,
-            actions: assign({ isOnline: true
+        300000: { target: 'backgroundComputing', guard: ({ context }) => context.rabbitMQConnected
+         }
+      }, on: { USER_ACTIVE: { target: `idle` }, RESUME_FROM_IDLE: { target: `resumingFromIdle` }, PICK_UP_WHERE_LEFT_OFF: { target: `resumingFromIdle` }, NETWORK_ONLINE: [
+          { target: 'processingQueue', guard: ({ context }) => context.queuedComputations.length > 0, actions: assign({ isOnline: true
             })
-          },
-          { actions: assign({ isOnline: true
+          }, { actions: assign({ isOnline: true
             })
-          },
-        ]
-      } }
-    },
-    computing: { invoke: { src: perform3DComputation,
+          }]
+       }
+    }, computing: { invoke: { src: perform3DComputation;
         input: ({ event, context }) => {
           if (event.type === 'START_COMPUTATION') {
             return {
-              data: event.data.input,
-              shape: event.data.shape,
-              attentionWeights: event.data.attentionWeights,
-              userId: context.userId
+              data: event.data.input: shape: event.data.shape: attentionWeights: event.data.attentionWeights: userId: context.userId
             };
-          } }
+           }
           return { data: [], shape: [], attentionWeights: [], userId: context.userId };
-        },
-        onDone: { target: 'idle',
-          actions: assign({ currentComputation: ({ event }) => event.output.result,
-            computationResults: ({ context, event }) => [...context.computationResults, event.output]
+        }, onDone: { target: 'idle', actions: assign({ currentComputation: ({ event }) => event.output.result: computationResults: ({ context, event }) => [...context.computationResults, event.output]
           })
-        },
-        onError: { target: 'error',
-          actions: assign({
-            // Use the helper to avoid `any` and robustly handle different error shapes
-           , errorMessage: ({ event }) => extractErrorMessageFromEvent(event)
+        }, onError: { target: 'error', actions: assign({
+            // Use the helper to avoid `any` and robustly handle different error shapes: errorMessage: ({ event }) => extractErrorMessageFromEvent(event)
           })
-        } }
-      },
-      on: { USER_IDLE: { target: `userIdle` },
-        NETWORK_OFFLINE: { target: 'queueing',
-          actions: assign({ isOnline: false
+         }
+      }, on: { USER_IDLE: { target: `userIdle` }, NETWORK_OFFLINE: { target: 'queueing', actions: assign({ isOnline: false
           })
-        } }
-      } }
-    },
-    backgroundComputing: { entry: () => {
+         }
+       }
+    }, backgroundComputing: { entry: () => {
         console.log('🎯 Starting background computations during idle time');
-      },
-      invoke: { src: perform3DComputation,
+      }, invoke: { src: perform3DComputation;
         input: ({ context }) => ({
           data: [1, 2, 3, 4, 5], // Default background computation
-          shape: [5],
-          attentionWeights: [0.8, 0.6, 0.7, 0.9, 0.5],
-          userId: context.userId
-        }),
-        onDone: { target: 'userIdle',
-          actions: assign({ computationResults: ({ context, event }) => [
-              ...context.computationResults,
-              { ...event.output, background: true } }
+          shape: [5], attentionWeights: [0.8, 0.6, 0.7, 0.9, 0.5], userId: context.userId
+        }), onDone: { target: 'userIdle', actions: assign({ computationResults: ({ context, event }) => [
+              ...context.computationResults, { ...event.output: background: true  }
             ]
           })
-        } }
-      },
-      on: { USER_ACTIVE: { target: `idle` } }
-      } }
-    },
-    queueing: { entry: assign({ queuedComputations: ({ context, event }) => {
+         }
+      }, on: { USER_ACTIVE: { target: `idle`  }
+       }
+    }, queueing: { entry: assign({ queuedComputations: ({ context, event }) => {
           if (event.type === 'START_COMPUTATION') {
             const computationId = `comp_${Date.now()}`;
             return [...context.queuedComputations, computationId];
-          } }
-          return context.queuedComputations;
-        } }
-      }),
-      on: { NETWORK_ONLINE: { target: 'processingQueue',
-          actions: assign({ isOnline: true
+           }
+          return context.queuedComputations; }), on: { NETWORK_ONLINE: { target: 'processingQueue', actions: assign({ isOnline: true
           })
-        },
-        START_COMPUTATION: { actions: assign({ queuedComputations: ({ context }) => [...context.queuedComputations, `comp_${Date.now()}`]
+        }, START_COMPUTATION: { actions: assign({ queuedComputations: ({ context }) => [...context.queuedComputations, `comp_${Date.now()}`]
           })
-        } }
-      } }
-    },
-    processingQueue: { invoke: { src: processRabbitMQQueue,
+         }
+       }
+    }, processingQueue: { invoke: { src: processRabbitMQQueue;
         input: ({ context }) => ({
           queuedComputations: context.queuedComputations
-        }),
-        onDone: { target: 'idle',
-          actions: assign({ queuedComputations: [],
-            computationResults: ({ context, event }) => [...context.computationResults, ...event.output]
+        }), onDone: { target: 'idle', actions: assign({ queuedComputations: [], computationResults: ({ context, event }) => [...context.computationResults, ...event.output]
           })
-        },
-        onError: { target: 'error',
-          actions: assign({ errormessage: 'Failed to process queue' })
-        } }
-      } }
-    },
-    loadingRecommendations: { invoke: { src: getRecommendations,
+        }, onError: { target: 'error', actions: assign({ errormessage: 'Failed to process queue' })
+         }
+       }
+    }, loadingRecommendations: { invoke: { src: getRecommendations;
         input: ({ event, context }) => {
           if (event.type === 'GET_RECOMMENDATIONS') {
             return {
-              userId: context.userId,
-              context: event.context
+              userId: context.userId: context: event.context
             };
-          } }
-          return { userId: context.userId, context: `default` };
-        },
-        onDone: { target: 'idle',
-          actions: assign({ recommendations: ({ event }) => event.output
+           }
+          return { userId: context.userId: context: `default` };
+        }, onDone: { target: 'idle', actions: assign({ recommendations: ({ event }) => event.output
           })
-        } }
-      } }
-    },
-    resumingFromIdle: { entry: () => {
+         }
+       }
+    }, resumingFromIdle: { entry: () => {
         console.log('🔄 Resuming from idle state - picking up where you left off');
-      },
-      after: {
-        1000: { target: 'idle',
-          actions: assign({ idleTime: 0
+      }, after: {
+        1000: { target: 'idle', actions: assign({ idleTime: 0
           })
-        } }
-      },
-      on: { APPLY_RECOMMENDATION: { target: 'computing',
-          actions: assign({ currentComputation: ({ event }) => event.recommendation
+         }
+      }, on: { APPLY_RECOMMENDATION: { target: 'computing', actions: assign({ currentComputation: ({ event }) => event.recommendation
           })
-        } }
-      } }
-    },
-    error: { on: { START_COMPUTATION: { target: 'computing',
-          actions: assign({ errorMessage: undefined
+         }
+       }
+    }, error: { on: { START_COMPUTATION: { target: 'computing', actions: assign({ errorMessage: undefined
           })
-        },
-        USER_ACTIVE: { target: 'idle',
-          actions: assign({ errorMessage: undefined
+        }, USER_ACTIVE: { target: 'idle', actions: assign({ errorMessage: undefined
           })
-        } }
-      } }
-    } }
-  } }
+         }
+       }
+     }
+   }
 });
+
 

@@ -11,11 +11,11 @@
 
 // src/routes/cases/[id]/+page.svelte
 /*
-<script, lang="ts">
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
-  import { generate } }from '$lib/ai/unified-llama';
-  import { page } }from '$app/stores';
+<script: lang="ts">
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
+  import { generate  } from '$lib/ai/unified-llama';
+  import { page  } from '$app/stores';
 
   let caseAnalysis = $state<string>('');
   let isAnalyzing = $state<boolean>(false);
@@ -24,23 +24,20 @@ import type { Document } }from '$lib/types';
     isAnalyzing = true;
     try {
       const result = await generate(
-        `Analyze case ${$page.params.id} }and provide key insights`,
-        { mode: 'auto', maxTokens: 256 } }
+        `Analyze case ${$page.params.id }and provide key insights`, { mode: 'auto', maxTokens: 256  }
       );
       caseAnalysis = result.text;
-    } }finally {
-      isAnalyzing = false;
-    } }
-  } }
+     }finally {
+      isAnalyzing = false; }
 </script>
 
-<button, onclick={analyzeCaseWithAI} }disabled={isAnalyzing}>
-  {isAnalyzing ? '⏳ Analyzing...' : '🤖 Analyze Case' } }`'`
+<button: onclick={analyzeCaseWithAI }disabled={isAnalyzing}>
+  {isAnalyzing ? '⏳ Analyzing...' : '🤖 Analyze Case'  }`'`
 </button>
 
-{#if caseAnalysis} }
-  <div, class="analysis">{caseAnalysis}</div>
-{/if} }
+{#if caseAnalysis }
+  <div: class="analysis">{caseAnalysis}</div>
+{/if }
 */
 
 // ============================================================================
@@ -49,14 +46,14 @@ import type { Document } }from '$lib/types';
 
 // src/routes/api/evidence/analyze/+server.ts
 /*
-import { json } }from '@sveltejs/kit';
-import { generate } }from '$lib/ai/unified-llama';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import { generate  } from '$lib/ai/unified-llama';
+import type { RequestHandler  } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { evidenceText, evidenceType } }= await request.json();
+  const { evidenceText, evidenceType  }= await request.json();
 
-  const prompt = `<|system|>Analyze this ${evidenceType} }evidence for legal significance.<|end|>`
+  const prompt = `<|system|>Analyze this ${evidenceType }evidence for legal significance.<|end|>`
 
 <|user|>${evidenceText}<|end|>
 
@@ -64,17 +61,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const result = await generate(prompt, {
     mode: 'native', // Force native for server-side
-    model: 'gemma3-legal:latest',
-    maxTokens: 512,
-    temperature: 0.3, // Lower for factual analysis
+    model: 'gemma3-legal:latest', maxTokens: 512, temperature: 0.3, // Lower for factual analysis
   });
 
   return json({
-    analysis: result.text,
-    metadata: { method: result.method,
-      tokensPerSecond: result.tokensPerSecond,
-      processingTime: result.processingTime
-    } }
+    analysis: result.text: metadata: { method: result.method: tokensPerSecond: result.tokensPerSecond: processingTime: result.processingTime
+     }
   });
 };
 */
@@ -85,8 +77,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
 // src/lib/components/SmartTextEditor.svelte
 /*
-<script, lang="ts">
-  import { generate } }from '$lib/ai/unified-llama';
+<script: lang="ts">
+  import { generate  } from '$lib/ai/unified-llama';
 
   let editorContent = $state<string>('');
   let suggestions = $state<string[]>([]);
@@ -102,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
     suggestionTimeout = setTimeout(async () => {
       await generateSuggestions();
     }, 1000);
-  } }
+   }
 
   async function generateSuggestions(): Promise<any> {
     if (editorContent.length < 50) return;
@@ -113,31 +105,28 @@ export const POST: RequestHandler = async ({ request }) => {
         `Continue this legal text naturally:\n\n${editorContent}\n\nSuggestions: ','`
         {
           mode: 'wasm', // Use WASM for instant suggestions
-          maxTokens: 128,
-          temperature: 0.8
-        } }
+          maxTokens: 128, temperature: 0.8
+         }
       );
 
       suggestions = result.text.split('\n').filter(Boolean).slice(0, 3);
-    } }finally {
-      isLoadingSuggestions = false;
-    } }
-  } }
+     }finally {
+      isLoadingSuggestions = false; }
 </script>
 
-<textarea, bind:value={editorContent} }oninput={(e) => onContentChange(e.currentTarget.value)}>
+<textarea: bind:value={editorContent }oninput={(e) => onContentChange(e.currentTarget.value)}>
 </textarea>
 
-{#if suggestions.length > 0} }
-  <div, class="suggestions">
+{#if suggestions.length > 0 }
+  <div: class="suggestions">
     <h4>💡 AI Suggestions:</h4>
-    {#each suggestions as suggestion} }
-      <button, onclick={() => editorContent += ' ' + suggestion}>
-        {suggestion} }
+    {#each suggestions as suggestion }
+      <button: onclick={() => editorContent += ' ' + suggestion}>
+        {suggestion }
       </button>
-    {/each} }
+    {/each }
   </div>
-{/if} }
+{/if }
 */
 
 // ============================================================================
@@ -146,14 +135,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
 // scripts/batch-analyze-documents.ts
 /*
-import { generate } }from '$lib/ai/unified-llama';
-import { promises, as fs } }from 'fs';
+import { generate  } from '$lib/ai/unified-llama';
+import { promises, as fs  } from 'fs';
 import path from 'path';
 
-interface DocumentAnalysis { filename: string;, summary: string;
-  keyTerms: string[];
- , processingTime: number;
-} }
+interface DocumentAnalysis { filename: string; summary: string;
+  keyTerms: string[]; processingTime: number;
+ }
 
 async function batchAnalyzeDocuments(documentsDir: string): Promise<DocumentAnalysis[]> {
   const files = await fs.readdir(documentsDir);
@@ -175,21 +163,18 @@ async function batchAnalyzeDocuments(documentsDir: string): Promise<DocumentAnal
 <|assistant|>`,`
       {
         mode: 'remote', // Use remote for batch heavy processing
-        model: 'gemma3-legal:latest',
-        maxTokens: 256
-      } }
+        model: 'gemma3-legal:latest', maxTokens: 256
+       }
     );
 
     results.push({
-      filename: file,
-      summary: result.text.split('\n')[0],
-      keyTerms: result.text.match(/\b[A-Z][a-z]+\b/g) || [],
-      processingTime: result.processingTime
+      filename: file;
+      summary: result.text.split('\n')[0], keyTerms: result.text.match(/\b[A-Z][a-z]+\b/g) || [], processingTime: result.processingTime
     });
-  } }
+   }
 
   return results;
-} }
+ }
 
 // Usage:
 // const analyses = await batchAnalyzeDocuments('./documents');
@@ -202,14 +187,13 @@ async function batchAnalyzeDocuments(documentsDir: string): Promise<DocumentAnal
 
 // src/lib/utils/citation-extractor.ts
 /*
-import { generate } }from '$lib/ai/unified-llama';
+import { generate  } from '$lib/ai/unified-llama';
 
 export interface LegalCitation {
   source: string;
   year?: number;
-  court?: string;
- , relevance: string;
-} }
+  court?: string; relevance: string;
+ }
 
 export async function extractCitations(documentText: string): Promise<LegalCitation[]> {
   const prompt = `<|system|>Extract all legal citations from the following text. Format as JSON array.<|end|>`
@@ -219,10 +203,7 @@ export async function extractCitations(documentText: string): Promise<LegalCitat
 <|assistant|>`;`
 
   const result = await generate(prompt, {
-    mode: 'auto',
-    model: 'gemma3-legal:latest',
-    maxTokens: 512,
-    temperature: 0.1, // Very low for factual extraction
+    mode: 'auto', model: 'gemma3-legal:latest', maxTokens: 512, temperature: 0.1, // Very low for factual extraction
   });
 
   try {
@@ -230,13 +211,11 @@ export async function extractCitations(documentText: string): Promise<LegalCitat
     const jsonMatch = result.text.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
       return JSON.parse(jsonMatch[0]);
-    } }
+     }
     return [];
-  } }catch {
+   }catch {
     console.error('Failed to parse citations');
-    return [];
-  } }
-} }
+    return []; } }
 */
 
 // ============================================================================
@@ -245,7 +224,7 @@ export async function extractCitations(documentText: string): Promise<LegalCitat
 
 // src/lib/search/query-expander.ts
 /*
-import { generate } }from '$lib/ai/unified-llama';
+import { generate  } from '$lib/ai/unified-llama';
 
 export async function expandSearchQuery(originalQuery: string): Promise<string[]> {
   const result = await generate(
@@ -255,9 +234,8 @@ export async function expandSearchQuery(originalQuery: string): Promise<string[]
 Alternatives (one per line): ','
     {
       mode: 'wasm', // Fast expansion
-      maxTokens: 128,
-      temperature: 0.7
-    } }
+      maxTokens: 128, temperature: 0.7
+     }
   );
 
   return result.text
@@ -265,7 +243,7 @@ Alternatives (one per line): ','
     .filter(line => line.trim().length > 0)
     .map(line => line.replace(/^\d+\.\s*/, '').trim())
     .slice(0, 3);
-} }
+ }
 
 // Usage:
 // const expanded = await expandSearchQuery('contract breach damages');
@@ -279,42 +257,36 @@ Alternatives (one per line): ','
 
 // src/lib/services/timeline-generator.ts
 /*
-import { generate } }from '$lib/ai/unified-llama';
+import { generate  } from '$lib/ai/unified-llama';
 
-interface TimelineEvent { date: string;, description: string;
+interface TimelineEvent { date: string; description: string;
   significance: string;
-} }
+ }
 
-export async function generateCaseTimeline(
- , caseDescription: string
+export async function generateCaseTimeline( caseDescription: string
 ): Promise<TimelineEvent[]> {
   const prompt = `<|system|>Extract key events from this case description and create a timeline.<|end|>`
 
-<|user|>${caseDescription} }
+<|user|>${caseDescription }
 
 Create a JSON array of timeline events.<|end|>
 
 <|assistant|>`;`
 
   const result = await generate(prompt, {
-    mode: 'auto',
-    model: 'gemma3-legal:latest',
-    maxTokens: 1024,
-    temperature: 0.2
+    mode: 'auto', model: 'gemma3-legal:latest', maxTokens: 1024, temperature: 0.2
   });
 
   // Parse timeline (add proper error handling)
   try {
     const jsonMatch = result.text.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    } }
-  } }catch {
+      return JSON.parse(jsonMatch[0]); }catch {
     console.error('Failed to parse timeline');
-  } }
+   }
 
   return [];
-} }
+ }
 */
 
 // ============================================================================
@@ -323,23 +295,22 @@ Create a JSON array of timeline events.<|end|>
 
 // src/lib/analysis/evidence-clusterer.ts
 /*
-import { generate } }from '$lib/ai/unified-llama';
+import { generate  } from '$lib/ai/unified-llama';
 
-interface EvidenceCluster { theme: string;, evidenceIds: string[];
+interface EvidenceCluster { theme: string; evidenceIds: string[];
   description: string;
-} }
+ }
 
-export async function clusterEvidence(
- , evidence: Array<{ id: string; description: string }>
+export async function clusterEvidence( evidence: Array<{ id: string; description: string }>
 ): Promise<EvidenceCluster[]> {
   const evidenceList = evidence
-    .map((e, i) => `${i + 1}. [${e.id} } ${e.description}`)
+    .map((e, i) => `${i + 1}. [${e.id } ${e.description}`)
     .join('\n');
 
   const prompt = `<|system|>Group this evidence into thematic clusters for case analysis.<|end|>`
 
 <|user|>Evidence items:
-${evidenceList} }
+${evidenceList }
 
 Identify 2-4 major themes and group evidence accordingly.<|end|>
 
@@ -347,9 +318,7 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
 
   const result = await generate(prompt, {
     mode: 'remote', // Complex analysis
-    model: 'gemma3-legal:latest',
-    maxTokens: 1024,
-    temperature: 0.5
+    model: 'gemma3-legal:latest', maxTokens: 1024, temperature: 0.5
   });
 
   // Parse clusters (simplified)
@@ -364,14 +333,12 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
     const evidenceIds = section.match(/\[([^\]]+)\]/g)?.map(id => id.slice(1, -1)) || [];
 
     clusters.push({
-      theme,
-      evidenceIds,
-      description: lines.slice(1).join(' ').trim()
+      theme, evidenceIds: description: lines.slice(1).join(' ').trim()
     });
-  } }
+   }
 
   return clusters;
-} }
+ }
 */
 
 // ============================================================================
@@ -380,8 +347,8 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
 
 // src/lib/components/SmartForm.svelte
 /*
-<script, lang="ts">
-  import { generate, getCapabilities } }from '$lib/ai/unified-llama';
+<script: lang="ts">
+  import { generate, getCapabilities  } from '$lib/ai/unified-llama';
 
   let fieldValue = $state<string>('');
   let aiSuggestion = $state<string>('');
@@ -400,25 +367,24 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
     const mode = capabilities.wasm ? 'wasm' : capabilities.remote ? 'remote' : 'auto';
 
     const result = await generate(
-      `Suggest a realistic ${fieldType} }for a legal document`,
-      { mode, maxTokens: 32 } }
+      `Suggest a realistic ${fieldType }for a legal document`, { mode: maxTokens: 32  }
     );
 
     aiSuggestion = result.text.trim();
-  } }
+   }
 </script>
 
-<input, bind:value={fieldValue} }placeholder="Enter, address..." />
+<input: bind:value={fieldValue }placeholder="Enter, address..." />
 
-{#if capabilities?.wasm || capabilities?.remote} }
-  <button, onclick={() => suggestValue('address')}>
+{#if capabilities?.wasm || capabilities?.remote }
+  <button: onclick={() => suggestValue('address')}>
     🤖 AI Suggest
   </button>
-{/if} }
+{/if }
 
-{#if aiSuggestion} }
-  <p, class="suggestion">Suggestion: {aiSuggestion}</p>
-{/if} }
+{#if aiSuggestion }
+  <p: class="suggestion">Suggestion: {aiSuggestion}</p>
+{/if }
 */
 
 // ============================================================================
@@ -427,11 +393,11 @@ Identify 2-4 major themes and group evidence accordingly.<|end|>
 
 // src/lib/utils/reliable-inference.ts
 /*
-import { generate, type GenerateOptions } }from '$lib/ai/unified-llama';
+import { generate, type GenerateOptions  } from '$lib/ai/unified-llama';
 
 export async function reliableGenerate(
-  prompt: string,
-  options?: GenerateOptions,
+  prompt: string;
+  options?: GenerateOptions;
   maxRetries = 3
 ): Promise<string> {
   let lastError: Error | null = null;
@@ -440,23 +406,22 @@ export async function reliableGenerate(
     try {
       const result = await generate(prompt, options);
       return result.text;
-    } }catch (error) {
+     }catch (error) {
       lastError = error instanceof Error ? error : new Error('Unknown error');
-      console.warn(`Attempt ${attempt}/${maxRetries} }failed:`, lastError);
+      console.warn(`Attempt ${attempt}/${maxRetries }failed:`, lastError);
 
       if (attempt < maxRetries) {
         // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-      } }
-    } }
-  } }
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000)); }
+   }
 
-  throw new Error(`Failed after ${maxRetries} }attempts: ${lastError?.message}`);
-} }
+  throw new Error(`Failed after ${maxRetries }attempts: ${lastError?.message}`);
+ }
 
 // Usage:
 // const safeResult = await reliableGenerate('Important query', { mode: 'auto' });'`'`
 */
 
 export {};
+
 

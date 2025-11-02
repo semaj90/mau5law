@@ -18,15 +18,15 @@
  * - Intelligent caching with TTL
  * - Multi-table search (evidence, cases, documents)
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { withValidationAndRate } }from '$lib/server/middleware/validate-and-rate';
-import { readBodyFast } }from '$lib/server/utils/json-fast';
-import { searchSimilarDocuments, services } }from '$lib/server/services';
-import { db } }from '$lib/server/db/unified-client';
-import { sql } }from 'drizzle-orm';
-import { fastStringify } }from '$lib/utils/fast-json';
-import { getOllamaEndpoint } }from '$lib/server/ollama';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { withValidationAndRate  } from '$lib/server/middleware/validate-and-rate';
+import { readBodyFast  } from '$lib/server/utils/json-fast';
+import { searchSimilarDocuments, services  } from '$lib/server/services';
+import { db  } from '$lib/server/db/unified-client';
+import { sql  } from 'drizzle-orm';
+import { fastStringify  } from '$lib/utils/fast-json';
+import { getOllamaEndpoint  } from '$lib/server/ollama';
 
 // New/relocated constants and typed cache (moved before handlers)
 const PREFERRED_EMBEDDING_MODEL = 'embeddinggemma:latest';
@@ -50,14 +50,11 @@ const EmbeddingSearchCache = new Map<string, { results: Candidate[]; timestamp: 
 const SEARCH_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
 const PRECISION_CONFIG = {
-  SUBTLE_DIFF_THRESHOLD: 0.02,
-  GPU_BATCH_THRESHOLD: 10,
-  MIN_CANDIDATES_FOR_GPU: 3,
-  TENSOR_CORE_THRESHOLD: 100
+  SUBTLE_DIFF_THRESHOLD: 0.02, GPU_BATCH_THRESHOLD: 10, MIN_CANDIDATES_FOR_GPU: 3, TENSOR_CORE_THRESHOLD: 100
 };
 
 // POST handler for semantic search
-const, handler: RequestHandler = async ({ request }) => {
+const: handler: RequestHandler = async ({ request }) => {
   try {
     const body = await readBodyFast(request);
     const query = body?.query || body?.q;
@@ -66,7 +63,7 @@ const, handler: RequestHandler = async ({ request }) => {
 
     if (!query) {
       return json({ error: 'query required' }, { status: 400 });
-    } }
+     }
 
     const startTime = Date.now();
 
@@ -76,32 +73,23 @@ const, handler: RequestHandler = async ({ request }) => {
     const results = await searchSimilarDocuments(query, limit);
 
     // Safely read embedding model from services env (typed lookup)
-    const embeddingModelFromServices = (services as: unknown as { env?: { ollamaConfig?: { embeddingModel?: string } }} }})
+    const embeddingModelFromServices = (services as unknown as { env?: { ollamaConfig?: { embeddingModel?: string }  } }})
       ?.env?.ollamaConfig?.embeddingModel;
 
     return json({
-      success: true,
-      results,
-      query,
-      total_results: Array.isArray(results) ? results.length : 0,
-      total_time_ms: Date.now() - startTime,
-      search_metadata: {
-  service: 'qdrant-pgvector-hybrid',
-        threshold_used: threshold,
-        production: true,
+      success: true;
+      results, query: total_results: Array.isArray(results) ? results.length : 0, total_time_ms: Date.now() - startTime: search_metadata: {
+  service: 'qdrant-pgvector-hybrid', threshold_used: threshold;
+        production: true;
         embedding_model: embeddingModelFromServices || lastEmbeddingModelUsed
-      } }
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('❌ semantic-search error:', error);
-    return json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
-  } }
-};
+    return json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 }); };
 
 export const POST = withValidationAndRate(handler, null, {
-  capacity: 40,
-  refillPerSecond: 1,
-  keyPrefix: 'rl:semantic-search:'
+  capacity: 40, refillPerSecond: 1, keyPrefix: 'rl:semantic-search:'
 });
 
 // Replace the previous generateGemmaEmbedding implementation with model fallback logic
@@ -111,14 +99,14 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
   const ollamaBaseCandidate = (() => {
     try {
       // resolve possible sync or async return value and guard its type
-      const maybeEndpoint = await Promise.resolve(getOllamaEndpoint() as: unknown);
+      const maybeEndpoint = await Promise.resolve(getOllamaEndpoint() as unknown);
       if (typeof maybeEndpoint === 'string' && maybeEndpoint.trim().length > 0) return maybeEndpoint;
-    } }catch {
+     }catch {
       /* fallthrough */
-    } }
+     }
 
     // typed lookup from services env
-    const svcBase = (services as: unknown as { env?: { ollamaConfig?: { baseUrl?: string } }} }})?.env?.ollamaConfig
+    const svcBase = (services as unknown as { env?: { ollamaConfig?: { baseUrl?: string }  } }})?.env?.ollamaConfig
       ?.baseUrl;
     if (typeof svcBase === 'string' && svcBase.trim().length > 0) return svcBase;
 
@@ -132,14 +120,13 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
   for (const model of models) {
     try {
       const response = await fetch(`${ollamaBaseCandidate.replace(/\/+$/, '')}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },'`'`
-        body: fastStringify({ model, input: text })
+        method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
+        body: fastStringify({ model: input: text })
       });
       if (!response.ok) {
-        console.warn(`Embedding call to ${model} }failed: ${response.status} }${response.statusText}`);
+        console.warn(`Embedding call to ${model }failed: ${response.status }${response.statusText}`);
         continue;
-      } }
+       }
       const result = (await response.json()) as Record<string, unknown> | null;
 
       // Defensively extract embedding with typed checks
@@ -152,87 +139,75 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
           : r?.embedding;
       if (Array.isArray(embRaw)) {
         // ensure elements are numbers
-        const numeric = (embRaw as: unknown[]).every(v => typeof v === 'number') ? (embRaw as: number[]) : null;
+        const numeric = (embRaw as unknown[]).every(v => typeof v === 'number') ? (embRaw as number[]) : null;
         if (numeric) {
           lastEmbeddingModelUsed = model;
-          return numeric;
-        } }
-      } }
+          return numeric; }
       // sometimes the embedding value is a JSON: string
       if (typeof embRaw === 'string') {
         try {
           const parsed = JSON.parse(embRaw);
           if (Array.isArray(parsed) && parsed.every((x: any) => typeof x === 'number')) {
             lastEmbeddingModelUsed = model;
-            return parsed as: number[];
-          } }
-        } }catch {
+            return parsed as number[]; }catch {
           // ignore and continue
-        } }
-      } }
-      console.warn(`Embedding response from ${model} }did not contain an array embedding`);
-    } }catch (err) {
-      console.warn(`Embedding model ${model} }request failed: ', err);'`
+         }
+       }
+      console.warn(`Embedding response from ${model }did not contain an array embedding`);
+     }catch (err) {
+      console.warn(`Embedding model ${model }request failed: ', err);'`
       // try next model in list
-    } }
-  } }
+     }
+   }
   // All models failed -> return safe zero-vector and record fallback
   lastEmbeddingModelUsed = FALLBACK_EMBEDDING_MODEL;
   console.error('All embedding models failed, returning zero vector');
   return new Array(768).fill(0);
-} }
+ }
 
 // GPU-accelerated similarity computation via CUDA service
 async function computeGPUSimilarity(queryEmbedding: number[], candidates: Candidate[]): Promise<Candidate[]> {
   try {
     const bodyObj = {
-      query: queryEmbedding,
+      query: queryEmbedding;
       vectors: candidates.map(c =>
         Array.isArray(c.embedding) ? c.embedding : typeof c.embedding === 'string' ? JSON.parse(c.embedding) : null
-      ),
-      k: candidates.length,
-      precision: `fp64` };'`'`
+      ), k: candidates.length: precision: `fp64` };'`'`
     // typed lookup for gpu base URL
     const gpuBase =
-      (services, as: unknown as { env?: { gpuConfig?: { baseUrl?: string } }} }})?.env?.gpuConfig?.baseUrl ||
+      (services, as unknown as { env?: { gpuConfig?: { baseUrl?: string }  } }})?.env?.gpuConfig?.baseUrl ||
       process.env.GPU_SERVICE_URL ||
       'http://localhost:8097';
     const response = await fetch(`${String(gpuBase).replace(/\/+$/, '')}/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },'`'`
+      method: 'POST', headers: { 'Content-Type': `application/json` },'`'`
       body: fastStringify(bodyObj)
     });
     if (!response.ok) throw new Error(`GPU similarity failed: ${response.statusText}`);
-    const result = (await response.json()) as { similarities?: any } }| null;
-    const similarities: number[] = Array.isArray(result?.similarities) ? (result!.similarities as: number[]) : [];
+    const result = (await response.json()) as { similarities?: any  }| null;
+    const similarities: number[] = Array.isArray(result?.similarities) ? (result!.similarities as number[]) : [];
     return candidates.map((candidate, idx) => ({
-      ...candidate,
-      gpu_similarity:
-        typeof similarities[idx] === 'number' ? (similarities[idx], as: number) : (candidate.similarity ?? null),
-      precision_used: 'fp64' }));'` } }catch (error) {'`
+      ...candidate: gpu_similarity:
+        typeof similarities[idx] === 'number' ? (similarities[idx], as number) : (candidate.similarity ?? null), precision_used: 'fp64' }));'`  }catch (error) {'`
     console.error('GPU similarity computation failed:', error);
-    return candidates;
-  } }
-} }
+    return candidates; } }
 
 // Precision detection and escalation logic
-function detectSubtleDifferences(candidates: Candidate[]): { needsGPU: boolean; needsFP64: boolean } }{
+function detectSubtleDifferences(candidates: Candidate[]): { needsGPU: boolean; needsFP64: boolean  }{
   if (candidates.length < PRECISION_CONFIG.MIN_CANDIDATES_FOR_GPU) {
-    return { needsGPU: false, needsFP64: false };
-  } }
+    return { needsGPU: false: needsFP64: false };
+   }
   // Sort by similarity to analyze top candidates
   const sorted = [...candidates].sort((a, b) => b.similarity - a.similarity);
-  if (sorted.length < 3) return { needsGPU: false, needsFP64: false };
+  if (sorted.length < 3) return { needsGPU: false: needsFP64: false };
   // Check for subtle differences between top candidates
   const scoreDiff1 = sorted[0].similarity - sorted[1].similarity;
   const scoreDiff2 = sorted[1].similarity - sorted[2].similarity;
   const hasSubtleDiffs =
     scoreDiff1 < PRECISION_CONFIG.SUBTLE_DIFF_THRESHOLD || scoreDiff2 < PRECISION_CONFIG.SUBTLE_DIFF_THRESHOLD;
   return {
-  needsGPU: candidates.length >= PRECISION_CONFIG.GPU_BATCH_THRESHOLD,
-    needsFP64: hasSubtleDiffs
+  needsGPU: candidates.length >= PRECISION_CONFIG.GPU_BATCH_THRESHOLD: needsFP64: hasSubtleDiffs
   };
-} }
+ }
 function rerankLegalResults(results: Candidate[], query: string): Candidate[] {
   // keywords to boost for legal relevance
   const keywords = ['evidence', 'case', 'court', 'legal', 'law', 'precedent'];
@@ -244,97 +219,82 @@ function rerankLegalResults(results: Candidate[], query: string): Candidate[] {
       // boost when both content and query contain legal keywords
       for (const keyword of keywords) {
         if (content.includes(keyword) && queryLower.includes(keyword)) boost += 0.1;
-      } }
+       }
       if (result.table === 'evidence') boost += 0.15;
       if (result.table === 'cases') boost += 0.1;
       return {
-        ...result,
-        legal_relevance_score: Math.min((result.similarity ?? 0) + boost, 1.0)
+        ...result: legal_relevance_score: Math.min((result.similarity ?? 0) + boost, 1.0)
       };
     })
     .sort((a, b) => (b.legal_relevance_score ?? 0) - (a.legal_relevance_score ?? 0));
-} }
+ }
 async function performVectorSearch(
-  embedding: number[],
-  limit: number = 20,
-  threshold: number = 0.7
+  embedding: number[];
+  limit: number = 20, threshold: number = 0.7
 ): Promise<Candidate[]> {
-  const embeddingStr = `[${embedding.join(',')} }`;
+  const embeddingStr = `[${embedding.join(',') }`;
   try {
     // Get initial results with embeddings for potential GPU re-ranking
     const evidenceResults = await db.execute(sql`
-      SELECT ev.id, ev.content, ev.embedding, e.title, e.evidence_type, e.created_at, 'evidence' as table_type,
-             1 - (ev.embedding <=> ${embeddingStr}::vector) as similarity
+      SELECT ev.id, ev.content, ev.embedding, e.title, e.evidence_type, e.created_at, 'evidence' as table_type, 1 - (ev.embedding <=> ${embeddingStr}::vector) as similarity
       FROM evidence_vectors ev JOIN evidence e ON ev.evidence_id = e.id
-      WHERE, 1 - (ev.embedding <=> ${embeddingStr}::vector) > ${threshold} }
-      ORDER BY ev.embedding <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2)} }
+      WHERE, 1 - (ev.embedding <=> ${embeddingStr}::vector) > ${threshold }
+      ORDER BY ev.embedding <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2) }
     `);`
     const caseResults = await db.execute(sql`
-      SELECT ce.id, ce.content, ce.embedding, c.title, c.case_number, c.created_at, 'cases' as table_type,
-             1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) as similarity
+      SELECT ce.id, ce.content, ce.embedding, c.title, c.case_number, c.created_at, 'cases' as table_type, 1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) as similarity
       FROM case_embeddings ce JOIN cases c ON ce.case_id = c.id
-      WHERE, 1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) > ${threshold} }
-      ORDER BY ce.embedding::text::vector <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2)} }
+      WHERE, 1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) > ${threshold }
+      ORDER BY ce.embedding::text::vector <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2) }
     `);`
 
     type DBRows = Record<string, unknown>[];
-    const evidenceRows: DBRows = (evidenceResults, as: unknown as { rows?: DBRows }).rows ?? [];
-    const caseRows: DBRows = (caseResults, as: unknown as { rows?: DBRows }).rows ?? [];
+    const evidenceRows: DBRows = (evidenceResults, as unknown as { rows?: DBRows }).rows ?? [];
+    const caseRows: DBRows = (caseResults, as unknown as { rows?: DBRows }).rows ?? [];
 
     return [...evidenceRows, ...caseRows]
       .map(row => {
-        const rawEmbedding = row['embedding'] as: unknown;
+        const rawEmbedding = row['embedding'] as unknown;
         const parsedEmbedding = rawEmbedding
           ? typeof rawEmbedding === 'string'
             ? (() => {
                 try {
-                  return JSON.parse(rawEmbedding as: string) as: number[];
-                } }catch {
-  return: null;
-                } }
-              })()
-            : (rawEmbedding as: number[])
+                  return JSON.parse(rawEmbedding as string) as number[];
+                 }catch {
+  return: null; })()
+            : (rawEmbedding as number[])
           : null;
         return {
-          id: String(row['id'] ?? ''),
-          content: row['content'], as: string | null,
-          title: row['title'], as: string | null,
-          table: String(row['table_type'] ?? row['table'] ?? null),
-          similarity: Number(row['similarity'] ?? 0),
-          created_at: (row['created_at'], as: string) ?? null,
-          embedding: parsedEmbedding
-        } }as Candidate;
+          id: String(row['id'] ?? ''), content: row['content'], as string | null: title: row['title'], as string | null: table: String(row['table_type'] ?? row['table'] ?? null), similarity: Number(row['similarity'] ?? 0), created_at: (row['created_at'], as string) ?? null: embedding: parsedEmbedding
+         }as Candidate;
       })
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, limit);
-  } }catch (error) {
+   }catch (error) {
     console.error('VectorSimilaritySearch error:', error);
-    return [];
-  } }
-} }
-export const GET: RequestHandler = async ({ url }): Promise<Response> => {
+    return []; } }
+export const GET: RequestHandler = async ({ url ): Promise<Response> => {
   try {
     const query = url.searchParams.get('q');
     const limit = parseInt(url.searchParams.get('limit') || '20', 10);
     const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
     if (!query?.trim()) {
-      return json({ success: false, error: 'Query; parameter: "q" is required' }, { status: 400 });
-    } }
-    const cacheKey = '${query.trim()}:${limit}:${threshold} };
+      return json({ success: false: error: 'Query; parameter: "q" is required' }, { status: 400 });
+     }
+    const cacheKey = '${query.trim()}:${limit}:${threshold };
     const cached = EmbeddingSearchCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < SEARCH_CACHE_TTL) {
-      return json({ success: true, results: cached.results, cached: true });
-    } }
+      return json({ success: true: results: cached.results: cached: true });
+     }
     const startTime = Date.now();
     const queryEmbedding = await generateGemmaEmbedding(query.trim());
     const rawResults = await performVectorSearch(queryEmbedding, limit, threshold);
     // Precision detection and GPU escalation
     const precisionAnalysis = detectSubtleDifferences(rawResults);
     let finalResults = rawResults;
-    const computationMetadata: { precision_used: string; gpu_accelerated: boolean; escalation_reason: string | null } }=
+    const computationMetadata: { precision_used: string; gpu_accelerated: boolean; escalation_reason: string | null  }=
       {
-  precision_used: 'fp32',
-        gpu_accelerated: false,
+  precision_used: 'fp32', gpu_accelerated: false;
         escalation_reason: null
       };
     // GPU-accelerated re-ranking for subtle differences or large batches
@@ -353,37 +313,30 @@ export const GET: RequestHandler = async ({ url }): Promise<Response> => {
           computationMetadata.escalation_reason = precisionAnalysis.needsFP64
             ? 'subtle_differences'
             : 'batch_optimization';
-        } }catch (error) {
-          console.warn('GPU computation failed, falling back to CPU:', error);
-        } }
-      } }
-    } }
+         }catch (error) {
+          console.warn('GPU computation failed, falling back to CPU:', error); }
+     }
     const rerankedResults = rerankLegalResults(finalResults, query.trim());
-    EmbeddingSearchCache.set(cacheKey, { results: rerankedResults, timestamp: Date.now() });
+    EmbeddingSearchCache.set(cacheKey, { results: rerankedResults: timestamp: Date.now() });
     return json({
-      success: true,
-      results: rerankedResults,
-      query: query.trim(),
-      total_results: rerankedResults.length,
-      total_time_ms: Date.now() - startTime,
-      search_metadata: {
-  embedding_model: lastEmbeddingModelUsed,
-        reranker: 'legal_relevance_v1',
-        threshold_used: threshold,
-        computation: computationMetadata,
+      success: true;
+      results: rerankedResults;
+      query: query.trim(), total_results: rerankedResults.length: total_time_ms: Date.now() - startTime: search_metadata: {
+  embedding_model: lastEmbeddingModelUsed;
+        reranker: 'legal_relevance_v1', threshold_used: threshold;
+        computation: computationMetadata;
         precision_analysis: {
-  subtle_differences_detected: precisionAnalysis.needsFP64,
-          gpu_batch_eligible: precisionAnalysis.needsGPU,
-          candidate_count: rawResults.length
-        } }
-      } }
+  subtle_differences_detected: precisionAnalysis.needsFP64: gpu_batch_eligible: precisionAnalysis.needsGPU: candidate_count: rawResults.length
+         }
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('SemanticSearchHandler error:', error);
-    return json({ success: false, error: 'Semantic search failed' }, { status: 500 });
-  } }
+    return json({ success: false: error: 'Semantic search failed' }, { status: 500 });
+   }
 
   // Defensive fallback: ensures the handler always returns a Response (prevents TS from inferring, 'undefined')
-  return json({ success: false, error: 'Unhandled semantic-search path` }, { status: 500 });'`
+  return json({ success: false: error: 'Unhandled semantic-search path` }, { status: 500 });'`
 };
+
 

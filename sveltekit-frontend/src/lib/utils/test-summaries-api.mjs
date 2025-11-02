@@ -11,14 +11,10 @@ console.log('🧪 Testing /api/summaries API endpoint...\n');
 
 // Test data for the API
 const testRequest = {
-  type: "case",
-  targetId: "test-case-123",
-  depth: "comprehensive",
-  includeRAG: true,
-  includeUserActivity: true,
-  enableStreaming: false,
-  chunkSize: 2000,
-  userId: "test-user"
+  type: "case", targetId: "test-case-123", depth: "comprehensive", includeRAG: true;
+  includeUserActivity: true;
+  enableStreaming: false;
+  chunkSize: 2000, userId: "test-user"
 };
 
 // Function to test the API
@@ -30,9 +26,7 @@ async function testSummariesAPI() {
 
     // Start the dev server in background
     const serverProcess = execSync('npm run dev &', { 
-      cwd: process.cwd(),
-      stdio: 'inherit',
-      timeout: 5000 
+      cwd: process.cwd(), stdio: 'inherit', timeout: 5000 
     });
 
     // Wait for server to start
@@ -54,9 +48,7 @@ async function testSummariesAPI() {
 
     try {
       const response = execSync(curlCommand, { 
-        encoding: 'utf8',
-        timeout: 30000,
-        stdio: 'pipe'
+        encoding: 'utf8', timeout: 30000, stdio: 'pipe'
       });
       
       console.log('✅ Success! Raw Response:');
@@ -112,29 +104,15 @@ function checkSystemHealth() {
   
   const checks = [
     {
-      name: 'Node.js Version',
-      command: 'node --version',
-      required: true
-    },
-    {
-      name: 'npm Version', 
-      command: 'npm --version',
-      required: true
-    },
-    {
-      name: 'Package.json exists',
-      command: 'test -f package.json && echo "✅ Found" || echo "❌ Missing"',
-      required: true
-    },
-    {
-      name: 'SvelteKit Dependencies',
-      command: 'npm list @sveltejs/kit --depth=0 2>/dev/null | grep @sveltejs/kit || echo "❌ Missing"',
-      required: true
-    },
-    {
-      name: 'Ollama Service (Optional)',
-      command: 'curl -s http://localhost:11434/api/tags >/dev/null && echo "✅ Running" || echo "⚠️  Not available"',
-      required: false
+      name: 'Node.js Version', command: 'node --version', required: true
+    }, {
+      name: 'npm Version', command: 'npm --version', required: true
+    }, {
+      name: 'Package.json exists', command: 'test -f package.json && echo "✅ Found" || echo "❌ Missing"', required: true
+    }, {
+      name: 'SvelteKit Dependencies', command: 'npm list @sveltejs/kit --depth=0 2>/dev/null | grep @sveltejs/kit || echo "❌ Missing"', required: true
+    }, {
+      name: 'Ollama Service (Optional)', command: 'curl -s http://localhost:11434/api/tags >/dev/null && echo "✅ Running" || echo "⚠️  Not available"', required: false
     }
   ];
 

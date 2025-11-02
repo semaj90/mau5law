@@ -90,10 +90,7 @@ ${this.getPhaseContext(phase)}
   }
   getPhaseStatus(phase) {
     const statuses = {
-      original: "✅ Foundation complete",
-      phase2: "🔧 Enhanced UI with conflicts",
-      "phase2-fixed": "✅ Enhanced UI conflicts resolved",
-    };
+      original: "✅ Foundation complete", phase2: "🔧 Enhanced UI with conflicts", "phase2-fixed": "✅ Enhanced UI conflicts resolved"};
     return statuses[phase] || "📋 In progress";
   }
   getPhaseContext(phase) {
@@ -104,24 +101,21 @@ Phase 1 established the foundation:
 - Simple stores for auth, cases, evidence
 - CRUD operations
 - Core UI components
-- Database integration`,
-      phase2: `
+- Database integration`, phase2: `
 Phase 2 enhanced the UI and added AI foundations:
 - Bits UI v2 integration (Melt UI removed)
 - Svelte 5 runes + SvelteKit 2 routes
 - Drizzle-ORM notes added
 - Docker Desktop URLs used for local docker service fallbacks
 - WebTransport (if available) or WebSocket fallback; QUIC support noted
-- Store conflicts emerged during integration`,
-      'phase2-fixed': `
+- Store conflicts emerged during integration`, 'phase2-fixed': `
 Phase 2 conflicts resolved:
 - Unified AI stores (ai-commands + ai-command-parser)
 - Unified Evidence stores (evidence + evidenceStore)
 - Safe import dependencies with fallbacks
 - Proper SSR compatibility
 - Dynamic WebSocket URLs
-- Exponential backoff reconnection`,
-    };
+- Exponential backoff reconnection`};
     return contexts[phase] || "Phase in development";
   }
   listStoreFiles() {

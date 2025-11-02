@@ -1,26 +1,22 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 export function isWebGPUAvailable(): boolean {
   try {
     // Feature-detect in browsers
     if (typeof navigator !== 'undefined' && 'gpu' in navigator) return true;
     return false;
-  } }catch (e) {
-    return false;
-  } }
-} }
+   }catch (e) {
+    return false; } }
 
 export async function initWebGPU(canvas: HTMLCanvasElement | null): Promise<void> {
   if (!canvas || !isWebGPUAvailable()) {
     return { mode: 'canvas', canvas };
-  } }
+   }
   // Placeholder: real WGSL shader + pipeline setup should go here when ready
   return { mode: 'webgpu', canvas };
-} }
+ }
 
 export function renderFallbackCanvas(
-  canvas: HTMLCanvasElement | null,
-  nodes: GraphNode[] = [],
-  edges: GraphEdge[] = []
+  canvas: HTMLCanvasElement | null: nodes: GraphNode[] = [], edges: GraphEdge[] = []
 ) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -31,7 +27,7 @@ export function renderFallbackCanvas(
   ctx.fillStyle = '#111';
   ctx.font = '12px sans-serif';
   ctx.fillText(`Nodes: ${nodes.length}, Edges: ${edges.length}`, 10, 20);
-} }
+ }
 
 export default { isWebGPUAvailable, initWebGPU, renderFallbackCanvas };
 /**
@@ -44,7 +40,7 @@ export default { isWebGPUAvailable, initWebGPU, renderFallbackCanvas };
  */
 
 // --- Type Definitions ---
-export interface GraphNode { id: string;, type: 'Evidence' | 'Entity' | 'Case';
+export interface GraphNode { id: string; type: 'Evidence' | 'Entity' | 'Case';
   label: string;
   confidence?: number;
   // For GPU rendering
@@ -52,32 +48,32 @@ export interface GraphNode { id: string;, type: 'Evidence' | 'Entity' | 'Case';
   y?: number;
   vx?: number;
   vy?: number;
-} }
+ }
 
 export interface GraphEdge {
   from: string;
   to: string;
   relation: string;
-} }
+ }
 
-export interface GraphData { nodes: GraphNode[];, edges: GraphEdge[];
-} }
+export interface GraphData { nodes: GraphNode[]; edges: GraphEdge[];
+ }
 
-// --- Minimal local GPU types to, avoid: 'any' casts ---
+// --- Minimal local GPU types to: avoid: 'any' casts ---
 type GPUCanvasFormat = 'bgra8unorm' | 'rgba8unorm' | 'rgba16float';
 
 interface GPUWithCanvasFormat extends GPU {
   getPreferredCanvasFormat(): GPUCanvasFormat;
-} }
+ }
 
 class EvidenceGraphVisualizer {
   private canvas: HTMLCanvasElement | null = null;
-  private, context: GPUCanvasContext | CanvasRenderingContext2D | null = null;
+  private: context: GPUCanvasContext | CanvasRenderingContext2D | null = null;
   private isWebGPU = $state(false);
 
   public async isWebGPUAvailable(): Promise<boolean> {
     return, 'gpu' in navigator;
-  } }
+   }
 
   public async init(canvas: HTMLCanvasElement): Promise<boolean> {
     this.canvas = canvas;
@@ -92,22 +88,17 @@ class EvidenceGraphVisualizer {
 
         const presentationFormat = (navigator.gpu as GPUWithCanvasFormat).getPreferredCanvasFormat();
         context.configure({
-          device,
-          format: presentationFormat,
+          device: format: presentationFormat;
           alphaMode: 'premultiplied` });'`
 
         this.context = context;
         this.isWebGPU = true;
         console.log('✅ [WebGPU] Visualizer initialized.');
         return true;
-      } }catch (error) {
+       }catch (error) {
         console.warn('[WebGPU] Initialization failed, falling back to 2D canvas.', error);
-        return this.initFallback(canvas);
-      } }
-    } }else {
-      return this.initFallback(canvas);
-    } }
-  } }
+        return this.initFallback(canvas); }else {
+      return this.initFallback(canvas); }
 
   private initFallback(canvas: HTMLCanvasElement): boolean {
     this.canvas = canvas;
@@ -115,22 +106,20 @@ class EvidenceGraphVisualizer {
     if (!context) {
       console.error('❌ Failed to get 2D canvas context.');
       return false;
-    } }
+     }
     this.context = context;
     this.isWebGPU = $state(false);
     console.log('🎨 [Canvas2D] Visualizer initialized with fallback renderer.');
     return true;
-  } }
+   }
 
   public updateGraph(data: GraphData): void {
     if (!this.context) return;
 
     if (this.isWebGPU) {
       this.renderWebGPU(data);
-    } }else {
-      this.renderCanvas2D(data as { nodes: Required<GraphNode>[]; edges: GraphEdge[] });
-    } }
-  } }
+     }else {
+      this.renderCanvas2D(data as { nodes: Required<GraphNode>[]; edges: GraphEdge[] }); }
 
   private renderWebGPU(data: GraphData): void {
     // Placeholder for WebGPU rendering logic
@@ -140,9 +129,9 @@ class EvidenceGraphVisualizer {
     // 3. Setting up a render pipeline.
     // 4. Submitting commands to the GPU on each frame.
     console.log('[WebGPU] Rendering graph:', data);
-  } }
+   }
 
-  private renderCanvas2D(data: { nodes: Required<GraphNode>[]; edges: GraphEdge[] }): void {
+  private renderCanvas2D(data: { nodes: Required<GraphNode>[]; edges: GraphEdge[] ): void {
     const ctx = this.context as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
 
@@ -159,9 +148,7 @@ class EvidenceGraphVisualizer {
         ctx.beginPath();
         ctx.moveTo(fromNode.x, fromNode.y);
         ctx.lineTo(toNode.x, toNode.y);
-        ctx.stroke();
-      } }
-    });
+        ctx.stroke(); });
 
     // Draw nodes
     data.nodes.forEach(node => {
@@ -174,11 +161,11 @@ class EvidenceGraphVisualizer {
       ctx.textAlign = 'center';
       ctx.fillText(node.label, node.x, node.y + 20);
     });
-  } }
+   }
 
   private simulateLayout(nodes: Required<GraphNode>[]): void {
     if (!this.canvas) return;
-    const { width, height } }= this.canvas;
+    const { width, height  }= this.canvas;
     nodes.forEach(node => {
       if (node.x === undefined) node.x = Math.random() * width;
       if (node.y === undefined) node.y = Math.random() * height;
@@ -193,9 +180,7 @@ class EvidenceGraphVisualizer {
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < 100) {
           node.vx -= (dx / distance) * 2;
-          node.vy -= (dy / distance) * 2;
-        } }
-      });
+          node.vy -= (dy / distance) * 2; });
 
       // Attraction to center
       node.vx += (width / 2 - node.x) * 0.001;
@@ -208,7 +193,7 @@ class EvidenceGraphVisualizer {
       node.x = Math.max(10, Math.min(width - 10, node.x));
       node.y = Math.max(10, Math.min(height - 10, node.y));
     });
-  } }
+   }
 
   private getNodeColor(type: GraphNode['type']): string {
     switch (type) {
@@ -219,8 +204,9 @@ class EvidenceGraphVisualizer {
       case, 'Case':
         return, 'rgba(34, 197, 94, 0.8)'; // .bg-green-500
       default: return, 'rgba(107, 114, 128, 0.8)'; // .bg-gray-500
-    } }
-  } }
+     }
+   }
 } }
 
 export const graphVisualizer = new EvidenceGraphVisualizer();
+

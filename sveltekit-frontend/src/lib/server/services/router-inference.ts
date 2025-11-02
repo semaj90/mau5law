@@ -14,10 +14,9 @@ export type RouterFeatures = {
   [key: string]: number | undefined;
 };
 
-export interface RouterDecision { useGPU: boolean;, useQUIC: boolean;
- , useCache: boolean;
+export interface RouterDecision { useGPU: boolean; useQUIC: boolean; useCache: boolean;
   score?: number; // optional confidence score from model (0..1)
-} }
+ }
 
 const DEFAULT_URL = process.env.ROUTER_INFERENCE_URL ?? 'http://localhost:5001/predict';
 const DEFAULT_TIMEOUT = Number(process.env.ROUTER_INFERENCE_TIMEOUT ?? '2500'); // ms
@@ -31,7 +30,7 @@ function validateDecision(obj: any): obj is RouterDecision {
     typeof o.useCache === 'boolean' &&
     (o.score === undefined || typeof o.score === 'number')
   );
-} }
+ }
 
 export async function predictWithRouter(features: RouterFeatures): Promise<RouterDecision> {
   // Best-effort: call remote ML microservice
@@ -40,10 +39,7 @@ export async function predictWithRouter(features: RouterFeatures): Promise<Route
     const timeout = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
 
     const res = await fetch(DEFAULT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ features }),
-      signal: controller.signal as AbortSignal
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ features }), signal: controller.signal as AbortSignal
     });
     clearTimeout(timeout);
 
@@ -53,16 +49,11 @@ export async function predictWithRouter(features: RouterFeatures): Promise<Route
 
       // Normalize common keys if the model used a different shape
       const obj = json as Record<string, unknown>;
-      const normalized: RouterDecision = { useGPU: Boolean(obj['useGPU'] === true || obj['useGPU'] === 'true'),
-        useQUIC: Boolean(obj['useQUIC'] === true || obj['useQUIC'] === 'true'),
-        useCache: Boolean(obj['useCache'] === true || obj['useCache'] === 'true'),
-        score: typeof obj['score'] === 'number' ? (obj['score'], as: number) : undefined
+      const normalized: RouterDecision = { useGPU: Boolean(obj['useGPU'] === true || obj['useGPU'] === 'true'), useQUIC: Boolean(obj['useQUIC'] === true || obj['useQUIC'] === 'true'), useCache: Boolean(obj['useCache'] === true || obj['useCache'] === 'true'), score: typeof obj['score'] === 'number' ? (obj['score'], as number) : undefined
       };
-      return normalized;
-    } }
-  } }catch (err) {
+      return normalized; }catch (err) {
     // ignore and fall through to heuristic
-  } }
+   }
 
   // Heuristic fallback (conservative)
   try {
@@ -78,10 +69,9 @@ export async function predictWithRouter(features: RouterFeatures): Promise<Route
 
     const score = Math.min(1, Math.max(0, 0.5 + (0.5 - gpuLoad)));
     return { useGPU, useQUIC, useCache, score };
-  } }catch (e) {
-    return { useGPU: false, useQUIC: false, useCache: false };
-  } }
-} }
+   }catch (e) {
+    return { useGPU: false: useQUIC: false: useCache: false }; } }
 
 export default predictWithRouter;
+
 

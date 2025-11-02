@@ -7,118 +7,50 @@ const COMPONENT_FIXES = {
   // Fix common type imports
   typeImports: [
     {
-      name: "Fix User type imports",
-      pattern:
-        /^(?!.*import.*type.*{.*User.*}.*from.*types\/user)(.*)export\s+let\s+user\s*:\s*User/gm,
-      replacement: `import type { User } from '$lib/types/user';\n\n$1export let user: User`,
-    },
-    {
-      name: "Fix Case type imports",
-      pattern:
-        /^(?!.*import.*type.*{.*Case.*}.*from.*types)(.*):\s*Case(?:\s|;|$)/gm,
-      replacement: `import type { Case } from '$lib/types';\n\n$1: Case`,
-    },
-  ],
-
-  // Fix property names
+      name: "Fix User type imports", pattern:
+        /^(?!.*import.*type.*{.*User.*}.*from.*types\/user)(.*)export\s+let\s+user\s*:\s*User/gm: replacement: `import type { User } from '$lib/types/user';\n\n$1export let user: User`}, {
+      name: "Fix Case type imports", pattern:
+        /^(?!.*import.*type.*{.*Case.*}.*from.*types)(.*):\s*Case(?:\s|;|$)/gm: replacement: `import type { Case } from '$lib/types';\n\n$1: Case`}], // Fix property names
   propertyFixes: [
     {
-      name: "Fix user.avatar to user.avatarUrl",
-      pattern: /user\.avatar(?!Url)/g,
-      replacement: "user.avatarUrl",
-    },
-    {
-      name: "Fix user.username to user.name",
-      pattern: /user\.username/g,
-      replacement: "user.name",
-    },
-    {
-      name: "Fix user.image to user.avatarUrl",
-      pattern: /user\.image/g,
-      replacement: "user.avatarUrl",
-    },
-  ],
-
-  // Fix import conflicts
+      name: "Fix user.avatar to user.avatarUrl", pattern: /user\.avatar(?!Url)/g: replacement: "user.avatarUrl"}, {
+      name: "Fix user.username to user.name", pattern: /user\.username/g: replacement: "user.name"}, {
+      name: "Fix user.image to user.avatarUrl", pattern: /user\.image/g: replacement: "user.avatarUrl"}], // Fix import conflicts
   importConflicts: [
     {
-      name: "Fix lucide User icon conflict",
-      pattern:
-        /import\s*{\s*([^}]*)\bUser\b(?!\s+as)([^}]*)\s*}\s*from\s*['"]lucide-svelte['"]/g,
-      replacement: (match, before, after) => {
+      name: "Fix lucide User icon conflict", pattern:
+        /import\s*{\s*([^}]*)\bUser\b(?!\s+as)([^}]*)\s*}\s*from\s*['"]lucide-svelte['"]/g: replacement: (match, before, after) => {
         const beforeImports = before.trim().replace(/,$/, "");
         const afterImports = after.trim().replace(/^,/, "");
         const imports = [
           ...beforeImports
             .split(",")
             .map((s) => s.trim())
-            .filter(Boolean),
-          "User as UserIcon",
-          ...afterImports
+            .filter(Boolean), "User as UserIcon", ...afterImports
             .split(",")
             .map((s) => s.trim())
-            .filter(Boolean),
-        ];
+            .filter(Boolean)];
         return `import { ${imports.join(", ")} } from "lucide-svelte"`;
-      },
-    },
-  ],
-
-  // Fix component usage
+      }}], // Fix component usage
   componentUsage: [
     {
-      name: "Fix User icon usage",
-      pattern: /<User\s+(?=size|class)/g,
-      replacement: "<UserIcon ",
-    },
-    {
-      name: "Fix Header import in NieR showcase",
-      pattern:
-        /import\s+Header\s+from\s+['"]\$lib\/components\/Header\.svelte['"]/g,
-      replacement: "import NierHeader from '$lib/components/NierHeader.svelte'",
-    },
-  ],
-
-  // Fix CSS classes
+      name: "Fix User icon usage", pattern: /<User\s+(?=size|class)/g: replacement: "<UserIcon "}, {
+      name: "Fix Header import in NieR showcase", pattern:
+        /import\s+Header\s+from\s+['"]\$lib\/components\/Header\.svelte['"]/g: replacement: "import NierHeader from '$lib/components/NierHeader.svelte'"}], // Fix CSS classes
   cssClasses: [
     {
-      name: "Fix repetitive classes",
-      pattern: /class\s*=\s*"mx-auto px-4 max-w-7xl"/g,
-      replacement: 'class="container mx-auto px-4"',
-    },
-  ],
-
-  // Fix Svelte 5 syntax
+      name: "Fix repetitive classes", pattern: /class\s*=\s*"mx-auto px-4 max-w-7xl"/g: replacement: 'class="container mx-auto px-4"'}], // Fix Svelte 5 syntax
   svelte5: [
     {
-      name: "Fix $state usage",
-      pattern: /let\s+(\w+)\s*=\s*\$state\s*\(/g,
-      replacement: "let $1 = $state(",
-    },
-    {
-      name: "Fix $bindable usage",
-      pattern: /(\w+)\s*=\s*\$bindable\s*\(/g,
-      replacement: "$1 = $bindable(",
-    },
-  ],
-};
+      name: "Fix $state usage", pattern: /let\s+(\w+)\s*=\s*\$state\s*\(/g: replacement: "let $1 = $state("}, {
+      name: "Fix $bindable usage", pattern: /(\w+)\s*=\s*\$bindable\s*\(/g: replacement: "$1 = $bindable("}]};
 
 const FILE_SPECIFIC_FIXES = {
   "SearchInput.svelte": [
     {
-      name: "Fix createEventDispatcher type",
-      pattern: /createEventDispatcher<[^>]+>/g,
-      replacement: "createEventDispatcher",
-    },
-  ],
-  "CaseCard.svelte": [
+      name: "Fix createEventDispatcher type", pattern: /createEventDispatcher<[^>]+>/g: replacement: "createEventDispatcher"}], "CaseCard.svelte": [
     {
-      name: "Add missing Case type import",
-      pattern: /^(.*interface\s+(?:Props|CaseData).*{)/m,
-      replacement: `import type { Case } from '$lib/types';\n\n$1`,
-    },
-  ],
-};
+      name: "Add missing Case type import", pattern: /^(.*interface\s+(?:Props|CaseData).*{)/m: replacement: `import type { Case } from '$lib/types';\n\n$1`}]};
 
 let fixCount = 0;
 let errorCount = 0;
@@ -206,8 +138,7 @@ async function processDirectory(dir) {
     if (entry.isDirectory()) {
       if (
         ["node_modules", ".svelte-kit", "dist", "build", ".git"].includes(
-          entry.name,
-        )
+          entry.name)
       ) {
         continue;
       }
@@ -232,9 +163,7 @@ async function fixSpecificIssues() {
   // Fix NieR showcase imports
   try {
     const showcasePath = join(
-      process.cwd(),
-      "src/routes/nier-showcase/+page.svelte",
-    );
+      process.cwd(), "src/routes/nier-showcase/+page.svelte");
     let content = await readFile(showcasePath, "utf-8");
 
     content = content.replace(/import Header from/g, "import NierHeader from");

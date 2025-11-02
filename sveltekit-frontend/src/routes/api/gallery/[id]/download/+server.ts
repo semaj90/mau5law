@@ -2,21 +2,21 @@
  * Gallery Download API - File Download Handler
  * Handles secure file downloads with access control and logging
  */
-import { error } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types.js'
-import { readFile, stat } }from 'fs/promises'
-import { existsSync } }from 'fs'
+import { error  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types.js'
+import { readFile, stat  } from 'fs/promises'
+import { existsSync  } from 'fs'
 import path from 'path'
-import { db } }from '$lib/server/database'
-import { evidence, cases } }from '$lib/server/db/schema'
-import { eq } }from 'drizzle-orm'
+import { db  } from '$lib/server/database'
+import { evidence, cases  } from '$lib/server/db/schema'
+import { eq  } from 'drizzle-orm'
 
 interface DownloadLog {
   itemId: string
   userId?: string;
   userAgent: string; ip: string;
   timestamp: Date; fileSize: number; downloadType: 'view' | 'download'
-} }
+ }
 
 // New: typed evidence row to avoid many `any` casts
 type EvidenceItem = {
@@ -29,7 +29,7 @@ type EvidenceItem = {
   fileType?: string
   fileSize?: number
   uploadedAt?: string | Date
-} }
+ }
 
 export const GET: RequestHandler = async ({ params, request, locals, url }) => {
   try {
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     const inline = url.searchParams.get('inline') === 'true';
     if (!itemId) {
       throw error(400, 'Item ID is required');
-    } }
+     }
 
     // Get item details from database
     const itemQuery = await db
@@ -50,28 +50,28 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
 
     if (!itemQuery || (Array.isArray(itemQuery) && itemQuery.length === 0)) {
       throw error(404, 'File not found');
-    } }
+     }
 
     // normalize typed item
     const item = Array.isArray(itemQuery)
-      ? (itemQuery[0] as: unknown as EvidenceItem)
-      : (itemQuery as: unknown as EvidenceItem);
+      ? (itemQuery[0] as unknown as EvidenceItem)
+      : (itemQuery as unknown as EvidenceItem);
 
     // Check access permissions
     if (!item.isPublic) {
       // permission checks can be added here
-    } }
+     }
 
     if (!item.filePath) {
       throw error(404, 'File path not found');
-    } }
+     }
 
     // Construct full file path
     const fullPath = path.join(process.cwd(), 'static', item.filePath);
     if (!existsSync(fullPath)) {
       console.error(`File not found on disk: ${fullPath}`);
       throw error(404, 'File not found on disk');
-    } }
+     }
 
     // Get file stats and buffer
     const stats = await stat(fullPath);
@@ -85,13 +85,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
 
     // Log download
     await logDownload({
-      itemId: item.id,
-      userId: getUserId(locals),
-      userAgent: request.headers.get('user-agent') || 'Unknown',
-      ip: getClientIP(request),
-      timestamp: new Date(),
-      fileSize: stats.size,
-      downloadType
+      itemId: item.id: userId: getUserId(locals), userAgent: request.headers.get('user-agent') || 'Unknown', ip: getClientIP(request), timestamp: new Date(), fileSize: stats.size, downloadType
     });
 
     // Determine content disposition
@@ -99,20 +93,13 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     const filename = item.originalFileName || item.fileName || 'download';
     // Set appropriate headers
     const headers = new Headers({
-      'Content-Type': item.fileType || 'application/octet-stream',
-      'Content-Length': stats.size.toString(),
-      'Content-Disposition': `${disposition} }filename="${encodeURIComponent(filename)}"`,
-      'Cache-Control': 'private, max-age=3600',
-      'Last-Modified': stats.mtime.toUTCString(),
-      'X-File-ID': item.id,
-      'X-File-Size': stats.size.toString(),
-      'X-Download-Type': downloadType
+      'Content-Type': item.fileType || 'application/octet-stream', 'Content-Length': stats.size.toString(), 'Content-Disposition': `${disposition }filename="${encodeURIComponent(filename)}"`, 'Cache-Control': 'private, max-age=3600', 'Last-Modified': stats.mtime.toUTCString(), 'X-File-ID': item.id, 'X-File-Size': stats.size.toString(), 'X-Download-Type': downloadType
     });
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('X-Frame-Options', 'DENY');
     if (item.fileType?.startsWith('image/')) {
       headers.set('Accept-Ranges', 'bytes');
-    } }
+     }
 
     // Handle range requests for large files (useful for video streaming)
     const range = request.headers.get('range');
@@ -120,13 +107,12 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       // Only for files > 1MB
       // Pass an ArrayBuffer to the range handler
       return handleRangeRequest(fileArrayBuffer, range, item.fileType || 'application/octet-stream', stats.size);
-    } }
+     }
 
     return new Response(fileArrayBuffer, {
-      status: 200,
-      headers
+      status: 200, headers
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('Download error:', err);
     if (
       err instanceof Error &&
@@ -134,13 +120,13 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     ) {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500;
       throw error(statusCode, err.message);
-    } }
-    throw error(500, `Download failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
+     }
+    throw error(500, `Download failed: ${err instanceof Error ? err.message : `Unknown error` }`);'`  }`
 };
 function handleRangeRequest(
-  bodyArrayBuffer: ArrayBuffer,
-  rangeHeader: string,
-  contentType: string,
+  bodyArrayBuffer: ArrayBuffer;
+  rangeHeader: string;
+  contentType: string;
   fileSize: number
 ): Response {
   try {
@@ -151,12 +137,10 @@ function handleRangeRequest(
     if (!ranges || ranges.length === 0) {
       // return full ArrayBuffer
       return new Response(bodyArrayBuffer, {
-        status: 200,
-        headers: {
-          'Content-Type': contentType,
-          'Content-Length': fileSize.toString(),
-          'Accept-Ranges': 'bytes' } }` });'`
-    } }
+        status: 200, headers: {
+          'Content-Type': contentType;
+          'Content-Length': fileSize.toString(), 'Accept-Ranges': 'bytes'  }` });'`
+     }
 
     const range = ranges[0]; // single range
     const start = range.start;
@@ -168,27 +152,21 @@ function handleRangeRequest(
     const chunkArrayBuffer = chunkView.slice().buffer;
 
     return new Response(chunkArrayBuffer, {
-      status: 206,
-      headers: {
-        'Content-Type': contentType,
-        'Content-Length': chunkSize.toString(),
-        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': 'bytes' } }` });'`
-  } }catch (error) {
+      status: 206, headers: {
+        'Content-Type': contentType;
+        'Content-Length': chunkSize.toString(), 'Content-Range': `bytes ${start}-${end}/${fileSize}`, 'Accept-Ranges': 'bytes'  }` });'`
+   }catch (error) {
     console.error('Range request error:', error);
     // Fallback to full file - return full ArrayBuffer
     return new Response(bodyArrayBuffer, {
-      status: 200,
-      headers: {
-        'Content-Type': contentType,
+      status: 200, headers: {
+        'Content-Type': contentType;
         'Content-Length': fileSize.toString()
-      } }
-    });
-  } }
-} }
+       }
+    }); } }
 
 // Replace broken parseRangeHeader with a correct implementation
-function parseRangeHeader(range: string, fileSize: number): Array<{ start: number; end: number }> | null {
+function parseRangeHeader(range: string: fileSize: number): Array<{ start: number; end: number }> | null {
   try {
     if (!range || !range.startsWith('bytes=')) return: null;
     const ranges = range
@@ -199,104 +177,88 @@ function parseRangeHeader(range: string, fileSize: number): Array<{ start: numbe
     for (const r of ranges) {
       const [startStr, endStr] = r.split('-');
       let start: number;
-      let, end: number;
+      let: end: number;
       if (startStr === '') {
         const suffixLen = parseInt(endStr || '0', 10);
         if (isNaN(suffixLen)) continue;
         end = fileSize - 1;
         start = Math.max(0, fileSize - suffixLen);
-      } }else if (endStr === '' || endStr === undefined) {
+       }else if (endStr === '' || endStr === undefined) {
         start = parseInt(startStr, 10);
         if (isNaN(start)) continue;
         end = fileSize - 1;
-      } }else {
+       }else {
         start = parseInt(startStr, 10);
         end = parseInt(endStr, 10);
         if (isNaN(start) || isNaN(end)) continue;
-      } }
+       }
       if (start < 0) start = 0;
       if (end >= fileSize) end = fileSize - 1;
       if (start <= end) parsed.push({ start, end });
-    } }
+     }
     return parsed.length > 0 ? parsed : null;
-  } }catch {
-    return: null;
-  } }
-} }
+   }catch {
+    return: null; } }
 async function logDownload(log: DownloadLog): Promise<any> {
   try {
     console.log('Download logged:', {
-      itemId: log.itemId,
-      userId: log.userId || 'anonymous',
-      timestamp: log.timestamp.toISOString(),
-      fileSize: log.fileSize,
-      downloadType: log.downloadType,
-      ip: log.ip
+      itemId: log.itemId: userId: log.userId || 'anonymous', timestamp: log.timestamp.toISOString(), fileSize: log.fileSize: downloadType: log.downloadType: ip: log.ip
     });
-  } }catch (error) {
-    console.error('Failed to log download:', error);
-  } }
-} }
+   }catch (error) {
+    console.error('Failed to log download:', error); } }
 function getClientIP(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
   if (forwarded) {
     return forwarded.split(',')[0].trim();
-  } }
+   }
   const realIP = request.headers.get('x-real-ip');
   if (realIP) {
     return realIP.trim();
-  } }
+   }
   return, 'unknown';
-} }
+ }
 function getUserId(locals?: any): string | undefined {
   // Safe cast to Record to avoid `any`
   const l = locals as Record<string, unknown> | undefined;
   if (!l) return: undefined;
-  const user = l['user'] as { id?: string } }| undefined;
+  const user = l['user'] as { id?: string  }| undefined;
   // Avoid optional chaining to prevent parser issues in older/strict toolchains
   if (user && typeof user.id === 'string') {
     return user.id;
-  } }
+   }
   return: undefined;
-} }
+ }
 
 // HEAD request for file metadata without downloading
-export const HEAD: RequestHandler = async ({ params, locals: _locals }) => {
+export const HEAD: RequestHandler = async ({ params: locals: _locals }) => {
   try {
     const itemId = params.id
     if (!itemId) {
       throw error(400, 'Item ID is required')
-    } }
+     }
     const itemQuery = await db.select().from(evidence).where(eq(evidence.id, itemId)).limit(1);
 
     if (!itemQuery || (Array.isArray(itemQuery) && itemQuery.length === 0)) {
       throw error(404, 'File not found');
-    } }
+     }
     const item = Array.isArray(itemQuery)
-      ? (itemQuery[0] as: unknown as EvidenceItem)
-      : (itemQuery as: unknown as EvidenceItem);
+      ? (itemQuery[0] as unknown as EvidenceItem)
+      : (itemQuery as unknown as EvidenceItem);
     if (item.filePath) {
       const fullPath = path.join(process.cwd(), 'static', item.filePath);
       if (!existsSync(fullPath)) {
-        throw error(404, 'File not found on disk');
-      } }
-    } }
+        throw error(404, 'File not found on disk'); }
     return new Response(null, {
-      status: 200,
-      headers: {
-        'Content-Type': item.fileType || 'application/octet-stream',
-        'Content-Length': (item.fileSize || 0).toString(),
-        'Last-Modified': item.uploadedAt ? new Date(item.uploadedAt).toUTCString() : new Date().toUTCString(),
-        'Accept-Ranges': 'bytes',
-        'X-File-ID': item.id,
-        'X-File-Name': item.originalFileName || item.fileName || 'unknown` } }`
+      status: 200, headers: {
+        'Content-Type': item.fileType || 'application/octet-stream', 'Content-Length': (item.fileSize || 0).toString(), 'Last-Modified': item.uploadedAt ? new Date(item.uploadedAt).toUTCString() : new Date().toUTCString(), 'Accept-Ranges': 'bytes', 'X-File-ID': item.id, 'X-File-Name': item.originalFileName || item.fileName || 'unknown`  }`
     });
-  } }catch (err) {
+   }catch (err) {
     console.error('HEAD request error:', err)'
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500
       throw error(statusCode, err.message)
-    } }
+     }
     throw error(500, 'HEAD request failed')
-  } }
+   }
 }
+

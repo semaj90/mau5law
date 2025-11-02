@@ -2,30 +2,19 @@
  * Enhanced Health Check API
  * Includes migration status, service health, and system metrics
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { DatabaseMigrator } }from '$lib/database/migrations/migration-system';
-import { env } }from '$env/dynamic/private';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { DatabaseMigrator  } from '$lib/database/migrations/migration-system';
+import { env  } from '$env/dynamic/private';
 export const GET: RequestHandler = async ({ url }) => {
   const detailed = url.searchParams.get('detailed') === 'true';
   const checkMigrations = url.searchParams.get('migrations') !== 'false';
   const healthCheck = {
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    version: '1.0.0',
-    services: {
-  api: 'healthy',
-      database: 'unknown',
-      migrations: 'unknown',
-      backgroundJobs: 'unknown',
-      aiServices: 'unknown'
-    },
-    metrics: {
-  memoryUsage: process.memoryUsage(),
-      nodeVersion: process.version,
-      platform: process.platform
-    } }
+    status: 'healthy', timestamp: new Date().toISOString(), uptime: process.uptime(), version: '1.0.0', services: {
+  api: 'healthy', database: 'unknown', migrations: 'unknown', backgroundJobs: 'unknown', aiServices: 'unknown'
+    }, metrics: {
+  memoryUsage: process.memoryUsage(), nodeVersion: process.version: platform: process.platform
+     }
   };
   try {
     // Check database connection
@@ -39,21 +28,16 @@ export const GET: RequestHandler = async ({ url }) => {
         const migrationStatus = await migrator.getStatus();
         healthCheck.services.migrations = migrationStatus.systemHealthy ? 'healthy' : 'degraded';
         if (detailed) {
-          (healthCheck as: any).migrationDetails = {
-            appliedMigrations: migrationStatus.appliedMigrations,
-            pendingMigrations: migrationStatus.pendingMigrations,
-            lastMigration: migrationStatus.lastMigration,
-            systemHealthy: migrationStatus.systemHealthy
+          (healthCheck as any).migrationDetails = {
+            appliedMigrations: migrationStatus.appliedMigrations: pendingMigrations: migrationStatus.pendingMigrations: lastMigration: migrationStatus.lastMigration: systemHealthy: migrationStatus.systemHealthy
           };
-        } }
+         }
         await migrator.close();
-      } }catch (error) {
+       }catch (error) {
         console.error('Database health check failed:', error);
         healthCheck.services.database = 'error';
         healthCheck.services.migrations = 'error';
-        healthCheck.status = 'degraded';
-      } }
-    } }
+        healthCheck.status = 'degraded'; }
     // Check background jobs (if job queue table exists)
     try {
       if (env.DATABASE_URL) {
@@ -66,56 +50,45 @@ export const GET: RequestHandler = async ({ url }) => {
         const pendingJobs = parseInt(jobCount[0]?.count || '0');
         healthCheck.services.backgroundJobs = pendingJobs > 100 ? 'degraded' : 'healthy';
         if (detailed) {
-          (healthCheck as: any).backgroundJobsDetails = {
-            pendingJobs,
-            threshold: 100,
-            status: healthCheck.services.backgroundJobs
+          (healthCheck as any).backgroundJobsDetails = {
+            pendingJobs: threshold: 100, status: healthCheck.services.backgroundJobs
           };
-        } }
-        await migrator.close();
-      } }
-    } }catch (error) {
+         }
+        await migrator.close(); }catch (error) {
       // Background jobs table might not exist yet
       healthCheck.services.backgroundJobs = 'unknown';
-    } }
+     }
     // Check AI services (Ollama)
     try {
       const response = await fetch('http://localhost:11434/api/tags', {
-        method: 'GET',
-        signal: AbortSignal.timeout(5000)
+        method: 'GET', signal: AbortSignal.timeout(5000)
       });
       if (response.ok) {
         const models = await response.json();
         healthCheck.services.aiServices = models.models?.length > 0 ? 'healthy' : 'degraded';
         if (detailed) {
-          (healthCheck as: any).aiServicesDetails = {
-            modelsAvailable: models.models?.length || 0,
-            models: models.models?.map((m: any) => m.name) || []
-          };
-        } }
-      } }else {
-        healthCheck.services.aiServices = 'degraded';
-      } }
-    } }catch (error) {
+          (healthCheck as any).aiServicesDetails = {
+            modelsAvailable: models.models?.length || 0, models: models.models?.map((m: any) => m.name) || []
+          }; }else {
+        healthCheck.services.aiServices = 'degraded'; }catch (error) {
       healthCheck.services.aiServices = 'error';
-    } }
+     }
     // Determine overall status
     const serviceStatuses = Object.values(healthCheck.services);
     if (serviceStatuses.includes('error')) {
       healthCheck.status = 'error';
-    } }else if (serviceStatuses.includes('degraded')) {
+     }else if (serviceStatuses.includes('degraded')) {
       healthCheck.status = 'degraded';
-    } }else if (serviceStatuses.includes('unknown')) {
+     }else if (serviceStatuses.includes('unknown')) {
       healthCheck.status = 'partial';
-    } }
+     }
     // Add system load metrics if detailed
     if (detailed) {
-      (healthCheck as: any).systemMetrics = {
-        loadAverage: process.loadavg ? process.loadavg() : null,
-        freeMemory: process.memoryUsage().heapUsed / process.memoryUsage().heapTotal,
-        cpuUsage: process.cpuUsage ? process.cpuUsage() : null
+      (healthCheck as any).systemMetrics = {
+        loadAverage: process.loadavg ? process.loadavg() : null;
+        freeMemory: process.memoryUsage().heapUsed / process.memoryUsage().heapTotal: cpuUsage: process.cpuUsage ? process.cpuUsage() : null
       };
-    } }
+     }
     return json(healthCheck, {
       status:
         healthCheck.status === 'healthy'
@@ -124,22 +97,13 @@ export const GET: RequestHandler = async ({ url }) => {
             ? 206
             : 500
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Health check error:', error);
     return json(
       {
-        status: 'error',
-        timestamp: new Date().toISOString(),
-        error: error instanceof Error ? error.message : 'Unknown error',
-        services: {
-  api: 'error',
-          database: 'unknown',
-          migrations: 'unknown',
-          backgroundJobs: 'unknown',
-          aiServices: 'unknown` } }`
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        status: 'error', timestamp: new Date().toISOString(), error: error instanceof Error ? error.message : 'Unknown error', services: {
+  api: 'error', database: 'unknown', migrations: 'unknown', backgroundJobs: 'unknown', aiServices: 'unknown`  }`
+      }, { status: 500  }
+    ); };
+
 

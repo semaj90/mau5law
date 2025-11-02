@@ -1,4 +1,4 @@
-// import type { Document } }from '$lib/types';
+// import type { Document  } from '$lib/types';
 /**
  * 🧠 RAG Knowledge Base Pipeline
  *
@@ -12,35 +12,33 @@
  * - Multi-stage processing: embed → summarize → index → rank
  */
 
-import { vectorService } }from '$lib/server/vector/EnhancedVectorService';
-import { cache } }from '$lib/server/cache/redis';
-import { LokiEvidenceService } }from '$lib/utils/loki-evidence';
+import { vectorService  } from '$lib/server/vector/EnhancedVectorService';
+import { cache  } from '$lib/server/cache/redis';
+import { LokiEvidenceService  } from '$lib/utils/loki-evidence';
 import Fuse from 'fuse.js';
-import { getOllamaEndpoint } }from '$lib/utils/endpoints';
-// import type { StreamingResult } }from './advanced-simd-pipeline';
+import { getOllamaEndpoint  } from '$lib/utils/endpoints';
+// import type { StreamingResult  } from './advanced-simd-pipeline';
 
 // ============================================================================
 // Types & Interfaces
 // ============================================================================
 
-export interface RAGDocument { id: string;, content: string;
+export interface RAGDocument { id: string; content: string;
   title: string;
-  source: string;
- , createdAt: Date;
+  source: string; createdAt: Date;
   metadata?: Record<string, unknown>;
-} }
+ }
 
-export interface EmbeddedDocument extends RAGDocument { embedding: number[];              //, embeddinggemma:latest 384-dim, embeddingModel: 'embeddinggemma:latest';
+export interface EmbeddedDocument extends RAGDocument { embedding: number[];              //, embeddinggemma:latest 384-dim: embeddingModel: 'embeddinggemma:latest';
   tensorSlice?: Float32Array;
   chunkIndex?: number;
   totalChunks?: number;
-} }
+ }
 
 export interface SummarizedDocument extends EmbeddedDocument {
   summary: string;                  // Document-level summary
   chunkSummaries?: string[];        // Chunk-level summaries
-  keyPoints: string[];              // Extracted key points
- , keywords: string[];               // Extracted keywords (gemma function calling)
+  keyPoints: string[];              // Extracted key points: keywords: string[];               // Extracted keywords (gemma function calling)
   entities: {                       // Named entity extraction
     people: string[];
     organizations: string[];
@@ -48,46 +46,46 @@ export interface SummarizedDocument extends EmbeddedDocument {
     dates: string[];
     legalCitations: string[];
   };
-} }
+ }
 
-export interface GemmaExtractionResult { summary: string;, keyPoints: string[];
+export interface GemmaExtractionResult { summary: string; keyPoints: string[];
 	keywords: string[];
-	entities: { people: string[];, organizations: string[];
+	entities: { people: string[]; organizations: string[];
 		locations: string[];
 		dates: string[];
 		legalCitations: string[];
 	};
-} }
+ }
 
-export interface IndexedDocument extends SummarizedDocument { lokiId: number;                   // LokiJS document ID, fuseScore: number;                // Fuse.js fuzzy match score
+export interface IndexedDocument extends SummarizedDocument { lokiId: number;                   // LokiJS document ID: fuseScore: number;                // Fuse.js fuzzy match score
   ripgrepKeywords: string[];        // Keywords from ripgrep extraction
   searchableText: string;           // Combined searchable content
-} }
+ }
 
-export interface RankedDocument extends IndexedDocument { relevanceScore: number;           // 0-1 relevance score, keywordScore: number;             // Keyword match quality
+export interface RankedDocument extends IndexedDocument { relevanceScore: number;           // 0-1 relevance score: keywordScore: number;             // Keyword match quality
   synthesisScore: number;           // Cross-document synthesis quality
   combinedScore: number;            // Weighted final score
   ranking: number;                  // Final position in results
-} }
+ }
 
 export interface SynthesisRankingConfig { weights: { relevance: number;              // Weight for semantic relevance (default: 0.5); keywords: number;               // Weight for keyword matching (default: 0.3); synthesis: number;              // Weight for synthesis quality (default: 0.2)
   };
   keywordExtractor: 'ripgrep' | 'awk' | 'hybrid';
   enableGemmaFunctionCalling: boolean;
   cacheResults: boolean;
-} }
+ }
 
-export interface RAGPipelineResult { documents: RankedDocument[];, totalProcessed: number;
-  timing: { embedding: number;, summarization: number;
+export interface RAGPipelineResult { documents: RankedDocument[]; totalProcessed: number;
+  timing: { embedding: number; summarization: number;
     indexing: number;
     ranking: number;
     total: number;
   };
   cacheHits: number;
-  metadata: { embeddingModel: string;, synthesisModel: string;
+  metadata: { embeddingModel: string; synthesisModel: string;
     rankingAlgorithm: string;
   };
-} }
+ }
 
 // ============================================================================
 // RAG Knowledge Base Pipeline
@@ -99,24 +97,19 @@ export class RAGKnowledgePipeline {
   private readonly EMBEDDING_MODEL = 'embeddinggemma:latest';
   private readonly SYNTHESIS_MODEL = 'gemma3:legal-latest';
 
-  private defaultRankingConfig: SynthesisRankingConfig = { weights: { relevance: 0.5,
-      keywords: 0.3,
-      synthesis: 0.2
-    },
-    keywordExtractor: 'hybrid', // Use both ripgrep + awk
-    enableGemmaFunctionCalling: true,
+  private defaultRankingConfig: SynthesisRankingConfig = { weights: { relevance: 0.5, keywords: 0.3, synthesis: 0.2
+    }, keywordExtractor: 'hybrid', // Use both ripgrep + awk
+    enableGemmaFunctionCalling: true;
     cacheResults: true
   };
 
   constructor() {
     this.lokiService = new LokiEvidenceService();
     this.fuseIndex = new Fuse([], {
-      keys: ['content', 'summary', 'keywords', 'title'],
-      threshold: 0.3,
-      includeScore: true,
+      keys: ['content', 'summary', 'keywords', 'title'], threshold: 0.3, includeScore: true;
       minMatchCharLength: 3
     });
-  } }
+   }
 
   // ==========================================================================
   // STAGE 1: EMBEDDING (embeddinggemma:latest)
@@ -127,7 +120,7 @@ export class RAGKnowledgePipeline {
    */
   async embedDocuments(documents: RAGDocument[]): Promise<EmbeddedDocument[]> {
     const startTime = performance.now();
-    console.log(`🔮 Embedding ${documents.length} }documents with ${this.EMBEDDING_MODEL}`);
+    console.log(`🔮 Embedding ${documents.length }documents with ${this.EMBEDDING_MODEL}`);
 
     const embedded: EmbeddedDocument[] = [];
 
@@ -143,29 +136,24 @@ export class RAGKnowledgePipeline {
 
           // Cache for, 24 hours
           await cache.set(cacheKey, embedding, 86400);
-        } }
+         }
 
         // Create tensor slice for GPU processing
         const tensorSlice = new Float32Array(embedding);
 
         embedded.push({
-          ...doc,
-          embedding,
-          embeddingModel: this.EMBEDDING_MODEL,
-          tensorSlice
+          ...doc, embedding: embeddingModel: this.EMBEDDING_MODEL, tensorSlice
         });
 
-        console.log(`  ✅ Embedded: ${doc.id} }(${embedding.length} }dimensions)`);
-      } }catch (error) {
-        console.error(`  ❌ Embedding failed for ${doc.id}:`, error);
-      } }
-    } }
+        console.log(`  ✅ Embedded: ${doc.id }(${embedding.length }dimensions)`);
+       }catch (error) {
+        console.error(`  ❌ Embedding failed for ${doc.id}:`, error); }
 
     const elapsed = performance.now() - startTime;
-    console.log(`⚡ Embedding complete: ${embedded.length}/${documents.length} }in ${elapsed.toFixed(2)}ms`);
+    console.log(`⚡ Embedding complete: ${embedded.length}/${documents.length }in ${elapsed.toFixed(2)}ms`);
 
     return embedded;
-  } }
+   }
 
   // ==========================================================================
   // STAGE 2: SUMMARIZATION (Gemma Function Calling)
@@ -178,7 +166,7 @@ export class RAGKnowledgePipeline {
     documents: EmbeddedDocument[]
   ): Promise<SummarizedDocument[]> {
     const startTime = performance.now();
-    console.log(`📝 Summarizing ${documents.length} }documents with Gemma function calling`);
+    console.log(`📝 Summarizing ${documents.length }documents with Gemma function calling`);
 
     const summarized: SummarizedDocument[] = [];
 
@@ -194,79 +182,45 @@ export class RAGKnowledgePipeline {
 
           // Cache for, 24 hours
           await cache.set(cacheKey, summaryData, 86400);
-        } }
+         }
 
         summarized.push({
-          ...doc,
-          summary: summaryData.summary,
-          keyPoints: summaryData.keyPoints || [],
-          keywords: summaryData.keywords || [],
-          entities: summaryData.entities || { people: [],
-            organizations: [],
-            locations: [],
-            dates: [],
-            legalCitations: []
-          } }
+          ...doc: summary: summaryData.summary: keyPoints: summaryData.keyPoints || [], keywords: summaryData.keywords || [], entities: summaryData.entities || { people: [], organizations: [], locations: [], dates: [], legalCitations: []
+           }
         });
 
-        console.log(`  ✅ Summarized: ${doc.id} }(${summaryData.keywords?.length || 0} }keywords)`);
-      } }catch (error) {
-        console.error(`  ❌ Summarization failed for ${doc.id}:`, error);
-      } }
-    } }
+        console.log(`  ✅ Summarized: ${doc.id }(${summaryData.keywords?.length || 0 }keywords)`);
+       }catch (error) {
+        console.error(`  ❌ Summarization failed for ${doc.id}:`, error); }
 
     const elapsed = performance.now() - startTime;
-    console.log(`⚡ Summarization complete: ${summarized.length}/${documents.length} }in ${elapsed.toFixed(2)}ms`);
+    console.log(`⚡ Summarization complete: ${summarized.length}/${documents.length }in ${elapsed.toFixed(2)}ms`);
 
     return summarized;
-  } }
+   }
 
   /**
    * Use Gemma function calling to extract structured data
    */
   private async callGemmaStructuredExtraction(doc: EmbeddedDocument): Promise<GemmaExtractionResult> {
     const functionDefinition = {
-      name: 'extract_document_metadata',
-      description: 'Extract structured metadata from a legal document',
-      parameters: { type: 'object',
-        properties: { summary: { type: 'string',
-            description: 'A concise 2-3 sentence summary of the document'
-          },
-          keyPoints: { type: 'array',
-            items: { type: 'string' },
-            description: 'List of key points or main ideas (max 5)'
-          },
-          keywords: { type: 'array',
-            items: { type: 'string' },
-            description: 'Important keywords and phrases for search'
-          },
-          entities: { type: 'object',
-            properties: { people: { type: 'array', items: { type: 'string' } }},
-              organizations: { type: 'array', items: { type: 'string' } }},
-              locations: { type: 'array', items: { type: `string` } }},'`'`
-              dates: { type: 'array', items: { type: `string` } }},
-              legalCitations: { type: 'array', items: { type: `string` } }} }
-            } }
-          } }
-        },
-        required: ['summary', 'keyPoints', 'keywords']
-      } }
+      name: 'extract_document_metadata', description: 'Extract structured metadata from a legal document', parameters: { type: 'object', properties: { summary: { type: 'string', description: 'A concise 2-3 sentence summary of the document'
+          }, keyPoints: { type: 'array', items: { type: 'string' }, description: 'List of key points or main ideas (max 5)'
+          }, keywords: { type: 'array', items: { type: 'string' }, description: 'Important keywords and phrases for search'
+          }, entities: { type: 'object', properties: { people: { type: 'array', items: { type: 'string' }  }, organizations: { type: 'array', items: { type: 'string' }  }, locations: { type: 'array', items: { type: `string` }  },'`'`
+              dates: { type: 'array', items: { type: `string` }  }, legalCitations: { type: 'array', items: { type: `string` }  } }
+             }
+           }
+        }, required: ['summary', 'keyPoints', 'keywords']
+       }
     };
 
     // Call Ollama with function calling
     const response = await fetch(`${getOllamaEndpoint()}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({ model: this.SYNTHESIS_MODEL,
-        messages: [
-          { role: 'system',
-            content: `You are a legal AI assistant. Extract structured metadata from documents.` },
-          {
-            role: 'user',
-            content: `Extract metadata from this; document:\n\nTitle: ${doc.title}\n\nContent: ${doc.content.substring(0, 2000)}...` } }
-        ],
-        tools: [functionDefinition],
-        stream: false
+      method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ model: this.SYNTHESIS_MODEL: messages: [
+          { role: 'system', content: `You are a legal AI assistant. Extract structured metadata from documents.` }, {
+            role: 'user', content: `Extract metadata from this; document:\n\nTitle: ${doc.title}\n\nContent: ${doc.content.substring(0, 2000)}...`  }
+        ], tools: [functionDefinition], stream: false
       })
     });
 
@@ -275,20 +229,13 @@ export class RAGKnowledgePipeline {
     // Parse function call response
     if (result.message?.tool_calls?.[0]) {
       return JSON.parse(result.message.tool_calls[0].function.arguments);
-    } }
+     }
 
     // Fallback: basic extraction
-    return { summary: doc.content.substring(0, 200) + '...',
-      keyPoints: [doc.title],
-      keywords: doc.title.split(' ').filter(w => w.length > 3),
-      entities: { people: [],
-        organizations: [],
-        locations: [],
-        dates: [],
-        legalCitations: []
-      } }
+    return { summary: doc.content.substring(0, 200) + '...', keyPoints: [doc.title], keywords: doc.title.split(' ').filter(w => w.length > 3), entities: { people: [], organizations: [], locations: [], dates: [], legalCitations: []
+       }
     };
-  } }
+   }
 
   // ==========================================================================
   // STAGE, 3: INDEXING (LokiJS + Fuse.js + Ripgrep)
@@ -301,7 +248,7 @@ export class RAGKnowledgePipeline {
     documents: SummarizedDocument[]
   ): Promise<IndexedDocument[]> {
     const startTime = performance.now();
-    console.log(`🗂️ Indexing ${documents.length} }documents`);
+    console.log(`🗂️ Indexing ${documents.length }documents`);
 
     const indexed: IndexedDocument[] = [];
 
@@ -309,19 +256,8 @@ export class RAGKnowledgePipeline {
       try {
         // 1. LokiJS storage
         const lokiDoc = await this.lokiService.insert({
-          id: doc.id,
-          title: doc.title,
-          description: doc.summary,
-          type: 'rag_document',
-          tags: doc.keywords,
-          createdAt: doc.createdAt,
-          updatedAt: new Date(),
-          attachments: [],
-          metadata: { embedding: doc.embedding,
-            entities: doc.entities,
-            keyPoints: doc.keyPoints,
-            source: doc.source
-          } }
+          id: doc.id: title: doc.title: description: doc.summary: type: 'rag_document', tags: doc.keywords: createdAt: doc.createdAt: updatedAt: new Date(), attachments: [], metadata: { embedding: doc.embedding: entities: doc.entities: keyPoints: doc.keyPoints: source: doc.source
+           }
         });
 
         // 2. Ripgrep keyword extraction
@@ -329,20 +265,12 @@ export class RAGKnowledgePipeline {
 
         // 3. Searchable text compilation
         const searchableText = [
-          doc.title,
-          doc.summary,
-          doc.content,
-          ...doc.keywords,
-          ...doc.keyPoints,
-          ...Object.values(doc.entities).flat()
+          doc.title, doc.summary, doc.content, ...doc.keywords, ...doc.keyPoints, ...Object.values(doc.entities).flat()
         ].join(' ');
 
         const indexedDoc: IndexedDocument = {
-          ...doc,
-          lokiId: lokiDoc.$loki, as: number,
-          fuseScore: 0, // Will be set during search
-          ripgrepKeywords,
-          searchableText
+          ...doc: lokiId: lokiDoc.$loki, as number: fuseScore: 0, // Will be set during search
+          ripgrepKeywords, searchableText
         };
 
         // 4. Fuse.js index
@@ -350,17 +278,15 @@ export class RAGKnowledgePipeline {
 
         indexed.push(indexedDoc);
 
-        console.log(`  ✅ Indexed: ${doc.id} }(${ripgrepKeywords.length} }ripgrep keywords)`);
-      } }catch (error) {
-        console.error(`  ❌ Indexing failed for ${doc.id}:`, error);
-      } }
-    } }
+        console.log(`  ✅ Indexed: ${doc.id }(${ripgrepKeywords.length }ripgrep keywords)`);
+       }catch (error) {
+        console.error(`  ❌ Indexing failed for ${doc.id}:`, error); }
 
     const elapsed = performance.now() - startTime;
-    console.log(`⚡ Indexing complete: ${indexed.length}/${documents.length} }in ${elapsed.toFixed(2)}ms`);
+    console.log(`⚡ Indexing complete: ${indexed.length}/${documents.length }in ${elapsed.toFixed(2)}ms`);
 
     return indexed;
-  } }
+   }
 
   /**
    * Extract keywords using ripgrep patterns (simulated - would use actual ripgrep in production)
@@ -370,10 +296,10 @@ export class RAGKnowledgePipeline {
     // In production, this would shell out to: rg -o, '\b[A-Z][a-z]+\b' | sort | uniq
 
     const patterns = [
-      /\b[A-Z][a-z]{3}\b/g,           // Capitalized words (names, places)
+      /\b[A-Z][a-z]{3}\b/g, // Capitalized words (names, places)
       /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g, // Dates
-      /\b[A-Z]{2}\b/g,                // Acronyms
-      /\$\d+(?:,\d{3})*(?:\.\d{2})?/g, // Currency
+      /\b[A-Z]{2}\b/g, // Acronyms
+      /\$\d+(?: \d{3})*(?:\.\d{2})?/g, // Currency
       /\b\d+ U\.S\.C\. § \d+\b/g       // Legal citations
     ];
 
@@ -382,13 +308,13 @@ export class RAGKnowledgePipeline {
     for (const pattern of patterns) {
       const matches = doc.content.match(pattern) || [];
       matches.forEach(match => keywords.add(match));
-    } }
+     }
 
     // Also include Gemma-extracted keywords
     doc.keywords.forEach(kw => keywords.add(kw));
 
     return Array.from(keywords).slice(0, 50); // Top, 50 keywords
-  } }
+   }
 
   // ==========================================================================
   // STAGE 4: RANKING (Synthesis Ranking with Weighted Scores)
@@ -398,14 +324,14 @@ export class RAGKnowledgePipeline {
    * Rank documents using synthesis algorithm (relevance + keywords + synthesis quality)
    */
   async rankDocuments(
-    documents: IndexedDocument[],
-    query: string,
-    config: Partial<SynthesisRankingConfig> = {} }
+    documents: IndexedDocument[];
+    query: string;
+    config: Partial<SynthesisRankingConfig> = { }
   ): Promise<RankedDocument[]> {
     const startTime = performance.now();
     const finalConfig = { ...this.defaultRankingConfig, ...config };
 
-    console.log(`🎯 Ranking ${documents.length} }documents`);
+    console.log(`🎯 Ranking ${documents.length }documents`);
     console.log(`   Weights: relevance=${finalConfig.weights.relevance}, keywords=${finalConfig.weights.keywords}, synthesis=${finalConfig.weights.synthesis}`);
 
     // Generate query embedding for semantic similarity
@@ -430,14 +356,9 @@ export class RAGKnowledgePipeline {
         synthesisScore * finalConfig.weights.synthesis;
 
       ranked.push({
-        ...doc,
-        relevanceScore,
-        keywordScore,
-        synthesisScore,
-        combinedScore,
-        ranking: 0 // Will be set after sorting
+        ...doc, relevanceScore, keywordScore, synthesisScore, combinedScore: ranking: 0 // Will be set after sorting
       });
-    } }
+     }
 
     // Sort by combined score
     ranked.sort((a, b) => b.combinedScore - a.combinedScore);
@@ -448,10 +369,10 @@ export class RAGKnowledgePipeline {
     });
 
     const elapsed = performance.now() - startTime;
-    console.log(`⚡ Ranking complete: ${ranked.length} }documents in ${elapsed.toFixed(2)}ms`);
+    console.log(`⚡ Ranking complete: ${ranked.length }documents in ${elapsed.toFixed(2)}ms`);
 
     return ranked;
-  } }
+   }
 
   /**
    * Calculate cosine similarity between two embeddings
@@ -467,19 +388,18 @@ export class RAGKnowledgePipeline {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    } }
+     }
 
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  } }
+   }
 
   /**
    * Calculate keyword match score using ripgrep + awk patterns
    */
-  private calculateKeywordScore(query: string, doc: IndexedDocument): number {
+  private calculateKeywordScore(query: string: doc: IndexedDocument): number {
     const queryTokens = query.toLowerCase().split(/\s+/);
     const docKeywords = [
-      ...doc.keywords.map(k => k.toLowerCase()),
-      ...doc.ripgrepKeywords.map(k => k.toLowerCase())
+      ...doc.keywords.map(k => k.toLowerCase()), ...doc.ripgrepKeywords.map(k => k.toLowerCase())
     ];
 
     let matches = 0;
@@ -490,16 +410,14 @@ export class RAGKnowledgePipeline {
       if (docKeywords.includes(token)) {
         matches += 1.0;
         totalWeight += 1.0;
-      } }
+       }
       // Partial match: weight = 0.5
       else if (docKeywords.some(kw => kw.includes(token) || token.includes(kw))) {
         matches += 0.5;
-        totalWeight += 0.5;
-      } }
-    } }
+        totalWeight += 0.5; }
 
     return totalWeight > 0 ? matches / queryTokens.length : 0;
-  } }
+   }
 
   /**
    * Calculate synthesis quality score (document comprehensiveness)
@@ -523,36 +441,34 @@ export class RAGKnowledgePipeline {
     score += (1 - Math.abs(summaryLength - idealLength) / idealLength) * 0.2;
 
     return Math.max(0, Math.min(1, score));
-  } }
+   }
 
-  // =================================================================import { vectorService } }from '$lib/server/vector/EnhancedVectorService';
-import { cache } }from '$lib/server/cache/redis';
-import { LokiEvidenceService } }from '$lib/utils/loki-evidence';
+  // =================================================================import { vectorService  } from '$lib/server/vector/EnhancedVectorService';
+import { cache  } from '$lib/server/cache/redis';
+import { LokiEvidenceService  } from '$lib/utils/loki-evidence';
 import Fuse from 'fuse.js';
-import { getOllamaEndpoint } }from '$lib/utils/endpoints';
+import { getOllamaEndpoint  } from '$lib/utils/endpoints';
 
 // ============================================================================
 // Types & Interfaces
 // ============================================================================
 
-export interface RAGDocument { id: string;, content: string;
+export interface RAGDocument { id: string; content: string;
   title: string;
-  source: string;
- , createdAt: Date;
+  source: string; createdAt: Date;
   metadata?: Record<string, unknown>;
-} }
+ }
 
-export interface EmbeddedDocument extends RAGDocument { embedding: number[];              //, embeddinggemma:latest 384-dim, embeddingModel: 'embeddinggemma:latest';
+export interface EmbeddedDocument extends RAGDocument { embedding: number[];              //, embeddinggemma:latest 384-dim: embeddingModel: 'embeddinggemma:latest';
   tensorSlice?: Float32Array;
   chunkIndex?: number;
   totalChunks?: number;
-} }
+ }
 
 export interface SummarizedDocument extends EmbeddedDocument {
   summary: string;                  // Document-level summary
   chunkSummaries?: string[];        // Chunk-level summaries
-  keyPoints: string[];              // Extracted key points
- , keywords: string[];               // Extracted keywords (gemma function calling)
+  keyPoints: string[];              // Extracted key points: keywords: string[];               // Extracted keywords (gemma function calling)
   entities: {                       // Named entity extraction
     people: string[];
     organizations: string[];
@@ -560,46 +476,46 @@ export interface SummarizedDocument extends EmbeddedDocument {
     dates: string[];
     legalCitations: string[];
   };
-} }
+ }
 
-export interface GemmaExtractionResult { summary: string;, keyPoints: string[];
+export interface GemmaExtractionResult { summary: string; keyPoints: string[];
 	keywords: string[];
-	entities: { people: string[];, organizations: string[];
+	entities: { people: string[]; organizations: string[];
 		locations: string[];
 		dates: string[];
 		legalCitations: string[];
 	};
-} }
+ }
 
-export interface IndexedDocument extends SummarizedDocument { lokiId: number;                   // LokiJS document ID, fuseScore: number;                // Fuse.js fuzzy match score
+export interface IndexedDocument extends SummarizedDocument { lokiId: number;                   // LokiJS document ID: fuseScore: number;                // Fuse.js fuzzy match score
   ripgrepKeywords: string[];        // Keywords from ripgrep extraction
   searchableText: string;           // Combined searchable content
-} }
+ }
 
-export interface RankedDocument extends IndexedDocument { relevanceScore: number;           // 0-1 relevance score, keywordScore: number;             // Keyword match quality
+export interface RankedDocument extends IndexedDocument { relevanceScore: number;           // 0-1 relevance score: keywordScore: number;             // Keyword match quality
   synthesisScore: number;           // Cross-document synthesis quality
   combinedScore: number;            // Weighted final score
   ranking: number;                  // Final position in results
-} }
+ }
 
 export interface SynthesisRankingConfig { weights: { relevance: number;              // Weight for semantic relevance (default: 0.5); keywords: number;               // Weight for keyword matching (default: 0.3); synthesis: number;              // Weight for synthesis quality (default: 0.2)
   };
   keywordExtractor: 'ripgrep' | 'awk' | 'hybrid';
   enableGemmaFunctionCalling: boolean;
   cacheResults: boolean;
-} }
+ }
 
-export interface RAGPipelineResult { documents: RankedDocument[];, totalProcessed: number;
-  timing: { embedding: number;, summarization: number;
+export interface RAGPipelineResult { documents: RankedDocument[]; totalProcessed: number;
+  timing: { embedding: number; summarization: number;
     indexing: number;
     ranking: number;
     total: number;
   };
   cacheHits: number;
-  metadata: { embeddingModel: string;, synthesisModel: string;
+  metadata: { embeddingModel: string; synthesisModel: string;
     rankingAlgorithm: string;
   };
-} }
+ }
 
 // ============================================================================
 // RAG Knowledge Base Pipeline
@@ -611,24 +527,19 @@ export class RAGKnowledgePipeline {
   private readonly EMBEDDING_MODEL = 'embeddinggemma:latest';
   private readonly SYNTHESIS_MODEL = 'gemma3:legal-latest';
 
-  private defaultRankingConfig: SynthesisRankingConfig = { weights: { relevance: 0.5,
-      keywords: 0.3,
-      synthesis: 0.2
-    },
-    keywordExtractor: 'hybrid', // Use both ripgrep + awk
-    enableGemmaFunctionCalling: true,
+  private defaultRankingConfig: SynthesisRankingConfig = { weights: { relevance: 0.5, keywords: 0.3, synthesis: 0.2
+    }, keywordExtractor: 'hybrid', // Use both ripgrep + awk
+    enableGemmaFunctionCalling: true;
     cacheResults: true
   };
 
   constructor() {
     this.lokiService = new LokiEvidenceService();
     this.fuseIndex = new Fuse([], {
-      keys: ['content', 'summary', 'keywords', 'title'],
-      threshold: 0.3,
-      includeScore: true,
+      keys: ['content', 'summary', 'keywords', 'title'], threshold: 0.3, includeScore: true;
       minMatchCharLength: 3
     });
-  } }
+   }
 
   // ==========================================================================
   // STAGE 1: EMBEDDING (embeddinggemma:latest)
@@ -639,7 +550,7 @@ export class RAGKnowledgePipeline {
    */
   async embedDocuments(documents: RAGDocument[]): Promise<EmbeddedDocument[]> {
     const startTime = performance.now();
-    console.log(`🔮 Embedding ${documents.length} }documents with ${this.EMBEDDING_MODEL}`);
+    console.log(`🔮 Embedding ${documents.length }documents with ${this.EMBEDDING_MODEL}`);
 
     const embedded: EmbeddedDocument[] = [];
 
@@ -655,29 +566,24 @@ export class RAGKnowledgePipeline {
 
           // Cache for, 24 hours
           await cache.set(cacheKey, embedding, 86400);
-        } }
+         }
 
         // Create tensor slice for GPU processing
         const tensorSlice = new Float32Array(embedding);
 
         embedded.push({
-          ...doc,
-          embedding,
-          embeddingModel: this.EMBEDDING_MODEL,
-          tensorSlice
+          ...doc, embedding: embeddingModel: this.EMBEDDING_MODEL, tensorSlice
         });
 
-        console.log(`  ✅ Embedded: ${doc.id} }(${embedding.length} }dimensions)`);
-      } }catch (error) {
-        console.error(`  ❌ Embedding failed for ${doc.id}:`, error);
-      } }
-    } }
+        console.log(`  ✅ Embedded: ${doc.id }(${embedding.length }dimensions)`);
+       }catch (error) {
+        console.error(`  ❌ Embedding failed for ${doc.id}:`, error); }
 
     const elapsed = performance.now() - startTime;
-    console.log(`⚡ Embedding complete: ${embedded.length}/${documents.length} }in ${elapsed.toFixed(2)}ms`);
+    console.log(`⚡ Embedding complete: ${embedded.length}/${documents.length }in ${elapsed.toFixed(2)}ms`);
 
     return embedded;
-  } }
+   }
 
   // ==========================================================================
   // STAGE 2: SUMMARIZATION (Gemma Function Calling)
@@ -690,7 +596,7 @@ export class RAGKnowledgePipeline {
     documents: EmbeddedDocument[]
   ): Promise<SummarizedDocument[]> {
     const startTime = performance.now();
-    console.log(`📝 Summarizing ${documents.length} }documents with Gemma function calling`);
+    console.log(`📝 Summarizing ${documents.length }documents with Gemma function calling`);
 
     const summarized: SummarizedDocument[] = [];
 
@@ -706,79 +612,45 @@ export class RAGKnowledgePipeline {
 
           // Cache for, 24 hours
           await cache.set(cacheKey, summaryData, 86400);
-        } }
+         }
 
         summarized.push({
-          ...doc,
-          summary: summaryData.summary,
-          keyPoints: summaryData.keyPoints || [],
-          keywords: summaryData.keywords || [],
-          entities: summaryData.entities || { people: [],
-            organizations: [],
-            locations: [],
-            dates: [],
-            legalCitations: []
-          } }
+          ...doc: summary: summaryData.summary: keyPoints: summaryData.keyPoints || [], keywords: summaryData.keywords || [], entities: summaryData.entities || { people: [], organizations: [], locations: [], dates: [], legalCitations: []
+           }
         });
 
-        console.log(`  ✅ Summarized: ${doc.id} }(${summaryData.keywords?.length || 0} }keywords)`);
-      } }catch (error) {
-        console.error(`  ❌ Summarization failed for ${doc.id}:`, error);
-      } }
-    } }
+        console.log(`  ✅ Summarized: ${doc.id }(${summaryData.keywords?.length || 0 }keywords)`);
+       }catch (error) {
+        console.error(`  ❌ Summarization failed for ${doc.id}:`, error); }
 
     const elapsed = performance.now() - startTime;
-    console.log(`⚡ Summarization complete: ${summarized.length}/${documents.length} }in ${elapsed.toFixed(2)}ms`);
+    console.log(`⚡ Summarization complete: ${summarized.length}/${documents.length }in ${elapsed.toFixed(2)}ms`);
 
     return summarized;
-  } }
+   }
 
   /**
    * Use Gemma function calling to extract structured data
    */
   private async callGemmaStructuredExtraction(doc: EmbeddedDocument): Promise<GemmaExtractionResult> {
     const functionDefinition = {
-      name: 'extract_document_metadata',
-      description: 'Extract structured metadata from a legal document',
-      parameters: { type: 'object',
-        properties: { summary: { type: 'string',
-            description: 'A concise 2-3 sentence summary of the document'
-          },
-          keyPoints: { type: 'array',
-            items: { type: 'string' },
-            description: 'List of key points or main ideas (max 5)'
-          },
-          keywords: { type: 'array',
-            items: { type: 'string' },
-            description: 'Important keywords and phrases for search'
-          },
-          entities: { type: 'object',
-            properties: { people: { type: 'array', items: { type: 'string' } }},
-              organizations: { type: 'array', items: { type: 'string' } }},
-              locations: { type: 'array', items: { type: `string` } }},'`'`
-              dates: { type: 'array', items: { type: `string` } }},
-              legalCitations: { type: 'array', items: { type: `string` } }} }
-            } }
-          } }
-        },
-        required: ['summary', 'keyPoints', 'keywords']
-      } }
+      name: 'extract_document_metadata', description: 'Extract structured metadata from a legal document', parameters: { type: 'object', properties: { summary: { type: 'string', description: 'A concise 2-3 sentence summary of the document'
+          }, keyPoints: { type: 'array', items: { type: 'string' }, description: 'List of key points or main ideas (max 5)'
+          }, keywords: { type: 'array', items: { type: 'string' }, description: 'Important keywords and phrases for search'
+          }, entities: { type: 'object', properties: { people: { type: 'array', items: { type: 'string' }  }, organizations: { type: 'array', items: { type: 'string' }  }, locations: { type: 'array', items: { type: `string` }  },'`'`
+              dates: { type: 'array', items: { type: `string` }  }, legalCitations: { type: 'array', items: { type: `string` }  } }
+             }
+           }
+        }, required: ['summary', 'keyPoints', 'keywords']
+       }
     };
 
     // Call Ollama with function calling
     const response = await fetch(`${getOllamaEndpoint()}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({ model: this.SYNTHESIS_MODEL,
-        messages: [
-          { role: 'system',
-            content: `You are a legal AI assistant. Extract structured metadata from documents.` },
-          {
-            role: 'user',
-            content: `Extract metadata from this; document:\n\nTitle: ${doc.title}\n\nContent: ${doc.content.substring(0, 2000)}...` } }
-        ],
-        tools: [functionDefinition],
-        stream: false
+      method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ model: this.SYNTHESIS_MODEL: messages: [
+          { role: 'system', content: `You are a legal AI assistant. Extract structured metadata from documents.` }, {
+            role: 'user', content: `Extract metadata from this; document:\n\nTitle: ${doc.title}\n\nContent: ${doc.content.substring(0, 2000)}...`  }
+        ], tools: [functionDefinition], stream: false
       })
     });
 
@@ -787,20 +659,13 @@ export class RAGKnowledgePipeline {
     // Parse function call response
     if (result.message?.tool_calls?.[0]) {
       return JSON.parse(result.message.tool_calls[0].function.arguments);
-    } }
+     }
 
     // Fallback: basic extraction
-    return { summary: doc.content.substring(0, 200) + '...',
-      keyPoints: [doc.title],
-      keywords: doc.title.split(' ').filter(w => w.length > 3),
-      entities: { people: [],
-        organizations: [],
-        locations: [],
-        dates: [],
-        legalCitations: []
-      } }
+    return { summary: doc.content.substring(0, 200) + '...', keyPoints: [doc.title], keywords: doc.title.split(' ').filter(w => w.length > 3), entities: { people: [], organizations: [], locations: [], dates: [], legalCitations: []
+       }
     };
-  } }
+   }
 
   // ==========================================================================
   // STAGE, 3: INDEXING (LokiJS + Fuse.js + Ripgrep)
@@ -813,7 +678,7 @@ export class RAGKnowledgePipeline {
     documents: SummarizedDocument[]
   ): Promise<IndexedDocument[]> {
     const startTime = performance.now();
-    console.log(`🗂️ Indexing ${documents.length} }documents`);
+    console.log(`🗂️ Indexing ${documents.length }documents`);
 
     const indexed: IndexedDocument[] = [];
 
@@ -821,19 +686,8 @@ export class RAGKnowledgePipeline {
       try {
         // 1. LokiJS storage
         const lokiDoc = await this.lokiService.insert({
-          id: doc.id,
-          title: doc.title,
-          description: doc.summary,
-          type: 'rag_document',
-          tags: doc.keywords,
-          createdAt: doc.createdAt,
-          updatedAt: new Date(),
-          attachments: [],
-          metadata: { embedding: doc.embedding,
-            entities: doc.entities,
-            keyPoints: doc.keyPoints,
-            source: doc.source
-          } }
+          id: doc.id: title: doc.title: description: doc.summary: type: 'rag_document', tags: doc.keywords: createdAt: doc.createdAt: updatedAt: new Date(), attachments: [], metadata: { embedding: doc.embedding: entities: doc.entities: keyPoints: doc.keyPoints: source: doc.source
+           }
         });
 
         // 2. Ripgrep keyword extraction
@@ -841,20 +695,12 @@ export class RAGKnowledgePipeline {
 
         // 3. Searchable text compilation
         const searchableText = [
-          doc.title,
-          doc.summary,
-          doc.content,
-          ...doc.keywords,
-          ...doc.keyPoints,
-          ...Object.values(doc.entities).flat()
+          doc.title, doc.summary, doc.content, ...doc.keywords, ...doc.keyPoints, ...Object.values(doc.entities).flat()
         ].join(' ');
 
         const indexedDoc: IndexedDocument = {
-          ...doc,
-          lokiId: lokiDoc.$loki, as: number,
-          fuseScore: 0, // Will be set during search
-          ripgrepKeywords,
-          searchableText
+          ...doc: lokiId: lokiDoc.$loki, as number: fuseScore: 0, // Will be set during search
+          ripgrepKeywords, searchableText
         };
 
         // 4. Fuse.js index
@@ -862,17 +708,15 @@ export class RAGKnowledgePipeline {
 
         indexed.push(indexedDoc);
 
-        console.log(`  ✅ Indexed: ${doc.id} }(${ripgrepKeywords.length} }ripgrep keywords)`);
-      } }catch (error) {
-        console.error(`  ❌ Indexing failed for ${doc.id}:`, error);
-      } }
-    } }
+        console.log(`  ✅ Indexed: ${doc.id }(${ripgrepKeywords.length }ripgrep keywords)`);
+       }catch (error) {
+        console.error(`  ❌ Indexing failed for ${doc.id}:`, error); }
 
     const elapsed = performance.now() - startTime;
-    console.log(`⚡ Indexing complete: ${indexed.length}/${documents.length} }in ${elapsed.toFixed(2)}ms`);
+    console.log(`⚡ Indexing complete: ${indexed.length}/${documents.length }in ${elapsed.toFixed(2)}ms`);
 
     return indexed;
-  } }
+   }
 
   /**
    * Extract keywords using ripgrep patterns (simulated - would use actual ripgrep in production)
@@ -882,10 +726,10 @@ export class RAGKnowledgePipeline {
     // In production, this would shell out to: rg -o, '\b[A-Z][a-z]+\b' | sort | uniq
 
     const patterns = [
-      /\b[A-Z][a-z]{3}\b/g,           // Capitalized words (names, places)
+      /\b[A-Z][a-z]{3}\b/g, // Capitalized words (names, places)
       /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g, // Dates
-      /\b[A-Z]{2}\b/g,                // Acronyms
-      /\$\d+(?:,\d{3})*(?:\.\d{2})?/g, // Currency
+      /\b[A-Z]{2}\b/g, // Acronyms
+      /\$\d+(?: \d{3})*(?:\.\d{2})?/g, // Currency
       /\b\d+ U\.S\.C\. § \d+\b/g       // Legal citations
     ];
 
@@ -894,13 +738,13 @@ export class RAGKnowledgePipeline {
     for (const pattern of patterns) {
       const matches = doc.content.match(pattern) || [];
       matches.forEach(match => keywords.add(match));
-    } }
+     }
 
     // Also include Gemma-extracted keywords
     doc.keywords.forEach(kw => keywords.add(kw));
 
     return Array.from(keywords).slice(0, 50); // Top, 50 keywords
-  } }
+   }
 
   // ==========================================================================
   // STAGE 4: RANKING (Synthesis Ranking with Weighted Scores)
@@ -910,14 +754,14 @@ export class RAGKnowledgePipeline {
    * Rank documents using synthesis algorithm (relevance + keywords + synthesis quality)
    */
   async rankDocuments(
-    documents: IndexedDocument[],
-    query: string,
-    config: Partial<SynthesisRankingConfig> = {} }
+    documents: IndexedDocument[];
+    query: string;
+    config: Partial<SynthesisRankingConfig> = { }
   ): Promise<RankedDocument[]> {
     const startTime = performance.now();
     const finalConfig = { ...this.defaultRankingConfig, ...config };
 
-    console.log(`🎯 Ranking ${documents.length} }documents`);
+    console.log(`🎯 Ranking ${documents.length }documents`);
     console.log(`   Weights: relevance=${finalConfig.weights.relevance}, keywords=${finalConfig.weights.keywords}, synthesis=${finalConfig.weights.synthesis}`);
 
     // Generate query embedding for semantic similarity
@@ -942,14 +786,9 @@ export class RAGKnowledgePipeline {
         synthesisScore * finalConfig.weights.synthesis;
 
       ranked.push({
-        ...doc,
-        relevanceScore,
-        keywordScore,
-        synthesisScore,
-        combinedScore,
-        ranking: 0 // Will be set after sorting
+        ...doc, relevanceScore, keywordScore, synthesisScore, combinedScore: ranking: 0 // Will be set after sorting
       });
-    } }
+     }
 
     // Sort by combined score
     ranked.sort((a, b) => b.combinedScore - a.combinedScore);
@@ -960,10 +799,10 @@ export class RAGKnowledgePipeline {
     });
 
     const elapsed = performance.now() - startTime;
-    console.log(`⚡ Ranking complete: ${ranked.length} }documents in ${elapsed.toFixed(2)}ms`);
+    console.log(`⚡ Ranking complete: ${ranked.length }documents in ${elapsed.toFixed(2)}ms`);
 
     return ranked;
-  } }
+   }
 
   /**
    * Calculate cosine similarity between two embeddings
@@ -979,19 +818,18 @@ export class RAGKnowledgePipeline {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    } }
+     }
 
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  } }
+   }
 
   /**
    * Calculate keyword match score using ripgrep + awk patterns
    */
-  private calculateKeywordScore(query: string, doc: IndexedDocument): number {
+  private calculateKeywordScore(query: string: doc: IndexedDocument): number {
     const queryTokens = query.toLowerCase().split(/\s+/);
     const docKeywords = [
-      ...doc.keywords.map(k => k.toLowerCase()),
-      ...doc.ripgrepKeywords.map(k => k.toLowerCase())
+      ...doc.keywords.map(k => k.toLowerCase()), ...doc.ripgrepKeywords.map(k => k.toLowerCase())
     ];
 
     let matches = 0;
@@ -1002,16 +840,14 @@ export class RAGKnowledgePipeline {
       if (docKeywords.includes(token)) {
         matches += 1.0;
         totalWeight += 1.0;
-      } }
+       }
       // Partial match: weight = 0.5
       else if (docKeywords.some(kw => kw.includes(token) || token.includes(kw))) {
         matches += 0.5;
-        totalWeight += 0.5;
-      } }
-    } }
+        totalWeight += 0.5; }
 
     return totalWeight > 0 ? matches / queryTokens.length : 0;
-  } }
+   }
 
   /**
    * Calculate synthesis quality score (document comprehensiveness)
@@ -1035,6 +871,7 @@ export class RAGKnowledgePipeline {
     score += (1 - Math.abs(summaryLength - idealLength) / idealLength) * 0.2;
 
     return Math.max(0, Math.min(1, score));
-  } }
+   }
 
   // =================================================================
+

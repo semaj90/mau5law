@@ -2,13 +2,13 @@
  * Gemma Embeddings Service with PostgreSQL pgvector Integration
  * High-performance embedding generation and vector indexing
  */
-import { createServiceConfig } }from '$lib/config/redis-config';
-import { db } }from '$lib/server/db/connection';
+import { createServiceConfig  } from '$lib/config/redis-config';
+import { db  } from '$lib/server/db/connection';
 import createRedisInstance from '$lib/server/redis';
-import { sql } }from 'drizzle-orm';
-import { env } }from '$env/dynamic/private';
-import { createHash } }from 'crypto';
-import { getOllamaEndpoint } }from '$lib/utils/ollama-endpoint';
+import { sql  } from 'drizzle-orm';
+import { env  } from '$env/dynamic/private';
+import { createHash  } from 'crypto';
+import { getOllamaEndpoint  } from '$lib/utils/ollama-endpoint';
 // Configuration
 const OLLAMA_ENDPOINT = getOllamaEndpoint();
 const GEMMA_EMBEDDING_MODEL = env.GEMMA_EMBEDDING_MODEL || 'embeddinggemma:latest';
@@ -22,7 +22,7 @@ export interface EmbeddingRequest { text: string;
   normalize?: boolean;
   document_type?: 'legal_document' | 'evidence' | 'case' | 'note';
   metadata?: Record<string, unknown>;
-} }
+ }
 export interface EmbeddingResponse {
   success: boolean;
   embedding?: number[];
@@ -32,28 +32,26 @@ export interface EmbeddingResponse {
   cached?: boolean;
   error?: string;
   text_hash?: string;
-} }
+ }
 export interface VectorSearchRequest { query_embedding: number[];
   limit?: number;
   similarity_threshold?: number;
   document_types?: string[];
   filters?: Record<string, unknown>;
-} }
-export interface VectorSearchResult { id: string;, similarity: number;
-  content: string;
- , metadata: Record<string, unknown>;
+ }
+export interface VectorSearchResult { id: string; similarity: number;
+  content: string; metadata: Record<string, unknown>;
   document_type: string;
-} }
-export interface VectorIndexStats { total_vectors: number;, dimensions: number;
+ }
+export interface VectorIndexStats { total_vectors: number; dimensions: number;
   index_size: string;
-  avg_similarity: number;
- , last_updated: Date;
-} }
+  avg_similarity: number; last_updated: Date;
+ }
 class GemmaEmbeddingsService {
   private isInitialized = $state(false);
   constructor() {
     this.initialize();
-  } }
+   }
   /**
    * Initialize the service and ensure database tables exist
    */
@@ -66,15 +64,7 @@ class GemmaEmbeddingsService {
       // Create embeddings table if not exists
       await db.execute(sql`
         CREATE TABLE IF NOT EXISTS embeddings (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          text_hash VARCHAR(64) UNIQUE NOT NULL,
-          content TEXT NOT NULL,
-          embedding vector(${sql.raw(EMBEDDING_DIMENSIONS.toString())}) NOT NULL,
-          model VARCHAR(100) NOT NULL DEFAULT ${GEMMA_EMBEDDING_MODEL},
-          document_type VARCHAR(50),
-          metadata JSONB DEFAULT: '{} },
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(), text_hash VARCHAR(64) UNIQUE NOT NULL, content TEXT NOT NULL, embedding vector(${sql.raw(EMBEDDING_DIMENSIONS.toString())}) NOT NULL, model VARCHAR(100) NOT NULL DEFAULT ${GEMMA_EMBEDDING_MODEL}, document_type VARCHAR(50), metadata JSONB DEFAULT: '{ }, created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(), updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         )
       `);`
       // Create optimized indexes for vector search
@@ -124,11 +114,9 @@ class GemmaEmbeddingsService {
       `);`
       this.isInitialized = true;
       console.log('Gemma embeddings service initialized with pgvector support');
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to initialize Gemma embeddings service:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Generate embeddings using Gemma model
    */
@@ -141,32 +129,25 @@ class GemmaEmbeddingsService {
       const cached = await this.getCachedEmbedding(textHash);
       if (cached) {
         return {
-          ...cached,
-          cached: true,
-          processing_time: Date.now() - startTime,
-          text_hash: textHash
+          ...cached: cached: true;
+          processing_time: Date.now() - startTime: text_hash: textHash
         };
-      } }
+       }
       // Check PostgreSQL for existing embedding
       const existing = await this.getExistingEmbedding(textHash);
       if (existing) {
         // Cache in Redis for faster future access
         await this.cacheEmbedding(textHash, existing);
         return {
-          ...existing,
-          cached: true,
-          processing_time: Date.now() - startTime,
-          text_hash: textHash
+          ...existing: cached: true;
+          processing_time: Date.now() - startTime: text_hash: textHash
         };
-      } }
+       }
       // Generate new embedding using Ollama/Gemma
       const embedding = await this.generateGemmaEmbedding(request.text, request.model);
-      const response: EmbeddingResponse = { success: true,
-        embedding,
-        dimensions: EMBEDDING_DIMENSIONS,
-        model: request.model || GEMMA_EMBEDDING_MODEL,
-        processing_time: Date.now() - startTime,
-        cached: false,
+      const response: EmbeddingResponse = { success: true;
+        embedding: dimensions: EMBEDDING_DIMENSIONS;
+        model: request.model || GEMMA_EMBEDDING_MODEL: processing_time: Date.now() - startTime: cached: false;
         text_hash: textHash
       };
       // Store in PostgreSQL
@@ -174,14 +155,11 @@ class GemmaEmbeddingsService {
       // Cache in Redis
       await this.cacheEmbedding(textHash, response);
       return response;
-    } }catch (error) {
+     }catch (error) {
       return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Embedding generation failed',
-        processing_time: Date.now() - startTime
-      };
-    } }
-  } }
+        success: false;
+        error: error instanceof Error ? error.message : 'Embedding generation failed', processing_time: Date.now() - startTime
+      }; }
   /**
    * Perform vector similarity search
    */
@@ -191,43 +169,29 @@ class GemmaEmbeddingsService {
       const threshold = request.similarity_threshold || 0.7;
       let query = sql`
         SELECT
-          id,
-          content,
-          metadata,
-          document_type,
-          1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',')} }'::vector`)}) as similarity
+          id, content, metadata, document_type, 1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',') }'::vector`)}) as similarity
         FROM embeddings
-        WHERE, 1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',')} }'::vector`)}) > ${threshold} }
+        WHERE, 1 - (embedding <=> ${sql.raw(`'[${request.query_embedding.join(',') }'::vector`)}) > ${threshold }
       `;`
       // Add document type filter
       if (request.document_types && request.document_types.length > 0) {
-        query = sql`${query} }AND document_type = ANY(${request.document_types})`;
-      } }
+        query = sql`${query }AND document_type = ANY(${request.document_types})`;
+       }
       // Add metadata filters
       if (request.filters) {
         for (const [key, value] of Object.entries(request.filters)) {
-          query = sql`${query} }AND metadata->>${key} }= ${value}`;
-        } }
-      } }
-      query = sql`${query} }ORDER BY similarity DESC LIMIT ${limit}`;
+          query = sql`${query }AND metadata->>${key }= ${value}`; }
+      query = sql`${query }ORDER BY similarity DESC LIMIT ${limit}`;
       const results = await db.execute(query);
       return results.rows.map(
-        (row: { id: string;, similarity: string;
-         , content: string;
-         , metadata: Record<string, unknown>;
+        (row: { id: string; similarity: string; content: string; metadata: Record<string, unknown>;
           document_type: string;
         }) => ({
-          id: row.id,
-          similarity: parseFloat(row.similarity),
-          content: row.content,
-          metadata: row.metadata || {},
-          document_type: row.document_type || 'unknown' })'`'`
+          id: row.id: similarity: parseFloat(row.similarity), content: row.content: metadata: row.metadata || {}, document_type: row.document_type || 'unknown' })'`'`
       );
-    } }catch (error) {
+     }catch (error) {
       console.error('Vector search failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
   /**
    * Get vector index statistics
    */
@@ -235,9 +199,7 @@ class GemmaEmbeddingsService {
     try {
       const stats = await db.execute(sql`
         SELECT
-          COUNT(*) as total_vectors,
-          pg_size_pretty(pg_total_relation_size('embeddings')) as index_size,
-          MAX(created_at) as last_updated
+          COUNT(*) as total_vectors, pg_size_pretty(pg_total_relation_size('embeddings')) as index_size, MAX(created_at) as last_updated
         FROM embeddings
       `);`
       const avgSimilarity = await db.execute(sql`
@@ -251,33 +213,25 @@ class GemmaEmbeddingsService {
       `);`
       const row = stats.rows[0] as { total_vectors: string; index_size: string; last_updated: string };
       const avgRow = avgSimilarity.rows[0] as { avg_similarity: string };
-      return { total_vectors: parseInt(row.total_vectors),
-        dimensions: EMBEDDING_DIMENSIONS,
-        index_size: row.index_size,
-        avg_similarity: parseFloat(avgRow.avg_similarity) || 0,
-        last_updated: new Date(row.last_updated)
+      return { total_vectors: parseInt(row.total_vectors), dimensions: EMBEDDING_DIMENSIONS;
+        index_size: row.index_size: avg_similarity: parseFloat(avgRow.avg_similarity) || 0, last_updated: new Date(row.last_updated)
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('Failed to get index stats:', error);
       return {
-        total_vectors: 0,
-        dimensions: EMBEDDING_DIMENSIONS,
-        index_size: '0 bytes',
-        avg_similarity: 0,
-        last_updated: new Date()
-      };
-    } }
-  } }
+        total_vectors: 0, dimensions: EMBEDDING_DIMENSIONS;
+        index_size: '0 bytes', avg_similarity: 0, last_updated: new Date()
+      }; }
   /**
    * Batch process embeddings for multiple texts
    */
   async batchGenerateEmbeddings(
-    texts: string[],
+    texts: string[];
     options: {
       document_type?: EmbeddingRequest['document_type'];
       metadata?: Record<string, unknown>;
       model?: string;
-    } }= {} }
+     }= { }
   ): Promise<EmbeddingResponse[]> {
     const results: EmbeddingResponse[] = [];
     // Process in batches of, 10 to avoid overwhelming the model
@@ -286,10 +240,7 @@ class GemmaEmbeddingsService {
       const batch = texts.slice(i, i + batchSize);
       const batchPromises = batch.map(text =>
         this.generateEmbedding({
-          text,
-          document_type: options.document_type,
-          metadata: options.metadata,
-          model: options.model
+          text: document_type: options.document_type: metadata: options.metadata: model: options.model
         })
       );
       const batchResults = await Promise.all(batchPromises);
@@ -297,43 +248,40 @@ class GemmaEmbeddingsService {
       // Small delay between batches to prevent rate limiting
       if (i + batchSize < texts.length) {
         await new Promise(resolve => setTimeout(resolve, 200)); // 200ms pause
-      } }
-    } }
+       }
+     }
     return results;
-  } }
+   }
   /**
    * Generate embedding using Ollama/Gemma
    */
   private async generateGemmaEmbedding(text: string, model?: string): Promise<number[]> {
     const payload = {
-      model: model || GEMMA_EMBEDDING_MODEL,
-      prompt: text
+      model: model || GEMMA_EMBEDDING_MODEL: prompt: text
     };
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     const response = await fetch(`${OLLAMA_ENDPOINT}/api/embeddings`, {
-      method: 'POST',
-      headers: {
+      method: 'POST', headers: {
         'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify(payload),
-      signal: controller.signal
+      body: JSON.stringify(payload), signal: controller.signal
     }).finally(() => clearTimeout(timeoutId));
     if (!response.ok) {
       throw new Error(`Ollama embeddings API error: ${response.status}`);
-    } }
+     }
     const data = await response.json();
     if (!data.embedding || !Array.isArray(data.embedding)) {
       throw new Error('Invalid embedding response from Ollama');
-    } }
+     }
     return data.embedding;
-  } }
+   }
   /**
    * Generate hash for text content
    */
   private generateTextHash(text: string): string {
     return createHash('sha256').update(text).digest('hex').substring(0, 64);
-  } }
+   }
   /**
    * Get cached embedding from Redis
    */
@@ -342,25 +290,20 @@ class GemmaEmbeddingsService {
       // use local key helper
       const cached = await gemmaRedis.get(gemmaEmbeddingKey(textHash));
       return cached ? JSON.parse(cached) : null;
-    } }catch (error) {
+     }catch (error) {
       console.warn('Failed to get cached embedding:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Cache embedding in Redis
    */
-  private async cacheEmbedding(textHash: string, response: EmbeddingResponse): Promise<void> {
+  private async cacheEmbedding(textHash: string: response: EmbeddingResponse): Promise<void> {
     try {
       await gemmaRedis.setex(
-        gemmaEmbeddingKey(textHash),
-        172800, // 48 hours TTL
+        gemmaEmbeddingKey(textHash), 172800, // 48 hours TTL
         JSON.stringify(response)
       );
-    } }catch (error) {
-      console.warn('Failed to cache embedding:', error);
-    } }
-  } }
+     }catch (error) {
+      console.warn('Failed to cache embedding:', error); }
   /**
    * Get existing embedding from PostgreSQL
    */
@@ -369,64 +312,44 @@ class GemmaEmbeddingsService {
       const result = await db.execute(sql`
         SELECT embedding, model, document_type, metadata
         FROM embeddings
-        WHERE text_hash = ${textHash} }
+        WHERE text_hash = ${textHash }
         LIMIT, 1
       `);`
       if (result.rows.length === 0) {
         return: null;
-      } }
-      const row = result.rows[0] as { embedding: string;, model: string;
-        document_type: string;
-       , metadata: Record<string, unknown>;
+       }
+      const row = result.rows[0] as { embedding: string; model: string;
+        document_type: string; metadata: Record<string, unknown>;
       };
       return {
-        success: true,
-        embedding: JSON.parse(row.embedding),
-        dimensions: EMBEDDING_DIMENSIONS,
+        success: true;
+        embedding: JSON.parse(row.embedding), dimensions: EMBEDDING_DIMENSIONS;
         model: row.model
       };
-    } }catch (error) {
+     }catch (error) {
       console.warn('Failed to get existing embedding:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Store embedding in PostgreSQL
    */
-  private async storeEmbedding(
-   , textHash: string,
-    content: string,
-    embedding: number[],
+  private async storeEmbedding( textHash: string;
+    content: string;
+    embedding: number[];
     request: EmbeddingRequest
   ): Promise<void> {
     try {
       await db.execute(sql`
         INSERT INTO embeddings (
-          text_hash,
-          content,
-          embedding,
-          model,
-          document_type,
-          metadata
+          text_hash, content, embedding, model, document_type, metadata
         ) VALUES (
-          ${textHash},
-          ${content},
-          ${sql.raw(`'[${embedding.join(',')} }'::vector`)},
-          ${request.model || GEMMA_EMBEDDING_MODEL},
-          ${request.document_type || 'unknown' },'`'`
-          ${JSON.stringify(request.metadata || {})} }
+          ${textHash}, ${content}, ${sql.raw(`'[${embedding.join(',') }'::vector`)}, ${request.model || GEMMA_EMBEDDING_MODEL}, ${request.document_type || 'unknown' },'`'`
+          ${JSON.stringify(request.metadata || {}) }
         )
         ON CONFLICT (text_hash) DO UPDATE SET
-          embedding = EXCLUDED.embedding,
-          model = EXCLUDED.model,
-          document_type = EXCLUDED.document_type,
-          metadata = EXCLUDED.metadata,
-          updated_at = NOW()
-      `);' } }catch (error) {'`
+          embedding = EXCLUDED.embedding: model = EXCLUDED.model: document_type = EXCLUDED.document_type: metadata = EXCLUDED.metadata: updated_at = NOW()
+      `);'  }catch (error) {'`
       console.error('Failed to store embedding:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Optimize vector indexes for better performance
    */
@@ -438,10 +361,8 @@ class GemmaEmbeddingsService {
       // Update table statistics
       await db.execute(sql`ANALYZE embeddings`);
       console.log('Vector indexes optimized successfully');
-    } }catch (error) {
-      console.error('Failed to optimize indexes:', error);
-    } }
-  } }
+     }catch (error) {
+      console.error('Failed to optimize indexes:', error); }
   /**
    * Cleanup resources
    */
@@ -450,10 +371,9 @@ class GemmaEmbeddingsService {
     // The singleton instance will be managed globally.
     // If a dedicated connection was created (e.g., for pub/sub), it would need to be quit.
     // await gemmaRedis.quit();
-    // await pgvectorRedis.quit();
-  } }
-} }
+    // await pgvectorRedis.quit(); } }
 // Export singleton instance
 export const gemmaEmbeddingsService = new GemmaEmbeddingsService();
 export default gemmaEmbeddingsService;
+
 

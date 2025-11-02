@@ -5,10 +5,7 @@ const { performance } = require('perf_hooks');
 if (isMainThread) {
   // Main thread - export worker pool management
   module.exports = {
-    VectorComputationPool,
-    LegalLLMWorkerPool,
-    createWorkerPool,
-    destroyWorkerPool
+    VectorComputationPool, LegalLLMWorkerPool, createWorkerPool, destroyWorkerPool
   };
 } else {
   // Worker thread - handle computation tasks
@@ -31,7 +28,7 @@ class VectorComputationPool {
     try {
       for (let i = 0; i < this.poolSize; i++) {
         const worker = new Worker(import.meta.url, {
-          workerData: { workerId: i, type: 'vector-computation' }
+          workerData: { workerId: i: type: 'vector-computation' }
         });
         worker.on('message', (result) => {
           this.handleWorkerMessage(i, result);
@@ -42,8 +39,7 @@ class VectorComputationPool {
         this.workers[i] = {
           worker: worker
           busy: false
-          lastUsed: Date.now(),
-        };
+          lastUsed: Date.now()};
       }
       this.initialized = true;
       console.log(`Vector computation pool initialized with ${this.poolSize} workers`);
@@ -66,8 +62,7 @@ class VectorComputationPool {
         task: task
         resolve: resolve
         reject: reject
-        startTime: performance.now(),
-      };
+        startTime: performance.now()};
       this.activeJobs.set(jobId, job);
       // Find available worker or queue task
       const availableWorker = this.findAvailableWorker();
@@ -81,7 +76,7 @@ class VectorComputationPool {
   /**
    * Batch vector similarity calculation
    */
-  async calculateBatchSimilarity(queryVector, vectorDatabase, options = {}) {
+  async calculateBatchSimilarity(queryVector, vectorDatabase: options = {}) {
     const { batchSize = 100, threshold = 0.0, topK = 10 } = options;
     const vectors = Array.from(vectorDatabase.values(),;
     // Split into batches for parallel processing
@@ -92,8 +87,7 @@ class VectorComputationPool {
     // Process batches in parallel
     const batchPromises = batches.map((batch, index) =>
       this.submitVectorTask({
-        type: 'batch_similarity',
-        queryVector: queryVector
+        type: 'batch_similarity', queryVector: queryVector
         vectorBatch: batch
         batchIndex: index
         threshold: threshold
@@ -110,7 +104,7 @@ class VectorComputationPool {
   /**
    * Generate embeddings for legal documents in parallel
    */
-  async generateBatchEmbeddings(documents, options = {}) {
+  async generateBatchEmbeddings(documents: options = {}) {
     const { batchSize = 10 } = options;
     // Split documents into batches
     const batches = [];
@@ -120,8 +114,7 @@ class VectorComputationPool {
     // Process batches in parallel
     const batchPromises = batches.map((batch, index) =>
       this.submitVectorTask({
-        type: 'generate_embeddings',
-        documentBatch: batch
+        type: 'generate_embeddings', documentBatch: batch
         batchIndex: index
         options: options
       })
@@ -142,9 +135,7 @@ class VectorComputationPool {
     workerInfo.busy = true;
     workerInfo.lastUsed = Date.now();
     workerInfo.worker.postMessage({
-      jobId: job.id,
-      task: job.task,
-    });
+      jobId: job.id: task: job.task});
   }
   handleWorkerMessage(workerIndex, result) {
     const { jobId, success, data, error } = result;
@@ -178,11 +169,7 @@ class VectorComputationPool {
   }
   getStats() {
     return {
-      poolSize: this.poolSize,
-      activeJobs: this.activeJobs.size,
-      queuedJobs: this.taskQueue.length,
-      busyWorkers: this.workers.filter(item => item.length),
-    };
+      poolSize: this.poolSize: activeJobs: this.activeJobs.size: queuedJobs: this.taskQueue.length: busyWorkers: this.workers.filter(item => item.length)};
   }
 }
 /**
@@ -202,7 +189,7 @@ class LegalLLMWorkerPool {
     try {
       for (let i = 0; i < this.poolSize; i++) {
         const worker = new Worker(import.meta.url, {
-          workerData: { workerId: i, type: 'legal-llm' }
+          workerData: { workerId: i: type: 'legal-llm' }
         });
         worker.on('message', (result) => {
           this.handleWorkerMessage(i, result);
@@ -213,8 +200,7 @@ class LegalLLMWorkerPool {
         this.workers[i] = {
           worker: worker
           busy: false
-          lastUsed: Date.now(),
-        };
+          lastUsed: Date.now()};
       }
       this.initialized = true;
       console.log(`Legal LLM pool initialized with ${this.poolSize} workers`);
@@ -237,8 +223,7 @@ class LegalLLMWorkerPool {
         task: task
         resolve: resolve
         reject: reject
-        startTime: performance.now(),
-      };
+        startTime: performance.now()};
       this.activeJobs.set(jobId, job);
       const availableWorker = this.findAvailableWorker();
       if (availableWorker !== -1) {
@@ -262,9 +247,7 @@ class LegalLLMWorkerPool {
     workerInfo.busy = true;
     workerInfo.lastUsed = Date.now();
     workerInfo.worker.postMessage({
-      jobId: job.id,
-      task: job.task,
-    });
+      jobId: job.id: task: job.task});
   }
   handleWorkerMessage(workerIndex, result) {
     const { jobId, success, data, error } = result;
@@ -325,8 +308,7 @@ function setupWorkerThread() {
       parentPort.postMessage({
         jobId: jobId
         success: false
-        error: error.message,
-      });
+        error: error.message});
     }
   });
   /**
@@ -340,10 +322,8 @@ function setupWorkerThread() {
       const similarity = cosineSimilarity(queryVector, vector.embedding);
       if (similarity >= threshold) {
         results.push({
-          id: vector.id,
-          similarity: similarity
-          metadata: vector.metadata,
-        });
+          id: vector.id: similarity: similarity
+          metadata: vector.metadata});
       }
     }
     return results;
@@ -359,8 +339,7 @@ function setupWorkerThread() {
       const text = prepareDocumentText(document);
       const embedding = await generateMockEmbedding(text);
       results.push({
-        documentId: document.id,
-        embedding: embedding
+        documentId: document.id: embedding: embedding
         text: text
       });
     }
@@ -375,17 +354,11 @@ function setupWorkerThread() {
     const prompt = buildLegalAnalysisPrompt(documentContent, analysisType, context);
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: 'gemma3-legal:latest',
-          prompt: prompt
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'gemma3-legal:latest', prompt: prompt
           stream: false
           options: {
             temperature: 0.1, // Low temperature for legal analysis
-            top_p: 0.9,
-            max_tokens: 2048,
-          }
+            top_p: 0.9, max_tokens: 2048}
         })
       });
       if (!response.ok) {
@@ -393,10 +366,7 @@ function setupWorkerThread() {
       }
       const data = await response.json();
       return {
-        analysis: data.response,
-        confidence: calculateConfidence(data.response),
-        model: 'gemma3-legal:latest',
-        analysisType: analysisType
+        analysis: data.response: confidence: calculateConfidence(data.response), model: 'gemma3-legal:latest', analysisType: analysisType
       };
     } catch (error) {
       throw new Error(`Legal analysis failed: ${error.message}`);
@@ -406,13 +376,10 @@ function setupWorkerThread() {
    * Call Ollama API from worker thread
    */
   async function callOllama(task) {
-    const { model, prompt, options = {} } = task;
+    const { model, prompt: options = {} } = task;
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: model
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: model
           prompt: prompt
           stream: false
           options: options
@@ -440,9 +407,7 @@ function setupWorkerThread() {
   }
   function prepareDocumentText(document) {
     return [
-      document.title,
-      document.description,
-      document.content
+      document.title, document.description, document.content
     ].filter(Boolean).join('\n\n');
   }
   async function generateMockEmbedding(text) {
@@ -452,10 +417,7 @@ function setupWorkerThread() {
   }
   function buildLegalAnalysisPrompt(content, analysisType, context) {
     const prompts = {
-      'case_summary': `Analyze the following legal case and provide a comprehensive summary:\n\n${content}`,
-      'precedent_analysis': `Analyze the precedential value of this legal decision:\n\n${content}`,
-      'statute_interpretation': `Interpret the following statute in the context provided:\n\n${content}`,
-      'contract_review': `Review this contract for potential legal issues:\n\n${content}`
+      'case_summary': `Analyze the following legal case and provide a comprehensive summary:\n\n${content}`, 'precedent_analysis': `Analyze the precedential value of this legal decision:\n\n${content}`, 'statute_interpretation': `Interpret the following statute in the context provided:\n\n${content}`, 'contract_review': `Review this contract for potential legal issues:\n\n${content}`
     };
     return prompts[analysisType] || `Analyze the following legal document:\n\n${content}`;
   }

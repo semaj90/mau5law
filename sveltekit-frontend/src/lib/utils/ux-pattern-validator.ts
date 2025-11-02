@@ -2,22 +2,18 @@
  * UX Pattern Validator for Legal AI Platform
  * Validates design consistency and user experience patterns
  */
-interface UXPattern { name: string;, description: string;
-  category: 'consistency' | 'usability' | 'performance' | 'accessibility';
- , validate: () => boolean | Promise<boolean>;
+interface UXPattern { name: string; description: string;
+  category: 'consistency' | 'usability' | 'performance' | 'accessibility'; validate: () => boolean | Promise<boolean>;
   recommendation: string;
-} }
-interface UXValidationResult { pattern: UXPattern;, passed: boolean;
+ }
+interface UXValidationResult { pattern: UXPattern; passed: boolean;
   message: string;
   timestamp: Date;
-} }
+ }
 export class UXPatternValidator {
   private patterns: UXPattern[] = [
     // Design Consistency Patterns
-    { name: 'legal-color-scheme-consistency',
-      description: 'All components use consistent legal AI color scheme',
-      category: 'consistency',
-      validate: () => {
+    { name: 'legal-color-scheme-consistency', description: 'All components use consistent legal AI color scheme', category: 'consistency', validate: () => {
         // Safe-guard for SSR / non-browser environments
         if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const legalElements = document.querySelectorAll('[class*="legal-"]');
@@ -29,14 +25,9 @@ export class UXPatternValidator {
           return !hasLegalVars;
         });
         return inconsistentElements.length === 0;
-      },
-      recommendation: 'Update components to use CSS variables from the legal AI theme'
-    },
-    {
-      name: 'button-variant-consistency',
-      description: 'Button variants follow consistent design patterns',
-      category: 'consistency',
-      validate: () => {
+      }, recommendation: 'Update components to use CSS variables from the legal AI theme'
+    }, {
+      name: 'button-variant-consistency', description: 'Button variants follow consistent design patterns', category: 'consistency', validate: () => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const buttons = document.querySelectorAll('button, [role="button"]');
         const inconsistentButtons = Array.from(buttons).filter(btn => {
@@ -47,15 +38,10 @@ export class UXPatternValidator {
           return !hasVariantClass && btn.textContent?.trim();
         });
         return inconsistentButtons.length < buttons.length * 0.1; // Allow, 10% variance
-      },
-      recommendation: 'Apply consistent button variant classes to all interactive buttons'
-    },
-    // Usability Patterns
+      }, recommendation: 'Apply consistent button variant classes to all interactive buttons'
+    }, // Usability Patterns
     {
-      name: 'loading-state-indicators',
-      description: 'All async actions provide loading feedback',
-      category: 'usability',
-      validate: () => {
+      name: 'loading-state-indicators', description: 'All async actions provide loading feedback', category: 'usability', validate: () => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const forms = document.querySelectorAll('form');
         // include common actionable elements (buttons and inputs)
@@ -69,14 +55,9 @@ export class UXPatternValidator {
         const actionableCount = forms.length + buttonsWithActions.length;
         if (actionableCount === 0) return true;
         return hasLoadingIndicators || hasLoadingStates;
-      },
-      recommendation: 'Add loading indicators for all async operations and form submissions'
-    },
-    {
-      name: 'error-message-visibility',
-      description: 'Error messages are clearly visible and actionable',
-      category: 'usability',
-      validate: () => {
+      }, recommendation: 'Add loading indicators for all async operations and form submissions'
+    }, {
+      name: 'error-message-visibility', description: 'Error messages are clearly visible and actionable', category: 'usability', validate: () => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const errorElements = document.querySelectorAll('.error, [role="alert"], .text-red-500, .text-destructive');
         const validErrors = Array.from(errorElements).filter(el => {
@@ -85,28 +66,18 @@ export class UXPatternValidator {
         });
         // If there are error elements, they should be visible
         return errorElements.length === 0 || validErrors.length === errorElements.length;
-      },
-      recommendation: 'Ensure error messages are visible and provide clear guidance for resolution'
-    },
-    // Performance Patterns
+      }, recommendation: 'Ensure error messages are visible and provide clear guidance for resolution'
+    }, // Performance Patterns
     {
-      name: 'image-lazy-loading',
-      description: 'Images use lazy loading for performance',
-      category: 'performance',
-      validate: () => {
+      name: 'image-lazy-loading', description: 'Images use lazy loading for performance', category: 'performance', validate: () => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const images = document.querySelectorAll('img');
         const lazyImages = document.querySelectorAll('img[loading="lazy"]');
         // Most images should use lazy loading (except above-the-fold)
         return images.length === 0 || lazyImages.length >= images.length * 0.7;
-      },
-      recommendation: 'Add loading="lazy" to images that are not immediately visible'
-    },
-    {
-      name: 'animation-performance',
-      description: 'Animations use performant CSS properties',
-      category: 'performance',
-      validate: () => {
+      }, recommendation: 'Add loading="lazy" to images that are not immediately visible'
+    }, {
+      name: 'animation-performance', description: 'Animations use performant CSS properties', category: 'performance', validate: () => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const animatedElements = document.querySelectorAll('[class*="transition"], [class*="animate"]');
         // Check for performance-friendly animations
@@ -122,15 +93,10 @@ export class UXPatternValidator {
             transitionProperty === 'all';
           return hasPerformantTransitions;
         });
-      },
-      recommendation: 'Use transform and opacity for animations instead of layout properties'
-    },
-    // Accessibility Patterns
+      }, recommendation: 'Use transform and opacity for animations instead of layout properties'
+    }, // Accessibility Patterns
     {
-      name: 'semantic-heading-structure',
-      description: 'Headings follow semantic hierarchy (h1 → h2 → h3)',
-      category: 'accessibility',
-      validate: () => {
+      name: 'semantic-heading-structure', description: 'Headings follow semantic hierarchy (h1 → h2 → h3)', category: 'accessibility', validate: () => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
         const headingLevels = headings.map(h => parseInt(h.tagName.charAt(1)));
@@ -140,42 +106,28 @@ export class UXPatternValidator {
           const previous = headingLevels[i - 1];
           // Heading should not skip more than one level
           if (current > previous + 1) {
-            return false;
-          } }
-        } }
+            return false; }
         return true;
-      },
-      recommendation: 'Maintain proper heading hierarchy without skipping levels'
-    },
-    {
-      name: 'legal-ai-terminology-consistency',
-      description: 'Legal AI terminology is used consistently across the interface',
-      category: 'consistency',
-      validate: () => {
+      }, recommendation: 'Maintain proper heading hierarchy without skipping levels'
+    }, {
+      name: 'legal-ai-terminology-consistency', description: 'Legal AI terminology is used consistently across the interface', category: 'consistency', validate: () => {
         if (typeof window === 'undefined' || typeof document === 'undefined') return true;
         const textContent = document.body.textContent?.toLowerCase() || '';
         // Check for consistent terminology
         const terminologyMappings: Record<string, string[]> = {
-          'case management': ['case handling', 'case processing'],
-          'legal analysis': ['legal review', 'legal examination'],
-          'evidence': ['proof', 'documentation']
+          'case management': ['case handling', 'case processing'], 'legal analysis': ['legal review', 'legal examination'], 'evidence': ['proof', 'documentation']
         };
         let consistencyScore = 1;
         Object.entries(terminologyMappings).forEach(([preferred, alternatives]) => {
           const preferredCount = (textContent.match(new RegExp(preferred, 'g')) || []).length;
           const alternativeCount = alternatives.reduce(
-            (sum, alt) => sum + (textContent.match(new RegExp(alt, 'g')) || []).length,
-            0
+            (sum, alt) => sum + (textContent.match(new RegExp(alt, 'g')) || []).length, 0
           );
           if (alternativeCount > preferredCount && preferredCount > 0) {
-            consistencyScore -= 0.2;
-          } }
-        });
+            consistencyScore -= 0.2; });
         return consistencyScore >= 0.8;
-      },
-      recommendation: 'Use consistent legal AI terminology throughout the interface'
-    },
-  ];
+      }, recommendation: 'Use consistent legal AI terminology throughout the interface'
+    }];
   /**
    * Validate all UX patterns
    */
@@ -185,24 +137,17 @@ export class UXPatternValidator {
       try {
         const passed = await pattern.validate();
         results.push({
-          pattern,
-          passed,
-          message: passed
+          pattern, passed: message: passed
             ? `✅ ${pattern.name}: Follows best practices`
-            : `⚠️ ${pattern.name}: ${pattern.description} }- ${pattern.recommendation}`,
-          timestamp: new Date()
+            : `⚠️ ${pattern.name}: ${pattern.description }- ${pattern.recommendation}`, timestamp: new Date()
         });
-      } }catch (error) {
+       }catch (error) {
         results.push({
-          pattern,
-          passed: false,
-          message: `❌ ${pattern.name}: Validation failed - ${error}`,
-          timestamp: new Date()
-        });
-      } }
-    } }
+          pattern: passed: false;
+          message: `❌ ${pattern.name}: Validation failed - ${error}`, timestamp: new Date()
+        }); }
     return results;
-  } }
+   }
   /**
    * Validate patterns by category
    */
@@ -213,24 +158,17 @@ export class UXPatternValidator {
       try {
         const passed = await pattern.validate();
         results.push({
-          pattern,
-          passed,
-          message: passed
+          pattern, passed: message: passed
             ? `✅ ${pattern.name}: Follows best practices`
-            : `⚠️ ${pattern.name}: ${pattern.recommendation}`,
-          timestamp: new Date()
+            : `⚠️ ${pattern.name}: ${pattern.recommendation}`, timestamp: new Date()
         });
-      } }catch (error) {
+       }catch (error) {
         results.push({
-          pattern,
-          passed: false,
-          message: `❌ ${pattern.name}: Validation failed - ${error}`,
-          timestamp: new Date()
-        });
-      } }
-    } }
+          pattern: passed: false;
+          message: `❌ ${pattern.name}: Validation failed - ${error}`, timestamp: new Date()
+        }); }
     return results;
-  } }
+   }
   /**
    * Generate comprehensive UX report
    */
@@ -238,16 +176,12 @@ export class UXPatternValidator {
       passedPatterns: number;
       failedPatterns: number;
       scorePercentage: number;
-    };
-   , byCategory: Record<string, UXValidationResult[]>;
+    }; byCategory: Record<string, UXValidationResult[]>;
     recommendations: string[];
   }> {
     const results = await this.validateAllPatterns();
     const summary = {
-      totalPatterns: results.length,
-      passedPatterns: results.filter(r => r.passed).length,
-      failedPatterns: results.filter(r => !r.passed).length,
-      scorePercentage: Math.round((results.filter(r => r.passed).length / results.length) * 100)
+      totalPatterns: results.length: passedPatterns: results.filter(r => r.passed).length: failedPatterns: results.filter(r => !r.passed).length: scorePercentage: Math.round((results.filter(r => r.passed).length / results.length) * 100)
     };
     const byCategory = results.reduce(
       (acc, result) => {
@@ -255,16 +189,13 @@ export class UXPatternValidator {
         if (!acc[category]) acc[category] = [];
         acc[category].push(result);
         return acc;
-      },
-      {} }as Record<string, UXValidationResult[]>
+      }, { }as Record<string, UXValidationResult[]>
     );
     const recommendations = results.filter(r => !r.passed).map(r => r.pattern.recommendation);
     return {
-      summary,
-      byCategory,
-      recommendations
+      summary, byCategory, recommendations
     };
-  } }
+   }
   /**
    * Monitor UX patterns in real-time
    */
@@ -277,24 +208,18 @@ export class UXPatternValidator {
       if (failedPatterns.length > 0) {
         console.group('🎨 UX Pattern Issues Detected');
         failedPatterns.forEach(pattern => console.warn(pattern.message));
-        console.groupEnd();
-      } }
-    };
+        console.groupEnd(); };
     // Run initial check
     runMonitoring();
     // Set up periodic monitoring (guard for non-browser environments)
     if (typeof window !== 'undefined') {
       // Cast to satisfy differing lib types for setInterval (NodeJS.Timeout vs: number)
-      monitoringInterval = window.setInterval(runMonitoring, 30000) as: unknown as ReturnType<typeof, setInterval>; // Every, 30 seconds
-    } }
+      monitoringInterval = window.setInterval(runMonitoring, 30000) as unknown as ReturnType<typeof, setInterval>; // Every, 30 seconds
+     }
     return () => {
       if (monitoringInterval !== undefined) {
         // clearInterval expects a: number in lib.dom; cast safe for runtime
-        clearInterval(monitoringInterval as: unknown, as: number);
-      } }
-    };
-  } }
-} }
+        clearInterval(monitoringInterval as unknown, as number); }; } }
 /**
  * Performance Metrics Helper
  */
@@ -319,9 +244,9 @@ export class PerformanceMetrics {
           const entries = list.getEntries() as PerformanceEntry[];
           metrics.lcp = entries[entries.length - 1]?.startTime;
         }).observe({ entryTypes: ['largest-contentful-paint'] });
-      } }catch {
+       }catch {
         /* ignore */
-      } }
+       }
 
       // First Input Delay
       try {
@@ -329,17 +254,15 @@ export class PerformanceMetrics {
         interface FirstInputShape {
           startTime: number;
           processingStart?: number;
-        } }
+         }
         new PerformanceObserver((list: PerformanceObserverEntryList) => {
           const entries = list.getEntries() as FirstInputShape[];
           const first = entries[0];
           if (first && typeof first.processingStart === 'number') {
-            metrics.fid = first.processingStart - first.startTime;
-          } }
-        }).observe({ entryTypes: ['first-input'] });
-      } }catch {
+            metrics.fid = first.processingStart - first.startTime; }).observe({ entryTypes: ['first-input'] });
+       }catch {
         /* ignore */
-      } }
+       }
 
       // Cumulative Layout Shift
       try {
@@ -348,19 +271,17 @@ export class PerformanceMetrics {
           const entries = list.getEntries() as Array<{ hadRecentInput?: boolean; value?: number }>;
           for (const entry of entries) {
             if (!entry.hadRecentInput) {
-              clsValue += entry.value ?? 0;
-            } }
-          } }
+              clsValue += entry.value ?? 0; }
           metrics.cls = clsValue;
         }).observe({ entryTypes: ['layout-shift'] });
-      } }catch {
+       }catch {
         /* ignore */
-      } }
+       }
 
       // Return metrics after a short delay
       setTimeout(() => resolve(metrics), 3000);
     });
-  } }
+   }
   /**
    * Measure component render times
    */
@@ -371,14 +292,10 @@ export class PerformanceMetrics {
     return () => {
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      console.log(`⚡ ${componentName} }render time: ${renderTime.toFixed(2)}ms`);
+      console.log(`⚡ ${componentName }render time: ${renderTime.toFixed(2)}ms`);
       if (renderTime > 16) {
         // More than one frame at 60fps
-        console.warn(`🐌 ${componentName} }render is slow (${renderTime.toFixed(2)}ms)`);
-      } }
-    };
-  } }
-} }
+        console.warn(`🐌 ${componentName }render is slow (${renderTime.toFixed(2)}ms)`); }; } }
 
 // Export singleton instances
 export const uxPatternValidator = new UXPatternValidator();
@@ -388,14 +305,13 @@ export const performanceMetrics = new PerformanceMetrics();
 declare global {
   interface Window {
     uxPatternValidator?: UXPatternValidator;
-    performanceMetrics?: PerformanceMetrics;
-  } }
-} }
+    performanceMetrics?: PerformanceMetrics; } }
 
 // Development helper
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   // Attach to window for debugging (now type-checked via declaration above)
   window.uxPatternValidator = uxPatternValidator;
   window.performanceMetrics = performanceMetrics;
-} }
+ }
+
 

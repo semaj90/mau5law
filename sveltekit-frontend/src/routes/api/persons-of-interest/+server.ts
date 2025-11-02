@@ -1,7 +1,7 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
-import { db, personsOfInterest } }from '$lib/server/db';
-import { eq, and, desc, asc, sql } }from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
+import { db, personsOfInterest  } from '$lib/server/db';
+import { eq, and, desc, asc, sql  } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -18,22 +18,22 @@ export const GET: RequestHandler = async ({ url }) => {
     // Build where conditions
     const conditions = [];
     if (searchQuery) {
-      conditions.push(sql`${personsOfInterest.name} }LIKE ${'%' + searchQuery + '%` }`);'' } }`
+      conditions.push(sql`${personsOfInterest.name }LIKE ${'%' + searchQuery + '%` }`);''  }`
     if (threatLevel) {
       conditions.push(eq(personsOfInterest.threatLevel, threatLevel));
-    } }
+     }
     if (status) {
       conditions.push(eq(personsOfInterest.status, status));
-    } }
+     }
     if (relationship) {
       conditions.push(eq(personsOfInterest.relationship, relationship));
-    } }
+     }
     if (caseId) {
       conditions.push(eq(personsOfInterest.caseId, caseId));
-    } }
+     }
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
-    } }
+     }
     // Apply sorting
     const sortColumn = personsOfInterest[sortBy as keyof typeof personsOfInterest] || personsOfInterest.updatedAt;
     query = query.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn));
@@ -44,26 +44,20 @@ export const GET: RequestHandler = async ({ url }) => {
     const [totalResult] = await db.select({ count: personsOfInterest.id }).from(personsOfInterest);
     const total = parseInt(totalResult?.count?.toString() || '0');
     return json({
-      success: true,
-      data: persons,
+      success: true;
+      data: persons;
       pagination: {
-        total,
-        limit,
-        offset,
-        hasMore: offset + persons.length < total
-      } }
+        total, limit, offset: hasMore: offset + persons.length < total
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error fetching persons of interest:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: 'Failed to fetch persons of interest'
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -71,65 +65,42 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.name || !body.relationship) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Name and relationship are required'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
     const personData = {
-      name: body.name,
-      aliases: body.aliases || [],
-      relationship: body.relationship,
-      threatLevel: body.threatLevel || 'low',
-      status: body.status || 'active',
-      profileData: body.profileData || {},
-      tags: body.tags || [],
-      position: body.position || {},
-      caseId: body.caseId || null,
-      createdBy: body.createdBy || null
+      name: body.name: aliases: body.aliases || [], relationship: body.relationship: threatLevel: body.threatLevel || 'low', status: body.status || 'active', profileData: body.profileData || {}, tags: body.tags || [], position: body.position || {}, caseId: body.caseId || null: createdBy: body.createdBy || null
     };
     const [newPerson] = await db.insert(personsOfInterest).values(personData).returning();
     return json(
       {
-        success: true,
+        success: true;
         data: newPerson
-      },
-      { status: 201 } }
+      }, { status: 201  }
     );
-  } }catch (error) {
+   }catch (error) {
     console.error('Error creating person of interest:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: 'Failed to create person of interest'
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     if (!body.id) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Person ID is required for updates'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
     const updateData = {
-      ...(body.name && { name: body.name }),
-      ...(body.aliases && { aliases: body.aliases }),
-      ...(body.relationship && { relationship: body.relationship }),
-      ...(body.threatLevel && { threatLevel: body.threatLevel }),
-      ...(body.status && { status: body.status }),
-      ...(body.profileData && { profileData: body.profileData }),
-      ...(body.tags && { tags: body.tags }),
-      ...(body.position && { position: body.position }),
-      updatedAt: new Date().toISOString()
+      ...(body.name && { name: body.name }), ...(body.aliases && { aliases: body.aliases }), ...(body.relationship && { relationship: body.relationship }), ...(body.threatLevel && { threatLevel: body.threatLevel }), ...(body.status && { status: body.status }), ...(body.profileData && { profileData: body.profileData }), ...(body.tags && { tags: body.tags }), ...(body.position && { position: body.position }), updatedAt: new Date().toISOString()
     };
     const [updatedPerson] = await db
       .update(personsOfInterest)
@@ -139,59 +110,52 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!updatedPerson) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Person of interest not found'
-        },
-        { status: 404 } }
+        }, { status: 404  }
       );
-    } }
+     }
     return json({
-      success: true,
+      success: true;
       data: updatedPerson
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error updating person of interest:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: 'Failed to update person of interest'
-      },
-      { status: 500 } }
-    );
-  } }
-};
+      }, { status: 500  }
+    ); };
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     if (!body.id) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Person ID is required for deletion'
-        },
-        { status: 400 } }
+        }, { status: 400  }
       );
-    } }
+     }
     const [deletedPerson] = await db.delete(personsOfInterest).where(eq(personsOfInterest.id, body.id)).returning();
     if (!deletedPerson) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'Person of interest not found' },''
-        { status: 404 } }
+        { status: 404  }
       );
-    } }
+     }
     return json({
-      success: true,
+      success: true;
       message: 'Person of interest deleted successfully' });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error deleting person of interest: ', error);'`'`
     return json(
       {
-        success: false,
-        error: `Failed to delete person of interest` },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: `Failed to delete person of interest` }, { status: 500  }
+    ); };
+
 

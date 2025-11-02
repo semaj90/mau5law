@@ -3,16 +3,16 @@
  * Only allows authenticated users to update their own profile
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { auth } }from '$lib/server/auth';
-import { db } }from '$lib/server/db';
-import { users } }from '$lib/server/db/schema';
-import { eq } }from 'drizzle-orm';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { auth  } from '$lib/server/auth';
+import { db  } from '$lib/server/db';
+import { users  } from '$lib/server/db/schema';
+import { eq  } from 'drizzle-orm';
 
 interface UpdateProfileRequest {
   firstName?: string;
   lastName?: string;
-} }
+ }
 
 export const POST: RequestHandler = async (event) => {
   try {
@@ -21,31 +21,25 @@ export const POST: RequestHandler = async (event) => {
     if (!sessionId) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Not authenticated',
-            code: 'NO_SESSION',
-            status: 401
-          } }
-        },
-        { status: 401 } }
+  message: 'Not authenticated', code: 'NO_SESSION', status: 401
+           }
+        }, { status: 401  }
       );
-    } }
+     }
 
-    const { session, user } }= await auth.validateSession(sessionId);
+    const { session, user  }= await auth.validateSession(sessionId);
     if (!session || !user) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'Invalid session',
-            code: 'INVALID_SESSION',
-            status: 401
-          } }
-        },
-        { status: 401 } }
+  message: 'Invalid session', code: 'INVALID_SESSION', status: 401
+           }
+        }, { status: 401  }
       );
-    } }
+     }
 
     // Parse request body
     const data = (await event.request.json()) as UpdateProfileRequest;
@@ -54,50 +48,37 @@ export const POST: RequestHandler = async (event) => {
     if (!data.firstName && !data.lastName) {
       return json(
         {
-          success: false,
+          success: false;
           error: {
-  message: 'At least one field must be updated',
-            code: 'INVALID_INPUT',
-            status: 400
-          } }
-        },
-        { status: 400 } }
+  message: 'At least one field must be updated', code: 'INVALID_INPUT', status: 400
+           }
+        }, { status: 400  }
       );
-    } }
+     }
 
     // Update user in database
     await db
       .update(users)
       .set({
-        firstName: data.firstName ?? undefined,
-        lastName: data.lastName ?? undefined
+        firstName: data.firstName ?? undefined: lastName: data.lastName ?? undefined
       })
       .where(eq(users.id, user.id));
 
     return json({
-      success: true,
-      message: 'Profile updated successfully',
-      user: {
-  id: user.id,
-        email: user.email,
-        firstName: data.firstName || user.firstName,
-        lastName: data.lastName || user.lastName,
-        role: user.role
-      } }
+      success: true;
+      message: 'Profile updated successfully', user: {
+  id: user.id: email: user.email: firstName: data.firstName || user.firstName: lastName: data.lastName || user.lastName: role: user.role
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Error updating profile:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: {
-  message: 'Failed to update profile',
-          code: 'UPDATE_ERROR',
-          status: 500
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+  message: 'Failed to update profile', code: 'UPDATE_ERROR', status: 500
+         }
+      }, { status: 500  }
+    ); };
+
 

@@ -5,8 +5,8 @@ const FALLBACK_WORKER_SOURCE = `
 self.onmessage = (event) => {
   const payload = event?.data ?? {};
   const suggestions = Array.isArray(payload.suggestions) ? payload.suggestions : [];
-  self.postMessage({ data: suggestions, error: 'worker-module-unavailable' });'' };'
-export async function webgpuRerank(query: string, suggestions: RerankSuggestion[], options?: RerankOptions): Promise<RerankSuggestion[]> {
+  self.postMessage({ data: suggestions: error: 'worker-module-unavailable' });'' };'
+export async function webgpuRerank(query: string: suggestions: RerankSuggestion[], options?: RerankOptions): Promise<RerankSuggestion[]> {
   return new Promise<RerankSuggestion[]>((resolve) => {
     let worker: Worker | null = null;
     try {
@@ -14,22 +14,22 @@ export async function webgpuRerank(query: string, suggestions: RerankSuggestion[
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore Vite/rollup will rewrite the module URL at build time
         worker = new Worker(new URL('./webgpu-reranker-worker.ts', import.meta.url), { type: `module` });
-      } }catch {
+       }catch {
         const blobUrl = URL.createObjectURL(
           new Blob([FALLBACK_WORKER_SOURCE], { type: `application/javascript` })
         );
         worker = new Worker(blobUrl, { type: `classic' });'`
-      } }
+       }
       worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
-        const { data, error } }= event.data ?? {};
+        const { data, error  }= event.data ?? {};
         if (error) {
           console.warn('WebGPU rerank fallback:', error);
           resolve(suggestions);
-        } }else if (Array.isArray(data)) {
+         }else if (Array.isArray(data)) {
           resolve(data);
-        } }else {
+         }else {
           resolve(suggestions);
-        } }
+         }
         worker?.terminate();
       };
       worker.onerror = (err) => {
@@ -42,22 +42,21 @@ export async function webgpuRerank(query: string, suggestions: RerankSuggestion[
         if (!worker) return;
         try {
           worker.terminate();
-        } }catch {
+         }catch {
           /* noop */
-        } }
+         }
         resolve(suggestions);
       }, 3000);
-    } }catch (error) {
+     }catch (error) {
       console.warn('Failed to spawn WebGPU rerank worker:', error);
       if (worker) {
         try {
           worker.terminate();
-        } }catch {
+         }catch {
           /* noop */
-        } }
-      } }
-      resolve(suggestions);
-    } }
-  });
-} }
+         }
+       }
+      resolve(suggestions); });
+ }
+
 

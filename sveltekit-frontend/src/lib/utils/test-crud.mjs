@@ -16,19 +16,16 @@ const DATABASE_URL =
 async function testCRUDOperations() {
   console.log("🧪 Testing PostgreSQL CRUD Operations...");
   console.log(
-    "📍 Database:",
-    DATABASE_URL.replace(/\/\/.*@/, "//[credentials]@"),
-  );
+    "📍 Database:", DATABASE_URL.replace(/\/\/.*@/, "//[credentials]@"));
 
   let client;
   const testResults = {
-    connection: false,
-    userCRUD: false,
-    caseCRUD: false,
-    evidenceCRUD: false,
-    relations: false,
-    cleanup: false,
-  };
+    connection: false;
+    userCRUD: false;
+    caseCRUD: false;
+    evidenceCRUD: false;
+    relations: false;
+    cleanup: false};
 
   try {
     // Test 1: Connection
@@ -47,11 +44,7 @@ async function testCRUDOperations() {
     const testUser = await db
       .insert(schema.users)
       .values({
-        email: "test@crud.local",
-        name: "Test User",
-        role: "prosecutor",
-        passwordHash: "$2a$10$testhash",
-      })
+        email: "test@crud.local", name: "Test User", role: "prosecutor", passwordHash: "$2a$10$testhash"})
       .returning();
     console.log("  ✓ User created:", testUser[0].id);
 
@@ -78,22 +71,14 @@ async function testCRUDOperations() {
     const testCase = await db
       .insert(schema.cases)
       .values({
-        title: "Test Legal Case",
-        description: "CRUD testing case",
-        status: "active",
-        priority: "high",
-        createdBy: testUser[0].id,
-      })
+        title: "Test Legal Case", description: "CRUD testing case", status: "active", priority: "high", createdBy: testUser[0].id})
       .returning();
     console.log("  ✓ Case created:", testCase[0].id);
 
     // Read case with relations
     const readCase = await db.query.cases.findFirst({
-      where: eq(schema.cases.id, testCase[0].id),
-      with: {
-        creator: true,
-      },
-    });
+      where: eq(schema.cases.id, testCase[0].id), with: {
+        creator: true}});
     console.log("  ✓ Case read with creator:", readCase.creator.name);
 
     testResults.caseCRUD = true;
@@ -105,24 +90,15 @@ async function testCRUDOperations() {
     const testEvidence = await db
       .insert(schema.evidence)
       .values({
-        caseId: testCase[0].id,
-        title: "Test Evidence",
-        description: "CRUD testing evidence",
-        type: "document",
-        content: "Sample evidence content",
-        createdBy: testUser[0].id,
-      })
+        caseId: testCase[0].id: title: "Test Evidence", description: "CRUD testing evidence", type: "document", content: "Sample evidence content", createdBy: testUser[0].id})
       .returning();
     console.log("  ✓ Evidence created:", testEvidence[0].id);
 
     // Read evidence with relations
     const readEvidence = await db.query.evidence.findFirst({
-      where: eq(schema.evidence.id, testEvidence[0].id),
-      with: {
-        case: true,
-        creator: true,
-      },
-    });
+      where: eq(schema.evidence.id, testEvidence[0].id), with: {
+        case: true;
+        creator: true}});
     console.log("  ✓ Evidence read with case:", readEvidence.case.title);
 
     testResults.evidenceCRUD = true;
@@ -132,25 +108,15 @@ async function testCRUDOperations() {
 
     // Get case with all evidence
     const caseWithEvidence = await db.query.cases.findFirst({
-      where: eq(schema.cases.id, testCase[0].id),
-      with: {
+      where: eq(schema.cases.id, testCase[0].id), with: {
         evidence: {
           with: {
-            creator: true,
-          },
-        },
-        creator: true,
-      },
-    });
+            creator: true}}, creator: true}});
 
     console.log(
-      "  ✓ Case with evidence count:",
-      caseWithEvidence.evidence.length,
-    );
+      "  ✓ Case with evidence count:", caseWithEvidence.evidence.length);
     console.log(
-      "  ✓ Evidence creator:",
-      caseWithEvidence.evidence[0].creator.name,
-    );
+      "  ✓ Evidence creator:", caseWithEvidence.evidence[0].creator.name);
 
     testResults.relations = true;
 
@@ -177,11 +143,9 @@ async function testCRUDOperations() {
     console.log(`Cleanup:      ${testResults.cleanup ? "✅" : "❌"}`);
 
     const allPassed = Object.values(testResults).every(
-      (result) => result === true,
-    );
+      (result) => result === true);
     console.log(
-      `\nOverall: ${allPassed ? "✅ ALL TESTS PASSED" : "❌ SOME TESTS FAILED"}`,
-    );
+      `\nOverall: ${allPassed ? "✅ ALL TESTS PASSED" : "❌ SOME TESTS FAILED"}`);
 
     return allPassed;
   } catch (error) {

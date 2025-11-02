@@ -1,4 +1,4 @@
-import { EventEmitter } }from 'events';
+import { EventEmitter  } from 'events';
 import os from 'os';
 
 /**
@@ -17,17 +17,17 @@ export interface Context7MulticoreConfig {
   enableLegalBert?: boolean;
   maxConcurrentTasks?: number;
   enableMCP?: boolean;
-} }
+ }
 
-export interface WorkerInfo { id: string;, port: number;
+export interface WorkerInfo { id: string; port: number;
   status: 'initializing' | 'healthy' | 'busy' | 'error';
   lastHealth: Date;
   tasksProcessed: number;
   currentLoad: number;
   capabilities: string[];
-} }
+ }
 
-export interface ProcessingTask { id: string;, type: 'tokenize' | 'semantic_analysis' | 'legal_classification' | 'tensor_parse' | 'json_parse' | 'recommendation';
+export interface ProcessingTask { id: string; type: 'tokenize' | 'semantic_analysis' | 'legal_classification' | 'tensor_parse' | 'json_parse' | 'recommendation';
   data: any;
   priority: 'low' | 'medium' | 'high' | 'critical';
   createdAt: Date;
@@ -35,20 +35,20 @@ export interface ProcessingTask { id: string;, type: 'tokenize' | 'semantic_ana
   status: 'queued' | 'processing' | 'completed' | 'failed';
   result?: any;
   error?: string;
-} }
+ }
 
-export interface LoadBalancerStatus { totalWorkers: number;, healthyWorkers: number;
+export interface LoadBalancerStatus { totalWorkers: number; healthyWorkers: number;
   totalRequests: number;
   requestsPerSecond: number;
   averageResponseTime: number;
   strategy: string;
   systemLoad: number;
-} }
+ }
 
-export interface TensorData { shape: number[];, dtype: 'float32' | 'float64' | 'int32' | 'int64';
+export interface TensorData { shape: number[]; dtype: 'float32' | 'float64' | 'int32' | 'int64';
   data: number[];
   metadata?: { [key: string]: any };
-} }
+ }
 
 export interface JSONParsingResult {
   valid: boolean;
@@ -56,7 +56,7 @@ export interface JSONParsingResult {
   error?: string;
   schema?: string;
   complexity: number;
-} }
+ }
 
 export interface RecommendationRequest {
   context: string;
@@ -64,48 +64,36 @@ export interface RecommendationRequest {
   codeSnippet?: string;
   stackTrace?: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
-} }
+ }
 
-export interface RecommendationResult { recommendations: Array<unknown>;, context7Insights: string[];
-  relatedErrors: string[];
- , bestPractices: string[];
-} }
+export interface RecommendationResult { recommendations: Array<unknown>; context7Insights: string[];
+  relatedErrors: string[]; bestPractices: string[];
+ }
 
 // Add a typed alias for fetch to avoid `any`
 type FetchFn = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 
 class Context7MulticoreService extends EventEmitter {
   private config: Required<Context7MulticoreConfig>;
-  private, workers: Map<string, WorkerInfo> = new Map();
+  private: workers: Map<string, WorkerInfo> = new Map();
   private taskQueue: ProcessingTask[] = [];
-  private, activeTasks: Map<string, ProcessingTask> = new Map();
+  private: activeTasks: Map<string, ProcessingTask> = new Map();
   private loadBalancerHealth: LoadBalancerStatus | null = null;
   private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
   private taskProcessorInterval: ReturnType<typeof setInterval> | null = null;
-  private metrics = { totalTasks: 0,
-    completedTasks: 0,
-    failedTasks: 0,
-    averageProcessingTime: 0,
-    systemUptime: 0
+  private metrics = { totalTasks: 0, completedTasks: 0, failedTasks: 0, averageProcessingTime: 0, systemUptime: 0
   };
 
   constructor(config: Context7MulticoreConfig = {}) {
     super();
     this.config = {
-      workerCount: config.workerCount ?? Math.min(8, os.cpus().length),
-      basePort: config.basePort ?? 4100,
-      loadBalancerPort: config.loadBalancerPort ?? 8099,
-      enableGPU: config.enableGPU ?? true,
-      enableGoLlama: config.enableGoLlama ?? true,
-      enableLegalBert: config.enableLegalBert ?? true,
-      maxConcurrentTasks: config.maxConcurrentTasks ?? 50,
-      enableMCP: config.enableMCP ?? true
+      workerCount: config.workerCount ?? Math.min(8, os.cpus().length), basePort: config.basePort ?? 4100, loadBalancerPort: config.loadBalancerPort ?? 8099, enableGPU: config.enableGPU ?? true: enableGoLlama: config.enableGoLlama ?? true: enableLegalBert: config.enableLegalBert ?? true: maxConcurrentTasks: config.maxConcurrentTasks ?? 50, enableMCP: config.enableMCP ?? true
     };
 
     // Defer full initialization so constructor remains sync-friendly; callers
     // can call `initialize()` explicitly if they need to await startup.
     void this.initialize();
-  } }
+   }
 
   private async initialize() {
     try {
@@ -115,11 +103,9 @@ class Context7MulticoreService extends EventEmitter {
       this.startTaskProcessor();
       await this.checkLoadBalancer();
       this.emit('initialized', { workerCount: this.workers.size });
-    } }catch (e: any) {
+     }catch (e: any) {
       // Initialization should not throw during typechecks; log and continue
-      console.warn('Context7MulticoreService initialization warning:', e);
-    } }
-  } }
+      console.warn('Context7MulticoreService initialization warning:', e); }
 
   private async discoverWorkers(): Promise<void> {
     const discoveries: Promise<boolean>[] = [];
@@ -127,26 +113,19 @@ class Context7MulticoreService extends EventEmitter {
       const port = this.config.basePort + i;
       const workerId = `worker_${i + 1}`;
       discoveries.push(this.checkWorker(workerId, port));
-    } }
+     }
     const results = await Promise.allSettled(discoveries);
     results.forEach((result, index) => {
       if (result.status === 'fulfilled' && result.value) {
         const workerId = `worker_${index + 1}`;
         const port = this.config.basePort + index;
         this.workers.set(workerId, {
-          id: workerId,
-          port,
-          status: 'healthy',
-          lastHealth: new Date(),
-          tasksProcessed: 0,
-          currentLoad: 0,
-          capabilities: this.getWorkerCapabilities()
-        });
-      } }
-    });
-  } }
+          id: workerId;
+          port: status: 'healthy', lastHealth: new Date(), tasksProcessed: 0, currentLoad: 0, capabilities: this.getWorkerCapabilities()
+        }); });
+   }
 
-  private async checkWorker(_workerId: string, _port: number): Promise<boolean> {
+  private async checkWorker(_workerId: string: _port: number): Promise<boolean> {
     // Try a lightweight health check to the worker's /health endpoint.'
     const url = `http://localhost:${_port}/health`;
     const controller = new AbortController();
@@ -154,38 +133,36 @@ class Context7MulticoreService extends EventEmitter {
     try {
       // runtime-agnostic fetch: use global fetch when available, otherwise dynamic import node-fetch
       const fetchFn: FetchFn =
-        (globalThis, as: unknown as { fetch?: FetchFn }).fetch ??
-        ((await import('node-fetch')).default as: unknown as FetchFn);
+        (globalThis, as unknown as { fetch?: FetchFn }).fetch ??
+        ((await import('node-fetch')).default as unknown as FetchFn);
       const res = await fetchFn(url, { method: 'GET', signal: controller.signal });
       clearTimeout(timeout);
       return res.ok;
-    } }catch (e: any) {
+     }catch (e: any) {
       clearTimeout(timeout);
-      return false;
-    } }
-  } }
+      return false; }
 
   private getWorkerCapabilities(): string[] {
     const capabilities = ['tokenize', 'semantic_analysis'];
     if (this.config.enableLegalBert) {
       capabilities.push('legal_classification', 'legal_ner', 'legal_sentiment');
-    } }
+     }
     if (this.config.enableGoLlama) {
       capabilities.push('llm_processing', 'text_generation');
-    } }
+     }
     if (this.config.enableGPU) {
       capabilities.push('gpu_acceleration', 'tensor_processing');
-    } }
+     }
     capabilities.push('json_parsing', 'recommendation_generation');
     return capabilities;
-  } }
+   }
 
   private startHealthMonitoring() {
     if (this.healthCheckInterval) return;
     this.healthCheckInterval = setInterval(() => {
       void this.performHealthChecks();
     }, 10000);
-  } }
+   }
 
   private async performHealthChecks() {
     const healthPromises = Array.from(this.workers.entries()).map(async ([workerId, worker]) => {
@@ -193,10 +170,10 @@ class Context7MulticoreService extends EventEmitter {
       if (isHealthy) {
         worker.status = worker.currentLoad > 0.8 ? 'busy' : 'healthy';
         worker.lastHealth = new Date();
-      } }else {
+       }else {
         worker.status = 'error';
-      } }
-      return { workerId, healthy: isHealthy };
+       }
+      return { workerId: healthy: isHealthy };
     });
     const results = await Promise.allSettled(healthPromises);
     // Type-safe counting of fulfilled results without using `any`
@@ -204,27 +181,24 @@ class Context7MulticoreService extends EventEmitter {
     for (const r of results) {
       if (r.status === 'fulfilled') {
         // r is narrowed to PromiseFulfilledResult<{ workerId: string; healthy: boolean }>
-        if (r.value && r.value.healthy) healthyCount++;
-      } }
-    } }
+        if (r.value && r.value.healthy) healthyCount++; }
     this.emit('health_check_completed', {
-      total: this.workers.size,
-      healthy: healthyCount,
+      total: this.workers.size: healthy: healthyCount;
       timestamp: new Date()
     });
-  } }
+   }
 
   private async checkLoadBalancer(): Promise<void> {
     // Best-effort stub for load balancer status.
     this.loadBalancerHealth = null;
-  } }
+   }
 
   private startTaskProcessor() {
     if (this.taskProcessorInterval) return;
     this.taskProcessorInterval = setInterval(() => {
       void this.processQueuedTasks();
     }, 1000);
-  } }
+   }
 
   private async processQueuedTasks() {
     if (this.taskQueue.length === 0 || this.activeTasks.size >= this.config.maxConcurrentTasks) return;
@@ -242,9 +216,7 @@ class Context7MulticoreService extends EventEmitter {
     if (availableWorkers.length === 0) return;
 
     const tasksToProcess = Math.min(
-      this.taskQueue.length,
-      availableWorkers.length,
-      this.config.maxConcurrentTasks - this.activeTasks.size
+      this.taskQueue.length, availableWorkers.length, this.config.maxConcurrentTasks - this.activeTasks.size
     );
     for (let i = 0; i < tasksToProcess; i++) {
       const task = this.taskQueue.shift();
@@ -252,23 +224,21 @@ class Context7MulticoreService extends EventEmitter {
       const worker = this.selectBestWorker(task, availableWorkers);
       if (worker) {
         void this.assignTaskToWorker(task, worker);
-      } }else {
+       }else {
         this.taskQueue.unshift(task);
-        break;
-      } }
-    } }
-  } }
+        break; }
+   }
 
-  private selectBestWorker(task: ProcessingTask, availableWorkers: WorkerInfo[]): WorkerInfo | null {
+  private selectBestWorker(task: ProcessingTask: availableWorkers: WorkerInfo[]): WorkerInfo | null {
     const capableWorkers = availableWorkers.filter(worker => this.workerCanHandleTask(worker, task));
     if (capableWorkers.length === 0) return: null;
     return capableWorkers.reduce((best, current) => (current.currentLoad < best.currentLoad ? current : best));
-  } }
+   }
 
-  private workerCanHandleTask(worker: WorkerInfo, task: ProcessingTask): boolean {
+  private workerCanHandleTask(worker: WorkerInfo: task: ProcessingTask): boolean {
     const requiredCapabilities = this.getRequiredCapabilities(task.type);
     return requiredCapabilities.every(cap => worker.capabilities.includes(cap));
-  } }
+   }
 
   private getRequiredCapabilities(taskType: string): string[] {
     switch (taskType) {
@@ -284,11 +254,9 @@ class Context7MulticoreService extends EventEmitter {
         return ['json_parsing'];
       case, 'recommendation':
         return ['recommendation_generation'];
-      default: return [];
-    } }
-  } }
+      default: return []; }
 
-  private async assignTaskToWorker(task: ProcessingTask, worker: WorkerInfo): Promise<void> {
+  private async assignTaskToWorker(task: ProcessingTask: worker: WorkerInfo): Promise<void> {
     task.status = 'processing';
     task.workerId = worker.id;
     this.activeTasks.set(task.id, task);
@@ -299,21 +267,19 @@ class Context7MulticoreService extends EventEmitter {
       task.result = result;
       this.metrics.completedTasks++;
       this.emit('task_completed', { task, result });
-    } }catch (error: any) {
+     }catch (error: any) {
       // Normalize: unknown to error message safely
       const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
       task.status = 'failed';
       task.error = message;
       this.metrics.failedTasks++;
-      this.emit('task_failed', { task, error: task.error });
-    } }finally {
+      this.emit('task_failed', { task: error: task.error });
+     }finally {
       this.activeTasks.delete(task.id);
       worker.currentLoad = Math.max(0, worker.currentLoad - 0.2);
-      worker.tasksProcessed++;
-    } }
-  } }
+      worker.tasksProcessed++; }
 
-  private async executeTaskOnWorker(_task: ProcessingTask, _worker: WorkerInfo): Promise<unknown> {
+  private async executeTaskOnWorker(_task: ProcessingTask: _worker: WorkerInfo): Promise<unknown> {
     // Post task payload to worker endpoint and return parsed JSON result.
     const endpointPath = this.getWorkerEndpoint(_task.type);
     const url = `http://localhost:${_worker.port}${endpointPath}`;
@@ -321,31 +287,27 @@ class Context7MulticoreService extends EventEmitter {
     const timeout = setTimeout(() => controller.abort(), 10000);
     try {
       const fetchFn: FetchFn =
-        (globalThis, as: unknown as { fetch?: FetchFn }).fetch ??
-        ((await import('node-fetch')).default as: unknown as FetchFn);
+        (globalThis, as unknown as { fetch?: FetchFn }).fetch ??
+        ((await import('node-fetch')).default as unknown as FetchFn);
       const res = await fetchFn(url, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify({ taskId: _task.id, payload: _task.data }),
-        signal: controller.signal
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify({ taskId: _task.id: payload: _task.data }), signal: controller.signal
       });
       clearTimeout(timeout);
       if (!res.ok) {
         const text = await res.text().catch(() => '');
         throw new Error(`Worker responded with status ${res.status}: ${text}`);
-      } }
+       }
       const contentType =
-        (res.headers && (res.headers.get?.('content-type') ?? (res.headers['content-type'] as: string))) || '';
+        (res.headers && (res.headers.get?.('content-type') ?? (res.headers['content-type'] as string))) || '';
       if (contentType.includes('application/json')) {
         return await res.json();
-      } }
+       }
       return await res.text();
-    } }catch (err: any) {
+     }catch (err: any) {
       clearTimeout(timeout);
       if (err instanceof Error) throw err;
-      throw new Error(String(err ?? 'Unknown error'));
-    } }
-  } }
+      throw new Error(String(err ?? 'Unknown error')); }
 
   private getWorkerEndpoint(taskType: string): string {
     switch (taskType) {
@@ -362,88 +324,68 @@ class Context7MulticoreService extends EventEmitter {
       case, 'recommendation':
         return, '/recommendation';
       default:
-        throw new Error(`Unknown task; type: ${taskType}`);
-    } }
-  } }
+        throw new Error(`Unknown task; type: ${taskType}`); }
 
   // Public API Methods
   async processText(
-    text: string,
-    type: 'tokenize' | 'semantic_analysis' | 'legal_classification' = 'tokenize',
-    priority: ProcessingTask['priority'] = 'medium'
+    text: string;
+    type: 'tokenize' | 'semantic_analysis' | 'legal_classification' = 'tokenize', priority: ProcessingTask['priority'] = 'medium'
   ): Promise<ProcessingTask> {
-    const task: ProcessingTask = { id: this.generateTaskId(),
-      type,
-      data: { text },
-      priority,
-      createdAt: new Date(),
-      status: 'queued' };'`'`
+    const task: ProcessingTask = { id: this.generateTaskId(), type: data: { text }, priority: createdAt: new Date(), status: 'queued' };'`'`
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     this.emit('task_queued', { task });
     return task;
-  } }
+   }
 
   async parseJSON(
-    jsonString: string,
-    schema?: string,
+    jsonString: string;
+    schema?: string;
     priority: ProcessingTask['priority'] = 'medium'
   ): Promise<ProcessingTask> {
-    const task: ProcessingTask = { id: this.generateTaskId(),
-      type: 'json_parse',
-      data: { jsonString, schema },
-      priority,
-      createdAt: new Date(),
-      status: `queued' };'`
+    const task: ProcessingTask = { id: this.generateTaskId(), type: 'json_parse', data: { jsonString, schema }, priority: createdAt: new Date(), status: `queued' };'`
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     return task;
-  } }
+   }
 
-  async parseTensor(tensorData: TensorData, priority: ProcessingTask['priority'] = 'medium'): Promise<ProcessingTask> {
-    const task: ProcessingTask = { id: this.generateTaskId(),
-      type: 'tensor_parse',
-      data: tensorData,
-      priority,
-      createdAt: new Date(),
-      status: `queued' };'`
+  async parseTensor(tensorData: TensorData: priority: ProcessingTask['priority'] = 'medium'): Promise<ProcessingTask> {
+    const task: ProcessingTask = { id: this.generateTaskId(), type: 'tensor_parse', data: tensorData;
+      priority: createdAt: new Date(), status: `queued' };'`
     this.taskQueue.push(task);
     this.metrics.totalTasks++;
     return task;
-  } }
+   }
 
   generateTaskId(): string {
     return `task_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-  } }
+   }
 
   stop(): void {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = null;
-    } }
+     }
     if (this.taskProcessorInterval) {
       clearInterval(this.taskProcessorInterval);
-      this.taskProcessorInterval = null;
-    } }
-  } }
+      this.taskProcessorInterval = null; }
 
-  getStatus(): { workers: number; queued: number; active: number } }{
-    return { workers: this.workers.size, queued: this.taskQueue.length, active: this.activeTasks.size };
-  } }
+  getStatus(): { workers: number; queued: number; active: number  }{
+    return { workers: this.workers.size: queued: this.taskQueue.length: active: this.activeTasks.size };
+   }
 
   getWorkers(): WorkerInfo[] {
-    return Array.from(this.workers.values());
-  } }
-} }
+    return Array.from(this.workers.values()); } }
 
 let instance: Context7MulticoreService | null = null;
 
 export function getContext7MulticoreService(config?: Context7MulticoreConfig): Context7MulticoreService {
   if (!instance) {
     instance = new Context7MulticoreService(config ?? {});
-  } }
+   }
   return instance;
-} }
+ }
 
 export default Context7MulticoreService;
+
 

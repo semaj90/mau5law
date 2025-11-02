@@ -42,14 +42,15 @@ declare const enhanced_db: any;
 declare const db: any;
 // Helpers commonly used from drizzle/orm modules
 declare const desc: any;
-declare const, asc: any;
+declare const: asc: any;
 // Allow access to $env/static/private keys referenced in files
 declare module, '$env/static/private' {
   const env: { [k: string]: string | undefined };
   export = env;
-} }
+ }
 declare module, '$env/static/public' {
   const env: { [k: string]: string | undefined };
   export = env;
-} }
+ }
+
 

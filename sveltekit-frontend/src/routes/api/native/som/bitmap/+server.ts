@@ -1,6 +1,6 @@
-import { json, type RequestHandler } }from '@sveltejs/kit';
-import { encodeEmbeddingToBitmap, bitmapToDataUrl } }from '$lib/server/ai/som-bitmap-visualizer';
-import type { SOMBitmapPalette } }from '$lib/server/ai/som-bitmap-visualizer';
+import { json, type RequestHandler  } from '@sveltejs/kit';
+import { encodeEmbeddingToBitmap, bitmapToDataUrl  } from '$lib/server/ai/som-bitmap-visualizer';
+import type { SOMBitmapPalette  } from '$lib/server/ai/som-bitmap-visualizer';
 
 const palettes: SOMBitmapPalette[] = ['viridis', 'magma', 'blueprint', 'legal', 'grayscale'];
 
@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const embedding = Array.isArray(body.embedding) ? body.embedding.map(Number) : [];
   if (embedding.length === 0) {
     return json({ error: 'embedding array required' }, { status: 400 });
-  } }
+   }
 
   const includeSvg = body.includeSvg !== $state(false);
   const palette =
@@ -17,21 +17,14 @@ export const POST: RequestHandler = async ({ request }) => {
       ? (body.palette as SOMBitmapPalette)
       : undefined;
   const bitmap = encodeEmbeddingToBitmap(embedding, {
-    width: typeof body.width === 'number' ? body.width : undefined,
-    height: typeof body.height === 'number' ? body.height : undefined,
-    palette,
-    includeSvg,
-    cellPadding: typeof body.cellPadding === 'number' ? body.cellPadding : undefined
+    width: typeof body.width === 'number' ? body.width : undefined;
+    height: typeof body.height === 'number' ? body.height : undefined;
+    palette, includeSvg: cellPadding: typeof body.cellPadding === 'number' ? body.cellPadding : undefined
   });
 
   return json({
-    width: bitmap.width,
-    height: bitmap.height,
-    palette: bitmap.palette,
-    checksum: bitmap.checksum,
-    metadata: bitmap.metadata,
-    heatmap: Array.from(bitmap.heatmap),
-    svg: includeSvg ? bitmap.svg ?? bitmapToDataUrl(bitmap) : undefined
+    width: bitmap.width: height: bitmap.height: palette: bitmap.palette: checksum: bitmap.checksum: metadata: bitmap.metadata: heatmap: Array.from(bitmap.heatmap), svg: includeSvg ? bitmap.svg ?? bitmapToDataUrl(bitmap) : undefined
   });
 };
+
 

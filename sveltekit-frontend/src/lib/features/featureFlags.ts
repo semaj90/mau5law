@@ -1,49 +1,49 @@
 export type FeatureFlagValue = boolean | string | number;
 export type FeatureFlags = Record<string, FeatureFlagValue>;
-function safeParseJson<T = any>(input: any, fallback: T): T {
+function safeParseJson<T = any>(input: any: fallback: T): T {
   try {
     if (typeof input === 'string') return JSON.parse(input) as T;
     if (typeof input === 'object' && input != null) return input as T;
-  } }catch {
+   }catch {
     /* ignore parse errors */
-  } }
+   }
   return fallback;
-} }
+ }
 class FeatureFlagService {
   private flags: FeatureFlags = {};
   private localKey = 'featureFlags:overrides';
   constructor() {
     this.flags = this.loadFromEnv();
     this.applyLocalOverrides();
-  } }
+   }
   // Load initial flags from environment variable FEATURE_FLAGS_JSON (safe fallback to {})
   private loadFromEnv(): FeatureFlags {
-    const envJson = (typeof process !== 'undefined' && (process.env as: any)?.FEATURE_FLAGS_JSON) || undefined;
+    const envJson = (typeof process !== 'undefined' && (process.env as any)?.FEATURE_FLAGS_JSON) || undefined;
     return safeParseJson<FeatureFlags>(envJson, {});
-  } }
+   }
   // Merge localStorage overrides (browser-only) to allow dev testing
   private applyLocalOverrides() {
     if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
     const raw = localStorage.getItem(this.localKey);
     const overrides = safeParseJson<FeatureFlags>(raw, {});
     this.flags = { ...this.flags, ...overrides };
-  } }
+   }
   // Public API
   get(key: string, fallback?: FeatureFlagValue): FeatureFlagValue | undefined {
     return key in this.flags ? this.flags[key] : fallback;
-  } }
+   }
   isEnabled(key: string): boolean {
     const v = this.get(key);
     if (typeof v === 'boolean') return v;
     if (typeof v === 'number') return v === 1;
     if (typeof v === 'string') return v === 'true' || v === '1';
     return false;
-  } }
+   }
   toObject(): FeatureFlags {
     return { ...this.flags };
-  } }
+   }
   // Set a browser-local override and persist to localStorage
-  setLocalOverride(key: string, value: FeatureFlagValue) {
+  setLocalOverride(key: string: value: FeatureFlagValue) {
     this.flags[key] = value;
     if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
     const raw = localStorage.getItem(this.localKey);
@@ -51,20 +51,20 @@ class FeatureFlagService {
     overrides[key] = value;
     try {
       localStorage.setItem(this.localKey, JSON.stringify(overrides));
-    } }catch {
+     }catch {
       /* ignore storage errors */
-    } }
-  } }
+     }
+   }
   clearLocalOverrides() {
     if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
     try {
       localStorage.removeItem(this.localKey);
-    } }catch {
+     }catch {
       /* ignore */
-    } }
+     }
     // reload env defaults
     this.flags = this.loadFromEnv();
-  } }
+   }
   // Fetch remote flags (merge, optional)
   async loadRemote(url: string, init?: RequestInit) {
     if (typeof fetch === 'undefined') return;
@@ -75,11 +75,12 @@ class FeatureFlagService {
       const parsed = safeParseJson<FeatureFlags>(remote, {});
       this.flags = { ...this.flags, ...parsed };
       this.applyLocalOverrides();
-    } }catch {
+     }catch {
       /* ignore network errors */
-    } }
-  } }
+     }
+   }
 } }
 export const featureFlags = new FeatureFlagService();
 export default featureFlags;
+
 

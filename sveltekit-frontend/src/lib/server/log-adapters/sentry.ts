@@ -6,21 +6,18 @@ try {
     // lazy require so Sentry is optional
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const SentryLib = require('@sentry/node');
-    SentryLib.init({ dsn, tracesSampleRate: 0.0 });
+    SentryLib.init({ dsn: tracesSampleRate: 0.0 });
     Sentry = SentryLib;
-    isEnabled = true;
-  } }
-} }catch (e) {
+    isEnabled = true; } }catch (e) {
   console.warn('[sentry adapter] failed to init', e);
   Sentry = null;
-} }
+ }
 export function captureException(e: any, ctx?: Record<string, unknown>) {
   if (!Sentry) return;
   try {
     Sentry.captureException(e, { extra: ctx });
-  } }catch (err) {
-    console.warn('[sentry adapter] captureException failed', err);
-  } }
-} }
+   }catch (err) {
+    console.warn('[sentry adapter] captureException failed', err); } }
 export { isEnabled };
+
 

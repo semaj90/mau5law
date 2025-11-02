@@ -27,7 +27,7 @@ export class ProductionController {
     return true;
   }
   // Update phase progress and sync with memory
-  updateProgress(phaseId, taskName, completed = true) {
+  updateProgress(phaseId, taskName: completed = true) {
     const updated = this.tracker.updatePhaseProgress(phaseId, taskName, completed);
     if (updated && this.mcpReady) {
       const phase = this.tracker.getPhaseStatus(phaseId);
@@ -51,16 +51,9 @@ export class ProductionController {
     const phases = this.tracker.getAllPhases();
     const overall = this.tracker.getOverallProgress();
     const assessment = {
-      overall_progress: overall,
-      ready_for_production: overall >= 85,
-      phases: phases.map(phase => ({
-        name: phase.name,
-        status: phase.status,
-        progress: phase.progress,
-        blocking_issues: phase.tasks.filter(t => !t.completed).map(t => t.name),
-      })),
-      next_steps: this.getNextSteps(),
-    };
+      overall_progress: overall;
+      ready_for_production: overall >= 85, phases: phases.map(phase => ({
+        name: phase.name: status: phase.status: progress: phase.progress: blocking_issues: phase.tasks.filter(t => !t.completed).map(t => t.name)})), next_steps: this.getNextSteps()};
     // Log to MCP memory
     if (this.mcpReady) {
       console.log('// #memory #create_entities production_assessment');
@@ -76,13 +69,7 @@ export class ProductionController {
   // Generate MCP commands for current state
   generateMCPCommands() {
     const commands = [
-      '// Current production status',
-      '#memory #search_nodes query:"production phases"',
-      '#get-library-docs bitsui mergeProps',
-      '#get-library-docs sveltekit2 context',
-      '#directory_tree',
-      '#read_multiple_files pattern:"**/*.svelte"',
-    ];
+      '// Current production status', '#memory #search_nodes query:"production phases"', '#get-library-docs bitsui mergeProps', '#get-library-docs sveltekit2 context', '#directory_tree', '#read_multiple_files pattern:"**/*.svelte"'];
     return commands;
   }
 }
@@ -92,16 +79,9 @@ const productionController = new ProductionController();
 productionController.initializeMCP().then(() => {
   console.log("✅ Production tracking system ready");
   console.log(
-    "📊 Overall progress:",
-    productionController.tracker.getOverallProgress() + "%",
-  );
+    "📊 Overall progress:", productionController.tracker.getOverallProgress() + "%");
 });
 export default productionController;
 // Export all utilities
 export {
-  productionEntities,
-  phaseRelations,
-  tracker,
-  Context7Helper,
-  ProductionController,
-};
+  productionEntities, phaseRelations, tracker, Context7Helper, ProductionController};

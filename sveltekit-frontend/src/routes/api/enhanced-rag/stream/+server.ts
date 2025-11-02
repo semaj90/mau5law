@@ -1,24 +1,21 @@
-import type { RequestHandler } }from '@sveltejs/kit';
-import { z } }from 'zod';
-import { enhancedRAGService } }from '$lib/services/enhanced-rag-integration.js';
-import { dev } }from '$app/environment';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { z  } from 'zod';
+import { enhancedRAGService  } from '$lib/services/enhanced-rag-integration.js';
+import { dev  } from '$app/environment';
 
 // Validate incoming request
 const StreamQuerySchema = z.object({
-	query: z.string().min(1).max(2000),
-	options: z
+	query: z.string().min(1).max(2000), options: z
 		.object({
-  maxResults: z.number().min(1).max(50).optional().default(10),
-			includeGraph: z.boolean().optional().default(true),
-			confidenceThreshold: z.number().min(0).max(1).optional().default(0.7)
+  maxResults: z.number().min(1).max(50).optional().default(10), includeGraph: z.boolean().optional().default(true), confidenceThreshold: z.number().min(0).max(1).optional().default(0.7)
 		})
 		.optional()
 		.default({})
 });
 
 // Minimal typed wrapper for the RAG service
-type RagService = { processLegalQuery: (; q: string,
-		opts?: { maxResults?: number; includeGraph?: boolean; confidenceThreshold?: number } }
+type RagService = { processLegalQuery: (; q: string;
+		opts?: { maxResults?: number; includeGraph?: boolean; confidenceThreshold?: number  }
 	) => Promise<{
 		response: string;
 		confidence?: number;
@@ -32,7 +29,7 @@ type RagService = { processLegalQuery: (; q: string,
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const { query, options } }= StreamQuerySchema.parse(body);
+    const { query, options  }= StreamQuerySchema.parse(body);
 
     if (dev) console.log(`🌊 Enhanced RAG Stream Query: "${query.substring(0, 100)}..."`);
 
@@ -44,9 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         // Initial handshake
         sendEvent({
-          type: 'status',
-          message: 'Processing query through Enhanced RAG pipeline',
-          timestamp: new Date().toISOString()
+          type: 'status', message: 'Processing query through Enhanced RAG pipeline', timestamp: new Date().toISOString()
         });
 
         // small debounce so client can attach
@@ -54,69 +49,47 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const startTime = Date.now();
         try {
-          const ragService = enhancedRAGService as: unknown as RagService;
+          const ragService = enhancedRAGService as unknown as RagService;
           const ragResponse = await ragService.processLegalQuery(query, options);
 
           const processingTime = Date.now() - startTime;
 
           // Send response payload
           sendEvent({
-            type: 'response',
-            response: ragResponse.response,
-            confidence: ragResponse.confidence,
-            sources: ragResponse.sources,
-            mlClassification: ragResponse.mlClassification,
-            graphRelationships: ragResponse.graphRelationships,
-            processingTime,
-            metadata: {
-  timestamp: new Date().toISOString(),
-              queryId: ragResponse.queryId,
-              systemVersion: '2.0.0-enhanced-rag-stream' } } });
+            type: 'response', response: ragResponse.response: confidence: ragResponse.confidence: sources: ragResponse.sources: mlClassification: ragResponse.mlClassification: graphRelationships: ragResponse.graphRelationships, processingTime: metadata: {
+  timestamp: new Date().toISOString(), queryId: ragResponse.queryId: systemVersion: '2.0.0-enhanced-rag-stream'  } });
 
           // Completion event
           sendEvent({
-            type: 'complete',
-            message: 'Enhanced RAG processing complete',
-            processingTime,
-            timestamp: new Date().toISOString()
+            type: 'complete', message: 'Enhanced RAG processing complete', processingTime: timestamp: new Date().toISOString()
           });
-        } }catch (err: any) {
+         }catch (err: any) {
           console.error('❌ Enhanced RAG Stream Error:', err);
           sendEvent({
-            type: 'error',
-            error: err instanceof Error ? err.message : String(err),
-            timestamp: new Date().toISOString()
+            type: 'error', error: err instanceof Error ? err.message : String(err), timestamp: new Date().toISOString()
           });
-        } }finally {
+         }finally {
           try {
             controller.close();
-          } }catch {
+           }catch {
             /* ignore close errors */
-          } }
-        } }
-      } }
+           }
+         }
+       }
     });
 
     return new Response(stream, {
       headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': `Content-Type' } }`
+        'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': `Content-Type'  }`
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('❌ Enhanced RAG Stream Setup Error:', error);
     return new Response(
       JSON.stringify({
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString()
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': `application/json' } }`
-      } }
-    );
-  } }
-};
+        success: false;
+        error: error instanceof Error ? error.message : String(error), timestamp: new Date().toISOString()
+      }), {
+        status: 500, headers: { 'Content-Type': `application/json'  }`
+       }
+    ); };
+

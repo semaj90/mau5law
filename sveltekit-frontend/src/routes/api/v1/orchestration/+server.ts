@@ -1,16 +1,16 @@
-import type { RequestHandler } }from './$types.js';
+import type { RequestHandler  } from './$types.js';
 // Comprehensive Service Orchestration System
 // Manages all, 37 Go binaries with intelligent routing and health monitoring
-import { ServiceOrchestrator } }from '$lib/services/service-orchestrator';
-import { json } }from '@sveltejs/kit';
-import type { OrchestrationRequest } }from '$lib/types/orchestration';
+import { ServiceOrchestrator  } from '$lib/services/service-orchestrator';
+import { json  } from '@sveltejs/kit';
+import type { OrchestrationRequest  } from '$lib/types/orchestration';
 // Initialize the service orchestrator
 const orchestrator = new ServiceOrchestrator();
 /* POST /api/v1/orchestration - Orchestrate services */
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as OrchestrationRequest;
-    console.log(`🎼 Orchestrator: Processing ${body.action} }request for ${body.services?.length || 'all' } }services`);'`'`
+    console.log(`🎼 Orchestrator: Processing ${body.action }request for ${body.services?.length || 'all'  }services`);'`'`
     let result;
     switch (body.action) {
       case, 'start':
@@ -33,75 +33,53 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       default:
         throw new Error(`Unsupported orchestration; action: ${body.action}`);
-    } }
-    console.log(`✅ Orchestrator: ${body.action} }completed successfully`);
+     }
+    console.log(`✅ Orchestrator: ${body.action }completed successfully`);
     return json({
-      success: true,
-      action: body.action,
-      result,
-      timestamp: new Date().toISOString(),
-      orchestration_id: generateOrchestrationId()
+      success: true;
+      action: body.action, result: timestamp: new Date().toISOString(), orchestration_id: generateOrchestrationId()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Orchestration Error:', error);
     return json(
       {
-        success: false,
-        error: 'Service orchestration failed',
-        details: getErrorMessage(error),
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Service orchestration failed', details: getErrorMessage(error), timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
 /* GET /api/v1/orchestration - Get orchestration status and capabilities */
 export const GET: RequestHandler = async () => {
   try {
     const status = await orchestrator.getSystemStatus();
     const capabilities = orchestrator.getCapabilities();
     return json({
-      service: 'Comprehensive Service Orchestrator',
-      status: 'operational',
-      version: '2.0.0',
-      system_status: status,
-      capabilities,
-      managed_services: orchestrator.getManagedServices(),
-      performance_metrics: await orchestrator.getPerformanceMetrics(),
-      timestamp: new Date().toISOString()
+      service: 'Comprehensive Service Orchestrator', status: 'operational', version: '2.0.0', system_status: status;
+      capabilities: managed_services: orchestrator.getManagedServices(), performance_metrics: await orchestrator.getPerformanceMetrics(), timestamp: new Date().toISOString()
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     return json(
       {
-        service: 'Comprehensive Service Orchestrator',
-        status: 'degraded',
-        error: 'Unable to get system status',
-        details: getErrorMessage(error),
-        timestamp: new Date().toISOString()
-      },
-      { status: 503 } }
-    );
-  } }
-};
+        service: 'Comprehensive Service Orchestrator', status: 'degraded', error: 'Unable to get system status', details: getErrorMessage(error), timestamp: new Date().toISOString()
+      }, { status: 503  }
+    ); };
 // Helper functions
 function generateOrchestrationId(): string {
   // avoid deprecated substr; use slice instead
   return `orch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-} }
+ }
 
-// New: safe error message extractor, for: unknown errors
+// New: safe error message extractor: for: unknown errors
 function getErrorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   if (typeof err === 'string') return err;
   try {
     return JSON.stringify(err);
-  } }catch {
-    return String(err);
-  } }
-} }
+   }catch {
+    return String(err); } }
 
 // Removed: GET_HEALTH, POST_EMERGENCY and alias exports.
 // Those handlers have been moved to dedicated nested route files:
 //   ./health/+server.ts  -> GET
 //   ./emergency/+server.ts -> POST
+
 

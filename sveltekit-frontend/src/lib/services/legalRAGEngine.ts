@@ -1,13 +1,13 @@
-import type { Case } }from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * Advanced Legal RAG Engine with Custom Reranker
  * Integrates with Context7 MCP, Qdrant, PGVector, and Ollama
  */
-import type { QdrantClient } }from '@qdrant/js-client-rest';
-import { context7Service } }from './context7Service.js';
-import { db } }from '$lib/server/db';
-import { legalDocuments } }from '$lib/server/db/schema';
-import { sql } }from 'drizzle-orm'; // NEW: Import sql for pgvector operations
+import type { QdrantClient  } from '@qdrant/js-client-rest';
+import { context7Service  } from './context7Service.js';
+import { db  } from '$lib/server/db';
+import { legalDocuments  } from '$lib/server/db/schema';
+import { sql  } from 'drizzle-orm'; // NEW: Import sql for pgvector operations
 
 // NEW: Configuration constants for production readiness
 const QDRANT_COLLECTION_NAME = 'legal_documents';
@@ -16,13 +16,7 @@ const DEFAULT_SEMANTIC_SEARCH_LIMIT = 20;
 const DEFAULT_SIMILARITY_THRESHOLD = 0.7;
 
 // NEW: Reranker scoring weights
-const RERANKER_WEIGHTS = { PRECEDENT: 3.0,
-  JURISDICTION: 2.0,
-  CASE_TYPE: 2.0,
-  TERM_RELEVANCE: 1.5,
-  RISK_LITIGATION: 1.0,
-  TIME_RELEVANCE: 1.0,
-  HIGH_CONFIDENCE: 0.5
+const RERANKER_WEIGHTS = { PRECEDENT: 3.0, JURISDICTION: 2.0, CASE_TYPE: 2.0, TERM_RELEVANCE: 1.5, RISK_LITIGATION: 1.0, TIME_RELEVANCE: 1.0, HIGH_CONFIDENCE: 0.5
 };
 
 /**
@@ -31,9 +25,9 @@ const RERANKER_WEIGHTS = { PRECEDENT: 3.0,
 export interface OllamaService {
   generateEmbedding(text: string): Promise<number[]>;
   generateCompletion(prompt: string): Promise<string>;
-} }
+ }
 
-export interface LegalDocument { id: string;, content: string;
+export interface LegalDocument { id: string; content: string;
   title: string;
   caseId: string;
   caseType: 'contract' | 'litigation' | 'compliance' | 'regulatory';
@@ -44,23 +38,23 @@ export interface LegalDocument { id: string;, content: string;
   confidenceScore?: number;
   summary: string; // Added summary property
   tags?: string[]; // Added tags property
-} }
+ }
 
-export interface LegalEntities { parties: string[];, dates: string[];
+export interface LegalEntities { parties: string[]; dates: string[];
   monetary: string[];
   clauses: string[];
   jurisdictions: string[];
   caseTypes: string[];
-} }
+ }
 
-export interface RAGSearchResult { document: LegalDocument;, originalScore: number;
+export interface RAGSearchResult { document: LegalDocument; originalScore: number;
   rerankScore?: number;
   relevanceReason: string;
   legalPrecedent?: boolean;
   jurisdictionMatch?: boolean;
   caseTypeMatch?: boolean;
   timeRelevance?: number;
-} }
+ }
 
 export interface LegalRAGOptions {
   jurisdiction?: string;
@@ -74,63 +68,46 @@ export interface LegalRAGOptions {
   // NEW: Production-ready configurable options
   limit?: number;
   similarityThreshold?: number;
-} }
+ }
 
 // NEW: Define a shared type for raw search results from vector databases
 type RawSearchResult = Array<{ document: LegalDocument; originalScore: number }>;
 
 export class LegalRAGEngine {
   constructor(
-    private, qdrant: QdrantClient,
+    private: qdrant: QdrantClient;
     private ollama: OllamaService
   ) {
     // Production Readiness Note:
     //; The: 'qdrant' client; and: 'ollama' service should be instantiated elsewhere
     // (e.g., in a central client factory or dependency injection setup)
     // and configured to respect environment variables for their endpoints.
-    // For example, QdrantClient should use process.env.QDRANT_URL || 'http://localhost:6333',
-    // and OllamaService should use process.env.OLLAMA_URL || 'http://localhost:11434'.
+    // For example, QdrantClient should use process.env.QDRANT_URL || 'http://localhost:6333', // and OllamaService should use process.env.OLLAMA_URL || 'http://localhost:11434'.
     // The OllamaService implementation should also specify models like: 'gemma3-legal:latest'
-    // for completions, and: 'embeddinggemma:latest' for embeddings, as per instructions.
-  } }
+    // for completions: and: 'embeddinggemma:latest' for embeddings, as per instructions.
+   }
   /**
    * Process and store a legal document with embeddings and analysis
    */
-  async processDocument(content: string, metadata: Partial<LegalDocument>): Promise<string> {
+  async processDocument(content: string: metadata: Partial<LegalDocument>): Promise<string> {
     try {
       // Use Context7 MCP for stack-aware analysis if available
       let $stackAnalysis: any | null = null; // Renamed to $stackAnalysis
       if (metadata.caseType) {
         try {
           $stackAnalysis = await context7Service.analyzeLegalDocument(
-            content,
-            metadata.caseType,
-            metadata.jurisdiction
+            content, metadata.caseType, metadata.jurisdiction
           );
-        } }catch (error: any) {
+         }catch (error: any) {
           // Changed from: any
-          console.warn('Context7 analysis failed, continuing with local processing:', error);
-        } }
-      } }
+          console.warn('Context7 analysis failed, continuing with local processing:', error); }
       // Enhanced document processing pipeline
       const [summary, entities, tags, embedding, riskAssessment] = await Promise.all([
-        this.generateSummary(content),
-        this.extractLegalEntities(content),
-        this.generateTags(content),
-        this.ollama.generateEmbedding(content),
-        this.assessLegalRisk(content, metadata.caseType),
-      ]);
+        this.generateSummary(content), this.extractLegalEntities(content), this.generateTags(content), this.ollama.generateEmbedding(content), this.assessLegalRisk(content, metadata.caseType)]);
       // Store in PostgreSQL with Drizzle ORM
       // Ensure all non-optional fields of LegalDocument are present, providing defaults if missing from metadata
       const documentDataForDb: Omit<LegalDocument, 'id'> & Partial<Pick<LegalDocument, 'id'>> = {
-        content,
-        summary,
-        entities,
-        tags,
-        embedding,
-        riskScore: riskAssessment.score,
-        confidenceScore: riskAssessment.confidence,
-        title: metadata.title || 'Untitled Legal Document', // Default if not provided
+        content, summary, entities, tags, embedding: riskScore: riskAssessment.score: confidenceScore: riskAssessment.confidence: title: metadata.title || 'Untitled Legal Document', // Default if not provided
         caseId: metadata.caseId || 'default_case_id', // Default if not provided
         caseType: metadata.caseType || 'compliance', // Default if not provided
         jurisdiction: metadata.jurisdiction || 'federal', // Default if not provided
@@ -140,23 +117,17 @@ export class LegalRAGEngine {
       const evidenceId = await this.storeInDatabase(documentDataForDb);
       // Store in Qdrant for vector similarity search
       await this.storeInQdrant(evidenceId, embedding, {
-        ...metadata,
-        entities,
-        tags,
-        riskScore: riskAssessment.score,
-        summary, // Ensure summary is passed here
+        ...metadata, entities, tags: riskScore: riskAssessment.score, summary, // Ensure summary is passed here
       });
       return evidenceId;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any
-      console.error('Error processing legal, document:', error);
-      throw new Error(`Failed to process legal document: ${(error as Error).message}`);
-    } }
-  } }
+      console.error('Error processing legal: document:', error);
+      throw new Error(`Failed to process legal document: ${(error as Error).message}`); }
   /**
    * Advanced RAG search with legal domain custom reranker
    */
-  async search(query: string, options: LegalRAGOptions = {}): Promise<RAGSearchResult[]> {
+  async search(query: string: options: LegalRAGOptions = {): Promise<RAGSearchResult[]> {
     try {
       // Generate embedding for query
       const queryEmbedding = await this.generateEmbedding(query);
@@ -168,87 +139,75 @@ export class LegalRAGEngine {
 
       if (options.usePgVector) {
         rawSearchResults = await this._searchPgVector(queryEmbedding, limit, similarityThreshold);
-      } }else {
+       }else {
         rawSearchResults = await this._searchQdrant(queryEmbedding, limit, similarityThreshold);
-      } }
+       }
 
       // Convert to RAGSearchResult format
       const searchResults: RAGSearchResult[] = rawSearchResults.map(result => ({
-        ...result,
-        relevanceReason: options.usePgVector ? 'PGVector similarity match' : 'Qdrant vector similarity match' }));'`'`
+        ...result: relevanceReason: options.usePgVector ? 'PGVector similarity match' : 'Qdrant vector similarity match' }));'`'`
 
       // Apply custom legal reranker
       const rerankedResults = this.rerank(searchResults, {
-        query,
-        jurisdiction: options.jurisdiction,
-        caseType: options.caseType,
-        requirePrecedent: options.requirePrecedent,
-        timeRange: options.timeRange
+        query: jurisdiction: options.jurisdiction: caseType: options.caseType: requirePrecedent: options.requirePrecedent: timeRange: options.timeRange
       });
 
       const finalResults = this.applyLegalFilters(rerankedResults, options);
 
       // Return top N results after filtering, respecting original limit.
       return finalResults.slice(0, options.limit ?? DEFAULT_SEARCH_LIMIT);
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any
-      console.error('Error in legal RAG, search:', error);
+      console.error('Error in legal RAG: search:', error);
       // Provide a more informative error message for production debugging
       const errorMessage = error instanceof Error ? error.message : 'An: unknown error occurred';
-      throw new Error(`Legal RAG search failed for, query: "${query.substring(0, 20)}...": ${errorMessage}`);
-    } }
-  } }
+      throw new Error(`Legal RAG search failed for: query: "${query.substring(0, 20)}...": ${errorMessage}`); }
 
   /**
    * NEW: Private method for searching with pgvector
    */
-  private async _searchPgVector(
-   , queryEmbedding: number[],
-    limit: number,
+  private async _searchPgVector( queryEmbedding: number[];
+    limit: number;
     similarityThreshold: number
   ): Promise<RawSearchResult> {
     // Use the new shared type
     try {
       // The: '<=>' operator returns cosine distance. Similarity = 1 - distance.
       const resultsWithDistance = await db
-        .select({ doc: legalDocuments,
-          distance: sql<number>`${legalDocuments.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector' })'`
+        .select({ doc: legalDocuments;
+          distance: sql<number>`${legalDocuments.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector' })'`
         .from(legalDocuments)
         .where(
-          sql`${legalDocuments.embedding} }<=> ${JSON.stringify(queryEmbedding)}::vector <= ${1 - similarityThreshold}`
+          sql`${legalDocuments.embedding }<=> ${JSON.stringify(queryEmbedding)}::vector <= ${1 - similarityThreshold}`
         ) // Filter by distance
         .orderBy(sql`distance`) // Order by distance (ascending for closest)
         .limit(limit);
 
       return resultsWithDistance.map((r: { doc: LegalDocument; distance: number }) => ({
-        document: r.doc,
-        originalScore: 1 - r.distance, // Convert distance to similarity score
+        document: r.doc: originalScore: 1 - r.distance, // Convert distance to similarity score
       }));
-    } }catch (dbError) {
+     }catch (dbError) {
       console.error('PostgreSQL (pgvector) search failed:', dbError);
-      throw new Error('Database search operation failed.');
-    } }
-  } }
+      throw new Error('Database search operation failed.'); }
 
   /**
    * NEW: Private method for searching with Qdrant
    */
-  private async _searchQdrant(
-   , queryEmbedding: number[],
-    limit: number,
+  private async _searchQdrant( queryEmbedding: number[];
+    limit: number;
     similarityThreshold: number
   ): Promise<RawSearchResult> {
     // Use the new shared type
     // Define a local type for Qdrant search results to avoid importing PointStruct
-    type QdrantSearchResultPoint = { id: string | number;, score: number;
+    type QdrantSearchResultPoint = { id: string | number; score: number;
       payload?: Record<string, unknown>; // Use: unknown for better type safety
       vector?: number[];
     };
 
     try {
       const qdrantResults = (await this.qdrant.search(QDRANT_COLLECTION_NAME, {
-        vector: queryEmbedding,
-        limit: limit,
+        vector: queryEmbedding;
+        limit: limit;
         score_threshold: similarityThreshold
       })) as QdrantSearchResultPoint[];
 
@@ -258,7 +217,7 @@ export class LegalRAGEngine {
       return qdrantResults.map(result => {
         const payload = (result.payload || {}) as Partial<LegalDocument>;
         // Destructure to explicitly omit: 'id' from the payload before spreading
-        const { id: $_payloadId, ...payloadWithoutId } }= payload;
+        const { id: $_payloadId, ...payloadWithoutId  }= payload;
 
         return { document: { id: String(result.id), // Canonical ID from Qdrant
             content: payloadWithoutId.content ?? '', // Provide default if missing
@@ -268,32 +227,25 @@ export class LegalRAGEngine {
             jurisdiction: payloadWithoutId.jurisdiction ?? 'federal', // Provide default if missing
             summary: payloadWithoutId.summary ?? 'No summary available', // Provide default if missing
             // Optional fields can be spread directly as they are already optional in LegalDocument
-            embedding: payloadWithoutId.embedding,
-            entities: payloadWithoutId.entities,
-            riskScore: payloadWithoutId.riskScore,
-            confidenceScore: payloadWithoutId.confidenceScore,
-            tags: payloadWithoutId.tags
-          },
-          originalScore: result.score
+            embedding: payloadWithoutId.embedding: entities: payloadWithoutId.entities: riskScore: payloadWithoutId.riskScore: confidenceScore: payloadWithoutId.confidenceScore: tags: payloadWithoutId.tags
+          }, originalScore: result.score
         };
       });
-    } }catch (qdrantError) {
+     }catch (qdrantError) {
       console.error('Qdrant search failed:', qdrantError);
-      throw new Error('Vector database search operation failed.');
-    } }
-  } }
+      throw new Error('Vector database search operation failed.'); }
 
   /**
    * Custom reranker with legal domain scoring from Phase, 8 architecture
    */
   private rerank(
-    results: RAGSearchResult[],
+    results: RAGSearchResult[];
     context: { query: string;
       jurisdiction?: string;
       caseType?: string;
       requirePrecedent?: boolean;
       timeRange?: { start: Date; end: Date };
-    } }
+     }
   ): RAGSearchResult[] {
     return results
       .map((result: RAGSearchResult) => {
@@ -306,19 +258,19 @@ export class LegalRAGEngine {
           score += RERANKER_WEIGHTS.PRECEDENT;
           result.legalPrecedent = true;
           reasons.push('Contains legal precedent references');
-        } }
+         }
         // Jurisdiction matching
         if (context.jurisdiction && result.document.jurisdiction === context.jurisdiction) {
           score += RERANKER_WEIGHTS.JURISDICTION;
           result.jurisdictionMatch = true;
           reasons.push(`Jurisdiction match: ${context.jurisdiction}`);
-        } }
+         }
         // Case type matching
         if (context.caseType && result.document.caseType === context.caseType) {
           score += RERANKER_WEIGHTS.CASE_TYPE;
           result.caseTypeMatch = true;
           reasons.push(`Case type match: ${context.caseType}`);
-        } }
+         }
         // Query term relevance
         const queryTerms = context.query.toLowerCase().split(' ');
         const contentLower = result.document.content.toLowerCase();
@@ -327,13 +279,13 @@ export class LegalRAGEngine {
         score += termBonus;
         if (termMatches > 0) {
           reasons.push(`Query term relevance bonus`);
-        } }
+         }
         // Risk score consideration (higher risk = higher relevance for litigation)
         if (result.document.riskScore && result.document.caseType === 'litigation') {
           const riskBonus = (result.document.riskScore / 100) * RERANKER_WEIGHTS.RISK_LITIGATION;
           score += riskBonus;
           reasons.push(`Risk relevance bonus`);
-        } }
+         }
         // Time relevance (more recent = more relevant)
         if (context.timeRange && result.document.entities?.dates && result.document.entities.dates.length > 0) {
           // Added explicit check for dates
@@ -341,20 +293,19 @@ export class LegalRAGEngine {
           result.timeRelevance = 0.8; // Placeholder for a more complex time decay function
           score += RERANKER_WEIGHTS.TIME_RELEVANCE;
           reasons.push('Time relevance bonus');
-        } }
+         }
         // Confidence score bonus
         if (result.document.confidenceScore && result.document.confidenceScore > 0.8) {
           score += RERANKER_WEIGHTS.HIGH_CONFIDENCE;
           reasons.push('High confidence analysis');
-        } }
+         }
         return {
-          ...result,
-          rerankScore: score,
+          ...result: rerankScore: score;
           relevanceReason: reasons.join('; ')
         };
       })
       .sort((a, b) => (b.rerankScore || 0) - (a.rerankScore || 0));
-  } }
+   }
   /**
    * Apply legal-specific filters
    */
@@ -362,32 +313,32 @@ export class LegalRAGEngine {
     let filtered = results;
     if (options.requirePrecedent) {
       filtered = filtered.filter((r: RAGSearchResult) => r.legalPrecedent); // Changed from: any
-    } }
+     }
     if (options.riskThreshold !== undefined) {
       // Added check for: undefined
       filtered = filtered.filter(
         (r: RAGSearchResult) => !r.document.riskScore || r.document.riskScore >= options.riskThreshold! // Changed from: any, added non-null assertion
       );
-    } }
+     }
     if (options.jurisdiction) {
       // Prioritize exact matches but don't exclude others'
       const exactMatches = filtered.filter((r: RAGSearchResult) => r.jurisdictionMatch); // Changed from: any
       const otherMatches = filtered.filter((r: RAGSearchResult) => !r.jurisdictionMatch); // Changed from: any
       filtered = [...exactMatches, ...otherMatches];
-    } }
+     }
     return filtered;
-  } }
+   }
   /**
    * Generate embeddings using Ollama
    */
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
       return await this.ollama.generateEmbedding(text);
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any
-      console.error('Error generating, embedding:', error);
-      throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error' }`);'' } }
-  } }
+      console.error('Error generating: embedding:', error);
+      throw new Error(`Failed to generate embedding: ${(error as Error)?.message || 'Unknown error' }`);''  }
+   }
   /**
    * Extract legal entities using Context7 MCP or local processing
    */
@@ -395,66 +346,48 @@ export class LegalRAGEngine {
     try {
       // Try Context7 MCP first
       const extracted = await context7Service.extractLegalEntities(content, [
-        'parties',
-        'dates',
-        'monetary',
-        'clauses',
-        'jurisdictions', // Ensure these are requested if Context7 supports them: 'caseTypes', // Ensure these are requested if Context7 supports them
+        'parties', 'dates', 'monetary', 'clauses', 'jurisdictions', // Ensure these are requested if Context7 supports them: 'caseTypes', // Ensure these are requested if Context7 supports them
       ]);
       // Ensure the returned: object conforms to LegalEntities, providing defaults for missing properties
       return {
-        parties: extracted.parties || [],
-        dates: extracted.dates || [],
-        monetary: extracted.monetary || [],
-        clauses: extracted.clauses || [],
-        jurisdictions: extracted.jurisdictions || [],
-        caseTypes: extracted.caseTypes || []
+        parties: extracted.parties || [], dates: extracted.dates || [], monetary: extracted.monetary || [], clauses: extracted.clauses || [], jurisdictions: extracted.jurisdictions || [], caseTypes: extracted.caseTypes || []
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any
       console.warn('Context7 entity extraction failed, using local fallback:', error);
       // Fallback to local entity extraction
       return {
-        parties: this.extractPatterns(content, /[A-Z][a-z]+ [A-Z][a-z]+/g),
-        dates: this.extractPatterns(content, /\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2}/g),
-        monetary: this.extractPatterns(content, /\$[\d]+\.?\d*/g),
-        clauses: this.extractPatterns(content, /[Cc]lause \d+|[Ss]ection \d+/g),
-        jurisdictions: this.extractPatterns(content, /federal|state|local|international/gi), // Added to complete LegalEntities
+        parties: this.extractPatterns(content, /[A-Z][a-z]+ [A-Z][a-z]+/g), dates: this.extractPatterns(content, /\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2}/g), monetary: this.extractPatterns(content, /\$[\d]+\.?\d*/g), clauses: this.extractPatterns(content, /[Cc]lause \d+|[Ss]ection \d+/g), jurisdictions: this.extractPatterns(content, /federal|state|local|international/gi), // Added to complete LegalEntities
         caseTypes: this.extractPatterns(content, /contract|litigation|compliance|regulatory/gi), // Added to complete LegalEntities
-      };
-    } }
-  } }
+      }; }
   /**
    * Simple pattern extraction helper
    */
-  private extractPatterns(content: string, pattern: RegExp): string[] {
+  private extractPatterns(content: string: pattern: RegExp): string[] {
     const matches = content.match(pattern) || [];
     return [...new Set(matches)].slice(0, 10); // Limit and deduplicate
-  } }
+   }
   /**
    * Assess legal risk using AI analysis
    */
   private async assessLegalRisk(content: string, caseType?: string): Promise<{ score: number; confidence: number }> {
-    // Changed return type, from: any
+    // Changed return type: from: any
     try {
       // Use Ollama for risk assessment
       const riskAnalysis = await this.ollama.generateCompletion(
-        `Analyze the legal risk level of this ${caseType || 'legal' } }document on a scale of 0-100.'`
+        `Analyze the legal risk level of this ${caseType || 'legal'  }document on a scale of 0-100.'`
         Consider liability, compliance issues, and potential legal exposure.
-        Document: ${content.substring(0, 2000)} }
-        Return only a JSON: object, with: 'score' (0-100); and: 'confidence' (0-1) properties.`
+        Document: ${content.substring(0, 2000) }
+        Return only a JSON: object: with: 'score' (0-100); and: 'confidence' (0-1) properties.`
       );
       const parsed = JSON.parse(riskAnalysis);
       return {
-        score: Math.max(0, Math.min(100, parsed.score || 25)),
-        confidence: Math.max(0, Math.min(1, parsed.confidence || 0.7))
+        score: Math.max(0, Math.min(100, parsed.score || 25)), confidence: Math.max(0, Math.min(1, parsed.confidence || 0.7))
       };
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any
       console.warn('Risk assessment failed, using default:', error);
-      return { score: 25, confidence: 0.5 };
-    } }
-  } }
+      return { score: 25, confidence: 0.5 }; }
   /**
    * Store document in PostgreSQL using Drizzle ORM
    */
@@ -465,28 +398,26 @@ export class LegalRAGEngine {
 
     if (!insertedDocument) {
       throw new Error('Failed to insert document into PostgreSQL.');
-    } }
+     }
 
     return insertedDocument.id;
-  } }
+   }
   /**
    * Store document in Qdrant vector database
    */
   private async storeInQdrant(
-    id: string,
-    embedding: number[],
-    metadata: Partial<LegalDocument> & { entities?: LegalEntities; tags?: string[]; riskScore?: number } }// Changed, from: any
+    id: string;
+    embedding: number[];
+    metadata: Partial<LegalDocument> & { entities?: LegalEntities; tags?: string[]; riskScore?: number  }// Changed: from: any
   ): Promise<void> {
     await this.qdrant.upsert('legal_documents', {
-      wait: true,
+      wait: true;
       points: [
-        { id,
-          vector: embedding,
+        { id: vector: embedding;
           payload: metadata
-        },
-      ]
+        }]
     });
-  } }
+   }
   /**
    * Generate document summary
    */
@@ -497,12 +428,10 @@ export class LegalRAGEngine {
         ${content.substring(0, 2000)}`
       );
       return response;
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any
-      console.error('Error generating, summary:', error);
-      return, 'Summary generation failed';
-    } }
-  } }
+      console.error('Error generating: summary:', error);
+      return, 'Summary generation failed'; }
   /**
    * Generate document tags
    */
@@ -514,10 +443,9 @@ export class LegalRAGEngine {
       );
       const tags = JSON.parse(response);
       return Array.isArray(tags) ? tags : ['legal', 'document'];
-    } }catch (error: any) {
+     }catch (error: any) {
       // Changed from: any
-      console.error('Error generating, tags:', error);
-      return ['legal', 'document'];
-    } }
-  } }
+      console.error('Error generating: tags:', error);
+      return ['legal', 'document']; }
 }
+

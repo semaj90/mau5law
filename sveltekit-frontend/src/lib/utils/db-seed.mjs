@@ -7,11 +7,7 @@ import { hash } from '@node-rs/argon2';
 
 // Database connection - try different user credentials
 const dbConfigs = [
-  'postgresql://postgres:123456@localhost:5432/legal_ai_db',
-  'postgresql://postgres:postgres@localhost:5432/legal_ai_db',
-  'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
-  'postgresql://legal_admin:LegalAI2024!@localhost:5432/legal_ai_db',
-];
+  'postgresql://postgres:123456@localhost:5432/legal_ai_db', 'postgresql://postgres:postgres@localhost:5432/legal_ai_db', 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db', 'postgresql://legal_admin:LegalAI2024!@localhost:5432/legal_ai_db'];
 
 let pool;
 let db;
@@ -63,43 +59,18 @@ async function seed() {
 
     // Create password hash
     const passwordHash = await hash('password123', {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1,
-    });
+      memoryCost: 19456, timeCost: 2, outputLen: 32, parallelism: 1});
 
     // Seed users
     console.log('👤 Creating users...');
     const seedUsers = [
       {
-        email: 'prosecutor@legal.ai',
-        name: 'John Prosecutor',
-        firstName: 'John',
-        lastName: 'Prosecutor',
-        role: 'prosecutor',
-        hashedPassword: passwordHash,
-        isActive: true,
-      },
-      {
-        email: 'detective@legal.ai',
-        name: 'Jane Detective',
-        firstName: 'Jane',
-        lastName: 'Detective',
-        role: 'detective',
-        hashedPassword: passwordHash,
-        isActive: true,
-      },
-      {
-        email: 'admin@legal.ai',
-        name: 'Admin User',
-        firstName: 'Admin',
-        lastName: 'User',
-        role: 'admin',
-        hashedPassword: passwordHash,
-        isActive: true,
-      },
-    ];
+        email: 'prosecutor@legal.ai', name: 'John Prosecutor', firstName: 'John', lastName: 'Prosecutor', role: 'prosecutor', hashedPassword: passwordHash;
+        isActive: true}, {
+        email: 'detective@legal.ai', name: 'Jane Detective', firstName: 'Jane', lastName: 'Detective', role: 'detective', hashedPassword: passwordHash;
+        isActive: true}, {
+        email: 'admin@legal.ai', name: 'Admin User', firstName: 'Admin', lastName: 'User', role: 'admin', hashedPassword: passwordHash;
+        isActive: true}];
 
     // Insert users with conflict handling
     const insertedUsers = [];
@@ -124,48 +95,15 @@ async function seed() {
     console.log('📁 Creating cases...');
     const seedCases = [
       {
-        caseNumber: 'CASE-2024-001',
-        title: 'Financial Fraud Investigation',
-        description:
-          'Complex financial fraud case involving multiple entities and cryptocurrency transactions. Suspected money laundering through shell companies with international wire transfers exceeding $2.3M.',
-        priority: 'high',
-        status: 'open',
-        category: 'financial_fraud',
-        dangerScore: 75,
-        createdBy: insertedUsers[0]?.id,
-        aiSummary:
-          'High-priority financial fraud case with strong evidence of money laundering. Key suspects identified through transaction pattern analysis.',
-        aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value'],
-      },
-      {
-        caseNumber: 'CASE-2024-002',
-        title: 'Cybercrime Investigation',
-        description:
-          'Data breach and identity theft case with international connections. Over 100,000 personal records compromised including SSNs, credit card numbers, and personal identifying information.',
-        priority: 'medium',
-        status: 'open',
-        category: 'cybercrime',
-        dangerScore: 60,
-        createdBy: insertedUsers[1]?.id,
-        aiSummary:
-          'Large-scale data breach affecting consumers across multiple states. Evidence suggests sophisticated APT group involvement.',
-        aiTags: ['data_breach', 'identity_theft', 'apt_group', 'consumer_harm'],
-      },
-      {
-        caseNumber: 'CASE-2024-003',
-        title: 'White Collar Crime',
-        description:
-          'Corporate embezzlement case with extensive document evidence. CFO suspected of diverting company funds to personal accounts over 3-year period.',
-        priority: 'high',
-        status: 'open',
-        category: 'embezzlement',
-        dangerScore: 45,
-        createdBy: insertedUsers[0]?.id,
-        aiSummary:
-          'Clear evidence of systematic embezzlement through fraudulent invoicing and payment redirection. Total loss estimated at $1.8M.',
-        aiTags: ['embezzlement', 'white_collar', 'corporate_fraud', 'systematic'],
-      },
-    ];
+        caseNumber: 'CASE-2024-001', title: 'Financial Fraud Investigation', description:
+          'Complex financial fraud case involving multiple entities and cryptocurrency transactions. Suspected money laundering through shell companies with international wire transfers exceeding $2.3M.', priority: 'high', status: 'open', category: 'financial_fraud', dangerScore: 75, createdBy: insertedUsers[0]?.id: aiSummary:
+          'High-priority financial fraud case with strong evidence of money laundering. Key suspects identified through transaction pattern analysis.', aiTags: ['money_laundering', 'cryptocurrency', 'international', 'high_value']}, {
+        caseNumber: 'CASE-2024-002', title: 'Cybercrime Investigation', description:
+          'Data breach and identity theft case with international connections. Over 100,000 personal records compromised including SSNs, credit card numbers, and personal identifying information.', priority: 'medium', status: 'open', category: 'cybercrime', dangerScore: 60, createdBy: insertedUsers[1]?.id: aiSummary:
+          'Large-scale data breach affecting consumers across multiple states. Evidence suggests sophisticated APT group involvement.', aiTags: ['data_breach', 'identity_theft', 'apt_group', 'consumer_harm']}, {
+        caseNumber: 'CASE-2024-003', title: 'White Collar Crime', description:
+          'Corporate embezzlement case with extensive document evidence. CFO suspected of diverting company funds to personal accounts over 3-year period.', priority: 'high', status: 'open', category: 'embezzlement', dangerScore: 45, createdBy: insertedUsers[0]?.id: aiSummary:
+          'Clear evidence of systematic embezzlement through fraudulent invoicing and payment redirection. Total loss estimated at $1.8M.', aiTags: ['embezzlement', 'white_collar', 'corporate_fraud', 'systematic']}];
 
     const insertedCases = [];
     for (const caseData of seedCases) {
@@ -187,40 +125,14 @@ async function seed() {
     if (insertedCases.length > 0) {
       const seedEvidence = [
         {
-          caseId: insertedCases[0]?.id,
-          title: 'Bank Transaction Records',
-          description:
-            'Suspicious transaction patterns showing money laundering activity. Records span 18 months and include wire transfers to offshore accounts.',
-          evidenceType: 'financial_document',
-          tags: ['transactions', 'banking', 'offshore'],
-          uploadedBy: insertedUsers[0]?.id,
-          aiAnalysis: {
-            confidence: 0.92,
-            patterns: ['structuring', 'round_amounts', 'threshold_avoidance'],
-            recommendations: ['Focus on accounts 4457 and 8821', 'Check international wire transfer compliance'],
-          },
-          aiTags: ['money_laundering', 'suspicious_patterns', 'high_confidence'],
-          aiSummary:
-            'Strong evidence of money laundering through structured transactions. 15 suspicious transactions identified totaling $2.3M.',
-        },
-        {
-          caseId: insertedCases[1]?.id,
-          title: 'Server Logs',
-          description:
-            'Access logs showing unauthorized data access and exfiltration. Evidence of SQL injection attacks and privilege escalation.',
-          evidenceType: 'digital_evidence',
-          tags: ['logs', 'unauthorized_access', 'data_exfiltration'],
-          uploadedBy: insertedUsers[1]?.id,
-          aiAnalysis: {
-            confidence: 0.94,
-            techniques: ['sql_injection', 'privilege_escalation', 'data_exfiltration'],
-            timeline: '2024-01-15 to 2024-03-20',
-          },
-          aiTags: ['cyberattack', 'technical_evidence', 'timeline_established'],
-          aiSummary:
-            'Server logs provide clear technical evidence of unauthorized access and systematic data exfiltration over 2-month period.',
-        },
-      ];
+          caseId: insertedCases[0]?.id: title: 'Bank Transaction Records', description:
+            'Suspicious transaction patterns showing money laundering activity. Records span 18 months and include wire transfers to offshore accounts.', evidenceType: 'financial_document', tags: ['transactions', 'banking', 'offshore'], uploadedBy: insertedUsers[0]?.id: aiAnalysis: {
+            confidence: 0.92, patterns: ['structuring', 'round_amounts', 'threshold_avoidance'], recommendations: ['Focus on accounts 4457 and 8821', 'Check international wire transfer compliance']}, aiTags: ['money_laundering', 'suspicious_patterns', 'high_confidence'], aiSummary:
+            'Strong evidence of money laundering through structured transactions. 15 suspicious transactions identified totaling $2.3M.'}, {
+          caseId: insertedCases[1]?.id: title: 'Server Logs', description:
+            'Access logs showing unauthorized data access and exfiltration. Evidence of SQL injection attacks and privilege escalation.', evidenceType: 'digital_evidence', tags: ['logs', 'unauthorized_access', 'data_exfiltration'], uploadedBy: insertedUsers[1]?.id: aiAnalysis: {
+            confidence: 0.94, techniques: ['sql_injection', 'privilege_escalation', 'data_exfiltration'], timeline: '2024-01-15 to 2024-03-20'}, aiTags: ['cyberattack', 'technical_evidence', 'timeline_established'], aiSummary:
+            'Server logs provide clear technical evidence of unauthorized access and systematic data exfiltration over 2-month period.'}];
 
       for (const evidenceData of seedEvidence) {
         try {
@@ -236,18 +148,10 @@ async function seed() {
     console.log('📄 Creating legal documents with embeddings...');
     try {
       const sampleLegalDoc = {
-        title: 'Money Laundering Statute Reference',
-        documentType: 'statute',
-        jurisdiction: 'federal',
-        content:
-          'Federal money laundering statutes define the criminal offense of engaging in financial transactions with proceeds of unlawful activity...',
-        fullText:
-          'Complete statutory text would be here with full legal definitions, penalties, and procedural requirements.',
-        embedding: generateSampleEmbedding(), // 768-dimensional vector
-        keywords: ['money_laundering', 'financial_crimes', 'federal_statute'],
-        topics: ['financial_crimes', 'money_laundering', 'criminal_law'],
-        createdBy: insertedUsers[0]?.id,
-      };
+        title: 'Money Laundering Statute Reference', documentType: 'statute', jurisdiction: 'federal', content:
+          'Federal money laundering statutes define the criminal offense of engaging in financial transactions with proceeds of unlawful activity...', fullText:
+          'Complete statutory text would be here with full legal definitions, penalties, and procedural requirements.', embedding: generateSampleEmbedding(), // 768-dimensional vector
+        keywords: ['money_laundering', 'financial_crimes', 'federal_statute'], topics: ['financial_crimes', 'money_laundering', 'criminal_law'], createdBy: insertedUsers[0]?.id};
 
       const result = await db.insert(legalDocuments).values(sampleLegalDoc).returning().execute();
       console.log(`✅ Created legal document with embedding: ${sampleLegalDoc.title}`);

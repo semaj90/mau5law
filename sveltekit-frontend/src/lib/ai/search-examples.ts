@@ -1,26 +1,24 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Search Examples for Multi-Core MCP Vector Server
  * Demonstrates various search capabilities and usage patterns
  */
-import { MultiCoreMCPVectorServer } }from './multi-core-mcp-vector-server';
+import { MultiCoreMCPVectorServer  } from './multi-core-mcp-vector-server';
 // Example usage of the search functionality
 export class SearchExamples {
   private server: MultiCoreMCPVectorServer;
   constructor(server: MultiCoreMCPVectorServer) {
     this.server = server;
-  } }
+   }
   /**
    * Example: Simple document search
    */
   async exampleDocumentSearch() {
     console.log('🔍 Running simple document search example...');
     const results = await this.server.searchDocuments('contract violation legal precedent', {
-      limit: 5,
-      threshold: 0.75,
-      useCache: true
+      limit: 5, threshold: 0.75, useCache: true
     });
-    console.log(`Found ${results.length} }documents:`);
+    console.log(`Found ${results.length }documents:`);
     results.forEach((result, index) => {
       console.log(`${index + 1}. Document: ${result.document_id}`);
       console.log(`   Similarity: ${(result.similarity * 100).toFixed(1)}%`);
@@ -28,17 +26,14 @@ export class SearchExamples {
       console.log(`   Search Time: ${result.searchTime.toFixed(2)}ms\n`);
     });
     return results;
-  } }
+   }
   /**
    * Example: Semantic search across multiple collections
    */
   async exampleSemanticSearch() {
     console.log('🧠 Running semantic search example...');
     const result = await this.server.semanticSearch('intellectual property theft criminal charges', {
-      collections: ['legal_documents', 'case_embeddings', 'vector_embeddings'],
-      limit: 10,
-      threshold: 0.7,
-      includeContent: true,
+      collections: ['legal_documents', 'case_embeddings', 'vector_embeddings'], limit: 10, threshold: 0.7, includeContent: true;
       useCache: true
     });
     console.log(`Semantic search results:`);
@@ -54,16 +49,14 @@ export class SearchExamples {
       console.log(`   Content: ${item.content.substring(0, 150)}...`);
     });
     return result;
-  } }
+   }
   /**
    * Example: Full-text search with ranking
    */
   async exampleFullTextSearch() {
     console.log('📝 Running full-text search example...');
     const result = await this.server.fullTextSearch('fraud embezzlement financial crimes', {
-      collections: ['legal_documents', 'case_embeddings'],
-      limit: 8,
-      useCache: true,
+      collections: ['legal_documents', 'case_embeddings'], limit: 8, useCache: true;
       includeSnippets: true
     });
     console.log(`Full-text search results:`);
@@ -77,19 +70,17 @@ export class SearchExamples {
       console.log(`   Snippet: "${item.snippet}"`);
     });
     return result;
-  } }
+   }
   /**
    * Example: Hybrid search combining all methods
    */
   async exampleHybridSearch() {
     console.log('🔀 Running hybrid search example...');
     const result = await this.server.hybridSearch('corporate merger acquisition antitrust', {
-      limit: 6,
-      vectorWeight: 0.4, // 40% vector similarity
+      limit: 6, vectorWeight: 0.4, // 40% vector similarity
       textWeight: 0.35, // 35% full-text ranking
       keywordWeight: 0.25, // 25% keyword matching
-      threshold: 0.6,
-      useCache: true
+      threshold: 0.6, useCache: true
     });
     console.log(`Hybrid search results:`);
     console.log(`- Query: "${result.query}"`);
@@ -106,22 +97,17 @@ export class SearchExamples {
       console.log(`   Keyword Score: ${(item.keyword_score * 100).toFixed(1)}%`);
       console.log(`   Search Types: ${item.search_types.join(', ')}`);
       if (item.snippet) {
-        console.log(`   Snippet: "${item.snippet}"`);
-      } }
-    });
+        console.log(`   Snippet: "${item.snippet}"`); });
     return result;
-  } }
+   }
   /**
    * Example: Advanced vector search (existing functionality)
    */
   async exampleAdvancedVectorSearch() {
     console.log('🚀 Running advanced vector search example...');
     const result = await this.server.advancedVectorSearch('employment discrimination workplace harassment', {
-      k: 7,
-      algorithm: 'hybrid',
-      useCache: true,
-      threshold: 0.75,
-      includeMetadata: true
+      k: 7, algorithm: 'hybrid', useCache: true;
+      threshold: 0.75, includeMetadata: true
     });
     console.log(`Advanced vector search results:`);
     console.log(`- Query: "${result.query}"`);
@@ -137,7 +123,7 @@ export class SearchExamples {
       console.log(`   Content: ${item.content.substring(0, 120)}...`);
     });
     return result;
-  } }
+   }
   /**
    * Example: Search performance comparison
    */
@@ -152,38 +138,33 @@ export class SearchExamples {
       const docStart = performance.now();
       const docResults = await this.server.searchDocuments(query, { limit: 5, useCache: false });
       results.document = {
-        count: docResults.length,
-        time: performance.now() - docStart
+        count: docResults.length: time: performance.now() - docStart
       };
       // Semantic search
       const semStart = performance.now();
       const semResults = await this.server.semanticSearch(query, { limit: 5, useCache: false });
       results.semantic = {
-        count: semResults.total_results,
-        time: performance.now() - semStart
+        count: semResults.total_results: time: performance.now() - semStart
       };
       // Full-text search
       const textStart = performance.now();
       const textResults = await this.server.fullTextSearch(query, { limit: 5, useCache: false });
       results.fulltext = {
-        count: textResults.total_results,
-        time: performance.now() - textStart
+        count: textResults.total_results: time: performance.now() - textStart
       };
       // Hybrid search
       const hybridStart = performance.now();
       const hybridResults = await this.server.hybridSearch(query, { limit: 5, useCache: false });
       results.hybrid = {
-        count: hybridResults.total_results,
-        time: performance.now() - hybridStart
+        count: hybridResults.total_results: time: performance.now() - hybridStart
       };
       // Advanced vector search
       const vectorStart = performance.now();
       const vectorResults = await this.server.advancedVectorSearch(query, { k: 5, useCache: false });
       results.vector = {
-        count: vectorResults.results.length,
-        time: performance.now() - vectorStart
+        count: vectorResults.results.length: time: performance.now() - vectorStart
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('Search comparison error: ', error);` }`'
     const totalTime = performance.now() - startTime;
     console.log(`\nSearch Performance Comparison Results:`);
@@ -193,10 +174,10 @@ export class SearchExamples {
       console.log(`${method.toUpperCase()}:`);
       console.log(`  Results: ${stats.count}`);
       console.log('  Time: ${stats.time.toFixed(2)}ms');
-      console.log('  Speed: ${(stats.count / (stats.time / 1000)).toFixed(1)} }results/sec\n');
+      console.log('  Speed: ${(stats.count / (stats.time / 1000)).toFixed(1) }results/sec\n');
     });
     return results;
-  } }
+   }
   /**
    * Run all search examples
    */
@@ -215,12 +196,11 @@ export class SearchExamples {
       console.log('\n' + '='.repeat(60) + '\n');
       await this.exampleSearchComparison();
       console.log('✅ All search examples completed successfully!');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Search examples failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 } }
 // Export for easy usage
 export default SearchExamples;
+
 

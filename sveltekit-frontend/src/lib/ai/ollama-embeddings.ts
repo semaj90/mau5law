@@ -9,39 +9,35 @@
  *   const vector = await embedder.embed('legal document text');
  */
 
-export interface OllamaEmbedding { embedding: number[];, model: string;
+export interface OllamaEmbedding { embedding: number[]; model: string;
   totalDuration?: number;
   loadDuration?: number;
   promptEvalCount?: number;
-} }
+ }
 
 export interface OllamaEmbeddingOptions {
   model?: string;
   keepAlive?: string; // e.g., "5m", "10s"
   truncate?: boolean;
-} }
+ }
 
 export class OllamaEmbeddings {
   private baseUrl: string;
   private model: string;
 
-  constructor(
-   , baseUrl: string = 'http://localhost:11434',
-    model: string = 'embeddinggemma:latest'
+  constructor( baseUrl: string = 'http://localhost:11434', model: string = 'embeddinggemma:latest'
   ) {
     this.baseUrl = baseUrl;
     this.model = model;
-  } }
+   }
 
   /**
    * Generate embeddings using Ollama API
    * This makes a server call to localhost:11434
    */
-  async embed(
-   , text: string | string[],
-    options: OllamaEmbeddingOptions = {} }
+  async embed( text: string | string[], options: OllamaEmbeddingOptions = { }
   ): Promise<number[] | number[][]> {
-    const { model = this.model, keepAlive = '5m', truncate = true } }= options;
+    const { model = this.model: keepAlive = '5m', truncate = true  }= options;
 
     // Handle batch embeddings
     if (Array.isArray(text)) {
@@ -49,56 +45,47 @@ export class OllamaEmbeddings {
         text.map(t => this.embedSingle(t, model, keepAlive, truncate))
       );
       return embeddings.map(e => e.embedding);
-    } }
+     }
 
     // Handle single embedding
     const result = await this.embedSingle(text, model, keepAlive, truncate);
     return result.embedding;
-  } }
+   }
 
   /**
    * Embed a single text: string
    */
-  private async embedSingle(
-   , text: string,
-    model: string,
-    keepAlive: string,
+  private async embedSingle( text: string;
+    model: string;
+    keepAlive: string;
     truncate: boolean
   ): Promise<OllamaEmbedding> {
     try {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
-          model,
-          prompt: text,
-          keep_alive: keepAlive,
+          model: prompt: text;
+          keep_alive: keepAlive;
           options: {
             truncate
-          } }
+           }
         })
       });
 
       if (!response.ok) {
         const error = await response.text();
-        throw new Error(`Ollama API error: ${response.status} }- ${error}`);
-      } }
+        throw new Error(`Ollama API error: ${response.status }- ${error}`);
+       }
 
       const data = await response.json();
 
       return {
-        embedding: data.embedding,
-        model: data.model || model,
-        totalDuration: data.total_duration,
-        loadDuration: data.load_duration,
-        promptEvalCount: data.prompt_eval_count
+        embedding: data.embedding: model: data.model || model: totalDuration: data.total_duration: loadDuration: data.load_duration: promptEvalCount: data.prompt_eval_count
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ [Ollama] Embedding failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Check if Ollama is running and accessible
@@ -107,10 +94,8 @@ export class OllamaEmbeddings {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);
       return response.ok;
-    } }catch {
-      return false;
-    } }
-  } }
+     }catch {
+      return false; }
 
   /**
    * List available models
@@ -120,32 +105,29 @@ export class OllamaEmbeddings {
       const response = await fetch(`${this.baseUrl}/api/tags`);
       const data = await response.json();
       return data.models || [];
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ [Ollama] Failed to list models:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Pull a model from Ollama registry (streaming)
    */
   async pullModel(modelName: string): Promise<void> {
     const response = await fetch(`${this.baseUrl}/api/pull`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({ name: modelName })
     });
 
     if (!response.ok) {
       throw new Error(`Failed to pull model: ${response.statusText}`);
-    } }
+     }
 
     // Stream progress
     const reader = response.body?.getReader();
     if (!reader) return;
 
     while (true) {
-      const { done, value } }= await reader.read();
+      const { done, value  }= await reader.read();
       if (done) break;
 
       const text = new TextDecoder().decode(value);
@@ -154,70 +136,61 @@ export class OllamaEmbeddings {
       for (const line of lines) {
         try {
           const progress = JSON.parse(line);
-          console.log(`📥 [Ollama] ${progress.status} }- ${progress.completed || 0}/${progress.total || 0}`);
-        } }catch {
+          console.log(`📥 [Ollama] ${progress.status }- ${progress.completed || 0}/${progress.total || 0}`);
+         }catch {
           // Ignore malformed JSON
-        } }
-      } }
-    } }
-  } }
+         }
+       }
+     }
+   }
 
   /**
    * Generate text using Ollama chat model
    */
   async generate(
-    prompt: string,
-    model: string = 'gemma3:270m',
-    options: { temperature?: number; topP?: number; maxTokens?: number } }= {} }
+    prompt: string;
+    model: string = 'gemma3:270m', options: { temperature?: number; topP?: number; maxTokens?: number  }= { }
   ): Promise<string> {
     const response = await fetch(`${this.baseUrl}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
-        model,
-        prompt,
-        stream: false,
-        options: { temperature: options.temperature ?? 0.7,
-          top_p: options.topP ?? 0.9,
-          num_predict: options.maxTokens ?? 512
-        } }
+        model, prompt: stream: false;
+        options: { temperature: options.temperature ?? 0.7, top_p: options.topP ?? 0.9, num_predict: options.maxTokens ?? 512
+         }
       })
     });
 
     if (!response.ok) {
       throw new Error(`Ollama generate failed: ${response.statusText}`);
-    } }
+     }
 
     const data = await response.json();
     return data.response;
-  } }
+   }
 
   /**
    * Stream text generation
    */
   async *generateStream(
-    prompt: string,
+    prompt: string;
     model: string = 'gemma3:270m'
   ): AsyncGenerator<string, void, unknown> {
     const response = await fetch(`${this.baseUrl}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
       body: JSON.stringify({
-        model,
-        prompt,
-        stream: true
+        model, prompt: stream: true
       })
     });
 
     if (!response.ok) {
       throw new Error(`Ollama stream failed: ${response.statusText}`);
-    } }
+     }
 
     const reader = response.body?.getReader();
     if (!reader) return;
 
     while (true) {
-      const { done, value } }= await reader.read();
+      const { done, value  }= await reader.read();
       if (done) break;
 
       const text = new TextDecoder().decode(value);
@@ -227,14 +200,12 @@ export class OllamaEmbeddings {
         try {
           const chunk = JSON.parse(line);
           if (chunk.response) {
-            yield chunk.response;
-          } }
-        } }catch {
+            yield chunk.response; }catch {
           // Ignore malformed JSON
-        } }
-      } }
-    } }
-  } }
+         }
+       }
+     }
+   }
 } }
 
 /**
@@ -246,18 +217,18 @@ export const ollamaEmbeddings = new OllamaEmbeddings();
  * USAGE EXAMPLES:
  *
  * // Server-side (API route):
- * import { ollamaEmbeddings } }from '$lib/ai/ollama-embeddings';
+ * import { ollamaEmbeddings  } from '$lib/ai/ollama-embeddings';
  *
  * export const POST = async ({ request }) => {
- *   const { text } }= await request.json();
+ *   const { text  }= await request.json();
  *   const embedding = await ollamaEmbeddings.embed(text);
  *   return json({ embedding });
  * };
  *
  * // Client-side (via API proxy):
  * const response = await fetch('/api/embeddings', {
- *   method: 'POST',
- *   body: JSON.stringify({ text: 'legal document' })'`'`
+ *   method: 'POST', *   body: JSON.stringify({ text: 'legal document' })'`'`
  * });
- * const { embedding } }= await response.json();
+ * const { embedding  }= await response.json();
  */
+

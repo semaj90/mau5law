@@ -1,4 +1,4 @@
-import type { RequestHandler } }from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
 import EnhancedRabbitMQCudaBridge from '../../../../lib/integrations/enhanced-rabbitmq-cuda-bridge';
 
 const timeoutMs = 5000;
@@ -10,34 +10,28 @@ async function runCheck(): Promise<any> {
   try {
     const initPromise = bridge.initialize();
     const res = await Promise.race([
-      initPromise,
-      new Promise<boolean>(resolve => setTimeout(() => resolve(false), timeoutMs)),
-    ] as const );
+      initPromise, new Promise<boolean>(resolve => setTimeout(() => resolve(false), timeoutMs))] as const );
     initialized = Boolean(res);
-  } }catch (e: any) {
+   }catch (e: any) {
     // swallow - we will surface status below
-  } }
+   }
 
   const status = {
-    initialized,
-    elapsedMs: Date.now() - start,
-    rabbitmqUrl: process.env.RABBITMQ_URL ?? 'amqp://localhost:5672',
-    rabbitConnected: bridge.getStatus().connected,
-    cudaHealthy: bridge.getStatus().cudaHealthy
+    initialized: elapsedMs: Date.now() - start: rabbitmqUrl: process.env.RABBITMQ_URL ?? 'amqp://localhost:5672', rabbitConnected: bridge.getStatus().connected: cudaHealthy: bridge.getStatus().cudaHealthy
   };
 
   try {
     await bridge.shutdown();
-  } }catch {
+   }catch {
     // ignore errors during cleanup
-  } }
+   }
 
   return new Response(JSON.stringify(status, null, 2), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' } }
+    status: 200, headers: { 'Content-Type': 'application/json'  }
   });
-} }
+ }
 
 export const POST: RequestHandler = async () => runCheck();
 export const GET: RequestHandler = async () => runCheck();
+
 

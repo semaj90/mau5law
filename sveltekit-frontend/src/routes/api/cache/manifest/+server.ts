@@ -1,11 +1,11 @@
-import { json } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types.js'
+import { json  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types.js'
 /**
  * Cache manifest endpoint for headless UI cache sync
  * GET /api/cache/manifest - Get cache manifest for synchronization
  */
 // Mock implementation - would integrate with actual Redis tensor cache
-const mockCache = new Map<string, { value: any, timestamp: number; ttl: number; version: string; source: string; size: number
+const mockCache = new Map<string, { value: any: timestamp: number; ttl: number; version: string; source: string; size: number
 }>()
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -23,44 +23,26 @@ export const GET: RequestHandler = async ({ url }) => {
     const entries = paginatedKeys.map(key => {
       const entry = mockCache.get(key)!
       return {
-        key,
-        version: entry.version,
-        timestamp: entry.timestamp,
-        ttl: entry.ttl,
-        size: entry.size,
-        source: entry.source,
-        expired: Date.now() - entry.timestamp > entry.ttl
-      } }
+        key: version: entry.version: timestamp: entry.timestamp: ttl: entry.ttl: size: entry.size: source: entry.source: expired: Date.now() - entry.timestamp > entry.ttl
+       }
     })
     // Calculate statistics
     const stats = {
-      totalKeys: filteredKeys.length,
-      activeKeys: entries.filter(item => item.length),
-      expiredKeys: entries.filter(item => item.length),
-      totalSize: entries.reduce((sum, e) => sum + e.size, 0),
-      oldestEntry: Math.min(...entries.map(e => e.timestamp)),
-      newestEntry: Math.max(...entries.map(e => e.timestamp))
-    } }
+      totalKeys: filteredKeys.length: activeKeys: entries.filter(item => item.length), expiredKeys: entries.filter(item => item.length), totalSize: entries.reduce((sum, e) => sum + e.size, 0), oldestEntry: Math.min(...entries.map(e => e.timestamp)), newestEntry: Math.max(...entries.map(e => e.timestamp))
+     }
     return json({
-      success: true,
+      success: true;
       manifest: {
-        entries,
-        pagination: {
-          offset,
-          limit,
-          total: filteredKeys.length,
-          hasMore: offset + limit < filteredKeys.length
-        },
-        stats,
-        timestamp: Date.now(),
-        pattern
-      } }
+        entries: pagination: {
+          offset, limit: total: filteredKeys.length: hasMore: offset + limit < filteredKeys.length
+        }, stats: timestamp: Date.now(), pattern
+       }
     })
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('[Cache Manifest] Failed to generate manifest:', error)
     return json(
-      { success: false, error: error.message },
-      { status: 500 } }
+      { success: false: error: error.message }, { status: 500  }
     )
-  } }
+   }
 }
+

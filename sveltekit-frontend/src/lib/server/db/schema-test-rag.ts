@@ -3,30 +3,23 @@
  * Tables: test_rag_documents, test_rag_embeddings
  * Purpose: Isolated RAG pipeline testing with pgvector + Qdrant + langextract + Ollama
  */
-import { pgTable, uuid, text, timestamp, jsonb, real, integer } }from 'drizzle-orm/pg-core';
-import { vector } }from 'pgvector/drizzle-orm';
-import { relations } }from 'drizzle-orm';
+import { pgTable, uuid, text, timestamp, jsonb, real, integer  } from 'drizzle-orm/pg-core';
+import { vector  } from 'pgvector/drizzle-orm';
+import { relations  } from 'drizzle-orm';
 /**
  * Test RAG Documents Table
  * Stores document content, metadata, and legal analysis
  */
 export const testRagDocuments = pgTable('test_rag_documents', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  filename: text('filename').notNull(),
-  content: text('content').notNull(),
-  originalContent: text('original_content'),
-  metadata: jsonb('metadata').$type<{
+  id: uuid('id').primaryKey().defaultRandom(), filename: text('filename').notNull(), content: text('content').notNull(), originalContent: text('original_content'), metadata: jsonb('metadata').$type<{
     fileType?: string;
     fileSize?: number;
     tags?: string[];
     uploadedAt?: string;
     caseId?: string;
     documentType?: string;
-  }>(),
-  confidence: real('confidence'),
-  legalAnalysis: jsonb('legal_analysis').$type<{
-    entities?: Array<{ type: string;, value: string;
-     , offset: [number, number];
+  }>(), confidence: real('confidence'), legalAnalysis: jsonb('legal_analysis').$type<{
+    entities?: Array<{ type: string; value: string; offset: [number, number];
     }>;
     parties?: string[];
     dates?: string[];
@@ -34,18 +27,14 @@ export const testRagDocuments = pgTable('test_rag_documents', {
     clauses?: string[];
     sentiment?: number;
     complexity?: number;
-  }>(),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  }>(), createdAt: timestamp('created_at').defaultNow(), updatedAt: timestamp('updated_at').defaultNow()
 });
 /**
  * Test RAG Embeddings Table
  * Stores vector embeddings with pgvector for semantic search
  */
 export const testRagEmbeddings = pgTable('test_rag_embeddings', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  documentId: uuid('document_id').references(() => testRagDocuments.id, { onDelete: 'cascade' }),
-  content: text('content').notNull(), // Chunk content (for large documents)
+  id: uuid('id').primaryKey().defaultRandom(), documentId: uuid('document_id').references(() => testRagDocuments.id, { onDelete: 'cascade' }), content: text('content').notNull(), // Chunk content (for large documents)
   embedding: vector('embedding', { dimensions: 768 }), // Gemma embeddings (768-dim)
   metadata: jsonb('metadata').$type<{
     chunkIndex?: number;
@@ -53,32 +42,24 @@ export const testRagEmbeddings = pgTable('test_rag_embeddings', {
     tags?: string[];
     modelUsed?: string;
     generatedAt?: string;
-  }>(),
-  createdAt: timestamp('created_at').defaultNow()
+  }>(), createdAt: timestamp('created_at').defaultNow()
 });
 /**
  * Test RAG Search Sessions Table
  * Stores search queries and results for analytics
  */
 export const testRagSearchSessions = pgTable('test_rag_search_sessions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  query: text('query').notNull(),
-  queryEmbedding: vector('query_embedding', { dimensions: 768 }),
-  results: jsonb('results').$type<
-    Array<{ documentId: string;, filename: string;
+  id: uuid('id').primaryKey().defaultRandom(), query: text('query').notNull(), queryEmbedding: vector('query_embedding', { dimensions: 768 }), results: jsonb('results').$type<
+    Array<{ documentId: string; filename: string;
       similarity: number;
-      score: number;
-     , rank: number;
+      score: number; rank: number;
     }>
-  >(),
-  searchType: text('search_type').notNull(), // 'semantic', 'text', 'hybrid'
-  resultCount: integer('result_count').notNull(),
-  metadata: jsonb('metadata').$type<{
+  >(), searchType: text('search_type').notNull(), // 'semantic', 'text', 'hybrid'
+  resultCount: integer('result_count').notNull(), metadata: jsonb('metadata').$type<{
     processingTime?: string;
     filters?: Record<string, unknown>;
     userId?: string;
-  }>(),
-  createdAt: timestamp('created_at').defaultNow()
+  }>(), createdAt: timestamp('created_at').defaultNow()
 });
 /**
  * Relations
@@ -88,8 +69,7 @@ export const testRagDocumentsRelations = relations(testRagDocuments, ({ many }) 
 }));
 export const testRagEmbeddingsRelations = relations(testRagEmbeddings, ({ one }) => ({
   document: one(testRagDocuments, {
-    fields: [testRagEmbeddings.documentId],
-    references: [testRagDocuments.id]
+    fields: [testRagEmbeddings.documentId], references: [testRagDocuments.id]
   })
 }));
 /**
@@ -101,4 +81,5 @@ export type TestRagEmbedding = typeof testRagEmbeddings.$inferSelect;
 export type NewTestRagEmbedding = typeof testRagEmbeddings.$inferInsert;
 export type TestRagSearchSession = typeof testRagSearchSessions.$inferSelect;
 export type NewTestRagSearchSession = typeof testRagSearchSessions.$inferInsert;
+
 

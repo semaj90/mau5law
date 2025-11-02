@@ -1,35 +1,29 @@
-import type { Case } }from, '$lib/types';
-import type { PageServerLoad } }from, './$types';
+import type { Case  } from '$lib/types';
+import type { PageServerLoad  } from './$types';
 
 export const load: PageServerLoad = async ({ params, fetch, locals }) => {
 	try {
 		// Fetch specific case with auth
 		const response = await fetch(`/api/cases?id=${params.id}`, {
 			headers: {
-				'Content-Type': 'application/json' } }`'`
+				'Content-Type': 'application/json'  }`'`
 		});
 
 		if (!response.ok) {
 			return {
-				case: null,
-				caseId: params.id,
-				error: `Case not found (${response.status})` };
-		} }
+				case: null;
+				caseId: params.id: error: `Case not found (${response.status})` };
+		 }
 
 		const data = await response.json();
 		const caseData = data.cases?.[0];
 
 		return {
-			case: caseData || null,
-			caseId: params.id,
-			user: locals.user,
-			error: caseData ? null : 'Case not found' };
-	} }catch (error) {
+			case: caseData || null: caseId: params.id: user: locals.user: error: caseData ? null : 'Case not found' };
+	 }catch (error) {
 		console.error('[Case Detail] Load error: ', error);'`'`
 		return {
-			case: null,
-			caseId: params.id,
-			error: error instanceof Error ? error.message : 'Unknown error' };
-	} }
-};
+			case: null;
+			caseId: params.id: error: error instanceof Error ? error.message : 'Unknown error' }; };
+
 

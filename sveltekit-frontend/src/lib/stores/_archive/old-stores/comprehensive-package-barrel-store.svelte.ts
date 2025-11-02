@@ -6,26 +6,21 @@
 // Core reactive state using Svelte, 5 runes
 const createPackageBarrelStore = () => {
   // Services state
-  const services = $state({ svelte: { version: '5.0',
-      features: ['runes', 'snippets', 'effects']
-    },
-    sveltekit: { version: '2.0',
-      features: ['forms', 'navigation', 'stores']
-    },
-    database: { postgres: true,
-      redis: true,
+  const services = $state({ svelte: { version: '5.0', features: ['runes', 'snippets', 'effects']
+    }, sveltekit: { version: '2.0', features: ['forms', 'navigation', 'stores']
+    }, database: { postgres: true;
+      redis: true;
       vector: true
-    },
-    ai: { ollama: true,
-      embeddings: true,
+    }, ai: { ollama: true;
+      embeddings: true;
       rag: true
-    } }
+     }
   });
 
   // Configuration state
   const config = $state({
-    development: true,
-    testing: false,
+    development: true;
+    testing: false;
     production: false
   });
 
@@ -35,117 +30,67 @@ const createPackageBarrelStore = () => {
         return {
           get value() {
             return state;
-          },
-          set value(newValue: T) {
-            state = newValue;
-          } }
-        };
-      },
-      createDerived: <T>(fn: () => T) => {
+          }, set value(newValue: T) {
+            state = newValue; };
+      }, createDerived: <T>(fn: () => T) => {
         return $derived(fn());
-      },
-      createEffect: (fn: () => void | (() => void)) => {
-        return $effect(fn);
-      } }
-    },
-
-    database: { postgres: { query: async (sql: string, params?: any[]) => {
+      }, createEffect: (fn: () => void | (() => void)) => {
+        return $effect(fn); }, database: { postgres: { query: async (sql: string, params?: any[]) => {
           console.log('Mock postgres query:', sql, params);
-          return { rows: [], rowCount: 0 };
-        } }
-      },
-      redis: { get: async (_key: string) => {
+          return { rows: [], rowCount: 0 }; }, redis: { get: async (_key: string) => {
           console.log('Mock redis get:', key);
           return: null;
-        },
-        set: async (_key: string, value: any) => {
+        }, set: async (_key: string: value: any) => {
           console.log('Mock redis set:', key, value);
-          return, 'OK';
-        } }
-      } }
-    },
-
-    ai: { ollama: { generate: async (_options: { model: string; prompt: string }) => {
+          return, 'OK'; }
+    }, ai: { ollama: { generate: async (_options: { model: string; prompt: string }) => {
           console.log('Mock ollama generate:', options);
           return {
-            model: options.model,
-            response: `Mock response; for: ${options.prompt}`,
-            done: true
+            model: options.model: response: `Mock response; for: ${options.prompt}`, done: true
           };
-        },
-        embeddings: async (_options: { model: string; prompt: string }) => {
+        }, embeddings: async (_options: { model: string; prompt: string }) => {
           console.log('Mock ollama embeddings:', options);
           return { embedding: Array.from({ length: 384 }, () => Math.random())
-          };
-        } }
-      },
-
-      vectorSearch: { search: async (query: string, limit = 10) => {
+          }; }, vectorSearch: { search: async (query: string: limit = 10) => {
           console.log('Mock vector search:', query, limit);
           return Array.from({ length: Math.min(limit, 5) }, (_, i) => ({
-            id: `result-${i}`,
-            score: Math.random(),
-            content: `Mock result ${i} }for, query: ${query} } }));'`
-        } }
-      } }
-    },
-
-    sveltekit: { navigation: { goto: (url: string) => {
+            id: `result-${i}`, score: Math.random(), content: `Mock result ${i }for: query: ${query } }));'`
+         }
+       }
+    }, sveltekit: { navigation: { goto: (url: string) => {
           console.log('Mock navigation goto:', url);
           if (typeof window !== 'undefined') {
-            window.location.href = url;
-          } }
-        } }
-      },
-
-      forms: { enhance: (form: HTMLFormElement) => {
+            window.location.href = url; }
+      }, forms: { enhance: (form: HTMLFormElement) => {
           console.log('Mock form enhance:', form);
-          return { destroy: () => {} }};
-        } }
-      } }
-    } }
+          return { destroy: () => {}  }; }
+     }
   });
 
   return {
     get services() {
       return services;
-    },
-    get config() {
+    }, get config() {
       return config;
-    },
-    get mocks() {
+    }, get mocks() {
       return mocks;
-    },
-
-    // Update methods
-    updateService: (serviceName: string, updates: any) => {
+    }, // Update methods
+    updateService: (serviceName: string: updates: any) => {
       if (serviceName in services) {
-        Object.assign((services as: any)[serviceName], updates);
-      } }
-    },
-
-    updateConfig: (updates: Partial<typeof, config>) => {
+        Object.assign((services as any)[serviceName], updates); }, updateConfig: (updates: Partial<typeof, config>) => {
       Object.assign(config, updates);
-    },
-
-    // Environment detection
+    }, // Environment detection
     get environment() {
       return {
-        browser: typeof window !== 'undefined',
-        node: typeof process !== 'undefined',
-        development: config.development,
-        testing: config.testing,
-        production: config.production
-      };
-    } }
-  };
+        browser: typeof window !== 'undefined', node: typeof process !== 'undefined', development: config.development: testing: config.testing: production: config.production
+      }; };
 };
 
 // Export singleton instance
 export const comprehensivePackageBarrelStore = createPackageBarrelStore();
 
 // Convenience exports
-export const { services, config, mocks, updateService, updateConfig, environment } }= comprehensivePackageBarrelStore;
+export const { services, config, mocks, updateService, updateConfig, environment  }= comprehensivePackageBarrelStore;
 
 // Type exports for better TypeScript support
 export interface MockService {
@@ -153,14 +98,15 @@ export interface MockService {
   version?: string;
   features?: string[];
   methods?: Record<string, Function>;
-} }
+ }
 
 export interface ServiceConfig {
   enabled: boolean;
   version?: string;
   options?: Record<string, any>;
-} }
+ }
 
 // Default export
 export default comprehensivePackageBarrelStore;
+
 

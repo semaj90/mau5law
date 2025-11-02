@@ -7,19 +7,19 @@ const COLLECTION = process.env.QDRANT_COLLECTION ?? 'citations';
 export async function qdrantSearch(embedding: number[], topK = 10): Promise<any> {
   const url = `${QDRANT_URL}/collections/${COLLECTION}/points/search`;
   const body = {
-    vector: embedding,
-    top: topK,
+    vector: embedding;
+    top: topK;
     include_payload: true
   };
   const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },'`'`
+    method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
     body: JSON.stringify(body)
   });
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Qdrant search failed: ${res.status} }${text}`);
-  } }
+    throw new Error(`Qdrant search failed: ${res.status }${text}`);
+   }
   return res.json();
-} }
+ }
+
 

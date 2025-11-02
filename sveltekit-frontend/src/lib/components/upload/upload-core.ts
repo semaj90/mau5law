@@ -8,8 +8,7 @@ export type UploadResult = {
   size?: number;
   message?: string;
 };
-export type FileState = { file: File;, status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
- , progress: number; // 0-100
+export type FileState = { file: File; status: 'pending' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled'; progress: number; // 0-100
   attempts?: number;
   error?: string | null;
   result?: UploadResult | null;
@@ -21,35 +20,30 @@ export interface UploadManagerOptions {
   enableEmbeddings?: boolean;
   onProgress?: (state: FileState[]) => void;
   onComplete?: (results: UploadResult[]) => void;
-} }
-export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] = [];
-  active = 0;
- , opts: Required<UploadManagerOptions>;
+ }
+export class UploadManager { fileStates: FileState[] = []; queue: FileState[] = [];
+  active = 0; opts: Required<UploadManagerOptions>;
   constructor(opts?: UploadManagerOptions) {
     this.opts = Object.assign(
       {
-        maxConcurrency: 3,
-        maxRetries: 3,
-        enableGPUProcessing: true,
-        enableEmbeddings: true,
-        onProgress: () => {},
-        onComplete: () => {} }
-      },
-      opts || {} }
+        maxConcurrency: 3, maxRetries: 3, enableGPUProcessing: true;
+        enableEmbeddings: true;
+        onProgress: () => {}, onComplete: () => { }
+      }, opts || { }
     );
-  } }
+   }
   addFiles(files: File[]) {
     const newStates = files.map(
-      f => ({ file: f, status: 'pending', progress: 0, attempts: 0, error: null, result: null }) as FileState
+      f => ({ file: f: status: 'pending', progress: 0, attempts: 0, error: null: result: null }) as FileState
     );
     this.fileStates.push(...newStates);
     this.queue.push(...newStates);
     this.emitProgress();
-  } }
+   }
   start() {
     const startWorkers = Math.min(this.opts.maxConcurrency, this.queue.length);
     for (let i = 0; i < startWorkers; i++) this.processQueue();
-  } }
+   }
   private async processQueue() {
     if (this.active >= this.opts.maxConcurrency) return;
     const next = this.queue.shift();
@@ -57,14 +51,12 @@ export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] 
     this.active++;
     try {
       await this.uploadSingle(next);
-    } }finally {
+     }finally {
       this.active--;
       if (this.queue.length > 0) this.processQueue();
-    } }
+     }
     if (this.active === 0 && this.queue.length === 0) {
-      this.opts.onComplete(this.fileStates.filter(s => !!s.result).map(s => s.result as UploadResult));
-    } }
-  } }
+      this.opts.onComplete(this.fileStates.filter(s => !!s.result).map(s => s.result as UploadResult)); }
   private async uploadSingle(state: FileState) {
     state.status = 'uploading';
     state.attempts = (state.attempts || 0) + 1;
@@ -77,11 +69,8 @@ export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] 
       if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
       const json = await res.json().catch(() => ({}));
       state.result = {
-        success: true,
-        id: json.id || '',
-        url: json.url || '',
-        fileName: state.file.name,
-        size: state.file.size
+        success: true;
+        id: json.id || '', url: json.url || '', fileName: state.file.name: size: state.file.size
       };
       state.progress = 100;
       state.status = 'completed';
@@ -89,27 +78,25 @@ export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] 
       if (this.opts.enableGPUProcessing) {
         try {
           await fetch('/api/gpu/process', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },'`'`
+            method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
             body: JSON.stringify({ fileName: state.file.name })
           }).catch(() => null);
-        } }catch {
+         }catch {
           // ignore GPU errors; not blocking
-        } }
-      } }
+         }
+       }
       if (this.opts.enableEmbeddings) {
         try {
           await fetch('/api/embed/process', {
-            method: 'POST',
-            headers: { 'Content-Type': `application/json' },'`
+            method: 'POST', headers: { 'Content-Type': `application/json' },'`
             body: JSON.stringify({ fileName: state.file.name })
           }).catch(() => null);
-        } }catch {
+         }catch {
           // ignore
-        } }
-      } }
-    } }catch (e: any) {
-      // Narrow: unknown to a, message: string safely without using `any`
+         }
+       }
+     }catch (e: any) {
+      // Narrow: unknown to a: message: string safely without using `any`
       const message = e instanceof Error ? e.message : String(e ?? 'Unknown error');
       state.error = message;
       state.status = 'error';
@@ -117,26 +104,23 @@ export class UploadManager { fileStates: FileState[] = [];, queue: FileState[] 
         // simple backoff
         const delay = Math.min(5000, 500 * 2 ** ((state.attempts || 1) - 1));
         await new Promise(r => setTimeout(r, delay));
-        this.queue.push(state);
-      } }
-    } }finally {
-      this.emitProgress();
-    } }
-  } }
+        this.queue.push(state); }finally {
+      this.emitProgress(); }
   cancelAll() {
     this.queue = [];
     this.fileStates.forEach(s => {
       if (s.status === 'uploading' || s.status === 'pending') s.status = 'canceled';
     });
     this.emitProgress();
-  } }
+   }
   private emitProgress() {
     try {
       this.opts.onProgress(this.fileStates);
-    } }catch {
+     }catch {
       /* swallow */
-    } }
-  } }
+     }
+   }
 } }
 export default UploadManager;
+
 

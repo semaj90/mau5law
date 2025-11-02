@@ -4,38 +4,36 @@
  * Uses: XState, RabbitMQ, Redis, QUIC/gRPC
  */
 
-import { setup, assign, fromPromise, createActor, type StateFrom } }from 'xstate';
-import { hybridVectorSearch } }from './hybrid-vector-search';
+import { setup, assign, fromPromise, createActor, type StateFrom  } from 'xstate';
+import { hybridVectorSearch  } from './hybrid-vector-search';
 
 // RAG Ingestion Types
-export interface RAGDocument { id: string;, filename: string;
+export interface RAGDocument { id: string; filename: string;
   content: string;
   file_type: 'pdf' | 'docx' | 'txt' | 'image' | 'html';
-  file_size: number;
- , uploaded_at: Date;
+  file_size: number; uploaded_at: Date;
   user_id?: string;
   case_id?: string;
   metadata?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
-} }
+ }
 
-export interface RAGChunk { id: string;, document_id: string;
+export interface RAGChunk { id: string; document_id: string;
   content: string;
   chunk_index: number;
-  chunk_size: number;
- , overlap_size: number;
+  chunk_size: number; overlap_size: number;
   metadata?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
-} }
+ }
 
-export interface RAGEmbedding { chunk_id: string;, embedding: number[];
+export interface RAGEmbedding { chunk_id: string; embedding: number[];
   dimensions: number;
   model: string;
   created_at: Date;
-} }
+ }
 
-export interface OCRResult { text: string;, confidence: number;
+export interface OCRResult { text: string; confidence: number;
   pages: number;
   processing_time_ms: number;
-} }
+ }
 
 export interface IngestionContext {
   document?: RAGDocument;
@@ -45,16 +43,15 @@ export interface IngestionContext {
   error?: string;
   progress: number;
   stage: string;
-  stats?: { total_chunks: number;, total_embeddings: number;
+  stats?: { total_chunks: number; total_embeddings: number;
     processing_time_ms: number;
     storage_engines: string[];
   };
   initialFile?: File | Buffer; // Added to context
   initialOptions?: IngestionInput['options']; // Added to context
-} }
+ }
 
-export interface IngestionInput { file: File | Buffer;, filename: string;
- , file_type: 'pdf' | 'docx' | 'txt' | 'image' | 'html';
+export interface IngestionInput { file: File | Buffer; filename: string; file_type: 'pdf' | 'docx' | 'txt' | 'image' | 'html';
   user_id?: string;
   case_id?: string;
   metadata?: Record<string, unknown>; // Changed: 'any'; to: 'unknown'
@@ -64,7 +61,7 @@ export interface IngestionInput { file: File | Buffer;, filename: string;
     chunk_overlap?: number;
     sync_to_qdrant?: boolean;
   };
-} }
+ }
 
 // Explicitly define the StateValue type for clarity and use in type assertions
 type RagIngestionStateValue = 'idle' | 'uploading' | 'ocr' | 'chunking' | 'embedding' | 'complete' | 'error';
@@ -72,38 +69,24 @@ type RagIngestionStateValue = 'idle' | 'uploading' | 'ocr' | 'chunking' | 'embed
 /**
  * XState Machine for RAG Ingestion Workflow
  */
-export const ragIngestionMachine = setup({ types: { context: {} }as IngestionContext,
-    input: {} }as IngestionInput,
-    events: {} }as
+export const ragIngestionMachine = setup({ types: { context: { }as IngestionContext: input: { }as IngestionInput: events: { }as
       | (IngestionInput & { type: 'START_INGESTION' }) // Modified to carry IngestionInput payload
-      | { type: 'OCR_COMPLETE'; ocrResult: OCRResult } }
-      | { type: 'CHUNKING_COMPLETE'; chunks: RAGChunk[] } }
-      | { type: 'EMBEDDING_COMPLETE'; embeddings: RAGEmbedding[] } }
-      | { type: 'STORAGE_COMPLETE' } }
-      | { type: 'ERROR'; error: string } }
-      | { type: 'RETRY' },
-    // Explicitly define the possible state values for TypeScript inference
+      | { type: 'OCR_COMPLETE'; ocrResult: OCRResult  }
+      | { type: 'CHUNKING_COMPLETE'; chunks: RAGChunk[]  }
+      | { type: 'EMBEDDING_COMPLETE'; embeddings: RAGEmbedding[]  }
+      | { type: 'STORAGE_COMPLETE'  }
+      | { type: 'ERROR'; error: string  }
+      | { type: 'RETRY' }, // Explicitly define the possible state values for TypeScript inference
     // value: 'idle' | 'uploading' | 'ocr' | 'chunking' | 'embedding' | 'complete' | 'error', // REMOVED
-  },
-
-  actors: {
+  }, actors: {
     uploadDocument: fromPromise(async ({ input }: { input: IngestionInput }) => {
       // Upload document logic
-      const document: RAGDocument = { id: `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        filename: input.filename,
-        content: '', // Will be filled after OCR
-        file_type: input.file_type,
-        file_size: input.file instanceof File ? input.file.size : input.file.length,
-        uploaded_at: new Date(),
-        user_id: input.user_id,
-        case_id: input.case_id,
-        metadata: input.metadata
+      const document: RAGDocument = { id: `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, filename: input.filename: content: '', // Will be filled after OCR
+        file_type: input.file_type: file_size: input.file instanceof File ? input.file.size : input.file.length: uploaded_at: new Date(), user_id: input.user_id: case_id: input.case_id: metadata: input.metadata
       };
 
       return document;
-    }),
-
-    performOCR: fromPromise(
+    }), performOCR: fromPromise(
       async ({
         input
       }: { input: { document: RAGDocument; file: File | Buffer; options?: IngestionInput['options'] };
@@ -116,54 +99,44 @@ export const ragIngestionMachine = setup({ types: { context: {} }as IngestionCon
           const text = input.file instanceof File ? await input.file.text() : input.file.toString('utf-8');
 
           return {
-            text,
-            confidence: 1.0,
-            pages: 1,
-            processing_time_ms: Date.now() - startTime
-          } }as OCRResult;
-        } }
+            text: confidence: 1.0, pages: 1, processing_time_ms: Date.now() - startTime
+           }as OCRResult;
+         }
 
         // Call CUDA OCR service for images/PDFs
         const formData = new FormData();
         if (input.file instanceof File) {
           formData.append('file', input.file);
-        } }else {
+         }else {
           // Convert Buffer to ArrayBuffer slice for Blob compatibility
           // This handles cases where Buffer from @types/node might not be directly compatible with BlobPart in browser contexts.
           const arrayBufferSlice = input.file.buffer.slice(
-            input.file.byteOffset,
-            input.file.byteOffset + input.file.byteLength
+            input.file.byteOffset, input.file.byteOffset + input.file.byteLength
           );
           formData.append('file', new Blob([arrayBufferSlice]), input.document.filename);
-        } }
+         }
         formData.append('enable_gpu', 'true');
 
         const response = await fetch('/api/ocr/process', {
-          method: 'POST',
-          body: formData
+          method: 'POST', body: formData
         });
 
         if (!response.ok) {
           throw new Error(`OCR failed: ${response.status}`);
-        } }
+         }
 
         const result = await response.json();
         return {
-          text: result.text,
-          confidence: result.confidence,
-          pages: result.pages,
-          processing_time_ms: Date.now() - startTime
-        } }as OCRResult;
-      } }
-    ),
-
-    chunkDocument: fromPromise(
-      async ({ input }: { input: { document: RAGDocument; content: string; options?: IngestionInput['options'] } }}) => {
+          text: result.text: confidence: result.confidence: pages: result.pages: processing_time_ms: Date.now() - startTime
+         }as OCRResult;
+       }
+    ), chunkDocument: fromPromise(
+      async ({ input }: { input: { document: RAGDocument; content: string; options?: IngestionInput['options'] }  }) => {
         // Changed: 'any'; to: 'IngestionInput['options']'
         const chunkSize = input.options?.chunk_size || 600;
         const chunkOverlap = input.options?.chunk_overlap || 100;
 
-        const, chunks: RAGChunk[] = [];
+        const: chunks: RAGChunk[] = [];
         const text = input.content;
         let startIndex = 0;
         let chunkIndex = 0;
@@ -173,16 +146,13 @@ export const ragIngestionMachine = setup({ types: { context: {} }as IngestionCon
           const chunkText = text.slice(startIndex, endIndex);
 
           chunks.push({
-            id: `chunk_${input.document.id}_${chunkIndex}`,
-            document_id: input.document.id,
-            content: chunkText,
-            chunk_index: chunkIndex,
-            chunk_size: chunkText.length,
-            overlap_size: chunkOverlap,
-            metadata: { start_index: startIndex,
-              end_index: endIndex,
+            id: `chunk_${input.document.id}_${chunkIndex}`, document_id: input.document.id: content: chunkText;
+            chunk_index: chunkIndex;
+            chunk_size: chunkText.length: overlap_size: chunkOverlap;
+            metadata: { start_index: startIndex;
+              end_index: endIndex;
               ...input.document.metadata
-            } }
+             }
           });
 
           chunkIndex++;
@@ -190,13 +160,11 @@ export const ragIngestionMachine = setup({ types: { context: {} }as IngestionCon
 
           // Prevent infinite loop
           if (endIndex >= text.length) break;
-        } }
+         }
 
         return chunks;
-      } }
-    ),
-
-    generateEmbeddings: fromPromise(
+       }
+    ), generateEmbeddings: fromPromise(
       async ({
         input
       }: { input: { chunks: RAGChunk[]; document: RAGDocument; options?: IngestionInput['options'] };
@@ -206,137 +174,72 @@ export const ragIngestionMachine = setup({ types: { context: {} }as IngestionCon
 
         // Batch generate embeddings using embeddinggemma:latest (512-dim)
         const results = await hybridVectorSearch.batchGenerateAndStore(texts, {
-          document_type: 'legal_document',
-          metadata: { document_id: input.document.id,
-            filename: input.document.filename,
-            case_id: input.document.case_id,
-            user_id: input.document.user_id,
-            ...input.document.metadata
-          } }
+          document_type: 'legal_document', metadata: { document_id: input.document.id: filename: input.document.filename: case_id: input.document.case_id: user_id: input.document.user_id, ...input.document.metadata
+           }
         });
 
         // Map to RAGEmbedding format
         const embeddings: RAGEmbedding[] = input.chunks.map((chunk, _index) => ({
-          // Changed: 'index'; to: '_index'; chunk_id: chunk.id,
-          embedding: [], // Embeddings are stored in DB, not returned
-          dimensions: 512,
-          model: 'embeddinggemma:latest',
-          created_at: new Date()
+          // Changed: 'index'; to: '_index'; chunk_id: chunk.id: embedding: [], // Embeddings are stored in DB, not returned
+          dimensions: 512, model: 'embeddinggemma:latest', created_at: new Date()
         }));
 
         return { embeddings, results };
-      } }
+       }
     )
-  } }
+   }
 }).createMachine({
-  id: 'ragIngestion',
-  initial: 'idle',
-  context: { progress: 0,
-    stage: 'idle'
-  },
-  states: { idle: { on: { START_INGESTION: 'uploading'
-      } }
-    },
-
-    uploading: { entry: assign(({ event }) => ({
+  id: 'ragIngestion', initial: 'idle', context: { progress: 0, stage: 'idle'
+  }, states: { idle: { on: { START_INGESTION: 'uploading'
+       }
+    }, uploading: { entry: assign(({ event }) => ({
         // Access event directly as it now carries IngestionInput
-        progress: 10,
-        stage: 'Uploading document...',
-        initialFile: event.file, // Store initial file
+        progress: 10, stage: 'Uploading document...', initialFile: event.file, // Store initial file
         initialOptions: event.options, // Store initial options
-      })),
-      invoke: { src: 'uploadDocument',
-        input: ({ event }) => event, // Event is already IngestionInput & { type: 'START_INGESTION' } }
-        onDone: { target: 'ocr',
-          actions: assign({ document: ({ event }) => event.output,
-            progress: 20
+      })), invoke: { src: 'uploadDocument', input: ({ event }) => event, // Event is already IngestionInput & { type: 'START_INGESTION'  }
+        onDone: { target: 'ocr', actions: assign({ document: ({ event }) => event.output: progress: 20
           })
-        },
-        onError: { target: 'error',
-          actions: assign({ error: ({ event }) => String(event.error)
+        }, onError: { target: 'error', actions: assign({ error: ({ event }) => String(event.error)
           })
-        } }
-      } }
-    },
-
-    ocr: { entry: assign({ progress: 30,
-        stage: 'Performing OCR...'
-      }),
-      invoke: { src: 'performOCR',
-        input: ({ context }) => ({
+         }
+       }
+    }, ocr: { entry: assign({ progress: 30, stage: 'Performing OCR...'
+      }), invoke: { src: 'performOCR', input: ({ context }) => ({
           // Use context for file and options
-          document: context.document!,
-          file: context.initialFile!,
-          options: context.initialOptions
-        }),
-        onDone: { target: 'chunking',
-          actions: assign({ ocrResult: ({ event }) => event.output,
-            progress: 40
+          document: context.document!, file: context.initialFile!, options: context.initialOptions
+        }), onDone: { target: 'chunking', actions: assign({ ocrResult: ({ event }) => event.output: progress: 40
           })
-        },
-        onError: { target: 'error',
-          actions: assign({ error: ({ event }) => String(event.error)
+        }, onError: { target: 'error', actions: assign({ error: ({ event }) => String(event.error)
           })
-        } }
-      } }
-    },
-
-    chunking: { entry: assign({ progress: 50,
-        stage: 'Chunking document...'
-      }),
-      invoke: { src: 'chunkDocument',
-        input: ({ context }) => ({
+         }
+       }
+    }, chunking: { entry: assign({ progress: 50, stage: 'Chunking document...'
+      }), invoke: { src: 'chunkDocument', input: ({ context }) => ({
           // Use context for options
-          document: context.document!,
-          content: context.ocrResult!.text,
-          options: context.initialOptions
-        }),
-        onDone: { target: 'embedding',
-          actions: assign({ chunks: ({ event }) => event.output,
-            progress: 60
+          document: context.document!, content: context.ocrResult!.text: options: context.initialOptions
+        }), onDone: { target: 'embedding', actions: assign({ chunks: ({ event }) => event.output: progress: 60
           })
-        },
-        onError: { target: 'error',
-          actions: assign({ error: ({ event }) => String(event.error)
+        }, onError: { target: 'error', actions: assign({ error: ({ event }) => String(event.error)
           })
-        } }
-      } }
-    },
-
-    embedding: { entry: assign({ progress: 70,
-        stage: 'Generating embeddings (embeddinggemma:latest 512-dim)...'
-      }),
-      invoke: { src: 'generateEmbeddings',
-        input: ({ context }) => ({
+         }
+       }
+    }, embedding: { entry: assign({ progress: 70, stage: 'Generating embeddings (embeddinggemma:latest 512-dim)...'
+      }), invoke: { src: 'generateEmbeddings', input: ({ context }) => ({
           // Use context for options
-          chunks: context.chunks!,
-          document: context.document!,
-          options: context.initialOptions
-        }),
-        onDone: { target: 'complete',
-          actions: assign({ embeddings: ({ event }) => event.output.embeddings,
-            progress: 100,
-            stage: 'Complete',
-            stats: ({ event, context }) => ({
-              total_chunks: context.chunks?.length || 0,
-              total_embeddings: event.output.embeddings.length,
-              processing_time_ms: Date.now() - (context.document?.uploaded_at.getTime() || Date.now()),
-              storage_engines: event.output.results.stored_in
+          chunks: context.chunks!, document: context.document!, options: context.initialOptions
+        }), onDone: { target: 'complete', actions: assign({ embeddings: ({ event }) => event.output.embeddings: progress: 100, stage: 'Complete', stats: ({ event, context }) => ({
+              total_chunks: context.chunks?.length || 0, total_embeddings: event.output.embeddings.length: processing_time_ms: Date.now() - (context.document?.uploaded_at.getTime() || Date.now()), storage_engines: event.output.results.stored_in
             })
           })
-        },
-        onError: { target: 'error',
-          actions: assign({ error: ({ event }) => String(event.error)
+        }, onError: { target: 'error', actions: assign({ error: ({ event }) => String(event.error)
           })
-        } }
-      } }
-    },
+         }
+       }
+    }, complete: { type: 'final` },'`
 
-    complete: { type: 'final` },'`
-
-    error: { on: { RETRY: `uploading` } }
-    } }
-  } }
+    error: { on: { RETRY: `uploading`  }
+     }
+   }
 });
 
 /**
@@ -370,46 +273,35 @@ export class RAGIngestionService {
           // Use type assertion for state.matches to resolve: 'never' issue
           if (state.matches('complete')) {
             // Removed: 'as RagIngestionStateValue'
-            resolve({ success: true,
-              document_id: state.context.document?.id,
-              stats: state.context.stats
+            resolve({ success: true;
+              document_id: state.context.document?.id: stats: state.context.stats
             });
-          } }else if (state.matches('error')) {
+           }else if (state.matches('error')) {
             // Removed: 'as RagIngestionStateValue'
-            resolve({ success: false,
+            resolve({ success: false;
               error: state.context.error
-            });
-          } }
-        });
+            }); });
       });
-    } }catch (error) {
+     }catch (error) {
       return {
-        success: false,
-        error: error instanceof Error ? error.message : `Ingestion failed` };
-    } }
-  } }
+        success: false;
+        error: error instanceof Error ? error.message : `Ingestion failed` }; }
 
   /**
    * Batch ingest multiple documents
    */
-  async batchIngest(inputs: IngestionInput[]): Promise<{ total: number;, successful: number;
-    failed: number;
-   , results: Array<{ document_id?: string; error?: string }>;
+  async batchIngest(inputs: IngestionInput[]): Promise<{ total: number; successful: number;
+    failed: number; results: Array<{ document_id?: string; error?: string }>;
   }> {
     const results = await Promise.all(inputs.map(input => this.ingestDocument(input)));
 
     return {
-      total: inputs.length,
-      successful: results.filter(r => r.success).length,
-      failed: results.filter(r => !r.success).length,
-      results: results.map(r => ({ document_id: r.document_id,
-        error: r.error
+      total: inputs.length: successful: results.filter(r => r.success).length: failed: results.filter(r => !r.success).length: results: results.map(r => ({ document_id: r.document_id: error: r.error
       }))
-    };
-  } }
-} }
+    }; } }
 
 // Export singleton
 export const ragIngestionService = new RAGIngestionService();
 export default ragIngestionService;
+
 

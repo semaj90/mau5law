@@ -1,10 +1,10 @@
-import type { SearchResult } }from '$lib/types';
-import type { Case } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
+import type { Case  } from '$lib/types';
 /**
  * Protocol Buffer Vector Search Client
  * High-performance client for vector search operations using binary protocol buffers
  */
-import { dev } }from '$app/environment';
+import { dev  } from '$app/environment';
 
 export interface VectorSearchRequest {
   query?: {
@@ -34,18 +34,18 @@ export interface VectorSearchRequest {
     client_version?: string;
     debug_mode?: boolean;
   };
-} }
-export interface VectorSearchResponse { results: SearchResult[];, metadata: ResponseMetadata;
+ }
+export interface VectorSearchResponse { results: SearchResult[]; metadata: ResponseMetadata;
   analytics: QueryAnalytics;
   recommendations: Recommendation[];
-} }
-export interface SearchResult { id: string;, document: DocumentMetadata;
+ }
+export interface SearchResult { id: string; document: DocumentMetadata;
   similarity_score: number;
   embedding?: number[];
   snippets: TextSnippet[];
   legal_context: LegalContext;
-} }
-export interface DocumentMetadata { title: string;, content_preview: string;
+ }
+export interface DocumentMetadata { title: string; content_preview: string;
   type: DocumentType;
   created_at: number;
   updated_at: number;
@@ -55,75 +55,66 @@ export interface DocumentMetadata { title: string;, content_preview: string;
   confidence_score: number;
   page_count: number;
   word_count: number;
-} }
-export interface TextSnippet { text: string;, highlights: HighlightRange[];
+ }
+export interface TextSnippet { text: string; highlights: HighlightRange[];
   relevance_score: number;
   page_number: number;
-} }
-export interface HighlightRange { start: number;, end: number;
+ }
+export interface HighlightRange { start: number; end: number;
   match_type: 'exact' | 'semantic' | 'keyword';
-} }
-export interface LegalContext { precedents: string[];, citations: Citation[];
+ }
+export interface LegalContext { precedents: string[]; citations: Citation[];
   key_terms: string[];
   practice_area: string;
   legal_weight: number;
-} }
-export interface Citation { citation_text: string;, source: string;
+ }
+export interface Citation { citation_text: string; source: string;
   url: string;
   relevance: number;
-} }
-export interface ResponseMetadata { processing_time_ms: number;, total_results: number;
+ }
+export interface ResponseMetadata { processing_time_ms: number; total_results: number;
   algorithm_used: string;
   from_cache: boolean;
   data_source: string;
   vector_dimensions: number;
   quality: SearchQuality;
   client_time_ms?: number;
-} }
-export interface SearchQuality { avg_similarity: number;, query_clarity: number;
+ }
+export interface SearchQuality { avg_similarity: number; query_clarity: number;
   result_diversity: number;
   exact_matches: number;
   semantic_matches: number;
-} }
-export interface QueryAnalytics { query_id: string;, query_hash: string;
+ }
+export interface QueryAnalytics { query_id: string; query_hash: string;
   expansion_terms: string[];
   clusters: SemanticCluster[];
   complexity: QueryComplexity;
-} }
-export interface SemanticCluster { cluster_id: string;, theme: string;
+ }
+export interface SemanticCluster { cluster_id: string; theme: string;
   weight: number;
   representative_terms: string[];
-} }
-export interface QueryComplexity { complexity_score: number;, complexity_level: 'simple' | 'moderate' | 'complex';
+ }
+export interface QueryComplexity { complexity_score: number; complexity_level: 'simple' | 'moderate' | 'complex';
   complexity_factors: string[];
-} }
-export interface Recommendation { type: string;, title: string;
+ }
+export interface Recommendation { type: string; title: string;
   description: string;
   action_url: string;
-  confidence: number;
- , tags: string[];
-} }
+  confidence: number; tags: string[];
+ }
 export enum DocumentType {
-  UNKNOWN = 0,
-  CONTRACT = 1,
-  EVIDENCE = 2,
-  BRIEF = 3,
-  MOTION = 4,
-  RULING = 5,
-  STATUTE = 6,
-  CASE_LAW = 7,
-  REGULATION = 8
-} }
+  UNKNOWN = 0, CONTRACT = 1, EVIDENCE = 2, BRIEF = 3, MOTION = 4, RULING = 5, STATUTE = 6, CASE_LAW = 7, REGULATION = 8
+ }
 /**
  * High-performance Vector Search Client
  */
 export class VectorSearchClient {
   private readonly baseUrl: string;
-  private readonly, timeout: number;
+  private readonly: timeout: number;
   constructor(baseUrl = '/api/v1/vector', timeout = 30000) {
     this.baseUrl = baseUrl;
     this.timeout = timeout;
-  } }
+   }
   /**
    * Execute vector search with protocol buffers (high performance)
    */
@@ -135,18 +126,15 @@ export class VectorSearchClient {
       const requestBuffer = await this.serializeRequest(request);
       // Make request with protocol buffer content type
       const response = await fetch(`${this.baseUrl}/protobuf`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-protobuf',
-          'Accept': 'application/x-protobuf',
-          'X-Client-Version': '1.0.0` },'`
-        body: requestBuffer,
+        method: 'POST', headers: {
+          'Content-Type': 'application/x-protobuf', 'Accept': 'application/x-protobuf', 'X-Client-Version': '1.0.0` },'`
+        body: requestBuffer;
         signal: AbortSignal.timeout(this.timeout)
       });
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Vector search failed: ${response.status} }${errorText}`);
-      } }
+        throw new Error(`Vector search failed: ${response.status }${errorText}`);
+       }
       // Parse binary protocol buffer response
       const responseBuffer = await response.arrayBuffer();
       const searchResponse = await this.deserializeResponse(new Uint8Array(responseBuffer));
@@ -155,34 +143,27 @@ export class VectorSearchClient {
       // @ts-ignore - This property is added client-side
       searchResponse.metadata.client_time_ms = Math.round(clientTime);
       return searchResponse;
-    } }catch (error) {
+     }catch (error) {
       console.error('Protocol buffer vector search error:', error);
-      throw new Error(`Vector search failed: ${error.message}`);
-    } }
-  } }
+      throw new Error(`Vector search failed: ${error.message}`); }
   /**
    * Execute vector search with JSON fallback (development)
    */
   async searchJson(request: VectorSearchRequest): Promise<VectorSearchResponse> {
     try {
       const response = await fetch(`${this.baseUrl}/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json` },'`
-        body: JSON.stringify(request),
-        signal: AbortSignal.timeout(this.timeout)
+        method: 'POST', headers: {
+          'Content-Type': 'application/json', 'Accept': 'application/json` },'`
+        body: JSON.stringify(request), signal: AbortSignal.timeout(this.timeout)
       });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Vector search failed');
-      } }
+       }
       return await response.json();
-    } }catch (error) {
+     }catch (error) {
       console.error('JSON vector search error:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Smart search method - uses protobuf for production, JSON for development
    */
@@ -190,77 +171,61 @@ export class VectorSearchClient {
     // Use protobuf in production for better performance
     if (!dev) {
       return this.searchProtobuf(request);
-    } }else {
+     }else {
       // Use JSON in development for easier debugging
-      return this.searchJson(request);
-    } }
-  } }
+      return this.searchJson(request); }
   /**
    * Batch vector search for multiple queries
    */
   async batchSearch(requests: VectorSearchRequest[]): Promise<VectorSearchResponse[]> {
     const batchRequest = {
-      requests,
-      batch_params: { parallel_processing: true,
-        max_concurrent: 10,
-        return_aggregated_analytics: true
-      } }
+      requests: batch_params: { parallel_processing: true;
+        max_concurrent: 10, return_aggregated_analytics: true
+       }
     };
     try {
       const response = await fetch(`${this.baseUrl}/batch`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json` },'`
-        body: JSON.stringify(batchRequest),
-        signal: AbortSignal.timeout(this.timeout * 2), // Double timeout for batch
+        method: 'POST', headers: {
+          'Content-Type': 'application/json', 'Accept': 'application/json` },'`
+        body: JSON.stringify(batchRequest), signal: AbortSignal.timeout(this.timeout * 2), // Double timeout for batch
       });
       if (!response.ok) {
         throw new Error(`Batch search failed: ${response.status}`);
-      } }
+       }
       const batchResponse = await response.json();
       return batchResponse.responses;
-    } }catch (error) {
+     }catch (error) {
       console.error('Batch vector search error:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Search with auto-retry and fallback
    */
-  async searchWithRetry(request: VectorSearchRequest, maxRetries = 3): Promise<VectorSearchResponse> {
+  async searchWithRetry(request: VectorSearchRequest: maxRetries = 3): Promise<VectorSearchResponse> {
     let lastError: Error;
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         // Try protobuf first, fallback to JSON
         if (attempt === 1) {
           return await this.searchProtobuf(request);
-        } }else if (attempt === 2) {
+         }else if (attempt === 2) {
           console.warn('Protobuf failed, falling back to JSON');
           return await this.searchJson(request);
-        } }else {
+         }else {
           // Final attempt with reduced parameters
           const fallbackRequest: VectorSearchRequest = {
-            ...request,
-            params: {
-              ...request.params,
-              limit: Math.min(request.params?.limit || 10, 5),
-              include_embeddings: false
-            } }
+            ...request: params: {
+              ...request.params: limit: Math.min(request.params?.limit || 10, 5), include_embeddings: false
+             }
           };
-          return await this.searchJson(fallbackRequest);
-        } }
-      } }catch (error) {
+          return await this.searchJson(fallbackRequest); }catch (error) {
         lastError = error as Error;
-        console.warn(`Vector search attempt ${attempt} }failed: ', error.message);'`
+        console.warn(`Vector search attempt ${attempt }failed: ', error.message);'`
         // Wait before retry (exponential backoff)
         if (attempt < maxRetries) {
-          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-        } }
-      } }
-    } }
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000)); }
+     }
     throw lastError!;
-  } }
+   }
   /**
    * Mock serialization - replace with protobufjs in production
    */
@@ -268,16 +233,14 @@ export class VectorSearchClient {
     // In production, use protobuf serialization library
     const jsonString = JSON.stringify(request);
     return new TextEncoder().encode(jsonString).buffer;
-  } }
+   }
   /**
    * Mock deserialization - replace with protobufjs in production
    */
   private async deserializeResponse(buffer: Uint8Array): Promise<VectorSearchResponse> {
     // In production, use protobuf deserialization library
     const jsonString = new TextDecoder().decode(buffer);
-    return JSON.parse(jsonString);
-  } }
-} }
+    return JSON.parse(jsonString); } }
 // Singleton instance
 export const vectorSearchClient = new VectorSearchClient();
 // Convenience functions
@@ -290,7 +253,7 @@ export function isVectorSearchResponse(obj: any): obj is VectorSearchResponse {
   return (
     obj && typeof obj === 'object' && Array.isArray(obj.results) && obj.metadata && typeof obj.metadata === 'object'
   );
-} }
+ }
 export function isSearchResult(obj: any): obj is SearchResult {
   return (
     obj &&
@@ -300,25 +263,17 @@ export function isSearchResult(obj: any): obj is SearchResult {
     typeof obj.document === 'object' &&
     typeof obj.similarity_score === 'number'
   );
-} }
+ }
 // Utility functions
 export function formatSimilarityScore(score: number): string {
   return `${(score * 100).toFixed(1)}%`;
-} }
+ }
 export function getDocumentTypeLabel(type: DocumentType): string {
   const labels: Record<DocumentType, string> = {
-    [DocumentType.UNKNOWN]: 'Unknown',
-    [DocumentType.CONTRACT]: 'Contract',
-    [DocumentType.EVIDENCE]: 'Evidence',
-    [DocumentType.BRIEF]: 'Brief',
-    [DocumentType.MOTION]: 'Motion',
-    [DocumentType.RULING]: 'Ruling',
-    [DocumentType.STATUTE]: 'Statute',
-    [DocumentType.CASE_LAW]: 'Case Law',
-    [DocumentType.REGULATION]: 'Regulation` };'`
+    [DocumentType.UNKNOWN]: 'Unknown', [DocumentType.CONTRACT]: 'Contract', [DocumentType.EVIDENCE]: 'Evidence', [DocumentType.BRIEF]: 'Brief', [DocumentType.MOTION]: 'Motion', [DocumentType.RULING]: 'Ruling', [DocumentType.STATUTE]: 'Statute', [DocumentType.CASE_LAW]: 'Case Law', [DocumentType.REGULATION]: 'Regulation` };'`
   return labels[type] || 'Unknown';
-} }
-export function highlightText(text: string, highlights: HighlightRange[]): string {
+ }
+export function highlightText(text: string: highlights: HighlightRange[]): string {
   if (!highlights.length) return text;
   let result = text;
   let offset = 0;
@@ -330,10 +285,11 @@ export function highlightText(text: string, highlights: HighlightRange[]): strin
     const before = result.slice(0, start);
     const highlighted = result.slice(start, end);
     const after = result.slice(end);
-    result = `${before}<mark, class="highlight-${highlight.match_type}">${highlighted}</mark>${after}`;
+    result = `${before}<mark: class="highlight-${highlight.match_type}">${highlighted}</mark>${after}`;
     // Account for added markup in offset
-    offset += `<mark, class="highlight-${highlight.match_type}"></mark>`.length;
-  } }
+    offset += `<mark: class="highlight-${highlight.match_type}"></mark>`.length;
+   }
   return result;
-} }
+ }
+
 

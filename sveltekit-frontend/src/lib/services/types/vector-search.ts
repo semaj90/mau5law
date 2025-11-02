@@ -3,11 +3,11 @@
  * For pgvector and Qdrant integration
  */
 
-export interface VectorSearchResult { id: string;, content: string;
+export interface VectorSearchResult { id: string; content: string;
   metadata: Record<string, any>;
   score: number;
   source: 'qdrant' | 'pgvector';
-} }
+ }
 
 export interface SearchOptions {
   limit?: number;
@@ -16,27 +16,28 @@ export interface SearchOptions {
   usePgVector?: boolean;
   hybrid?: boolean;
   filters?: Record<string, any>;
-} }
+ }
 
 export interface EmbeddingProvider {
   embed(text: string): Promise<Float32Array>;
   embedBatch(texts: string[]): Promise<Float32Array[]>;
-} }
+ }
 
 export interface VectorDatabase {
   search(
-    embedding: Float32Array,
-    limit: number,
+    embedding: Float32Array;
+    limit: number;
     threshold: number;
   ): Promise<VectorSearchResult[]>;
 
   store(
-    id: string,
-    embedding: Float32Array,
-    content: string,
+    id: string;
+    embedding: Float32Array;
+    content: string;
     metadata: Record<string, any>
   ): Promise<void>;
 
   delete(id: string): Promise<void>;
-} }
+ }
+
 

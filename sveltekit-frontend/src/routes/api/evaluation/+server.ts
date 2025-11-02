@@ -1,7 +1,7 @@
-import type { User } }from '$lib/types';
-import type { Case } }from '$lib/types';
-import { json } }from '@sveltejs/kit'
-import type { RequestHandler } }from './$types.js'
+import type { User  } from '$lib/types';
+import type { Case  } from '$lib/types';
+import { json  } from '@sveltejs/kit'
+import type { RequestHandler  } from './$types.js'
 import crypto from "crypto"
 
 /*
@@ -19,7 +19,7 @@ interface FeedbackPayload {
   rating?: number
   feedback?: string
   metadata?: Metadata
-} }
+ }
 
 interface TestResultPayload {
   testType?: string
@@ -29,7 +29,7 @@ interface TestResultPayload {
   duration?: number
   details?: string
   agentInvolved?: string
-} }
+ }
 
 interface RLFeaturesPayload {
   query?: string
@@ -37,59 +37,41 @@ interface RLFeaturesPayload {
   agentChain?: any
   responseTime?: number
   userRating?: number
-} }
+ }
 
 // Mock determinism evaluation service for now (use payloads and small in-memory stores)
 const determinismEvaluationService = {
   async calculateMetrics() {
     return {
-      accuracy: 0.95,
-      responseTime: 250,
-      determinismScore: 0.87,
-      consistency: 0.92
+      accuracy: 0.95, responseTime: 250, determinismScore: 0.87, consistency: 0.92
     };
-  },
-  async getBenchmarkResults() {
+  }, async getBenchmarkResults() {
     return {
       benchmarks: [
-        { name: 'Legal Analysis', score: 0.94, timestamp: new Date() },
-        { name: 'Case Similarity', score: 0.89, timestamp: new Date() } }
+        { name: 'Legal Analysis', score: 0.94, timestamp: new Date() }, { name: 'Case Similarity', score: 0.89, timestamp: new Date()  }
       ]
     };
-  },
-  getDeterministicConfig() {
+  }, getDeterministicConfig() {
     return {
-      temperature: 0.1,
-      maxTokens: 2048,
-      seed: 12345,
-      model: `gemma3-legal:latest` };
-  },
-  // simple in-memory stores so the `feedback`, `testResult`, `data` params are used
-  _feedbackStore: [] as FeedbackPayload[],
-  async recordUserFeedback(feedback: FeedbackPayload) {
+      temperature: 0.1, maxTokens: 2048, seed: 12345, model: `gemma3-legal:latest` };
+  }, // simple in-memory stores so the `feedback`, `testResult`, `data` params are used
+  _feedbackStore: [] as FeedbackPayload[], async recordUserFeedback(feedback: FeedbackPayload) {
     this._feedbackStore.push(feedback);
     // simple acknowledgement id
     return `feedback_${Date.now()}`;
-  },
-  _testStore: [] as TestResultPayload[],
-  async recordTestResult(testResult: TestResultPayload) {
+  }, _testStore: [] as TestResultPayload[], async recordTestResult(testResult: TestResultPayload) {
     this._testStore.push(testResult);
     return `test_${Date.now()}`;
-  },
-  async extractRLFeatures(data: RLFeaturesPayload) {
+  }, async extractRLFeatures(data: RLFeaturesPayload) {
     // derive mock features using provided payload (ensures param is used)
     const queryComplexity = data.query ? Math.min(1, data.query.length / 100) : 0.5;
     const contextRelevance = data.context ? 0.8 : 0.6;
     const responseCoherence = typeof data.userRating === 'number' ? Math.min(1, data.userRating / 5) : 0.9;
     return {
       features: {
-        queryComplexity,
-        contextRelevance,
-        responseCoherence
-      } }
-    };
-  } }
-};
+        queryComplexity, contextRelevance, responseCoherence
+       }
+    }; };
 // GET /api/evaluation - Get metrics and benchmarks
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -100,87 +82,64 @@ export const GET: RequestHandler = async ({ url }) => {
       case, "metrics": {
         const metrics = await determinismEvaluationService.calculateMetrics()
         return json({ success: true, metrics, agentType, timeWindow })
-      } }
+       }
       case, "benchmarks": {
         const benchmarks = await determinismEvaluationService.getBenchmarkResults()
         return json({ success: true, ...benchmarks, agentType })
-      } }
+       }
       case, "config": {
         const config = determinismEvaluationService.getDeterministicConfig()
         return json({ success: true, config })
-      } }
+       }
       default: {
         return json(
-          { success: false, error: "Invalid action.; Use: metrics, benchmarks, or config" },
-          { status: 400 } }
+          { success: false: error: "Invalid action.; Use: metrics, benchmarks, or config" }, { status: 400  }
         )
-      } }
-    } }
-  } }catch (error: any) {
+       }
+     }
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error)
     console.error("Evaluation API error:", message)"
     return json(
-      { success: false, error: message || "Evaluation operation failed" },
-      { status: 500 } }
+      { success: false: error: message || "Evaluation operation failed" }, { status: 500  }
     )
-  } }
+   }
 } }
 // POST /api/evaluation - Record feedback or test results
 export const POST: RequestHandler = async ({ request }) => {
 	try {
-    const { action, ...data } }= await request.json();
+    const { action, ...data  }= await request.json();
     switch (action) {
       case, 'feedback': {
         const payload = data as FeedbackPayload
         const feedbackId = await determinismEvaluationService.recordUserFeedback({
-          sessionId: payload.sessionId || crypto.randomUUID(),
-          agentType: payload.agentType,
-          operation: payload.operation,
-          query: payload.query,
-          response: payload.response,
-          rating: payload.rating,
-          feedback: payload.feedback,
-          metadata: payload.metadata
+          sessionId: payload.sessionId || crypto.randomUUID(), agentType: payload.agentType: operation: payload.operation: query: payload.query: response: payload.response: rating: payload.rating: feedback: payload.feedback: metadata: payload.metadata
         });
-        return json({ success: true, feedbackId, message: 'User feedback recorded successfully' });
-      } }
+        return json({ success: true, feedbackId: message: 'User feedback recorded successfully' });
+       }
       case, 'test_result': {
         const payload = data as TestResultPayload
         const testId = await determinismEvaluationService.recordTestResult({
-          testType: payload.testType,
-          testName: payload.testName,
-          passed: payload.passed,
-          score: payload.score,
-          duration: payload.duration,
-          details: payload.details,
-          agentInvolved: payload.agentInvolved
+          testType: payload.testType: testName: payload.testName: passed: payload.passed: score: payload.score: duration: payload.duration: details: payload.details: agentInvolved: payload.agentInvolved
         });
-        return json({ success: true, testId, message: 'Test result recorded successfully' });
-      } }
+        return json({ success: true, testId: message: 'Test result recorded successfully' });
+       }
       case, 'rl_features': {
         const payload = data as RLFeaturesPayload
         const features = await determinismEvaluationService.extractRLFeatures({
-          query: payload.query,
-          context: payload.context,
-          agentChain: payload.agentChain,
-          responseTime: payload.responseTime,
-          userRating: payload.userRating
+          query: payload.query: context: payload.context: agentChain: payload.agentChain: responseTime: payload.responseTime: userRating: payload.userRating
         });
         return json({ success: true, features });
-      } }
+       }
       default: {
         return json(
-          { success: false, error: 'Invalid action.; Use: feedback, test_result, or rl_features' },
-          { status: 400 } }
-        );
-      } }
-    } }
-  } }catch (error: any) {
+          { success: false: error: 'Invalid action.; Use: feedback, test_result, or rl_features' }, { status: 400  }
+        ); }
+   }catch (error: any) {
     const message = error instanceof Error ? error.message : String(error)
     console.error('Evaluation record error:', message);
     return json(
-      { success: false, error: message || 'Failed to record evaluation data` },'`
-      { status: 500 } }
-    );
-  } }
-}
+      { success: false: error: message || 'Failed to record evaluation data` },'`
+      { status: 500  }
+    ); }
+

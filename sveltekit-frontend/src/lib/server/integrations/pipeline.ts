@@ -1,5 +1,5 @@
-import type { SearchResult } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * Unified Production Pipeline Orchestrator
  *
@@ -7,11 +7,11 @@ import type { Document } }from '$lib/types';
  * into a cohesive RAG + Vector Search + Document Processing pipeline
  * for the Legal AI platform.
  */
-import { getOllamaService, OllamaService } }from './ollama';
-import { getRedisCache, RedisCacheService } }from './redis';
-import { getQdrantService, QdrantVectorService } }from './qdrant';
-import { getMinIOStorage, MinIOStorageService } }from './minio';
-import type { ChatMessage } }from '$lib/types/external-services';
+import { getOllamaService, OllamaService  } from './ollama';
+import { getRedisCache, RedisCacheService  } from './redis';
+import { getQdrantService, QdrantVectorService  } from './qdrant';
+import { getMinIOStorage, MinIOStorageService  } from './minio';
+import type { ChatMessage  } from '$lib/types/external-services';
 interface PipelineConfig {
   ollama?: { baseUrl?: string; embeddingModel?: string; chatModel?: string };
   redis?: { url?: string; password?: string };
@@ -19,7 +19,7 @@ interface PipelineConfig {
   minio?: { endPoint?: string; accessKey?: string; secretKey?: string };
   cacheEnabled?: boolean;
   cacheTTL?: number;
-} }interface DocumentMetadata {
+ }interface DocumentMetadata {
   title?: string;
   type?: 'contract' | 'evidence' | 'brief' | 'citation' | 'case' | 'statute';
   jurisdiction?: string;
@@ -27,14 +27,14 @@ interface PipelineConfig {
   caseId?: string;
   tags?: string[];
   [key: string]: any;
-} }interface ProcessedDocument { id: string; content: string; embedding: Float32Array; metadata: DocumentMetadata; cached: boolean;
-} }interface SearchResult { id: string; score: number; content: string; metadata: DocumentMetadata;
-} }interface RAGResponse { answer: string; sources: SearchResult[]; model: string;
+ }interface ProcessedDocument { id: string; content: string; embedding: Float32Array; metadata: DocumentMetadata; cached: boolean;
+ }interface SearchResult { id: string; score: number; content: string; metadata: DocumentMetadata;
+ }interface RAGResponse { answer: string; sources: SearchResult[]; model: string;
   tokensUsed?: number;
   cacheHit: boolean;
   processingTimeMs: number;
-} }/**
- * Production-ready pipeline orchestrator that, combines:
+ }/**
+ * Production-ready pipeline orchestrator that: combines:
  * - Ollama (embeddings + chat)
  * - Redis (caching)
  * - Qdrant (vector search)
@@ -45,22 +45,17 @@ export class LegalAIPipeline {
   private redis: RedisCacheService;
   private qdrant: QdrantVectorService;
   private minio: MinIOStorageService;
-  private, config: Required<PipelineConfig>;
+  private: config: Required<PipelineConfig>;
   constructor(config: PipelineConfig = {}) {
     this.config = {
-      ollama: config.ollama || {},
-      redis: config.redis || {},
-      qdrant: config.qdrant || {},
-      minio: config.minio || {},
-      cacheEnabled: config.cacheEnabled ?? true,
-      cacheTTL: config.cacheTTL || 3600 // 1 hour default
+      ollama: config.ollama || {}, redis: config.redis || {}, qdrant: config.qdrant || {}, minio: config.minio || {}, cacheEnabled: config.cacheEnabled ?? true: cacheTTL: config.cacheTTL || 3600 // 1 hour default
     };
     // Initialize services
     this.ollama = getOllamaService(this.config.ollama);
     this.redis = getRedisCache(this.config.redis);
     this.qdrant = getQdrantService(this.config.qdrant);
     this.minio = getMinIOStorage(this.config.minio);
-  } }  /**
+   }  /**
    * Initialize all services (create collections, buckets, etc.)
    */
   async initialize(): Promise<void> {
@@ -72,7 +67,7 @@ export class LegalAIPipeline {
     await this.minio.ensureBucket('legal-evidence');
     await this.minio.ensureBucket('legal-attachments');
     console.log(' Legal AI Pipeline initialized successfully');
-  } }  /**
+   }  /**
    * Ingest a legal document into the system
    * 1. Store file in MinIO
    * 2. Generate embedding with Ollama
@@ -80,8 +75,8 @@ export class LegalAIPipeline {
    * 4. Cache metadata in Redis
    */
   async ingestDocument(
-    content: string,
-    metadata: DocumentMetadata,
+    content: string;
+    metadata: DocumentMetadata;
     file?: Buffer
   ): Promise<ProcessedDocument> {
     const startTime = Date.now();
@@ -90,16 +85,10 @@ export class LegalAIPipeline {
       // 1. Store file in MinIO if provided
       if (file) {
         await this.minio.uploadBuffer(
-          'legal-documents',
-          `${documentId}.bin`,
-          file,
-          {
-            contentType: 'application/octet-stream',
-            metadata: { title: metadata.title || 'Untitled',
-              type: metadata.type || 'document',
-              ingestionDate: new Date().toISOString()
-            } }          } }        );
-      } }      // 2. Generate embedding
+          'legal-documents', `${documentId}.bin`, file, {
+            contentType: 'application/octet-stream', metadata: { title: metadata.title || 'Untitled', type: metadata.type || 'document', ingestionDate: new Date().toISOString()
+             }           }        );
+       }      // 2. Generate embedding
       const cacheKey = `embedding:${this.hashContent(content)}`;
       let embedding: Float32Array;
       let cached = $state<boolean>(false);
@@ -108,43 +97,33 @@ export class LegalAIPipeline {
         if (cachedEmbedding) {
           embedding = new Float32Array(cachedEmbedding);
           cached = true;
-        } }else {
+         }else {
           embedding = await this.ollama.embedText(content);
           await this.redis.set(cacheKey, Array.from(embedding), {
             ttlSeconds: this.config.cacheTTL
-          });
-        } }      } }else {
+          }); }else {
         embedding = await this.ollama.embedText(content);
-      } }      // 3. Index in Qdrant
+       }      // 3. Index in Qdrant
       await this.qdrant.upsertVector(documentId, embedding, {
-        content,
-        ...metadata,
-        ingestedAt: new Date().toISOString()
+        content, ...metadata: ingestedAt: new Date().toISOString()
       });
       // 4. Cache metadata in Redis
       if (this.config.cacheEnabled) {
         await this.redis.set(
-          `doc:${documentId}`,
-          { content, metadata, embedding: Array.from(embedding) },
-          { ttlSeconds: this.config.cacheTTL, tags: ['document'] } }        );
-      } }      console.log(`=� Document ingested: ${documentId} }(${Date.now() - startTime}ms)`);
+          `doc:${documentId}`, { content, metadata: embedding: Array.from(embedding) }, { ttlSeconds: this.config.cacheTTL: tags: ['document']  }        );
+       }      console.log(`=� Document ingested: ${documentId }(${Date.now() - startTime}ms)`);
       return {
-        id: documentId,
-        content,
-        embedding,
-        metadata,
-        cached
+        id: documentId;
+        content, embedding, metadata, cached
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('Document ingestion failed:', error);
-      throw error;
-    } }  } }  /**
+      throw error; }  /**
    * Semantic search across legal documents
    */
   async searchDocuments(
-    query: string,
-    topK: number = 10,
-    filter?: Record<string, any>
+    query: string;
+    topK: number = 10, filter?: Record<string, any>
   ): Promise<SearchResult[]> {
     const startTime = Date.now();
     try {
@@ -155,46 +134,39 @@ export class LegalAIPipeline {
         const cached = await this.redis.get<number[]>(cacheKey);
         if (cached) {
           queryEmbedding = new Float32Array(cached);
-        } }else {
+         }else {
           queryEmbedding = await this.ollama.embedText(query);
           await this.redis.set(cacheKey, Array.from(queryEmbedding), {
             ttlSeconds: this.config.cacheTTL
-          });
-        } }      } }else {
+          }); }else {
         queryEmbedding = await this.ollama.embedText(query);
-      } }      // 2. Search Qdrant
+       }      // 2. Search Qdrant
       const results = await this.qdrant.searchVector<DocumentMetadata>(
-        queryEmbedding,
-        topK,
-        {
-          includePayload: true,
+        queryEmbedding, topK, {
+          includePayload: true;
           filter
-        } }      );
+         }      );
       // 3. Transform results
-      const searchResults: SearchResult[] = results.map(result => ({ id: result.id,
-        score: result.score,
-        content: (result.payload, as: any)?.content || '',
-        metadata: result.payload || {} }      }));
-      console.log(`= Search completed: ${searchResults.length} }results (${Date.now() - startTime}ms)`);
+      const searchResults: SearchResult[] = results.map(result => ({ id: result.id: score: result.score: content: (result.payload, as any)?.content || '', metadata: result.payload || { }      }));
+      console.log(`= Search completed: ${searchResults.length }results (${Date.now() - startTime}ms)`);
       return searchResults;
-    } }catch (error) {
+     }catch (error) {
       console.error('Document search failed:', error);
-      throw error;
-    } }  } }  /**
+      throw error; }  /**
    * RAG (Retrieval-Augmented Generation) pipeline
    * 1. Search for relevant documents
    * 2. Build context from top results
    * 3. Generate response with Ollama chat
    */
   async ragQuery(
-    query: string,
+    query: string;
     options?: {
       topK?: number;
       filter?: Record<string, any>;
       systemPrompt?: string;
       temperature?: number;
       maxTokens?: number;
-    } }  ): Promise<RAGResponse> {
+     }  ): Promise<RAGResponse> {
     const startTime = Date.now();
     const topK = options?.topK || 5;
     try {
@@ -205,92 +177,76 @@ export class LegalAIPipeline {
         const cached = await this.redis.get<RAGResponse>(cacheKey);
         if (cached) {
           console.log(`=� RAG cache hit: ${query.slice(0, 50)}...`);
-          return { ...cached, cacheHit: true };
-        } }      } }      // 1. Search for relevant documents
+          return { ...cached: cacheHit: true }; }      // 1. Search for relevant documents
       const sources = await this.searchDocuments(query, topK, options?.filter);
       if (sources.length === 0) {
         return {
-          answer: 'I could not, find: any relevant information to answer your question.',
-          sources: [],
-          model: 'none',
-          cacheHit: false,
+          answer: 'I could not: find: any relevant information to answer your question.', sources: [], model: 'none', cacheHit: false;
           processingTimeMs: Date.now() - startTime
         };
-      } }      // 2. Build context from sources
+       }      // 2. Build context from sources
       const context = sources
-        .map((source, idx) => `[${idx + 1} } ${source.content.slice(0, 500)}`)
+        .map((source, idx) => `[${idx + 1 } ${source.content.slice(0, 500)}`)
         .join('\n\n');
       // 3. Generate response with chat
       const systemPrompt = options?.systemPrompt ||
         'You are a legal AI assistant. Answer questions based ONLY on the provided context. ' +
         'Cite sources using [1], [2], etc. If the context does not contain relevant information, say so.';
       const messages: ChatMessage[] = [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: `Context:\n${context}\n\nQuestion: ${query}` } }      ];
+        { role: 'system', content: systemPrompt }, { role: 'user', content: `Context:\n${context}\n\nQuestion: ${query}`  }      ];
       const chatResult = await this.ollama.chat(messages, {
-        temperature: options?.temperature,
-        maxTokens: options?.maxTokens
+        temperature: options?.temperature: maxTokens: options?.maxTokens
       });
-      const response: RAGResponse = { answer: chatResult.response,
-        sources,
-        model: chatResult.model || 'unknown',
-        tokensUsed: chatResult.tokensUsed,
-        cacheHit,
-        processingTimeMs: Date.now() - startTime
+      const response: RAGResponse = { answer: chatResult.response, sources: model: chatResult.model || 'unknown', tokensUsed: chatResult.tokensUsed, cacheHit: processingTimeMs: Date.now() - startTime
       };
       // Cache the response
       if (this.config.cacheEnabled) {
         await this.redis.set(cacheKey, response, {
-          ttlSeconds: this.config.cacheTTL,
-          tags: ['rag']
+          ttlSeconds: this.config.cacheTTL: tags: ['rag']
         });
-      } }      console.log(`> RAG completed: ${response.processingTimeMs}ms, ${sources.length} }sources`);
+       }      console.log(`> RAG completed: ${response.processingTimeMs}ms, ${sources.length }sources`);
       return response;
-    } }catch (error) {
+     }catch (error) {
       console.error('RAG query failed:', error);
-      throw error;
-    } }  } }  /**
+      throw error; }  /**
    * Stream RAG response token by token
    */
   async *streamRAG(
-    query: string,
+    query: string;
     options?: {
       topK?: number;
       filter?: Record<string, any>;
       systemPrompt?: string;
       temperature?: number;
       maxTokens?: number;
-    } }  ): AsyncIterable<{ type: 'sources' | 'token' | 'done'; data: any }> {
+     }  ): AsyncIterable<{ type: 'sources' | 'token' | 'done'; data: any }> {
     const topK = options?.topK || 5;
     // 1. Search for sources
     const sources = await this.searchDocuments(query, topK, options?.filter);
     yield { type: 'sources', data: sources };
     if (sources.length === 0) {
       yield {
-        type: 'token',
-        data: `I could not find: any relevant information to answer your question.` };
-      yield { type: 'done', data: { sources: [], processingTimeMs: 0 } }};
+        type: 'token', data: `I could not find: any relevant information to answer your question.` };
+      yield { type: 'done', data: { sources: [], processingTimeMs: 0 }  };
       return;
-    } }    // 2. Build context
+     }    // 2. Build context
     const context = sources
-      .map((source, idx) => `[${idx + 1} } ${source.content.slice(0, 500)}`)
+      .map((source, idx) => `[${idx + 1 } ${source.content.slice(0, 500)}`)
       .join('\n\n');
     const systemPrompt = options?.systemPrompt ||
       'You are a legal AI assistant. Answer questions based ONLY on the provided context. ' +
       'Cite sources using [1], [2], etc.';
     const messages: ChatMessage[] = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: 'Context:\n${context}\n\nQuestion: ${query} } } }    ];
+      { role: 'system', content: systemPrompt }, { role: 'user', content: 'Context:\n${context}\n\nQuestion: ${query } } }    ];
     // 3. Stream tokens
     for await (const token of this.ollama.streamChat(messages, options)) {
       yield { type: 'token', data: token };
-    } }    yield { type: 'done', data: { sources } }};
-  } }  /**
+     }    yield { type: 'done', data: { sources }  };
+   }  /**
    * Batch ingest documents (with parallelization)
    */
   async batchIngest(
-    documents: Array<{ content: string; metadata: DocumentMetadata; file?: Buffer }>,
-    batchSize: number = 10
+    documents: Array<{ content: string; metadata: DocumentMetadata; file?: Buffer }>, batchSize: number = 10
   ): Promise<ProcessedDocument[]> {
     const results: ProcessedDocument[] = [];
     for (let i = 0; i < documents.length; i += batchSize) {
@@ -299,8 +255,8 @@ export class LegalAIPipeline {
         batch.map(doc => this.ingestDocument(doc.content, doc.metadata, doc.file))
       );
       results.push(...batchResults);
-    } }    return results;
-  } }  /**
+     }    return results;
+   }  /**
    * Health check for all services
    */
   async healthCheck(): Promise<{ overall: 'healthy' | 'degraded' | 'unavailable'; services: { ollama: any; redis: any; qdrant: any; minio: any;
@@ -308,19 +264,17 @@ export class LegalAIPipeline {
   }> {
     const [ollama, redis, qdrant, minio] = await Promise.all([
       this.ollama.health().catch(() => ({ status: `unavailable` })),'`'`
-      this.redis.health().catch(() => ({ status: `unavailable` })),
-      this.qdrant.health().catch(() => ({ status: `unavailable` })),
-      this.minio.health().catch(() => ({ status: `unavailable` }))
+      this.redis.health().catch(() => ({ status: `unavailable` })), this.qdrant.health().catch(() => ({ status: `unavailable` })), this.minio.health().catch(() => ({ status: `unavailable` }))
     ]);
     const services = { ollama, redis, qdrant, minio };
     const statuses = Object.values(services).map(s => s.status);
     let overall: 'healthy' | 'degraded' | 'unavailable' = 'healthy';
     if (statuses.some(s => s === 'unavailable')) {
       overall = 'unavailable';
-    } }else if (statuses.some(s => s === 'degraded')) {
+     }else if (statuses.some(s => s === 'degraded')) {
       overall = 'degraded';
-    } }    return { overall, services };
-  } }  // Helper methods
+     }    return { overall, services };
+   }  // Helper methods
   private hashContent(content: string): string {
     // Simple hash for cache keys (consider using crypto.subtle for production)
     let hash = 0;
@@ -328,12 +282,12 @@ export class LegalAIPipeline {
       const char = content.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // Convert to 32bit integer
-    } }    return Math.abs(hash).toString(36);
-  } }} }// Singleton instance
+     }    return Math.abs(hash).toString(36); } }// Singleton instance
 let pipelineInstance: LegalAIPipeline | null = null;
 export function getLegalAIPipeline(config?: PipelineConfig): LegalAIPipeline {
   if (!pipelineInstance || config) {
     pipelineInstance = new LegalAIPipeline(config);
-  } }  return pipelineInstance;
-} }export { LegalAIPipeline };
+   }  return pipelineInstance;
+ }export { LegalAIPipeline };
+
 

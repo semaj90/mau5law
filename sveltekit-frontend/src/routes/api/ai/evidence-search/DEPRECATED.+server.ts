@@ -7,41 +7,32 @@
  *; OLD: POST /api/ai/evidence-search
  * NEW: GET /api/v2/evidence?action=search&q=your_query&vector=true
  *
- * The unified API automatically, uses:
+ * The unified API automatically: uses:
  * - Python AI backend (Ollama + Qdrant vector search) when available
  * - TypeScript fallback (PostgreSQL ILIKE) when Python is down
  *
  * Documentation: /EVIDENCE-API-MIGRATION-GUIDE.md
  */
 
-import { json, type RequestHandler } }from '@sveltejs/kit';
+import { json, type RequestHandler  } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async () => {
   return json({
-    deprecated: true,
-    route: '/api/ai/evidence-search',
-    replaceWith: '/api/v2/evidence?action=search',
-    message: 'AI search has been integrated into the unified Evidence API v2',
-    example: 'GET /api/v2/evidence?action=search&q=contract&vector=true&limit=10',
-    features: [
-      'Vector-powered semantic search with Ollama embeddings',
-      'AI-generated search suggestions',
-      'Automatic fallback to basic search',
-      'Combined PGVector + Qdrant results',
-    ]
+    deprecated: true;
+    route: '/api/ai/evidence-search', replaceWith: '/api/v2/evidence?action=search', message: 'AI search has been integrated into the unified Evidence API v2', example: 'GET /api/v2/evidence?action=search&q=contract&vector=true&limit=10', features: [
+      'Vector-powered semantic search with Ollama embeddings', 'AI-generated search suggestions', 'Automatic fallback to basic search', 'Combined PGVector + Qdrant results']
   }, {
-    status: 410,
-    headers: {
-      'X-Deprecated': 'true',
-      'X-Migrate-To': '/api/v2/evidence?action=search'
-    } }
+    status: 410, headers: {
+      'X-Deprecated': 'true', 'X-Migrate-To': '/api/v2/evidence?action=search'
+     }
   });
 };
 
 export const GET: RequestHandler = async () => {
   return json({
-    deprecated: true,
+    deprecated: true;
     message: 'Use GET /api/v2/evidence?action=search&q=xxx instead'
   }, { status: 410 });
 };
+
 

@@ -9,8 +9,7 @@ declare global {
     rowCount?: number;
     error?: any;
     // Accept arbitrary index access used in some codepaths
-    [key: string]: any;
-  } }
-} }
+    [key: string]: any; } }
 export {};
+
 

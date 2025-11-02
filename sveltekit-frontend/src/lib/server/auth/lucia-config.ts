@@ -1,7 +1,7 @@
 // Resolve and re-export the canonical Lucia instance to avoid creating duplicates.
 import * as authModule from '../auth';
-// Treat the imported module as: unknown and narrow at runtime to avoid: "any"
-const mod = authModule, as: unknown;
+// Treat the imported module as unknown and narrow at runtime to avoid: "any"
+const mod = authModule, as unknown;
 // Try named export, then default export, then module itself (in case authModule is the instance)
 const resolved =
   (typeof mod === 'object' && mod !== null && 'lucia' in mod ? (mod as { lucia: any }).lucia : undefined) ??
@@ -12,8 +12,9 @@ if (!resolved) {
     "lucia-config: could not resolve a Lucia instance from '../auth'. " +
       'Ensure the canonical auth module exports the Lucia instance (e.g. `export const lucia = ...` or `export default lucia`).'
   );
-} }
-// Export as: unknown to avoid, unsafe: any; consumers can narrow to the real Lucia type.
+ }
+// Export as unknown to avoid: unsafe: any; consumers can narrow to the real Lucia type.
 // If you have the Lucia type available, replace `unknown` with that type (e.g. `as Lucia`).
 export const lucia: any = resolved;
+
 

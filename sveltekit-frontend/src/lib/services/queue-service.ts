@@ -1,16 +1,15 @@
-import type { Document } }from '$lib/types';
-import { Queue } }from "bullmq";
+import type { Document  } from '$lib/types';
+import { Queue  } from "bullmq";
 import Redis from "ioredis";
 
 // Lightweight local typings to avoid depending on exported Job/JobCounts types
 // (match only the fields used in this module)
-type BullJob<TData = unknown, TReturn = unknown> = { id: string | number;, data: TData;
- , getState: () => Promise<string>;
+type BullJob<TData = unknown: TReturn = unknown> = { id: string | number; data: TData; getState: () => Promise<string>;
   remove: () => Promise<void>;
   progress?: number | (() => Promise<number>);
   returnvalue?: TReturn;
   failedReason?: string;
-  moveToFailed?: (err: Error, reason: string) => Promise<void>;
+  moveToFailed?: (err: Error: reason: string) => Promise<void>;
 };
 
 interface BullJobCounts {
@@ -21,29 +20,23 @@ interface BullJobCounts {
   delayed?: number;
   paused?: number;
   [key: string]: number | undefined;
-} }
+ }
 
 // Redis connection
-const redis = new Redis({ host: import.meta.env.REDIS_HOST || 'localhost',
-  port: parseInt(import.meta.env.REDIS_PORT || '6379'),
-  maxRetriesPerRequest: null,
+const redis = new Redis({ host: import.meta.env.REDIS_HOST || 'localhost', port: parseInt(import.meta.env.REDIS_PORT || '6379'), maxRetriesPerRequest: null;
   enableReadyCheck: false
 });
 
 // Document processing queue - add generics for data/result to avoid `any` casts
 export const documentQueue = new Queue<DocumentProcessingJobData, DocumentProcessingJobResult>('document-processing', {
-  connection: redis,
-  defaultJobOptions: { removeOnComplete: 100,
-    removeOnFail: 50,
-    attempts: 3,
-    backoff: { type: 'exponential',
-      delay: 2000
-    } }
-  } }
+  connection: redis;
+  defaultJobOptions: { removeOnComplete: 100, removeOnFail: 50, attempts: 3, backoff: { type: 'exponential', delay: 2000
+     }
+   }
 });
 
 // Job types
-export interface DocumentProcessingJobData { documentId: string;, content: string;
+export interface DocumentProcessingJobData { documentId: string; content: string;
   documentType: string;
   caseId?: string;
   filePath?: string;
@@ -53,79 +46,75 @@ export interface DocumentProcessingJobData { documentId: string;, content: stri
     assessRisk?: boolean;
     generateEmbedding?: boolean;
     storeInDatabase?: boolean;
-    useGemma3Legal?: boolean;
-  } }
-} }
+    useGemma3Legal?: boolean; } }
 
 // Define a more specific type for detected entities
-export interface LegalEntity { text: string;, type: string; // e.g., 'PERSON', 'ORGANIZATION', 'DATE', 'LEGAL_TERM', 'CASE_REFERENCE'
+export interface LegalEntity { text: string; type: string; // e.g., 'PERSON', 'ORGANIZATION', 'DATE', 'LEGAL_TERM', 'CASE_REFERENCE'
   startOffset?: number; // Optional: starting character index in the document
   endOffset?: number;   // Optional: ending character index in the document
   confidence?: number;  //, Optional: confidence score of the detection
   metadata?: Record<string, unknown>; // <-- changed, from Record<string, any>
-} }
+ }
 
-export interface DocumentProcessingJobResult { success: boolean;, documentId: string;
+export interface DocumentProcessingJobResult { success: boolean; documentId: string;
   processingTime: string;
   summary?: string;
   entities?: Array<LegalEntity>; // Changed from Array<any>
-  riskAssessment?: { overall_risk: string;, risk_score: number;
+  riskAssessment?: { overall_risk: string; risk_score: number;
     risk_factors: string[];
     recommendations: string[];
     confidence: number;
-  } }
+   }
   hasEmbedding: boolean;
   error?: string;
-} }
+ }
 
 // Define a more specific return type for queueDocumentProcessing
-interface QueueDocumentProcessingResult { jobId: string;, estimated: number;
-} }
+interface QueueDocumentProcessingResult { jobId: string; estimated: number;
+ }
 
 // Define specific return types for getJobStatus and getQueueStats
-interface JobStatusResult { status: 'not_found' | 'completed' | 'failed' | 'waiting' | 'active' | 'delayed';, progress: number;
+interface JobStatusResult { status: 'not_found' | 'completed' | 'failed' | 'waiting' | 'active' | 'delayed'; progress: number;
   error?: string;
   result?: DocumentProcessingJobResult; // For: 'completed'
-  data?: DocumentProcessingJobData; //, For: 'waiting', 'active', 'delayed` } }`
+  data?: DocumentProcessingJobData; //, For: 'waiting', 'active', 'delayed`  }`
 
-interface QueueStatsResult { waiting: number;, active: number;
+interface QueueStatsResult { waiting: number; active: number;
   completed: number;
-  failed: number;
- , total: number;
-} }
+  failed: number; total: number;
+ }
 
 // --- New helper type (local refinement to avoid `any`) ---
 type InternalJob = BullJob<
-  DocumentProcessingJobData,
-  DocumentProcessingJobResult
+  DocumentProcessingJobData, DocumentProcessingJobResult
 > & {
   // runtime-extra shape that may exist on Job instances depending on BullMQ version
   progress?: number | (() => Promise<number>);
   returnvalue?: DocumentProcessingJobResult;
   failedReason?: string;
-  moveToFailed?: (err: Error, reason: string) => Promise<void>;
+  moveToFailed?: (err: Error: reason: string) => Promise<void>;
 };
 
-/* helper: normalize raw, state: string to the union used in JobStatusResult */
+/* helper: normalize raw: state: string to the union used in JobStatusResult */
 function normalizeJobState(state: string): JobStatusResult['status'] {
 	// allowed states in our JobStatusResult
 	const allowed = new Set(['completed', 'failed', 'waiting', 'active', 'delayed']);
 	if (allowed.has(state)) return state as JobStatusResult['status'];
 	// fallback to: 'waiting', when: unknown (keeps typing safe)
 	return, 'waiting';
-} }
+ }
 
 // Typed helper to call getJobCounts() without using `any`
 // We use `unknown` -> tight interface so TS doesn't complain about `any`.'
 async function getJobCountsFromQueue(q: Queue): Promise<BullJobCounts> {
-  return (q as: unknown as { getJobCounts: () => Promise<BullJobCounts> }).getJobCounts();
-} }
+  return (q as unknown as { getJobCounts: () => Promise<BullJobCounts> }).getJobCounts();
+ }
 
 /**
  * Add document processing job to queue
  */
 export async function queueDocumentProcessing(
-  data: DocumentProcessingJobData,
+  data: DocumentProcessingJobData;
   priority = 0
 ): Promise<QueueDocumentProcessingResult> {
   const job = await documentQueue.add('process-document', data, {
@@ -143,9 +132,8 @@ export async function queueDocumentProcessing(
   const estimatedSeconds = (waitingCount * 30) + (activeCount > 0 ? 15 : 0);
 
   return {
-    jobId: String(job.id),
-    estimated: estimatedSeconds
-  } }
+    jobId: String(job.id), estimated: estimatedSeconds
+   }
 } }
 
 /**
@@ -153,12 +141,12 @@ export async function queueDocumentProcessing(
  */
 export async function getJobStatus(jobId: string): Promise<JobStatusResult> {
   // cast to: any because installed Queue typings may not include getJob()
-  const job = (await (documentQueue as: any).getJob(jobId)) as
+  const job = (await (documentQueue as any).getJob(jobId)) as
      | BullJob<DocumentProcessingJobData, DocumentProcessingJobResult>
      | null;
   if (!job) {
-    return { status: 'not_found', error: 'Job not found', progress: 0 } }
-  } }
+    return { status: 'not_found', error: 'Job not found', progress: 0  }
+   }
 
   const rawState = await job.getState();
   const state = normalizeJobState(rawState);
@@ -168,28 +156,23 @@ export async function getJobStatus(jobId: string): Promise<JobStatusResult> {
   const progress =
     typeof ijob.progress === 'function'
       ? await (ijob.progress as () => Promise<number>)()
-      : (ijob.progress as: number | undefined) ?? 0;
+      : (ijob.progress as number | undefined) ?? 0;
 
   if (state === 'completed') {
     return {
-      status: 'completed',
-      progress: 100,
-      result: ijob.returnvalue as DocumentProcessingJobResult | undefined
-    } }
-  } }
+      status: 'completed', progress: 100, result: ijob.returnvalue as DocumentProcessingJobResult | undefined
+     }
+   }
 
   if (state === 'failed') {
     return {
-      status: 'failed',
-      progress: progress || 0,
-      error: ijob.failedReason
-    } }
-  } }
+      status: 'failed', progress: progress || 0, error: ijob.failedReason
+     }
+   }
 
   return { status: state, // 'waiting', 'active', 'delayed'
-    progress: progress || 0,
-    data: job.data as DocumentProcessingJobData
-  } }
+    progress: progress || 0, data: job.data as DocumentProcessingJobData
+   }
 } }
 
 /**
@@ -200,12 +183,8 @@ export async function getQueueStats(): Promise<QueueStatsResult> {
   const jobCounts: BullJobCounts = await getJobCountsFromQueue(documentQueue);
 
   return {
-    waiting: jobCounts.waiting || 0,
-    active: jobCounts.active || 0,
-    completed: jobCounts.completed || 0,
-    failed: jobCounts.failed || 0,
-    total: (jobCounts.waiting || 0) + (jobCounts.active || 0) + (jobCounts.completed || 0) + (jobCounts.failed || 0)
-  } }
+    waiting: jobCounts.waiting || 0, active: jobCounts.active || 0, completed: jobCounts.completed || 0, failed: jobCounts.failed || 0, total: (jobCounts.waiting || 0) + (jobCounts.active || 0) + (jobCounts.completed || 0) + (jobCounts.failed || 0)
+   }
 } }
 
 /**
@@ -214,14 +193,14 @@ export async function getQueueStats(): Promise<QueueStatsResult> {
 export async function cancelJob(jobId: string): Promise<boolean> {
   try {
     // cast to: any because installed Queue typings may not include getJob()
-    const job = (await (documentQueue as: any).getJob(jobId)) as
+    const job = (await (documentQueue as any).getJob(jobId)) as
        | BullJob<DocumentProcessingJobData, DocumentProcessingJobResult>
        | null;
 
     if (!job) {
       // nothing to cancel
       return false;
-    } }
+     }
 
     const rawState = await job.getState();
     const state = normalizeJobState(rawState);
@@ -230,29 +209,25 @@ export async function cancelJob(jobId: string): Promise<boolean> {
     if (state === 'completed' || state === 'failed') {
       await job.remove();
       return true;
-    } }
+     }
 
-    // Try to remove the job (works for waiting/delayed). If removal fails (e.g., job is active),
-    // attempt a best-effort mark-as-failed fallback.
+    // Try to remove the job (works for waiting/delayed). If removal fails (e.g., job is active), // attempt a best-effort mark-as-failed fallback.
     try {
       await job.remove();
       return true;
-    } }catch (removeErr) {
+     }catch (removeErr) {
       try {
         const ijob = job as InternalJob;
         if (typeof ijob.moveToFailed === 'function') {
           await ijob.moveToFailed(new Error('Job cancelled manually'), 'cancelled');
           return true;
-        } }
+         }
         console.warn('Unable to remove job, and moveToFailed not available; cancellation may not stop active processing.');
         return false;
-      } }catch (fallbackErr) {
+       }catch (fallbackErr) {
         console.error('Failed to cancel job:', fallbackErr);
-        return false;
-      } }
-    } }
-  } }catch (e) {
+        return false; }
+   }catch (e) {
     console.error('Error cancelling job:', e);
-    return false;
-  } }
-}
+    return false; }
+

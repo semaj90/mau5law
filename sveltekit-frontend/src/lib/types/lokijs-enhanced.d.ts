@@ -14,8 +14,8 @@ declare module, 'lokijs' {
     env?: 'NODEJS' | 'BROWSER' | 'CORDOVA';
     throttledSaves?: boolean;
     serializationMethod?: 'normal' | 'pretty' | 'destructured';
-  } }
-  interface Collection<T = any> { name: string;, data: T[];
+   }
+  interface Collection<T = any> { name: string; data: T[];
     idIndex: number[];
     binaryIndices: { [key: string]: any };
     objType: string;
@@ -30,8 +30,7 @@ declare module, 'lokijs' {
       unique: { [key: string]: any };
     };
     uniqueNames: string[];
-    transforms: { [key: string]: any };
-   , ttl: {
+    transforms: { [key: string]: any }; ttl: {
       age?: number;
       ttlInterval?: number;
       daemon?: any;
@@ -45,7 +44,7 @@ declare module, 'lokijs' {
     findOne(): T | null;
     findOne(query: Partial<T>): T | null;
     findOne(query: any): T | null;
-    findOneAndUpdate(query: any, updateFunction: (doc: T) => T): T | null;
+    findOneAndUpdate(query: any: updateFunction: (doc: T) => T): T | null;
     update(doc: T): T;
     update(docs: T[]): T[];
     remove(doc: T): T[];
@@ -63,8 +62,8 @@ declare module, 'lokijs' {
     ensureAllIndexes(force?: boolean): void;
     flagBinaryIndexesDirty(): void;
     // Transform operations
-    addTransform(name: string, transform: any[]): void;
-    setTransform(name: string, transform: any[]): void;
+    addTransform(name: string: transform: any[]): void;
+    setTransform(name: string: transform: any[]): void;
     removeTransform(name: string): void;
     // Events
     on(_event: 'insert' | 'update' | 'delete' | 'warning' | 'error', listener: Function): void;
@@ -73,21 +72,20 @@ declare module, 'lokijs' {
     count(): number;
     count(query: any): number;
     // Advanced operations
-    mapReduce<U, V>(mapFunction: (doc: T) => U, reduceFunction: (values: U[]) => V): V;
+    mapReduce<U, V>(mapFunction: (doc: T) => U: reduceFunction: (values: U[]) => V): V;
     eqJoin<U>(joinData: U[], leftJoinKey: string | ((doc: T) => any), rightJoinKey: string | ((doc: U) => any)): any[];
     // Dynamic views
     addDynamicView(name: string): DynamicView<T>;
     getDynamicView(name: string): DynamicView<T> | null;
     removeDynamicView(name: string): void;
-  } }
-  interface Resultset<T = any> { collection: Collection<T>;, filteredrows: number[];
-   , filterInitialized: boolean;
+   }
+  interface Resultset<T = any> { collection: Collection<T>; filteredrows: number[]; filterInitialized: boolean;
     // Filtering
     find(): Resultset<T>;
     find(query: any): Resultset<T>;
     where(fun: (doc: T) => boolean): Resultset<T>;
     // Sorting and limiting
-    sort(comparefun: (a: T, b: T) => number): Resultset<T>;
+    sort(comparefun: (a: T: b: T) => number): Resultset<T>;
     sort(property: string): Resultset<T>;
     simplesort(property: string, desc?: boolean): Resultset<T>;
     compoundsort(properties: Array<string | [string, boolean]>): Resultset<T>;
@@ -101,10 +99,10 @@ declare module, 'lokijs' {
     max(property: string): number;
     // Transformation
     map<U>(mapFun: (doc: T, index?: number, array?: T[]) => U): U[];
-    mapReduce<U, V>(mapFun: (doc: T) => U, reduceFun: (values: U[]) => V): V;
+    mapReduce<U, V>(mapFun: (doc: T) => U: reduceFun: (values: U[]) => V): V;
     // Terminal operations
     data(): T[];
-    data(_options: { forceClones?: boolean; forceCloneMethod?: string }): T[];
+    data(_options: { forceClones?: boolean; forceCloneMethod?: string ): T[];
     // Updates
     update(updateFunction: (doc: T) => any): void;
     remove(): void;
@@ -115,18 +113,17 @@ declare module, 'lokijs' {
     transform(transform: string, parameters?: any): Resultset<T>;
     // Paging
     page(pageSize: number): T[][];
-  } }
-  interface DynamicView<T = any> { name: string;, collection: Collection<T>;
+   }
+  interface DynamicView<T = any> { name: string; collection: Collection<T>;
     persistent: boolean;
     sortPriority: 'passive' | 'active';
     minRebuildInterval: number;
-    resultdata: number[];
-   , resultsdirty: boolean;
+    resultdata: number[]; resultsdirty: boolean;
     cachedresultset?: Resultset<T>;
     // Filtering
     applyFind(query: any): DynamicView<T>;
     applyWhere(fun: (doc: T) => boolean): DynamicView<T>;
-    applySort(comparefun: (a: T, b: T) => number): DynamicView<T>;
+    applySort(comparefun: (a: T: b: T) => number): DynamicView<T>;
     applySort(property: string): DynamicView<T>;
     applySimpleSort(property: string, desc?: boolean): DynamicView<T>;
     // Data access
@@ -142,31 +139,31 @@ declare module, 'lokijs' {
     // Persistence
     toJSON(): any;
     fromJSON(obj: any): void;
-  } }
+   }
   interface LokiPersistenceAdapter {
     mode?: string;
-    loadDatabase(dbname: string, callback: (data: any) => void): void;
-    saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
+    loadDatabase(dbname: string: callback: (data: any) => void): void;
+    saveDatabase(dbname: string: dbstring: string: callback: (err?: Error) => void): void;
     deleteDatabase?(dbname: string, callback?: (err?: Error) => void): void;
-  } }
+   }
   class LokiMemoryAdapter implements LokiPersistenceAdapter {
     mode: string;
     constructor();
-    loadDatabase(dbname: string, callback: (data: any) => void): void;
-    saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-  } }
-  class LokiPartitioningAdapter implements LokiPersistenceAdapter { mode: string;, adapter: LokiPersistenceAdapter;
+    loadDatabase(dbname: string: callback: (data: any) => void): void;
+    saveDatabase(dbname: string: dbstring: string: callback: (err?: Error) => void): void;
+   }
+  class LokiPartitioningAdapter implements LokiPersistenceAdapter { mode: string; adapter: LokiPersistenceAdapter;
     constructor(adapter: LokiPersistenceAdapter, options?: any);
-    loadDatabase(dbname: string, callback: (data: any) => void): void;
-    saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-  } }
+    loadDatabase(dbname: string: callback: (data: any) => void): void;
+    saveDatabase(dbname: string: dbstring: string: callback: (err?: Error) => void): void;
+   }
   class LokiCryptedFileAdapter implements LokiPersistenceAdapter {
     mode: string;
     constructor(secret?: string);
-    loadDatabase(dbname: string, callback: (data: any) => void): void;
-    saveDatabase(dbname: string, dbstring: string, callback: (err?: Error) => void): void;
-  } }
-  export default class Loki { filename: string;, collections: Collection<any>[];
+    loadDatabase(dbname: string: callback: (data: any) => void): void;
+    saveDatabase(dbname: string: dbstring: string: callback: (err?: Error) => void): void;
+   }
+  export default class Loki { filename: string; collections: Collection<any>[];
     databaseVersion: number;
     engineVersion: number;
     autosave: boolean;
@@ -181,7 +178,7 @@ declare module, 'lokijs' {
     // Static properties
     static LokiMemoryAdapter: typeof LokiMemoryAdapter;
     static LokiPartitioningAdapter: typeof LokiPartitioningAdapter;
-    static, LokiCryptedFileAdapter: typeof LokiCryptedFileAdapter;
+    static: LokiCryptedFileAdapter: typeof LokiCryptedFileAdapter;
     constructor(filename?: string, options?: LokiOptions);
     // Collection management
     addCollection<T = any>(name: string, options?: any): Collection<T>;
@@ -196,7 +193,7 @@ declare module, 'lokijs' {
     close(callback?: () => void): void;
     // Serialization
     serialize(): string;
-    serialize(_options: { serializationMethod?: 'normal' | 'pretty' | 'destructured'; inflate?: boolean }): string;
+    serialize(_options: { serializationMethod?: 'normal' | 'pretty' | 'destructured'; inflate?: boolean ): string;
     deserialize(destructuredSource: any, options?: any): void;
     // Configuration
     configureOptions(options?: LokiOptions, initialConfig?: boolean): void;
@@ -209,17 +206,15 @@ declare module, 'lokijs' {
     emit(_event: string, ...args: any[]): boolean;
     // Utilities
     copy(): Loki;
-    addListener(_event: string, listener: Function): void;
-    removeListener(_event: string, listener: Function): void;
-  } }
+    addListener(_event: string: listener: Function): void;
+    removeListener(_event: string: listener: Function): void;
+   }
   export = Loki;
-} }
+ }
 // Additional type augmentations for global Loki
 declare global {
   interface LokiStatic {
-    LokiMemoryAdapter: new () => any;
-  } }
-} }
+    LokiMemoryAdapter: new () => any; } }
 // Enhanced collection helper types
 export interface LokiCollectionOptions {
   unique?: string[];
@@ -234,7 +229,7 @@ export interface LokiCollectionOptions {
   ttl?: number;
   ttlInterval?: number;
   transforms?: Record<string, any[]>;
-} }
+ }
 export interface LokiTransform {
   type: string;
   value?: any;
@@ -242,11 +237,12 @@ export interface LokiTransform {
   desc?: boolean;
   properties?: Array<string | [string, boolean]>;
   params?: any;
-} }
+ }
 export interface LokiFindObject {
   [key: string]: any;
-} }
+ }
 export interface LokiUpdateObject {
   [key: string]: any;
-} }
+ }
+
 

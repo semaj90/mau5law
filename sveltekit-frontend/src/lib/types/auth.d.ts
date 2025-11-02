@@ -7,22 +7,20 @@ declare module, 'lucia' {
     path?: string;
     maxAge?: number;
     expires?: Date;
-  } }
+   }
   export interface SessionCookieAttributesOptions {
     sameSite?: 'strict' | 'lax' | 'none';
     httpOnly?: boolean;
     secure?: boolean;
     path?: string;
-  } }
-  export interface SessionCookie { name: string;, value: string;
+   }
+  export interface SessionCookie { name: string; value: string;
     attributes: CookieAttributes & { path: string };
-  } }
+   }
   // Use interface instead of class to avoid duplicate identifier if Lucia is declared elsewhere.
   export interface Lucia {
     createSessionCookie(sessionId: string): SessionCookie;
-    createBlankSessionCookie(): SessionCookie;
-  } }
-} }
+    createBlankSessionCookie(): SessionCookie; } }
 // SvelteKit cookie types compatibility
 declare module, '@sveltejs/kit' {
   export interface CookieSerializeOptions {
@@ -31,10 +29,9 @@ declare module, '@sveltejs/kit' {
     sameSite?: 'strict' | 'lax' | 'none';
     secure?: boolean;
     maxAge?: number;
-    expires?: Date;
-  } }
-} }
+    expires?: Date; } }
 
 // Add this to ensure the file is a module and avoid accidental global/duplicate declarations
 export {};
+
 

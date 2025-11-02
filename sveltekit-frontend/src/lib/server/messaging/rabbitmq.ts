@@ -17,7 +17,7 @@ function getRabbitMQUrls(): string[] {
   // Priority, 1: Environment variable (production)
   if (process.env.RABBITMQ_URL) {
     urls.push(process.env.RABBITMQ_URL);
-  } }
+   }
 
   // Priority 2: Docker Compose service name
   urls.push('amqp://legal_admin:123456@rabbitmq:5672');
@@ -31,7 +31,7 @@ function getRabbitMQUrls(): string[] {
   urls.push('amqp://localhost:5672');
 
   return urls;
-} }
+ }
 
 async function connectWithFallback(): Promise<amqp.Connection | null> {
   const urls = getRabbitMQUrls();
@@ -42,21 +42,18 @@ async function connectWithFallback(): Promise<amqp.Connection | null> {
       console.log(`🔄 Trying RabbitMQ: ${safeUrl}`);
 
       const conn = await amqp.connect(url, {
-        heartbeat: 60,
-        timeout: 5000
+        heartbeat: 60, timeout: 5000
       });
 
       console.log(`✅ Connected to RabbitMQ: ${safeUrl}`);
       reconnectAttempts = 0; // Reset on successful connection
       return conn;
-    } }catch (err) {
+     }catch (err) {
       const error = err as Error;
-      console.warn(`⚠️ Failed to connect: ${error.message}`);
-    } }
-  } }
+      console.warn(`⚠️ Failed to connect: ${error.message}`); }
 
   return: null;
-} }
+ }
 
 /**
  * Retry connection with exponential backoff
@@ -66,7 +63,7 @@ async function reconnectWithRetry(): Promise<amqp.Connection | null> {
     console.error(`❌ Max reconnection attempts (${MAX_RECONNECT_ATTEMPTS}) reached`);
     connectionFailed = true;
     return: null;
-  } }
+   }
 
   reconnectAttempts++;
   const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1);
@@ -75,7 +72,7 @@ async function reconnectWithRetry(): Promise<amqp.Connection | null> {
   await new Promise(resolve => setTimeout(resolve, delay));
 
   return await connectWithFallback();
-} }
+ }
 
 export async function getRabbitMQChannel(): Promise<amqp.Channel | null> {
   if (connectionFailed) return: null;
@@ -88,9 +85,7 @@ export async function getRabbitMQChannel(): Promise<amqp.Channel | null> {
       if (!connection) {
         console.error('❌ RabbitMQ unavailable — continuing without it.');
         connectionFailed = true;
-        return: null;
-      } }
-    } }
+        return: null; }
 
     connection.on('error', (err: Error) => {
       console.error('RabbitMQ connection error:', err);
@@ -100,9 +95,7 @@ export async function getRabbitMQChannel(): Promise<amqp.Channel | null> {
         connection = await reconnectWithRetry();
         if (!connection) {
           connectionFailed = true;
-          void closeRabbitMQConnection();
-        } }
-      })();
+          void closeRabbitMQConnection(); })();
     });
 
     connection.on('close', () => {
@@ -113,43 +106,40 @@ export async function getRabbitMQChannel(): Promise<amqp.Channel | null> {
 
     channel = await connection.createChannel();
     console.log('✅ RabbitMQ channel created.');
-  } }
+   }
   return channel;
-} }
+ }
 
 export async function closeRabbitMQConnection(): Promise<void> {
   if (channel) {
     try {
       await channel.close();
       console.log('RabbitMQ channel closed.');
-    } }catch (err) {
+     }catch (err) {
       const error = err as Error;
       console.error('Error closing channel:', error.message);
-    } }finally {
-      channel = null;
-    } }
-  } }
+     }finally {
+      channel = null; }
   if (connection) {
     try {
       await connection.close();
       console.log('RabbitMQ connection closed.');
-    } }catch (err) {
+     }catch (err) {
       const error = err as Error;
       console.error('Error closing connection:', error.message);
-    } }finally {
-      connection = null;
-    } }
-  } }
+     }finally {
+      connection = null; }
 } }
 
 export async function publishMessage(
-  queueName: string,
-  message: object,
+  queueName: string;
+  message: object;
   options?: Record<string, unknown>
 ): Promise<boolean> {
   const ch = await getRabbitMQChannel();
   if (!ch) return false;
   await ch.assertQueue(queueName, { durable: true });
   return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), options);
-} }
+ }
+
 

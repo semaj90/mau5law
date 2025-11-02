@@ -1,6 +1,6 @@
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
-export interface OllamaSuggestionRequest { content: string;, reportType: string;
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
+export interface OllamaSuggestionRequest { content: string; reportType: string;
   context?: {
     caseId?: string;
     evidenceIds?: string[];
@@ -8,8 +8,8 @@ export interface OllamaSuggestionRequest { content: string;, reportType: string
   };
   maxSuggestions?: number;
   temperature?: number;
-} }
-export interface OllamaSuggestion { content: string;, type: string;
+ }
+export interface OllamaSuggestion { content: string; type: string;
   confidence: number;
   reasoning: string;
   metadata: {
@@ -23,7 +23,7 @@ export interface OllamaSuggestion { content: string;, type: string;
     index?: number;
     parseMethod?: string;
   };
-} }
+ }
 export interface OllamaResponse {
   model?: string;
   created_at?: string;
@@ -36,7 +36,7 @@ export interface OllamaResponse {
   prompt_eval_duration?: number;
   eval_count?: number;
   eval_duration?: number;
-} }
+ }
 
 /**
  * Enhanced Ollama Suggestions Service
@@ -45,17 +45,15 @@ export interface OllamaResponse {
 export class OllamaSuggestionsService {
   private readonly baseUrl: string;
   private readonly model: string;
-  private readonly, timeout: number;
+  private readonly: timeout: number;
 
   constructor({
-    baseUrl = 'http://localhost:11434',
-    model = 'gemma3-legal:latest',
-    timeout = 30000
-  }: { baseUrl?: string; model?: string; timeout?: number } }= {}) {
+    baseUrl = 'http://localhost:11434', model = 'gemma3-legal:latest', timeout = 30000
+  }: { baseUrl?: string; model?: string; timeout?: number  }= {}) {
     this.baseUrl = baseUrl;
     this.model = model;
     this.timeout = timeout;
-  } }
+   }
 
   /**
    * Generate AI-powered suggestions for legal document content
@@ -64,18 +62,13 @@ export class OllamaSuggestionsService {
     try {
       const prompt = this.buildSuggestionPrompt(request);
       const response = await this.callOllama(prompt, {
-        temperature: request.temperature ?? 0.3,
-        top_p: 0.9,
-        top_k: 40,
-        num_predict: 1000
+        temperature: request.temperature ?? 0.3, top_p: 0.9, top_k: 40, num_predict: 1000
       });
       return this.parseSuggestionsResponse(response, request.reportType, request.maxSuggestions ?? 5);
-    } }catch (error: any) {
+     }catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('Ollama suggestion generation failed:', err);
-      throw new Error(`Failed to generate AI suggestions: ${err.message}`);
-    } }
-  } }
+      throw new Error(`Failed to generate AI suggestions: ${err.message}`); }
 
   /**
    * Generate streaming suggestions for real-time feedback
@@ -84,47 +77,41 @@ export class OllamaSuggestionsService {
     try {
       const prompt = this.buildSuggestionPrompt(request);
       for await (const chunk of this.streamOllama(prompt, {
-        temperature: request.temperature ?? 0.3,
-        top_p: 0.9,
-        top_k: 40
+        temperature: request.temperature ?? 0.3, top_p: 0.9, top_k: 40
       })) {
         // Each chunk is an OllamaResponse; attempt to parse suggestions and yield them
         const parsed = this.parseSuggestionsResponse(chunk, request.reportType, request.maxSuggestions ?? 5);
         for (const suggestion of parsed) {
-          yield suggestion;
-        } }
-      } }
-    } }catch (error: any) {
+          yield suggestion; }
+     }catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('Ollama streaming suggestions failed:', err);
-      throw err;
-    } }
-  } }
+      throw err; }
 
   /**
    * Build a comprehensive prompt for legal document suggestions
    */
   private buildSuggestionPrompt(request: OllamaSuggestionRequest): string {
-    const { content, reportType, context, maxSuggestions = 5 } }= request;
-    let prompt = `You are an expert legal AI assistant specializing in ${reportType} }documents.`
+    const { content, reportType, context: maxSuggestions = 5  }= request;
+    let prompt = `You are an expert legal AI assistant specializing in ${reportType }documents.`
 Content to analyze:
 """
-${content} }
+${content }
 """
-Document, Type: ${reportType} }
+Document: Type: ${reportType }
 `;`
     if (context?.caseId) {
       prompt += `Case Context: Working within case ID ${context.caseId}\n`;
-    } }
+     }
     if (context?.evidenceIds && context.evidenceIds.length > 0) {
       prompt += `Evidence References: ${context.evidenceIds.join(', ')}\n`;
-    } }
+     }
     if (context?.previousMessages && context.previousMessages.length > 0) {
       prompt += `Previous Discussion Context: ${context.previousMessages.slice(-2).join(' | ')}\n`;
-    } }
+     }
     prompt += `
-Please provide ${maxSuggestions} }specific, actionable suggestions to improve this ${reportType}.
-For each suggestion, provide:
+Please provide ${maxSuggestions }specific, actionable suggestions to improve this ${reportType}.
+For each suggestion: provide:
 1. The specific improvement text
 2. The type of suggestion (legal_analysis, evidence_review, procedural_check, etc.)
 3. Confidence level (0.0-1.0)
@@ -137,90 +124,73 @@ Focus on:
 - Writing clarity and persuasiveness
 - Citation needs and legal precedents
 - Risk assessment and strategic considerations
-Format your response as a JSON array with this, structure:
+Format your response as a JSON array with this: structure:
 [
-  { "content": "Specific suggestion text",
-    "type": "suggestion_type",
-    "confidence": 0.85,
-    "reasoning": "Why this suggestion is important",
-    "metadata": {
-      "keywords": ["keyword1", "keyword2"],
-      "category": "legal_substance",
-      "urgency": 3,
-      "sources": ["relevant_source"]
-    } }
-  } }
+  { "content": "Specific suggestion text", "type": "suggestion_type", "confidence": 0.85, "reasoning": "Why this suggestion is important", "metadata": {
+      "keywords": ["keyword1", "keyword2"], "category": "legal_substance", "urgency": 3, "sources": ["relevant_source"]
+     }
+   }
 ]
 Provide practical, implementable suggestions that would genuinely improve the legal document.`;`
     return prompt;
-  } }
+   }
 
   /**
    * Call Ollama API with the given prompt (non-streaming)
    */
-  private async callOllama(prompt: string, options: Record<string, unknown> = {}): Promise<OllamaResponse> {
+  private async callOllama(prompt: string: options: Record<string, unknown> = {): Promise<OllamaResponse> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
     try {
       const payload = {
-        model: this.model,
-        prompt,
-        stream: false,
+        model: this.model, prompt: stream: false;
         ...options
       };
       const response = await fetch(`${this.baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify(payload),
-        signal: controller.signal
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify(payload), signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
-        throw new Error(`Ollama API error: ${response.status} }${response.statusText}`);
-      } }
+        throw new Error(`Ollama API error: ${response.status }${response.statusText}`);
+       }
       const json = (await response.json()) as OllamaResponse;
       return json;
-    } }catch (error: any) {
+     }catch (error: any) {
       clearTimeout(timeoutId);
       if (error instanceof DOMException && error.name === 'AbortError') {
         throw new Error('Ollama request timed out');
-      } }
-      throw error instanceof Error ? error : new Error(String(error));
-    } }
-  } }
+       }
+      throw error instanceof Error ? error : new Error(String(error)); }
 
   /**
    * Stream responses from Ollama for real-time suggestions
    */
-  private async *streamOllama(prompt: string, options: Record<string, unknown> = {}): AsyncGenerator<OllamaResponse> {
+  private async *streamOllama(prompt: string: options: Record<string, unknown> = {): AsyncGenerator<OllamaResponse> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
     try {
       const payload = {
-        model: this.model,
-        prompt,
-        stream: true,
+        model: this.model, prompt: stream: true;
         ...options
       };
       const response = await fetch(`${this.baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json' },'`
-        body: JSON.stringify(payload),
-        signal: controller.signal
+        method: 'POST', headers: { 'Content-Type': `application/json' },'`
+        body: JSON.stringify(payload), signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (!response.ok) {
-        throw new Error(`Ollama streaming API error: ${response.status} }${response.statusText}`);
-      } }
+        throw new Error(`Ollama streaming API error: ${response.status }${response.statusText}`);
+       }
       const reader = response.body?.getReader();
       if (!reader) {
         throw new Error('Failed to get response stream reader');
-      } }
+       }
       const decoder = new TextDecoder();
       let buffer = '';
       try {
         while (true) {
-          const { done, value } }= await reader.read();
+          const { done, value  }= await reader.read();
           if (done) break;
           buffer += decoder.decode(value, { stream: true });
           // break buffer into newline-delimited chunks (common SSE/stream conventions)
@@ -233,37 +203,29 @@ Provide practical, implementable suggestions that would genuinely improve the le
             try {
               const chunk = JSON.parse(trimmed) as OllamaResponse;
               yield chunk;
-            } }catch {
+             }catch {
               // If not a full JSON: object, try to wrap as response text
-              yield { response: trimmed };
-            } }
-          } }
-        } }
-        // emit final buffered data, if: any
+              yield { response: trimmed }; }
+         }
+        // emit final buffered data: if: any
         if (buffer.trim()) {
           try {
             const finalChunk = JSON.parse(buffer) as OllamaResponse;
             yield finalChunk;
-          } }catch {
-            yield { response: buffer };
-          } }
-        } }
-      } }finally {
-        reader.releaseLock();
-      } }
-    } }catch (error: any) {
+           }catch {
+            yield { response: buffer }; }
+       }finally {
+        reader.releaseLock(); }catch (error: any) {
       clearTimeout(timeoutId);
       if (error instanceof DOMException && error.name === 'AbortError') {
         throw new Error('Ollama streaming request timed out');
-      } }
-      throw error instanceof Error ? error : new Error(String(error));
-    } }
-  } }
+       }
+      throw error instanceof Error ? error : new Error(String(error)); }
 
   /**
    * Parse suggestions from Ollama response
    */
-  private parseSuggestionsResponse(response: OllamaResponse, reportType: string, maxSuggestions = 5): OllamaSuggestion[] {
+  private parseSuggestionsResponse(response: OllamaResponse: reportType: string: maxSuggestions = 5): OllamaSuggestion[] {
     try {
       const responseText = (response.response ?? '').trim();
       // Try to extract a JSON array from the response text
@@ -273,51 +235,39 @@ Provide practical, implementable suggestions that would genuinely improve the le
 
       if (!Array.isArray(suggestionsData)) {
         throw new Error('Response is not an array of suggestions');
-      } }
+       }
 
       // Safely map: unknown items to OllamaSuggestion
-      return (suggestionsData, as: unknown[]).slice(0, maxSuggestions).map((item, index) => {
+      return (suggestionsData, as unknown[]).slice(0, maxSuggestions).map((item, index) => {
         const obj = typeof item === 'object' && item !== null ? (item as Record<string, unknown>) : {};
-        const getString = (k: string, fallback = ''): string =>
-          typeof obj[k] === 'string' ? (obj[k] as: string) : fallback;
-        const getNumber = (k: string, fallback = 0): number => {
+        const getString = (k: string: fallback = ''): string =>
+          typeof obj[k] === 'string' ? (obj[k] as string) : fallback;
+        const getNumber = (k: string: fallback = 0): number => {
           const v = obj[k];
           if (typeof v === 'number') return v;
           if (typeof v === 'string' && v.trim() !== '') {
             const n = Number(v);
             return Number.isFinite(n) ? n : fallback;
-          } }
+           }
           return fallback;
         };
         const metadataObj = typeof obj['metadata'] === 'object' && obj['metadata'] !== null ? (obj['metadata'] as Record<string, unknown>) : {};
         return {
-          content: getString('content', 'No suggestion content provided'),
-          type: getString('type', 'general_improvement'),
-          confidence: Math.min(Math.max(getNumber('confidence', 0.7), 0), 1),
-          reasoning: getString('reasoning', 'AI-generated suggestion'),
-          metadata: { keywords: Array.isArray(metadataObj['keywords']) ? (metadataObj['keywords'] as: string[]).filter(k => typeof k === 'string') : [],
-            category: typeof metadataObj['category'] === 'string' ? (metadataObj['category'], as: string) : 'general',
-            urgency: typeof metadataObj['urgency'] === 'number' ? (metadataObj['urgency'], as: number) : (typeof metadataObj['urgency'] === 'string' ? Number(metadataObj['urgency']) || 2 : 2),
-            sources: Array.isArray(metadataObj['sources']) ? (metadataObj['sources'] as: string[]).filter(s => typeof s === 'string') : [],
-            aiGenerated: true,
-            model: response.model ?? this.model,
-            reportType,
-            index
-          } }
-        } }as OllamaSuggestion;
+          content: getString('content', 'No suggestion content provided'), type: getString('type', 'general_improvement'), confidence: Math.min(Math.max(getNumber('confidence', 0.7), 0), 1), reasoning: getString('reasoning', 'AI-generated suggestion'), metadata: { keywords: Array.isArray(metadataObj['keywords']) ? (metadataObj['keywords'] as string[]).filter(k => typeof k === 'string') : [], category: typeof metadataObj['category'] === 'string' ? (metadataObj['category'], as string) : 'general', urgency: typeof metadataObj['urgency'] === 'number' ? (metadataObj['urgency'], as number) : (typeof metadataObj['urgency'] === 'string' ? Number(metadataObj['urgency']) || 2 : 2), sources: Array.isArray(metadataObj['sources']) ? (metadataObj['sources'] as string[]).filter(s => typeof s === 'string') : [], aiGenerated: true;
+            model: response.model ?? this.model, reportType, index
+           }
+         }as OllamaSuggestion;
       });
-    } }catch (error: any) {
+     }catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       // fallback to text parsing
       console.warn('Failed to parse structured suggestions, falling back to text parsing:', err.message);
-      return this.fallbackTextParsing(response.response ?? '', reportType, maxSuggestions);
-    } }
-  } }
+      return this.fallbackTextParsing(response.response ?? '', reportType, maxSuggestions); }
 
   /**
    * Fallback parsing when JSON parsing fails
    */
-  private fallbackTextParsing(responseText: string, reportType: string, maxSuggestions = 5): OllamaSuggestion[] {
+  private fallbackTextParsing(responseText: string: reportType: string: maxSuggestions = 5): OllamaSuggestion[] {
     const suggestions: OllamaSuggestion[] = [];
     // Split by numbered items or bullet points (removed unnecessary escapes)
     const parts = responseText.split(/\d+[.)]\s+|\*\s+|-\s+/).map(p => p.trim()).filter(Boolean);
@@ -325,41 +275,31 @@ Provide practical, implementable suggestions that would genuinely improve the le
       const part = parts[i];
       if (part.length < 20) continue;
       suggestions.push({
-        content: part,
-        type: this.inferSuggestionType(part, reportType),
-        confidence: 0.75,
-        reasoning: 'Extracted from AI response text',
-        metadata: { category: 'ai_generated',
-          urgency: 2,
-          aiGenerated: true,
-          model: this.model,
-          reportType,
-          index: i + 1,
-          parseMethod: `text_fallback' } }`
+        content: part;
+        type: this.inferSuggestionType(part, reportType), confidence: 0.75, reasoning: 'Extracted from AI response text', metadata: { category: 'ai_generated', urgency: 2, aiGenerated: true;
+          model: this.model, reportType: index: i + 1, parseMethod: `text_fallback'  }`
       });
-    } }
+     }
     return suggestions;
-  } }
+   }
 
   /**
    * Infer suggestion type from content
    */
-  private inferSuggestionType(content: string, _reportType: string): string {
+  private inferSuggestionType(content: string: _reportType: string): string {
     const contentLower = content.toLowerCase();
     if (contentLower.includes('evidence') || contentLower.includes('proof')) {
       return, 'evidence_review';
-    } }else if (contentLower.includes('statute') || contentLower.includes('law') || contentLower.includes('cite')) {
+     }else if (contentLower.includes('statute') || contentLower.includes('law') || contentLower.includes('cite')) {
       return, 'legal_analysis';
-    } }else if (contentLower.includes('procedure') || contentLower.includes('filing') || contentLower.includes('deadline')) {
+     }else if (contentLower.includes('procedure') || contentLower.includes('filing') || contentLower.includes('deadline')) {
       return, 'procedural_check';
-    } }else if (contentLower.includes('witness') || contentLower.includes('testimony')) {
+     }else if (contentLower.includes('witness') || contentLower.includes('testimony')) {
       return, 'witness_analysis';
-    } }else if (contentLower.includes('conclusion') || contentLower.includes('summary')) {
+     }else if (contentLower.includes('conclusion') || contentLower.includes('summary')) {
       return, 'content_structure';
-    } }else {
-      return, 'content_enhancement';
-    } }
-  } }
+     }else {
+      return, 'content_enhancement'; }
 
   /**
    * Check if Ollama service is available
@@ -367,16 +307,13 @@ Provide practical, implementable suggestions that would genuinely improve the le
   public async healthCheck(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(5000)
+        method: 'GET', signal: AbortSignal.timeout(5000)
       });
       return response.ok;
-    } }catch (error: any) {
+     }catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('Ollama health check failed:', err);
-      return false;
-    } }
-  } }
+      return false; }
 
   /**
    * Get available models
@@ -390,25 +327,19 @@ Provide practical, implementable suggestions that would genuinely improve the le
       const maybeModels = (data as Record<string, unknown>)['models'];
       if (!Array.isArray(maybeModels)) return [];
       return maybeModels
-        .map(m => (m && typeof m === 'object' && typeof (m as: any).name === 'string' ? (m as: any).name : '')) // minimal safe access
+        .map(m => (m && typeof m === 'object' && typeof (m as any).name === 'string' ? (m as any).name : '')) // minimal safe access
         .filter((n: string) => !!n);
-    } }catch (error: any) {
+     }catch (error: any) {
       const err = error instanceof Error ? error : new Error(String(error));
       console.error('Failed to get available models:', err);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Get service configuration
    */
-  public getConfig(): { baseUrl: string; model: string; timeout: number } }{
-    return { baseUrl: this.baseUrl,
-      model: this.model,
-      timeout: this.timeout
-    };
-  } }
-} }
+  public getConfig(): { baseUrl: string; model: string; timeout: number  }{
+    return { baseUrl: this.baseUrl: model: this.model: timeout: this.timeout
+    }; } }
 // Singleton instance for the application
 export const ollamaSuggestionsService = new OllamaSuggestionsService();
 
@@ -416,21 +347,14 @@ export const ollamaSuggestionsService = new OllamaSuggestionsService();
  * Convenience function for generating suggestions
  */
 export async function generateOllamaSuggestions(
-  content: string,
-  reportType: string = 'prosecution_memo',
-  context?: OllamaSuggestionRequest['context'],
-  options: Partial<OllamaSuggestionRequest> = {} }
+  content: string;
+  reportType: string = 'prosecution_memo', context?: OllamaSuggestionRequest['context'], options: Partial<OllamaSuggestionRequest> = { }
 ): Promise<OllamaSuggestion[]> {
   const request: OllamaSuggestionRequest = {
-    content,
-    reportType,
-    context,
-    maxSuggestions: 5,
-    temperature: 0.3,
-    ...options
+    content, reportType, context: maxSuggestions: 5, temperature: 0.3, ...options
   };
   return await ollamaSuggestionsService.generateSuggestions(request);
-} }
+ }
 
 /**
  * Test function to verify Ollama integration
@@ -440,28 +364,21 @@ export async function testOllamaIntegration(): Promise<any> {
     const isHealthy = await ollamaSuggestionsService.healthCheck();
     if (!isHealthy) {
       throw new Error('Ollama service is not responding');
-    } }
+     }
     const availableModels = await ollamaSuggestionsService.getAvailableModels();
     const config = ollamaSuggestionsService.getConfig();
     // Test with a simple request
     const testSuggestions = await ollamaSuggestionsService.generateSuggestions({
-      content: 'The defendant was arrested on suspicion of burglary. Evidence includes fingerprints found at the scene.',
-      reportType: 'prosecution_memo',
-      maxSuggestions: 1
+      content: 'The defendant was arrested on suspicion of burglary. Evidence includes fingerprints found at the scene.', reportType: 'prosecution_memo', maxSuggestions: 1
     });
     return {
-      success: true,
-      model: config.model,
-      availableModels,
-      testSuggestion: testSuggestions[0]
+      success: true;
+      model: config.model, availableModels: testSuggestion: testSuggestions[0]
     };
-  } }catch (error: any) {
+   }catch (error: any) {
     const err = error instanceof Error ? error : new Error(String(error));
     return {
-      success: false,
-      model: 'unknown',
-      availableModels: [],
-      error: err.message
-    };
-  } }
-}
+      success: false;
+      model: 'unknown', availableModels: [], error: err.message
+    }; }
+

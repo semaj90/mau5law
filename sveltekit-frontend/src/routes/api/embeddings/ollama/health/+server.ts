@@ -4,19 +4,19 @@
  * GET /api/embeddings/ollama/health
  */
 
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { getOllamaEndpoint } }from '$lib/server/ollama';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { getOllamaEndpoint  } from '$lib/server/ollama';
 
 // default fallback
 const OLLAMA_BASE_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 
-function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = 2000) {
+function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit: timeoutMs = 2000) {
   // AbortSignal.timeout may not be available in all runtimes, use AbortController for compatibility
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   return fetch(input, { ...(init || {}), signal: controller.signal }).finally(() => clearTimeout(id));
-} }
+ }
 
 export const GET: RequestHandler = async () => {
   try {
@@ -24,19 +24,16 @@ export const GET: RequestHandler = async () => {
     const resolved = await getOllamaEndpoint();
     if (!resolved) {
       return json({ status: 'unhealthy', available: false });
-    } }
+     }
 
     const url = `${resolved.replace(/\/$/, '')}/api/tags`;
     const response = await fetchWithTimeout(url, undefined, 2000);
 
     return json({
-      status: response.ok ? 'healthy' : 'unhealthy',
-      available: response.ok
+      status: response.ok ? 'healthy' : 'unhealthy', available: response.ok
     });
-  } }catch {
+   }catch {
     return json({
-      status: 'unhealthy',
-      available: false
-    });
-  } }
-};
+      status: 'unhealthy', available: false
+    }); };
+

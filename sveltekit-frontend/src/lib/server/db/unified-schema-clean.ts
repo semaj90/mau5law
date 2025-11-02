@@ -8,6 +8,7 @@
 export async function cleanUnifiedSchema(): Promise<void> {
   // no-op for now
   return;
-} }
+ }
 export default cleanUnifiedSchema;
+
 

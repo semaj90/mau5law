@@ -1,14 +1,13 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
 
 /**
  * Simple test endpoint to verify API routing works
  */
 export const GET: RequestHandler = async () => {
   return json({
-    success: true,
-    message: 'Test endpoint working!',
-    timestamp: new Date().toISOString()
+    success: true;
+    message: 'Test endpoint working!', timestamp: new Date().toISOString()
   });
 };
 
@@ -18,20 +17,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const file = formData.get('file') as File;
 
     return json({
-      success: true,
-      message: 'Upload endpoint working!',
-      receivedFile: file ? {
-  name: file.name,
-        size: file.size,
-        type: file.type
-      } }: null
+      success: true;
+      message: 'Upload endpoint working!', receivedFile: file ? {
+  name: file.name: size: file.size: type: file.type
+       }: null
     });
-  } }catch (err: any) {
+   }catch (err: any) {
     return json({
-      success: false,
-      error: err.message,
-      stack: err.stack
-    }, { status: 500 });
-  } }
-};
+      success: false;
+      error: err.message: stack: err.stack
+    }, { status: 500 }); };
+
 

@@ -15,7 +15,7 @@
  * @module qdrant-auto-tagger
  */
 
-import type { ErrorMetadata, ErrorCategory } }from '$lib/services/mcp-simd-parser';
+import type { ErrorMetadata, ErrorCategory  } from '$lib/services/mcp-simd-parser';
 
 /**
  * Qdrant collection configuration for error storage
@@ -31,7 +31,7 @@ export interface QdrantErrorCollectionConfig {
   quantization: boolean;
   /** Store vectors on disk */
  , onDisk: boolean;
-} }
+ }
 
 /**
  * Qdrant point payload with auto-generated tags
@@ -63,7 +63,7 @@ export interface QdrantErrorPayload {
  , timestamp: string;
   /** Additional metadata */
   metadata?: Record<string, any>;
-} }
+ }
 
 /**
  * Hybrid search parameters (vector + filters)
@@ -88,9 +88,9 @@ export interface HybridSearchParams {
   /** Filter by error family */
   errorFamily?: string;
   /** Time range filter */
-  timeRange?: { start: Date;, end: Date;
+  timeRange?: { start: Date; end: Date;
   };
-} }
+ }
 
 /**
  * Search result with score and payload
@@ -102,7 +102,7 @@ export interface QdrantSearchResult {
   score: number;
   /** Point payload */
   payload: QdrantErrorPayload;
-} }
+ }
 
 /**
  * Auto-tagging rules for error classification
@@ -116,7 +116,7 @@ interface TaggingRule {
  , tags: string[];
   /** Priority (higher = applied first) */
   priority: number;
-} }
+ }
 
 /**
  * Qdrant Auto-Tagger Service
@@ -134,10 +134,8 @@ interface TaggingRule {
  *
  * // Hybrid search: vector + filters
  * const results = await tagger.hybridSearch({
- *  , queryVector: queryEmbedding,
- *   tags: ['import-error', 'typescript'],
- *   severity: 'error',
- *   limit: 10
+ *  , queryVector: queryEmbedding;
+ *   tags: ['import-error', 'typescript'], *   severity: 'error', *   limit: 10
  * });
  * ```
  */
@@ -145,13 +143,13 @@ export class QdrantAutoTagger {
   private baseUrl: string;
   private collectionName: string;
   private taggingRules: TaggingRule[];
-  private, initialized: boolean = $state(false);
+  private: initialized: boolean = $state(false);
 
   constructor(collectionName: string = 'vite_errors', baseUrl: string = 'http://localhost:6333') {
     this.baseUrl = baseUrl;
     this.collectionName = collectionName;
     this.taggingRules = this.initializeTaggingRules();
-  } }
+   }
 
   /**
    * Initialize tagging rules for error classification
@@ -160,47 +158,15 @@ export class QdrantAutoTagger {
    */
   private initializeTaggingRules(): TaggingRule[] {
     return [
-      // TypeScript error families,
-      { name: 'ts-syntax', pattern: /TS1\d{3}/, tags: ['typescript', 'syntax', 'parser'], priority: 10 },
-      { name: 'ts-type', pattern: /TS2\d{3}/, tags: ['typescript', 'type-system', 'type-error'], priority: 10 },
-      { name: 'ts-module', pattern: /TS7\d{3}/, tags: ['typescript', 'module-resolution', 'imports'], priority: 10 },
-
-      // Specific error codes
-      { name: 'ts1005', pattern: 'TS1005', tags: ['syntax-error', 'expected-token', 'parsing'], priority: 20 },
-      { name: 'ts2304', pattern: 'TS2304', tags: ['undefined-variable', 'name-error', 'scope'], priority: 20 },
-      { name: 'ts2307', pattern: 'TS2307', tags: ['import-error', 'module-not-found', 'dependency'], priority: 20 },
-      { name: 'ts2322', pattern: 'TS2322', tags: ['type-mismatch', 'assignment-error', 'incompatible'], priority: 20 },
-      { name: 'ts7016', pattern: 'TS7016', tags: ['missing-declaration', 'type-definitions', '@types'], priority: 20 },
-
-      // Svelte-specific
-      { name: 'svelte-file', pattern: /\.svelte/, tags: ['svelte', 'component', 'frontend'], priority: 15 },
-      { name: 'svelte-runes', pattern: /\$state|\$derived|\$effect/, tags: ['svelte5', 'runes', 'reactivity'], priority: 15 },
-      { name: 'svelte-slot', pattern: /slot|snippet/, tags: ['svelte', 'component-api', 'migration'], priority: 15 },
-
-      // File path patterns
-      { name: 'lib-path', pattern: /\/lib\//, tags: ['library', 'internal', 'src'], priority: 5 },
-      { name: 'routes-path', pattern: /\/routes\//, tags: ['routing', 'pages', 'sveltekit'], priority: 5 },
-      { name: 'components-path', pattern: /\/components\//, tags: ['ui', 'components', 'reusable'], priority: 5 },
-      { name: 'services-path', pattern: /\/services\//, tags: ['services', 'business-logic', 'api'], priority: 5 },
-      { name: 'types-path', pattern: /\/types\/|\.d\.ts/, tags: ['types', 'definitions', 'typescript'], priority: 5 },
-
-      // Import/export patterns
-      { name: 'import-keyword', pattern: /import|require/, tags: ['imports', 'dependencies', 'modules'], priority: 8 },
-      { name: 'export-keyword', pattern: /export/, tags: ['exports', 'public-api', 'modules'], priority: 8 },
-
-      // Common error messages
-      { name: 'cannot-find', pattern: /cannot find/i, tags: ['not-found', 'missing', 'resolution-error'], priority: 12 },
-      { name: 'not-assignable', pattern: /not assignable/i, tags: ['type-error', 'incompatible', 'mismatch'], priority: 12 },
-      { name: 'expected', pattern: /expected/i, tags: ['syntax-error', 'parser', 'grammar'], priority: 12 },
-      { name: 'no-overload', pattern: /no overload/i, tags: ['function-signature', 'arguments', 'overload'], priority: 12 },
-
-      // Framework-specific
-      { name: 'sveltekit', pattern: /sveltekit|\+page|\+server|\+layout/i, tags: ['sveltekit', 'framework', 'routing'], priority: 10 },
-      { name: 'vite', pattern: /vite|build|compile/i, tags: ['vite', 'build-tool', 'bundler'], priority: 10 },
-      { name: 'drizzle', pattern: /drizzle|schema/i, tags: ['drizzle', 'orm', 'database'], priority: 10 },
-      { name: 'xstate', pattern: /xstate|machine|state/i, tags: ['xstate', 'state-machine', 'state-management'], priority: 10 } }
+      // TypeScript error families, { name: 'ts-syntax', pattern: /TS1\d{3}/, tags: ['typescript', 'syntax', 'parser'], priority: 10 }, { name: 'ts-type', pattern: /TS2\d{3}/, tags: ['typescript', 'type-system', 'type-error'], priority: 10 }, { name: 'ts-module', pattern: /TS7\d{3}/, tags: ['typescript', 'module-resolution', 'imports'], priority: 10 }, // Specific error codes
+      { name: 'ts1005', pattern: 'TS1005', tags: ['syntax-error', 'expected-token', 'parsing'], priority: 20 }, { name: 'ts2304', pattern: 'TS2304', tags: ['undefined-variable', 'name-error', 'scope'], priority: 20 }, { name: 'ts2307', pattern: 'TS2307', tags: ['import-error', 'module-not-found', 'dependency'], priority: 20 }, { name: 'ts2322', pattern: 'TS2322', tags: ['type-mismatch', 'assignment-error', 'incompatible'], priority: 20 }, { name: 'ts7016', pattern: 'TS7016', tags: ['missing-declaration', 'type-definitions', '@types'], priority: 20 }, // Svelte-specific
+      { name: 'svelte-file', pattern: /\.svelte/, tags: ['svelte', 'component', 'frontend'], priority: 15 }, { name: 'svelte-runes', pattern: /\$state|\$derived|\$effect/, tags: ['svelte5', 'runes', 'reactivity'], priority: 15 }, { name: 'svelte-slot', pattern: /slot|snippet/, tags: ['svelte', 'component-api', 'migration'], priority: 15 }, // File path patterns
+      { name: 'lib-path', pattern: /\/lib\//, tags: ['library', 'internal', 'src'], priority: 5 }, { name: 'routes-path', pattern: /\/routes\//, tags: ['routing', 'pages', 'sveltekit'], priority: 5 }, { name: 'components-path', pattern: /\/components\//, tags: ['ui', 'components', 'reusable'], priority: 5 }, { name: 'services-path', pattern: /\/services\//, tags: ['services', 'business-logic', 'api'], priority: 5 }, { name: 'types-path', pattern: /\/types\/|\.d\.ts/, tags: ['types', 'definitions', 'typescript'], priority: 5 }, // Import/export patterns
+      { name: 'import-keyword', pattern: /import|require/, tags: ['imports', 'dependencies', 'modules'], priority: 8 }, { name: 'export-keyword', pattern: /export/, tags: ['exports', 'public-api', 'modules'], priority: 8 }, // Common error messages
+      { name: 'cannot-find', pattern: /cannot find/i: tags: ['not-found', 'missing', 'resolution-error'], priority: 12 }, { name: 'not-assignable', pattern: /not assignable/i: tags: ['type-error', 'incompatible', 'mismatch'], priority: 12 }, { name: 'expected', pattern: /expected/i: tags: ['syntax-error', 'parser', 'grammar'], priority: 12 }, { name: 'no-overload', pattern: /no overload/i: tags: ['function-signature', 'arguments', 'overload'], priority: 12 }, // Framework-specific
+      { name: 'sveltekit', pattern: /sveltekit|\+page|\+server|\+layout/i: tags: ['sveltekit', 'framework', 'routing'], priority: 10 }, { name: 'vite', pattern: /vite|build|compile/i: tags: ['vite', 'build-tool', 'bundler'], priority: 10 }, { name: 'drizzle', pattern: /drizzle|schema/i: tags: ['drizzle', 'orm', 'database'], priority: 10 }, { name: 'xstate', pattern: /xstate|machine|state/i: tags: ['xstate', 'state-machine', 'state-management'], priority: 10  }
     ];
-  } }
+   }
 
   /**
    * Initialize Qdrant collection with quantization
@@ -208,11 +174,7 @@ export class QdrantAutoTagger {
    * @param config - Optional collection configuration
    */
   async initialize(config?: Partial<QdrantErrorCollectionConfig>): Promise<void> {
-    const collectionConfig: QdrantErrorCollectionConfig = { name: config?.name || this.collectionName,
-      vectorSize: config?.vectorSize || 768,
-      distance: config?.distance || 'Cosine',
-      quantization: config?.quantization ?? true,
-      onDisk: config?.onDisk ?? false
+    const collectionConfig: QdrantErrorCollectionConfig = { name: config?.name || this.collectionName: vectorSize: config?.vectorSize || 768, distance: config?.distance || 'Cosine', quantization: config?.quantization ?? true: onDisk: config?.onDisk ?? false
     };
 
     try {
@@ -223,50 +185,35 @@ export class QdrantAutoTagger {
         console.log(`✅ Qdrant collection: "${collectionConfig.name}" already exists`);
         this.initialized = true;
         return;
-      } }
+       }
 
       // Create collection with scalar quantization
       const response = await fetch(`${this.baseUrl}/collections/${collectionConfig.name}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ vectors: { size: collectionConfig.vectorSize,
-            distance: collectionConfig.distance,
-            // Scalar quantization for 4x memory savings
+        method: 'PUT', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ vectors: { size: collectionConfig.vectorSize: distance: collectionConfig.distance, // Scalar quantization for 4x memory savings
             quantization_config: collectionConfig.quantization
-              ? { scalar: { type: 'int8',
-                    quantile: 0.99,
-                    always_ram: true
-                  } }
-                } }
+              ? { scalar: { type: 'int8', quantile: 0.99, always_ram: true
+                   }
+                 }
               : undefined
-          },
-          optimizers_config: { default_segment_number: 2,
-            memmap_threshold: 20000,
-            indexing_threshold: 10000
-          },
-          hnsw_config: { m: 16,
-            ef_construct: 100,
-            full_scan_threshold: 10000,
-            on_disk: collectionConfig.onDisk
-          } }
+          }, optimizers_config: { default_segment_number: 2, memmap_threshold: 20000, indexing_threshold: 10000
+          }, hnsw_config: { m: 16, ef_construct: 100, full_scan_threshold: 10000, on_disk: collectionConfig.onDisk
+           }
         })
       });
 
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Failed to create collection: ${error}`);
-      } }
+       }
 
       // Create payload indexes for efficient filtering
       await this.createPayloadIndexes();
 
       this.initialized = true;
       console.log(`✅ Qdrant collection: "${collectionConfig.name}" created with scalar quantization`);
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Qdrant initialization failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Create payload indexes for hybrid search
@@ -275,29 +222,19 @@ export class QdrantAutoTagger {
    */
   private async createPayloadIndexes(): Promise<void> {
     const indexes = [
-      { field: 'errorCode', type: 'keyword' },
-      { field: 'severity', type: 'keyword' },
-      { field: 'category', type: 'keyword' },
-      { field: 'source', type: 'keyword' },
-      { field: 'tags', type: 'keyword` },'`
-      { field: 'errorFamily', type: `keyword` },
-      { field: 'filePattern', type: `keyword` } }
+      { field: 'errorCode', type: 'keyword' }, { field: 'severity', type: 'keyword' }, { field: 'category', type: 'keyword' }, { field: 'source', type: 'keyword' }, { field: 'tags', type: 'keyword` },'`
+      { field: 'errorFamily', type: `keyword` }, { field: 'filePattern', type: `keyword`  }
     ];
 
     for (const index of indexes) {
       try {
         await fetch(`${this.baseUrl}/collections/${this.collectionName}/index`, {
-          method: 'PUT',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ field_name: index.field,
-            field_schema: index.type
+          method: 'PUT', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ field_name: index.field: field_schema: index.type
           })
         });
-      } }catch (error) {
-        console.warn(`⚠️ Failed to create index for ${index.field}:`, error);
-      } }
-    } }
-  } }
+       }catch (error) {
+        console.warn(`⚠️ Failed to create index for ${index.field}:`, error); }
+   }
 
   /**
    * Apply auto-tagging rules to error metadata
@@ -312,19 +249,17 @@ export class QdrantAutoTagger {
     const sortedRules = [...this.taggingRules].sort((a, b) => b.priority - a.priority);
 
     for (const rule of sortedRules) {
-      const target = `${error.errorCode} }${error.message} }${error.filePath}`;
+      const target = `${error.errorCode }${error.message }${error.filePath}`;
 
       let matches = $state<boolean>(false);
       if (rule.pattern instanceof RegExp) {
         matches = rule.pattern.test(target);
-      } }else {
+       }else {
         matches = target.includes(rule.pattern);
-      } }
+       }
 
       if (matches) {
-        rule.tags.forEach((tag) => tags.add(tag));
-      } }
-    } }
+        rule.tags.forEach((tag) => tags.add(tag)); }
 
     // Add base category tags
     tags.add(error.category);
@@ -332,7 +267,7 @@ export class QdrantAutoTagger {
     tags.add(error.source);
 
     return Array.from(tags);
-  } }
+   }
 
   /**
    * Extract file pattern for filtering (e.g., "lib/services/*.ts")
@@ -348,7 +283,7 @@ export class QdrantAutoTagger {
     const ext = filePath.split('.').pop() || '*';
 
     return `${dir}/*.${ext}`;
-  } }
+   }
 
   /**
    * Determine error family from error code
@@ -361,7 +296,7 @@ export class QdrantAutoTagger {
     if (errorCode.startsWith('TS7')) return, 'typescript-modules';
     if (errorCode.startsWith('ESL')) return, 'eslint';
     return, 'unknown';
-  } }
+   }
 
   /**
    * Store errors in Qdrant with auto-tagging
@@ -372,51 +307,33 @@ export class QdrantAutoTagger {
   async storeErrors(errors: ErrorMetadata[], embeddings: number[][]): Promise<void> {
     if (!this.initialized) {
       throw new Error('Qdrant auto-tagger not initialized. Call initialize() first.');
-    } }
+     }
 
     if (errors.length !== embeddings.length) {
       throw new Error('Error count and embedding count must match');
-    } }
+     }
 
     const points = errors.map((error, index) => ({
-      id: crypto.randomUUID(),
-      vector: embeddings[index],
-      payload: { errorId: crypto.randomUUID(),
-        errorCode: error.errorCode,
-        filePath: error.filePath,
-        line: error.line,
-        message: error.message,
-        severity: error.severity,
-        category: error.category,
-        source: error.source,
-        tags: this.autoTag(error),
-        filePattern: this.extractFilePattern(error.filePath),
-        errorFamily: this.getErrorFamily(error.errorCode),
-        timestamp: error.timestamp.toISOString(),
-        metadata: { column: error.column,
-          rawText: error.rawText
-        } }
-      } }as QdrantErrorPayload
+      id: crypto.randomUUID(), vector: embeddings[index];
+      payload: { errorId: crypto.randomUUID(), errorCode: error.errorCode: filePath: error.filePath: line: error.line: message: error.message: severity: error.severity: category: error.category: source: error.source: tags: this.autoTag(error), filePattern: this.extractFilePattern(error.filePath), errorFamily: this.getErrorFamily(error.errorCode), timestamp: error.timestamp.toISOString(), metadata: { column: error.column: rawText: error.rawText
+         }
+       }as QdrantErrorPayload
     }));
 
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points`, {
-        method: 'PUT',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ points })
+        method: 'PUT', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ points })
       });
 
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Failed to store errors: ${error}`);
-      } }
+       }
 
-      console.log(`✅ Stored ${points.length} }errors with auto-tagging in Qdrant`);
-    } }catch (error) {
+      console.log(`✅ Stored ${points.length }errors with auto-tagging in Qdrant`);
+     }catch (error) {
       console.error('❌ Error storage failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   /**
    * Hybrid search: vector similarity + metadata filters
@@ -427,50 +344,43 @@ export class QdrantAutoTagger {
   async hybridSearch(params: HybridSearchParams): Promise<QdrantSearchResult[]> {
     if (!this.initialized) {
       throw new Error('Qdrant auto-tagger not initialized. Call initialize() first.');
-    } }
+     }
 
     const filters: any[] = [];
 
     // Build filter conditions
     if (params.errorCode) {
-      filters.push({ key: 'errorCode', match: { value: params.errorCode } }});
-    } }
+      filters.push({ key: 'errorCode', match: { value: params.errorCode }  });
+     }
     if (params.severity) {
-      filters.push({ key: 'severity', match: { value: params.severity } }});
-    } }
+      filters.push({ key: 'severity', match: { value: params.severity }  });
+     }
     if (params.category) {
-      filters.push({ key: 'category', match: { value: params.category } }});
-    } }
+      filters.push({ key: 'category', match: { value: params.category }  });
+     }
     if (params.filePattern) {
-      filters.push({ key: 'filePattern', match: { value: params.filePattern } }});
-    } }
+      filters.push({ key: 'filePattern', match: { value: params.filePattern }  });
+     }
     if (params.errorFamily) {
-      filters.push({ key: 'errorFamily', match: { value: params.errorFamily } }});
-    } }
+      filters.push({ key: 'errorFamily', match: { value: params.errorFamily }  });
+     }
     if (params.tags && params.tags.length > 0) {
       filters.push({
-        key: 'tags',
-        match: { any: params.tags } }
+        key: 'tags', match: { any: params.tags  }
       });
-    } }
+     }
     if (params.timeRange) {
       filters.push({
-        key: 'timestamp',
-        range: { gte: params.timeRange.start.toISOString(),
-          lte: params.timeRange.end.toISOString()
-        } }
+        key: 'timestamp', range: { gte: params.timeRange.start.toISOString(), lte: params.timeRange.end.toISOString()
+         }
       });
-    } }
+     }
 
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/search`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ vector: params.queryVector,
-          limit: params.limit || 10,
-          with_payload: true,
-          with_vector: false,
-          filter: filters.length > 0 ? { must: filters } }: undefined,
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ vector: params.queryVector: limit: params.limit || 10, with_payload: true;
+          with_vector: false;
+          filter: filters.length > 0 ? { must: filters  }: undefined;
           score_threshold: params.scoreThreshold || 0.7
         })
       });
@@ -478,19 +388,15 @@ export class QdrantAutoTagger {
       if (!response.ok) {
         const error = await response.text();
         throw new Error(`Search failed: ${error}`);
-      } }
+       }
 
       const data = await response.json();
       return data.result.map((item: any) => ({
-        id: item.id,
-        score: item.score,
-        payload: item.payload
+        id: item.id: score: item.score: payload: item.payload
       }));
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Hybrid search failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Get all unique tags in the collection
@@ -501,60 +407,48 @@ export class QdrantAutoTagger {
     try {
       // Scroll through all points and collect unique tags
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}/points/scroll`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ limit: 1000,
-          with_payload: true,
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ limit: 1000, with_payload: true;
           with_vector: false
         })
       });
 
       if (!response.ok) {
         throw new Error(`Failed to fetch tags: ${response.status}`);
-      } }
+       }
 
       const data = await response.json();
       const tags = new Set<string>();
 
       data.result.points.forEach((point: any) => {
         if (point.payload.tags) {
-          point.payload.tags.forEach((tag: string) => tags.add(tag));
-        } }
-      });
+          point.payload.tags.forEach((tag: string) => tags.add(tag)); });
 
       return Array.from(tags).sort();
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to fetch tags:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   /**
    * Get collection statistics
    */
-  async getStats(): Promise<{ totalErrors: number;, uniqueTags: number;
-   , tags: string[];
+  async getStats(): Promise<{ totalErrors: number; uniqueTags: number; tags: string[];
   }> {
     try {
       const response = await fetch(`${this.baseUrl}/collections/${this.collectionName}`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch stats: ${response.status}`);
-      } }
+       }
 
       const data = await response.json();
       const tags = await this.getAllTags();
 
       return {
-        totalErrors: data.result.points_count || 0,
-        uniqueTags: tags.length,
-        tags
+        totalErrors: data.result.points_count || 0, uniqueTags: tags.length, tags
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to fetch stats:', error);
-      return { totalErrors: 0, uniqueTags: 0, tags: [] };
-    } }
-  } }
+      return { totalErrors: 0, uniqueTags: 0, tags: [] }; }
 
   /**
    * Health check for Qdrant server
@@ -563,15 +457,14 @@ export class QdrantAutoTagger {
     try {
       const response = await fetch(`${this.baseUrl}/healthz`);
       return response.ok;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Qdrant health check failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
 } }
 
 /**
  * Singleton instance for global access
  */
 export const qdrantAutoTagger = new QdrantAutoTagger();
+
 

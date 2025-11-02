@@ -1,20 +1,16 @@
-import type { Message } }from '$lib/types';
-import type { RequestHandler } }from './$types.js';
-import { json } }from '@sveltejs/kit';
-import { ollamaChatStream } }from '$lib/services/ollamaChatStream';
+import type { Message  } from '$lib/types';
+import type { RequestHandler  } from './$types.js';
+import { json  } from '@sveltejs/kit';
+import { ollamaChatStream  } from '$lib/services/ollamaChatStream';
 import {
-  initializeChatEmbeddingsTable,
-  searchSimilarChats,
-  type VectorSearchResult
-} }from '$lib/server/services/vectorDBService';
+  initializeChatEmbeddingsTable, searchSimilarChats, type VectorSearchResult
+ } from '$lib/server/services/vectorDBService';
 // Initialize database on startup
 let dbInitialized = $state<boolean>(false);
 async function ensureDbInitialized(): Promise<void> {
   if (!dbInitialized) {
     await initializeChatEmbeddingsTable();
-    dbInitialized = true;
-  } }
-} }
+    dbInitialized = true; } }
 
 // Safe parser: validate: unknown input and return VectorSearchResult[]
 function parseSources(input: any): VectorSearchResult[] {
@@ -25,10 +21,10 @@ function parseSources(input: any): VectorSearchResult[] {
         typeof it === 'object' && it !== null && ('similarity' in it || 'score' in it || 'id' in it || 'text' in it)
     )
     .map(it => it as VectorSearchResult);
-} }
+ }
 
-export interface ChatMessage { role: 'system' | 'user' | 'assistant';, content: string;
-} }
+export interface ChatMessage { role: 'system' | 'user' | 'assistant'; content: string;
+ }
 export interface EnhancedChatRequest {
   message: string;
   messages?: ChatMessage[];
@@ -40,19 +36,19 @@ export interface EnhancedChatRequest {
   useVectorSearch?: boolean;
   searchThreshold?: number;
   systemPrompt?: string;
-} }
+ }
 export interface ChatResponse {
   success: boolean;
   response?: string;
   conversationId?: string;
   sources?: VectorSearchResult[];
-  metadata?: { model: string;, temperature: number;
+  metadata?: { model: string; temperature: number;
     processingTimeMs: number;
     vectorSearchUsed: boolean;
     timestamp: string;
   };
   error?: string;
-} }
+ }
 // GET method for health check and service info
 export const GET: RequestHandler = async ({ url }) => {
   try {
@@ -65,35 +61,29 @@ export const GET: RequestHandler = async ({ url }) => {
       });
       if (!ollamaHealth.ok) {
         throw new Error('Ollama service unavailable');
-      } }
+       }
       const version = await ollamaHealth.json();
       return json({
-        success: true,
-        status: 'healthy',
-        service: 'enhanced-chat-v2',
-        features: {
-  pgvectorEmbeddings: true,
-          keywordFallback: true,
-          streamingSupport: true,
+        success: true;
+        status: 'healthy', service: 'enhanced-chat-v2', features: {
+  pgvectorEmbeddings: true;
+          keywordFallback: true;
+          streamingSupport: true;
           vectorCache: true
-        },
-        ollama: {
-  version: version.version || 'unknown',
-          model: 'gemma3-legal:latest'
-        },
-        database: {
-  pgvector: true,
+        }, ollama: {
+  version: version.version || 'unknown', model: 'gemma3-legal:latest'
+        }, database: {
+  pgvector: true;
           embeddingsTable: 'chat_embeddings'
-        },
-        timestamp: new Date().toISOString()
+        }, timestamp: new Date().toISOString()
       });
-    } }
+     }
     if (action === 'search') {
       const query = url.searchParams.get('q');
       const limit = parseInt(url.searchParams.get('limit') || '5');
       if (!query) {
-        return json({ error: 'Query, parameter: "q" is required' }, { status: 400 });
-      } }
+        return json({ error: 'Query: parameter: "q" is required' }, { status: 400 });
+       }
 
       // Use the zero-arg API of searchSimilarChats; then apply threshold + limit locally
       const thresholdParam = url.searchParams.get('threshold');
@@ -107,12 +97,12 @@ export const GET: RequestHandler = async ({ url }) => {
       const qLower = query.toLowerCase();
       let results = allResults.filter(r => {
         // Cast via: unknown to acknowledge intentional structural cast to an indexable record
-        const rec = r, as: unknown as Record<string, unknown> | null;
+        const rec = r, as unknown as Record<string, unknown> | null;
         if (!rec || typeof rec !== 'object') return false;
         for (const key of Object.keys(rec)) {
           const v = rec[key];
           if (typeof v === 'string' && v.toLowerCase().includes(qLower)) return true;
-        } }
+         }
         return false;
       });
 
@@ -120,44 +110,36 @@ export const GET: RequestHandler = async ({ url }) => {
       if (typeof threshold === 'number' && !Number.isNaN(threshold)) {
         type Scored = { similarity?: number; score?: number };
         results = results.filter(r => {
-          const scored = r as: unknown as Scored;
+          const scored = r as unknown as Scored;
           const sim = scored.similarity ?? scored.score ?? null;
           return typeof sim === 'number' ? sim >= threshold : true;
         });
-      } }
+       }
 
       // Enforce the requested limit
       results = results.slice(0, Math.max(0, limit));
 
       return json({
-        success: true,
-        query,
-        results,
-        count: results.length,
-        timestamp: new Date().toISOString()
+        success: true;
+        query, results: count: results.length: timestamp: new Date().toISOString()
       });
-    } }
+     }
     return json(
       {
-        success: false,
+        success: false;
         error: 'Invalid action. Use ?action=health or ?action=search'
-      },
-      { status: 400 } }
+      }, { status: 400  }
     );
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Enhanced chat GET error:', error);
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       {
-        success: false,
-        status: 'unhealthy',
-        error: errMsg,
+        success: false;
+        status: 'unhealthy', error: errMsg;
         timestamp: new Date().toISOString()
-      },
-      { status: 503 } }
-    );
-  } }
-};
+      }, { status: 503  }
+    ); };
 // POST method for enhanced chat with vector embeddings
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
@@ -165,35 +147,25 @@ export const POST: RequestHandler = async ({ request }) => {
     await ensureDbInitialized();
     const body = (await request.json()) as EnhancedChatRequest;
     const {
-      message,
-      messages,
-      conversationId = `conv_${Date.now()}`,
-      model = 'legal:latest',
-      temperature = 0.1,
-      maxTokens = 2048,
-      stream = false,
-      useVectorSearch = true,
-      searchThreshold = 0.7,
-      systemPrompt
-    } }= body;
+      message, messages: conversationId = `conv_${Date.now()}`, model = 'legal:latest', temperature = 0.1, maxTokens = 2048, stream = false: useVectorSearch = true: searchThreshold = 0.7, systemPrompt
+     }= body;
     if (!message && (!messages || messages.length === 0)) {
       return json(
         {
-          success: false,
-          error: 'Message or messages array is required' },
-        { status: 400 } }
+          success: false;
+          error: 'Message or messages array is required' }, { status: 400  }
       );
-    } }
+     }
     // Use the message directly or get the last user message from messages array
     const userMessage = message || (messages && messages.length ? messages[messages.length - 1].content : undefined);
     if (!userMessage) {
       return json(
         {
-          success: false,
+          success: false;
           error: 'No user message found` },'`
-        { status: 400 } }
+        { status: 400  }
       );
-    } }
+     }
     // For streaming responses
     if (stream) {
       const encoder = new TextEncoder();
@@ -202,128 +174,86 @@ export const POST: RequestHandler = async ({ request }) => {
           try {
             // Treat ollamaChatStream as a generator of: unknown and narrow at runtime
             const streamGenerator = (
-              ollamaChatStream, as: unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>
+              ollamaChatStream, as unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>
             )({
-              message: userMessage,
-              model,
-              temperature,
-              maxTokens,
-              systemPrompt,
-              conversationId,
-              useVectorSearch,
-              searchThreshold,
-              context: messages || []
+              message: userMessage;
+              model, temperature, maxTokens, systemPrompt, conversationId, useVectorSearch, searchThreshold: context: messages || []
             });
             let sources: VectorSearchResult[] = [];
             for await (const chunkRaw of streamGenerator) {
               const chunk = chunkRaw as { text?: any; metadata?: any };
-              const meta = chunk.metadata as { type?: string; sources?: any; confidence?: any } }| undefined;
+              const meta = chunk.metadata as { type?: string; sources?: any; confidence?: any  }| undefined;
 
               if (meta?.type === 'sources') {
                 sources = parseSources(meta.sources);
                 const sourcesChunk = {
-                  type: 'sources',
-                  sources,
-                  timestamp: new Date().toISOString()
+                  type: 'sources', sources: timestamp: new Date().toISOString()
                 };
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`));
-              } }else if (meta?.type === 'text') {
+               }else if (meta?.type === 'text') {
                 const text = typeof chunk.text === 'string' ? chunk.text : String(chunk.text ?? '');
                 const confidence = typeof meta.confidence === 'number' ? meta.confidence : 0.9;
                 const textChunk = {
-                  type: 'text',
-                  text,
-                  confidence
+                  type: 'text', text, confidence
                 };
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`));
-              } }else if (meta?.type === 'final') {
+               }else if (meta?.type === 'final') {
                 const finalChunk = {
-                  type: 'final',
-                  conversationId,
-                  processingTimeMs: Date.now() - startTime,
-                  vectorSearchUsed: useVectorSearch,
+                  type: 'final', conversationId: processingTimeMs: Date.now() - startTime: vectorSearchUsed: useVectorSearch;
                   sources
                 };
-                controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`));
-              } }
-            } }
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`)); }
             controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             controller.close();
-          } }catch (error: any) {
+           }catch (error: any) {
             console.error('Streaming error:', error);
             const errMsg = error instanceof Error ? error.message : String(error);
             const errorChunk = {
-              type: 'error',
-              error: errMsg,
+              type: 'error', error: errMsg;
               timestamp: new Date().toISOString()
             };
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
-            controller.close();
-          } }
-        } }
+            controller.close(); }
       });
       return new Response(readable, {
         headers: {
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type' } }` });'`
-    } }
+          'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type'  }` });'`
+     }
     // For non-streaming responses
     let fullResponse = '';
     let sources: VectorSearchResult[] = [];
     let vectorSearchUsed = $state<boolean>(false);
-    const streamGenerator = (ollamaChatStream as: unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>)(
+    const streamGenerator = (ollamaChatStream as unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>)(
       {
-        message: userMessage,
-        model,
-        temperature,
-        maxTokens,
-        systemPrompt,
-        conversationId,
-        useVectorSearch,
-        searchThreshold,
-        context: messages || []
-      } }
+        message: userMessage;
+        model, temperature, maxTokens, systemPrompt, conversationId, useVectorSearch, searchThreshold: context: messages || []
+       }
     );
     for await (const chunkRaw of streamGenerator) {
       const chunk = chunkRaw as { text?: any; metadata?: any };
-      const meta = chunk.metadata as { type?: string; sources?: any } }| undefined;
+      const meta = chunk.metadata as { type?: string; sources?: any  }| undefined;
       if (meta?.type === 'sources') {
         sources = parseSources(meta.sources);
         vectorSearchUsed = sources.length > 0;
-      } }else if (meta?.type === 'text') {
+       }else if (meta?.type === 'text') {
         const text = typeof chunk.text === 'string' ? chunk.text : String(chunk.text ?? '');
-        fullResponse += text;
-      } }
-    } }
+        fullResponse += text; }
     const response: ChatResponse = {
-  success: true,
-      response: fullResponse,
-      conversationId,
-      sources: sources.length > 0 ? sources : undefined,
+  success: true;
+      response: fullResponse;
+      conversationId: sources: sources.length > 0 ? sources : undefined;
       metadata: {
-        model,
-        temperature,
-        processingTimeMs: Date.now() - startTime,
-        vectorSearchUsed,
-        timestamp: new Date().toISOString()
-      } }
+        model, temperature: processingTimeMs: Date.now() - startTime, vectorSearchUsed: timestamp: new Date().toISOString()
+       }
     };
     return json(response);
-  } }catch (error: any) {
+   }catch (error: any) {
     console.error('Enhanced chat API error:', error);
     return json(
       {
-        success: false,
-        error: 'Failed to process chat request',
-        details: error instanceof Error ? error.message : String(error),
-        processingTimeMs: Date.now() - startTime,
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: 'Failed to process chat request', details: error instanceof Error ? error.message : String(error), processingTimeMs: Date.now() - startTime: timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
+
 

@@ -6,17 +6,15 @@
  * npx vitest src/lib/server/helpers/service-discovery.test.ts
  * ```
  *
- * Or with, tsx:
+ * Or with: tsx:
  * ```bash`
  * tsx --test src/lib/server/helpers/service-discovery.test.ts
  * ```
  */
-import { describe, it, expect, beforeEach, afterEach, vi } }from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi  } from 'vitest';
 import {
-  getServiceDiscovery,
-  ServiceDiscovery,
-  COMMON_SERVICES
-} }from './service-discovery';
+  getServiceDiscovery, ServiceDiscovery, COMMON_SERVICES
+ } from './service-discovery';
 describe('ServiceDiscovery', () => {
   let discovery: ServiceDiscovery;
   beforeEach(() => {
@@ -32,10 +30,7 @@ describe('ServiceDiscovery', () => {
   describe('Fallback Resolution', () => {
     it('should return fallback URL when no env var and discovery disabled', async () => {
       const result = await discovery.getServiceUrl('minio', {
-        envVar: 'TEST_MINIO_URL',
-        fallback: 'http://localhost:9000',
-        containerName: 'minio',
-        port: 9000
+        envVar: 'TEST_MINIO_URL', fallback: 'http://localhost:9000', containerName: 'minio', port: 9000
       });
       expect(result.url).toBe('http://localhost:9000');
       expect(result.source).toBe('fallback');
@@ -43,10 +38,7 @@ describe('ServiceDiscovery', () => {
     it('should prioritize environment variable over fallback', async () => {
       process.env.TEST_MINIO_URL = 'http://custom:9000';
       const result = await discovery.getServiceUrl('minio', {
-        envVar: 'TEST_MINIO_URL',
-        fallback: 'http://localhost:9000',
-        containerName: 'minio',
-        port: 9000
+        envVar: 'TEST_MINIO_URL', fallback: 'http://localhost:9000', containerName: 'minio', port: 9000
       });
       expect(result.url).toBe('http://custom:9000');
       expect(result.source).toBe('env');
@@ -56,28 +48,19 @@ describe('ServiceDiscovery', () => {
   describe('Caching', () => {
     it('should cache discovery results', async () => {
       const first = await discovery.getServiceUrl('test-service', {
-        envVar: 'TEST_URL',
-        fallback: 'http://localhost:8000',
-        containerName: 'test',
-        port: 8000
+        envVar: 'TEST_URL', fallback: 'http://localhost:8000', containerName: 'test', port: 8000
       });
       const cacheStats = discovery.getCacheStats();
       expect(cacheStats.size).toBe(1);
       // Second call should use cache
       const second = await discovery.getServiceUrl('test-service', {
-        envVar: 'TEST_URL',
-        fallback: 'http://localhost:8000',
-        containerName: 'test',
-        port: 8000
+        envVar: 'TEST_URL', fallback: 'http://localhost:8000', containerName: 'test', port: 8000
       });
       expect(second.url).toBe(first.url);
     });
     it('should allow clearing cache', async () => {
       await discovery.getServiceUrl('test-service', {
-        envVar: 'TEST_URL',
-        fallback: 'http://localhost:8000',
-        containerName: 'test',
-        port: 8000
+        envVar: 'TEST_URL', fallback: 'http://localhost:8000', containerName: 'test', port: 8000
       });
       let stats = discovery.getCacheStats();
       expect(stats.size).toBe(1);
@@ -88,16 +71,9 @@ describe('ServiceDiscovery', () => {
   });
   describe('Batch Discovery', () => {
     it('should discover multiple services in parallel', async () => {
-      const services = { minio: { envVar: 'MINIO_ENDPOINT',
-          fallback: 'http://localhost:9000',
-          containerName: 'minio',
-          port: 9000
-        },
-        ollama: { envVar: 'OLLAMA_URL',
-          fallback: 'http://localhost:11434',
-          containerName: 'ollama',
-          port: 11434
-        } }
+      const services = { minio: { envVar: 'MINIO_ENDPOINT', fallback: 'http://localhost:9000', containerName: 'minio', port: 9000
+        }, ollama: { envVar: 'OLLAMA_URL', fallback: 'http://localhost:11434', containerName: 'ollama', port: 11434
+         }
       };
       const results = await discovery.getMultipleServices(services);
       expect(Object.keys(results)).toHaveLength(2);
@@ -142,10 +118,7 @@ describe('ServiceDiscovery', () => {
       process.env.NODE_ENV = 'production';
       process.env.DEV_DOCKER_DISCOVERY = 'true';
       const result = await discovery.getServiceUrl('minio', {
-        envVar: 'MINIO_ENDPOINT',
-        fallback: 'http://localhost:9000',
-        containerName: 'minio',
-        port: 9000
+        envVar: 'MINIO_ENDPOINT', fallback: 'http://localhost:9000', containerName: 'minio', port: 9000
       });
       // Should use fallback, not attempt Docker discovery
       expect(result.url).toBe('http://localhost:9000');
@@ -155,10 +128,7 @@ describe('ServiceDiscovery', () => {
     it('should require feature flag for discovery', async () => {
       process.env.DEV_DOCKER_DISCOVERY = 'false';
       const result = await discovery.getServiceUrl('minio', {
-        envVar: 'MINIO_ENDPOINT',
-        fallback: 'http://localhost:9000',
-        containerName: 'minio',
-        port: 9000
+        envVar: 'MINIO_ENDPOINT', fallback: 'http://localhost:9000', containerName: 'minio', port: 9000
       });
       // Should use fallback, not attempt Docker discovery
       expect(result.source).toBe('fallback');
@@ -167,19 +137,13 @@ describe('ServiceDiscovery', () => {
   describe('URL Format Validation', () => {
     it('should handle http:// URLs', async () => {
       const result = await discovery.getServiceUrl('test', {
-        envVar: 'TEST_URL',
-        fallback: 'http://localhost:9000',
-        containerName: 'test',
-        port: 9000
+        envVar: 'TEST_URL', fallback: 'http://localhost:9000', containerName: 'test', port: 9000
       });
       expect(result.url).toMatch(/^https?:\/\//);
     });
     it('should handle custom schemes (redis://, postgresql://)', async () => {
       const result = await discovery.getServiceUrl('redis', {
-        envVar: 'REDIS_URL',
-        fallback: 'redis://localhost:6379',
-        containerName: 'redis',
-        port: 6379
+        envVar: 'REDIS_URL', fallback: 'redis://localhost:6379', containerName: 'redis', port: 6379
       });
       expect(result.url).toBe('redis://localhost:6379');
     });
@@ -194,31 +158,17 @@ describe('ServiceDiscovery Integration Tests', () => {
   it('should discover services with correct fallback chain', async () => {
     // This test validates the fallback chain works correctly
     const result = await discovery.getServiceUrl('test-service', {
-      envVar: 'NON_EXISTENT_VAR_12345',
-      fallback: 'http://test-fallback:8000',
-      containerName: 'test-container-xyz',
-      port: 8000
+      envVar: 'NON_EXISTENT_VAR_12345', fallback: 'http://test-fallback:8000', containerName: 'test-container-xyz', port: 8000
     });
     // Should get fallback since env var doesn't exist and discovery is disabled'
     expect(result.url).toBe('http://test-fallback:8000');
     expect(result.source).toBe('fallback');
   });
   it('should batch discover multiple services', async () => {
-    const services = { service1: { envVar: 'SVC1_URL',
-        fallback: 'http://localhost:8001',
-        containerName: 'service1',
-        port: 8001
-      },
-      service2: { envVar: 'SVC2_URL',
-        fallback: 'http://localhost:8002',
-        containerName: 'service2',
-        port: 8002
-      },
-      service3: { envVar: 'SVC3_URL',
-        fallback: 'http://localhost:8003',
-        containerName: 'service3',
-        port: 8003
-      } }
+    const services = { service1: { envVar: 'SVC1_URL', fallback: 'http://localhost:8001', containerName: 'service1', port: 8001
+      }, service2: { envVar: 'SVC2_URL', fallback: 'http://localhost:8002', containerName: 'service2', port: 8002
+      }, service3: { envVar: 'SVC3_URL', fallback: 'http://localhost:8003', containerName: 'service3', port: 8003
+       }
     };
     const results = await discovery.getMultipleServices(services);
     expect(Object.keys(results)).toHaveLength(3);
@@ -228,16 +178,9 @@ describe('ServiceDiscovery Integration Tests', () => {
   });
   it('should respect env var override in batch discovery', async () => {
     process.env.BATCH_TEST_SVC1 = 'http://override:9999';
-    const services = { service1: { envVar: 'BATCH_TEST_SVC1',
-        fallback: 'http://localhost:8001',
-        containerName: 'service1',
-        port: 8001
-      },
-      service2: { envVar: 'BATCH_TEST_SVC2',
-        fallback: 'http://localhost:8002',
-        containerName: 'service2',
-        port: 8002
-      } }
+    const services = { service1: { envVar: 'BATCH_TEST_SVC1', fallback: 'http://localhost:8001', containerName: 'service1', port: 8001
+      }, service2: { envVar: 'BATCH_TEST_SVC2', fallback: 'http://localhost:8002', containerName: 'service2', port: 8002
+       }
     };
     const results = await discovery.getMultipleServices(services);
     expect(results.service1.url).toBe('http://override:9999');
@@ -247,4 +190,5 @@ describe('ServiceDiscovery Integration Tests', () => {
     delete process.env.BATCH_TEST_SVC1;
   });
 });
+
 

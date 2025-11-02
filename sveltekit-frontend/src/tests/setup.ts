@@ -2,46 +2,38 @@
  * Test Setup Configuration
  * Global test setup for Legal AI Platform integration tests
  */
-import { beforeAll, afterAll } }from 'vitest';
-import { config } }from 'dotenv';
+import { beforeAll, afterAll  } from 'vitest';
+import { config  } from 'dotenv';
 import path from 'path';
 // Load test environment variables
 config({
-  path: path.join(process.cwd(), '.env.test'),
-  override: false
+  path: path.join(process.cwd(), '.env.test'), override: false
 });
 // Global test configuration
 global.TEST_CONFIG = {
-  baseUrl: process.env.TEST_BASE_URL || 'http://localhost:5173',
-  databaseUrl: process.env.TEST_DATABASE_URL || 'postgresql://localhost:5432/legal_ai_test',
-  timeout: 30000,
-  retryAttempts: 3
-} }
+  baseUrl: process.env.TEST_BASE_URL || 'http://localhost:5173', databaseUrl: process.env.TEST_DATABASE_URL || 'postgresql://localhost:5432/legal_ai_test', timeout: 30000, retryAttempts: 3
+ }
 // Global setup - runs once before all tests
 /**
  * Test Setup Configuration
  * Global test setup for Legal AI Platform integration tests
  */
-import { beforeAll, afterAll } }from 'vitest';
-import { config } }from 'dotenv';
+import { beforeAll, afterAll  } from 'vitest';
+import { config  } from 'dotenv';
 import path from 'path';
 
 // make TypeScript aware of our test-global
 declare global {
   var TEST_CONFIG: any;
-} }
+ }
 
 // Load test environment variables
-config({ path: path.join(process.cwd(), '.env.test'),
-  override: false
+config({ path: path.join(process.cwd(), '.env.test'), override: false
 });
 
 // Global test configuration
 global.TEST_CONFIG = {
-  baseUrl: process.env.TEST_BASE_URL || 'http://localhost:5173',
-  databaseUrl: process.env.TEST_DATABASE_URL || 'postgresql://localhost:5432/legal_ai_test',
-  timeout: 30000,
-  retryAttempts: 3
+  baseUrl: process.env.TEST_BASE_URL || 'http://localhost:5173', databaseUrl: process.env.TEST_DATABASE_URL || 'postgresql://localhost:5432/legal_ai_test', timeout: 30000, retryAttempts: 3
 };
 
 // Global setup - runs once before all tests
@@ -51,10 +43,10 @@ beforeAll(async () => {
   try {
     // Basic connectivity test would go here
     console.log('✅ Test database connection verified');
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ Test database connection failed:', error);
     throw error;
-  } }
+   }
   // Initialize: any global test state
   console.log('✅ Global test setup completed');
 });
@@ -67,7 +59,7 @@ afterAll(async () => {
 });
 
 // Mock implementations for testing
-(global as: any).fetch = (global as: any).fetch || require('node-fetch');
+(global as any).fetch = (global as any).fetch || require('node-fetch');
 
 // Export test utilities
 export const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -77,15 +69,14 @@ export async function withRetry<T>(operation: () => Promise<T>, maxAttempts: num
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await operation();
-    } }catch (error) {
+     }catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       if (attempt < maxAttempts) {
-        console.log(`Attempt ${attempt} }failed, retrying in ${delayMs}ms...`);
-        await delay(delayMs);
-      } }
-    } }
-  } }
+        console.log(`Attempt ${attempt }failed, retrying in ${delayMs}ms...`);
+        await delay(delayMs); }
+   }
   throw lastError!;
-} }
+ }
 
 export {};
+

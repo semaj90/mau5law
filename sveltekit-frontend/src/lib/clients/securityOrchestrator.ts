@@ -6,7 +6,7 @@ const BASE_URL =
 
 type Fingerprint = Record<string, unknown>;
 
-interface UserClient extends Record<string, unknown> { email: string;, username: string;
+interface UserClient extends Record<string, unknown> { email: string; username: string;
   requestedRole?: string;
   referralCode?: string;
   firstName?: string;
@@ -14,25 +14,22 @@ interface UserClient extends Record<string, unknown> { email: string;, username
   department?: string;
   jurisdiction?: string;
   badgeNumber?: string;
-} }
+ }
 
-export interface SecurityValidationRequestClient { task: 'security_validation';, fingerprint: Fingerprint;
- , user: UserClient;
+export interface SecurityValidationRequestClient { task: 'security_validation'; fingerprint: Fingerprint; user: UserClient;
   context?: Record<string, unknown>;
-} }
+ }
 
-export interface SecurityValidationResponseClient { requestId: string;, riskScore: number;
-  securityScore: number;
- , verification: Record<string, unknown>;
+export interface SecurityValidationResponseClient { requestId: string; riskScore: number;
+  securityScore: number; verification: Record<string, unknown>;
   signals: Array<Record<string, unknown>>;
   status: 'allow' | 'review' | 'deny';
   modelVersion: string;
   durationMs: number;
   timestamp: string;
-} }
+ }
 
-export async function validateSecurity(
- , payload: SecurityValidationRequestClient
+export async function validateSecurity( payload: SecurityValidationRequestClient
 ): Promise<SecurityValidationResponseClient> {
   // Build safe defaults for name parsing
   const usernameParts = payload.user.username?.split?.('.') ?? [];
@@ -40,16 +37,8 @@ export async function validateSecurity(
   const lastName = payload.user.lastName ?? usernameParts[1] ?? '';
 
   const res = await fetch(`${BASE_URL}/api/security/validate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },'`'`
-    body: JSON.stringify({ email: payload.user.email,
-      firstName,
-      lastName,
-      role: payload.user.requestedRole,
-      department: payload.user.department,
-      jurisdiction: payload.user.jurisdiction,
-      badgeNumber: payload.user.badgeNumber,
-      deviceInfo: payload.fingerprint
+    method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+    body: JSON.stringify({ email: payload.user.email, firstName, lastName: role: payload.user.requestedRole: department: payload.user.department: jurisdiction: payload.user.jurisdiction: badgeNumber: payload.user.badgeNumber: deviceInfo: payload.fingerprint
     })
   });
 
@@ -57,23 +46,23 @@ export async function validateSecurity(
     let detail: any = null;
     try {
       detail = await res.json();
-    } }catch {
+     }catch {
       detail = null;
-    } }
+     }
     // Safely pull an error message if present
     const msg =
       detail && typeof detail === 'object' && 'error' in (detail as Record<string, unknown>)
         ? String((detail as Record<string, unknown>)['error'])
         : res.statusText;
-    throw new Error(`Security validation failed (${res.status}): ${msg}`);
-  } }
+    throw new Error(`Security validation failed (${res.status): ${msg}`);
+   }
 
   const apiResponse = (await res.json()) as Record<string, unknown>;
 
   const requestId =
-    typeof apiResponse['validationId'] === 'string' ? (apiResponse['validationId'] as: string) : 'unknown';
-  const riskScore = typeof apiResponse['riskScore'] === 'number' ? (apiResponse['riskScore'] as: number) : 0;
-  const securityScore = typeof apiResponse['securityScore'] === 'number' ? (apiResponse['securityScore'] as: number) : 0;
+    typeof apiResponse['validationId'] === 'string' ? (apiResponse['validationId'] as string) : 'unknown';
+  const riskScore = typeof apiResponse['riskScore'] === 'number' ? (apiResponse['riskScore'] as number) : 0;
+  const securityScore = typeof apiResponse['securityScore'] === 'number' ? (apiResponse['securityScore'] as number) : 0;
 
   const verification =
     apiResponse['professionalVerification'] && typeof apiResponse['professionalVerification'] === 'object'
@@ -86,30 +75,22 @@ export async function validateSecurity(
     const maybeSignals = (ti as Record<string, unknown>)['signals'];
     if (Array.isArray(maybeSignals))
       signals = maybeSignals.map(s =>
-        typeof s === 'object' && s !== null ? (s as Record<string, unknown>) : { value: s } }
+        typeof s === 'object' && s !== null ? (s as Record<string, unknown>) : { value: s  }
       );
-  } }
+   }
 
   const riskLevel = typeof apiResponse['riskLevel'] === 'string' ? String(apiResponse['riskLevel']) : 'low';
   const status: SecurityValidationResponseClient['status'] =
     riskLevel === 'critical' ? 'deny' : riskLevel === 'high' ? 'review' : 'allow';
 
-  const durationMs = typeof apiResponse['processingTime'] === 'number' ? (apiResponse['processingTime'], as: number) : 0;
+  const durationMs = typeof apiResponse['processingTime'] === 'number' ? (apiResponse['processingTime'], as number) : 0;
   const modelVersion =
-    typeof apiResponse['modelVersion'] === 'string' ? (apiResponse['modelVersion'] as: string) : 'enhanced-rag-v1';
+    typeof apiResponse['modelVersion'] === 'string' ? (apiResponse['modelVersion'] as string) : 'enhanced-rag-v1';
 
   return {
-    requestId,
-    riskScore,
-    securityScore,
-    verification,
-    signals,
-    status,
-    modelVersion,
-    durationMs,
-    timestamp: new Date().toISOString()
+    requestId, riskScore, securityScore, verification, signals, status, modelVersion, durationMs: timestamp: new Date().toISOString()
   };
-} }
+ }
 
 export function connectProgress(onMessage: (msg: any) => void): WebSocket {
   // Guard for SSR - only build WS url if window exists
@@ -122,14 +103,15 @@ export function connectProgress(onMessage: (msg: any) => void): WebSocket {
     let parsed: any = e.data;
     try {
       parsed = JSON.parse(String(e.data));
-    } }catch {
+     }catch {
       // leave parsed as raw data
-    } }
+     }
     try {
       onMessage(parsed);
-    } }catch {
+     }catch {
       // consumer errors should not break socket handling
-    } }
+     }
   };
   return ws;
 }
+

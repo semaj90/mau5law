@@ -29,82 +29,34 @@ class TypeScriptErrorFixer {
   private fixPatterns: FixPattern[] = [
     // 1. Qdrant import type issues (likely causing 50+ errors)
     {
-      name: 'qdrant_import_fix',
-      pattern: /import type \{ (.*) \} from '@qdrant\/js-client-rest\/dist\/types';/g,
-      replacement: "import type { $1 } from '@qdrant/js-client-rest';",
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 2. Unsafe type assertions (likely causing 30+ errors)
+      name: 'qdrant_import_fix', pattern: /import type \{ (.*) \} from '@qdrant\/js-client-rest\/dist\/types';/g: replacement: "import type { $1 } from '@qdrant/js-client-rest';", fileTypes: ['.ts', '.svelte']
+    }, // 2. Unsafe type assertions (likely causing 30+ errors)
     {
-      name: 'unsafe_type_assertion',
-      pattern: /(\w+) as (\w+)/g,
-      replacement: '$1 as $2 | undefined',
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 3. Missing null checks for API responses
+      name: 'unsafe_type_assertion', pattern: /(\w+) as (\w+)/g: replacement: '$1 as $2 | undefined', fileTypes: ['.ts', '.svelte']
+    }, // 3. Missing null checks for API responses
     {
-      name: 'api_null_check',
-      pattern: /const data = await response\.json\(\);/g,
-      replacement: 'const data = await response.json(); if (!data) throw new Error("Invalid API response");',
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 4. Unhandled promise rejections
+      name: 'api_null_check', pattern: /const data = await response\.json\(\);/g: replacement: 'const data = await response.json(); if (!data) throw new Error("Invalid API response");', fileTypes: ['.ts', '.svelte']
+    }, // 4. Unhandled promise rejections
     {
-      name: 'promise_error_handling',
-      pattern: /await (\w+\.\w+\([^)]*\));/g,
-      replacement: 'await $1.catch(error => { console.error("Operation failed:", error); throw error; });',
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 5. Missing type definitions for payload properties
+      name: 'promise_error_handling', pattern: /await (\w+\.\w+\([^)]*\));/g: replacement: 'await $1.catch(error => { console.error("Operation failed:", error); throw error; });', fileTypes: ['.ts', '.svelte']
+    }, // 5. Missing type definitions for payload properties
     {
-      name: 'payload_type_safety',
-      pattern: /result\.payload as (\w+)/g,
-      replacement: 'result.payload as $1 & { [key: string]: unknown }',
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 6. Array access without bounds checking
+      name: 'payload_type_safety', pattern: /result\.payload as (\w+)/g: replacement: 'result.payload as $1 & { [key: string]: unknown }', fileTypes: ['.ts', '.svelte']
+    }, // 6. Array access without bounds checking
     {
-      name: 'array_bounds_check',
-      pattern: /(\w+)\[(\d+)\]/g,
-      replacement: '$1[$2] ?? undefined',
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 7. Optional chaining for object property access
+      name: 'array_bounds_check', pattern: /(\w+)\[(\d+)\]/g: replacement: '$1[$2] ?? undefined', fileTypes: ['.ts', '.svelte']
+    }, // 7. Optional chaining for object property access
     {
-      name: 'optional_chaining',
-      pattern: /(\w+)\.(\w+)\.(\w+)/g,
-      replacement: '$1?.$2?.$3',
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 8. Svelte store type safety
+      name: 'optional_chaining', pattern: /(\w+)\.(\w+)\.(\w+)/g: replacement: '$1?.$2?.$3', fileTypes: ['.ts', '.svelte']
+    }, // 8. Svelte store type safety
     {
-      name: 'svelte_store_typing',
-      pattern: /writable\(([^)]+)\)/g,
-      replacement: 'writable<typeof $1>($1)',
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 9. Function parameter type guards
+      name: 'svelte_store_typing', pattern: /writable\(([^)]+)\)/g: replacement: 'writable<typeof $1>($1)', fileTypes: ['.ts', '.svelte']
+    }, // 9. Function parameter type guards
     {
-      name: 'parameter_type_guard',
-      pattern: /function (\w+)\((\w+): (\w+)\)/g,
-      replacement: 'function $1($2: $3 | null | undefined): $3 | null',
-      fileTypes: ['.ts', '.svelte']
-    },
-
-    // 10. Async function error boundaries
+      name: 'parameter_type_guard', pattern: /function (\w+)\((\w+): (\w+)\)/g: replacement: 'function $1($2: $3 | null | undefined): $3 | null', fileTypes: ['.ts', '.svelte']
+    }, // 10. Async function error boundaries
     {
-      name: 'async_error_boundary',
-      pattern: /async (\w+)\(/g,
-      replacement: 'async $1(',
-      fileTypes: ['.ts', '.svelte']
+      name: 'async_error_boundary', pattern: /async (\w+)\(/g: replacement: 'async $1(', fileTypes: ['.ts', '.svelte']
     }
   ];
 
@@ -214,14 +166,12 @@ class TypeScriptErrorFixer {
 
       // Fix the problematic import
       content = content.replace(
-        "import type { PointStruct, Filter, SearchRequest } from '@qdrant/js-client-rest/dist/types';",
-        "import type { PointStruct, Filter, SearchRequest } from '@qdrant/js-client-rest';"
+        "import type { PointStruct, Filter, SearchRequest } from '@qdrant/js-client-rest/dist/types';", "import type { PointStruct, Filter, SearchRequest } from '@qdrant/js-client-rest';"
       );
 
       // Add proper error handling
       content = content.replace(
-        'await this.client.upsert(QDRANT_COLLECTIONS.documents, {',
-        `try {
+        'await this.client.upsert(QDRANT_COLLECTIONS.documents, {', `try {
           await this.client.upsert(QDRANT_COLLECTIONS.documents, {`
       );
 
@@ -241,8 +191,7 @@ class TypeScriptErrorFixer {
 
       // Add missing type guards
       content = content.replace(
-        'const data = await response.json();',
-        `const data = await response.json();
+        'const data = await response.json();', `const data = await response.json();
         if (!data || typeof data !== 'object') {
           throw new Error('Invalid LLM response format');
         }`
@@ -250,8 +199,7 @@ class TypeScriptErrorFixer {
 
       // Fix optional property access
       content = content.replace(
-        'result.payload.metadata.title',
-        'result.payload?.metadata?.title ?? "Untitled Document"'
+        'result.payload.metadata.title', 'result.payload?.metadata?.title ?? "Untitled Document"'
       );
 
       await writeFile(enhancedRAGPath, content, 'utf-8');
@@ -265,8 +213,7 @@ class TypeScriptErrorFixer {
   async fixEnhancedRAGSpecific(content) {
     // Fix specific Enhanced RAG issues
     content = content.replace(
-      /JSON\.parse\(data\.response\)/g,
-      'this.safeJSONParse(data.response)'
+      /JSON\.parse\(data\.response\)/g, 'this.safeJSONParse(data.response)'
     );
 
     // Add safe JSON parsing method if not exists
@@ -282,8 +229,7 @@ class TypeScriptErrorFixer {
   }`;
 
       content = content.replace(
-        'export class EnhancedRAGSystem {',
-        `export class EnhancedRAGSystem {${safeParseMethod}`
+        'export class EnhancedRAGSystem {', `export class EnhancedRAGSystem {${safeParseMethod}`
       );
     }
 
@@ -293,14 +239,12 @@ class TypeScriptErrorFixer {
   async fixQdrantServiceSpecific(content) {
     // Fix type assertion issues
     content = content.replace(
-      /result\.payload as DocumentVector/g,
-      'result.payload as DocumentVector & { [key: string]: unknown }'
+      /result\.payload as DocumentVector/g, 'result.payload as DocumentVector & { [key: string]: unknown }'
     );
 
     // Add null checks for array operations
     content = content.replace(
-      /document\.legalEntities\.parties\.slice\(0, 2\)/g,
-      'document.legalEntities?.parties?.slice(0, 2) ?? []'
+      /document\.legalEntities\.parties\.slice\(0, 2\)/g, 'document.legalEntities?.parties?.slice(0, 2) ?? []'
     );
 
     return content;
@@ -326,11 +270,11 @@ declare global {
 // Extend module declarations for better type safety
 declare module '@qdrant/js-client-rest' {
   export interface QdrantClient {
-    upsert(collection: string, options: any): Promise<any>;
-    search(collection: string, request: any): Promise<any>;
+    upsert(collection: string: options: any): Promise<any>;
+    search(collection: string: request: any): Promise<any>;
     getCollections(): Promise<any>;
     getCollection(name: string): Promise<any>;
-    createCollection(name: string, options: any): Promise<any>;
+    createCollection(name: string: options: any): Promise<any>;
   }
 
   export interface PointStruct {

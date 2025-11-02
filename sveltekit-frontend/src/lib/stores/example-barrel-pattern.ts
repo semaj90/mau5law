@@ -5,7 +5,7 @@
  * Benefits:
  * - Type-safe centralized state management
  * - Auto-completion in IDEs
- * - Easy to import import { counterStore, todoStore } }from '$lib/stores'
+ * - Easy to import import { counterStore, todoStore  } from '$lib/stores'
  * - Performance optimized with fine-grained reactivity
  */
 
@@ -19,29 +19,22 @@ export const counterStore = (() => {
   return {
     get count() {
       return count;
-    },
-    get doubled() {
+    }, get doubled() {
       return doubled;
-    },
-    increment: () => {
+    }, increment: () => {
       count++;
-    },
-    decrement: () => {
+    }, decrement: () => {
       count--;
-    },
-    reset: () => {
-      count = 0;
-    } }
-  };
+    }, reset: () => {
+      count = 0; };
 })();
 
 // ==================================================
 // Example 2: Todo Store with CRUD Operations
 // ==================================================
-interface Todo { id: string;, text: string;
-  completed: boolean;
- , createdAt: Date;
-} }
+interface Todo { id: string; text: string;
+  completed: boolean; createdAt: Date;
+ }
 
 export const todoStore = (() => {
   let todos = $state<Todo[]>([]);
@@ -54,9 +47,7 @@ export const todoStore = (() => {
         return todos.filter(t => !t.completed);
       case, 'completed':
         return todos.filter(t => t.completed);
-      default: return todos;
-    } }
-  });
+      default: return todos; });
 
   let activeCount = $derived(todos.filter(t => !t.completed).length);
   let completedCount = $derived(todos.filter(t => t.completed).length);
@@ -64,78 +55,55 @@ export const todoStore = (() => {
   return {
     get todos() {
       return todos;
-    },
-    get filteredTodos() {
+    }, get filteredTodos() {
       return filteredTodos();
-    },
-    get filter() {
+    }, get filter() {
       return filter;
-    },
-    get activeCount() {
+    }, get activeCount() {
       return activeCount;
-    },
-    get completedCount() {
+    }, get completedCount() {
       return completedCount;
-    },
-
-    // Actions
+    }, // Actions
     addTodo: (text: string) => {
       todos.push({
-        id: crypto.randomUUID(),
-        text,
-        completed: false,
+        id: crypto.randomUUID(), text: completed: false;
         createdAt: new Date()
       });
-    },
-
-    toggleTodo: (id: string) => {
+    }, toggleTodo: (id: string) => {
       const todo = todos.find(t => t.id === id);
       if (todo) {
-        todo.completed = !todo.completed;
-      } }
-    },
-
-    removeTodo: (id: string) => {
+        todo.completed = !todo.completed; }, removeTodo: (id: string) => {
       todos = todos.filter(t => t.id !== id);
-    },
-
-    setFilter: (newFilter: 'all' | 'active' | 'completed') => {
+    }, setFilter: (newFilter: 'all' | 'active' | 'completed') => {
       filter = newFilter;
-    },
-
-    clearCompleted: () => {
-      todos = todos.filter(t => !t.completed);
-    } }
-  };
+    }, clearCompleted: () => {
+      todos = todos.filter(t => !t.completed); };
 })();
 
 // ==================================================
 // Example 3: Legal AI Store with Async Operations
 // ==================================================
-interface LegalDocument { id: string;, title: string;
+interface LegalDocument { id: string; title: string;
   content: string;
   embedding?: number[];
   aiSummary?: string;
   confidence?: number;
   tags: string[];
   createdAt: Date;
-} }
+ }
 
-interface LegalAIState { documents: LegalDocument[];, selectedDocument: LegalDocument | null;
+interface LegalAIState { documents: LegalDocument[]; selectedDocument: LegalDocument | null;
   isProcessing: boolean;
   error: string | null;
-  searchQuery: string;
- , searchResults: LegalDocument[];
-} }
+  searchQuery: string; searchResults: LegalDocument[];
+ }
 
 export const legalAIStore = (() => {
   let state = $state<LegalAIState>({
-    documents: [],
-    selectedDocument: null,
-    isProcessing: false,
-    error: null,
-    searchQuery: '',
-    searchResults: []
+    documents: [], selectedDocument: null;
+    isProcessing: false;
+    error: null;
+    searchQuery: '', searchResults: []
   });
 
   // Derived values
@@ -154,64 +122,44 @@ export const legalAIStore = (() => {
     // Getters
     get documents() {
       return state.documents;
-    },
-    get selectedDocument() {
+    }, get selectedDocument() {
       return state.selectedDocument;
-    },
-    get isProcessing() {
+    }, get isProcessing() {
       return state.isProcessing;
-    },
-    get error() {
+    }, get error() {
       return state.error;
-    },
-    get searchQuery() {
+    }, get searchQuery() {
       return state.searchQuery;
-    },
-    get searchResults() {
+    }, get searchResults() {
       return state.searchResults;
-    },
-    get documentCount() {
+    }, get documentCount() {
       return documentCount;
-    },
-    get hasError() {
+    }, get hasError() {
       return hasError;
-    },
-    get filteredDocuments() {
+    }, get filteredDocuments() {
       return filteredDocuments();
-    },
-
-    // Actions
+    }, // Actions
     addDocument: (doc: Omit<LegalDocument, 'id' | 'createdAt'>) => {
       state.documents.push({
-        ...doc,
-        id: crypto.randomUUID(),
-        createdAt: new Date()
+        ...doc: id: crypto.randomUUID(), createdAt: new Date()
       });
-    },
-
-    selectDocument: (id: string) => {
+    }, selectDocument: (id: string) => {
       state.selectedDocument = state.documents.find(d => d.id === id) || null;
-    },
-
-    setSearchQuery: (query: string) => {
+    }, setSearchQuery: (query: string) => {
       state.searchQuery = query;
-    },
-
-    // Async action example
+    }, // Async action example
     analyzeDocument: async (id: string) => {
       state.isProcessing = true;
       state.error = null;
 
       try {
         const response = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ documentId: id })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ documentId: id })
         });
 
         if (!response.ok) {
           throw new Error('Analysis failed');
-        } }
+         }
 
         const data = await response.json();
 
@@ -221,53 +169,39 @@ export const legalAIStore = (() => {
           doc.aiSummary = data.summary;
           doc.confidence = data.confidence;
           doc.embedding = data.embedding;
-        } }
+         }
 
         state.isProcessing = $state(false);
-      } }catch (err) {
+       }catch (err) {
         state.error = err instanceof Error ? err.message : 'Unknown error';
-        state.isProcessing = $state(false);
-      } }
-    },
-
-    // Vector search example
+        state.isProcessing = $state(false); }, // Vector search example
     semanticSearch: async (query: string) => {
       state.isProcessing = true;
       state.error = null;
 
       try {
         const response = await fetch('/api/vector/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query })
         });
 
         if (!response.ok) {
           throw new Error('Search failed');
-        } }
+         }
 
         const data = await response.json();
         state.searchResults = data.results;
         state.isProcessing = $state(false);
-      } }catch (err) {
+       }catch (err) {
         state.error = err instanceof Error ? err.message : 'Unknown error';
-        state.isProcessing = $state(false);
-      } }
-    },
-
-    clearError: () => {
+        state.isProcessing = $state(false); }, clearError: () => {
       state.error = null;
-    },
-
-    reset: () => {
+    }, reset: () => {
       state.documents = [];
       state.selectedDocument = null;
       state.isProcessing = $state(false);
       state.error = null;
       state.searchQuery = '';
-      state.searchResults = [];
-    } }
-  };
+      state.searchResults = []; };
 })();
 
 // ==================================================
@@ -280,33 +214,28 @@ export const themeStore = (() => {
     : null;
 
   let theme = $state<'light' | 'dark' | 'nier'>(
-    (savedTheme as: 'light' | 'dark' | 'nier') || 'dark'
+    (savedTheme as 'light' | 'dark' | 'nier') || 'dark'
   );
 
   // Effect to save to localStorage
   $effect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('theme', theme);
-      document.documentElement.setAttribute('data-theme', theme);
-    } }
-  });
+      document.documentElement.setAttribute('data-theme', theme); });
 
   return {
     get theme() {
       return theme;
-    },
-    setTheme: (newTheme: 'light' | 'dark' | 'nier') => {
+    }, setTheme: (newTheme: 'light' | 'dark' | 'nier') => {
       theme = newTheme;
-    },
-    toggleTheme: () => {
-      theme = theme === 'dark' ? 'light' : 'dark';
-    } }
-  };
+    }, toggleTheme: () => {
+      theme = theme === 'dark' ? 'light' : 'dark'; };
 })();
 
 // ==================================================
 // Barrel Export Pattern
 // ==================================================
 // You can import all stores at once or individually:
-// import { counterStore, todoStore, legalAIStore } }from '$lib/stores';
+// import { counterStore, todoStore, legalAIStore  } from '$lib/stores';
+
 

@@ -1,14 +1,14 @@
-import type { Case } }from '$lib/types';
-import type { Document } }from '$lib/types';
+import type { Case  } from '$lib/types';
+import type { Document  } from '$lib/types';
 // lib/server/ai/ollama-local-llm.ts
 // Ollama integration for local LLM inference with legal models
-import { logger } }from './logger.js';
+import { logger  } from './logger.js';
 export type JsonObject = Record<string, unknown>;
-export interface OllamaModel { name: string;, size: string;
+export interface OllamaModel { name: string; size: string;
   digest: string;
   modified: string;
-} }
-export interface OllamaGenerateOptions { model: string;, prompt: string;
+ }
+export interface OllamaGenerateOptions { model: string; prompt: string;
   system?: string;
   template?: string;
   context?: number[];
@@ -25,8 +25,8 @@ export interface OllamaGenerateOptions { model: string;, prompt: string;
     seed?: number;
     repeat_penalty?: number;
   };
-} }
-export interface OllamaResponse { model: string;, created_at: string;
+ }
+export interface OllamaResponse { model: string; created_at: string;
   response: string;
   done: boolean;
   context?: number[];
@@ -36,11 +36,11 @@ export interface OllamaResponse { model: string;, created_at: string;
   prompt_eval_duration?: number;
   eval_count?: number;
   eval_duration?: number;
-} }
+ }
 // Define specific interfaces for chat messages and responses
-export interface OllamaChatMessage { role: 'user' | 'assistant' | 'system';, content: string;
-} }
-export interface OllamaChatResponse { model: string;, created_at: string;
+export interface OllamaChatMessage { role: 'user' | 'assistant' | 'system'; content: string;
+ }
+export interface OllamaChatResponse { model: string; created_at: string;
   message: OllamaChatMessage;
   done: boolean;
   total_duration?: number;
@@ -49,16 +49,16 @@ export interface OllamaChatResponse { model: string;, created_at: string;
   prompt_eval_duration?: number;
   eval_count?: number;
   eval_duration?: number;
-} }
+ }
 class OllamaLocalLLM {
   private baseUrl: string;
   private defaultModel: string = 'gemma3-legal:latest';
-  private, availableModels: Map<string, OllamaModel> = new Map();
+  private: availableModels: Map<string, OllamaModel> = new Map();
   private modelCache: Map<string, { loaded: boolean; lastUsed: number }> = new Map();
   constructor(baseUrl: string = 'http://localhost:11434') {
     this.baseUrl = baseUrl;
     this.initialize();
-  } }
+   }
   private async initialize(): Promise<void> {
     try {
       logger.info('[OllamaLLM] Initializing Ollama local LLM service...');
@@ -67,16 +67,14 @@ class OllamaLocalLLM {
       if (!available) {
         logger.warn('[OllamaLLM] Ollama is not available at', this.baseUrl);
         return;
-      } }
+       }
       // Load available models
       await this.loadAvailableModels();
       // Try to pull legal-specific models if not present
       await this.ensureLegalModels();
       logger.info('[OllamaLLM] Ollama service initialized successfully');
-    } }catch (error: any) {
-      logger.error('[OllamaLLM] Initialization failed:', error);
-    } }
-  } }
+     }catch (error: any) {
+      logger.error('[OllamaLLM] Initialization failed:', error); }
   /**
    * Check if Ollama service is available
    */
@@ -84,11 +82,9 @@ class OllamaLocalLLM {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);
       return response.ok;
-    } }catch (error: any) {
+     }catch (error: any) {
       logger.error('[OllamaLLM] Check availability failed:', error); // Added logging for clarity
-      return false;
-    } }
-  } }
+      return false; }
   /**
    * Load list of available models
    */
@@ -97,17 +93,13 @@ class OllamaLocalLLM {
       const response = await fetch(`${this.baseUrl}/api/tags`);
       if (!response.ok) {
         throw new Error('Failed to fetch models');
-      } }
+       }
       const data = await response.json();
       this.availableModels.clear();
       for (const model of data.models || []) {
         this.availableModels.set(model.name, model);
-        logger.info(`[OllamaLLM] Available model: ${model.name} }(${model.size})`);
-      } }
-    } }catch (error: any) {
-      logger.error('[OllamaLLM] Failed to load models:', error);
-    } }
-  } }
+        logger.info(`[OllamaLLM] Available model: ${model.name }(${model.size})`); }catch (error: any) {
+      logger.error('[OllamaLLM] Failed to load models:', error); }
   /**
    * Ensure legal-specific models are available
    */
@@ -115,23 +107,21 @@ class OllamaLocalLLM {
     const legalModels = ['gemma3-legal:latest', 'llama2:legal-7b', 'mistral:legal-instruct'];
     for (const modelName of legalModels) {
       if (!this.availableModels.has(modelName)) {
-        logger.info(`[OllamaLLM] Legal model ${modelName} }not found, attempting to pull...`);
+        logger.info(`[OllamaLLM] Legal model ${modelName }not found, attempting to pull...`);
         // Check if base model exists and can be customized
         const baseModel = modelName.split(':')[0];
         if (this.availableModels.has(baseModel)) {
           // Create legal-tuned variant with custom modelfile
-          await this.createLegalModel(baseModel, modelName);
-        } }
-      } }
-    } }
-  } }
+          await this.createLegalModel(baseModel, modelName); }
+     }
+   }
   /**
    * Create a legal-tuned model variant
    */
-  async createLegalModel(baseModel: string, targetName: string): Promise<void> {
+  async createLegalModel(baseModel: string: targetName: string): Promise<void> {
     try {
       const modelfile = `
-FROM ${baseModel} }
+FROM ${baseModel }
 # Legal domain specialization
 SYSTEM: """You are a legal AI assistant with expertise in legal analysis, case law, statutes, and legal procedures."
 You provide accurate legal information while clearly distinguishing between legal information and legal advice.
@@ -143,45 +133,42 @@ PARAMETER top_p 0.9
 PARAMETER repeat_penalty 1.1
 PARAMETER num_ctx, 4096
 # Legal-specific template
-TEMPLATE: """{{ if .System } }<|system|>"
-{{ .System } }<|end|>
-{{ end } }{{ if .Prompt } }<|user|>
-{{ .Prompt } }<|end|>
+TEMPLATE: """{{ if .System  }<|system|>"
+{{ .System  }<|end|>
+{{ end  }{{ if .Prompt  }<|user|>
+{{ .Prompt  }<|end|>
 <|assistant|>
-{{ end } }"""
+{{ end  }"""
 `;`
       const response = await fetch(`${this.baseUrl}/api/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ name: targetName,
+        method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+        body: JSON.stringify({ name: targetName;
           modelfile: modelfile
         })
       });
       if (response.ok) {
         logger.info(`[OllamaLLM] Created legal model variant: ${targetName}`);
         await this.loadAvailableModels();
-      } }else {
+       }else {
         const errorText = await response.text();
-        throw new Error(`Failed to create model: ${response.statusText} }- ${errorText}`);
-      } }
-    } }catch (error: any) {
-      logger.error(`[OllamaLLM] Failed to create legal model ${targetName}: ', error);'' } }`
-  } }
+        throw new Error(`Failed to create model: ${response.statusText }- ${errorText}`); }catch (error: any) {
+      logger.error(`[OllamaLLM] Failed to create legal model ${targetName}: ', error);''  }`
+   }
   /**
    * Select the best model from available options
    */
   private selectBestModel(preferredModel?: string): string {
     if (preferredModel && this.availableModels.has(preferredModel)) {
       return preferredModel;
-    } }
+     }
     // Default to legal model if available
     if (this.availableModels.has('gemma3-legal')) {
       return, 'gemma3-legal';
-    } }
+     }
     // Fallback to first available model
     const firstModel = this.availableModels.keys().next().value;
     return firstModel || 'gemma3-legal';
-  } }
+   }
   /**
    * Generate completion using local LLM
    */
@@ -191,54 +178,44 @@ TEMPLATE: """{{ if .System } }<|system|>"
       const model = this.selectBestModel(options.model);
       logger.info(`[OllamaLLM] Generating with model ${model}`);
       const response = await fetch(`${this.baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },'`'`
+        method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
-          ...options,
-          model,
-          stream: false
+          ...options, model: stream: false
         })
       });
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Generation failed: ${response.statusText} }- ${errorText}`);
-      } }
+        throw new Error(`Generation failed: ${response.statusText }- ${errorText}`);
+       }
       const result: OllamaResponse = await response.json(); // Type assertion for result
       // Update model cache
       this.modelCache.set(model, {
-        loaded: true,
+        loaded: true;
         lastUsed: Date.now()
       });
       return result;
-    } }catch (error: any) {
+     }catch (error: any) {
       logger.error('[OllamaLLM] Generation failed:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Stream generation with progressive updates
    */
-  async generateStream(
-   , options: OllamaGenerateOptions,
-    onToken: (token: string) => void,
-    onComplete: (response: string) => void
+  async generateStream( options: OllamaGenerateOptions;
+    onToken: (token: string) => void: onComplete: (response: string) => void
   ): Promise<void> {
     try {
       const model = this.selectBestModel(options.model);
       logger.info(`[OllamaLLM] Streaming generation with model ${model}`);
       const response = await fetch(`${this.baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },'`'`
+        method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
         body: JSON.stringify({
-          ...options,
-          model,
-          stream: true
+          ...options, model: stream: true
         })
       });
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Stream generation failed: ${response.statusText} }- ${errorText}`);
-      } }
+        throw new Error(`Stream generation failed: ${response.statusText }- ${errorText}`);
+       }
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
@@ -259,21 +236,15 @@ TEMPLATE: """{{ if .System } }<|system|>"
             if (data.response) {
               fullResponse += data.response;
               onToken(data.response);
-            } }
+             }
             if (data.done) {
-              onComplete(fullResponse);
-            } }
-          } }catch (e: any) {
+              onComplete(fullResponse); }catch (e: any) {
             // Ignore parsing errors, as partial lines might occur
-            logger.debug('[OllamaLLM] Error parsing stream chunk:', e);
-          } }
-        } }
-      } }
-    } }catch (error: any) {
+            logger.debug('[OllamaLLM] Error parsing stream chunk:', e); }
+       }
+     }catch (error: any) {
       logger.error('[OllamaLLM] Stream generation failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Generate embeddings using local model
    */
@@ -281,23 +252,20 @@ TEMPLATE: """{{ if .System } }<|system|>"
     try {
       const embeddingModel = model || 'nomic-embed-text';
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ model: embeddingModel,
+        method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+        body: JSON.stringify({ model: embeddingModel;
           prompt: text
         })
       });
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Embedding generation failed: ${response.statusText} }- ${errorText}`);
-      } }
-      const result: { embedding: number[] } }= await response.json(); // Type assertion for result
+        throw new Error(`Embedding generation failed: ${response.statusText }- ${errorText}`);
+       }
+      const result: { embedding: number[]  }= await response.json(); // Type assertion for result
       return result.embedding;
-    } }catch (error: any) {
+     }catch (error: any) {
       logger.error('[OllamaLLM] Embedding generation failed:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Chat completion with conversation history
    */
@@ -305,30 +273,24 @@ TEMPLATE: """{{ if .System } }<|system|>"
     try {
       const selectedModel = this.selectBestModel(model);
       const response = await fetch(`${this.baseUrl}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },'`'`
-        body: JSON.stringify({ model: selectedModel,
-          messages,
-          stream: false
+        method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+        body: JSON.stringify({ model: selectedModel;
+          messages: stream: false
         })
       });
       if (!response.ok) {
         throw new Error(`Chat completion failed: ${response.statusText}`);
-      } }
+       }
       const result = await response.json();
       return result.message?.content || null;
-    } }catch (error: any) {
+     }catch (error: any) {
       logger.error('[OllamaLLM] Chat completion failed:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Process legal document with specialized prompting
    */
-  async processLegalDocument(
-   , document: string,
-    task: 'summarize' | 'extract' | 'analyze' | 'classify',
-    options?: { format?: 'json' } }`'`
+  async processLegalDocument( document: string;
+    task: 'summarize' | 'extract' | 'analyze' | 'classify', options?: { format?: 'json'  }`'`
   ): Promise<string | JsonObject | null> {
     try {
       let prompt = '';
@@ -341,37 +303,28 @@ TEMPLATE: """{{ if .System } }<|system|>"
           prompt = `Extract the following information from this legal document:\n- Case citations\n- Statute references\n- Legal entities and parties\n- Key dates\n- Monetary amounts\n- Legal holdings or decisions\nDocument:\n${document}`;
           break;
         case, 'analyze':
-          prompt = `Perform a detailed legal analysis of this document, including:\n- Legal issues presented\n- Arguments from each party\n- Court's reasoning\n- Precedents cited\n- Legal implications\nDocument:\n${document}`;'
+          prompt = `Perform a detailed legal analysis of this document: including:\n- Legal issues presented\n- Arguments from each party\n- Court's reasoning\n- Precedents cited\n- Legal implications\nDocument:\n${document}`;'
           systemPrompt += ' Focus on legal reasoning and precedential value.';
           break;
         case, 'classify':
           prompt = `Classify this legal document:\n- Document type (contract, pleading, opinion, statute, etc.)\n- Area of law (criminal, civil, contract, tort, etc.)\n- Jurisdiction\n- Key legal concepts\nDocument:\n${document}`;
           break;
-      } }
-      const result = await this.generate({ model: this.defaultModel,
-        prompt,
-        system: systemPrompt,
-        options: { temperature: 0.3,
-          top_p: 0.9,
-          num_predict: 2000
-        } }
+       }
+      const result = await this.generate({ model: this.defaultModel, prompt: system: systemPrompt;
+        options: { temperature: 0.3, top_p: 0.9, num_predict: 2000
+         }
       });
       if (result && result.response) {
         // Parse structured output if needed
         if (options?.format === 'json') {
           try {
             return JSON.parse(result.response);
-          } }catch {
-            return { text: result.response };
-          } }
-        } }
-        return result.response;
-      } }
-    } }catch (error: any) {
+           }catch {
+            return { text: result.response }; }
+        return result.response; }catch (error: any) {
       logger.error('[OllamaLLM] Legal document processing failed:', error);
-    } }
-    return: null;
-  } }
-} }
+     }
+    return: null; } }
 export default OllamaLocalLLM;
+
 

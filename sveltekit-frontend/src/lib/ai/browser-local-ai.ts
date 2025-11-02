@@ -3,110 +3,94 @@
  * Implements gemma3:270m for lightweight, privacy-first inference
  */
 // Types for transformers.js integration
-export interface LocalModelConfig { modelId: string;, quantized: boolean;
+export interface LocalModelConfig { modelId: string; quantized: boolean;
   device: 'webgpu' | 'wasm' | 'cpu';
   maxTokens: number;
   temperature: number;
-} }
+ }
 export interface LocalInferenceRequest {
   prompt: string;
   maxTokens?: number;
   temperature?: number;
   stopSequences?: string[];
   systemPrompt?: string;
-} }
-export interface LocalInferenceResult { text: string;, tokensGenerated: number;
+ }
+export interface LocalInferenceResult { text: string; tokensGenerated: number;
   processingTime: number;
   device: string;
   confidence: number;
   fromCache: boolean;
-} }
+ }
 export interface EmbeddingRequest {
   texts: string[];
   model?: 'sentence-transformers' | 'all-MiniLM-L6-v2';
-} }
-export interface EmbeddingResult { embeddings: Float32Array[];, processingTime: number;
+ }
+export interface EmbeddingResult { embeddings: Float32Array[]; processingTime: number;
   device: string;
   dimensions: number;
-} }
-export interface SemanticSearchRequest { query: string;, documents: Array<{ id: string; text: string; metadata?: any }>;
+ }
+export interface SemanticSearchRequest { query: string; documents: Array<{ id: string; text: string; metadata?: any }>;
   topK?: number;
   threshold?: number;
-} }
-export interface SemanticSearchResult { id: string;, text: string;
- , similarity: number;
+ }
+export interface SemanticSearchResult { id: string; text: string; similarity: number;
   metadata?: any;
-} }
+ }
 // Browser compatibility detection
 export class BrowserCapabilities {
-  static async detect(): Promise<{ webgpu: boolean;, wasm: boolean;
+  static async detect(): Promise<{ webgpu: boolean; wasm: boolean;
     sharedArrayBuffer: boolean;
-    webworkers: boolean;
-   , estimatedMemory: number;
+    webworkers: boolean; estimatedMemory: number;
   }> {
     const webgpu = !!navigator.gpu;
     const wasm = (() => {
       try {
         return typeof WebAssembly === 'object' && typeof WebAssembly.instantiate === 'function';
-      } }catch {
-        return false;
-      } }
-    })();
+       }catch {
+        return false; })();
     const sharedArrayBuffer = typeof SharedArrayBuffer !== 'undefined';
     const webworkers = typeof Worker !== 'undefined';
     // Estimate available memory
     let estimatedMemory = 2048; // Default 2GB
-    if ('memory' in performance && 'usedJSHeapSize' in (performance as: any).memory) {
-      const memory = (performance as: any).memory;
+    if ('memory' in performance && 'usedJSHeapSize' in (performance as any).memory) {
+      const memory = (performance as any).memory;
       estimatedMemory = Math.floor((memory.jsHeapSizeLimit - memory.usedJSHeapSize) / (1024 * 1024));
-    } }
+     }
     return {
-      webgpu,
-      wasm,
-      sharedArrayBuffer,
-      webworkers,
-      estimatedMemory
+      webgpu, wasm, sharedArrayBuffer, webworkers, estimatedMemory
     };
-  } }
+   }
   static canRunModel(
-    modelSizeMB: number,
+    modelSizeMB: number;
     capabilities: Awaited<ReturnType<typeof, BrowserCapabilities.detect>>
   ): boolean {
     const requiredMemory = modelSizeMB * 1.5; // 50% overhead
     const hasRequiredTech = capabilities.wasm || capabilities.webgpu;
-    return hasRequiredTech && capabilities.estimatedMemory > requiredMemory;
-  } }
-} }
+    return hasRequiredTech && capabilities.estimatedMemory > requiredMemory; } }
 // Local AI Engine using transformers.js pattern
 export class BrowserLocalAI {
   private initialized = $state(false);
   private modelLoaded = $state(false);
   private capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>> | null = null;
-  private, config: LocalModelConfig;
+  private: config: LocalModelConfig;
   // Model instances (would be actual transformers.js instances)
   private textModel: any = null;
-  private, embeddingModel: any = null;
+  private: embeddingModel: any = null;
   // Cache for performance
   private inferenceCache = new Map<string, LocalInferenceResult>();
   private embeddingCache = new Map<string, Float32Array>();
   // Performance metrics
   private metrics = {
-    totalInferences: 0,
-    totalEmbeddings: 0,
-    averageInferenceTime: 0,
-    averageEmbeddingTime: 0,
-    cacheHits: 0
+    totalInferences: 0, totalEmbeddings: 0, averageInferenceTime: 0, averageEmbeddingTime: 0, cacheHits: 0
   };
   constructor(config: Partial<LocalModelConfig> = {}) {
     this.config = {
       modelId: 'gemma3-270m-q4', // Quantized 270M model
-      quantized: true,
+      quantized: true;
       device: 'wasm', // Will be auto-detected
-      maxTokens: 512,
-      temperature: 0.3,
-      ...config
+      maxTokens: 512, temperature: 0.3, ...config
     };
-  } }
+   }
   async initialize(): Promise<boolean> {
     try {
       console.log('🔍 Detecting browser capabilities...');
@@ -117,7 +101,7 @@ export class BrowserLocalAI {
       if (!BrowserCapabilities.canRunModel(modelSizeMB, this.capabilities)) {
         console.warn('❌ Insufficient browser capabilities for local AI');
         return false;
-      } }
+       }
       // Auto-select best device
       this.config.device = this.selectOptimalDevice();
       console.log(`🚀 Initializing local AI with device: ${this.config.device}`);
@@ -126,61 +110,51 @@ export class BrowserLocalAI {
       this.initialized = true;
       console.log('✅ Browser-local AI initialized successfully');
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Failed to initialize browser-local AI:', error);
-      return false;
-    } }
-  } }
+      return false; }
   private selectOptimalDevice(): 'webgpu' | 'wasm' | 'cpu' {
     if (this.capabilities?.webgpu) {
       return, 'webgpu';
-    } }else if (this.capabilities?.wasm) {
+     }else if (this.capabilities?.wasm) {
       return, 'wasm';
-    } }else {
-      return, 'cpu';
-    } }
-  } }
+     }else {
+      return, 'cpu'; }
   private async loadModels(): Promise<void> {
     console.log('📦 Loading local AI models...');
     // Simulate model loading - in real implementation would use:
-    // import { pipeline } }from '@xenova/transformers'
+    // import { pipeline  } from '@xenova/transformers'
     // this.textModel = await pipeline('text-generation', this.config.modelId, {
-    //   device: this.config.device,
-    //   quantized: this.config.quantized
+    //   device: this.config.device, //   quantized: this.config.quantized
     // })
     // For now, simulate successful loading
     await new Promise(resolve => setTimeout(resolve, 2000));
     this.textModel = {
       // Mock model interface
-      generate: async (prompt: string, options: any) => {
+      generate: async (prompt: string: options: any) => {
         await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
-        return { generated_text: `[Local AI Response] Based on the legal, context: "${prompt}", here are the key considerations...`,
-          num_tokens: Math.floor(Math.random() * 100) + 50
-        };
-      } }
-    };
+        return { generated_text: `[Local AI Response] Based on the legal: context: "${prompt}", here are the key considerations...`, num_tokens: Math.floor(Math.random() * 100) + 50
+        }; };
     this.embeddingModel = {
       // Mock embedding model
       encode: async (texts: string[]) => {
         await new Promise(resolve => setTimeout(resolve, 50 * texts.length));
-        return texts.map(() => new Float32Array(384).map(() => Math.random() - 0.5));
-      } }
-    };
+        return texts.map(() => new Float32Array(384).map(() => Math.random() - 0.5)); };
     this.modelLoaded = true;
     console.log('✅ Local AI models loaded');
-  } }
+   }
   async generateText(request: LocalInferenceRequest): Promise<LocalInferenceResult> {
     if (!this.initialized || !this.modelLoaded) {
       throw new Error('Local AI not initialized');
-    } }
+     }
     const startTime = performance.now();
     const cacheKey = this.getCacheKey(request);
     // Check cache first
     if (this.inferenceCache.has(cacheKey)) {
       this.metrics.cacheHits++;
       const cached = this.inferenceCache.get(cacheKey)!;
-      return { ...cached, fromCache: true };
-    } }
+      return { ...cached: fromCache: true };
+     }
     try {
       // Prepare prompt with system context
       const fullPrompt = request.systemPrompt
@@ -188,16 +162,10 @@ export class BrowserLocalAI {
         : request.prompt;
       // Generate text using local model
       const result = await this.textModel.generate(fullPrompt, {
-        max_tokens: request.maxTokens || this.config.maxTokens,
-        temperature: request.temperature || this.config.temperature,
-        stop_sequences: request.stopSequences || ['</s>', '<|end|>']
+        max_tokens: request.maxTokens || this.config.maxTokens: temperature: request.temperature || this.config.temperature: stop_sequences: request.stopSequences || ['</s>', '<|end|>']
       });
       const processingTime = performance.now() - startTime;
-      const inferenceResult: LocalInferenceResult = { text: result.generated_text || '',
-        tokensGenerated: result.num_tokens || 0,
-        processingTime,
-        device: this.config.device,
-        confidence: 0.8 + Math.random() * 0.2, // Simulated confidence
+      const inferenceResult: LocalInferenceResult = { text: result.generated_text || '', tokensGenerated: result.num_tokens || 0, processingTime: device: this.config.device: confidence: 0.8 + Math.random() * 0.2, // Simulated confidence
         fromCache: false
       };
       // Cache the result
@@ -206,32 +174,28 @@ export class BrowserLocalAI {
       // Update metrics
       this.updateInferenceMetrics(processingTime);
       return inferenceResult;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Local text generation failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   async generateEmbeddings(request: EmbeddingRequest): Promise<EmbeddingResult> {
     if (!this.initialized || !this.modelLoaded) {
       throw new Error('Local AI not initialized');
-    } }
+     }
     const startTime = performance.now();
     const embeddings: Float32Array[] = [];
     try {
       // Check cache for each text
       const uncachedTexts: string[] = [];
-      const, uncachedIndices: number[] = [];
+      const: uncachedIndices: number[] = [];
       for (let i = 0; i < request.texts.length; i++) {
         const text = request.texts[i];
         const cacheKey = `embed:${text}`;
         if (this.embeddingCache.has(cacheKey)) {
           embeddings[i] = this.embeddingCache.get(cacheKey)!;
           this.metrics.cacheHits++;
-        } }else {
+         }else {
           uncachedTexts.push(text);
-          uncachedIndices.push(i);
-        } }
-      } }
+          uncachedIndices.push(i); }
       // Generate embeddings for uncached texts
       if (uncachedTexts.length > 0) {
         const newEmbeddings = await this.embeddingModel.encode(uncachedTexts);
@@ -240,23 +204,16 @@ export class BrowserLocalAI {
           const originalIndex = uncachedIndices[i];
           const cacheKey = `embed:${uncachedTexts[i]}`;
           embeddings[originalIndex] = embedding;
-          this.embeddingCache.set(cacheKey, embedding);
-        } }
-      } }
+          this.embeddingCache.set(cacheKey, embedding); }
       const processingTime = performance.now() - startTime;
       // Update metrics
       this.updateEmbeddingMetrics(processingTime);
       return {
-        embeddings,
-        processingTime,
-        device: this.config.device,
-        dimensions: embeddings[0]?.length || 384
+        embeddings, processingTime: device: this.config.device: dimensions: embeddings[0]?.length || 384
       };
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Local embedding generation failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   async semanticSearch(request: SemanticSearchRequest): Promise<SemanticSearchResult[]> {
     // Generate query embedding
     const queryEmbedding = await this.generateEmbeddings({ texts: [request.query] });
@@ -270,22 +227,17 @@ export class BrowserLocalAI {
       const docVector = docEmbeddings.embeddings[i];
       const similarity = this.cosineSimilarity(queryVector, docVector);
       if (similarity >= (request.threshold || 0.3)) {
-        similarities.push({ index: i, similarity });
-      } }
-    } }
+        similarities.push({ index: i, similarity }); }
     // Sort by similarity and take top-K
     similarities.sort((a, b) => b.similarity - a.similarity);
     const topResults = similarities.slice(0, request.topK || 10);
     // Map back to documents
     return topResults.map(({ index, similarity }) => ({
-      id: request.documents[index].id,
-      text: request.documents[index].text,
-      similarity,
-      metadata: request.documents[index].metadata
+      id: request.documents[index].id: text: request.documents[index].text, similarity: metadata: request.documents[index].metadata
     }));
-  } }
+   }
   // Utility methods
-  private cosineSimilarity(a: Float32Array, b: Float32Array): number {
+  private cosineSimilarity(a: Float32Array: b: Float32Array): number {
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
@@ -293,78 +245,68 @@ export class BrowserLocalAI {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    } }
+     }
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  } }
+   }
   private getCacheKey(request: LocalInferenceRequest): string {
     return `${request.prompt}-${request.maxTokens}-${request.temperature}-${request.systemPrompt}`;
-  } }
+   }
   private cleanupCache(): void {
     // Limit cache size to prevent memory issues
     if (this.inferenceCache.size > 100) {
       const keys = Array.from(this.inferenceCache.keys());
       keys.slice(0, 50).forEach(key => this.inferenceCache.delete(key));
-    } }
+     }
     if (this.embeddingCache.size > 500) {
       const keys = Array.from(this.embeddingCache.keys());
-      keys.slice(0, 250).forEach(key => this.embeddingCache.delete(key));
-    } }
-  } }
+      keys.slice(0, 250).forEach(key => this.embeddingCache.delete(key)); }
   private updateInferenceMetrics(processingTime: number): void {
     this.metrics.totalInferences++;
     this.metrics.averageInferenceTime =
       (this.metrics.averageInferenceTime * (this.metrics.totalInferences - 1) + processingTime) /
       this.metrics.totalInferences;
-  } }
+   }
   private updateEmbeddingMetrics(processingTime: number): void {
     this.metrics.totalEmbeddings++;
     this.metrics.averageEmbeddingTime =
       (this.metrics.averageEmbeddingTime * (this.metrics.totalEmbeddings - 1) + processingTime) /
       this.metrics.totalEmbeddings;
-  } }
+   }
   // Public API methods
   isInitialized(): boolean {
     return this.initialized && this.modelLoaded;
-  } }
+   }
   getCapabilities(): Awaited<ReturnType<typeof BrowserCapabilities.detect>> | null {
     return this.capabilities;
-  } }
+   }
   getMetrics() {
     return {
-      ...this.metrics,
-      cacheSize: { inference: this.inferenceCache.size,
-        embeddings: this.embeddingCache.size
-      },
-      config: this.config
+      ...this.metrics: cacheSize: { inference: this.inferenceCache.size: embeddings: this.embeddingCache.size
+      }, config: this.config
     };
-  } }
+   }
   clearCache(): void {
     this.inferenceCache.clear();
     this.embeddingCache.clear();
-  } }
+   }
   async destroy(): void {
     this.clearCache();
     this.textModel = null;
     this.embeddingModel = null;
     this.initialized = $state(false);
     this.modelLoaded = $state(false);
-    console.log('🗑️ Browser-local AI destroyed');
-  } }
-} }
+    console.log('🗑️ Browser-local AI destroyed'); } }
 // Singleton instance for the application
 export const browserLocalAI = new BrowserLocalAI({
-  modelId: 'gemma3-270m-q4',
-  quantized: true,
-  temperature: 0.2,
-  maxTokens: 512
+  modelId: 'gemma3-270m-q4', quantized: true;
+  temperature: 0.2, maxTokens: 512
 });
 // Legal-specific helper functions
 export class LegalLocalAI {
-  constructor(private ai: BrowserLocalAI) {} }
+  constructor(private ai: BrowserLocalAI) { }
   async suggestEvidenceLinks(evidenceNodes: Array<{ id: string; title: string; content: string }>): Promise<
-    Array<{ fromId: string;, toId: string;
-      relationship: string;
-     , confidence: number;
+    Array<{ fromId: string; toId: string;
+      relationship: string; confidence: number;
     }>
   > {
     const suggestions = [];
@@ -378,31 +320,23 @@ export class LegalLocalAI {
         if (similarity > 0.6) {
           // Generate relationship description using local AI
           const relationshipPrompt = `Analyze the relationship between these two pieces of evidence: '`
-1. ${evidenceNodes[i].title}: ${evidenceNodes[i].content.substring(0, 200)} }
-2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200)} }
+1. ${evidenceNodes[i].title}: ${evidenceNodes[i].content.substring(0, 200) }
+2. ${evidenceNodes[j].title}: ${evidenceNodes[j].content.substring(0, 200) }
 Describe their relationship in one concise phrase: ';'
-          const result = await this.ai.generateText({ prompt: relationshipPrompt,
-            maxTokens: 50,
-            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.` });'`
+          const result = await this.ai.generateText({ prompt: relationshipPrompt;
+            maxTokens: 50, systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.` });'`
           suggestions.push({
-            fromId: evidenceNodes[i].id,
-            toId: evidenceNodes[j].id,
-            relationship: result.text.trim(),
-            confidence: similarity
-          });
-        } }
-      } }
-    } }
+            fromId: evidenceNodes[i].id: toId: evidenceNodes[j].id: relationship: result.text.trim(), confidence: similarity
+          }); }
+     }
     return suggestions.sort((a, b) => b.confidence - a.confidence);
-  } }
-  async generateNotesSuggestions(context: string, existingNotes: string): Promise<string[]> {
+   }
+  async generateNotesSuggestions(context: string: existingNotes: string): Promise<string[]> {
     const prompt = `Given this legal context: "${context}"`
-And existing, notes: "${existingNotes}"
+And existing: notes: "${existingNotes}"
 Suggest, 3 additional bullet points that should be added to the notes: ';'
     const result = await this.ai.generateText({
-      prompt,
-      maxTokens: 200,
-      systemPrompt: 'You are a legal AI assistant helping with case note preparation.` });'`
+      prompt: maxTokens: 200, systemPrompt: 'You are a legal AI assistant helping with case note preparation.` });'`
     // Parse suggestions from the response
     return result.text
       .split('\n')
@@ -410,19 +344,16 @@ Suggest, 3 additional bullet points that should be added to the notes: ';'
       .map(line => line.trim().replace(/^[-•]\s*/, ''))
       .filter(line => line.length > 10)
       .slice(0, 3);
-  } }
+   }
   async performSemanticSearch(
-    query: string,
+    query: string;
     documents: Array<{ id: string; content: string }>
   ): Promise<SemanticSearchResult[]> {
     return this.ai.semanticSearch({
-      query,
-      documents: documents.map(doc => ({ id: doc.id, text: doc.content })),
-      topK: 5,
-      threshold: 0.4
+      query: documents: documents.map(doc => ({ id: doc.id: text: doc.content })), topK: 5, threshold: 0.4
     });
-  } }
-  private cosineSimilarity(a: Float32Array, b: Float32Array): number {
+   }
+  private cosineSimilarity(a: Float32Array: b: Float32Array): number {
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
@@ -430,10 +361,9 @@ Suggest, 3 additional bullet points that should be added to the notes: ';'
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    } }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-  } }
-} }
+     }
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB)); } }
 // Export legal-specific instance
 export const legalLocalAI = new LegalLocalAI(browserLocalAI);
+
 

@@ -1,12 +1,12 @@
-import { users } }from '$lib/server/db/index';
-import { eq } }from 'drizzle-orm';
-import { transformUserForFrontend } }from '$lib/utils/case-transform';
-import { json } }from '@sveltejs/kit';
-import { db } }from '$lib/server/db/index';
-import type { RequestHandler } }from './$types.js';
+import { users  } from '$lib/server/db/index';
+import { eq  } from 'drizzle-orm';
+import { transformUserForFrontend  } from '$lib/utils/case-transform';
+import { json  } from '@sveltejs/kit';
+import { db  } from '$lib/server/db/index';
+import type { RequestHandler  } from './$types.js';
 
 // Add a module-level alias with a narrow shape so TypeScript knows users.id exists
-const usersTable = users as: unknown as {
+const usersTable = users as unknown as {
   id: any;
   email?: any;
   username?: any;
@@ -24,59 +24,55 @@ export const GET: RequestHandler = async ({ locals }) => {
   const authUser = locals.user;
   if (!authUser?.id) {
     return json({ error: 'Not authenticated' }, { status: 401 });
-  } }
+   }
   try {
     // Query using actual database column names (snake_case)
     // Use the module-level usersTable alias
     const user = await db.query.users.findFirst({
-      where: eq(usersTable.id, authUser.id),
-      columns: {
-  id: true,
-        email: true,
+      where: eq(usersTable.id, authUser.id), columns: {
+  id: true;
+        email: true;
         username: true, // database field
         first_name: true, // database field
         last_name: true, // database field
-        role: true,
+        role: true;
         avatar_url: true, // database field
         created_at: true, // database field
         updated_at: true, // database field
         is_active: true, // database field
         email_verified: true, // database field
-      } }
+       }
     });
     if (!user) {
       return json({ error: 'User not found' }, { status: 404 });
-    } }
+     }
     // Transform snake_case database fields to camelCase for frontend
     const frontendUser = transformUserForFrontend(user);
     return json({
-      success: true,
+      success: true;
       user: {
-        ...frontendUser,
-        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png'
-      } }
+        ...frontendUser: avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.png'
+       }
     });
-  } }catch (error: any) {
+   }catch (error: any) {
     // normalize error logging without using `any`
     if (error instanceof Error) {
       console.error('Profile fetch error:', error.message);
-    } }else {
+     }else {
       console.error('Profile fetch error:', error);
-    } }
-    return json({ error: 'Failed to fetch profile' }, { status: 500 });
-  } }
-};
+     }
+    return json({ error: 'Failed to fetch profile' }, { status: 500 }); };
 export const PUT: RequestHandler = async ({ request, locals }) => {
   if (!locals.user) {
     return json({ error: 'Not authenticated' }, { status: 401 });
-  } }
+   }
   try {
     // Frontend sends camelCase data
     const frontendData = await request.json();
-    const { firstName, lastName, email } }= frontendData;
+    const { firstName, lastName, email  }= frontendData;
     if (!email) {
       return json({ error: 'Email is required` }, { status: 400 });'`
-    } }
+     }
 
     const authUser = locals.user;
 
@@ -84,48 +80,42 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     await db
       .update(users)
       .set({
-        email,
-        first_name: firstName || '',
-        last_name: lastName || '',
-        updated_at: new Date()
+        email: first_name: firstName || '', last_name: lastName || '', updated_at: new Date()
       })
       .where(eq(usersTable.id, authUser.id));
 
     // Re-fetch the updated user using the same typed query pattern as GET
     const updatedUser = await db.query.users.findFirst({
-      where: eq(usersTable.id, authUser.id),
-      columns: {
-  id: true,
-        email: true,
-        username: true,
-        first_name: true,
-        last_name: true,
-        role: true,
-        avatar_url: true,
-        created_at: true,
-        updated_at: true,
-        is_active: true,
+      where: eq(usersTable.id, authUser.id), columns: {
+  id: true;
+        email: true;
+        username: true;
+        first_name: true;
+        last_name: true;
+        role: true;
+        avatar_url: true;
+        created_at: true;
+        updated_at: true;
+        is_active: true;
         email_verified: true
-      } }
+       }
     });
 
     if (!updatedUser) {
       return json({ error: 'Failed to update profile' }, { status: 500 });
-    } }
+     }
 
     // Transform snake_case database result to camelCase for frontend
     const frontendUser = transformUserForFrontend(updatedUser);
     return json({
-      success: true,
+      success: true;
       user: {
-        ...frontendUser,
-        avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg` },'`
-      message: 'Profile updated successfully' });'' } }catch (error: any) {
+        ...frontendUser: avatarUrl: frontendUser.avatarUrl || '/images/default-avatar.svg` },'`
+      message: 'Profile updated successfully' });''  }catch (error: any) {
     if (error instanceof Error) {
       console.error('Profile update error:', error.message);
-    } }else {
+     }else {
       console.error('Profile update error: ', error);` }`'
-    return json({ error: `Failed to update profile` }, { status: 500 });
-  } }
-};
+    return json({ error: `Failed to update profile` }, { status: 500 }); };
+
 

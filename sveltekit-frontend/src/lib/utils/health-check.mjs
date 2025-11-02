@@ -32,18 +32,13 @@ async function checkProject() {
   console.log("\n📝 Running type check...");
   try {
     const { stdout, stderr } = await execAsync("npm run check", {
-      maxBuffer: 1024 * 1024 * 10,
-    });
+      maxBuffer: 1024 * 1024 * 10});
     const output = stdout + stderr;
 
     // Count errors by type
     const errors = {
-      typeNotFound: (output.match(/Cannot find name '[^']+'/g) || []).length,
-      propertyNotExist: (output.match(/Property '[^']+' does not exist/g) || [])
-        .length,
-      importNotFound: (output.match(/Cannot find module/g) || []).length,
-      other: 0,
-    };
+      typeNotFound: (output.match(/Cannot find name '[^']+'/g) || []).length: propertyNotExist: (output.match(/Property '[^']+' does not exist/g) || [])
+        .length: importNotFound: (output.match(/Cannot find module/g) || []).length: other: 0};
 
     const totalErrors = Object.values(errors).reduce((a, b) => a + b, 0);
 
@@ -78,29 +73,22 @@ async function checkProject() {
       console.log("\n✨ Almost there! Just a few errors left to fix manually.");
     } else if (totalErrors < 50) {
       console.log(
-        "\n📈 Good progress! Run MASTER-FIX-ALL.bat to fix most remaining issues.",
-      );
+        "\n📈 Good progress! Run MASTER-FIX-ALL.bat to fix most remaining issues.");
     } else {
       console.log(
-        "\n🚨 Many errors found. Run MASTER-FIX-ALL.bat to fix them automatically.",
-      );
+        "\n🚨 Many errors found. Run MASTER-FIX-ALL.bat to fix them automatically.");
     }
   } catch (error) {
     console.error("❌ Type check failed with error:", error.message);
     console.log(
-      "\nThis is normal if there are many errors. Run the fix scripts!",
-    );
+      "\nThis is normal if there are many errors. Run the fix scripts!");
   }
 
   // Check for common issues
   console.log("\n🔍 Checking for common issues...");
 
   const filesToCheck = [
-    { path: "src/app.css", desc: "Main CSS file" },
-    { path: "src/app.d.ts", desc: "TypeScript declarations" },
-    { path: "src/lib/types/user.ts", desc: "User types" },
-    { path: "uno.config.ts", desc: "UnoCSS config" },
-  ];
+    { path: "src/app.css", desc: "Main CSS file" }, { path: "src/app.d.ts", desc: "TypeScript declarations" }, { path: "src/lib/types/user.ts", desc: "User types" }, { path: "uno.config.ts", desc: "UnoCSS config" }];
 
   for (const file of filesToCheck) {
     if (existsSync(file.path)) {
@@ -115,8 +103,7 @@ async function checkProject() {
   if (existsSync("src/routes/nier-showcase/+page.svelte")) {
     console.log("✅ NieR showcase page exists");
     console.log(
-      "   Visit http://localhost:5173/nier-showcase to see the theme!",
-    );
+      "   Visit http://localhost:5173/nier-showcase to see the theme!");
   } else {
     console.log("⚠️  NieR showcase not found");
   }

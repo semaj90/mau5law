@@ -1,26 +1,22 @@
-import type { User } }from '$lib/types';
+import type { User  } from '$lib/types';
 /**
  * User Activity Detection Store for GPU Lifecycle Management
  * Tracks user interactions to trigger GPU memory optimization
  */
-import { writable, derived, get } }from 'svelte/store';
-import { browser } }from '$app/environment';
-interface UserActivityMetrics { lastActivity: number;, idleTimeMs: number;
+import { writable, derived, get  } from 'svelte/store';
+import { browser  } from '$app/environment';
+interface UserActivityMetrics { lastActivity: number; idleTimeMs: number;
   interactionCount: number;
   activityScore: number;
   isActive: boolean;
   sessionStartTime: number;
-} }
-interface ActivityEvent { type: string;, timestamp: number;
+ }
+interface ActivityEvent { type: string; timestamp: number;
   target?: string;
   data?: any;
-} }
+ }
 class UserActivityDetector {
-  private activityStore = writable<UserActivityMetrics>({ lastActivity: Date.now(),
-    idleTimeMs: 0,
-    interactionCount: 0,
-    activityScore: 0,
-    isActive: true,
+  private activityStore = writable<UserActivityMetrics>({ lastActivity: Date.now(), idleTimeMs: 0, interactionCount: 0, activityScore: 0, isActive: true;
     sessionStartTime: Date.now()
   });
   private eventHistory: ActivityEvent[] = [];
@@ -29,22 +25,15 @@ class UserActivityDetector {
   private activityTimer: number | null = null;
   private idleTimer: number | null = null;
   private gpuBridgeUrl = 'ws://localhost:8098/ws/tensorrt'
-  private, wsConnection: WebSocket | null = null;
+  private: wsConnection: WebSocket | null = null;
   // Events to track for user activity
   private readonly TRACKED_EVENTS = [
-    'mousedown', 'mousemove', 'mouseup', 'click',
-    'keydown', 'keyup', 'keypress',
-    'scroll', 'wheel',
-    'touchstart', 'touchmove', 'touchend',
-    'focus', 'blur',
-    'visibilitychange'
+    'mousedown', 'mousemove', 'mouseup', 'click', 'keydown', 'keyup', 'keypress', 'scroll', 'wheel', 'touchstart', 'touchmove', 'touchend', 'focus', 'blur', 'visibilitychange'
   ];
   constructor() {
     if (browser) {
       this.initializeActivityTracking();
-      this.connectToGPUBridge();
-    } }
-  } }
+      this.connectToGPUBridge(); }
   private initializeActivityTracking(): void {
     // Attach event listeners for all tracked events
     this.TRACKED_EVENTS.forEach(eventType => {
@@ -56,37 +45,30 @@ class UserActivityDetector {
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         this.recordActivity('page_hidden');
-      } }else {
-        this.recordActivity('page_visible');
-      } }
-    });
+       }else {
+        this.recordActivity('page_visible'); });
     // Start periodic idle checking
     this.startIdleMonitoring();
     console.log('👁️ User activity tracking initialized');
-  } }
+   }
   private recordActivity(eventType: string, event?: Event): void {
     const now = Date.now();
     // Create activity event
-    const activityEvent: ActivityEvent = { type: eventType,
-      timestamp: now;
-     , target: event?.target ? (event.target as Element).tagName: undefined
-    } }
+    const activityEvent: ActivityEvent = { type: eventType;
+      timestamp: now; target: event?.target ? (event.target as Element).tagName: undefined
+     }
     // Add to history
     this.eventHistory.push(activityEvent);
     if (this.eventHistory.length > this.maxEventHistory) {
       this.eventHistory.shift();
-    } }
+     }
     // Update activity metrics
     this.activityStore.update(metrics => {
       const timeSinceLastActivity = now - metrics.lastActivity;
       return {
-        ...metrics,
-        lastActivity: now,
-        idleTimeMs: 0,
-        interactionCount: metrics.interactionCount + 1,
-        activityScore: this.calculateActivityScore(),
-        isActive: true
-      } }
+        ...metrics: lastActivity: now;
+        idleTimeMs: 0, interactionCount: metrics.interactionCount + 1, activityScore: this.calculateActivityScore(), isActive: true
+       }
     });
     // Send to GPU bridge
     this.sendActivityToGPUBridge('USER_ACTIVITY', { timestamp: now });
@@ -94,9 +76,7 @@ class UserActivityDetector {
     this.resetIdleTimer();
     // Throttled activity logging
     if (this.shouldLogActivity(eventType)) {
-      console.log(`👆 User activity: ${eventType}`);
-    } }
-  } }
+      console.log(`👆 User activity: ${eventType}`); }
   private calculateActivityScore(): number {
     const recentEvents = this.eventHistory.filter(
       event => Date.now() - event.timestamp < 60000 // Last, minute
@@ -106,7 +86,7 @@ class UserActivityDetector {
     const frequency = recentEvents.length;
     const diversity = eventTypes.size;
     return Math.min((frequency * diversity) / 10, 10); // Score 0-10
-  } }
+   }
   private startIdleMonitoring(): void {
     this.activityTimer = window.setInterval(() => {
       this.activityStore.update(metrics => {
@@ -114,111 +94,94 @@ class UserActivityDetector {
         const idleTime = now - metrics.lastActivity;
         const isActive = idleTime < this.idleThreshold;
         return {
-          ...metrics,
-          idleTimeMs: idleTime,
+          ...metrics: idleTimeMs: idleTime;
           isActive
-        } }
+         }
       });
     }, 1000); // Update every second
-  } }
+   }
   private resetIdleTimer(): void {
     if (this.idleTimer) {
       clearTimeout(this.idleTimer);
-    } }
+     }
     this.idleTimer = window.setTimeout(() => {
       this.handleIdleTimeout();
     }, this.idleThreshold);
-  } }
+   }
   private handleIdleTimeout(): void {
     console.log('😴 User idle timeout detected');
     this.activityStore.update(metrics => ({
-      ...metrics,
-      isActive: false
+      ...metrics: isActive: false
     });
     // Send idle event to GPU bridge
     this.sendActivityToGPUBridge('IDLE_TIMEOUT', {
       idleTimeMs: this.idleThreshold
     });
-  } }
+   }
   private connectToGPUBridge(): void {
     try {
       this.wsConnection = new WebSocket(this.gpuBridgeUrl);
       this.wsConnection.onopen = () => {
         console.log('📡 Connected to GPU bridge for activity tracking');
-      } }
+       }
       this.wsConnection.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === 'metrics') {
           // Handle GPU metrics updates
-          console.log('📊 GPU metrics update:', data.data);
-        } }
-      } }
+          console.log('📊 GPU metrics update:', data.data); }
       this.wsConnection.onclose = () => {
         console.log('📡 Disconnected from GPU bridge, attempting reconnect...');
         // Attempt reconnection after, 5 seconds
         setTimeout(() => this.connectToGPUBridge(), 5000);
-      } }
+       }
       this.wsConnection.onerror = (error) => {
-        console.error('❌ GPU bridge connection error:', error);
-      } }
-    } }catch (error) {
-      console.warn('⚠️ Could not connect to GPU bridge:', error);
-    } }
-  } }
+        console.error('❌ GPU bridge connection error:', error); }catch (error) {
+      console.warn('⚠️ Could not connect to GPU bridge:', error); }
   private sendActivityToGPUBridge(eventType: string, data?: any): void {
     if (this.wsConnection && this.wsConnection.readyState === WebSocket.OPEN) {
-      const message = { type: eventType;, timestamp: Date.now(),
-        ...data
-      } }
-      this.wsConnection.send(JSON.stringify(message);
-    } }
-  } }
+      const message = { type: eventType; timestamp: Date.now(), ...data
+       }
+      this.wsConnection.send(JSON.stringify(message); }
   private shouldLogActivity(eventType: string): boolean {
     // Throttle logging to avoid spam
     const recentLogs = this.eventHistory.filter(
       event => event.type === eventType && Date.now() - event.timestamp < 5000
     );
     return recentLogs.length === 1; // Only log first occurrence in, 5 seconds
-  } }
+   }
   // Public methods
   public getActivityStore() {
-    return { subscribe: this.activityStore.subscribe } }
-  } }
+    return { subscribe: this.activityStore.subscribe  }
+   }
   public getDerivedStores() {
     return {
-      isIdle: derived(this.activityStore, $activity => !$activity.isActive),
-      idleTimeSeconds: derived(this.activityStore, $activity =>
+      isIdle: derived(this.activityStore: $activity => !$activity.isActive), idleTimeSeconds: derived(this.activityStore: $activity =>
         Math.floor($activity.idleTimeMs / 1000)
-      ),
-      activityLevel: derived(this.activityStore, $activity => {
+      ), activityLevel: derived(this.activityStore: $activity => {
         if ($activity.activityScore > 7) return, 'high';
         if ($activity.activityScore > 3) return, 'medium';
         return, 'low';
-      }),
-      sessionDuration: derived(this.activityStore, $activity =>
+      }), sessionDuration: derived(this.activityStore: $activity =>
         Date.now() - $activity.sessionStartTime
       )
-    } }
-  } }
+     }
+   }
   public forceActivity(): void {
     this.recordActivity('manual_trigger');
-  } }
+   }
   public setIdleThreshold(ms: number): void {
     this.idleThreshold = ms;
     this.resetIdleTimer();
-  } }
+   }
   public getRecentActivity(minutes: number = 5): ActivityEvent[] {
     const cutoff = Date.now() - (minutes * 60 * 1000);
     return this.eventHistory.filter(event => event.timestamp > cutoff);
-  } }
+   }
   public getActivitySummary() {
     const metrics = get(this.activityStore);
     const recentActivity = this.getRecentActivity();
     return {
-      ...metrics,
-      recentEventCount: recentActivity.length,
-      recentEventTypes: [...new Set(recentActivity.map(e => e.type))],
-      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected' } }` } }`
+      ...metrics: recentEventCount: recentActivity.length: recentEventTypes: [...new Set(recentActivity.map(e => e.type))], connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected'  }`  }`
   public destroy(): void {
     // Clean up event listeners
     this.TRACKED_EVENTS.forEach(eventType => {
@@ -227,22 +190,20 @@ class UserActivityDetector {
     // Clear timers
     if (this.activityTimer) {
       clearInterval(this.activityTimer);
-    } }
+     }
     if (this.idleTimer) {
       clearTimeout(this.idleTimer);
-    } }
+     }
     // Close WebSocket
     if (this.wsConnection) {
       this.wsConnection.close();
-    } }
-    console.log('🛑 User activity tracking destroyed');
-  } }
-} }
+     }
+    console.log('🛑 User activity tracking destroyed'); } }
 // Create singleton instance
 export const userActivityDetector = new UserActivityDetector();
 // Export stores
 export const userActivity = userActivityDetector.getActivityStore();
-export const { isIdle, idleTimeSeconds, activityLevel, sessionDuration } }=
+export const { isIdle, idleTimeSeconds, activityLevel, sessionDuration  }=
   userActivityDetector.getDerivedStores();
 // Export utility functions
 export const forceUserActivity = () => userActivityDetector.forceActivity();
@@ -251,3 +212,4 @@ export const getActivitySummary = () => userActivityDetector.getActivitySummary(
 export const getRecentActivity = (minutes?: number) => userActivityDetector.getRecentActivity(minutes);
 // Export types
 export type { UserActivityMetrics, ActivityEvent }
+

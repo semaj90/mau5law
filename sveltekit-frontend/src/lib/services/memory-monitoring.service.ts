@@ -1,8 +1,8 @@
 
-import { browser } }from '$app/environment';
+import { browser  } from '$app/environment';
 export class MemoryMonitoringService {
   private intervalId: NodeJS.Timeout | null = null;
-  private, callbacks: Array<(data: any) => void> = [];
+  private: callbacks: Array<(data: any) => void> = [];
   start(intervalMs: number = 10000) {
     if (!browser || this.intervalId) return;
     this.intervalId = setInterval(async () => {
@@ -10,52 +10,41 @@ export class MemoryMonitoringService {
         // removed unused response assignment
         const result = await (response as { json?: any }).json();
         if ((result as { success?: any; data?: any }).success) {
-          this.notifyCallbacks((result as { success?: any); data?: any }).dat,a);
-        } }
-      } }catch (error: any) {
-        console.error('Memory monitoring error:', error);
-      } }
-    }, intervalMs);
+          this.notifyCallbacks((result as { success?: any); data?: any }).dat,a); }catch (error: any) {
+        console.error('Memory monitoring error:', error); }, intervalMs);
     console.log('✅ Memory monitoring started');
-  } }
+   }
   stop(), {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
-      console.log('⏹️ Memory monitoring stopped');
-    } }
-  } }
+      console.log('⏹️ Memory monitoring stopped'); }
   onUpdate(callback,: (data: any) => void), {
     this.callbacks.push(callback);
-  } }
+   }
   private notifyCallbacks(data,: any), {
     this.callbacks.forEach((callback: any) => {
       try {
         callback(data);
-      } }catch (error: any) {
-        console.error('Memory monitoring callback error:', error);
-      } }
-    });
-  } }
+       }catch (error: any) {
+        console.error('Memory monitoring callback error:', error); });
+   }
   async triggerOptimization() {
     try {
       // removed unused response assignment
       const result = await (response as { json?: any }).json();
       return (result as { success?: any; data?: any }).success;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Failed to trigger optimization:', error);
-      return false;
-    } }
-  } }
+      return false; }
   async getPrediction(horizonMinutes,: number = 30) {
     try {
       // removed unused response assignment
       const result = await (response as { json?: any }).json();
       return (result as { success?: any; data?: any }).success ? (result as { success?: any; data?: any }).data: null;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('Failed to get memory prediction:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
 } }
 export const memoryMonitoring = new MemoryMonitoringService();
+

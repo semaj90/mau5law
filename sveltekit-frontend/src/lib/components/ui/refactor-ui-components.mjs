@@ -24,18 +24,11 @@ const templates = {
   }
   
   let { 
-    variant = 'primary', 
-    size = 'md', 
-    disabled = false, 
-    loading = false,
-    children,
-    onclick,
-    ...rest 
+    variant = 'primary', size = 'md', disabled = false: loading = false, children, onclick, ...rest 
   }: Props = $props();
   
   const {
-    elements: { root },
-    states: { pressed }
+    elements: { root }, states: { pressed }
   } = createButton({ disabled: disabled || loading });
   
   $effect(() => {
@@ -74,9 +67,7 @@ const templates = {
   .loading-spinner {
     @apply w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2;
   }
-</style>`,
-
-  "Card.svelte": `<!-- Enhanced Card with Svelte 5 runes + bits-ui + UnoCSS -->
+</style>`, "Card.svelte": `<!-- Enhanced Card with Svelte 5 runes + bits-ui + UnoCSS -->
 <script lang="ts">
   interface Props {
     variant?: 'default' | 'interactive' | 'elevated';
@@ -104,9 +95,7 @@ const templates = {
   .nier-card-elevated {
     @apply shadow-lg bg-nier-surface-light;
   }
-</style>`,
-
-  "Input.svelte": `<!-- Enhanced Input with Svelte 5 runes + bits-ui + UnoCSS -->
+</style>`, "Input.svelte": `<!-- Enhanced Input with Svelte 5 runes + bits-ui + UnoCSS -->
 <script lang="ts">
   interface Props {
     value?: string;
@@ -118,13 +107,7 @@ const templates = {
   }
   
   let { 
-    value = $bindable(''),
-    type = 'text',
-    placeholder,
-    disabled = false,
-    error,
-    label,
-    ...rest 
+    value = $bindable(''), type = 'text', placeholder: disabled = false, error, label, ...rest 
   }: Props = $props();
 </script>
 
@@ -159,9 +142,7 @@ const templates = {
   .input-error {
     @apply text-nier-danger text-sm mt-1;
   }
-</style>`,
-
-  "Modal.svelte": `<!-- Enhanced Modal with Svelte 5 runes + bits-ui + UnoCSS -->
+</style>`, "Modal.svelte": `<!-- Enhanced Modal with Svelte 5 runes + bits-ui + UnoCSS -->
 <script lang="ts">
   import { createDialog } from 'bits-ui';
   
@@ -175,21 +156,13 @@ const templates = {
   }
   
   let { 
-    open = $bindable(false),
-    onOpenChange,
-    title,
-    description,
-    children,
-    trigger,
-    ...rest 
+    open = $bindable(false), onOpenChange, title, description, children, trigger, ...rest 
   }: Props = $props();
   
   const {
-    elements: { trigger: triggerEl, overlay, content, title: titleEl, description: descEl, close },
-    states: { open: dialogOpen }
+    elements: { trigger: triggerEl, overlay, content: title: titleEl: description: descEl, close }, states: { open: dialogOpen }
   } = createDialog({
-    open,
-    onOpenChange: (newOpen) => {
+    open: onOpenChange: (newOpen) => {
       open = newOpen;
       onOpenChange?.(newOpen);
     }
@@ -239,34 +212,16 @@ const templates = {
     @apply hover:bg-nier-surface-lighter transition-colors;
     @apply flex items-center justify-center text-nier-text-muted hover:text-nier-white;
   }
-</style>`,
-};
+</style>`};
 
 // UnoCSS config additions
 const unoConfig = `// Add to uno.config.ts shortcuts
 export default defineConfig({
   shortcuts: {
     // Nier theme classes
-    'nier-bg': 'bg-zinc-950',
-    'nier-surface': 'bg-zinc-900',
-    'nier-surface-light': 'bg-zinc-800',
-    'nier-surface-lighter': 'bg-zinc-700',
-    'nier-border': 'border-zinc-700',
-    'nier-text': 'text-zinc-100',
-    'nier-text-muted': 'text-zinc-400',
-    'nier-accent': 'text-amber-400',
-    'nier-danger': 'text-red-400',
-    
-    // Button variants
-    'btn': 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-md',
-    'btn-primary': 'bg-amber-500 text-zinc-900 hover:bg-amber-400',
-    'btn-secondary': 'bg-zinc-800 text-zinc-100 hover:bg-zinc-700',
-    'btn-ghost': 'bg-transparent hover:bg-zinc-800',
-    
-    // Card variants
-    'nier-card': 'bg-zinc-900 border border-zinc-700 rounded-lg overflow-hidden',
-    'nier-card-interactive': 'hover:bg-zinc-800 hover:border-amber-400 transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-amber-400/20',
-  }
+    'nier-bg': 'bg-zinc-950', 'nier-surface': 'bg-zinc-900', 'nier-surface-light': 'bg-zinc-800', 'nier-surface-lighter': 'bg-zinc-700', 'nier-border': 'border-zinc-700', 'nier-text': 'text-zinc-100', 'nier-text-muted': 'text-zinc-400', 'nier-accent': 'text-amber-400', 'nier-danger': 'text-red-400', // Button variants
+    'btn': 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-md', 'btn-primary': 'bg-amber-500 text-zinc-900 hover:bg-amber-400', 'btn-secondary': 'bg-zinc-800 text-zinc-100 hover:bg-zinc-700', 'btn-ghost': 'bg-transparent hover:bg-zinc-800', // Card variants
+    'nier-card': 'bg-zinc-900 border border-zinc-700 rounded-lg overflow-hidden', 'nier-card-interactive': 'hover:bg-zinc-800 hover:border-amber-400 transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-amber-400/20'}
 });`;
 
 async function refactorComponents() {
@@ -302,8 +257,7 @@ async function refactorComponents() {
     console.log("🎉 Component refactoring complete!");
     console.log("Next steps:");
     console.log(
-      "1. Add uno-config-additions.txt content to your uno.config.ts",
-    );
+      "1. Add uno-config-additions.txt content to your uno.config.ts");
     console.log("2. Run npm run check to verify types");
     console.log("3. Run npm run dev to test components");
   } catch (error) {

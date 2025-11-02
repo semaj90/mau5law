@@ -1,18 +1,11 @@
-import type { User } }from '$lib/types';
-import type { Case } }from '$lib/types';
+import type { User  } from '$lib/types';
+import type { Case  } from '$lib/types';
 // @ts-nocheck
 // Production schema type exports for SvelteKit, 2 + Drizzle ORM
-import type { InferSelectModel, InferInsertModel } }from 'drizzle-orm';
+import type { InferSelectModel, InferInsertModel  } from 'drizzle-orm';
 import {
-  cases,
-  evidence,
-  reports,
-  users,
-  criminals,
-  personsOfInterest,
-  legalDocuments,
-  notes
-} }from './unified-schema.js';
+  cases, evidence, reports, users, criminals, personsOfInterest, legalDocuments, notes
+ } from './unified-schema.js';
 // Inferred types from schema
 export type Case = InferSelectModel<typeof, cases>;
 export type CaseInsert = InferInsertModel<typeof, cases>;
@@ -51,13 +44,7 @@ export type ReportWithRelations = Report & {
 };
 // Re-export schema tables
 export {
-  cases,
-  evidence,
-  reports,
-  users,
-  criminals,
-  personsOfInterest,
-  legalDocuments,
-  notes
-} }from './unified-schema.js';
+  cases, evidence, reports, users, criminals, personsOfInterest, legalDocuments, notes
+ } from './unified-schema.js';
+
 

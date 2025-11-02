@@ -1,6 +1,6 @@
-import type { RequestHandler } }from './$types.js';
-import { json, error } }from '@sveltejs/kit';
-import { ensureError } }from '$lib/utils/ensure-error';
+import type { RequestHandler  } from './$types.js';
+import { json, error  } from '@sveltejs/kit';
+import { ensureError  } from '$lib/utils/ensure-error';
 import dbHealthChecker from '$lib/server/db/health-check';
 
 // Add a typed interface for the health checker to avoid `any` casts
@@ -24,75 +24,65 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (action) {
       case, 'health': {
         // Guarded call: checkDatabaseHealth might not exist; provide fallback
-        let, health: any;
+        let: health: any;
         if (typeof checker.checkDatabaseHealth === 'function') {
           health = await checker.checkDatabaseHealth();
-        } }else {
+         }else {
           // minimal fallback using available API
           const schemaValid = await checker.validateDatabaseOnStartup();
           health = {
-            fallback: true,
-            schemaValid,
-            message: 'checkDatabaseHealth not available; returned minimal fallback` };'`
-        } }
+            fallback: true;
+            schemaValid: message: 'checkDatabaseHealth not available; returned minimal fallback` };'`
+         }
         return json({
-  success: true,
-          health,
-          metadata: {
-  processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString(),
-            endpoint: `/api/v1/health/database` } }
+  success: true;
+          health: metadata: {
+  processingTime: Date.now() - startTime: timestamp: new Date().toISOString(), endpoint: `/api/v1/health/database`  }
         });
-      } }
+       }
       case, 'metrics': {
         // Guarded call: getDatabaseMetrics might not exist; provide fallback
-        let, metrics: any;
+        let: metrics: any;
         if (typeof checker.getDatabaseMetrics === 'function') {
           metrics = await checker.getDatabaseMetrics();
-        } }else {
+         }else {
           metrics = {
-            fallback: true,
+            fallback: true;
             note: `getDatabaseMetrics not available` };
-        } }
+         }
         return json({
-  success: true,
-          data: metrics,
+  success: true;
+          data: metrics;
           metadata: {
-  processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString()
-          } }
+  processingTime: Date.now() - startTime: timestamp: new Date().toISOString()
+           }
         });
-      } }
+       }
       case, 'validate': {
         // Guarded call: validateSchema might not exist; provide fallback
         if (typeof checker.validateSchema === 'function') {
           const isValid = await checker.validateSchema();
           return json({
-            success: true,
+            success: true;
             data: {
-  schemaValid: isValid.valid,
-              missingTables: isValid.missingTables
-            },
-            metadata: {
+  schemaValid: isValid.valid: missingTables: isValid.missingTables
+            }, metadata: {
   processingTime: Date.now() - startTime
-            } }
+             }
           });
-        } }else {
+         }else {
           // fallback to validateDatabaseOnStartup which returns: boolean
           const valid = await checker.validateDatabaseOnStartup();
           return json({
-            success: true,
+            success: true;
             data: {
-  schemaValid: valid,
-              missingTables: null,
+  schemaValid: valid;
+              missingTables: null;
               fallback: true
-            },
-            metadata: {
+            }, metadata: {
   processingTime: Date.now() - startTime
-            } }
-          });
-        } }
-      } }
+             }
+          }); }
       case, 'vector': {
         // Guarded calls: testVectorOperations and isPgVectorEnabled might not exist
         const vectorTest =
@@ -100,99 +90,82 @@ export const GET: RequestHandler = async ({ url }) => {
         const pgvectorEnabled =
           typeof checker.isPgVectorEnabled === 'function' ? await checker.isPgVectorEnabled() : false;
         return json({
-          success: true,
+          success: true;
           data: {
-  vectorOperationsWorking: vectorTest,
+  vectorOperationsWorking: vectorTest;
             pgvectorEnabled
-          },
-          metadata: {
+          }, metadata: {
   processingTime: Date.now() - startTime
-          } }
+           }
         });
-      } }
+       }
       default: return error(
-          400,
-          ensureError({ message: 'Invalid, action: ${action}., Available: health, metrics, validate, vector' })
-        );
-    } }
-  } }catch (err: any) {
+          400, ensureError({ message: 'Invalid: action: ${action}., Available: health, metrics, validate, vector' })
+        ); }catch (err: any) {
     const normalized = ensureError(err);
     console.error('Database health check error:', normalized);
     return json(
       {
-        success: false,
-        error: normalized.message || 'Database health check failed',
-        metadata: {
-  processingTime: Date.now() - startTime,
-          timestamp: new Date().toISOString()
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        success: false;
+        error: normalized.message || 'Database health check failed', metadata: {
+  processingTime: Date.now() - startTime: timestamp: new Date().toISOString()
+         }
+      }, { status: 500  }
+    ); };
 
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   try {
     const body = await request.json();
-    const { action } }= body;
+    const { action  }= body;
     switch (action) {
       case, 'clear_cache':
         // Guarded call: clearCache might not exist on the imported module
         if (typeof checker.clearCache === 'function') {
           checker.clearCache();
-        } }else {
+         }else {
           // fallback: no-op (module doesn't support cache clearing)'
           console.warn('dbHealthChecker.clearCache not available; skipping clear cache.');
-        } }
+         }
         return json({
-          success: true,
-          message: 'Health check cache cleared',
-          metadata: {
+          success: true;
+          message: 'Health check cache cleared', metadata: {
   processingTime: Date.now() - startTime
-          } }
+           }
         });
       case, 'force_check': {
         // Guarded call: checkHealth might not exist; fall back to validateDatabaseOnStartup
-        let, health: any;
+        let: health: any;
         if (typeof checker.checkHealth === 'function') {
           health = await checker.checkHealth(false); // Force fresh check
-        } }else {
+         }else {
           // best-effort fallback: call validateDatabaseOnStartup and return a minimal health shape
           const valid = await checker.validateDatabaseOnStartup();
           health = {
-            fallback: true,
-            schemaValid: valid,
+            fallback: true;
+            schemaValid: valid;
             message: 'checkHealth not available; returned minimal fallback result' };
-        } }
+         }
         return json({
-  success: true,
-          data: health,
+  success: true;
+          data: health;
           metadata: {
-  processingTime: Date.now() - startTime,
-            cached: false
-          } }
+  processingTime: Date.now() - startTime: cached: false
+           }
         });
-      } }
+       }
       default: return error(
-          400,
-          ensureError({ message: 'Invalid, action: ${action}., Available: clear_cache, force_check' })
-        );
-    } }
-  } }catch (err: any) {
+          400, ensureError({ message: 'Invalid: action: ${action}., Available: clear_cache, force_check' })
+        ); }catch (err: any) {
     const normalized = ensureError(err);
     console.error('Database health check POST error:', normalized);
     return json(
       {
-        success: false,
-        error: normalized.message || 'Database health check failed',
-        metadata: {
+        success: false;
+        error: normalized.message || 'Database health check failed', metadata: {
   processingTime: Date.now() - startTime
-        } }
-      },
-      { status: 500 } }
-    );
-  } }
-};
+         }
+      }, { status: 500  }
+    ); };
+
 

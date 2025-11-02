@@ -1,4 +1,4 @@
-import { writable } }from 'svelte/store';
+import { writable  } from 'svelte/store';
 export interface NotificationAction {
   label: string;
   // optional callback when the action is triggered (e.g., button click)
@@ -9,7 +9,7 @@ export interface NotificationAction {
   variant?: string;
   // allow attaching arbitrary metadata in a typed way
   meta?: Record<string, unknown>;
-} }
+ }
 export interface Notification {
   id: string;
   // make: 's' optional and typed to avoid requiring it on every notification: object
@@ -20,24 +20,21 @@ export interface Notification {
   duration?: number;
   // Replaced unsafe: any with a concrete action type
   actions?: NotificationAction[];
-} }
+ }
 export interface NotificationState {
   notifications: Notification[];
-} }
+ }
 const initialState: NotificationState = { notifications: []
 };
 function createNotificationStore() {
-  const { subscribe, set, update } }= writable<NotificationState>(initialState);
+  const { subscribe, set, update  }= writable<NotificationState>(initialState);
   const store = {
-    subscribe,
-    // Add a notification
+    subscribe, // Add a notification
     add: (notification: Omit<Notification, 'id'>) => {
       // generate id (use slice instead of deprecated substr)
       const id = `notification-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
       const newNotification: Notification = {
-        ...notification,
-        id,
-        duration: notification.duration ?? 5000
+        ...notification, id: duration: notification.duration ?? 5000
       };
       update(state => ({ notifications: [...state.notifications, newNotification]
       }));
@@ -46,55 +43,40 @@ function createNotificationStore() {
         setTimeout(() => {
           store.remove(id);
         }, newNotification.duration);
-      } }
+       }
       return id;
-    },
-    // Remove a notification
+    }, // Remove a notification
     remove: (id: string) => {
       update(state => ({
         notifications: state.notifications.filter(n => n.id !== id)
       }));
-    },
-    // Clear all notifications
+    }, // Clear all notifications
     clear: () => {
       set(initialState);
-    },
-    // Convenience methods
+    }, // Convenience methods
     success: (title: string, message?: string, options?: Partial<Notification>) => {
       return store.add({ type: 'success', title, message, ...options });
-    },
-    error: (title: string, message?: string, options?: Partial<Notification>) => {
+    }, error: (title: string, message?: string, options?: Partial<Notification>) => {
       return store.add({
-        type: 'error',
-        title,
-        message,
-        duration: 0,
-        ...options
+        type: 'error', title, message: duration: 0, ...options
       });
-    },
-    warning: (title: string, message?: string, options?: Partial<Notification>) => {
+    }, warning: (title: string, message?: string, options?: Partial<Notification>) => {
       return store.add({ type: 'warning', title, message, ...options });
-    },
-    info: (title: string, message?: string, options?: Partial<Notification>) => {
+    }, info: (title: string, message?: string, options?: Partial<Notification>) => {
       return store.add({ type: 'info', title, message, ...options });
-    },
-    // Legacy compatibility methods that accept objects without title
-    addLegacy: (notification: { type: 'success' | 'error' | 'warning' | 'info';, message: string;
+    }, // Legacy compatibility methods that accept objects without title
+    addLegacy: (notification: { type: 'success' | 'error' | 'warning' | 'info'; message: string;
       timeout?: number;
       duration?: number;
     }) => {
       const type = notification.type;
       const title = type.charAt(0).toUpperCase() + type.slice(1);
       return store.add({
-        type,
-        title,
-        message: notification.message,
-        duration: notification.timeout ?? notification.duration
-      });
-    } }
-  };
+        type, title: message: notification.message: duration: notification.timeout ?? notification.duration
+      }); };
   return store;
-} }
+ }
 export const notifications = createNotificationStore();
 export default notifications;
+
 

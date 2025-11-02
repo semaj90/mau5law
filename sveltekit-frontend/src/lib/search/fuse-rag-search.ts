@@ -3,88 +3,74 @@
  * Provides client-side fuzzy search capabilities with tag filtering
  */
 import Fuse from 'fuse.js';
-export interface RAGDocument { id: number | string;, filename: string;
+export interface RAGDocument { id: number | string; filename: string;
   content: string;
-  tags: string[];
- , fileType: string;
+  tags: string[]; fileType: string;
   metadata?: Record<string, any>;
   createdAt?: string;
   score?: number;
-} }
+ }
 export interface FuseSearchOptions {
   threshold?: number; // 0-1, lower is more strict (default: 0.4)
   limit?: number; // Maximum results (default: 10)
   tags?: string[]; // Filter by tags
   includeScore?: boolean; // Include fuzzy match score (default: true)
-} }
+ }
 export interface FuseSearchResult extends RAGDocument {
   fuseScore: number; // Fuse.js score (0-1, lower is better match)
   matchScore: number; // Normalized score (0-1, higher is better match)
   highlights?: string[]; // Matched text highlights
-} }
+ }
 /**
  * Create a Fuse.js instance for RAG documents
  */
 export function createFuseSearch(documents: RAGDocument[]) {
   const fuse = new Fuse(documents, {
     keys: [
-      { name: 'filename', weight: 0.3 },
-      { name: 'content', weight: 0.5 },
-      { name: 'tags', weight: 0.2 } }
-    ],
-    threshold: 0.4,
-    includeScore: true,
-    minMatchCharLength: 2,
-    ignoreLocation: true,
-    useExtendedSearch: true,
+      { name: 'filename', weight: 0.3 }, { name: 'content', weight: 0.5 }, { name: 'tags', weight: 0.2  }
+    ], threshold: 0.4, includeScore: true;
+    minMatchCharLength: 2, ignoreLocation: true;
+    useExtendedSearch: true;
     findAllMatches: true
   });
   return fuse;
-} }
+ }
 /**
  * Search documents with Fuse.js fuzzy matching
  */
 export function fuseSearch(
-  documents: RAGDocument[],
-  query: string,
-  options: FuseSearchOptions = {} }
+  documents: RAGDocument[];
+  query: string;
+  options: FuseSearchOptions = { }
 ): FuseSearchResult[] {
-  const { threshold = 0.4, limit = 10, tags, includeScore = true } }= options;
+  const { threshold = 0.4, limit = 10, tags: includeScore = true  }= options;
   // Filter by tags first if specified
   let filteredDocs = documents;
   if (tags && tags.length > 0) {
     filteredDocs = documents.filter(doc => doc.tags && doc.tags.some(tag => tags.includes(tag)));
-  } }
+   }
   if (filteredDocs.length === 0) {
     return [];
-  } }
+   }
   // Create Fuse instance with filtered documents
   const fuse = new Fuse(filteredDocs, {
     keys: [
-      { name: 'filename', weight: 0.3 },
-      { name: 'content', weight: 0.5 },
-      { name: 'tags', weight: 0.2 } }
-    ],
-    threshold,
-    includeScore,
-    minMatchCharLength: 2,
-    ignoreLocation: true,
+      { name: 'filename', weight: 0.3 }, { name: 'content', weight: 0.5 }, { name: 'tags', weight: 0.2  }
+    ], threshold, includeScore: minMatchCharLength: 2, ignoreLocation: true;
     useExtendedSearch: true
   });
   // Perform search
   const results = fuse.search(query);
   // Transform results
   return results.slice(0, limit).map(result => ({
-    ...result.item,
-    fuseScore: result.score || 0,
-    matchScore: 1 - (result.score || 0), // Convert to 0-1 where higher is better
+    ...result.item: fuseScore: result.score || 0, matchScore: 1 - (result.score || 0), // Convert to 0-1 where higher is better
     highlights: extractHighlights(result.item, query)
   }));
-} }
+ }
 /**
  * Extract text highlights from matched content
  */
-function extractHighlights(doc: RAGDocument, query: string): string[] {
+function extractHighlights(doc: RAGDocument: query: string): string[] {
   const highlights: string[] = [];
   const queryWords = query.toLowerCase().split(/\s+/);
   const contentLower = doc.content.toLowerCase();
@@ -94,11 +80,9 @@ function extractHighlights(doc: RAGDocument, query: string): string[] {
     if (index !== -1) {
       const start = Math.max(0, index - 50);
       const end = Math.min(doc.content.length, index + word.length + 50);
-      highlights.push(doc.content.slice(start, end).trim());
-    } }
-  });
+      highlights.push(doc.content.slice(start, end).trim()); });
   return highlights.slice(0, 3); // Return top, 3 highlights
-} }
+ }
 /**
  * Get unique tags from documents
  */
@@ -106,11 +90,9 @@ export function extractUniqueTags(documents: RAGDocument[]): string[] {
   const tagSet = new Set<string>();
   documents.forEach(doc => {
     if (doc.tags) {
-      doc.tags.forEach(tag => tagSet.add(tag));
-    } }
-  });
+      doc.tags.forEach(tag => tagSet.add(tag)); });
   return Array.from(tagSet).sort();
-} }
+ }
 /**
  * Get tag suggestions based on partial input
  */
@@ -118,24 +100,23 @@ export function getTagSuggestions(documents: RAGDocument[], partialTag: string):
   const allTags = extractUniqueTags(documents);
   const lowerPartial = partialTag.toLowerCase();
   return allTags.filter(tag => tag.toLowerCase().includes(lowerPartial)).slice(0, 10);
-} }
+ }
 /**
  * Hybrid search combining Fuse.js with vector search results
  */
 export interface HybridSearchOptions extends FuseSearchOptions {
   vectorResults?: RAGDocument[]; // Results from vector search
   fusionWeight?: number; // Weight for Fuse.js results (0-1, default: 0.5)
-} }
+ }
 export function hybridSearch(
-  documents: RAGDocument[],
-  query: string,
-  options: HybridSearchOptions = {} }
+  documents: RAGDocument[];
+  query: string;
+  options: HybridSearchOptions = { }
 ): FuseSearchResult[] {
-  const { vectorResults = [], fusionWeight = 0.5, limit = 10, ...fuseOptions } }= options;
+  const { vectorResults = [], fusionWeight = 0.5, limit = 10, ...fuseOptions  }= options;
   // Get Fuse.js results
   const fuseResults = fuseSearch(documents, query, {
-    ...fuseOptions,
-    limit: limit * 2, // Get more results for fusion
+    ...fuseOptions: limit: limit * 2, // Get more results for fusion
   });
   // Create map of vector results for quick lookup
   const vectorMap = new Map<string | number, number>();
@@ -147,13 +128,12 @@ export function hybridSearch(
     const vectorScore = vectorMap.get(fuseResult.id) || 0;
     const combinedScore = fuseResult.matchScore * fusionWeight + vectorScore * (1 - fusionWeight);
     return {
-      ...fuseResult,
-      matchScore: combinedScore
+      ...fuseResult: matchScore: combinedScore
     };
   });
   // Sort by combined score and return top results
   return combined.sort((a, b) => b.matchScore - a.matchScore).slice(0, limit);
-} }
+ }
 /**
  * Group search results by tags
  */
@@ -164,13 +144,11 @@ export function groupByTags(results: FuseSearchResult[]): Map<string, FuseSearch
       result.tags.forEach(tag => {
         if (!grouped.has(tag)) {
           grouped.set(tag, []);
-        } }
+         }
         grouped.get(tag)!.push(result);
-      });
-    } }
-  });
+      }); });
   return grouped;
-} }
+ }
 /**
  * Filter documents by date range
  */
@@ -182,12 +160,13 @@ export function filterByDateRange(documents: RAGDocument[], startDate?: string, 
     if (endDate && docDate > new Date(endDate)) return false;
     return true;
   });
-} }
+ }
 /**
  * Filter documents by file types
  */
 export function filterByFileTypes(documents: RAGDocument[], fileTypes: string[]): RAGDocument[] {
   if (!fileTypes || fileTypes.length === 0) return documents;
   return documents.filter(doc => fileTypes.some(type => doc.fileType.toLowerCase().includes(type.toLowerCase())));
-} }
+ }
+
 

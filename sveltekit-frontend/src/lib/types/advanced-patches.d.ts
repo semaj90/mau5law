@@ -15,39 +15,27 @@ declare global {
       useExtendedSearch?: boolean;
       ignoreLocation?: boolean;
       ignoreFieldNorm?: boolean;
-      fieldNormWeight?: number;
-    } }
-  } }
+      fieldNormWeight?: number; }
   interface BufferLike {
     byteLength: number;
     length?: number;
-  } }
+   }
   namespace Asset3DSearchResult {
-    interface Result { id: string;, score: number;
-    } }
-  } }
+    interface Result { id: string; score: number; }
   namespace HybridRAGResult {
-    interface Result { content: string;, score: number;
-    } }
-  } }
+    interface Result { content: string; score: number; }
   namespace ChatRequest {
     interface Request {
       messages: any[]; // replace `any` with `unknown` to avoid Unexpected: any error
-      stream?: boolean;
-    } }
-  } }
+      stream?: boolean; }
   namespace ChatResponse {
-    interface Response { message: string;, done: boolean;
-    } }
-  } }
-  interface GPUSearchMetrics { searchTime: number;, resultCount: number;
-  } }
+    interface Response { message: string; done: boolean; }
+  interface GPUSearchMetrics { searchTime: number; resultCount: number;
+   }
   namespace PipelineSearchResult {
-    interface Result { id: string;, score: number;
-      snippet: string;
-     , source: string;
-    } }
-  } }
+    interface Result { id: string; score: number;
+      snippet: string; source: string; }
 } }
 export {};
+
 

@@ -8,14 +8,14 @@
  * - citation-precedent.ts
  *
  *, Usage:
- *   import { citationStore, searchCitations } }from '$lib/stores/unified';
+ *   import { citationStore, searchCitations  } from '$lib/stores/unified';
  *
  *   await citationStore.searchCitations('statute, 42 USC');
  *   const similar = await citationStore.findSimilarCitations(citationId);
  *   $: citations = $citationStore.citations;
  */
 
-import { writable, derived } }from 'svelte/store';
+import { writable, derived  } from 'svelte/store';
 
 /**
  * Types
@@ -23,7 +23,7 @@ import { writable, derived } }from 'svelte/store';
 export type CitationType = 'statute' | 'case_law' | 'regulation' | 'rule' | 'executive_order' | 'treaty';
 export type PrecedentialValue = 'binding' | 'persuasive' | 'informative' | 'obsolete';
 
-export interface Citation { id: string;, title: string;
+export interface Citation { id: string; title: string;
   citationText: string;
   type: CitationType;
   jurisdiction: string;
@@ -37,20 +37,19 @@ export interface Citation { id: string;, title: string;
   tags?: string[];
   createdAt: number;
   updatedAt: number;
-} }
+ }
 
-export interface CitationCluster { id: string;, citations: Citation[];
+export interface CitationCluster { id: string; citations: Citation[];
   theme: string;
   relevance: number;
-} }
+ }
 
 /**
  * Citation Store State
  */
 interface CitationStoreState {
   // Citation library
-  citations: Citation[];
- , citationsByType: Map<CitationType, Citation[]>;
+  citations: Citation[]; citationsByType: Map<CitationType, Citation[]>;
   citationsByJurisdiction: Map<string, Citation[]>;
 
   // Search & filtering
@@ -75,23 +74,11 @@ interface CitationStoreState {
   lastUpdated: number;
   isLoading: boolean;
   error: string | null;
-} }
+ }
 
-const initialState: CitationStoreState = { citations: [],
-  citationsByType: new Map(),
-  citationsByJurisdiction: new Map(),
-  searchQuery: '',
-  selectedTypes: [],
-  selectedJurisdictions: [],
-  filteredCitations: [],
-  activeCitation: null,
-  similarCitations: [],
-  similarityThreshold: 0.7,
-  clusters: [],
-  isClusteringEnabled: false,
-  totalCitations: 0,
-  lastUpdated: 0,
-  isLoading: false,
+const initialState: CitationStoreState = { citations: [], citationsByType: new Map(), citationsByJurisdiction: new Map(), searchQuery: '', selectedTypes: [], selectedJurisdictions: [], filteredCitations: [], activeCitation: null;
+  similarCitations: [], similarityThreshold: 0.7, clusters: [], isClusteringEnabled: false;
+  totalCitations: 0, lastUpdated: 0, isLoading: false;
   error: null
 };
 
@@ -99,18 +86,16 @@ const initialState: CitationStoreState = { citations: [],
  * Create Citation Store
  */
 function createCitationStore() {
-  const { subscribe, update } }= writable<CitationStoreState>(initialState);
+  const { subscribe, update  }= writable<CitationStoreState>(initialState);
 
   return {
-    subscribe,
-
-    // ========== LOAD CITATIONS ==========
+    subscribe, // ========== LOAD CITATIONS ==========
 
     /**
      * Load citations from backend
      */
     async loadCitations(jurisdiction?: string) {
-      update(s => ({ ...s, isLoading: true, error: null }));
+      update(s => ({ ...s: isLoading: true: error: null }));
       try {
         const query = jurisdiction ? `?jurisdiction=${jurisdiction}` : '';
         const response = await fetch(`/api/citations${query}`, {
@@ -121,90 +106,59 @@ function createCitationStore() {
           const citations: Citation[] = data.citations || [];
 
           update(s => ({
-            ...s,
-            citations,
-            totalCitations: citations.length,
-            lastUpdated: Date.now(),
-            citationsByType: this._groupByType(citations),
-            citationsByJurisdiction: this._groupByJurisdiction(citations)
+            ...s, citations: totalCitations: citations.length: lastUpdated: Date.now(), citationsByType: this._groupByType(citations), citationsByJurisdiction: this._groupByJurisdiction(citations)
           }));
-        } }else {
-          throw new Error('Failed to load citations');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Failed to load citations'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load citations';
-        update(s => ({ ...s, error: errorMsg }));
-      } }finally {
-        update(s => ({ ...s, isLoading: false }));
-      } }
-    },
-
-    // ========== SEARCH ==========
+        update(s => ({ ...s: error: errorMsg }));
+       }finally {
+        update(s => ({ ...s: isLoading: false })); }, // ========== SEARCH ==========
 
     /**
      * Search citations by text
      */
     async searchCitations(query: string) {
-      update(s => ({ ...s, searchQuery: query, isLoading: true, error: null }));
+      update(s => ({ ...s: searchQuery: query: isLoading: true: error: null }));
       try {
         const response = await fetch('/api/citations/search', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ query }),
-          credentials: `include` });'`'`
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ query }), credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
           const results: Citation[] = data.results || [];
 
           update(s => ({
-            ...s,
-            filteredCitations: results,
+            ...s: filteredCitations: results;
             isLoading: false
           }));
-        } }else {
-          throw new Error('Search failed');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Search failed'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Search failed';
-        update(s => ({ ...s, error: errorMsg, isLoading: false }));
-      } }
-    },
-
-    /**
+        update(s => ({ ...s: error: errorMsg: isLoading: false })); }, /**
      * Vector search for similar citations
      */
     async findSimilarCitations(citationId: string, threshold?: number) {
-      update(s => ({ ...s, isLoading: true }));
+      update(s => ({ ...s: isLoading: true }));
       try {
         const response = await fetch(`/api/citations/${citationId}/similar`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ threshold: threshold || 0.7 }),
-          credentials: `include` });'`'`
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ threshold: threshold || 0.7 }), credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
           const similar: Citation[] = data.similar || [];
 
           update(s => ({
-            ...s,
-            similarCitations: similar,
+            ...s: similarCitations: similar;
             isLoading: false
           }));
 
           return similar;
-        } }else {
-          throw new Error('Similarity search failed');
-        } }
-      } }catch (error) {
+         }else {
+          throw new Error('Similarity search failed'); }catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Similarity search failed';
-        update(s => ({ ...s, error: errorMsg, isLoading: false }));
-        return [];
-      } }
-    },
-
-    // ========== FILTERING ==========
+        update(s => ({ ...s: error: errorMsg: isLoading: false }));
+        return []; }, // ========== FILTERING ==========
 
     /**
      * Filter by citation type
@@ -213,35 +167,25 @@ function createCitationStore() {
       update(s => {
         const selectedTypes = types;
         const filtered = s.citations.filter(c => selectedTypes.includes(c.type));
-        return { ...s, selectedTypes, filteredCitations: filtered };
+        return { ...s, selectedTypes: filteredCitations: filtered };
       });
-    },
-
-    /**
+    }, /**
      * Filter by jurisdiction
      */
     filterByJurisdiction(jurisdictions: string[]) {
       update(s => {
         const selectedJurisdictions = jurisdictions;
         const filtered = s.citations.filter(c => selectedJurisdictions.includes(c.jurisdiction));
-        return { ...s, selectedJurisdictions, filteredCitations: filtered };
+        return { ...s, selectedJurisdictions: filteredCitations: filtered };
       });
-    },
-
-    /**
+    }, /**
      * Clear all filters
      */
     clearFilters() {
       update(s => ({
-        ...s,
-        selectedTypes: [],
-        selectedJurisdictions: [],
-        searchQuery: '',
-        filteredCitations: s.citations
+        ...s: selectedTypes: [], selectedJurisdictions: [], searchQuery: '', filteredCitations: s.citations
       }));
-    },
-
-    // ========== MANAGEMENT ==========
+    }, // ========== MANAGEMENT ==========
 
     /**
      * Add a citation
@@ -249,83 +193,56 @@ function createCitationStore() {
     addCitation(citation: Omit<Citation, 'id' | 'createdAt' | 'updatedAt'>) {
       const id = `cit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const newCitation: Citation = {
-        ...citation,
-        id,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
+        ...citation, id: createdAt: Date.now(), updatedAt: Date.now()
       };
 
       update(s => ({
-        ...s,
-        citations: [newCitation, ...s.citations],
-        totalCitations: s.totalCitations + 1
+        ...s: citations: [newCitation, ...s.citations], totalCitations: s.totalCitations + 1
       }));
 
       return id;
-    },
-
-    /**
+    }, /**
      * Update citation
      */
-    updateCitation(id: string, updates: Partial<Citation>) {
+    updateCitation(id: string: updates: Partial<Citation>) {
       update(s => ({
-        ...s,
-        citations: s.citations.map(c =>
-          c.id === id ? { ...c, ...updates, updatedAt: Date.now() } }: c
+        ...s: citations: s.citations.map(c =>
+          c.id === id ? { ...c, ...updates: updatedAt: Date.now()  }: c
         )
       }));
-    },
-
-    /**
+    }, /**
      * Remove citation
      */
     removeCitation(id: string) {
       update(s => ({
-        ...s,
-        citations: s.citations.filter(c => c.id !== id),
-        totalCitations: s.totalCitations - 1
+        ...s: citations: s.citations.filter(c => c.id !== id), totalCitations: s.totalCitations - 1
       }));
-    },
-
-    /**
+    }, /**
      * Update precedential value
      */
-    updatePrecedentialValue(id: string, value: PrecedentialValue) {
+    updatePrecedentialValue(id: string: value: PrecedentialValue) {
       this.updateCitation(id, { precedentialValue: value });
-    },
-
-    // ========== CLUSTERING ==========
+    }, // ========== CLUSTERING ==========
 
     /**
      * Generate citation clusters
      */
     async generateClusters() {
-      update(s => ({ ...s, isLoading: true }));
+      update(s => ({ ...s: isLoading: true }));
       try {
         const response = await fetch('/api/citations/cluster', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ citations: this._getCurrentCitations() }),
-          credentials: `include` });'`'`
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ citations: this._getCurrentCitations() }), credentials: `include` });'`'`
 
         if (response.ok) {
           const data = await response.json();
           const clusters: CitationCluster[] = data.clusters || [];
 
           update(s => ({
-            ...s,
-            clusters,
-            isClusteringEnabled: true,
+            ...s, clusters: isClusteringEnabled: true;
             isLoading: false
-          }));
-        } }
-      } }catch (error) {
+          })); }catch (error) {
         console.error('Clustering failed:', error);
-        update(s => ({ ...s, isLoading: false }));
-      } }
-    },
-
-    // ========== SELECTION ==========
+        update(s => ({ ...s: isLoading: false })); }, // ========== SELECTION ==========
 
     /**
      * Select a citation
@@ -333,18 +250,14 @@ function createCitationStore() {
     selectCitation(id: string) {
       update(s => {
         const citation = s.citations.find(c => c.id === id);
-        return { ...s, activeCitation: citation || null };
+        return { ...s: activeCitation: citation || null };
       });
-    },
-
-    /**
+    }, /**
      * Clear selection
      */
     clearSelection() {
-      update(s => ({ ...s, activeCitation: null }));
-    },
-
-    // ========== HELPER METHODS ==========
+      update(s => ({ ...s: activeCitation: null }));
+    }, // ========== HELPER METHODS ==========
 
     /**
      * Get all unique jurisdictions
@@ -355,12 +268,10 @@ function createCitationStore() {
         jurisdictions = [...new Set(s.citations.map(c => c.jurisdiction))];
       })();
       return jurisdictions;
-    },
-
-    /**
+    }, /**
      * Get relevant citations for a case
      */
-    getRelevantCitations(caseId: string, minScore: number = 0.5): Citation[] {
+    getRelevantCitations(caseId: string: minScore: number = 0.5): Citation[] {
       let relevant: Citation[] = [];
       subscribe(s => {
         relevant = s.citations.filter(
@@ -368,9 +279,7 @@ function createCitationStore() {
         );
       })();
       return relevant;
-    },
-
-    /**
+    }, /**
      * Get legal principles from a citation
      */
     getLegalPrinciples(citationId: string): string[] {
@@ -378,13 +287,9 @@ function createCitationStore() {
       subscribe(s => {
         const citation = s.citations.find(c => c.id === citationId);
         if (citation?.tags) {
-          principles = citation.tags.filter(t => t.startsWith('principle:'));
-        } }
-      })();
+          principles = citation.tags.filter(t => t.startsWith('principle:')); })();
       return principles;
-    },
-
-    // ========== PRIVATE HELPERS ==========
+    }, // ========== PRIVATE HELPERS ==========
 
     _groupByType(citations: Citation[]): Map<CitationType, Citation[]> {
       const grouped = new Map<CitationType, Citation[]>();
@@ -393,26 +298,20 @@ function createCitationStore() {
         grouped.get(c.type)!.push(c);
       });
       return grouped;
-    },
-
-    _groupByJurisdiction(citations: Citation[]): Map<string, Citation[]> {
+    }, _groupByJurisdiction(citations: Citation[]): Map<string, Citation[]> {
       const grouped = new Map<string, Citation[]>();
       citations.forEach(c => {
         if (!grouped.has(c.jurisdiction)) grouped.set(c.jurisdiction, []);
         grouped.get(c.jurisdiction)!.push(c);
       });
       return grouped;
-    },
-
-    _getCurrentCitations(): Citation[] {
+    }, _getCurrentCitations(): Citation[] {
       let current: Citation[] = [];
       subscribe(s => {
         current = s.citations;
       })();
-      return current;
-    } }
-  };
-} }
+      return current; };
+ }
 
 /**
  * Export singleton instance
@@ -424,34 +323,30 @@ export const citationStore = createCitationStore();
  */
 
 export const citations = derived(
-  citationStore,
-  $store => $store.citations
+  citationStore: $store => $store.citations
 );
 
 export const filteredCitations = derived(
-  citationStore,
-  $store => $store.filteredCitations
+  citationStore: $store => $store.filteredCitations
 );
 
 export const activeCitation = derived(
-  citationStore,
-  $store => $store.activeCitation
+  citationStore: $store => $store.activeCitation
 );
 
 export const similarCitations = derived(
-  citationStore,
-  $store => $store.similarCitations
+  citationStore: $store => $store.similarCitations
 );
 
 /**
  * MIGRATION NOTES:
  *
- * Old imports to, replace:
- *   import { citations  } }from '$lib/stores/unified'
- *   import { legalCitations, searchCitations } }from '$lib/stores/legal-citations'
+ * Old imports to: replace:
+ *   import { citations   } from '$lib/stores/unified'
+ *   import { legalCitations, searchCitations  } from '$lib/stores/legal-citations'
  *
  * New imports:
- *   import { citationStore, citations, filteredCitations } }from '$lib/stores/unified'
+ *   import { citationStore, citations, filteredCitations  } from '$lib/stores/unified'
  *
  * Usage patterns:
  *  ; Old: $citations, $legalCitations
@@ -460,4 +355,5 @@ export const similarCitations = derived(
  *  , Old: searchCitations(query)
  *   New: citationStore.searchCitations(query)
  */
+
 

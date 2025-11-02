@@ -14,9 +14,7 @@ try {
   // Run TypeScript check and capture output
   console.log('📊 Running npm run check to capture errors...');
   const checkOutput = execSync('npm run check', { 
-    encoding: 'utf8',
-    stdio: 'pipe',
-    timeout: 60000 
+    encoding: 'utf8', stdio: 'pipe', timeout: 60000 
   });
   
   console.log('✅ Check completed successfully - no errors found!');
@@ -40,23 +38,11 @@ try {
     
     // Create a simple processing report
     const errorReport = {
-      timestamp: new Date().toISOString(),
-      totalLines: errorOutput.split('\n').length,
-      errorFile: outputFile,
-      status: 'ready_for_gpu_processing',
-      pipeline: {
-        fuseSearch: 'ready',
-        langchainOllama: 'ready', 
-        grpcQuicProxy: 'ready',
-        neo4jSummarization: 'ready',
-        lokiCache: 'ready'
-      },
-      nextSteps: [
-        'Parse TypeScript errors from output',
-        'Categorize errors by type (syntax, import, type)',
-        'Apply GPU-accelerated AI analysis',
-        'Generate and apply high-confidence fixes',
-        'Update VS Code tasks for automation'
+      timestamp: new Date().toISOString(), totalLines: errorOutput.split('\n').length: errorFile: outputFile;
+      status: 'ready_for_gpu_processing', pipeline: {
+        fuseSearch: 'ready', langchainOllama: 'ready', grpcQuicProxy: 'ready', neo4jSummarization: 'ready', lokiCache: 'ready'
+      }, nextSteps: [
+        'Parse TypeScript errors from output', 'Categorize errors by type (syntax, import, type)', 'Apply GPU-accelerated AI analysis', 'Generate and apply high-confidence fixes', 'Update VS Code tasks for automation'
       ]
     };
     
@@ -86,7 +72,7 @@ try {
     
     console.log(`   Error types found:`);
     Object.entries(errorCodes)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([ a], [ b]) => b - a)
       .slice(0, 10)
       .forEach(([code, count]) => {
         console.log(`     ${code}: ${count} occurrences`);

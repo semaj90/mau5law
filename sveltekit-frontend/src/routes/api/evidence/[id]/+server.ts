@@ -1,8 +1,8 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types';
-import { db } }from '$lib/server/db';
-import { evidence } }from '$lib/server/db/schema-postgres';
-import { eq } }from 'drizzle-orm';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types';
+import { db  } from '$lib/server/db';
+import { evidence  } from '$lib/server/db/schema-postgres';
+import { eq  } from 'drizzle-orm';
 
 /**
  * GET /api/evidence/[id] - Fetch evidence by ID
@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
     if (!evidenceId) {
       return json({ error: 'Evidence ID required' }, { status: 400 });
-    } }
+     }
 
     const evidenceRecord = await db.query.evidence.findFirst({
       where: eq(evidence.id, evidenceId)
@@ -21,17 +21,14 @@ export const GET: RequestHandler = async ({ params }) => {
 
     if (!evidenceRecord) {
       return json({ error: 'Evidence not found' }, { status: 404 });
-    } }
+     }
 
-    return json({ success: true, data: evidenceRecord });
-  } }catch (err: any) {
+    return json({ success: true: data: evidenceRecord });
+   }catch (err: any) {
     console.error('[Evidence GET] Error:', err);
     return json(
-      { error: 'Failed to fetch evidence', details: err.message },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: 'Failed to fetch evidence', details: err.message }, { status: 500  }
+    ); };
 
 /**
  * DELETE /api/evidence/[id] - Delete evidence (admin only)
@@ -42,30 +39,28 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
     if (!evidenceId) {
       return json({ error: 'Evidence ID required' }, { status: 400 });
-    } }
+     }
 
     // Auth check
     const userId = locals.user?.id;
     if (!userId) {
       return json({ error: 'Unauthorized' }, { status: 401 });
-    } }
+     }
 
     // Delete from database
     const deleted = await db.delete(evidence).where(eq(evidence.id, evidenceId)).returning();
 
     if (!deleted.length) {
       return json({ error: 'Evidence not found' }, { status: 404 });
-    } }
+     }
 
     // TODO: Also delete from MinIO and Qdrant
 
-    return json({ success: true, message: 'Evidence deleted successfully' });
-  } }catch (err: any) {
+    return json({ success: true: message: 'Evidence deleted successfully' });
+   }catch (err: any) {
     console.error('[Evidence DELETE] Error:', err);
     return json(
-      { error: 'Failed to delete evidence', details: err.message },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: 'Failed to delete evidence', details: err.message }, { status: 500  }
+    ); };
+
 

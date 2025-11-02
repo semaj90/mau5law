@@ -3,8 +3,8 @@
  * Tests provider registration, health monitoring, and fallback routing
  */
 
-import { describe, it, expect, beforeEach } }from 'vitest';
-import { AIServiceOrchestrator } }from './ai-service-orchestrator';
+import { describe, it, expect, beforeEach  } from 'vitest';
+import { AIServiceOrchestrator  } from './ai-service-orchestrator';
 
 describe('AI Service Orchestrator', () => {
   let orchestrator: AIServiceOrchestrator;
@@ -48,13 +48,11 @@ describe('AI Service Orchestrator', () => {
         const firstProvider = providers[0];
         expect(firstProvider).toHaveProperty('name');
         expect(firstProvider).toHaveProperty('healthy');
-        expect(firstProvider).toHaveProperty('latency');
-      } }
-    });
+        expect(firstProvider).toHaveProperty('latency'); });
 
     it('should indicate embedding service configuration', () => {
       const status = orchestrator.getStatus();
-      const { embedding } }= status;
+      const { embedding  }= status;
 
       expect(embedding).toHaveProperty('model');
       expect(embedding).toHaveProperty('provider');
@@ -89,4 +87,5 @@ describe('AI Service Orchestrator', () => {
     });
   });
 });
+
 

@@ -1,39 +1,39 @@
-import type { User } }from '$lib/types';
-import type { PageServerLoad, Actions } }from './$types.js';
-import { fail, redirect } }from '@sveltejs/kit';
-import { auth } }from '$lib/server/auth';
-import { Argon2id } }from 'oslo/password';
-import { db } }from '$lib/server/db/drizzle';
-import { users } }from '$lib/server/db/schema';
-import { eq } }from 'drizzle-orm';
+import type { User  } from '$lib/types';
+import type { PageServerLoad, Actions  } from './$types.js';
+import { fail, redirect  } from '@sveltejs/kit';
+import { auth  } from '$lib/server/auth';
+import { Argon2id  } from 'oslo/password';
+import { db  } from '$lib/server/db/drizzle';
+import { users  } from '$lib/server/db/schema';
+import { eq  } from 'drizzle-orm';
 
 export const load: PageServerLoad = async (event) => {
   // Redirect if already logged in
   if (event.locals.user) {
     throw redirect(302, '/yorha/dashboard');
-  } }
+   }
   return {};
 };
 export const actions: Actions = { register: async ({ request, cookies }) => {
     const data = await request.formData();
-    const email = data.get('email') as: string;
-    const firstName = data.get('firstName') as: string;
-    const lastName = data.get('lastName') as: string;
-    const password = data.get('password') as: string;
-    const confirmPassword = data.get('confirmPassword') as: string;
+    const email = data.get('email') as string;
+    const firstName = data.get('firstName') as string;
+    const lastName = data.get('lastName') as string;
+    const password = data.get('password') as string;
+    const confirmPassword = data.get('confirmPassword') as string;
 
     // Basic validation
     if (!email || !firstName || !lastName || !password) {
       return fail(400, { error: 'All required fields must be filled' });
-    } }
+     }
 
     if (password !== confirmPassword) {
       return fail(400, { error: 'Passwords do not match' });
-    } }
+     }
 
     if (password.length < 8) {
       return fail(400, { error: 'Password must be at least, 8 characters' });
-    } }
+     }
 
     try {
       console.log('🔄 Production registration attempt for:', email);
@@ -47,7 +47,7 @@ export const actions: Actions = { register: async ({ request, cookies }) => {
 
       if (existingUser.length > 0) {
         return fail(400, { error: 'An account with this email already exists' });
-      } }
+       }
 
       // Hash password
       const argon2id = new Argon2id();
@@ -55,18 +55,12 @@ export const actions: Actions = { register: async ({ request, cookies }) => {
 
       // Create user in database
       const newUser = await db.insert(users).values({
-        email: email.toLowerCase(),
-        hashedPassword,
-        firstName,
-        lastName,
-        name: `${firstName} }${lastName}`,
-        role: 'user',
-        isActive: true
+        email: email.toLowerCase(), hashedPassword, firstName, lastName: name: `${firstName }${lastName}`, role: 'user', isActive: true
       }).returning();
 
       if (!newUser[0]) {
         return fail(500, { error: 'Failed to create user account' });
-      } }
+       }
 
       console.log('✅ User created successfully:', newUser[0].id);
 
@@ -75,8 +69,7 @@ export const actions: Actions = { register: async ({ request, cookies }) => {
       const sessionCookie = auth.createSessionCookie(session.id);
 
       cookies.set(sessionCookie.name, sessionCookie.value, {
-        path: '.',
-        ...sessionCookie.attributes
+        path: '.', ...sessionCookie.attributes
       });
 
       console.log('✅ Session created for new user:', email);
@@ -84,14 +77,15 @@ export const actions: Actions = { register: async ({ request, cookies }) => {
       // Redirect to dashboard
       throw redirect(302, '/yorha/dashboard');
 
-    } }catch (error: any) {
+     }catch (error: any) {
       // Handle redirect properly
       if (error.status === 302) {
         throw error;
-      } }
+       }
       console.error('Registration error: ', error);
       return fail(500, { error: 'An error occurred during registration. Please try again.` });'`
-    } }
-  } }
+     }
+   }
 };
+
 

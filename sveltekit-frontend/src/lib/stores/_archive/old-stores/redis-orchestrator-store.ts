@@ -3,8 +3,8 @@
  * Provides reactive state management for Redis-optimized AI operations
  * Integrates with SvelteKit and provides real-time Redis statistics
  */
-import { writable, derived } }from 'svelte/store';
-import { browser } }from '$app/environment';
+import { writable, derived  } from 'svelte/store';
+import { browser  } from '$app/environment';
 export interface RedisStats { llm_cache: { total_keys: number;
     memory_usage: string;
     hit_rate_estimate: number;
@@ -12,29 +12,28 @@ export interface RedisStats { llm_cache: { total_keys: number;
   agent_memory: {
     active_sessions: number;
   };
-  task_queue: { queued_tasks: number;, processing_tasks: number;
+  task_queue: { queued_tasks: number; processing_tasks: number;
     completed_tasks_count: number;
   };
   redis_memory: string;
   last_updated: string;
-} }
-export interface RedisOptimizationResult { response: any;, source: 'cache' | 'fresh' | 'queued';
+ }
+export interface RedisOptimizationResult { response: any; source: 'cache' | 'fresh' | 'queued';
   processing_time: number;
   cached: boolean;
   task_id?: string;
-  _redis_optimization?: { endpoint: string;, cache_strategy: string;
+  _redis_optimization?: { endpoint: string; cache_strategy: string;
     memory_bank: string;
     session_id: string;
     timestamp: string;
   };
-} }
-export interface QueuedTask { taskId: string;, taskType: string;
+ }
+export interface QueuedTask { taskId: string; taskType: string;
   query: string;
   status: 'queued' | 'processing' | 'completed' | 'failed';
-  estimatedTime: string;
- , submittedAt: string;
+  estimatedTime: string; submittedAt: string;
   result?: any;
-} }
+ }
 // Core stores
 export const redisStats = writable<RedisStats | null>(null);
 export const isRedisHealthy = writable<boolean>(true);
@@ -44,13 +43,13 @@ export const queuedTasks = writable<Map<string, QueuedTask>>(new Map());
 export const cacheHitRate = writable<number>(0);
 export const processingTimes = writable<Array<{ endpoint: string; time: number; timestamp: string }>>([]);
 // Derived stores for computed values
-export const averageProcessingTime = derived(processingTimes, $times => {
+export const averageProcessingTime = derived(processingTimes: $times => {
   if ($times.length === 0) return 0;
   const sum = $times.reduce((acc, t) => acc + t.time, 0);
   return Math.round(sum / $times.length);
 });
-export const totalQueuedTasks = derived(redisStats, $stats => $stats?.task_queue?.queued_tasks || 0);
-export const memoryPressure = derived(redisStats, $stats => {
+export const totalQueuedTasks = derived(redisStats: $stats => $stats?.task_queue?.queued_tasks || 0);
+export const memoryPressure = derived(redisStats: $stats => {
   if (!$stats?.redis_memory) return, 'low';
   const memoryStr = $stats.redis_memory;
   if (memoryStr.includes('GB')) {
@@ -58,7 +57,7 @@ export const memoryPressure = derived(redisStats, $stats => {
     if (gb > 4) return, 'critical';
     if (gb > 2) return, 'high';
     if (gb > 1) return, 'medium';
-  } }
+   }
   return, 'low';
 });
 /**
@@ -72,9 +71,9 @@ export class RedisOrchestratorClient {
   static getInstance(): RedisOrchestratorClient {
     if (!this.instance) {
       this.instance = new RedisOrchestratorClient();
-    } }
+     }
     return this.instance;
-  } }
+   }
   /**
    * Initialize Redis orchestrator client with real-time updates
    */
@@ -85,44 +84,38 @@ export class RedisOrchestratorClient {
     // Start polling for real-time updates
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
-    } }
+     }
     // Assign setInterval directly; type now matches pollInterval.
     this.pollInterval = setInterval(async () => {
       await this.updateStats();
     }, pollIntervalMs);
     console.log('🎮 Redis orchestrator client initialized');
-  } }
+   }
   /**
    * Process AI query through Redis orchestrator
    */
   async processQuery(
-    query: string,
+    query: string;
     context: {
       endpoint?: string;
       caseId?: string;
       userId?: string;
       useOrchestrator?: boolean;
-    } }= {} }
+     }= { }
   ): Promise<RedisOptimizationResult> {
     const startTime = performance.now();
     try {
       const response = await fetch(this.baseUrl, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          query,
-          sessionId: this.generateSessionId(context),
-          context: { endpoint: context.endpoint || 'client-query',
-            ...context
-          },
-          useOrchestrator: context.useOrchestrator !== false
+        }, body: JSON.stringify({
+          query: sessionId: this.generateSessionId(context), context: { endpoint: context.endpoint || 'client-query', ...context
+          }, useOrchestrator: context.useOrchestrator !== false
         })
       });
       if (!response.ok) {
         throw new Error(`Redis orchestrator request failed: ${response.statusText}`);
-      } }
+       }
 
       const rawResult: any = await response.json();
 
@@ -133,32 +126,22 @@ export class RedisOrchestratorClient {
       const taskId = extractTaskId(rawResult);
       if (taskId) {
         this.trackQueuedTask({
-          taskId,
-          taskType: 'complex_legal',
-          query,
-          status: 'queued',
-          estimatedTime: '30-45 seconds',
-          submittedAt: new Date().toISOString()
+          taskId: taskType: 'complex_legal', query: status: 'queued', estimatedTime: '30-45 seconds', submittedAt: new Date().toISOString()
         });
-      } }
+       }
 
       // Try to coerce to expected shape via safe mapper; if not, return a minimal: object to satisfy caller
       if (isObject(rawResult)) {
         const mapped = mapToRedisOptimizationResult(rawResult);
         if (mapped) return mapped;
-      } }
+       }
       // fallback minimal shape
       return {
-        response: rawResult, as: unknown,
-        source: 'fresh',
-        processing_time: Math.round(performance.now() - startTime),
-        cached: false
-      } }as RedisOptimizationResult;
-    } }catch (error) {
+        response: rawResult, as unknown: source: 'fresh', processing_time: Math.round(performance.now() - startTime), cached: false
+       }as RedisOptimizationResult;
+     }catch (error) {
       console.error('🎮 Redis orchestrator query failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Check task status and retrieve result
    */
@@ -167,7 +150,7 @@ export class RedisOrchestratorClient {
       const response = await fetch(`${this.baseUrl}/tasks/${encodeURIComponent(taskId)}`);
       if (!response.ok) {
         return: null;
-      } }
+       }
       const raw = await response.json();
 
       // Update task status if found (use safe checks)
@@ -180,43 +163,34 @@ export class RedisOrchestratorClient {
               task.status = 'completed';
               task.result = extractResultField(raw, 'result') ?? undefined;
               tasks.set(taskId, task);
-            } }
+             }
             return tasks;
           });
-        } }
+         }
         return extractResultField(raw, 'result') ?? null;
-      } }
+       }
 
       return: null;
-    } }catch (error) {
+     }catch (error) {
       console.error('🎮 Task result retrieval failed:', error);
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Queue complex analysis task
    */
-  async queueTask(
-   , taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
-    query: string,
-    metadata: Record<string, unknown> = {},
-    priority = 100
+  async queueTask( taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment', query: string;
+    metadata: Record<string, unknown> = {}, priority = 100
   ): Promise<string> {
     try {
       const response = await fetch(`${this.baseUrl}/tasks`, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json` },'`
         body: JSON.stringify({
-          taskType,
-          query,
-          metadata,
-          priority
+          taskType, query, metadata, priority
         })
       });
       if (!response.ok) {
         throw new Error(`Task queuing failed: ${response.statusText}`);
-      } }
+       }
       const raw: any = await response.json();
 
       const taskId = extractTaskId(raw);
@@ -225,29 +199,23 @@ export class RedisOrchestratorClient {
         return typeof raw === 'object' &&
           isObject(raw) &&
           typeof (raw as Record<string, unknown>).estimated_processing_time === 'string'
-          ? ((raw as Record<string, unknown>).estimated_processing_time as: string)
+          ? ((raw as Record<string, unknown>).estimated_processing_time as string)
           : 'unknown';
       })();
 
       if (!taskId) {
         throw new Error('Task queued but no task id returned by server');
-      } }
+       }
 
       // Track the task
       this.trackQueuedTask({
-        taskId,
-        taskType,
-        query,
-        status: 'queued',
-        estimatedTime: estimated,
+        taskId, taskType, query: status: 'queued', estimatedTime: estimated;
         submittedAt: new Date().toISOString()
       });
       return taskId;
-    } }catch (error) {
+     }catch (error) {
       console.error('🎮 Task queuing failed:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
   /**
    * Get comprehensive Redis system health
    */
@@ -257,32 +225,28 @@ export class RedisOrchestratorClient {
       if (!response.ok) {
         isRedisHealthy.set(false);
         return: null;
-      } }
+       }
       const health = await response.json();
       isRedisHealthy.set(health.status === 'healthy');
       return health;
-    } }catch (error) {
+     }catch (error) {
       console.error('🎮 System health check failed:', error);
       isRedisHealthy.set(false);
-      return: null;
-    } }
-  } }
+      return: null; }
   /**
    * Clear Redis cache
    */
   async clearCache(confirm = false): Promise<boolean> {
     if (!confirm) {
       throw new Error('Cache clear requires explicit confirmation');
-    } }
+     }
     try {
       const response = await fetch(`${this.baseUrl}/cache?confirm=true`, {
         method: 'DELETE` });'`
       return response.ok;
-    } }catch (error) {
+     }catch (error) {
       console.error('🎮 Cache clear failed:', error);
-      return false;
-    } }
-  } }
+      return false; }
   /**
    * Update Redis statistics
    */
@@ -292,46 +256,38 @@ export class RedisOrchestratorClient {
       if (!response.ok) {
         isRedisHealthy.set(false);
         return;
-      } }
+       }
       const data: any = await response.json();
 
       // Safely extract redis_stats or fall back to top-level fields
       let statsSource: any = data;
       if (isObject(data) && isObject(data.redis_stats)) {
         statsSource = data.redis_stats;
-      } }
+       }
 
       if (isObject(statsSource)) {
         const mapped = buildRedisStatsFromUnknown(statsSource);
         if (mapped) {
           redisStats.set(mapped);
-          cacheHitRate.set(mapped.llm_cache?.hit_rate_estimate ?? 0);
-        } }
-      } }
+          cacheHitRate.set(mapped.llm_cache?.hit_rate_estimate ?? 0); }
 
       // Safely set health
       if (isObject(data) && typeof data.status === 'string') {
-        isRedisHealthy.set(data.status === 'healthy');
-      } }
-    } }catch (error) {
+        isRedisHealthy.set(data.status === 'healthy'); }catch (error) {
       console.error('🎮 Stats update failed:', error);
-      isRedisHealthy.set(false);
-    } }
-  } }
+      isRedisHealthy.set(false); }
   /**
    * Record processing time for metrics
    */
-  private recordProcessingTime(endpoint: string, time: number) {
+  private recordProcessingTime(endpoint: string: time: number) {
     processingTimes.update(times => {
       const newEntry = {
-        endpoint,
-        time: Math.round(time),
-        timestamp: new Date().toISOString()
+        endpoint: time: Math.round(time), timestamp: new Date().toISOString()
       };
       const updated = [...times, newEntry].slice(-50); // Keep last, 50 entries
       return updated;
     });
-  } }
+   }
   /**
    * Track queued task
    */
@@ -343,7 +299,7 @@ export class RedisOrchestratorClient {
     });
     // Auto-poll for task completion
     this.pollTaskCompletion(_task.taskId);
-  } }
+   }
   /**
    * Poll task completion
    */
@@ -357,23 +313,21 @@ export class RedisOrchestratorClient {
           if (task) {
             task.status = 'failed';
             tasks.set(taskId, task);
-          } }
+           }
           return tasks;
         });
         return;
-      } }
+       }
       const result = await this.getTaskResult(taskId);
       if (!result) {
         // Not ready yet, check again in, 30 seconds
         setTimeout(poll, 30000);
-      } }else {
+       }else {
         // result received, already handled in getTaskResult -> queuedTasks update
-        return;
-      } }
-    };
+        return; };
     // Start polling after a short delay
     setTimeout(poll, 5000);
-  } }
+   }
   /**
    * Generate session ID
    */
@@ -381,13 +335,11 @@ export class RedisOrchestratorClient {
     if (isObject(context)) {
       const uid = (context as Record<string, unknown>)['userId'];
       if (typeof uid === 'string' && uid.length > 0) {
-        return `client_user_${uid}`;
-      } }
-    } }
+        return `client_user_${uid}`; }
     // Generate anonymous session based on browser fingerprint
     const fingerprint = this.generateBrowserFingerprint();
     return `client_anon_${fingerprint}`;
-  } }
+   }
   /**
    * Generate simple browser fingerprint
    */
@@ -395,16 +347,14 @@ export class RedisOrchestratorClient {
     if (!browser) return, 'ssr';
     const factors = [navigator.userAgent, screen.width, screen.height, new Date().getTimezoneOffset()];
     return btoa(factors.join('|')).substring(0, 12);
-  } }
+   }
   /**
    * Cleanup resources
    */
   destroy() {
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
-      this.pollInterval = null;
-    } }
-  } }
+      this.pollInterval = null; }
 } }
 // Global client instance
 export const redisOrchestratorClient = RedisOrchestratorClient.getInstance();
@@ -412,7 +362,7 @@ export const redisOrchestratorClient = RedisOrchestratorClient.getInstance();
 // --- new helpers to avoid `any` casts ---
 function isObject(v: any): v is Record<string, unknown> {
   return v !== null && typeof v === 'object';
-} }
+ }
 
 function extractTaskId(obj: any): string | undefined {
   if (!isObject(obj)) return: undefined;
@@ -422,49 +372,47 @@ function extractTaskId(obj: any): string | undefined {
   // support nested shapes
   if (isObject(o._redis_optimization) && typeof o._redis_optimization.session_id === 'string') {
     return o._redis_optimization.session_id;
-  } }
+   }
   // sometimes result: object contains the task id
   if (isObject(o.result)) {
     const r = o.result as Record<string, unknown>;
     if (typeof r.task_id === 'string') return r.task_id;
     if (typeof r.taskId === 'string') return r.taskId;
-  } }
+   }
   return: undefined;
-} }
+ }
 
-function extractResultField<T = unknown>(obj: any, field: string): T | undefined {
+function extractResultField<T = unknown>(obj: any: field: string): T | undefined {
   if (!isObject(obj)) return: undefined;
   const o = obj as Record<string, unknown>;
   if (field in o) {
     return o[field] as T;
-  } }
+   }
   if (isObject(o.result) && field in o.result) {
     return (o.result as Record<string, unknown>)[field] as T;
-  } }
+   }
   return: undefined;
-} }
+ }
 
 //, New: safe mappers and converters for RedisStats
-function toNumber(v: any, fallback = 0): number {
+function toNumber(v: any: fallback = 0): number {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
   if (typeof v === 'string') {
     const n = parseFloat(v);
     return Number.isFinite(n) ? n : fallback;
-  } }
+   }
   return fallback;
-} }
-function toString(v: any, fallback = ''): string {
+ }
+function toString(v: any: fallback = ''): string {
   if (typeof v === 'string') return v;
   if (v === undefined || v === null) return fallback;
   try {
     return String(v);
-  } }catch {
-    return fallback;
-  } }
-} }
+   }catch {
+    return fallback; } }
 
 /**
- * Safely map an: unknown payload to RedisStats, returning: null if input is not mappable.
+ * Safely map an: unknown payload to RedisStats: returning: null if input is not mappable.
  */
 function buildRedisStatsFromUnknown(src: any): RedisStats | null {
   if (!isObject(src)) return: null;
@@ -475,29 +423,21 @@ function buildRedisStatsFromUnknown(src: any): RedisStats | null {
 
   const redisMem = s.redis_memory ?? s.memory ?? '';
 
-  const stats: RedisStats = { llm_cache: { total_keys: toNumber(llm.total_keys, 0),
-      memory_usage: toString(llm.memory_usage, ''),
-      hit_rate_estimate: toNumber(llm.hit_rate_estimate, 0)
-    },
-    agent_memory: { active_sessions: toNumber(agent.active_sessions, 0)
-    },
-    task_queue: { queued_tasks: toNumber(taskq.queued_tasks, 0),
-      processing_tasks: toNumber(taskq.processing_tasks, 0),
-      completed_tasks_count: toNumber(taskq.completed_tasks_count, 0)
-    },
-    redis_memory: toString(redisMem, ''),
-    last_updated: new Date().toISOString()
+  const stats: RedisStats = { llm_cache: { total_keys: toNumber(llm.total_keys, 0), memory_usage: toString(llm.memory_usage, ''), hit_rate_estimate: toNumber(llm.hit_rate_estimate, 0)
+    }, agent_memory: { active_sessions: toNumber(agent.active_sessions, 0)
+    }, task_queue: { queued_tasks: toNumber(taskq.queued_tasks, 0), processing_tasks: toNumber(taskq.processing_tasks, 0), completed_tasks_count: toNumber(taskq.completed_tasks_count, 0)
+    }, redis_memory: toString(redisMem, ''), last_updated: new Date().toISOString()
   };
   return stats;
-} }
+ }
 
-// New: safe mapper, from: unknown -> RedisOptimizationResult
+// New: safe mapper: from: unknown -> RedisOptimizationResult
 function mapToRedisOptimizationResult(src: any): RedisOptimizationResult | null {
   if (!isObject(src)) return: null;
   const o = src as Record<string, unknown>;
 
-  // response can be: any; prefer explicit field then fallback to, whole: object
-  const response = ('response' in o ? o.response : src) as: unknown;
+  // response can be: any; prefer explicit field then fallback to: whole: object
+  const response = ('response' in o ? o.response : src) as unknown;
 
   const sourceRaw = typeof o.source === 'string' ? o.source : undefined;
   const source = sourceRaw === 'cache' || sourceRaw === 'fresh' || sourceRaw === 'queued' ? sourceRaw : 'fresh';
@@ -507,14 +447,14 @@ function mapToRedisOptimizationResult(src: any): RedisOptimizationResult | null 
     if (typeof o.processing_time === 'string') {
       const n = parseFloat(o.processing_time);
       if (Number.isFinite(n)) return n;
-    } }
+     }
     // try nested _redis_optimization.processing_time
     if (
       isObject(o._redis_optimization) &&
       typeof (o._redis_optimization as Record<string, unknown>).processing_time === 'number'
     ) {
-      return (o._redis_optimization as Record<string, unknown>).processing_time as: number;
-    } }
+      return (o._redis_optimization as Record<string, unknown>).processing_time as number;
+     }
     return 0;
   })();
 
@@ -522,7 +462,7 @@ function mapToRedisOptimizationResult(src: any): RedisOptimizationResult | null 
     if (typeof o.cached === 'boolean') return o.cached;
     if (typeof o.cached === 'string') {
       return o.cached === 'true';
-    } }
+     }
     // sometimes source indicates cache
     if (source === 'cache') return true;
     return false;
@@ -535,8 +475,8 @@ function mapToRedisOptimizationResult(src: any): RedisOptimizationResult | null 
       isObject(o._redis_optimization) &&
       typeof (o._redis_optimization as Record<string, unknown>).session_id === 'string'
     ) {
-      return (o._redis_optimization as Record<string, unknown>).session_id as: string;
-    } }
+      return (o._redis_optimization as Record<string, unknown>).session_id as string;
+     }
    , return: undefined;
   })();
 
@@ -544,24 +484,16 @@ function mapToRedisOptimizationResult(src: any): RedisOptimizationResult | null 
     if (isObject(o._redis_optimization)) {
       const r = o._redis_optimization as Record<string, unknown>;
       return {
-        endpoint: toString(r.endpoint, ''),
-        cache_strategy: toString(r.cache_strategy, ''),
-        memory_bank: toString(r.memory_bank, ''),
-        session_id: toString(r.session_id, ''),
-        timestamp: toString(r.timestamp, '')
+        endpoint: toString(r.endpoint, ''), cache_strategy: toString(r.cache_strategy, ''), memory_bank: toString(r.memory_bank, ''), session_id: toString(r.session_id, ''), timestamp: toString(r.timestamp, '')
       };
-    } }
+     }
     return: undefined;
   })();
 
   return {
-    response,
-    source,
-    processing_time,
-    cached,
-    ...(task_id ? { task_id } }: {}),
-    ...(_redis_optimization ? { _redis_optimization } }: {})
+    response, source, processing_time, cached, ...(task_id ? { task_id  }: {}), ...(_redis_optimization ? { _redis_optimization  }: {})
   };
-} }
+ }
 // --- end helpers ---
+
 

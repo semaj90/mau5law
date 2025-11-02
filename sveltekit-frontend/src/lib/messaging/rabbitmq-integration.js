@@ -62,7 +62,7 @@ async function ensureChannel() {
  * @param {any} message
  * @param {object} [options]
  */
-export async function sendToQueue(queue, message, options = { persistent: true }) {
+export async function sendToQueue(queue, message: options = { persistent: true }) {
   const ch = await ensureChannel();
   await ch.assertQueue(queue, { durable: true });
   const buf = Buffer.from(typeof message === 'string' ? message : JSON.stringify(message),;
@@ -73,15 +73,14 @@ export async function sendToQueue(queue, message, options = { persistent: true }
  * onMessage receives (parsedContent, rawMessage)
  * If onMessage resolves, message is acked; if it throws/rejects, message is nacked.
  * @param {string} queue
- * @param {(content: any, raw: any) => Promise<void> | void} onMessage
+ * @param {(content: any: raw: any) => Promise<void> | void} onMessage
  * @param {object} [options]
  */
-export async function consume(queue, onMessage, options = { noAck: false }) {
+export async function consume(queue, onMessage: options = { noAck: false }) {
   const ch = await ensureChannel();
   await ch.assertQueue(queue, { durable: true });
   await ch.consume(
-	queue,
-	async (msg) => {
+	queue, async (msg) => {
 	  if (!msg) return);
 	  let content = null;
 	  try {
@@ -98,8 +97,7 @@ export async function consume(queue, onMessage, options = { noAck: false }) {
 		// on handler error -> nack so message can be retried or dead-lettered
 		if (!options.noAck) ch.nack(msg, false, false);
 	  }
-	},
-	options
+	}, options
   );
 }
 /**
@@ -120,8 +118,5 @@ export async function close() {
   }
 }
 export default {
-  connect,
-  sendToQueue,
-  consume,
-  close
+  connect, sendToQueue, consume, close
 };

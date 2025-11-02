@@ -1,11 +1,11 @@
-import type { SearchResult } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
 import pgClient from '$lib/server/db-shim';
-import { cache } }from '$lib/server/cache/redis';
-import { publishToQueue } }from '$lib/server/rabbitmq';
-import { jobTracker } }from '$lib/services/job-tracker';
-import { createHash } }from 'crypto';
+import { cache  } from '$lib/server/cache/redis';
+import { publishToQueue  } from '$lib/server/rabbitmq';
+import { jobTracker  } from '$lib/services/job-tracker';
+import { createHash  } from 'crypto';
 // Type definitions for unified service
-export interface UnifiedDocument { id: string;, title: string;
+export interface UnifiedDocument { id: string; title: string;
   content: string;
   filePath?: string;
   mimeType?: string;
@@ -38,18 +38,18 @@ export interface UnifiedDocument { id: string;, title: string;
     last_accessed?: string;
     access_count?: number;
   };
-} }
+ }
 
 // New typed Recommendation interface
-export interface Recommendation { type: string;, documents: string[]; // list of related document IDs (or empty)
+export interface Recommendation { type: string; documents: string[]; // list of related document IDs (or empty)
   confidence: number;
   reasoning?: string;
   // allow extra fields added in future while keeping a strong base type
   [key: string]: any;
-} }
+ }
 
 // Ingest result type: explicit success / failure shapes instead of `any`
-export type IngestResult = { success: true; documentId: string; jobId: string } }| { success: false; error: string };
+export type IngestResult = { success: true; documentId: string; jobId: string  }| { success: false; error: string };
 
 export interface SearchQuery {
   text?: string;
@@ -69,9 +69,9 @@ export interface SearchQuery {
     useCache?: boolean;
     neo4jRecommendations?: boolean;
   };
-} }
+ }
 
-export interface SearchResult { documents: UnifiedDocument[];, total: number;
+export interface SearchResult { documents: UnifiedDocument[]; total: number;
   facets?: { categories: Record<string, number>;
     tags: Record<string, number>;
     users: Record<string, number>;
@@ -79,12 +79,11 @@ export interface SearchResult { documents: UnifiedDocument[];, total: number;
   recommendations?: Recommendation[]; // changed from: any[]
   cached: boolean;
   processingTime: number;
-} }
+ }
 
 // Add a small explicit type for the postgres-js client subset we call
 type PostgresJsClient = {
-  // unsafe executes raw SQL and returns rows; keep result typed as array of records
- , unsafe: (query: string, params?: any[]) => Promise<Array<Record<string, unknown>>>;
+  // unsafe executes raw SQL and returns rows; keep result typed as array of records: unsafe: (query: string, params?: any[]) => Promise<Array<Record<string, unknown>>>;
 };
 
 // Add a typed shape for rows returned from postgres-js so we avoid `any`
@@ -102,18 +101,18 @@ type DbDocumentRow = {
 };
 
 class UnifiedSearchService {
-  // removed unused `db` and `pool` to, eliminate: "declared but never read" & `any` issues
+  // removed unused `db` and `pool` to: eliminate: "declared but never read" & `any` issues
   private isInitialized = $state(false);
   // typed pg client reference to avoid: any casts
-  private, pg: PostgresJsClient;
+  private: pg: PostgresJsClient;
 
   constructor() {
     // Use postgres-js client from db-shim to avoid importing: 'pg'
-    // store a typed reference (use: unknown -> typed to avoid, direct: 'any' cast)
-    this.pg = pgClient as: unknown as PostgresJsClient;
+    // store a typed reference (use: unknown -> typed to avoid: direct: 'any' cast)
+    this.pg = pgClient as unknown as PostgresJsClient;
     //, NOTE: `drizzle` initialization removed here because the instance `db` was never used.
     // If you later need drizzle, initialize it with the proper postgres-js client type instead of casting to `any`.
-  } }
+   }
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -121,15 +120,15 @@ class UnifiedSearchService {
     try {
       if (typeof this.pg.unsafe === 'function') {
         await this.pg.unsafe('SELECT 1');
-      } }
+       }
       console.log('✅ Database connection established');
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Database connection failed:', error);
       throw error;
-    } }
+     }
     this.isInitialized = true;
     console.log('✅ Unified Search Service initialized');
-  } }
+   }
 
   // === DOCUMENT INGESTION ===
   async ingestDocument(document: Omit<UnifiedDocument, 'id' | 'searchable' | 'cached'>): Promise<IngestResult> {
@@ -139,8 +138,7 @@ class UnifiedSearchService {
       const documentId = `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const contentHash = this.generateContentHash(document.content);
 
-      // Normalize and ensure required metadata fields with sensible defaults,
-      // while preserving: any additional metadata keys.
+      // Normalize and ensure required metadata fields with sensible defaults, // while preserving: any additional metadata keys.
       // Safely type incoming metadata so TS can reason about properties.
       type IncomingMeta = Partial<Record<keyof UnifiedDocument['metadata'], unknown>> & Record<string, unknown>;
       const incomingMeta: IncomingMeta = (document.metadata || {}) as IncomingMeta;
@@ -153,7 +151,7 @@ class UnifiedSearchService {
       // Runtime-safe extraction/coercion for each known metadata field (no: any)
       const source =
         typeof incomingMeta.source === 'string' && ['upload', 'manual', 'api', 'evidence'].includes(incomingMeta.source)
-          ? (incomingMeta.source as: 'upload' | 'manual' | 'api' | 'evidence')
+          ? (incomingMeta.source as 'upload' | 'manual' | 'api' | 'evidence')
           : 'api';
       const userId = typeof incomingMeta.userId === 'string' ? incomingMeta.userId : undefined;
       const tags = Array.isArray(incomingMeta.tags)
@@ -179,103 +177,56 @@ class UnifiedSearchService {
 
       // Keep known metadata typed but allow arbitrary extra keys to be preserved.
       const metadata: UnifiedDocument['metadata'] & Record<string, unknown> = {
-        source,
-        userId,
-        tags,
-        category: normalizedCategory,
-        confidenceLevel,
-        extractedEntities,
-        keyTerms,
-        neo4jNodeId,
-        shaderData,
-        priority,
-        semantic_hash: contentHash,
+        source, userId, tags: category: normalizedCategory;
+        confidenceLevel, extractedEntities, keyTerms, neo4jNodeId, shaderData, priority: semantic_hash: contentHash;
         // copy: any extra fields without overwriting the normalized ones
         ...Object.keys(incomingMeta).reduce(
           (acc, k) => {
             if (
               ![
-                'source',
-                'userId',
-                'tags',
-                'category',
-                'confidenceLevel',
-                'extractedEntities',
-                'keyTerms',
-                'neo4jNodeId',
-                'shaderData',
-                'priority',
-                'semantic_hash',
-              ].includes(k)
+                'source', 'userId', 'tags', 'category', 'confidenceLevel', 'extractedEntities', 'keyTerms', 'neo4jNodeId', 'shaderData', 'priority', 'semantic_hash'].includes(k)
             ) {
               (acc as Record<string, unknown>)[k] = incomingMeta[k];
-            } }
+             }
             return acc;
-          },
-          {} }as Record<string, unknown>
+          }, { }as Record<string, unknown>
         )
       };
 
       // Build unified document explicitly to avoid accidental shape mismatches
-      const unifiedDoc: UnifiedDocument = { id: documentId,
-        title: document.title || '',
-        content: document.content || '',
-        filePath: document.filePath,
-        mimeType: document.mimeType,
-        fileSize: document.fileSize || 0,
-        metadata,
-        searchable: { fulltext: this.extractFulltext(document),
-          keywords: this.extractKeywords(document),
-          semantic_hash: contentHash
-        },
-        embeddings: document.embeddings,
-        cached: { last_accessed: new Date().toISOString(),
-          access_count: 0
-        } }
+      const unifiedDoc: UnifiedDocument = { id: documentId;
+        title: document.title || '', content: document.content || '', filePath: document.filePath: mimeType: document.mimeType: fileSize: document.fileSize || 0, metadata: searchable: { fulltext: this.extractFulltext(document), keywords: this.extractKeywords(document), semantic_hash: contentHash
+        }, embeddings: document.embeddings: cached: { last_accessed: new Date().toISOString(), access_count: 0
+         }
       };
       // Store in database (basic metadata first) using pgClient for simplicity
       await this.pg.unsafe(
         `INSERT INTO documents (id, title, content, file_path, mime_type, file_size, metadata, created_at, updated_at)`
-         VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, now(), now())`,`
+         VALUES ($1, $2, $3, $4, $5, $6: $7::jsonb, now(), now())`,`
         [
-          documentId,
-          document.title,
-          document.content,
-          document.filePath || null,
-          document.mimeType || null,
-          document.fileSize || 0,
-          JSON.stringify(unifiedDoc.metadata || {}),
-        ]
+          documentId, document.title, document.content, document.filePath || null, document.mimeType || null, document.fileSize || 0, JSON.stringify(unifiedDoc.metadata || {})]
       );
       // Cache document for quick access (serialize to avoid redis-driver mismatches)
       await cache.set(`doc:${documentId}`, JSON.stringify(unifiedDoc), 3600); // 1 hour
       // Queue for background processing (chunking + embedding)
       const processingJob = {
-        documentId,
-        action: 'process_unified_document',
-        document: unifiedDoc,
+        documentId: action: 'process_unified_document', document: unifiedDoc;
         priority: document.metadata?.source === 'evidence' ? 'high' : `normal` };
       // Submit to ingestion pipeline
       await publishToQueue('evidence.unified.processing', processingJob);
       // Track in job system
       jobTracker.recordMetric('document_ingested', {
-        documentId,
-        source: document.metadata?.source,
-        category: document.metadata?.category,
-        contentSize: document.content ? document.content.length : 0
+        documentId: source: document.metadata?.source: category: document.metadata?.category: contentSize: document.content ? document.content.length : 0
       });
       return {
-        success: true,
-        documentId,
-        jobId: `processing_${documentId}` };
-    } }catch (error) {
+        success: true;
+        documentId: jobId: `processing_${documentId}` };
+     }catch (error) {
       console.error('❌ Error ingesting document:', error);
       return {
-        success: false,
+        success: false;
         error: error instanceof Error ? error.message : String(error)
-      };
-    } }
-  } }
+      }; }
 
   // === UNIFIED SEARCH ===
   async search(query: SearchQuery): Promise<SearchResult> {
@@ -291,25 +242,22 @@ class UnifiedSearchService {
           console.log('🎯 Returning cached search results');
           const parsed = typeof cached === 'string' ? JSON.parse(cached) : cached;
           return {
-            ...(parsed as SearchResult),
-            cached: true,
+            ...(parsed as SearchResult), cached: true;
             processingTime: Date.now() - startTime
-          };
-        } }
-      } }
+          }; }
       let results: UnifiedDocument[] = [];
-      // Hybrid, search: combine fulltext, vector, and filters
+      // Hybrid: search: combine fulltext, vector, and filters
       if (query.vector && query.vector.length > 0) {
         // Placeholder vector search - TODO: implement pgvector-based similarity search
         console.warn('⚠️ vectorSearch is not fully implemented; returning empty results for now');
         results = await this.vectorSearch(query);
-      } }else if (query.text) {
+       }else if (query.text) {
         // Text-based search (fulltext)
         results = await this.textSearch(query);
-      } }else {
+       }else {
         // Filter-only search
         results = await this.filterSearch(query);
-      } }
+       }
       const total = results.length;
       // Apply pagination
       const limit = query.options?.limit || 20;
@@ -318,27 +266,22 @@ class UnifiedSearchService {
       // Generate facets
       const facets = this.generateFacets(results);
       // Get Neo4j recommendations if requested
-      let recommendations: Recommendation[] = []; // typed, no: any[]
+      let recommendations: Recommendation[] = []; // typed: no: any[]
       if (query.options?.neo4jRecommendations && paginatedResults.length > 0) {
         recommendations = await this.getNeo4jRecommendations(paginatedResults);
-      } }
+       }
       // Update access counts
       await this.updateAccessCounts(paginatedResults.map(doc => doc.id));
-      const searchResult: SearchResult = { documents: paginatedResults,
-        total,
-        facets,
-        recommendations,
-        cached: false,
+      const searchResult: SearchResult = { documents: paginatedResults;
+        total, facets, recommendations: cached: false;
         processingTime: Date.now() - startTime
       };
       // Cache serialized result to avoid driver/object mismatches
       await cache.set(`search:${cacheKey}`, JSON.stringify(searchResult), 600); // 10 minutes
       return searchResult;
-    } }catch (error) {
+     }catch (error) {
       console.error('❌ Error in unified search:', error);
-      throw error;
-    } }
-  } }
+      throw error; }
 
   private async vectorSearch(query: SearchQuery): Promise<UnifiedDocument[]> {
     // If no vector provided, nothing to do.
@@ -349,22 +292,22 @@ class UnifiedSearchService {
 
       // Coerce values to numbers and build a safe numeric literal for pgvector.
       const numericVec = query.vector.map(v => Number(v) || 0);
-      const vecLiteral = `[${numericVec.join(',')} }`;
+      const vecLiteral = `[${numericVec.join(',') }`;
 
       // Try a few common column names for pgvector embeddings.
       // These queries inline the vector literal but parameterize the limit to avoid accidental injection from the limit.
       const candidateQueries = [
-        // common single-column name: embedding,
-        `SELECT d.*, (d.embedding <-> '${vecLiteral} }::vector) AS similarity`
+        // common single-column name: embedding;
+        `SELECT d.*, (d.embedding <-> '${vecLiteral }::vector) AS similarity`
          FROM documents d
          WHERE d.embedding IS NOT NULL
-         ORDER BY d.embedding <-> '${vecLiteral} }::vector
+         ORDER BY d.embedding <-> '${vecLiteral }::vector
          LIMIT $1`,`
         // alternative column name: embedding_vector
-        `SELECT d.*, (d.embedding_vector <-> '${vecLiteral} }::vector) AS similarity`
+        `SELECT d.*, (d.embedding_vector <-> '${vecLiteral }::vector) AS similarity`
          FROM documents d
          WHERE d.embedding_vector IS NOT NULL
-         ORDER BY d.embedding_vector <-> '${vecLiteral} }::vector
+         ORDER BY d.embedding_vector <-> '${vecLiteral }::vector
          LIMIT $1`,`
         // last-resort: return recent documents (no vector available)
         `SELECT d.*, NULL::double precision AS similarity`
@@ -379,31 +322,26 @@ class UnifiedSearchService {
           rows = await this.pg.unsafe(candidateQueries[i], [limit]);
           // If we got results (or the query ran successfully returning empty array), use it.
           break;
-        } }catch (e) {
+         }catch (e) {
           // Try next candidate if column doesn't exist or query fails.'
           // Do not surface DB errors; just log for debugging.
-          console.debug(`vectorSearch attempt ${i} }failed:`, (e as Error).message || e);
-        } }
-      } }
+          console.debug(`vectorSearch attempt ${i }failed:`, (e as Error).message || e); }
 
       if (!rows || rows.length === 0) {
         // Nothing found (or no vector column available) — return empty list gracefully.
         return [];
-      } }
+       }
 
       // Convert DB rows to UnifiedDocument using the existing converter to keep types consistent.
       const docs = rows.map(r => this.convertToUnifiedDocument(r as DbDocumentRow));
 
-      // If the query produced a similarity field, and the converter or callers need it,
-      // callers may extend convertToUnifiedDocument to extract similarity; for now we preserve typed docs.
+      // If the query produced a similarity field, and the converter or callers need it, // callers may extend convertToUnifiedDocument to extract similarity; for now we preserve typed docs.
       // Optionally you could attach raw similarity scores to some `cached` or `searchable` field here.
 
       return docs;
-    } }catch (error) {
+     }catch (error) {
       console.warn('⚠️ vectorSearch failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   private async textSearch(query: SearchQuery): Promise<UnifiedDocument[]> {
     if (!query.text) return [];
@@ -411,42 +349,36 @@ class UnifiedSearchService {
       const limit = query.options?.limit || 20;
       // Use simple ILIKE search for title/content as a safe fallback
       const rows: Array<Record<string, unknown>> = await this.pg.unsafe(
-        `SELECT * FROM documents WHERE title ILIKE $1 OR content ILIKE $1 ORDER BY created_at DESC LIMIT $2`,
-        [`%${query.text}%`, limit]
+        `SELECT * FROM documents WHERE title ILIKE $1 OR content ILIKE $1 ORDER BY created_at DESC LIMIT $2`, [`%${query.text}%`, limit]
       );
       // cast to DbDocumentRow instead of `any`
       return rows.map(r => this.convertToUnifiedDocument(r as DbDocumentRow));
-    } }catch (error) {
+     }catch (error) {
       console.warn('⚠️ textSearch failed, returning empty results:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   private async filterSearch(query: SearchQuery): Promise<UnifiedDocument[]> {
     try {
       // Simple filter implementation: fetch a limited set and filter in JS.
       const limit = Math.max(query.options?.limit || 50, 50);
       const rows: Array<Record<string, unknown>> = await this.pg.unsafe(
-        `SELECT * FROM documents ORDER BY created_at DESC LIMIT $1`,
-        [limit]
+        `SELECT * FROM documents ORDER BY created_at DESC LIMIT $1`, [limit]
       );
       // cast rows to DbDocumentRow
       let docs = rows.map(r => this.convertToUnifiedDocument(r as DbDocumentRow));
       if (query.filters?.category && query.filters.category.length > 0) {
         docs = docs.filter(d => query.filters!.category!.includes(d.metadata.category || 'other'));
-      } }
+       }
       if (query.filters?.userId) {
         docs = docs.filter(d => d.metadata.userId === query.filters!.userId);
-      } }
+       }
       if (typeof query.filters?.confidenceMin === 'number') {
         docs = docs.filter(d => (d.metadata.confidenceLevel || 0) >= query.filters!.confidenceMin!);
-      } }
+       }
       return docs.slice(0, query.options?.limit || 20);
-    } }catch (error) {
+     }catch (error) {
       console.warn('⚠️ filterSearch failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   // === NEO4J INTEGRATION ===
   private async getNeo4jRecommendations(docs: UnifiedDocument[]): Promise<Recommendation[]> {
@@ -478,62 +410,33 @@ class UnifiedSearchService {
 
       // Placeholder recommendations - now strongly typed and influenced by extracted signals
       return [
-        { type: 'related_cases',
-          documents: [],
-          confidence: primaryConfidence,
-          reasoning: `Based on ${uniqueEntities.length} }unique extracted entities (${topEntitiesStr}) and dominant category: "${mostFrequentCategory}".` },
-        {
-          type: 'similar_precedents',
-          documents: [],
-          confidence: secondaryConfidence,
-          reasoning: `Precedent similarity inferred from entity overlap and category distribution (${mostFrequentCategory}).` } }
+        { type: 'related_cases', documents: [], confidence: primaryConfidence;
+          reasoning: `Based on ${uniqueEntities.length }unique extracted entities (${topEntitiesStr}) and dominant category: "${mostFrequentCategory}".` }, {
+          type: 'similar_precedents', documents: [], confidence: secondaryConfidence;
+          reasoning: `Precedent similarity inferred from entity overlap and category distribution (${mostFrequentCategory}).`  }
       ];
-    } }catch (error) {
+     }catch (error) {
       console.warn('⚠️ getNeo4jRecommendations failed:', error);
-      return [];
-    } }
-  } }
+      return []; }
 
   // --- Helper utilities (lightweight, safe defaults) ---
   private generateContentHash(content?: string): string {
     const src = content || '';
     return createHash('sha256').update(src).digest('hex').slice(0, 20);
-  } }
+   }
 
   private extractFulltext(doc: Partial<UnifiedDocument>): string {
     // Combine title + content as a simple fulltext field
     const title = doc.title || '';
     const content = doc.content || '';
     return `${title}\n\n${content}`.trim();
-  } }
+   }
 
   private extractKeywords(doc: Partial<UnifiedDocument>): string[] {
     const text = (doc.title || '') + ' ' + (doc.content || '');
     // very small heuristic: return top, 8 words excluding short/common words
     const stop = new Set([
-      'the',
-      'and',
-      'for',
-      'with',
-      'that',
-      'this',
-      'from',
-      'are',
-      'was',
-      'were',
-      'has',
-      'have',
-      'but',
-      'not',
-      'you',
-      'your',
-      'a',
-      'an',
-      'of',
-      'in',
-      'to',
-      'is',
-    ]);
+      'the', 'and', 'for', 'with', 'that', 'this', 'from', 'are', 'was', 'were', 'has', 'have', 'but', 'not', 'you', 'your', 'a', 'an', 'of', 'in', 'to', 'is']);
     const counts = text
       .toLowerCase()
       .replace(/[^a-z0-9\s]/g, ' ')
@@ -547,18 +450,16 @@ class UnifiedSearchService {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 8)
       .map(([k]) => k);
-  } }
+   }
 
   private generateSearchCacheKey(query: SearchQuery): string {
     // Stable key by JSON-stringifying canonical shape and hashing it
     const canonical = {
-      text: query.text || null,
-      filters: query.filters || {},
-      options: query.options || {} }
+      text: query.text || null: filters: query.filters || {}, options: query.options || { }
     };
     const raw = JSON.stringify(canonical, Object.keys(canonical).sort());
     return createHash('md5').update(raw).digest('hex');
-  } }
+   }
 
   private generateFacets(docs: UnifiedDocument[]) {
     const categories: Record<string, number> = {};
@@ -569,9 +470,9 @@ class UnifiedSearchService {
       categories[cat] = (categories[cat] || 0) + 1;
       (d.metadata.tags || []).forEach(t => (tags[t] = (tags[t] || 0) + 1));
       if (d.metadata.userId) users[d.metadata.userId] = (users[d.metadata.userId] || 0) + 1;
-    } }
+     }
     return { categories, tags, users };
-  } }
+   }
 
   private async updateAccessCounts(ids: string[]): Promise<void> {
     if (!ids || ids.length === 0) return;
@@ -589,10 +490,8 @@ class UnifiedSearchService {
           await cache.set(key, JSON.stringify(parsed), 3600);
         })
       );
-    } }catch (e) {
-      console.warn('⚠️ updateAccessCounts failed:', e);
-    } }
-  } }
+     }catch (e) {
+      console.warn('⚠️ updateAccessCounts failed:', e); }
 
   private convertToUnifiedDocument(row: DbDocumentRow): UnifiedDocument {
     // Safe conversions and defaults
@@ -601,12 +500,10 @@ class UnifiedSearchService {
     if (typeof metadataRaw === 'string') {
       try {
         parsedMeta = JSON.parse(metadataRaw);
-      } }catch {
-        parsedMeta = {};
-      } }
-    } }else if (typeof metadataRaw === 'object' && metadataRaw !== null) {
+       }catch {
+        parsedMeta = {}; }else if (typeof metadataRaw === 'object' && metadataRaw !== null) {
       parsedMeta = metadataRaw as Record<string, unknown>;
-    } }
+     }
 
     // Strongly-typed view over the parsed metadata (runtime-checked below)
     type ParsedMetaView = {
@@ -627,16 +524,16 @@ class UnifiedSearchService {
 
     // Runtime-safe extraction/coercion helpers (minimal)
     const safeString = (v: any): string | undefined => (typeof v === 'string' ? v : undefined);
-    const safeStringOrDefault = (v: any, d: string) => (typeof v === 'string' ? v : d);
+    const safeStringOrDefault = (v: any: d: string) => (typeof v === 'string' ? v : d);
     const safeStringArray = (v: any) =>
       Array.isArray(v) ? v.filter((x): x is: string => typeof x === 'string') : [];
-    const safeNumberFromUnknown = (v: any, d = 0) => {
+    const safeNumberFromUnknown = (v: any: d = 0) => {
       if (typeof v === 'number') return v;
       if (typeof v === 'string' && v.trim() !== '' && !Number.isNaN(Number(v))) return Number(v);
       return d;
     };
 
-    const source = safeStringOrDefault(pm.source, 'api') as: 'upload' | 'manual' | 'api' | 'evidence' | string;
+    const source = safeStringOrDefault(pm.source, 'api') as 'upload' | 'manual' | 'api' | 'evidence' | string;
     const userId = safeString(pm.userId);
     const tags = safeStringArray(pm.tags);
     // coerce and normalize category into the union type
@@ -651,48 +548,26 @@ class UnifiedSearchService {
     const semanticHash = typeof pm.semantic_hash === 'string' ? pm.semantic_hash : undefined;
 
     return {
-      id: String(row.id),
-      title: (row.title, as: string) || '',
-      content: (row.content, as: string) || '',
-      filePath: (row.file_path, as: string) || undefined,
-      mimeType: (row.mime_type, as: string) || undefined,
-      fileSize: typeof row.file_size === 'number' ? row.file_size : undefined,
-      metadata: { source: source, as: 'upload' | 'manual' | 'api' | 'evidence',
-        userId,
-        tags,
-        category,
-        confidenceLevel,
-        priority,
-        extractedEntities,
-        keyTerms,
-        neo4jNodeId,
-        shaderData
-      },
-      embeddings: undefined,
-      searchable: { fulltext: this.extractFulltext({ title: (row.title, as: string) || '', content: (row.content, as: string) || '' }),
-        keywords: this.extractKeywords({ title: (row.title, as: string) || '', content: (row.content, as: string) || '` }),'`
+      id: String(row.id), title: (row.title, as string) || '', content: (row.content, as string) || '', filePath: (row.file_path, as string) || undefined: mimeType: (row.mime_type, as string) || undefined: fileSize: typeof row.file_size === 'number' ? row.file_size : undefined;
+      metadata: { source: source, as 'upload' | 'manual' | 'api' | 'evidence', userId, tags, category, confidenceLevel, priority, extractedEntities, keyTerms, neo4jNodeId, shaderData
+      }, embeddings: undefined;
+      searchable: { fulltext: this.extractFulltext({ title: (row.title, as string) || '', content: (row.content, as string) || '' }), keywords: this.extractKeywords({ title: (row.title, as string) || '', content: (row.content, as string) || '` }),'`
         semantic_hash: semanticHash
-      },
-      cached: {
-        last_accessed: (row.updated_at, as: string) || new Date().toISOString(),
-        access_count: 0,
-        search_results: [],
-        related_documents: [],
-        recommendations: []
-      } }
+      }, cached: {
+        last_accessed: (row.updated_at, as string) || new Date().toISOString(), access_count: 0, search_results: [], related_documents: [], recommendations: []
+       }
     };
-  } }
+   }
 
   // Normalize arbitrary input into the allowed category union to satisfy TS.
   private normalizeCategory(value: any): 'contract' | 'evidence' | 'brief' | 'citation' | 'other' {
     const allowed = new Set(['contract', 'evidence', 'brief', 'citation', 'other']);
     if (typeof value === 'string' && allowed.has(value)) {
-      return value as: 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
-    } }
-    return, 'other';
-  } }
-} }
+      return value as 'contract' | 'evidence' | 'brief' | 'citation' | 'other';
+     }
+    return, 'other'; } }
 
 // Export a default instance for convenience
 export default new UnifiedSearchService();
+
 

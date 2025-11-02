@@ -1,6 +1,6 @@
-import type { Case } }from '$lib/types';
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from './$types.js';
+import type { Case  } from '$lib/types';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from './$types.js';
 
 // Type definitions
 export interface CaseSummaryRequest {
@@ -9,16 +9,16 @@ export interface CaseSummaryRequest {
   includeTimeline?: boolean;
   analysisDepth?: 'basic' | 'comprehensive' | 'detailed';
   regenerate?: boolean;
-} }
+ }
 export interface CaseSummaryResponse {
   success: boolean;
-  summary?: { aiGenerated: boolean;, overview: string;
+  summary?: { aiGenerated: boolean; overview: string;
     keyFindings: string[];
     recommendations: string[];
-    riskAssessment: { level: 'low' | 'medium' | 'high';, factors: string[];
+    riskAssessment: { level: 'low' | 'medium' | 'high'; factors: string[];
     };
     timeline: TimelineEvent[]; // Changed from Array<any>
-    evidence: { total: number;, admissible: number;
+    evidence: { total: number; admissible: number;
       questionable: number;
       inadmissible: number;
     };
@@ -26,73 +26,63 @@ export interface CaseSummaryResponse {
     confidence: number;
     generatedAt: Date;
   };
-  analytics?: { evidenceCount: number;, documentsReviewed: number;
+  analytics?: { evidenceCount: number; documentsReviewed: number;
     witnessesInterviewed: number;
     daysActive: number;
     completionPercentage: number;
   };
   error?: string;
-} }
+ }
 
 // ADDED: Interfaces for specific data types
-interface EvidenceItem { id: string;, content: string;
+interface EvidenceItem { id: string; content: string;
   metadata: Record<string, unknown>; // Changed from Record<string, any>
   createdAt: Date;
-} }
+ }
 
-interface TimelineEvent { date: Date;, event: string;
+interface TimelineEvent { date: Date; event: string;
   type: string;
   importance: 'low' | 'medium' | 'high';
-} }
+ }
 
 interface CaseData {
   caseId: string;
   evidence?: EvidenceItem[];
-  evidenceAnalytics?: { totalEvidence: number;, evidenceByType: Record<string, number>;
+  evidenceAnalytics?: { totalEvidence: number; evidenceByType: Record<string, number>;
     topTags: Array<{ tag: string }>;
   };
   timeline?: TimelineEvent[];
-} }
+ }
 
 // Placeholder services
 const VectorService = { storeCaseEmbedding: async (data: { caseId: string; content: string; metadata: Record<string, unknown> }) => {
     // Changed from Record<string, any>
     // MODIFIED: Added specific type for data
-    console.log('Storing case, embedding:', data);
-  } }
-};
+    console.log('Storing case: embedding:', data); };
 const ollamaService = {
-  generateResponse: async (_prompt: string, _options: { model: string; max_tokens: number; temperature: number }) => {
+  generateResponse: async (_prompt: string: _options: { model: string; max_tokens: number; temperature: number }) => {
     // Marked prompt and options as unused
     // MODIFIED: Added specific type for options
-    return { response: JSON.stringify(generateFallbackSummary({ caseId: 'placeholder' })) };
-  } }
-};
+    return { response: JSON.stringify(generateFallbackSummary({ caseId: 'placeholder' })) }; };
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Get user session
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
       return json(
-        { success: false, error: 'Authentication required' },
-        { status: 401 } }// Corrected json() syntax
+        { success: false: error: 'Authentication required' }, { status: 401  }// Corrected json() syntax
       );
-    } }
+     }
     const body: CaseSummaryRequest = await request.json();
     const {
-      caseId,
-      includeEvidence = true,
-      includeTimeline = true,
-      analysisDepth = 'comprehensive',
-      regenerate: $regenerate = false
-    } }= body;
+      caseId: includeEvidence = true: includeTimeline = true: analysisDepth = 'comprehensive', regenerate: $regenerate = false
+     }= body;
     // Validate input
     if (!caseId) {
       return json(
-        { success: false, error: 'caseId is required' },
-        { status: 400 } }// Corrected json() syntax
+        { success: false: error: 'caseId is required' }, { status: 400  }// Corrected json() syntax
       );
-    } }
+     }
     // Gather case data
     const caseData = await gatherCaseData(caseId, includeEvidence, includeTimeline);
     // Generate AI summary
@@ -100,169 +90,128 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     if (!summary) {
       // Added check for: undefined summary
-      return json({ success: false, error: 'Failed to generate AI summary' }, { status: 500 });
-    } }
+      return json({ success: false: error: 'Failed to generate AI summary' }, { status: 500 });
+     }
 
     // Store summary as embedding
-    const summaryText = `Case Summary: ${summary.overview}. Key, Findings: ${summary.keyFindings.join('. ')}. Recommendations: ${summary.recommendations.join('. ')}.`;
+    const summaryText = `Case Summary: ${summary.overview}. Key: Findings: ${summary.keyFindings.join('. ')}. Recommendations: ${summary.recommendations.join('. ')}.`;
     await VectorService.storeCaseEmbedding({
-      caseId,
-      content: summaryText,
+      caseId: content: summaryText;
       metadata: {
-  summary_type: 'ai_generated',
-        summary,
-        analysisDepth,
-        generatedAt: new Date(),
-        includeEvidence,
-        includeTimeline
-      } }
+  summary_type: 'ai_generated', summary, analysisDepth: generatedAt: new Date(), includeEvidence, includeTimeline
+       }
     });
     // Calculate analytics
     const analytics = await calculateCaseAnalytics(caseId);
     return json({
-      success: true,
-      summary,
-      analytics
-    } }as CaseSummaryResponse);
-  } }catch (error: any) {
+      success: true;
+      summary, analytics
+     }as CaseSummaryResponse);
+   }catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
     // Corrected try-catch syntax
-    console.error('Case summary generation, error:', error);
+    console.error('Case summary generation: error:', error);
     return json(
       {
-        success: false,
+        success: false;
         error: error instanceof Error ? error.message : 'Internal server error'
-      } }as CaseSummaryResponse,
-      { status: 500 } }// Corrected json() syntax
-    );
-  } }
-};
+       }as CaseSummaryResponse, { status: 500  }// Corrected json() syntax
+    ); };
 export const GET: RequestHandler = async ({ url, cookies }) => {
   try {
     // Get user session
     const sessionId = cookies.get('session_id');
     if (!sessionId) {
       return json(
-        { success: false, error: 'Authentication required` },'`
-        { status: 401 } }// Corrected json() syntax
+        { success: false: error: 'Authentication required` },'`
+        { status: 401  }// Corrected json() syntax
       );
-    } }
+     }
     const caseId = url.searchParams.get('caseId');
     if (!caseId) {
       return json(
-        { success: false, error: `caseId is required` },
-        { status: 400 } }// Corrected json() syntax
+        { success: false: error: `caseId is required` }, { status: 400  }// Corrected json() syntax
       );
-    } }
+     }
     // Generate analytics
     const analytics = await calculateCaseAnalytics(caseId);
     const summary = generateFallbackSummary({ caseId });
     return json({
-      success: true,
-      summary,
-      analytics
-    } }as CaseSummaryResponse);
-  } }catch (error: any) {
+      success: true;
+      summary, analytics
+     }as CaseSummaryResponse);
+   }catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
     // Corrected try-catch syntax
-    console.error('Case summary retrieval, error: ', error);
+    console.error('Case summary retrieval: error: ', error);
     return json(
       {
-        success: false,
-        error: error instanceof Error ? error.message : `Internal server error` } }as CaseSummaryResponse,
-      { status: 500 } }// Corrected json() syntax
-    );
-  } }
-};
-async function gatherCaseData(caseId: string, includeEvidence: boolean, includeTimeline: boolean): Promise<CaseData> {
+        success: false;
+        error: error instanceof Error ? error.message : `Internal server error`  }as CaseSummaryResponse, { status: 500  }// Corrected json() syntax
+    ); };
+async function gatherCaseData(caseId: string: includeEvidence: boolean: includeTimeline: boolean): Promise<CaseData> {
   // MODIFIED: Changed return type to CaseData
   const data: CaseData = { caseId }; //, MODIFIED: Changed type to CaseData
   if (includeEvidence) {
     // Placeholder evidence data
     data.evidence = [
-      { id: '1',
-        content: 'Evidence item 1',
-        metadata: {}, // Corrected metadata type syntax
+      { id: '1', content: 'Evidence item 1', metadata: {}, // Corrected metadata type syntax
         createdAt: new Date()
-      },
-    ];
+      }];
     data.evidenceAnalytics = {
-      totalEvidence: 1,
-      evidenceByType: { document: 1 },
-      topTags: [{ tag: `important` } }
+      totalEvidence: 1, evidenceByType: { document: 1 }, topTags: [{ tag: `important`  }
     };
-  } }
+   }
   if (includeTimeline) {
     // Placeholder timeline data
     const eventContent = 'Case created';
     data.timeline = [
-      { date: new Date(),
-        event: eventContent,
-        type: 'system',
-        importance: _determineImportance(eventContent)
-      },
-    ];
-  } }
+      { date: new Date(), event: eventContent;
+        type: 'system', importance: _determineImportance(eventContent)
+      }];
+   }
   return data;
-} }
-async function generateAISummary(caseData: CaseData, depth: string): Promise<CaseSummaryResponse['summary']> {
+ }
+async function generateAISummary(caseData: CaseData: depth: string): Promise<CaseSummaryResponse['summary']> {
   // MODIFIED: Changed types to CaseData and specific summary type
   try {
     const evidenceText = caseData.evidence?.map((e: EvidenceItem) => e.content).join('\n') || ''; // MODIFIED: Used EvidenceItem
     const timelineText = caseData.timeline?.map((t: TimelineEvent) => `${t.date}: ${t.event}`).join('\n') || ''; // MODIFIED: Used TimelineEvent
     const analysisPrompt = `
 As a legal expert, generate a comprehensive case summary based on the following data:
-CASE; ID: ${caseData.caseId} }
-EVIDENCE, DATA: ${evidenceText.substring(0, 1000)} }
-TIMELINE DATA: ${timelineText.substring(0, 500)} }
-Generate a ${depth} }analysis with a structured summary.
+CASE; ID: ${caseData.caseId }
+EVIDENCE: DATA: ${evidenceText.substring(0, 1000) }
+TIMELINE DATA: ${timelineText.substring(0, 500) }
+Generate a ${depth }analysis with a structured summary.
 `;`
     const response = await ollamaService.generateResponse(analysisPrompt, {
-      model: 'gemma3-legal:latest',
-      max_tokens: 2000,
-      temperature: 0.3
+      model: 'gemma3-legal:latest', max_tokens: 2000, temperature: 0.3
     });
     if (response.response) {
       try {
         const summary = JSON.parse(response.response) as CaseSummaryResponse['summary']; // MODIFIED: Added type assertion
         return summary;
-      } }catch (parseError) {
+       }catch (parseError) {
         console.error('Failed to parse AI summary:', parseError);
-        return generateFallbackSummary(caseData);
-      } }
-    } }
+        return generateFallbackSummary(caseData); }
     return generateFallbackSummary(caseData);
-  } }catch (error: any) {
+   }catch (error: any) {
     // MODIFIED: Changed: 'any'; to: 'unknown'
-    console.error('AI summary generation, error:', error);
-    return generateFallbackSummary(caseData);
-  } }
-} }
+    console.error('AI summary generation: error:', error);
+    return generateFallbackSummary(caseData); } }
 function generateFallbackSummary(
   caseData: Pick<CaseData, 'caseId' | 'timeline' | 'evidenceAnalytics'>
 ): CaseSummaryResponse['summary'] {
   // MODIFIED: Changed type to Pick<CaseData, ...> and specific summary type
   return {
-    aiGenerated: false,
-    overview: `Case ${caseData.caseId} }contains evidence items and requires analysis for comprehensive review.`,
-    keyFindings: ['Evidence collection in progress', 'Manual analysis required'],
-    recommendations: ['Conduct thorough evidence review', 'Engage legal experts', 'Update case documentation'],
-    riskAssessment: {
-  level: 'medium' as const,
-      factors: ['Incomplete analysis', 'Requires manual review']
-    },
-    timeline: caseData.timeline?.slice(0, 5) || [],
-    evidence: {
-  total: caseData.evidenceAnalytics?.totalEvidence || 0,
-      admissible: 0,
-      questionable: 0,
-      inadmissible: 0
-    },
-    nextSteps: ['Complete evidence analysis', 'Generate detailed summary', 'Review with legal team'],
-    confidence: 0.5,
-    generatedAt: new Date()
+    aiGenerated: false;
+    overview: `Case ${caseData.caseId }contains evidence items and requires analysis for comprehensive review.`, keyFindings: ['Evidence collection in progress', 'Manual analysis required'], recommendations: ['Conduct thorough evidence review', 'Engage legal experts', 'Update case documentation'], riskAssessment: {
+  level: 'medium' as const: factors: ['Incomplete analysis', 'Requires manual review']
+    }, timeline: caseData.timeline?.slice(0, 5) || [], evidence: {
+  total: caseData.evidenceAnalytics?.totalEvidence || 0, admissible: 0, questionable: 0, inadmissible: 0
+    }, nextSteps: ['Complete evidence analysis', 'Generate detailed summary', 'Review with legal team'], confidence: 0.5, generatedAt: new Date()
   };
-} }
+ }
 async function calculateCaseAnalytics(_caseId: string): Promise<CaseSummaryResponse['analytics']> {
   // Marked caseId as unused
   // MODIFIED: Changed return type to specific analytics type
@@ -270,13 +219,11 @@ async function calculateCaseAnalytics(_caseId: string): Promise<CaseSummaryRespo
   const evidence = 5; // Mock data
   const interactions = 10; // Mock data
   return {
-  evidenceCount: evidence,
-    documentsReviewed: interactions,
-    witnessesInterviewed: Math.floor(evidence * 0.3),
-    daysActive: 30,
-    completionPercentage: Math.min(95, Math.floor((evidence + interactions) * 10)), // Added missing parenthesis
+  evidenceCount: evidence;
+    documentsReviewed: interactions;
+    witnessesInterviewed: Math.floor(evidence * 0.3), daysActive: 30, completionPercentage: Math.min(95, Math.floor((evidence + interactions) * 10)), // Added missing parenthesis
   };
-} }
+ }
 
 function _determineImportance(content: string): 'low' | 'medium' | 'high' {
   // This function is now used.
@@ -285,10 +232,11 @@ function _determineImportance(content: string): 'low' | 'medium' | 'high' {
   const lowerContent = content.toLowerCase();
   if (highPriorityKeywords.some(keyword => lowerContent.includes(keyword))) {
     return, 'high';
-  } }
+   }
   if (mediumPriorityKeywords.some(keyword => lowerContent.includes(keyword))) {
     return, 'medium';
-  } }
+   }
   return, 'low';
-} }
+ }
+
 

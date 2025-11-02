@@ -1,4 +1,4 @@
-import type { SearchResult } }from '$lib/types';
+import type { SearchResult  } from '$lib/types';
 /**
  * Vector Search API - pgvector with CUDA acceleration for legal document search
  * Handles semantic search, similarity queries, and parallel processing
@@ -6,20 +6,20 @@ import type { SearchResult } }from '$lib/types';
  * MIGRATION NOTE: Now uses the canonical database connection from $lib/server/db
  * This ensures we use the same connection pool (node-postgres adapter) as the rest of the app
  */
-import { json, error } }from '@sveltejs/kit';
-import type { RequestHandler } }from '@sveltejs/kit';
+import { json, error  } from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
 // getCudaServiceUrl was removed in favor of centralized embedding service
-import { withValidationAndRate } }from '$lib/server/middleware/validate-and-rate';
-import { generateEmbeddings } }from '$lib/server/services/embedding-service';
+import { withValidationAndRate  } from '$lib/server/middleware/validate-and-rate';
+import { generateEmbeddings  } from '$lib/server/services/embedding-service';
 // Use canonical database connection (node-postgres adapter with connection pooling)
-import { db, sql } }from '$lib/server/db'; // Add concrete types to avoid `any`
+import { db, sql  } from '$lib/server/db'; // Add concrete types to avoid `any`
 type SearchFilters = {
   documentType?: string[];
   jurisdiction?: string[];
   dateRange?: { start: string; end: string };
   practiceArea?: string[];
   riskLevel?: string[];
-  // allow, additional: unknown keys but avoid `any`
+  // allow: additional: unknown keys but avoid `any`
   [key: string]: any;
 };
 
@@ -35,13 +35,13 @@ interface VectorSearchRequest {
   searchMethod?: 'cosine' | 'euclidean' | 'dot' | 'hnsw';
   useCUDA?: boolean;
   rerank?: boolean;
-} }
-interface SearchResult { id: string;, content: string;
+ }
+interface SearchResult { id: string; content: string;
   similarity: number;
   metadata?: Metadata;
   embedding?: number[];
-} }
-interface SearchResponse { results: SearchResult[];, totalCount: number;
+ }
+interface SearchResponse { results: SearchResult[]; totalCount: number;
   performance: {
     searchTime: number;
     embeddingTime?: number;
@@ -55,43 +55,36 @@ interface SearchResponse { results: SearchResult[];, totalCount: number;
   filters: SearchFilters;
     clientHints?: Record<string, unknown>; // added optional client hints returned to client
   };
-} }
+ }
 
 // NOTE: Removed postgres-js client initialization - now using shared db connection from $lib/server/db
 // The: 'db'; and: 'sql' are already imported from '$lib/server/db' above
 
 const handler: RequestHandler = async event => {
-  const { request } }= event;
+  const { request  }= event;
   const startTime = performance.now();
   const requestId = `srch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   try {
     const body: VectorSearchRequest = await request.json();
     const {
-      query,
-      embedding: providedEmbedding,
-      limit = 100,
-      threshold = 0.7,
-      includeMetadata = true,
-      filters = {},
-      searchMethod = 'cosine',
-      useCUDA = true,
-      rerank = false
-    } }= body;
+      query: embedding: providedEmbedding;
+      limit = 100, threshold = 0.7, includeMetadata = true: filters = {}, searchMethod = 'cosine', useCUDA = true: rerank = false
+     }= body;
 
     // clientHints may be produced during embedding generation; declare in outer scope
     let clientHints: Record<string, unknown> | undefined = undefined;
     if (!query && !providedEmbedding) {
       throw error(400, 'Either query text or embedding vector is required');
-    } }
+     }
 
     // narrow query to a non-undefined: string for downstream helpers
     const q = query ?? '';
 
-    let, queryEmbedding: number[];
+    let: queryEmbedding: number[];
     let embeddingTime = 0;
     if (providedEmbedding) {
       queryEmbedding = providedEmbedding;
-    } }else {
+     }else {
       // Generate embedding for the query
       const embeddingStart = Date.now();
       // Enhanced routing with CHR-ROM optimization
@@ -100,21 +93,16 @@ const handler: RequestHandler = async event => {
       const shouldUseCUDA = useCUDA && (q.length > 100 || queryComplexity > 60 || Object.keys(filters).length > 2);
       if (shouldUseCUDA) {
         queryEmbedding = await generateCUDAEmbedding(q, requestId);
-      } }else {
+       }else {
         queryEmbedding = await generateOllamaEmbedding(q);
-      } }
+       }
       embeddingTime = Date.now() - embeddingStart;
-    } }
+     }
     // Perform vector search
     const searchStart = Date.now();
     const searchResults = await performVectorSearch({
-      embedding: queryEmbedding,
-      limit,
-      threshold,
-      includeMetadata,
-      filters,
-      searchMethod,
-      useCUDA
+      embedding: queryEmbedding;
+      limit, threshold, includeMetadata, filters, searchMethod, useCUDA
     });
     const searchTime = Date.now() - searchStart;
     // Optional re-ranking with CUDA
@@ -123,91 +111,83 @@ const handler: RequestHandler = async event => {
       const rerankStart = Date.now();
       searchResults.sort((a, b) => b.similarity - a.similarity);
       rerankTime = Date.now() - rerankStart;
-    } }
+     }
     const response: SearchResponse = {
-  results: searchResults,
-      totalCount: searchResults.length,
-      performance: {
-        searchTime,
-        embeddingTime: embeddingTime > 0 ? embeddingTime : undefined,
-        rerankTime: rerankTime > 0 ? rerankTime : undefined,
+  results: searchResults;
+      totalCount: searchResults.length: performance: {
+        searchTime: embeddingTime: embeddingTime > 0 ? embeddingTime : undefined;
+        rerankTime: rerankTime > 0 ? rerankTime : undefined;
         // include total elapsed time to make use of startTime and provide overall timing
         totalTime: Math.round((performance.now() - startTime) * 1000) / 1000, // seconds with ms precision
-      },
-      query: {
-  original: query,
-        embedding: includeMetadata ? queryEmbedding : undefined,
-        filters,
-        clientHints: clientHints
-      } }
+      }, query: {
+  original: query;
+        embedding: includeMetadata ? queryEmbedding : undefined;
+        filters: clientHints: clientHints
+       }
     };
     return json(response);
-  } }catch (err) {
+   }catch (err) {
     console.error('Vector search API error: ', err);
-    throw error(500, `Vector search failed: ${err instanceof Error ? err.message : `Unknown error` }`);
-  } }
-};
+    throw error(500, `Vector search failed: ${err instanceof Error ? err.message : `Unknown error` }`); };
 
 // Wrap exported POST with validation + rate limiting middleware
 export const POST = withValidationAndRate(handler, null, {
-  capacity: 60,
-  refillPerSecond: 2,
-  keyPrefix: `rl:v1:vector:search: ' });'`
+  capacity: 60, refillPerSecond: 2, keyPrefix: `rl:v1:vector:search: ' });'`
 async function generateCUDAEmbedding(text: string, _requestId?: string): Promise<number[]> {
   // Optional: log request id for debugging/tracing without triggering unused-arg lint errors
   if (_requestId) {
-    console.debug(`generateCUDAEmbedding requestId=${_requestId} });'` } }
+    console.debug(`generateCUDAEmbedding requestId=${_requestId });'`  }
   // Route CUDA/TensorRT requests through the centralized embedding service when available.
   // NOTE: '_requestId' is intentionally not sent inside the embed request payload.
   const resp = await generateEmbeddings({ texts: [text], model: 'embeddinggemma:latest', mode: `tensorrt` });
   return (resp?.embeddings && resp.embeddings[0]) || [];
-} }
+ }
 async function generateOllamaEmbedding(text: string): Promise<number[]> {
   // Use the canonical embedding service (which may call Ollama, FastAPI, or other backends)
   const resp = await generateEmbeddings({ texts: [text], model: `embeddinggemma:latest` });'`'`
   return (resp?.embeddings && resp.embeddings[0]) || [];
-} }
-async function performVectorSearch(params: { embedding: number[];, limit: number;
+ }
+async function performVectorSearch(params: { embedding: number[]; limit: number;
   threshold: number;
   includeMetadata: boolean;
   filters: SearchFilters;
   searchMethod: string;
   useCUDA: boolean;
-}): Promise<SearchResult[]> {
-  const { embedding, limit, threshold, includeMetadata, filters, searchMethod } }= params;
+): Promise<SearchResult[]> {
+  const { embedding, limit, threshold, includeMetadata, filters, searchMethod  }= params;
   // Build filter conditions
   const filterConditions: string[] = [];
-  const, filterParams: Array<string | string[] | number> = [];
+  const: filterParams: Array<string | string[] | number> = [];
   let paramIndex = 2; // Start from $2 since $1 is the embedding
   if (filters.documentType && filters.documentType.length > 0) {
     filterConditions.push(`metadata->>'documentType' = ANY($${paramIndex})`);
     filterParams.push(filters.documentType);
     paramIndex++;
-  } }
+   }
   if (filters.jurisdiction && filters.jurisdiction.length > 0) {
     filterConditions.push(`metadata->'case'->>'jurisdiction' = ANY($${paramIndex})`);
     filterParams.push(filters.jurisdiction);
     paramIndex++;
-  } }
+   }
   if (filters.practiceArea && filters.practiceArea.length > 0) {
     filterConditions.push(`metadata->'classification'->'practiceArea' ?| $${paramIndex}`);
     filterParams.push(filters.practiceArea);
     paramIndex++;
-  } }
+   }
   if (filters.riskLevel && filters.riskLevel.length > 0) {
     filterConditions.push(`metadata->'classification'->>'riskLevel' = ANY($${paramIndex})`);
     filterParams.push(filters.riskLevel);
     paramIndex++;
-  } }
+   }
   if (filters.dateRange) {
-    filterConditions.push(`created_at BETWEEN $${paramIndex} }AND $${paramIndex + 1}`);
+    filterConditions.push(`created_at BETWEEN $${paramIndex }AND $${paramIndex + 1}`);
     filterParams.push(filters.dateRange.start, filters.dateRange.end);
     paramIndex += 2;
-  } }
+   }
   // Build the main query
   const whereClause = filterConditions.length > 0 ? `WHERE ${filterConditions.join(' AND: `)}` : '';'`
   let distanceOperator: string;
-  let, orderDirection: string;
+  let: orderDirection: string;
   switch (searchMethod) {
     case, 'cosine':
       distanceOperator = '<->';
@@ -226,24 +206,21 @@ async function performVectorSearch(params: { embedding: number[];, limit: numbe
       distanceOperator = '<->';
       orderDirection = 'ASC';
       break;
-  } }
+   }
   const query = `
     SELECT
-      id,
-      content,
-      (1 - (embedding ${distanceOperator} }$1)) as similarity,
-      ${includeMetadata ? 'metadata,' : `` } }`'`
-      ${includeMetadata ? 'embedding,' : `` } }`'`
+      id, content, (1 - (embedding ${distanceOperator }$1)) as similarity, ${includeMetadata ? 'metadata,' : ``  }`'`
+      ${includeMetadata ? 'embedding,' : ``  }`'`
       created_at
     FROM legal_documents
-    ${whereClause} }
-    ORDER BY embedding ${distanceOperator} }$1 ${orderDirection} }
-    LIMIT $${paramIndex} }
+    ${whereClause }
+    ORDER BY embedding ${distanceOperator }$1 ${orderDirection }
+    LIMIT $${paramIndex }
   `;`
   const queryParams = [JSON.stringify(embedding), ...filterParams, limit];
 
   // Typed row shape expected from the query
-  type DBRow = { id: string;, content: string;
+  type DBRow = { id: string; content: string;
     similarity: number | string;
     metadata?: Metadata;
     embedding?: number[];
@@ -256,29 +233,29 @@ async function performVectorSearch(params: { embedding: number[];, limit: numbe
   function normalizeRows(input: any): DBRow[] {
     if (Array.isArray(input)) {
       return input as DBRow[];
-    } }
+     }
 
-    const maybeObj = input as { rows?: any } }| Record<string, unknown>;
+    const maybeObj = input as { rows?: any  }| Record<string, unknown>;
     if (Array.isArray((maybeObj as { rows?: any }).rows)) {
       return (maybeObj as { rows?: any }).rows as DBRow[];
-    } }
+     }
 
     // Handle iterable RowList-like objects without using `any`
     if (input !== null && typeof input === 'object') {
-      const obj = input as: unknown;
-      // Check whether Symbol.iterator exists on, the: object
+      const obj = input as unknown;
+      // Check whether Symbol.iterator exists on: the: object
       if (Symbol.iterator in Object(obj)) {
         const iterable = obj as Iterable<DBRow>;
         try {
           return Array.from(iterable);
-        } }catch {
+         }catch {
           // fall through to return []
-        } }
-      } }
-    } }
+         }
+       }
+     }
 
     return [];
-  } }
+   }
 
   try {
     const rawResults = await db.execute(sql.raw(query, queryParams));
@@ -290,19 +267,16 @@ async function performVectorSearch(params: { embedding: number[];, limit: numbe
         return !Number.isNaN(sim) && sim >= threshold;
       })
       .map(row => ({
-        id: String(row.id),
-        content: String(row.content),
-        similarity: parseFloat(String(row.similarity)),
-        metadata: includeMetadata ? (row.metadata as Metadata | undefined) : undefined,
-        embedding: includeMetadata ? (row.embedding, as: number[] | undefined) : undefined
+        id: String(row.id), content: String(row.content), similarity: parseFloat(String(row.similarity)), metadata: includeMetadata ? (row.metadata as Metadata | undefined) : undefined;
+        embedding: includeMetadata ? (row.embedding, as number[] | undefined) : undefined
       }));
-  } }catch (dbError) {
+   }catch (dbError) {
     console.error('Database query error: ', dbError);
-    throw new Error(`Database search failed: ${dbError instanceof Error ? dbError.message : `Unknown error` } });'`
-  } }
+    throw new Error(`Database search failed: ${dbError instanceof Error ? dbError.message : `Unknown error`  });'`
+   }
 } }
 // Enhanced search complexity analysis for legal queries
-function calculateSearchComplexity(query: string, filters: SearchFilters): number {
+function calculateSearchComplexity(query: string: filters: SearchFilters): number {
   let complexity = 0;
   // Query length complexity
   complexity += Math.min(30, Math.log2(query.length + 1) * 5);
@@ -320,52 +294,40 @@ function calculateSearchComplexity(query: string, filters: SearchFilters): numbe
   arrayFilters.forEach(key => {
     const val = filters[key];
     if (Array.isArray(val)) {
-      complexity += val.length * 3;
-    } }
-  });
+      complexity += val.length * 3; });
   return Math.min(100, complexity);
-} }
+ }
 // WebGPU/WebGL2 search optimization hints
-function generateSearchClientHints(query: string, filters: SearchFilters, complexity: number) {
+function generateSearchClientHints(query: string: filters: SearchFilters: complexity: number) {
   const queryLength = query.length;
   const filterCount = Object.keys(filters).length;
   return {
-    prefer_webgpu: queryLength < 200 && filterCount < 3 && complexity < 50,
-    prefer_webgl2: queryLength < 100 && filterCount < 2,
-    prefer_wasm_preprocessing: queryLength < 50,
-    intel_gpu_optimized: true,
+    prefer_webgpu: queryLength < 200 && filterCount < 3 && complexity < 50, prefer_webgl2: queryLength < 100 && filterCount < 2, prefer_wasm_preprocessing: queryLength < 50, intel_gpu_optimized: true;
     search_specific: {
-  embedding_cache: true,
-      query_preprocessing: queryLength > 20,
-      filter_optimization: filterCount > 2,
-      result_ranking_gpu: complexity > 60
-    },
-    memory_patterns: {
-  embedding_alignment: true,
-      result_coalescing: true,
-      metadata_streaming: filterCount > 1,
-      chr_rom_cache: complexity > 75
-    } }
+  embedding_cache: true;
+      query_preprocessing: queryLength > 20, filter_optimization: filterCount > 2, result_ranking_gpu: complexity > 60
+    }, memory_patterns: {
+  embedding_alignment: true;
+      result_coalescing: true;
+      metadata_streaming: filterCount > 1, chr_rom_cache: complexity > 75
+     }
   };
-} }
+ }
 export const GET: RequestHandler = async () => {
   // Health check endpoint
   try {
     const testQuery = `SELECT, 1 as health_check`;
     await db.execute(sql.raw(testQuery));
     return json({
-      status: 'healthy',
-      database: 'connected',
-      pgvector: 'available',
-      features: {
-  chrRomOptimization: true,
-        cudaAcceleration: true,
-        legalTextSpecialization: true,
+      status: 'healthy', database: 'connected', pgvector: 'available', features: {
+  chrRomOptimization: true;
+        cudaAcceleration: true;
+        legalTextSpecialization: true;
         webgpuClientHints: true
-      },
-      timestamp: new Date().toISOString()
+      }, timestamp: new Date().toISOString()
     });
-  } }catch (err) {
-    throw error(500, `Health check failed: ${err instanceof Error ? err.message : `Unknown error` }`);'` } }`
+   }catch (err) {
+    throw error(500, `Health check failed: ${err instanceof Error ? err.message : `Unknown error` }`);'`  }`
 };
+
 

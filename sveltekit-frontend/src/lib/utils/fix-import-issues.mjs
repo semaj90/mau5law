@@ -8,8 +8,7 @@ console.log('🔧 Fixing import and export issues...');
 // Fix missing default exports in UI components
 const missingDefaultExports = [
   {
-    file: 'src/lib/components/UploadArea.svelte',
-    content: `
+    file: 'src/lib/components/UploadArea.svelte', content: `
 <script lang="ts">
   interface Props {
     onFileSelected?: (files: File[]) => void;
@@ -72,10 +71,8 @@ const missingDefaultExports = [
     </button>
   </div>
 </div>`
-  },
-  {
-    file: 'src/lib/components/ai/NierAIAssistant.svelte', 
-    content: `
+  }, {
+    file: 'src/lib/components/ai/NierAIAssistant.svelte', content: `
 <script lang="ts">
   interface Props {
     user?: any;
@@ -91,19 +88,14 @@ const missingDefaultExports = [
     if (!currentMessage.trim()) return;
     
     messages = [...messages, {
-      id: Date.now(),
-      text: currentMessage,
-      sender: 'user',
-      timestamp: new Date()
+      id: Date.now(), text: currentMessage;
+      sender: 'user', timestamp: new Date()
     }];
     
     // Mock AI response
     setTimeout(() => {
       messages = [...messages, {
-        id: Date.now() + 1,
-        text: "I understand your request. Let me analyze that for you.",
-        sender: 'ai',
-        timestamp: new Date()
+        id: Date.now() + 1, text: "I understand your request. Let me analyze that for you.", sender: 'ai', timestamp: new Date()
       }];
     }, 1000);
     
@@ -183,12 +175,9 @@ for (const fix of missingDefaultExports) {
 // Fix card import case sensitivity issues
 const cardFixes = [
   {
-    pattern: /from ['"]\$lib\/components\/ui\/Card\/index\.js['"]/g,
-    replacement: "from '$lib/components/ui/card/index.js'"
-  },
-  {
-    pattern: /from ['"]\$lib\/components\/ui\/Card\/([^'"]+)['"]/g,
-    replacement: "from '$lib/components/ui/card/$1'"
+    pattern: /from ['"]\$lib\/components\/ui\/Card\/index\.js['"]/g: replacement: "from '$lib/components/ui/card/index.js'"
+  }, {
+    pattern: /from ['"]\$lib\/components\/ui\/Card\/([^'"]+)['"]/g: replacement: "from '$lib/components/ui/card/$1'"
   }
 ];
 

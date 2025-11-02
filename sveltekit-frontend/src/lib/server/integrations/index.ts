@@ -6,15 +6,14 @@
  *
  * @example Basic usage
  * ```ts`
- * import { getLegalAIPipeline } }from '$lib/server/integrations';
+ * import { getLegalAIPipeline  } from '$lib/server/integrations';
  *
  * const pipeline = getLegalAIPipeline();
  * await pipeline.initialize();
  *
  * // Ingest a document
  * const doc = await pipeline.ingestDocument(
- *   'Contract content...',
- *   { title: 'Employment Contract', type: 'contract', jurisdiction: 'CA' } }`'`
+ *   'Contract content...', *   { title: 'Employment Contract', type: 'contract', jurisdiction: 'CA'  }`'`
  * );
  *
  * // Search documents
@@ -26,7 +25,7 @@
  *
  * @example Individual services
  * ```ts`
- * import { getOllamaService, getRedisCache, getQdrantService } }from '$lib/server/integrations';
+ * import { getOllamaService, getRedisCache, getQdrantService  } from '$lib/server/integrations';
  *
  * const ollama = getOllamaService();
  * const redis = getRedisCache();
@@ -35,28 +34,19 @@
  * // Use services independently
  * const embedding = await ollama.embedText('test');
  * await redis.set('key', { data: 'value' });'`'`
- * await qdrant.upsertVector('id', embedding, { metadata: {} }});
+ * await qdrant.upsertVector('id', embedding, { metadata: {}  });
  * ```
  */
 // Primary Pipeline
-export { LegalAIPipeline, getLegalAIPipeline } }from './pipeline';
+export { LegalAIPipeline, getLegalAIPipeline  } from './pipeline';
 // Individual Services
-export { OllamaService, getOllamaService } }from './ollama';
-export { RedisCacheService, getRedisCache } }from './redis';
-export { QdrantVectorService, getQdrantService } }from './qdrant';
-export { MinIOStorageService, getMinIOStorage } }from './minio';
+export { OllamaService, getOllamaService  } from './ollama';
+export { RedisCacheService, getRedisCache  } from './redis';
+export { QdrantVectorService, getQdrantService  } from './qdrant';
+export { MinIOStorageService, getMinIOStorage  } from './minio';
 // Type re-exports for convenience
 export type {
-  IOllamaEmbeddingService,
-  IOllamaChatService,
-  IRedisCacheService,
-  IQdrantVectorService,
-  ChatMessage,
-  ChatOptions,
-  ChatResult,
-  EmbeddingOptions,
-  CacheSetOptions,
-  VectorSearchOptions,
-  VectorSearchResult
-} }from '$lib/types/external-services';
+  IOllamaEmbeddingService, IOllamaChatService, IRedisCacheService, IQdrantVectorService, ChatMessage, ChatOptions, ChatResult, EmbeddingOptions, CacheSetOptions, VectorSearchOptions, VectorSearchResult
+ } from '$lib/types/external-services';
+
 

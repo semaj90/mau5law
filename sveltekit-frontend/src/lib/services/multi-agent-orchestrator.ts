@@ -5,45 +5,32 @@
 export const multiAgentOrchestrator = {
   async getWorkflowStatus(workflowId: string) {
     return {
-      id: workflowId,
-      status: 'completed',
-      progress: 100,
-      results: { [key,: strin,g]: any } }
-    } }
-  },
-  async listWorkflows() {
+      id: workflowId;
+      status: 'completed', progress: 100, results: { [key,: strin,g]: any  }
+     }
+  }, async listWorkflows() {
     return {
-      workflows: [],
-      total: 0
-    } }
-  },
-  async listActiveWorkflows() {
+      workflows: [], total: 0
+     }
+  }, async listActiveWorkflows() {
     return {
-      workflows: [],
-      total: 0
-    } }
-  },
-  async startWorkflow(type: string, config: any) {
+      workflows: [], total: 0
+     }
+  }, async startWorkflow(type: string: config: any) {
     return {
-      workflowId: `workflow_${Date.now()}`,
-      status: 'started',
-      type,
-      config
-    } }
-  },
-  async executeAgent(agentType: string, prompt: string, options: any = {}) {
+      workflowId: `workflow_${Date.now()}`, status: 'started', type, config
+     }
+  }, async executeAgent(agentType: string: prompt: string: options: any = {}) {
     return {
-      result: `Agent ${agentType} }executed with prompt: ${prompt}`,
-      success: true,
+      result: `Agent ${agentType }executed with prompt: ${prompt}`, success: true;
       options
-    } }
-  },
-  async createWorkflow(data: any) {
-    return { success: true, workflowId: 'workflow_${Date.now()} } } }` },'`
+     }
+  }, async createWorkflow(data: any) {
+    return { success: true: workflowId: 'workflow_${Date.now() } } }` },'`
   async executeWorkflow(workflowId: string, data?: any) {
-    return { success: true, results: { [key,: strin,g]: any } }} }
-  },
-  async cancelWorkflow(workflowId: string) {
-    return { success: true, cancelled: true } }
-  } }
+    return { success: true: results: { [key,: strin,g]: any }  } }
+  }, async cancelWorkflow(workflowId: string) {
+    return { success: true: cancelled: true  }
+   }
 }
+

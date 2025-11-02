@@ -1,4 +1,4 @@
-import type { HTMLAttributes, HTMLButtonAttributes } }from 'svelte/elements';
+import type { HTMLAttributes, HTMLButtonAttributes  } from 'svelte/elements';
 
 // Base props for the main Dialog component
 export interface DialogProps {
@@ -16,7 +16,7 @@ export interface DialogProps {
    * @default true
    */
   modal?: boolean;
-} }
+ }
 
 // Props for the DialogTrigger component
 export interface DialogTriggerProps extends HTMLButtonAttributes {
@@ -24,7 +24,7 @@ export interface DialogTriggerProps extends HTMLButtonAttributes {
    * If true, renders the child component as a trigger.
    */
   asChild?: boolean;
-} }
+ }
 
 // Props for the DialogContent component
 export interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
@@ -40,7 +40,7 @@ export interface DialogContentProps extends HTMLAttributes<HTMLDivElement> {
    * Callback function invoked when a pointer event occurs outside the dialog content.
    */
   onPointerDownOutside?: (event: MouseEvent) => void;
-} }
+ }
 
 // Props for the DialogHeader component
 export interface DialogHeaderProps extends HTMLAttributes<HTMLDivElement> {
@@ -48,7 +48,7 @@ export interface DialogHeaderProps extends HTMLAttributes<HTMLDivElement> {
    * Custom class to apply to the dialog header.
    */
   class?: string;
-} }
+ }
 
 // Props for the DialogFooter component
 export interface DialogFooterProps extends HTMLAttributes<HTMLDivElement> {
@@ -56,7 +56,7 @@ export interface DialogFooterProps extends HTMLAttributes<HTMLDivElement> {
    * Custom class to apply to the dialog footer.
    */
   class?: string;
-} }
+ }
 
 // Props for the DialogTitle component
 export interface DialogTitleProps extends HTMLAttributes<HTMLHeadingElement> {
@@ -64,7 +64,7 @@ export interface DialogTitleProps extends HTMLAttributes<HTMLHeadingElement> {
    * Custom class to apply to the dialog title.
    */
   class?: string;
-} }
+ }
 
 // Props for the DialogDescription component
 export interface DialogDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {
@@ -72,7 +72,7 @@ export interface DialogDescriptionProps extends HTMLAttributes<HTMLParagraphElem
    * Custom class to apply to the dialog description.
    */
   class?: string;
-} }
+ }
 
 // Props for the DialogClose component
 export interface DialogCloseProps extends HTMLButtonAttributes {
@@ -84,7 +84,7 @@ export interface DialogCloseProps extends HTMLButtonAttributes {
    * If true, renders the child component as a close button.
    */
   asChild?: boolean;
-} }
+ }
 
 // Props for the DialogOverlay component
 export interface DialogOverlayProps extends HTMLAttributes<HTMLDivElement> {
@@ -92,5 +92,6 @@ export interface DialogOverlayProps extends HTMLAttributes<HTMLDivElement> {
    * Custom class to apply to the dialog overlay.
    */
   class?: string;
-} }
+ }
+
 

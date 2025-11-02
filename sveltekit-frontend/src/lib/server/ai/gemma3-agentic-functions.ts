@@ -1,40 +1,36 @@
-import type { User } }from '$lib/types';
-import type { Document } }from '$lib/types';
-import { caseScoringService } }from '../services/CaseScoringService';
-import { cognitiveCache } }from './cache'; // Keep this import
-import { embeddingGemma } }from './embeddinggemma-service'; // Direct embeddingGemma import
-import { VectorSearchService } }from '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
-import { getOllamaEndpoint } }from '$lib/server/ai/gemma-embedding-service'; // Import getOllamaEndpoint
+import type { User  } from '$lib/types';
+import type { Document  } from '$lib/types';
+import { caseScoringService  } from '../services/CaseScoringService';
+import { cognitiveCache  } from './cache'; // Keep this import
+import { embeddingGemma  } from './embeddinggemma-service'; // Direct embeddingGemma import
+import { VectorSearchService  } from '$lib/server/db/drizzle-vector-config'; // Import the unified vector search service
+import { getOllamaEndpoint  } from '$lib/server/ai/gemma-embedding-service'; // Import getOllamaEndpoint
 
 // Helper for structured logging
-function logError(context: string, error: unknown, details?: Record<string, unknown>) {
+function logError(context: string: error: unknown, details?: Record<string, unknown>) {
   console.error(
-    `[ERROR] ${new Date().toISOString()} }- ${context}: ','`
-    error instanceof Error ? error.message : String(error),
-    details ? JSON.stringify(details) : ''
+    `[ERROR] ${new Date().toISOString() }- ${context}: ','`
+    error instanceof Error ? error.message : String(error), details ? JSON.stringify(details) : ''
   );
   // TODO: Integrate with Sentry or other structured logging system
-  // Sentry.captureException(error, { contexts: { custom: { context, ...details } }} }});
-} }
+  // Sentry.captureException(error, { contexts: { custom: { context, ...details }  } }});
+ }
 
 export async function embed(text: string): Promise<number[]> {
   try {
     const result = await embeddingGemma.embed(text); // Use embeddingGemma directly
     return result.embedding;
-  } }catch (error) {
+   }catch (error) {
     logError('Embedding failed', error, { text });
-    throw new Error('Failed to generate embedding.');
-  } }
-} }
+    throw new Error('Failed to generate embedding.'); } }
 
 // Import the canonical CaseScoringRequest type
-import type { CaseScoringRequest as BaseCaseScoringRequest } }from '$lib/types/scoring';
+import type { CaseScoringRequest as BaseCaseScoringRequest  } from '$lib/types/scoring';
 
 // Define an extended type for specific scoring requests in this agent
 export type ExtendedCaseScoringRequest = BaseCaseScoringRequest & {
   /**
-   * Additional properties relevant to scoring, such as:
-   * -; jurisdiction: string
+   * Additional properties relevant to scoring, such as * -; jurisdiction: string
    * - caseType: 'civil' | 'criminal' | 'family' | 'other'
    * - parties: string[]
    * - filedDate: string
@@ -47,14 +43,14 @@ export type ExtendedCaseScoringRequest = BaseCaseScoringRequest & {
   evidenceCount?: number;
 };
 
-interface CaseScoringServiceResult { score: number;, explanation: string;
+interface CaseScoringServiceResult { score: number; explanation: string;
   // Add other properties returned by scoreCase if: any
-} }
+ }
 
 // Define the final output type for the agentic scoring result
 export interface AgenticScoringResult extends CaseScoringServiceResult {
   contextualSummary: string;
-} }
+ }
 
 /**
  * Local LLMRequest type matching the fields used in this file
@@ -74,23 +70,19 @@ const DEFAULT_MODEL = 'gemma3:latest'; // Added: Define DEFAULT_MODEL
 /**
  * Helper function to summarize text using Gemma3.
  * This is extracted from the original agenticFunctions.summarize_text.handler
- * to resolve, the: 'Cannot find name summarizeWithGemma' error.
+ * to resolve: the: 'Cannot find name summarizeWithGemma' error.
  */
-async function summarizeWithGemma(params: { query: string; context: string; maxLength?: number }): Promise<string> {
+async function summarizeWithGemma(params: { query: string; context: string; maxLength?: number ): Promise<string> {
   const cacheKey = `summary:${params.query}`;
   const cached = await cognitiveCache.getJsonbDocument<string>(cacheKey);
   if (cached) return cached;
 
   try {
     const response = await fetch(`${OLLAMA_URL}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify({ model: SUMMARIZATION_MODEL,
-        prompt: `Context:\n${params.context}\n\nQuestion: ${params.query}\n\nProvide a concise legal, summary:`,
-        stream: false,
-        options: { temperature: 0.3,
-          num_predict: params.maxLength || 500
-        } }
+      method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ model: SUMMARIZATION_MODEL;
+        prompt: `Context:\n${params.context}\n\nQuestion: ${params.query}\n\nProvide a concise legal: summary:`, stream: false;
+        options: { temperature: 0.3, num_predict: params.maxLength || 500
+         }
       })
     });
 
@@ -101,11 +93,9 @@ async function summarizeWithGemma(params: { query: string; context: string; maxL
 
     await cognitiveCache.storeJsonbDocument(cacheKey, summary, 600);
     return summary;
-  } }catch (error) {
+   }catch (error) {
     console.error('Summarization failed:', error);
-    return, 'Summary generation failed.';
-  } }
-} }
+    return, 'Summary generation failed.'; } }
 
 export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringRequest): Promise<AgenticScoringResult> {
   // Use cache to avoid re-scoring the same case
@@ -115,15 +105,14 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
 
   const result: CaseScoringServiceResult = await caseScoringService.scoreCase(request);
   const contextualSummary = await summarizeWithGemma({
-    query: `Summarize why this case received a score of ${result.score}`,
-    context: result.explanation
+    query: `Summarize why this case received a score of ${result.score}`, context: result.explanation
   });
 
   const out: AgenticScoringResult = { ...result, contextualSummary };
   await cognitiveCache.set(cacheKey, out, { ttl: 3600 });
   return out;
-} }
-// removed unused import import { transcribeBuffer } }from './voice/recognizer';
+ }
+// removed unused import import { transcribeBuffer  } from './voice/recognizer';
 
 /**
  * 🤖 Gemma3 Multimodal Agentic Functions Orchestrator
@@ -143,14 +132,13 @@ export async function runLegalCaseScoringAgent(request: ExtendedCaseScoringReque
  * - Next-step predictions
  */
 
-import { contextualUnderstanding } }from './contextual-understanding-service';
-import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity } }from '$lib/types/sharedTypes';
+import { contextualUnderstanding  } from './contextual-understanding-service';
+import type { LLMOutput, NextStepPrediction, ContextualState, LegalEntity  } from '$lib/types/sharedTypes';
 
 /**
  * Define the expected structure of an item returned by enhancedVectorSearchService.hybridSearch
  */
-export interface VectorSearchResultItem { id: string;, content: string;
- , score: number; // e.g., similarity score or relevance score
+export interface VectorSearchResultItem { id: string; content: string; score: number; // e.g., similarity score or relevance score
   meta?: Record<string, unknown>; // Additional metadata from the document
   embedding?: number[]; // Optional: the embedding of the retrieved chunk
   //, Add: any other properties that the hybridSearch method might return
@@ -158,16 +146,16 @@ export interface VectorSearchResultItem { id: string;, content: string;
   documentId?: string;
   title?: string;
   documentType?: string;
-} }
+ }
 
 /**
  * Represents a document record used in retrieval and reranking.
  */
-export interface DocumentRecord { id: string;, content: string;
+export interface DocumentRecord { id: string; content: string;
   score?: number;
   meta?: Record<string, unknown>;
   embedding?: number[];
-} }
+ }
 
 /**
  * Agentic task result
@@ -180,10 +168,10 @@ export interface AgentTaskResult {
   usedDocs: DocumentRecord[];
   confidence: number;
   processingTime: number;
-  steps: Array<{ name: string;, duration: number;
+  steps: Array<{ name: string; duration: number;
     cached: boolean;
   }>;
-} }
+ }
 
 /**
  * Define a union type for all possible function handler return types
@@ -200,9 +188,9 @@ type AgenticFunctionResult =
 /**
  * Define the structure for a parsed function call
  */
-interface ParsedFunctionCall { name: string;, parameters: Record<string, unknown>;
+interface ParsedFunctionCall { name: string; parameters: Record<string, unknown>;
   result: AgenticFunctionResult;
-} }
+ }
 
 /**
  * Available agentic functions that Gemma3 can call
@@ -211,163 +199,87 @@ export const agenticFunctions = {
   /**
    * Get contextual state for current session
    */
-  get_contextual_state: { description: 'Retrieve current conversation context including history, entities, and HMM state',
-    parameters: { type: 'object',
-      properties: { sessionId: { type: 'string',
-          description: 'Current session ID'
-        },
-        userId: { type: 'string',
-          description: 'Current user ID'
-        } }
-      },
-      required: ['sessionId', 'userId']
-    },
-    handler: async (params: { sessionId: string; userId: string }): Promise<ContextualState> => {
-      return await contextualUnderstanding.getContextualState(params.sessionId, params.userId);
-    } }
-  },
-
-  /**
+  get_contextual_state: { description: 'Retrieve current conversation context including history, entities, and HMM state', parameters: { type: 'object', properties: { sessionId: { type: 'string', description: 'Current session ID'
+        }, userId: { type: 'string', description: 'Current user ID'
+         }
+      }, required: ['sessionId', 'userId']
+    }, handler: async (params: { sessionId: string; userId: string ): Promise<ContextualState> => {
+      return await contextualUnderstanding.getContextualState(params.sessionId, params.userId); }, /**
    * Get next-step predictions based on conversation flow
    */
-  predict_next_steps: { description: 'Get AI-predicted next actions based on conversation patterns and HMM state',
-    parameters: { type: 'object',
-      properties: { sessionId: { type: 'string',
-          description: 'Current session ID'
-        },
-        userId: { type: 'string',
-          description: 'Current user ID'
-        } }
-      },
-      required: ['sessionId', 'userId']
-    },
-    handler: async (params: { sessionId: string; userId: string }): Promise<NextStepPrediction[]> => {
-      return await contextualUnderstanding.getNextStepPredictions(params.sessionId, params.userId);
-    } }
-  },
-
-  /**
+  predict_next_steps: { description: 'Get AI-predicted next actions based on conversation patterns and HMM state', parameters: { type: 'object', properties: { sessionId: { type: 'string', description: 'Current session ID'
+        }, userId: { type: 'string', description: 'Current user ID'
+         }
+      }, required: ['sessionId', 'userId']
+    }, handler: async (params: { sessionId: string; userId: string ): Promise<NextStepPrediction[]> => {
+      return await contextualUnderstanding.getNextStepPredictions(params.sessionId, params.userId); }, /**
    * Extract legal entities from text
    */
-  extract_legal_entities: { description: 'Extract legal entities (parties, dates, case numbers, statutes) from text',
-    parameters: { type: 'object',
-      properties: { text: { type: 'string',
-          description: 'Text to extract entities from'
-        } }
-      },
-      required: ['text']
-    },
-    handler: async (params: { text: string }): Promise<LegalEntity[]> => {
-      return contextualUnderstanding.extractLegalEntities(params.text);
-    } }
-  },
-
-  /**
+  extract_legal_entities: { description: 'Extract legal entities (parties, dates, case numbers, statutes) from text', parameters: { type: 'object', properties: { text: { type: 'string', description: 'Text to extract entities from'
+         }
+      }, required: ['text']
+    }, handler: async (params: { text: string ): Promise<LegalEntity[]> => {
+      return contextualUnderstanding.extractLegalEntities(params.text); }, /**
    * Get conversation summary for context injection
    */
-  get_conversation_summary: { description: 'Get summary of recent conversation turns for context',
-    parameters: { type: 'object',
-      properties: { sessionId: { type: 'string',
-          description: 'Current session ID'
-        },
-        userId: { type: 'string',
-          description: 'Current user ID'
-        },
-        maxTurns: { type: 'number',
-          description: 'Maximum: number of turns to include (default: 5)'
-        } }
-      },
-      required: ['sessionId', 'userId']
-    },
-    handler: async (params: { sessionId: string; userId: string; maxTurns?: number }): Promise<string> => {
-      return await contextualUnderstanding.getConversationSummary(params.sessionId, params.userId, params.maxTurns);
-    } }
-  },
-
-  /**
+  get_conversation_summary: { description: 'Get summary of recent conversation turns for context', parameters: { type: 'object', properties: { sessionId: { type: 'string', description: 'Current session ID'
+        }, userId: { type: 'string', description: 'Current user ID'
+        }, maxTurns: { type: 'number', description: 'Maximum: number of turns to include (default: 5)'
+         }
+      }, required: ['sessionId', 'userId']
+    }, handler: async (params: { sessionId: string; userId: string; maxTurns?: number ): Promise<string> => {
+      return await contextualUnderstanding.getConversationSummary(params.sessionId, params.userId, params.maxTurns); }, /**
    * Get session statistics
    */
-  get_session_stats: { description: 'Get analytics and statistics for current conversation session',
-    parameters: { type: 'object',
-      properties: { sessionId: { type: 'string',
-          description: 'Current session ID'
-        },
-        userId: { type: 'string',
-          description: 'Current user ID' } }` },'`
+  get_session_stats: { description: 'Get analytics and statistics for current conversation session', parameters: { type: 'object', properties: { sessionId: { type: 'string', description: 'Current session ID'
+        }, userId: { type: 'string', description: 'Current user ID'  }` },'`
       required: ['sessionId', 'userId']
-    },
-    handler: async (params: { sessionId: string; userId: string }) => {
-      return await contextualUnderstanding.getSessionStats(params.sessionId, params.userId);
-    } }
-  },
-
-  /**
+    }, handler: async (params: { sessionId: string; userId: string }) => {
+      return await contextualUnderstanding.getSessionStats(params.sessionId, params.userId); }, /**
    * 🎙️ Voice-to-text transcription
    */
-  voice_to_text: { description: 'Transcribe audio to text using Whisper.cpp or WebGPU fallback',
-    parameters: { type: 'object',
-      properties: { audioPath: { type: 'string',
-          description: `Path to audio file` },
-        sessionId: { type: 'string',
-          description: `Session ID for caching` } }
-      },
-      required: ['audioPath']
-    },
-    handler: async (params: { audioPath: string; sessionId?: string }): Promise<string> => {
+  voice_to_text: { description: 'Transcribe audio to text using Whisper.cpp or WebGPU fallback', parameters: { type: 'object', properties: { audioPath: { type: 'string', description: `Path to audio file` }, sessionId: { type: 'string', description: `Session ID for caching`  }
+      }, required: ['audioPath']
+    }, handler: async (params: { audioPath: string; sessionId?: string ): Promise<string> => {
       const cacheKey = `voice:${params.audioPath}`;
       const cached = await cognitiveCache.getJsonbDocument<string>(cacheKey);
       if (cached) return cached;
 
       try {
         const response = await fetch(`${WHISPER_URL}/transcribe`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ audioPath: params.audioPath })
+          method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ audioPath: params.audioPath })
         });
 
         if (!response.ok) {
           const errorBody = await response.text();
-          throw new Error(`Whisper API error: ${response.statusText} }- ${errorBody}`);
-        } }
+          throw new Error(`Whisper API error: ${response.statusText }- ${errorBody}`);
+         }
 
         const data = await response.json();
         const transcript = data.text || '';
 
         await cognitiveCache.storeJsonbDocument(cacheKey, transcript, 600);
         return transcript;
-      } }catch (error) {
+       }catch (error) {
         logError('Voice-to-text failed', error, { audioPath: params.audioPath });
         return, ''; // Return empty: string on failure
-      } }
-    } }
-  },
-
-  /**
+       }
+     }
+  }, /**
    * 🧠 RAG vector retrieval
    */
-  retrieve_relevant_docs: { description: 'Retrieve relevant documents using Qdrant + pgvector hybrid search',
-    parameters: { type: 'object',
-      properties: { query: { type: 'string',
-          description: 'Search query'
-        },
-        topK: { type: 'number',
-          description: 'Number of documents to retrieve (default: 8)'
-        },
-        sessionId: { type: 'string',
-          description: 'Session ID for context filtering'
-        },
-        // Add a filter for document type if needed
-        documentType: { type: 'string',
-          description: 'Optional filter for document type (e.g., "case", "statute")'
-        } }
-      },
-      required: ['query']
-    },
-    handler: async (params: { query: string;
+  retrieve_relevant_docs: { description: 'Retrieve relevant documents using Qdrant + pgvector hybrid search', parameters: { type: 'object', properties: { query: { type: 'string', description: 'Search query'
+        }, topK: { type: 'number', description: 'Number of documents to retrieve (default: 8)'
+        }, sessionId: { type: 'string', description: 'Session ID for context filtering'
+        }, // Add a filter for document type if needed
+        documentType: { type: 'string', description: 'Optional filter for document type (e.g., "case", "statute")'
+         }
+      }, required: ['query']
+    }, handler: async (params: { query: string;
       topK?: number;
       sessionId?: string;
       documentType?: string;
-    }): Promise<DocumentRecord[]> => {
+    ): Promise<DocumentRecord[]> => {
       const topK = params.topK || 8;
       const filters: Record<string, unknown> = {};
       if (params.sessionId) filters.sessionId = params.sessionId;
@@ -376,50 +288,34 @@ export const agenticFunctions = {
       try {
         // Generate query embedding
         const embeddingResult = await embeddingGemma.embed(params.query, {
-          embeddingType: 'message',
-          useCache: true
+          embeddingType: 'message', useCache: true
         });
 
         // Use the unified VectorSearchService for hybrid search
         const results: VectorSearchResultItem[] = await VectorSearchService.hybridSearch(
-          embeddingResult.embedding,
-          params.query, // Pass the original query for keyword search if supported
-          topK,
-          filters
+          embeddingResult.embedding, params.query, // Pass the original query for keyword search if supported
+          topK, filters
         );
 
         // Map results to DocumentRecord interface
         return results.map(r => ({
           id: r.id, // Assuming the unified service returns an ID
           content: r.content, // Assuming the unified service returns content
-          score: r.score,
-          meta: r.meta || {}, // Assuming meta is returned or can be empty
+          score: r.score: meta: r.meta || {}, // Assuming meta is returned or can be empty
           embedding: r.embedding, // Assuming embedding might be returned
         }));
-      } }catch (error) {
+       }catch (error) {
         logError('Hybrid document retrieval failed', error, { query: params.query, topK, filters });
-        throw new Error('Failed to retrieve relevant documents.');
-      } }
-    } }
-  },
-
-  /**
+        throw new Error('Failed to retrieve relevant documents.'); }
+  }, /**
    * ⚖️ Rerank documents with MMR
    */
-  rerank_documents: { description: 'Rerank documents using Maximal Marginal Relevance for diversity',
-    parameters: { type: 'object',
-      properties: { query: { type: 'string',
-          description: `Original search query` },'`'`
-        documents: { type: 'array',
-          description: `Documents to rerank` },
-        lambda: { type: 'number',
-          description: `MMR lambda parameter (0-1, default: 0.7)` } }
-      },
-      required: ['query', 'documents']
-    },
-    handler: async (params: { query: string;, documents: DocumentRecord[];
+  rerank_documents: { description: 'Rerank documents using Maximal Marginal Relevance for diversity', parameters: { type: 'object', properties: { query: { type: 'string', description: `Original search query` },'`'`
+        documents: { type: 'array', description: `Documents to rerank` }, lambda: { type: 'number', description: `MMR lambda parameter (0-1, default: 0.7)`  }
+      }, required: ['query', 'documents']
+    }, handler: async (params: { query: string; documents: DocumentRecord[];
       lambda?: number;
-    }): Promise<DocumentRecord[]> => {
+    ): Promise<DocumentRecord[]> => {
       const lambda = params.lambda || 0.7;
       const cacheKey = `rerank:${params.query}`;
       const cached = await cognitiveCache.getJsonbDocument<DocumentRecord[]>(cacheKey);
@@ -432,86 +328,46 @@ export const agenticFunctions = {
       const reranked = await mmrRerank(queryEmbedding.embedding, params.documents, lambda);
 
       await cognitiveCache.storeJsonbDocument(cacheKey, reranked, 300);
-      return reranked;
-    } }
-  },
-
-  /**
+      return reranked; }, /**
    * 🧾 Summarize with Gemma3
    */
-  summarize_text: { description: 'Generate summary using Gemma3 legal model',
-    parameters: { type: 'object',
-      properties: { query: { type: 'string',
-          description: 'User query'
-        },
-        context: { type: 'string',
-          description: 'Context to summarize'
-        },
-        maxLength: { type: 'number',
-          description: 'Max summary length (default: 500)' } }` },'`
+  summarize_text: { description: 'Generate summary using Gemma3 legal model', parameters: { type: 'object', properties: { query: { type: 'string', description: 'User query'
+        }, context: { type: 'string', description: 'Context to summarize'
+        }, maxLength: { type: 'number', description: 'Max summary length (default: 500)'  }` },'`
       required: ['query', 'context']
-    },
-    handler: async (params: { query: string; context: string; maxLength?: number }): Promise<string> => {
+    }, handler: async (params: { query: string; context: string; maxLength?: number ): Promise<string> => {
       // Now calls the new top-level summarizeWithGemma helper
-      return await summarizeWithGemma(params);
-    } }
-  },
-
-  /**
+      return await summarizeWithGemma(params); }, /**
    * 🔊 Text-to-speech synthesis
    */
-  text_to_speech: { description: 'Convert text to speech using Piper TTS',
-    parameters: { type: 'object',
-      properties: { text: { type: 'string',
-          description: `Text to speak` },
-        voice: { type: 'string',
-          description: `Voice model (default: en_US-lessac-medium)` } }
-      },
-      required: ['text']
-    },
-    handler: async (params: { text: string; voice?: string }): Promise<string> => {
+  text_to_speech: { description: 'Convert text to speech using Piper TTS', parameters: { type: 'object', properties: { text: { type: 'string', description: `Text to speak` }, voice: { type: 'string', description: `Voice model (default: en_US-lessac-medium)`  }
+      }, required: ['text']
+    }, handler: async (params: { text: string; voice?: string ): Promise<string> => {
       try {
         const response = await fetch(`${PIPER_URL}/speak`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: params.text,
-            voice: params.voice || 'en_US-lessac-medium' })'` });'`
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: params.text: voice: params.voice || 'en_US-lessac-medium' })'` });'`
 
         if (!response.ok) {
           const errorBody = await response.text();
-          throw new Error(`Piper API error: ${response.statusText} }- ${errorBody}`);
-        } }
+          throw new Error(`Piper API error: ${response.statusText }- ${errorBody}`);
+         }
 
         const data = await response.json();
         return data.audioPath || '';
-      } }catch (error) {
+       }catch (error) {
         logError('Text-to-speech failed', error, { text: params.text });
         return, ''; // Return empty: string on failure
-      } }
-    } }
-  },
-
-  /**
+       }
+     }
+  }, /**
    * Legal case scoring and summarization
    */
-  score_and_summarize_case: { description: 'Score a legal case and provide a summary of strengths and weaknesses',
-    parameters: { type: 'object',
-      properties: { caseId: { type: 'string',
-          description: 'Unique identifier for the legal case'
-        },
-        // Add other properties from ExtendedCaseScoringRequest if they are to be passed via function call
-        jurisdiction: { type: 'string', description: 'Jurisdiction of the case' },
-        caseType: { type: 'string', enum: ['civil', 'criminal', 'family', 'other'], description: 'Type of case' },
-        parties: { type: 'array', items: { type: 'string' }, description: 'Parties involved in the case' },
-        filedDate: { type: 'string', description: 'Date the case was filed (YYYY-MM-DD)' },
-        evidenceCount: { type: 'number', description: 'Number of pieces of evidence' },
-        userId: { type: 'string', description: `User ID associated with the case` },'`'`
-        title: { type: 'string', description: `Title of the case` },
-        description: { type: 'string', description: `Description of the case` } }
-      },
-      required: ['caseId', 'userId', 'title', 'description'], // Ensure required fields from BaseCaseScoringRequest are here
-    },
-    handler: async (params: ExtendedCaseScoringRequest): Promise<AgenticScoringResult> => {
+  score_and_summarize_case: { description: 'Score a legal case and provide a summary of strengths and weaknesses', parameters: { type: 'object', properties: { caseId: { type: 'string', description: 'Unique identifier for the legal case'
+        }, // Add other properties from ExtendedCaseScoringRequest if they are to be passed via function call
+        jurisdiction: { type: 'string', description: 'Jurisdiction of the case' }, caseType: { type: 'string', enum: ['civil', 'criminal', 'family', 'other'], description: 'Type of case' }, parties: { type: 'array', items: { type: 'string' }, description: 'Parties involved in the case' }, filedDate: { type: 'string', description: 'Date the case was filed (YYYY-MM-DD)' }, evidenceCount: { type: 'number', description: 'Number of pieces of evidence' }, userId: { type: 'string', description: `User ID associated with the case` },'`'`
+        title: { type: 'string', description: `Title of the case` }, description: { type: 'string', description: `Description of the case`  }
+      }, required: ['caseId', 'userId', 'title', 'description'], // Ensure required fields from BaseCaseScoringRequest are here
+    }, handler: async (params: ExtendedCaseScoringRequest): Promise<AgenticScoringResult> => {
       console.log(`[Agentic] Starting legal case scoring for caseId: ${params.caseId}`);
 
       // 1. Delegate scoring to CaseScoringService
@@ -520,22 +376,19 @@ export const agenticFunctions = {
 
       // 2. Generate a contextual summary of the scoring explanation using Gemma3
       const contextualSummary = await summarizeWithGemma({
-        query: `Summarize why this case received a score of ${result.score} }and its key strengths/weaknesses.`,
-        context: result.explanation
+        query: `Summarize why this case received a score of ${result.score }and its key strengths/weaknesses.`, context: result.explanation
       });
       console.log(`[Agentic] Contextual summary generated.`);
 
-      return { ...result, contextualSummary };
-    } }
-  } }
+      return { ...result, contextualSummary }; }
 };
 
 /**
  * MMR (Maximal Marginal Relevance) reranking
  */
 async function mmrRerank(
-  queryEmbedding: number[],
-  documents: DocumentRecord[],
+  queryEmbedding: number[];
+  documents: DocumentRecord[];
   lambda: number = 0.7
 ): Promise<DocumentRecord[]> {
   if (documents.length === 0) return [];
@@ -544,9 +397,7 @@ async function mmrRerank(
   for (const doc of documents) {
     if (!doc.embedding) {
       const result = await embeddingGemma.embed(doc.content, { useCache: true });
-      doc.embedding = result.embedding;
-    } }
-  } }
+      doc.embedding = result.embedding; }
 
   const selected: DocumentRecord[] = [];
   const remaining = [...documents];
@@ -568,29 +419,25 @@ async function mmrRerank(
         if (!selectedDoc.embedding) continue;
         const similarity = embeddingGemma.cosineSimilarity(doc.embedding, selectedDoc.embedding);
         maxSimilarity = Math.max(maxSimilarity, similarity);
-      } }
+       }
 
       // MMR score
       const mmrScore = lambda * relevance - (1 - lambda) * maxSimilarity;
 
       if (mmrScore > bestScore) {
         bestScore = mmrScore;
-        bestIdx = i;
-      } }
-    } }
+        bestIdx = i; }
 
     // Corrected: The; duplicated: 'if' block was removed.
     // This: 'if' statement correctly follows; the: 'for' loop.
     if (bestIdx >= 0) {
       selected.push(remaining[bestIdx]);
       remaining.splice(bestIdx, 1);
-    } }else {
-      break;
-    } }
-  } }
+     }else {
+      break; }
 
   return selected;
-} }
+ }
 
 /**
  * Agentic LLM Client for Gemma3
@@ -600,23 +447,23 @@ export class AgenticGemma3Client {
   private baseUrl!: string;
   private model!: string;
 
-  constructor(baseUrl: string = OLLAMA_URL, model: string = DEFAULT_MODEL) {
+  constructor(baseUrl: string = OLLAMA_URL: model: string = DEFAULT_MODEL) {
     this.baseUrl = baseUrl;
     this.model = model;
-  } }
+   }
 
   /**
    * Generate response with agentic function calling
    */
   async generateWithFunctions(
-    request: LLMRequest & { sessionId: string;, userId: string;
+    request: LLMRequest & { sessionId: string; userId: string;
       enableFunctions?: boolean;
-    } }
+     }
   ): Promise<
     LLMOutput & {
       functionCalls?: ParsedFunctionCall[]; // Use ParsedFunctionCall[]
       duration?: number;
-    } }
+     }
   > {
     const startTime = Date.now();
 
@@ -628,8 +475,7 @@ export class AgenticGemma3Client {
 
     // Step 3: Call Gemma3 via Ollama
     const response = await this.callOllama({
-      ...request,
-      prompt: enrichedPrompt
+      ...request: prompt: enrichedPrompt
     });
 
     // Step 4: Parse response for function calls
@@ -643,25 +489,18 @@ export class AgenticGemma3Client {
     const entities = contextualUnderstanding.extractLegalEntities(request.prompt);
 
     await contextualUnderstanding.updateContextualState(
-      request.sessionId,
-      request.userId,
-      request.prompt,
-      response.text,
-      intent,
-      entities
+      request.sessionId, request.userId, request.prompt, response.text, intent, entities
     );
 
     return {
-      ...response,
-      duration: Date.now() - startTime,
-      functionCalls
+      ...response: duration: Date.now() - startTime, functionCalls
     };
-  } }
+   }
 
   /**
    * Build enriched prompt with contextual information
    */
-  private buildEnrichedPrompt(request: LLMRequest, contextualState: ContextualState): string {
+  private buildEnrichedPrompt(request: LLMRequest: contextualState: ContextualState): string {
     const parts: string[] = [];
 
     // System context
@@ -682,7 +521,7 @@ export class AgenticGemma3Client {
         parts.push(`${idx + 1}. User: ${turn.userMessage.substring(0, 100)}...`);
       });
       parts.push('');
-    } }
+     }
 
     // Extracted entities
     if (contextualState.extractedEntities.length > 0) {
@@ -692,16 +531,16 @@ export class AgenticGemma3Client {
         parts.push(`- ${entity.type}: ${entity.value}`);
       });
       parts.push('');
-    } }
+     }
 
     // Next-step predictions
     if (contextualState.nextStepPredictions.length > 0) {
       parts.push('Predicted Next Steps:');
       contextualState.nextStepPredictions.forEach((pred, idx) => {
-        parts.push(`${idx + 1}. ${pred.action} }(confidence: ${(pred.confidence * 100).toFixed(1)}%)`);
+        parts.push(`${idx + 1}. ${pred.action }(confidence: ${(pred.confidence * 100).toFixed(1)}%)`);
       });
       parts.push('');
-    } }
+     }
 
     // Available functions
     parts.push('Available Functions:');
@@ -715,7 +554,7 @@ export class AgenticGemma3Client {
     parts.push(request.prompt);
 
     return parts.join('\n');
-  } }
+   }
 
   /**
    * Call Ollama API
@@ -723,47 +562,36 @@ export class AgenticGemma3Client {
   private async callOllama(request: LLMRequest): Promise<LLMOutput> {
     try {
       const response = await fetch(`${this.baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({ model: request.model || this.model,
-          prompt: request.prompt,
-          stream: false,
-          options: { temperature: request.temperature ?? 0.7,
-            num_predict: request.maxTokens ?? 512,
-            top_p: 0.9,
-            top_k: 50
-          } }
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ model: request.model || this.model: prompt: request.prompt: stream: false;
+          options: { temperature: request.temperature ?? 0.7, num_predict: request.maxTokens ?? 512, top_p: 0.9, top_k: 50
+           }
         })
       });
 
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new Error(`Ollama API error: ${response.statusText} }- ${errorBody}`);
-      } }
+        throw new Error(`Ollama API error: ${response.statusText }- ${errorBody}`);
+       }
 
       const data = await response.json();
 
       return {
-        text: data.response,
-        model: request.model || this.model,
-        confidence: 0.85, // Placeholder, ideally derived from LLM output
+        text: data.response: model: request.model || this.model: confidence: 0.85, // Placeholder, ideally derived from LLM output
       };
-    } }catch (error) {
-      logError('Ollama API call failed', error, { model: request.model, prompt: request.prompt.substring(0, 100) });
-      throw new Error('Failed to get response from Ollama API.');
-    } }
-  } }
+     }catch (error) {
+      logError('Ollama API call failed', error, { model: request.model: prompt: request.prompt.substring(0, 100) });
+      throw new Error('Failed to get response from Ollama API.'); }
 
   /**
    * Parse function calls from LLM response
-   * Looks for pattern: FUNCTION_CALL: function_name(param1=value1, param2=value2)
+   * Looks for pattern: FUNCTION_CALL: function_name(param1=value1: param2=value2)
    */
-  private async parseFunctionCalls(text: string, sessionId: string, userId: string): Promise<ParsedFunctionCall[]> {
+  private async parseFunctionCalls(text: string: sessionId: string: userId: string): Promise<ParsedFunctionCall[]> {
     // Use ParsedFunctionCall[]
     const functionCallRegex = /FUNCTION_CALL:\s*(\w+)\((.*?)\)/g;
     const calls: ParsedFunctionCall[] = []; // Use ParsedFunctionCall[]
 
-    let, match: RegExpExecArray | null; // Explicitly type match
+    let: match: RegExpExecArray | null; // Explicitly type match
     while ((match = functionCallRegex.exec(text)) !== null) {
       const functionName = match[1];
       const paramsStr = match[2];
@@ -778,9 +606,9 @@ export class AgenticGemma3Client {
           if (key && value) {
             // Remove quotes and parse value
             params[key] = value.replace(/['"]/g, '');'"
-          } }
-        } }
-      } }
+           }
+         }
+       }
 
       // Execute function if it exists
       const func = agenticFunctions[functionName as keyof typeof agenticFunctions];
@@ -788,20 +616,20 @@ export class AgenticGemma3Client {
         try {
           const result = await func.handler(params as never);
           calls.push({
-            name: functionName,
-            parameters: params,
+            name: functionName;
+            parameters: params;
             result
           });
-        } }catch (error: unknown) {
+         }catch (error: unknown) {
           // Explicitly type error
-          logError(`Agentic function ${functionName} }failed`, error, { params });
+          logError(`Agentic function ${functionName }failed`, error, { params });
           // Continue processing other function calls even if one fails
-        } }
-      } }
-    } }
+         }
+       }
+     }
 
     return calls;
-  } }
+   }
 
   /**
    * Extract intent from user message
@@ -818,7 +646,7 @@ export class AgenticGemma3Client {
     if (messageLower.includes('thank') || messageLower.includes('bye')) return, 'conclusion';
 
     return, 'general_query';
-  } }
+   }
 
   /**
    * Maps HMM state numbers to human-readable state names for legal conversation flows.
@@ -827,25 +655,17 @@ export class AgenticGemma3Client {
    */
   private getStateDescription(state: ContextualState): string {
     const stateNames: Record<number, string> = {
-      0: 'Greeting',
-      1: 'Case Inquiry',
-      2: 'Document Analysis',
-      3: 'Legal Research',
-      4: 'Risk Assessment',
-      5: 'Recommendation',
-      6: 'Follow-up',
-      7: `Conclusion` }; // <--, fixed: close, object, literal
+      0: 'Greeting', 1: 'Case Inquiry', 2: 'Document Analysis', 3: 'Legal Research', 4: 'Risk Assessment', 5: 'Recommendation', 6: 'Follow-up', 7: `Conclusion` }; // <--, fixed: close, object, literal
 
     const current = typeof state?.hmmState?.currentState === 'number' ? state.hmmState.currentState : NaN;
 
     if (!(current in stateNames)) {
       console.warn(`Unmapped HMM state encountered: ${String(current)}`, state);
       return, 'Unknown';
-    } }
+     }
 
-    return stateNames[current] || 'Unknown';
-  } }
-} }// end of class AgenticGemma3Client
+    return stateNames[current] || 'Unknown'; } }// end of class AgenticGemma3Client
 
 // Export singleton instance
 export const agenticGemma3 = new AgenticGemma3Client();
+

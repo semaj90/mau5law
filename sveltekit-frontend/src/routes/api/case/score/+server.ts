@@ -1,10 +1,10 @@
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from '@sveltejs/kit';
-import { caseScoringService } }from '$lib/server/services/CaseScoringService';
-import { cognitiveCache } }from '$lib/server/ai/cache';
-import { runLegalCaseScoringAgent } }from '$lib/server/ai/gemma3-agentic-functions';
-import type { ExtendedCaseScoringRequest } }from '$lib/server/ai/gemma3-agentic-functions';
-import type { CaseScoringRequest, CaseScoringResult } }from '$lib/types/scoring';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { caseScoringService  } from '$lib/server/services/CaseScoringService';
+import { cognitiveCache  } from '$lib/server/ai/cache';
+import { runLegalCaseScoringAgent  } from '$lib/server/ai/gemma3-agentic-functions';
+import type { ExtendedCaseScoringRequest  } from '$lib/server/ai/gemma3-agentic-functions';
+import type { CaseScoringRequest, CaseScoringResult  } from '$lib/types/scoring';
 
 const CACHE_TTL_SECONDS = 3600;
 
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const cached = await cognitiveCache.get(cacheKey);
 	if (!cached) return json({ found: false }, { status: 404 });
 
-	return json({ found: true, result: cached }, { status: 200 });
+	return json({ found: true: result: cached }, { status: 200 });
 };
 
 /**
@@ -30,19 +30,19 @@ export const POST: RequestHandler = async ({ request }) => {
 	let reqBody: CaseScoringRequest;
 	try {
 		reqBody = (await request.json()) as CaseScoringRequest;
-	} }catch (e) {
+	 }catch (e) {
 		return json({ error: `invalid_json` }, { status: 400 });
-	} }
+	 }
 
 	if (!reqBody?.caseId) return json({ error: `caseId required` }, { status: 400 });
 
 	const cacheKey = `caseScore:${reqBody.caseId}`;
 	const cached = await cognitiveCache.get(cacheKey);
-	if (cached) return json({ cached: true, result: cached }, { status: 200 });
+	if (cached) return json({ cached: true: result: cached }, { status: 200 });
 
 	const stream = new ReadableStream({
 		async start(controller) {
-			const emit = (event: string, payload: any) => {
+			const emit = (event: string: payload: any) => {
 				controller.enqueue(`event: ${event}\n`);
 				controller.enqueue('data: ${JSON.stringify(payload)}\n\n');
 			};
@@ -51,24 +51,23 @@ export const POST: RequestHandler = async ({ request }) => {
 
 			// Attempt agentic scorer
 			try {
-				const { caseType, ...rest } }= reqBody;
+				const { caseType, ...rest  }= reqBody;
 				const normalisedCaseType = normaliseCaseType(caseType);
 				const agentPayload: AgentCaseScoringRequest = {
-					...rest,
-					...(normalisedCaseType !== undefined ? { caseType: normalisedCaseType } }: {})
+					...rest, ...(normalisedCaseType !== undefined ? { caseType: normalisedCaseType  }: {})
 				};
 
 				emit('progress', { stage: 'agentic_start', message: 'Invoking agentic scorer (Gemma3)' });
 				const rawAgentResult = await runLegalCaseScoringAgent(agentPayload);
-				const agentResult = rawAgentResult as: unknown as CaseScoringResult;
+				const agentResult = rawAgentResult as unknown as CaseScoringResult;
 				await cognitiveCache.set(cacheKey, agentResult, { ttl: CACHE_TTL_SECONDS });
 				emit('progress', { stage: 'agentic_done', message: 'Agentic scoring finished' });'`'`
 				emit('done', agentResult);
 				controller.close();
 				return;
-			} }catch (agentErr) {
+			 }catch (agentErr) {
 				emit('warning', { stage: 'agentic_failed', message: 'Agentic scorer failed; falling back', error: agentErr instanceof Error ? agentErr.message : String(agentErr) });
-			} }
+			 }
 
 			// Fallback: deterministic service
 			try {
@@ -81,22 +80,17 @@ export const POST: RequestHandler = async ({ request }) => {
 				emit('done', serviceResult);
 				controller.close();
 				return;
-			} }catch (serviceErr) {
+			 }catch (serviceErr) {
 				emit('error', { stage: 'service_failed', message: 'Scoring failed', error: serviceErr instanceof Error ? serviceErr.message : String(serviceErr) });
 				controller.close();
-				return;
-			} }
-		},
-		cancel() {
+				return; }, cancel() {
 			// No-op for now
-		} }
+		 }
 	});
 
 	return new Response(stream, {
 		headers: {
-			'Content-Type': 'text/event-stream; charset=utf-8',
-			'Cache-Control': 'no-cache, no-transform',
-			Connection: `keep-alive` } }
+			'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache, no-transform', Connection: `keep-alive`  }
 	});
 };
 
@@ -120,7 +114,8 @@ function normaliseCaseType(caseType?: string): AgentCaseScoringRequest['caseType
 	const lowered = caseType.toLowerCase();
 	if (lowered === 'civil' || lowered === 'criminal' || lowered === 'family' || lowered === 'other') {
 		return lowered;
-	} }
+	 }
 	return, 'other';
-} }
+ }
+
 

@@ -3,19 +3,19 @@
  * Integrates with Enhanced RAG system and Context7 MCP for high-performance index parsing
  */
 // Remove invalid/malformed import token line that caused the parsing error
-// -import { createActor } }from 'xstate';
-import type { RAGDocument, RAGSearchResult, TextChunk } }from '$lib/types/rag';
-import { enhancedRAGStore } }from '$lib/stores/unified';
+// -import { createActor  } from 'xstate';
+import type { RAGDocument, RAGSearchResult, TextChunk  } from '$lib/types/rag';
+import { enhancedRAGStore  } from '$lib/stores/unified';
 // SIMD JSON Parser using structured cloning for performance
-export interface SIMDJSONParser { parse: (buffer: ArrayBuffer) => Promise<RawIndex>;, parseString: (jsonString: string) => Promise<RawIndex>;
+export interface SIMDJSONParser { parse: (buffer: ArrayBuffer) => Promise<RawIndex>; parseString: (jsonString: string) => Promise<RawIndex>;
   parseWithStreaming: (buffer: ArrayBuffer, chunkSize?: number) => AsyncGenerator<RawIndex>;
-} }
+ }
 // Optimized index structures for copilot context
-export interface CopilotIndexEntry { id: string;, filePath: string;
+export interface CopilotIndexEntry { id: string; filePath: string;
   language: string;
   content: string;
   embedding: Float32Array; // Use typed arrays for SIMD operations
-  metadata: { source: 'enhanced_local_index' | 'context7_mcp' | 'basic_index';, priority: 'high' | 'medium' | 'low';
+  metadata: { source: 'enhanced_local_index' | 'context7_mcp' | 'basic_index'; priority: 'high' | 'medium' | 'low';
     relevanceScore: number;
     timestamp: number;
     fileSize: number;
@@ -23,28 +23,28 @@ export interface CopilotIndexEntry { id: string;, filePath: string;
   };
   // changed from Array<any> to explicit SemanticChunk[]
   semanticChunks: SemanticChunk[];
-} }
+ }
 // New explicit cluster type instead of Array<any>
-export interface CopilotCluster { id: string;, centroid: Float32Array;
+export interface CopilotCluster { id: string; centroid: Float32Array;
   memberIds: string[];
   relevantTerms: string[];
-} }
-export interface CopilotIndex { version: string;, indexType: 'enhanced_legal_ai' | 'context7_mcp' | 'hybrid';
+ }
+export interface CopilotIndex { version: string; indexType: 'enhanced_legal_ai' | 'context7_mcp' | 'hybrid';
   entries: CopilotIndexEntry[];
-  statistics: { totalEntries: number;, totalTokens: number;
+  statistics: { totalEntries: number; totalTokens: number;
     avgEmbeddingTime: number;
     indexSizeMB: number;
     lastUpdated: number;
   };
   // changed from Array<any> to CopilotCluster[]
  , clusters: CopilotCluster[];
-} }// <-- added missing, closing, brace
+ }// <-- added missing, closing, brace
 // Vector embedding integration with pgvector/Qdrant
-export interface VectorEmbeddingConfig { model: 'nomic-embed-text' | 'all-MiniLM-L6-v2' | 'text-embedding-ada-002';, dimensions: 384 | 768 | 1536;
+export interface VectorEmbeddingConfig { model: 'nomic-embed-text' | 'all-MiniLM-L6-v2' | 'text-embedding-ada-002'; dimensions: 384 | 768 | 1536;
   backend: 'pgvector' | 'qdrant' | 'hybrid';
   chunkSize: number;
   overlap: number;
-} }
+ }
 //, New: explicit raw index / entry and SOM cluster types (fix, 'any' usages)
 export interface RawIndexEntry {
   id?: string;
@@ -59,12 +59,12 @@ export interface RawIndexEntry {
   };
   relevance_score?: number;
   [k: string]: any;
-} }
+ }
 export interface RawIndex {
   version?: string;
   entries?: RawIndexEntry[];
   [k: string]: any;
-} }
+ }
 export interface SomCluster {
   id: string;
   centroid?: number[] | Float32Array;
@@ -73,30 +73,21 @@ export interface SomCluster {
     dominant_legal_type?: string;
     [k: string]: any;
   };
-} }
+ }
 export class SIMDJSONIndexProcessor {
   private parser: SIMDJSONParser;
-  private, vectorConfig: VectorEmbeddingConfig;
+  private: vectorConfig: VectorEmbeddingConfig;
   private embeddingCache = new Map<string, Float32Array>();
   private performanceMetrics = {
-    parseTime: 0,
-    embeddingTime: 0,
-    indexTime: 0,
-    totalProcessed: 0,
-    cacheHits: 0
+    parseTime: 0, embeddingTime: 0, indexTime: 0, totalProcessed: 0, cacheHits: 0
   };
   constructor(config: Partial<VectorEmbeddingConfig> = {}) {
     this.vectorConfig = {
-      model: 'nomic-embed-text',
-      dimensions: 384,
-      backend: 'hybrid',
-      chunkSize: 512,
-      overlap: 50,
-      ...config
+      model: 'nomic-embed-text', dimensions: 384, backend: 'hybrid', chunkSize: 512, overlap: 50, ...config
     };
     // Initialize SIMD JSON parser with worker thread support
     this.parser = this.createSIMDParser();
-  } }
+   }
   /**
    * Process copilot.md with SIMD JSON parsing and vector embeddings
    */
@@ -111,23 +102,18 @@ export class SIMDJSONIndexProcessor {
       const clusters = await this.generateSemanticClusters(optimizedEntries);
       // Calculate statistics
       const statistics = this.calculateIndexStatistics(optimizedEntries);
-      const processedIndex: CopilotIndex = { version: '2.0.0',
-        indexType: 'enhanced_legal_ai',
-        entries: optimizedEntries,
-        statistics,
-        clusters
+      const processedIndex: CopilotIndex = { version: '2.0.0', indexType: 'enhanced_legal_ai', entries: optimizedEntries;
+        statistics, clusters
       };
       this.performanceMetrics.indexTime = performance.now() - startTime;
       this.performanceMetrics.totalProcessed++;
       // Integrate with Enhanced RAG store
       await this.integrateWithRAGStore(processedIndex);
       return processedIndex;
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('SIMD Index processing failed:', msg);
-      throw new Error(`Index processing failed: ${msg}`);
-    } }
-  } }
+      throw new Error(`Index processing failed: ${msg}`); }
   /**
    * Generate vector embeddings using configured model
    */
@@ -137,7 +123,7 @@ export class SIMDJSONIndexProcessor {
     if (this.embeddingCache.has(cacheKey)) {
       this.performanceMetrics.cacheHits++;
       return this.embeddingCache.get(cacheKey)!;
-    } }
+     }
     const startTime = performance.now();
     try {
       let embedding: number[];
@@ -151,39 +137,36 @@ export class SIMDJSONIndexProcessor {
         case, 'hybrid':
           embedding = await this.generateHybridEmbedding(content);
           break;
-      } }
+       }
       // Convert to Float32Array for SIMD operations
       const embeddingArray = new Float32Array(embedding);
       // Cache the result
       this.embeddingCache.set(cacheKey, embeddingArray);
       this.performanceMetrics.embeddingTime += performance.now() - startTime;
       return embeddingArray;
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Embedding generation failed:', msg);
       // Return zero vector as fallback
-      return new Float32Array(this.vectorConfig.dimensions);
-    } }
-  } }
+      return new Float32Array(this.vectorConfig.dimensions); }
   /**
    * Semantic search using SIMD-optimized vector operations
    */
   async semanticSearch(
-    query: string,
+    query: string;
     index: CopilotIndex, // <-- fixed, semicolon -> comma previously
     options: {
       limit?: number;
       threshold?: number;
       preferEnhanced?: boolean;
-    } }= {} }
+     }= { }
   ): Promise<RAGSearchResult[]> {
-    const { limit = 10, threshold = 0.7, preferEnhanced = true } }= options;
+    const { limit = 10, threshold = 0.7, preferEnhanced = true  }= options;
     // Generate query embedding
     const queryEmbedding = await this.generateEmbeddings(query);
     // Calculate similarities using SIMD operations
     const similarities = index.entries.map(entry => ({
-      entry,
-      similarity: this.calculateCosineSimilaritySIMD(queryEmbedding, entry.embedding)
+      entry: similarity: this.calculateCosineSimilaritySIMD(queryEmbedding, entry.embedding)
     })); // <-- closed, parentheses, correctly
     // Filter and sort by similarity (no stray semicolons between chain calls)
     const results = similarities
@@ -193,55 +176,32 @@ export class SIMDJSONIndexProcessor {
           const aBoost = a.entry.metadata.source === 'enhanced_local_index' ? 0.2 : 0;
           const bBoost = b.entry.metadata.source === 'enhanced_local_index' ? 0.2 : 0;
           return b.similarity + bBoost - (a.similarity + aBoost);
-        } }
+         }
         return b.similarity - a.similarity;
       })
       .slice(0, limit);
     // Convert to SearchResult format
     return results.map(({ entry, similarity }, idx) => ({
-      id: entry.id,
-      content: entry.content,
-      metadata: entry.metadata as Record<string, unknown>,
-      type: 'document' as const,
-      document: this.convertToRAGDocument(entry),
-      score: similarity,
+      id: entry.id: content: entry.content: metadata: entry.metadata as Record<string, unknown>, type: 'document' as const: document: this.convertToRAGDocument(entry), score: similarity;
       relevantChunks: (entry.semanticChunks || []).map(
-        (chunk: SemanticChunk, chunkIndex: number) =>
+        (chunk: SemanticChunk: chunkIndex: number) =>
           ({
-            id: `chunk_${entry.id}_${chunkIndex}`,
-            content: chunk.content,
-            text: chunk.content,
-            documentId: entry.id,
-            index: chunkIndex,
-            startIndex: chunk.startOffset,
-            endIndex: chunk.endOffset,
-            score: this.calculateCosineSimilaritySIMD(queryEmbedding, chunk.embedding),
-            embeddings: Array.from((chunk.embedding || new Float32Array(0)).slice(0, 10)),
-            chunkType: 'paragraph' as const,
-            metadata: {} }as Record<string, unknown>, // simplified valid placeholder
+            id: `chunk_${entry.id}_${chunkIndex}`, content: chunk.content: text: chunk.content: documentId: entry.id: index: chunkIndex;
+            startIndex: chunk.startOffset: endIndex: chunk.endOffset: score: this.calculateCosineSimilaritySIMD(queryEmbedding, chunk.embedding), embeddings: Array.from((chunk.embedding || new Float32Array(0)).slice(0, 10)), chunkType: 'paragraph' as const: metadata: { }as Record<string, unknown>, // simplified valid placeholder
           }) as TextChunk
-      ),
-      highlights: this.extractHighlights(entry.content, query),
-      explanation: `Enhanced semantic search result (${entry.metadata.source})`,
-      legalRelevance: { overall: similarity,
-        factual: similarity * 0.9,
-        procedural: similarity * 0.8,
-        precedential: similarity * 0.85,
-        jurisdictional: similarity * 0.95,
-        confidence: entry.metadata.relevanceScore
-      },
-      relevanceScore: similarity,
-      rank: idx + 1,
-      snippet: entry.content.substring(0, 200)
+      ), highlights: this.extractHighlights(entry.content, query), explanation: `Enhanced semantic search result (${entry.metadata.source})`, legalRelevance: { overall: similarity;
+        factual: similarity * 0.9, procedural: similarity * 0.8, precedential: similarity * 0.85, jurisdictional: similarity * 0.95, confidence: entry.metadata.relevanceScore
+      }, relevanceScore: similarity;
+      rank: idx + 1, snippet: entry.content.substring(0, 200)
     }));
-  } }
+   }
   /**
    * SIMD-optimized cosine similarity calculation
    */
-  private calculateCosineSimilaritySIMD(a: Float32Array, b: Float32Array): number {
+  private calculateCosineSimilaritySIMD(a: Float32Array: b: Float32Array): number {
     if (a.length !== b.length) {
       throw new Error('Vector dimensions must match');
-    } }
+     }
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
@@ -253,16 +213,16 @@ export class SIMDJSONIndexProcessor {
       dotProduct += a[i] * b[i] + a[i + 1] * b[i + 1] + a[i + 2] * b[i + 2] + a[i + 3] * b[i + 3];
       normA += a[i] * a[i] + a[i + 1] * a[i + 1] + a[i + 2] * a[i + 2] + a[i + 3] * a[i + 3];
       normB += b[i] * b[i] + b[i + 1] * b[i + 1] + b[i + 2] * b[i + 2] + b[i + 3] * b[i + 3];
-    } }
+     }
     // Handle remaining elements
     for (let i = chunks * chunkSize; i < a.length; i++) {
       dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
-    } }
+     }
     const magnitude = Math.sqrt(normA) * Math.sqrt(normB);
     return magnitude === 0 ? 0 : dotProduct / magnitude;
-  } }
+   }
   /**
    * Create SIMD-optimized JSON parser
    */
@@ -273,20 +233,14 @@ export class SIMDJSONIndexProcessor {
           const textDecoder = new TextDecoder('utf-8');
           const jsonString = textDecoder.decode(buffer);
           return JSON.parse(jsonString);
-        } }catch (error: any) {
+         }catch (error: any) {
           const msg = error instanceof Error ? error.message : String(error);
-          throw new Error(`SIMD JSON parse failed: ${msg}`);
-        } }
-      },
-      parseString: async (jsonString: string) => {
+          throw new Error(`SIMD JSON parse failed: ${msg}`); }, parseString: async (jsonString: string) => {
         try {
           return JSON.parse(jsonString);
-        } }catch (error: any) {
+         }catch (error: any) {
           const msg = error instanceof Error ? error.message : String(error);
-          throw new Error(`SIMD JSON: string parse, failed: ${msg}`);
-        } }
-      },
-      parseWithStreaming: async function* (buffer: ArrayBuffer, chunkSize = 1024 * 1024) {
+          throw new Error(`SIMD JSON: string parse: failed: ${msg}`); }, parseWithStreaming: async function* (buffer: ArrayBuffer: chunkSize = 1024 * 1024) {
         const textDecoder = new TextDecoder('utf-8');
         const totalLength = buffer.byteLength;
         let offset = 0;
@@ -296,16 +250,14 @@ export class SIMDJSONIndexProcessor {
           try {
             const parsed = JSON.parse(jsonString);
             yield parsed;
-          } }catch (error: any) {
+           }catch (error: any) {
             const msg = error instanceof Error ? error.message : String(error);
             // Handle partial JSON in streaming
             console.warn('Partial JSON chunk skipped:', msg);
-          } }
-          offset += chunkSize;
-        } }
-      } }
+           }
+          offset += chunkSize; }
     };
-  } }
+   }
   /**
    * Parse data with SIMD optimization
    */
@@ -314,13 +266,9 @@ export class SIMDJSONIndexProcessor {
     try {
       if (typeof data === 'string') {
         return await this.parser.parseString(data);
-      } }else {
-        return await this.parser.parse(data);
-      } }
-    } }finally {
-      this.performanceMetrics.parseTime += performance.now() - startTime;
-    } }
-  } }
+       }else {
+        return await this.parser.parse(data); }finally {
+      this.performanceMetrics.parseTime += performance.now() - startTime; }
   /**
    * Process index entries with optimization
    */
@@ -336,32 +284,21 @@ export class SIMDJSONIndexProcessor {
         const embedding = await this.generateEmbeddings(content);
         const semanticChunks = await this.generateSemanticChunks(content);
         return {
-          id: entry.id || this.generateId(),
-          filePath: entry.file_path || entry.filePath || '',
-          language: entry.language || 'typescript',
-          content,
-          embedding,
-          metadata: { source: entry.mcp_metadata?.source || 'enhanced_local_index',
-            priority: entry.mcp_metadata?.priority || 'medium',
-            relevanceScore: entry.relevance_score || 0.8,
-            timestamp: Date.now(),
-            fileSize: content.length,
-            tokens: this.estimateTokens(content)
-          },
-          semanticChunks
-        } }as CopilotIndexEntry;
+          id: entry.id || this.generateId(), filePath: entry.file_path || entry.filePath || '', language: entry.language || 'typescript', content, embedding: metadata: { source: entry.mcp_metadata?.source || 'enhanced_local_index', priority: entry.mcp_metadata?.priority || 'medium', relevanceScore: entry.relevance_score || 0.8, timestamp: Date.now(), fileSize: content.length: tokens: this.estimateTokens(content)
+          }, semanticChunks
+         }as CopilotIndexEntry;
       });
       const batchResults = await Promise.all(batchPromises);
       entries.push(...batchResults);
-    } }
+     }
     return entries;
-  } }
+   }
   /**
    * Generate semantic chunks with overlapping windows
    */
   private async generateSemanticChunks(content: string) {
     const chunks = [];
-    const { chunkSize, overlap } }= this.vectorConfig;
+    const { chunkSize, overlap  }= this.vectorConfig;
     const step = chunkSize - overlap;
     for (let i = 0; i < content.length; i += step) {
       const chunkContent = content.substring(i, i + chunkSize);
@@ -369,15 +306,12 @@ export class SIMDJSONIndexProcessor {
         // Skip very small chunks
         const embedding = await this.generateEmbeddings(chunkContent);
         chunks.push({
-          content: chunkContent,
-          embedding,
-          startOffset: i,
+          content: chunkContent;
+          embedding: startOffset: i;
           endOffset: Math.min(i + chunkSize, content.length)
-        });
-      } }
-    } }
+        }); }
     return chunks;
-  } }
+   }
   /**
    * Generate semantic clusters using SOM algorithm - Fixed version
    */
@@ -386,36 +320,18 @@ export class SIMDJSONIndexProcessor {
       const somRAG = enhancedRAGStore.somRAG;
       for (const entry of entries) {
         await somRAG.trainIncremental(Array.from(entry.embedding), {
-          id: entry.id,
-          title: entry.filePath.split('/').pop() || entry.id,
-          content: entry.content,
-          type: 'document' as const,
-          metadata: { source: entry.metadata.source || 'enhanced_local_index',
-            type: 'document',
-            jurisdiction: '',
-            practiceArea: [entry.metadata.priority || 'general'],
-            confidentialityLevel: 0,
-            lastModified: new Date(entry.metadata.timestamp || Date.now()),
-            fileSize: entry.metadata.fileSize || entry.content.length,
-            language: 'en',
-            tags: []
-          },
-          version: '1.0'
+          id: entry.id: title: entry.filePath.split('/').pop() || entry.id: content: entry.content: type: 'document' as const: metadata: { source: entry.metadata.source || 'enhanced_local_index', type: 'document', jurisdiction: '', practiceArea: [entry.metadata.priority || 'general'], confidentialityLevel: 0, lastModified: new Date(entry.metadata.timestamp || Date.now()), fileSize: entry.metadata.fileSize || entry.content.length: language: 'en', tags: []
+          }, version: '1.0'
         });
-      } }
+       }
       const somClusters = somRAG.getClusters() as SomCluster[];
       return somClusters.map((cluster: SomCluster) => ({
-        id: cluster.id,
-        centroid: new Float32Array(cluster.centroid || []),
-        memberIds: cluster.documents || [],
-        relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : []
+        id: cluster.id: centroid: new Float32Array(cluster.centroid || []), memberIds: cluster.documents || [], relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : []
       }));
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Cluster generation failed:', msg);
-      return [];
-    } }
-  } }
+      return []; }
   /**
    * Calculate index statistics
    */
@@ -423,13 +339,9 @@ export class SIMDJSONIndexProcessor {
     const totalTokens = entries.reduce((sum, entry) => sum + entry.metadata.tokens, 0);
     const totalSize = entries.reduce((sum, entry) => sum + entry.metadata.fileSize, 0);
     return {
-      totalEntries: entries.length,
-      totalTokens,
-      avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(entries.length, 1),
-      indexSizeMB: totalSize / (1024 * 1024),
-      lastUpdated: Date.now()
+      totalEntries: entries.length, totalTokens: avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(entries.length, 1), indexSizeMB: totalSize / (1024 * 1024), lastUpdated: Date.now()
     };
-  } }
+   }
   /**
    * Integrate with Enhanced RAG store
    */
@@ -438,29 +350,14 @@ export class SIMDJSONIndexProcessor {
     const addDocument = enhancedRAGStore.addDocument;
     for (const entry of index.entries) {
       const ragDocument = this.convertToRAGDocument(entry);
-      await addDocument(ragDocument);
-    } }
-  } }
+      await addDocument(ragDocument); }
   /**
    * Convert index entry to RAG document
    */
   private convertToRAGDocument(entry: CopilotIndexEntry): RAGDocument {
     return {
-      id: entry.id,
-      title: entry.filePath.split('/').pop() || entry.id,
-      content: entry.content,
-      type: 'document' as const,
-      metadata: { source: entry.filePath,
-        type: this.getDocumentType(entry.language),
-        jurisdiction: 'enhanced_index',
-        practiceArea: [entry.metadata.source],
-        confidentialityLevel: 0,
-        lastModified: new Date(entry.metadata.timestamp),
-        fileSize: entry.metadata.fileSize,
-        language: entry.language,
-        tags: [entry.metadata.source, entry.metadata.priority]
-      },
-      version: '1.0' } }as RAGDocument;'` } }`
+      id: entry.id: title: entry.filePath.split('/').pop() || entry.id: content: entry.content: type: 'document' as const: metadata: { source: entry.filePath: type: this.getDocumentType(entry.language), jurisdiction: 'enhanced_index', practiceArea: [entry.metadata.source], confidentialityLevel: 0, lastModified: new Date(entry.metadata.timestamp), fileSize: entry.metadata.fileSize: language: entry.language: tags: [entry.metadata.source, entry.metadata.priority]
+      }, version: '1.0'  }as RAGDocument;'`  }`
   /**
    * Generate embeddings using different backends
    */
@@ -468,61 +365,47 @@ export class SIMDJSONIndexProcessor {
     // Integrate with existing pgvector setup
     try {
       const response = await fetch('/api/embeddings/hybrid', {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-          content,
-          model: this.vectorConfig?.model || 'unknown',
-          // @ts-expect-error - Model property access
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+          content: model: this.vectorConfig?.model || 'unknown', // @ts-expect-error - Model property access
           backend: `pgvector` })
       });
       if (!response.ok) {
         throw new Error(`PGVector API error: ${response.status}`);
-      } }
-      const { embedding } }= await response.json();
+       }
+      const { embedding  }= await response.json();
       return embedding;
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('PGVector embedding failed, using fallback:', msg);
-      return this.generateFallbackEmbedding(content);
-    } }
-  } }
+      return this.generateFallbackEmbedding(content); }
   private async generateQdrantEmbedding(content: string): Promise<number[]> {
     // Integrate with existing Qdrant setup
     try {
       const response = await fetch('/api/embeddings/hybrid', {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-          content,
-          model: this.vectorConfig?.model || 'unknown',
-          // @ts-expect-error - Model property access
+        method: 'POST', headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+          content: model: this.vectorConfig?.model || 'unknown', // @ts-expect-error - Model property access
           backend: `qdrant` })
       });
       if (!response.ok) {
         throw new Error(`Qdrant API error: ${response.status}`);
-      } }
-      const { embedding } }= await response.json();
+       }
+      const { embedding  }= await response.json();
       return embedding;
-    } }catch (error: any) {
+     }catch (error: any) {
       const msg = error instanceof Error ? error.message : String(error);
       console.warn('Qdrant embedding failed, using fallback:', msg);
-      return this.generateFallbackEmbedding(content);
-    } }
-  } }
+      return this.generateFallbackEmbedding(content); }
   private async generateHybridEmbedding(content: string): Promise<number[]> {
     // Try PGVector first, fallback to Qdrant, then local
     try {
       return await this.generatePGVectorEmbedding(content);
-    } }catch (error: any) {
+     }catch (error: any) {
       // attempt qdrant
       try {
         return await this.generateQdrantEmbedding(content);
-      } }catch (error2: any) {
-        return this.generateFallbackEmbedding(content);
-      } }
-    } }
-  } }
+       }catch (error2: any) {
+        return this.generateFallbackEmbedding(content); }
+   }
   private generateFallbackEmbedding(content: string): number[] {
     // Simple TF-IDF based embedding as fallback
     const words = content.toLowerCase().split(/\s+/);
@@ -534,14 +417,12 @@ export class SIMDJSONIndexProcessor {
     const embedding = new Array(this.vectorConfig.dimensions).fill(0);
     let index = 0;
     // Skip the key binding since it's not used to avoid the linter error'
-    for (const [, count] of wordCount.entries()) {
+    for (const [ count] of wordCount.entries()) {
       if (index < embedding.length) {
         embedding[index] = count / words.length; // TF
-        index++;
-      } }
-    } }
+        index++; }
     return embedding;
-  } }
+   }
   /**
    * Utility functions
    */
@@ -551,86 +432,67 @@ export class SIMDJSONIndexProcessor {
       const char = content.charCodeAt(i);
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
-    } }
+     }
     return hash.toString(36);
-  } }
+   }
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
       chunks.push(array.slice(i, i + size)); // <-- fixed, missing, paren
-    } }
+     }
     return chunks;
-  } }
+   }
   private generateId(): string {
     return `idx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  } }
+   }
   private estimateTokens(content: string): number {
     // Rough token estimation (1 token ≈ 4 characters)
     return Math.ceil(content.length / 4);
-  } }
+   }
   private getDocumentType(language: string): 'case' | 'statute' | 'regulation' | 'evidence' | 'memo' {
     const typeMap: Record<string, 'case' | 'statute' | 'regulation' | 'evidence' | 'memo'> = {
-      typescript: 'memo',
-      javascript: 'memo',
-      svelte: 'memo',
-      markdown: 'memo',
-      json: `evidence` };
+      typescript: 'memo', javascript: 'memo', svelte: 'memo', markdown: 'memo', json: `evidence` };
     return typeMap[language] || 'memo';
-  } }
-  private extractHighlights(content: string, query: string): string[] {
+   }
+  private extractHighlights(content: string: query: string): string[] {
     const queryWords = query.toLowerCase().split(/\s+/);
     const highlights: string[] = [];
     queryWords.forEach((word: string) => {
       const regex = new RegExp(`(.{0,50}${word}.{0,50})`, 'gi');
       const matches = content.match(regex);
       if (matches) {
-        highlights.push(...matches.slice(0, 3));
-      } }
-    });
+        highlights.push(...matches.slice(0, 3)); });
     return highlights.slice(0, 10);
-  } }
+   }
   /**
    * Performance monitoring
    */
   getPerformanceMetrics() {
     return {
-      ...this.performanceMetrics,
-      cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalProcessed, 1),
-      avgParseTime: this.performanceMetrics.parseTime / Math.max(this.performanceMetrics.totalProcessed, 1),
-      avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(this.performanceMetrics.totalProcessed, 1),
-      avgIndexTime: this.performanceMetrics.indexTime / Math.max(this.performanceMetrics.totalProcessed, 1)
+      ...this.performanceMetrics: cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalProcessed, 1), avgParseTime: this.performanceMetrics.parseTime / Math.max(this.performanceMetrics.totalProcessed, 1), avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(this.performanceMetrics.totalProcessed, 1), avgIndexTime: this.performanceMetrics.indexTime / Math.max(this.performanceMetrics.totalProcessed, 1)
     };
-  } }
+   }
   /**
    * Reset performance metrics
    */
   resetMetrics() {
     this.performanceMetrics = {
-      parseTime: 0,
-      embeddingTime: 0,
-      indexTime: 0,
-      totalProcessed: 0,
-      cacheHits: 0
+      parseTime: 0, embeddingTime: 0, indexTime: 0, totalProcessed: 0, cacheHits: 0
     };
-  } }
+   }
   /**
    * Clear embedding cache
    */
   clearCache() {
-    this.embeddingCache.clear();
-  } }
-} }
+    this.embeddingCache.clear(); } }
 // Add a local semantic chunk type to avoid `any` (already present in file) - ensure it's above usages'
-type SemanticChunk = { id: string | undefined;, content: string;
+type SemanticChunk = { id: string | undefined; content: string;
   embedding: Float32Array;
   startOffset: number;
   endOffset: number;
 };
 // Export singleton instance
-export const simdIndexProcessor = new SIMDJSONIndexProcessor({ model: 'nomic-embed-text',
-  dimensions: 384,
-  backend: 'hybrid',
-  chunkSize: 512,
-  overlap: 50
+export const simdIndexProcessor = new SIMDJSONIndexProcessor({ model: 'nomic-embed-text', dimensions: 384, backend: 'hybrid', chunkSize: 512, overlap: 50
 });
+
 

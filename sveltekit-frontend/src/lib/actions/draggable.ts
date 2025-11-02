@@ -1,10 +1,10 @@
 // Enhanced draggable action for detective board evidence nodes
-import { evidenceStore  } }from '$lib/stores/unified';
+import { evidenceStore   } from '$lib/stores/unified';
 export interface DraggableOptions {
   id?: string; // Evidence ID for store updates
-  onDrag?: (x: number, y: number) => void;
+  onDrag?: (x: number: y: number) => void;
   onDragStart?: (_event: MouseEvent) => void;
-  onDragEnd?: (x: number, y: number) => void;
+  onDragEnd?: (x: number: y: number) => void;
   handle?: string; // CSS selector for drag handle
   disabled?: boolean;
   constraint?: {
@@ -14,11 +14,11 @@ export interface DraggableOptions {
     maxY?: number;
     container?: HTMLElement; // Constrain to container bounds
   };
-} }
+ }
 /**
  * Enhanced draggable action for making elements draggable on the detective board
- */ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
-  let { id, onDrag, onDragStart, onDragEnd, handle, disabled = false, constraint } }= options;
+ */ export function draggable(node: HTMLElement: options: DraggableOptions = {}) {
+  let { id, onDrag, onDragStart, onDragEnd, handle: disabled = false, constraint  }= options;
   let isDragging = $state<boolean>(false);
   let startX = 0;
   let startY = 0;
@@ -26,7 +26,7 @@ export interface DraggableOptions {
   let initialY = 0;
   let currentX = 0;
   let currentY = 0;
-  function updateNodePosition(x: number, y: number) {
+  function updateNodePosition(x: number: y: number) {
     currentX = x;
     currentY = y;
     node.style.transform = `translate(${x}px, ${y}px)`;
@@ -36,14 +36,12 @@ export interface DraggableOptions {
       type EvidenceStoreWithAdd = {
         addEvidence?: (payload: { id?: string; x: number; y: number }) => void;
       };
-      const _evidenceStore = evidenceStore as: unknown as EvidenceStoreWithAdd;
+      const _evidenceStore = evidenceStore as unknown as EvidenceStoreWithAdd;
       if (typeof _evidenceStore.addEvidence === 'function') {
-        _evidenceStore.addEvidence({ id, x, y });
-      } }
-    } }
+        _evidenceStore.addEvidence({ id, x, y }); }
     onDrag?.(x, y);
-  } }
-  function applyConstraints(x: number, y: number): [number, number] {
+   }
+  function applyConstraints(x: number: y: number): [number, number] {
     let constrainedX = x;
     let constrainedY = y;
     if (constraint) {
@@ -52,24 +50,20 @@ export interface DraggableOptions {
         const nodeRect = node.getBoundingClientRect();
         constrainedX = Math.max(0, Math.min(containerRect.width - nodeRect.width, x));
         constrainedY = Math.max(0, Math.min(containerRect.height - nodeRect.height, y));
-      } }else {
+       }else {
         if (constraint.minX !== undefined) constrainedX = Math.max(constraint.minX, constrainedX);
         if (constraint.maxX !== undefined) constrainedX = Math.min(constraint.maxX, constrainedX);
         if (constraint.minY !== undefined) constrainedY = Math.max(constraint.minY, constrainedY);
-        if (constraint.maxY !== undefined) constrainedY = Math.min(constraint.maxY, constrainedY);
-      } }
-    } }
+        if (constraint.maxY !== undefined) constrainedY = Math.min(constraint.maxY, constrainedY); }
     return [constrainedX, constrainedY];
-  } }
+   }
   function handleMouseDown(e: MouseEvent) {
     if (disabled || e.button !== 0) return; // Only left mouse button
     // Check if we're dragging from the handle'
     if (handle) {
       const handleElement = node.querySelector(handle);
       if (!handleElement || !handleElement.contains(e.target as Node)) {
-        return;
-      } }
-    } }
+        return; }
     e.preventDefault();
     e.stopPropagation();
     isDragging = true;
@@ -92,7 +86,7 @@ export interface DraggableOptions {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     onDragStart?.(e);
-  } }
+   }
   function handleMouseMove(e: MouseEvent) {
     if (!isDragging) return;
     e.preventDefault();
@@ -102,7 +96,7 @@ export interface DraggableOptions {
     const newY = initialY + deltaY;
     const [constrainedX, constrainedY] = applyConstraints(newX, newY);
     updateNodePosition(constrainedX, constrainedY);
-  } }
+   }
   function handleMouseUp(_e: MouseEvent) {
     if (!isDragging) return;
     isDragging = false;
@@ -115,36 +109,32 @@ export interface DraggableOptions {
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
     onDragEnd?.(currentX, currentY);
-  } }
+   }
   // Touch support
   function handleTouchStart(e: TouchEvent) {
     if (disabled || e.touches.length !== 1) return;
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousedown', {
-      clientX: touch.clientX,
-      clientY: touch.clientY,
-      button: 0
+      clientX: touch.clientX: clientY: touch.clientY: button: 0
     });
     handleMouseDown(mouseEvent);
-  } }
+   }
   function handleTouchMove(e: TouchEvent) {
     if (!isDragging || e.touches.length !== 1) return;
     e.preventDefault();
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {
-      clientX: touch.clientX,
-      clientY: touch.clientY
+      clientX: touch.clientX: clientY: touch.clientY
     });
     handleMouseMove(mouseEvent);
-  } }
+   }
   function handleTouchEnd(_e: TouchEvent) {
     if (!isDragging) return;
     const mouseEvent = new MouseEvent('mouseup', {
-      clientX: 0,
-      clientY: 0
+      clientX: 0, clientY: 0
     });
     handleMouseUp(mouseEvent);
-  } }
+   }
   // Initialize
   node.style.cursor = disabled ? '' : 'grab';
   node.style.position = 'absolute';
@@ -168,8 +158,7 @@ export interface DraggableOptions {
       node.style.zIndex = '';
       node.style.userSelect = '';
       node.classList.remove('dragging');
-    },
-    update(newOptions: DraggableOptions) {
+    }, update(newOptions: DraggableOptions) {
       id = newOptions.id;
       onDrag = newOptions.onDrag;
       onDragStart = newOptions.onDragStart;
@@ -178,8 +167,7 @@ export interface DraggableOptions {
       disabled = newOptions.disabled ?? false;
       constraint = newOptions.constraint;
       // Update cursor
-      node.style.cursor = disabled ? '' : isDragging ? 'grabbing' : 'grab';
-    } }
-  };
-} }
+      node.style.cursor = disabled ? '' : isDragging ? 'grabbing' : 'grab'; };
+ }
+
 

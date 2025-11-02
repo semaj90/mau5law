@@ -13,10 +13,7 @@ async function main() {
   console.log('🧪 Testing Database Connection & pgvector Integration...\n');
   
   const client = postgres(DATABASE_URL, {
-    max: 5,
-    idle_timeout: 20,
-    connect_timeout: 10,
-  });
+    max: 5, idle_timeout: 20, connect_timeout: 10});
   
   try {
     // 1. Test basic connection
@@ -61,8 +58,7 @@ async function main() {
     try {
       const similarityTest = await client`
         SELECT 
-          '[1,2,3,4,5]'::vector <=> '[1,2,3,4,6]'::vector as distance,
-          1 - ('[1,2,3,4,5]'::vector <=> '[1,2,3,4,6]'::vector) as similarity
+          '[1,2,3,4,5]'::vector <=> '[1,2,3,4,6]'::vector as distance, 1 - ('[1,2,3,4,5]'::vector <=> '[1,2,3,4,6]'::vector) as similarity
       `;
       
       console.log(`   Distance: ${similarityTest[0].distance}`);

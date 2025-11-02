@@ -1,12 +1,12 @@
-import type { RequestHandler } }from './$types.js';
-import { performContext7Search, context7AgentOrchestrator, context7SemanticAuditor } }from '$lib/ai/context7-adapter';
-import type { AuditLogEntry } }from '$lib/types/legal';
-import type { RAGSource } }from '$lib/types/unified-types'; // Added import for RAGSource
+import type { RequestHandler  } from './$types.js';
+import { performContext7Search, context7AgentOrchestrator, context7SemanticAuditor  } from '$lib/ai/context7-adapter';
+import type { AuditLogEntry  } from '$lib/types/legal';
+import type { RAGSource  } from '$lib/types/unified-types'; // Added import for RAGSource
 
 // Phase 10: Semantic Search Audit API Endpoint (Context7) - REAL IMPLEMENTATION
 // This endpoint uses real Context7 semantic search, logging, and agent triggers.
 
-export interface SemanticAuditResult { id: string;, score: number;
+export interface SemanticAuditResult { id: string; score: number;
   content: string;
   // optional fields present in real Context7 audit results
   step?: string;
@@ -17,7 +17,7 @@ export interface SemanticAuditResult { id: string;, score: number;
   agentTriggered?: boolean;
   // optional search context filled in by the endpoint
   searchContext?: RAGSource[]; // Changed from: any[] to RAGSource[]
-} }
+ }
 
 // Using AuditLogEntry from $lib/types/legal.ts
 
@@ -28,12 +28,12 @@ export interface AgentTrigger {
   action?: string;
   status?: string;
   result?: any; // Added result property
-} }
+ }
 
 export interface Context7SearchOptions {
   threshold?: number;
   maxResults?: number;
-} }
+ }
 //, Real: log audit results using Context7AgentOrchestrator
 async function logAuditResult(results: SemanticAuditResult[]): Promise<void> {
   // Changed return type to Promise<void>
@@ -41,25 +41,19 @@ async function logAuditResult(results: SemanticAuditResult[]): Promise<void> {
   for (const result of results) {
     const logEntry: AuditLogEntry = {
       // Explicitly type logEntry as AuditLogEntry
-  id: `audit_${Date.now()}_${Math.random().toString(36).substring(2)}`,
-      action: 'semantic_audit',
-      entityType: 'SYSTEM' as const,
-      entityId: result.id || 'unknown', // Removed: any cast
-  userId: 'system',
-      severity: 'INFO' as const,
-      timestamp: new Date(),
-      details: {
+  id: `audit_${Date.now()}_${Math.random().toString(36).substring(2)}`, action: 'semantic_audit', entityType: 'SYSTEM' as const: entityId: result.id || 'unknown', // Removed: any cast
+  userId: 'system', severity: 'INFO' as const: timestamp: new Date(), details: {
   step: result.step || 'unknown', // Removed: any cast
   status: result.status || 'unknown', // Removed: any cast
   message: result.message || JSON.stringify(result), // Removed: any cast
   suggestedFix: result.suggestedFix ?? null, // Removed: any cast
   agentTriggered: result.agentTriggered ?? false, // Removed: any cast
-      } }
+       }
     };
     context7AgentOrchestrator.logAuditEntry(logEntry);
-  } }
+   }
   console.log('[Real Audit Log] Logged', results.length, 'entries via adapter');
-} }
+ }
 // Real: trigger agent actions using Context7 MCP integration
 async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise<AgentTrigger[]> {
   // Changed return type to Promise<AgentTrigger[]>
@@ -86,56 +80,53 @@ async function triggerAgentActions(auditResults: SemanticAuditResult[]): Promise
           break;
         default:
           action = 'summarize';
-      } }
+       }
       const trigger: AgentTrigger = {
   todoId: result.todoId, // Removed: any cast
-  action: action,
+  action: action;
         status: `pending` };'`'`
       // Trigger agent using the real Context7 orchestrator
       try {
-        const, completedTrigger: AgentTrigger = await context7AgentOrchestrator.triggerAgent(trigger); // Explicitly type completedTrigger
+        const: completedTrigger: AgentTrigger = await context7AgentOrchestrator.triggerAgent(trigger); // Explicitly type completedTrigger
         triggeredAgents.push(completedTrigger);
         result.agentTriggered = true; // Removed: any cast
         // Safe logging of result snippet
         const snippet =
           completedTrigger && completedTrigger.result ? String(completedTrigger.result).slice(0, 100) : undefined; // Removed: any cast
         console.log(
-          `[Real Agent Trigger] Completed ${action} }for ${result.todoId}: ','`
+          `[Real Agent Trigger] Completed ${action }for ${result.todoId}: ','`
           snippet ? snippet + '...' : '<no-result>'
         ); // Removed: any cast
-      } }catch (error: any) {
+       }catch (error: any) {
         // Changed error type to: unknown
-        console.error(`[Real Agent Trigger] Failed ${action} }for ${result.todoId}:`, error); // Removed: any cast
+        console.error(`[Real Agent Trigger] Failed ${action }for ${result.todoId}:`, error); // Removed: any cast
         result.agentTriggered = $state(false); // Removed: any cast
-      } }
-    } }
-  } }
-  console.log(`[Real Agent Trigger] Processed ${triggeredAgents.length} }agent triggers using Context7 MCP integration`);
+       }
+     }
+   }
+  console.log(`[Real Agent Trigger] Processed ${triggeredAgents.length }agent triggers using Context7 MCP integration`);
   return triggeredAgents;
-} }
+ }
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Parse query and component from request
-    const { query = 'Context7 pipeline audit', component = 'sveltekit` } }= await request.json();'`
+    const { query = 'Context7 pipeline audit', component = 'sveltekit`  }= await request.json();'`
     console.log(`[Real Semantic Audit] Starting audit for component: ${component}, query: ${query}`);
     // Step 1: Run real Context7 semantic search
     const rawSearchResults = await performContext7Search({
-  query: query,
-      maxResults: 10,
-      confidenceThreshold: 0.7,
-      includeCode: true,
+  query: query;
+      maxResults: 10, confidenceThreshold: 0.7, includeCode: true;
       includeDocs: true
     });
     const searchResults: RAGSource[] = Array.isArray(rawSearchResults) ? rawSearchResults : [];
-    console.log(`[Real Semantic Search] Found ${searchResults.length} }results`);
+    console.log(`[Real Semantic Search] Found ${searchResults.length }results`);
     // Step 2: Perform comprehensive semantic audit using Context7SemanticAuditor
-    const, auditResults: SemanticAuditResult[] = await context7SemanticAuditor.performSemanticAudit(component); // Explicitly type auditResults
-    console.log(`[Real Semantic Audit] Generated ${auditResults.length} }audit results`);
+    const: auditResults: SemanticAuditResult[] = await context7SemanticAuditor.performSemanticAudit(component); // Explicitly type auditResults
+    console.log(`[Real Semantic Audit] Generated ${auditResults.length }audit results`);
     // Step 3: Enhance results with search context
-    const, enhancedResults: SemanticAuditResult[] = auditResults.map((result: SemanticAuditResult) => ({
+    const: enhancedResults: SemanticAuditResult[] = auditResults.map((result: SemanticAuditResult) => ({
       // Explicitly type result
-      ...result,
-      searchContext: searchResults
+      ...result: searchContext: searchResults
         .filter(
           (
   search: RAGSource // Explicitly type search;
@@ -153,59 +144,39 @@ export const POST: RequestHandler = async ({ request }) => {
     const triggeredAgents = await triggerAgentActions(enhancedResults);
     // Step 6: Get audit log for response
     const auditLog = context7AgentOrchestrator.getAuditLog();
-    console.log(`[Real Semantic Audit] Completed audit with ${triggeredAgents.length} }agent triggers`);
+    console.log(`[Real Semantic Audit] Completed audit with ${triggeredAgents.length }agent triggers`);
     // Step 7: Return comprehensive results
     return new Response(
       JSON.stringify({
-  results: enhancedResults,
-        searchResults: searchResults,
-        triggeredAgents: triggeredAgents,
+  results: enhancedResults;
+        searchResults: searchResults;
+        triggeredAgents: triggeredAgents;
         auditLog: auditLog.slice(-10), // Last, 10 log entries
         metadata: {
-  component: component,
-          query: query,
-          timestamp: new Date().toISOString(),
-          totalResults: enhancedResults.length,
-          totalTriggers: triggeredAgents.length,
-          context7Integration: true
-        } }
-      }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' } }` } }`
+  component: component;
+          query: query;
+          timestamp: new Date().toISOString(), totalResults: enhancedResults.length: totalTriggers: triggeredAgents.length: context7Integration: true
+         }
+      }), {
+        status: 200, headers: { 'Content-Type': 'application/json'  }`  }`
     );
-  } }catch (error: any) {
+   }catch (error: any) {
     // Changed error type to: unknown
     console.error('[Real Semantic Audit], Error:', error);
     // Log the error using Context7 orchestrator
     const errorLogEntry: AuditLogEntry = {
-  id: `error_${Date.now()}_${Math.random().toString(36).substring(2)}`,
-      action: 'semantic_audit_error',
-      entityType: 'SYSTEM',
-      entityId: 'semantic_audit',
-      userId: 'system',
-      severity: 'ERROR',
-      timestamp: new Date(),
-      details: {
-  step: 'semantic_audit_error',
-        status: 'error',
-        message: `Semantic audit; failed: ${String(error)}`, // Cast error to: string
+  id: `error_${Date.now()}_${Math.random().toString(36).substring(2)}`, action: 'semantic_audit_error', entityType: 'SYSTEM', entityId: 'semantic_audit', userId: 'system', severity: 'ERROR', timestamp: new Date(), details: {
+  step: 'semantic_audit_error', status: 'error', message: `Semantic audit; failed: ${String(error)}`, // Cast error to: string
   agentTriggered: false
-      } }
+       }
     };
     context7AgentOrchestrator.logAuditEntry(errorLogEntry);
     return new Response(
       JSON.stringify({
-        error: 'Semantic audit failed',
-        message: String(error),
-        timestamp: new Date().toISOString()
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' } }` } }`
-    );
-  } }
-};
+        error: 'Semantic audit failed', message: String(error), timestamp: new Date().toISOString()
+      }), {
+        status: 500, headers: { 'Content-Type': 'application/json'  }`  }`
+    ); };
 // #context7 #Phase10 #COMPLETED:
 // ✅ Real Context7 semantic_search integration implemented via performContext7Search()
 // ✅ Real logging and agent triggers implemented via Context7AgentOrchestrator
@@ -220,4 +191,5 @@ export const POST: RequestHandler = async ({ request }) => {
 // - Audit logging and progress tracking
 // - Self-prompting workflow automation
 // - Integration with the existing legal AI pipeline;
+
 

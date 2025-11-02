@@ -57,8 +57,7 @@ for (const [filePath, content] of Object.entries(typeFiles)) {
 
 // Fix specific problematic files
 const filesToFix = [
-  'src/lib/components/ui/enhanced-bits/Select.svelte',
-  'src/routes/windows-gguf-demo/+page.svelte'
+  'src/lib/components/ui/enhanced-bits/Select.svelte', 'src/routes/windows-gguf-demo/+page.svelte'
 ];
 
 for (const filePath of filesToFix) {
@@ -79,8 +78,7 @@ for (const filePath of filesToFix) {
     // Fix component imports
     if (content.includes('import { Button }')) {
       content = content.replace(
-        /import \{ (\w+) \} from "\$lib\/components\/ui\/enhanced-bits\/(\w+)\.svelte"/g,
-        'import $1 from "$lib/components/ui/enhanced-bits/$2.svelte"'
+        /import \{ (\w+) \} from "\$lib\/components\/ui\/enhanced-bits\/(\w+)\.svelte"/g, 'import $1 from "$lib/components/ui/enhanced-bits/$2.svelte"'
       );
       modified = true;
     }
@@ -88,8 +86,7 @@ for (const filePath of filesToFix) {
     // Add type imports for demo pages
     if (filePath.includes('windows-gguf-demo') && !content.includes('import type { AIResponse }')) {
       content = content.replace(
-        /<script lang="ts">/,
-        `<script lang="ts">
+        /<script lang="ts">/, `<script lang="ts">
   import type { AIResponse } from '$lib/types/ai';`
       );
       modified = true;

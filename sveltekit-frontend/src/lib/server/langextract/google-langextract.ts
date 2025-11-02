@@ -10,7 +10,7 @@
  * - TypeScript native
  * - Fully controllable with custom prompts
  */
-import { OLLAMA_BASE_URL } }from '$env/static/private';
+import { OLLAMA_BASE_URL  } from '$env/static/private';
 /**
  * Extract keywords from text using Ollama Gemma 3:270m
  * Returns top keywords relevant to the legal document
@@ -32,25 +32,21 @@ Focus on: parties, legal concepts, dates, amounts, evidence types, jurisdictions
 Limit to 15-20 keywords.
 Document:
 ---
-${limitedText} }
+${limitedText }
 ---
 Keywords (comma-separated):`;`
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },'`'`
-      body: JSON.stringify({ model: 'gemma3:270m',
-        prompt,
-        stream: false,
+      method: 'POST', headers: { 'Content-Type': 'application/json' },'`'`
+      body: JSON.stringify({ model: 'gemma3:270m', prompt: stream: false;
         options: { temperature: 0.3, // Low temperature for consistent extraction
           num_predict: 200, // Limit tokens to keywords only
-        } }
-      }),
-      signal: controller.signal
+         }
+      }), signal: controller.signal
     });
     if (!response.ok) {
       console.warn('⚠️ Ollama API error:', response.statusText);
       return extractKeywordsFallback(text);
-    } }
+     }
     const data = await response.json();
     const rawKeywords = data.response || '';
     // Parse comma-separated keywords
@@ -62,19 +58,17 @@ Keywords (comma-separated):`;`
     if (keywords.length === 0) {
       console.warn('⚠️ Gemma extraction returned no keywords, using fallback');
       return extractKeywordsFallback(text);
-    } }
+     }
     return keywords;
-  } }catch (error) {
+   }catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       console.warn('⚠️ Gemma keyword extraction timed out after 5s, using fallback.');
-    } }else {
+     }else {
       console.warn('⚠️ Gemma keyword extraction failed, using fallback extraction:', error);
-    } }
+     }
     return extractKeywordsFallback(text);
-  } }finally {
-    clearTimeout(timeoutId);
-  } }
-} }
+   }finally {
+    clearTimeout(timeoutId); } }
 /**
  * Fallback keyword extraction using pattern matching
  * Used when Ollama is unavailable or returns empty results
@@ -93,59 +87,22 @@ function extractKeywordsFallback(text: string): string[] {
     capitalizedMatches.slice(0, 10).forEach(k => keywords.add(k));
     // Extract common legal terms found in document
     const legalTerms = [
-      // Parties: 'plaintiff', 'defendant', 'appellant', 'respondent', 'claimant', 'petitioner',
-      'witness',
-      'expert',
-      'counsel',
-      'attorney',
-      'judge',
-      'jury',
-      // Legal concepts: 'contract', 'agreement', 'liability', 'damages', 'negligence', 'breach',
-      'fraud',
-      'misrepresentation',
-      'warranty',
-      'indemnity',
-      'arbitration',
-      // Court/process, 'court',
-      'jurisdiction',
-      'venue',
-      'appeal',
-      'trial',
-      'hearing',
-      'motion',
-      'discovery',
-      'deposition',
-      'interrogatory',
-      'settlement',
-      'judgment',
-      'verdict',
-      // Evidence: 'evidence', 'testimony', 'deposition', 'affidavit', 'exhibit', 'document',
-      // Documents: 'complaint', 'petition', 'brief', 'memorandum', 'motion', 'order', 'judgment',
-      // Time/money, 'damages',
-      'compensation',
-      'settlement',
-      'fee',
-      'cost',
-      'penalty',
-    ];
+      // Parties: 'plaintiff', 'defendant', 'appellant', 'respondent', 'claimant', 'petitioner', 'witness', 'expert', 'counsel', 'attorney', 'judge', 'jury', // Legal concepts: 'contract', 'agreement', 'liability', 'damages', 'negligence', 'breach', 'fraud', 'misrepresentation', 'warranty', 'indemnity', 'arbitration', // Court/process, 'court', 'jurisdiction', 'venue', 'appeal', 'trial', 'hearing', 'motion', 'discovery', 'deposition', 'interrogatory', 'settlement', 'judgment', 'verdict', // Evidence: 'evidence', 'testimony', 'deposition', 'affidavit', 'exhibit', 'document', // Documents: 'complaint', 'petition', 'brief', 'memorandum', 'motion', 'order', 'judgment', // Time/money, 'damages', 'compensation', 'settlement', 'fee', 'cost', 'penalty'];
     legalTerms.forEach(term => {
       if (new RegExp(`\\b${term}\\b`, 'gi').test(text)) {
-        keywords.add(term);
-      } }
-    });
+        keywords.add(term); });
     // Extract dates and money amounts
     const dateRegex =
       /\b(January|February|March|April|May|June|July|August|September|October|November|December|\d{1,2}\/\d{1,2}\/\d{2,4}|\d{4})\b/gi;
     const dateMatches = text.match(dateRegex) || [];
     dateMatches.slice(0, 5).forEach(d => keywords.add(d));
-    const moneyRegex = /\$[\d,]+(?:\.\d{2})?|\b\d+\s(?:million|thousand|billion|dollars|cents)\b/gi;
+    const moneyRegex = /\$[\d]+(?:\.\d{2})?|\b\d+\s(?:million|thousand|billion|dollars|cents)\b/gi;
     const moneyMatches = text.match(moneyRegex) || [];
     moneyMatches.slice(0, 5).forEach(m => keywords.add(m));
     // Convert to array and return top, 20
     return Array.from(keywords).slice(0, 20);
-  } }catch (error) {
+   }catch (error) {
     console.warn('⚠️ Fallback keyword extraction failed:', error);
-    return [];
-  } }
-} }
+    return []; } }
+
 

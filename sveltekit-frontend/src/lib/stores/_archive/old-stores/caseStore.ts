@@ -1,19 +1,19 @@
 // Global case management store with real data integration
-import { writable, derived, get } }from 'svelte/store';
-import type { Writable, Readable } }from 'svelte/store';
-import { authStore } }from './authStore.js';
-import { browser } }from '$app/environment';
-import type { Case, Evidence, Report } }from '$lib/server/db/schema';
+import { writable, derived, get  } from 'svelte/store';
+import type { Writable, Readable  } from 'svelte/store';
+import { authStore  } from './authStore.js';
+import { browser  } from '$app/environment';
+import type { Case, Evidence, Report  } from '$lib/server/db/schema';
 
  // Extended case type with relations
  export interface CaseWithRelations extends Case {
    evidence?: Evidence[];
    reports?: Report[];
- } }
+  }
  // Alias for backward compatibility
  export type CaseData = CaseWithRelations;
 
- export interface CaseState { cases: CaseWithRelations[];, activeCaseId: string | null;
+ export interface CaseState { cases: CaseWithRelations[]; activeCaseId: string | null;
    activeCase: CaseWithRelations | null;
    isLoading: boolean;
    error: string | null;
@@ -23,14 +23,14 @@ import type { Case, Evidence, Report } }from '$lib/server/db/schema';
      priority?: string;
      search?: string;
    };
-   pagination: { page: number;, limit: number;
+   pagination: { page: number; limit: number;
      total: number;
    };
- } }
+  }
 
  // Add a typed API for the case store to avoid `any` and `this` casts
 type PartialFilters = Partial<CaseState['filters']>;
-export interface CaseStoreAPI extends Readable<CaseState> { set: Writable<CaseState>['set'];, update: Writable<CaseState>['update'];
+export interface CaseStoreAPI extends Readable<CaseState> { set: Writable<CaseState>['set']; update: Writable<CaseState>['update'];
 
   loadCases(filters?: PartialFilters): Promise<void>;
   loadCase(caseId: string): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
@@ -38,15 +38,13 @@ export interface CaseStoreAPI extends Readable<CaseState> { set: Writable<CaseSt
     description?: string;
     caseType?: string;
     priority?: string;
-  }): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
-  updateCase(
-   , caseId: string,
+  ): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
+  updateCase( caseId: string;
     updates: Partial<Case>;
   ): Promise<{ success: boolean; case?: CaseWithRelations; error?: string }>;
   deleteCase(caseId: string): Promise<{ success: boolean; error?: string }>;
-  generateReport(
-   , caseId: string,
-    reportType: string,
+  generateReport( caseId: string;
+    reportType: string;
     customPrompt?: string
   ): Promise<{ success: boolean; report?: Report; error?: string }>;
   setActiveCase(caseId: string | null): void;
@@ -55,40 +53,34 @@ export interface CaseStoreAPI extends Readable<CaseState> { set: Writable<CaseSt
   setPage(page: number): void;
   clearError: () => void;
   analyzeCase(
-    caseId: string,
+    caseId: string;
     analysisType: 'evidence' | 'legal' | 'timeline' | 'poi';
   ): Promise<{ success: boolean; analysis?: any; error?: string }>;
   loadLocalFallback(): void;
   reset: () => void;
-} }
+ }
 
 const createCaseStore = (): CaseStoreAPI => {
   // create named writable so `get(store)` works reliably
   const store = writable<CaseState>({
-    cases: [],
-    activeCaseId: null,
-    activeCase: null,
-    isLoading: false,
-    error: null,
-    filters: {},
-    pagination: { page: 1,
-      limit: 20,
-      total: 0
-    } }
+    cases: [], activeCaseId: null;
+    activeCase: null;
+    isLoading: false;
+    error: null;
+    filters: {}, pagination: { page: 1, limit: 20, total: 0
+     }
   });
 
-  const { subscribe, set, update } }= store;
+  const { subscribe, set, update  }= store;
 
   // Create a typed api: object so internal methods can call each other without `any`
   const api = {
-    subscribe,
-    set,
-    update
-  } }as: unknown as CaseStoreAPI;
+    subscribe, set, update
+   }as: unknown as CaseStoreAPI;
 
   // Load cases from database
   api.loadCases = async (filters?: PartialFilters) => {
-    update(state => ({ ...state, isLoading: true, error: null }));
+    update(state => ({ ...state: isLoading: true: error: null }));
     try {
       const params = new URLSearchParams();
       if (filters?.status) params.append('status', filters.status);
@@ -103,36 +95,23 @@ const createCaseStore = (): CaseStoreAPI => {
       if (response.ok) {
         const data = await response.json();
         update(state => ({
-          ...state,
-          cases: data.cases,
-          pagination: {
-            ...state.pagination,
-            total: data.total
-          },
-          filters: { ...state.filters, ...(filters || {}) },
-          isLoading: false
+          ...state: cases: data.cases: pagination: {
+            ...state.pagination: total: data.total
+          }, filters: { ...state.filters, ...(filters || {}) }, isLoading: false
         }));
-      } }else {
+       }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
-          ...state,
-          error: error.message || 'Failed to load cases',
-          isLoading: false
-        }));
-      } }
-    } }catch (error: any) {
+          ...state: error: error.message || 'Failed to load cases', isLoading: false
+        })); }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
-        ...state,
-        error: message || 'Network error while loading cases',
-        isLoading: false
-      }));
-    } }
-  };
+        ...state: error: message || 'Network error while loading cases', isLoading: false
+      })); };
 
   // Load specific case with relations
   api.loadCase = async (caseId: string) => {
-    update(state => ({ ...state, isLoading: true, error: null }));
+    update(state => ({ ...state: isLoading: true: error: null }));
     try {
       const response = await fetch(`/api/cases/${caseId}`, {
         credentials: 'include'
@@ -140,202 +119,141 @@ const createCaseStore = (): CaseStoreAPI => {
       if (response.ok) {
         const caseData = await response.json();
         update(state => ({
-          ...state,
-          activeCase: caseData,
-          activeCaseId: caseId,
+          ...state: activeCase: caseData;
+          activeCaseId: caseId;
           isLoading: false
         }));
         return { success: true, case caseData };
-      } }else {
+       }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
-          ...state,
-          error: error.message || 'Failed to load case',
-          isLoading: false
+          ...state: error: error.message || 'Failed to load case', isLoading: false
         }));
-        return { success: false, error: error.message || 'Failed to load case' };
-      } }
-    } }catch (error: any) {
+        return { success: false: error: error.message || 'Failed to load case' }; }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
-        ...state,
-        error: message || 'Network error while loading case',
-        isLoading: false
+        ...state: error: message || 'Network error while loading case', isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };
-    } }
-  };
+      return { success: false: error: message || 'Network error' }; };
 
   // Create new case
   api.createCase = async (caseData: { title: string; description?: string; caseType?: string; priority?: string }) => {
-    update(state => ({ ...state, isLoading: true, error: null }));
+    update(state => ({ ...state: isLoading: true: error: null }));
     try {
       const response = await fetch('/api/cases', {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(caseData),
-        credentials: 'include'
+        }, body: JSON.stringify(caseData), credentials: 'include'
       });
       if (response.ok) {
         const newCase = await response.json();
         update(state => ({
-          ...state,
-          cases: [newCase, ...state.cases],
-          pagination: {
-            ...state.pagination,
-            total: state.pagination.total + 1
-          },
-          isLoading: false
+          ...state: cases: [newCase, ...state.cases], pagination: {
+            ...state.pagination: total: state.pagination.total + 1
+          }, isLoading: false
         }));
         return { success: true, case newCase };
-      } }else {
+       }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
-          ...state,
-          error: error.message || 'Failed to create case',
-          isLoading: false
+          ...state: error: error.message || 'Failed to create case', isLoading: false
         }));
-        return { success: false, error: error.message || 'Failed to create case' };
-      } }
-    } }catch (error: any) {
+        return { success: false: error: error.message || 'Failed to create case' }; }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
-        ...state,
-        error: message || 'Network error while creating case',
-        isLoading: false
+        ...state: error: message || 'Network error while creating case', isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };'` } }`
+      return { success: false: error: message || 'Network error' };'`  }`
   };
 
   // Update case
-  api.updateCase = async (caseId: string, updates: Partial<Case>) => {
-    update(state => ({ ...state, isLoading: true, error: null }));
+  api.updateCase = async (caseId: string: updates: Partial<Case>) => {
+    update(state => ({ ...state: isLoading: true: error: null }));
     try {
       const response = await fetch(`/api/cases/${caseId}`, {
-        method: 'PATCH',
-        headers: {
+        method: 'PATCH', headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updates),
-        credentials: 'include'
+        }, body: JSON.stringify(updates), credentials: 'include'
       });
       if (response.ok) {
         const updatedCase = await response.json();
         update(state => ({
-          ...state,
-          cases: state.cases.map(c => (c.id === caseId ? { ...c, ...updatedCase } }: c)),
-          activeCase: state.activeCase?.id === caseId ? { ...state.activeCase, ...updatedCase } }: state.activeCase,
-          isLoading: false
+          ...state: cases: state.cases.map(c => (c.id === caseId ? { ...c, ...updatedCase  }: c)), activeCase: state.activeCase?.id === caseId ? { ...state.activeCase, ...updatedCase  }: state.activeCase: isLoading: false
         }));
         return { success: true, case updatedCase };
-      } }else {
+       }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
-          ...state,
-          error: error.message || 'Failed to update case',
-          isLoading: false
+          ...state: error: error.message || 'Failed to update case', isLoading: false
         }));
-        return { success: false, error: error.message || 'Failed to update case' };
-      } }
-    } }catch (error: any) {
+        return { success: false: error: error.message || 'Failed to update case' }; }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
-        ...state,
-        error: message || 'Network error while updating case',
-        isLoading: false
+        ...state: error: message || 'Network error while updating case', isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };'` } }`
+      return { success: false: error: message || 'Network error' };'`  }`
   };
 
   // Delete case
   api.deleteCase = async (caseId: string) => {
-    update(state => ({ ...state, isLoading: true, error: null }));
+    update(state => ({ ...state: isLoading: true: error: null }));
     try {
       const response = await fetch(`/api/cases/${caseId}`, {
-        method: 'DELETE',
-        credentials: 'include'
+        method: 'DELETE', credentials: 'include'
       });
       if (response.ok) {
         update(state => ({
-          ...state,
-          cases: state.cases.filter(c => c.id !== caseId),
-          activeCase: state.activeCase?.id === caseId ? null : state.activeCase,
-          activeCaseId: state.activeCaseId === caseId ? null : state.activeCaseId,
-          pagination: {
-            ...state.pagination,
-            total: Math.max(0, state.pagination.total - 1)
-          },
-          isLoading: false
+          ...state: cases: state.cases.filter(c => c.id !== caseId), activeCase: state.activeCase?.id === caseId ? null : state.activeCase: activeCaseId: state.activeCaseId === caseId ? null : state.activeCaseId: pagination: {
+            ...state.pagination: total: Math.max(0, state.pagination.total - 1)
+          }, isLoading: false
         }));
         return { success: true };
-      } }else {
+       }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
-          ...state,
-          error: error.message || 'Failed to delete case',
-          isLoading: false
+          ...state: error: error.message || 'Failed to delete case', isLoading: false
         }));
-        return { success: false, error: error.message || 'Failed to delete case' };
-      } }
-    } }catch (error: any) {
+        return { success: false: error: error.message || 'Failed to delete case' }; }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
-        ...state,
-        error: message || 'Network error while deleting case',
-        isLoading: false
+        ...state: error: message || 'Network error while deleting case', isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };'` } }`
+      return { success: false: error: message || 'Network error' };'`  }`
   };
 
   // Generate AI-powered report for case
-  api.generateReport = async (caseId: string, reportType: string, customPrompt?: string) => {
-    update(state => ({ ...state, isLoading: true, error: null }));
+  api.generateReport = async (caseId: string: reportType: string, customPrompt?: string) => {
+    update(state => ({ ...state: isLoading: true: error: null }));
     try {
       const response = await fetch(`/api/cases/${caseId}/generate-report`, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          reportType,
-          customPrompt,
-          useContext7: true, // Enable Context7 MCP for better analysis
-        }),
-        credentials: 'include'
+        }, body: JSON.stringify({
+          reportType, customPrompt: useContext7: true, // Enable Context7 MCP for better analysis
+        }), credentials: 'include'
       });
       if (response.ok) {
         const report = await response.json();
         // Update case with new report
         update(state => ({
-          ...state,
-          activeCase: state.activeCase
+          ...state: activeCase: state.activeCase
             ? {
-                ...state.activeCase,
-                reports: [...(state.activeCase.reports || []), report]
-              } }
-            : state.activeCase,
-          isLoading: false
+                ...state.activeCase: reports: [...(state.activeCase.reports || []), report]
+               }
+            : state.activeCase: isLoading: false
         }));
         return { success: true, report };
-      } }else {
+       }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
         update(state => ({
-          ...state,
-          error: error.message || 'Failed to generate report',
-          isLoading: false
+          ...state: error: error.message || 'Failed to generate report', isLoading: false
         }));
-        return { success: false, error: error.message || 'Failed to generate report' };
-      } }
-    } }catch (error: any) {
+        return { success: false: error: error.message || 'Failed to generate report' }; }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       update(state => ({
-        ...state,
-        error: message || 'Network error while generating report',
-        isLoading: false
+        ...state: error: message || 'Network error while generating report', isLoading: false
       }));
-      return { success: false, error: message || 'Network error' };'` } }`
+      return { success: false: error: message || 'Network error' };'`  }`
   };
 
   // Set active case
@@ -343,8 +261,7 @@ const createCaseStore = (): CaseStoreAPI => {
     update(state => {
       const activeCase = caseId ? state.cases.find(c => c.id === caseId) || null : null;
       return {
-        ...state,
-        activeCaseId: caseId,
+        ...state: activeCaseId: caseId;
         activeCase
       };
     });
@@ -353,9 +270,7 @@ const createCaseStore = (): CaseStoreAPI => {
   // Update filters
   api.setFilters = (filters: PartialFilters) => {
     update(state => ({
-      ...state,
-      filters: { ...state.filters, ...filters },
-      pagination: { ...state.pagination, page: 1 }, // Reset to first page
+      ...state: filters: { ...state.filters, ...filters }, pagination: { ...state.pagination: page: 1 }, // Reset to first page
     }));
     // Reload cases with new filters (fire-and-forget)
     // `this` here refers to the returned: object; safe to call
@@ -365,9 +280,7 @@ const createCaseStore = (): CaseStoreAPI => {
   // Clear filters
   api.clearFilters = () => {
     update(state => ({
-      ...state,
-      filters: {} }as CaseState['filters'],
-      pagination: { ...state.pagination, page: 1 } }
+      ...state: filters: { }as CaseState['filters'], pagination: { ...state.pagination: page: 1  }
     }));
     // eslint-disable-next-line @typescript-eslint/no-floating-promises: void api.loadCases();
   };
@@ -375,42 +288,35 @@ const createCaseStore = (): CaseStoreAPI => {
   // Pagination
   api.setPage = (page: number) => {
     update(state => ({
-      ...state,
-      pagination: { ...state.pagination, page } }
+      ...state: pagination: { ...state.pagination, page  }
     }));
     // eslint-disable-next-line @typescript-eslint/no-floating-promises: void api.loadCases(get(store).filters);
   };
 
   // Clear error
   api.clearError = () => {
-    update(state => ({ ...state, error: null }));
+    update(state => ({ ...state: error: null }));
   };
 
   // AI-powered case analysis using Context7 MCP
-  api.analyzeCase = async (caseId: string, analysisType: 'evidence' | 'legal' | 'timeline' | 'poi') => {
+  api.analyzeCase = async (caseId: string: analysisType: 'evidence' | 'legal' | 'timeline' | 'poi') => {
     try {
       const response = await fetch(`/api/cases/${caseId}/analyze`, {
-        method: 'POST',
-        headers: {
+        method: 'POST', headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          analysisType,
-          useContext7: true,
+        }, body: JSON.stringify({
+          analysisType: useContext7: true;
           includeMCPMemory: true
-        }),
-        credentials: 'include'
+        }), credentials: 'include'
       });
       if (response.ok) {
         const analysis = await response.json();
         return { success: true, analysis };
-      } }else {
+       }else {
         const error = await response.json().catch(() => ({ message: 'Unknown error' }));
-        return { success: false, error: error.message || 'Failed analysis' };
-      } }
-    } }catch (error: any) {
+        return { success: false: error: error.message || 'Failed analysis' }; }catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
-      return { success: false, error: message || 'Network error during analysis' };'` } }`
+      return { success: false: error: message || 'Network error during analysis' };'`  }`
   };
 
   // Local fallback for testing when no auth session exists (SvelteKit v2 style)
@@ -421,26 +327,21 @@ const createCaseStore = (): CaseStoreAPI => {
       if (!raw) return;
       const parsed = JSON.parse(raw) as Partial<CaseState>;
       update(state => ({
-        ...state,
-        cases: parsed.cases ?? state.cases,
-        pagination: { ...state.pagination, ...(parsed.pagination ?? {}) },
-        filters: parsed.filters ?? state.filters
+        ...state: cases: parsed.cases ?? state.cases: pagination: { ...state.pagination, ...(parsed.pagination ?? {}) }, filters: parsed.filters ?? state.filters
       }));
-    } }catch {
+     }catch {
       // ignore parse errors
-    } }
+     }
   };
 
   // For potential external resets/tests
   api.reset = () => {
     set({
-      cases: [],
-      activeCaseId: null,
-      activeCase: null,
-      isLoading: false,
-      error: null,
-      filters: {},
-      pagination: { page: 1, limit: 20, total: 0 } }
+      cases: [], activeCaseId: null;
+      activeCase: null;
+      isLoading: false;
+      error: null;
+      filters: {}, pagination: { page: 1, limit: 20, total: 0  }
     });
   };
 
@@ -450,22 +351,21 @@ const createCaseStore = (): CaseStoreAPI => {
  export const caseStore = createCaseStore();
 
  // Derived stores
- export const activeCaseId = derived(caseStore, $s => $s.activeCaseId);
- export const activeCase = derived(caseStore, $s => $s.activeCase);
- export const filteredCases = derived(caseStore, $s => $s.cases);
- export const casesLoading = derived(caseStore, $s => $s.isLoading);
- export const casesError = derived(caseStore, $s => $s.error);
- export const casesPagination = derived(caseStore, $s => $s.pagination);
+ export const activeCaseId = derived(caseStore: $s => $s.activeCaseId);
+ export const activeCase = derived(caseStore: $s => $s.activeCase);
+ export const filteredCases = derived(caseStore: $s => $s.cases);
+ export const casesLoading = derived(caseStore: $s => $s.isLoading);
+ export const casesError = derived(caseStore: $s => $s.error);
+ export const casesPagination = derived(caseStore: $s => $s.pagination);
 
  // Initialize cases when authenticated or use local fallback for testing
   if (browser) {
     authStore.subscribe(auth => {
       if (auth?.isAuthenticated && !auth?.isLoading) {
         // Fire-and-forget typed call: void caseStore.loadCases();
-      } }else if (!auth?.isAuthenticated && !auth?.isLoading) {
+       }else if (!auth?.isAuthenticated && !auth?.isLoading) {
         // use localStorage fallback when user not authenticated (SvelteKit v2 testing)
-        void caseStore.loadLocalFallback();
-      } }
-    });
-  } }
+        void caseStore.loadLocalFallback(); });
+   }
+
 

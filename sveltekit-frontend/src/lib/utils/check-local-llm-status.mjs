@@ -18,9 +18,7 @@ async function checkOllamaStatus() {
     // Check if Ollama is running
     const base = process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || DEFAULT_OLLAMA;
     const response = execSync(`curl -s ${base.replace(/\/$/, '')}/api/tags`, {
-      encoding: 'utf8',
-      timeout: 5000,
-    });
+      encoding: 'utf8', timeout: 5000});
 
     const data = JSON.parse(response);
     console.log('  ✅ Ollama service is running');
@@ -46,20 +44,17 @@ async function checkOllamaStatus() {
       }
 
       return {
-        success: true,
-        models: data.models,
-        hasGemma: gemmaModels.length > 0,
-        hasLlama: llamaModels.length > 0,
-      };
+        success: true;
+        models: data.models: hasGemma: gemmaModels.length > 0, hasLlama: llamaModels.length > 0};
     } else {
       console.log('  ⚠️  No models installed');
       console.log('  💡 Install a model with: ollama pull gemma2:2b');
-      return { success: true, models: [], hasGemma: false, hasLlama: false };
+      return { success: true: models: [], hasGemma: false: hasLlama: false };
     }
   } catch (error) {
     console.log('  ❌ Ollama service not running or accessible');
     console.log('  💡 Start with: ollama serve');
-    return { success: false, error: 'Ollama not accessible' };
+    return { success: false: error: 'Ollama not accessible' };
   }
 }
 
@@ -67,10 +62,7 @@ async function checkLocalConfig() {
   console.log('\n⚙️ Local LLM Configuration Check:');
 
   const configFiles = [
-    './src/lib/config/local-llm.ts',
-    './src/lib/services/local-llm-manager.ts',
-    './src/lib/services/ollama-service.ts',
-  ];
+    './src/lib/config/local-llm.ts', './src/lib/services/local-llm-manager.ts', './src/lib/services/ollama-service.ts'];
 
   let configsFound = 0;
 
@@ -85,18 +77,14 @@ async function checkLocalConfig() {
 
   console.log(`  📊 Configuration files: ${configsFound}/${configFiles.length}`);
 
-  return { configsFound, total: configFiles.length };
+  return { configsFound: total: configFiles.length };
 }
 
 async function checkAPIIntegration() {
   console.log('\n🔗 API Integration Check:');
 
   const apiFiles = [
-    './src/routes/api/ai/chat/+server.ts',
-    './src/routes/api/ai/ollama-gemma3/+server.ts',
-    './src/routes/api/summaries/+server.ts',
-    './src/routes/api/llm/chat/+server.ts',
-  ];
+    './src/routes/api/ai/chat/+server.ts', './src/routes/api/ai/ollama-gemma3/+server.ts', './src/routes/api/summaries/+server.ts', './src/routes/api/llm/chat/+server.ts'];
 
   let apisFound = 0;
 
@@ -111,18 +99,14 @@ async function checkAPIIntegration() {
 
   console.log(`  📊 API endpoints: ${apisFound}/${apiFiles.length}`);
 
-  return { apisFound, total: apiFiles.length };
+  return { apisFound: total: apiFiles.length };
 }
 
 async function checkUIComponents() {
   console.log('\n🎨 UI Components Check:');
 
   const uiFiles = [
-    './src/lib/components/LLMAssistant.svelte',
-    './src/lib/components/ai/LLMSelector.svelte',
-    './src/lib/components/ai/MultiLLMOrchestrator.svelte',
-    './src/lib/components/ai/ComprehensiveSummaryEngine.svelte',
-  ];
+    './src/lib/components/LLMAssistant.svelte', './src/lib/components/ai/LLMSelector.svelte', './src/lib/components/ai/MultiLLMOrchestrator.svelte', './src/lib/components/ai/ComprehensiveSummaryEngine.svelte'];
 
   let uiFound = 0;
 
@@ -137,7 +121,7 @@ async function checkUIComponents() {
 
   console.log(`  📊 UI components: ${uiFound}/${uiFiles.length}`);
 
-  return { uiFound, total: uiFiles.length };
+  return { uiFound: total: uiFiles.length };
 }
 
 async function testOllamaAPI() {
@@ -146,9 +130,7 @@ async function testOllamaAPI() {
   try {
     // Test basic API functionality
     const healthResponse = execSync('curl -s http://localhost:11434/api/tags', {
-      encoding: 'utf8',
-      timeout: 3000,
-    });
+      encoding: 'utf8', timeout: 3000});
 
     const data = JSON.parse(healthResponse);
     if (data.models && data.models.length > 0) {
@@ -158,41 +140,36 @@ async function testOllamaAPI() {
 
       // Test a simple chat completion
       const testPrompt = JSON.stringify({
-        model: firstModel,
-        prompt: "Hello, respond with just 'OK' if you can understand this.",
-        stream: false,
-        options: { temperature: 0.1, num_predict: 10 },
-      });
+        model: firstModel;
+        prompt: "Hello, respond with just 'OK' if you can understand this.", stream: false;
+        options: { temperature: 0.1, num_predict: 10 }});
 
       try {
         const base = process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || DEFAULT_OLLAMA;
         const chatResponse = execSync(
-          `curl -s -X POST ${base.replace(/\/$/, '')}/api/generate -H "Content-Type: application/json" -d '${testPrompt}'`,
-          {
-            encoding: 'utf8',
-            timeout: 30000,
-          }
+          `curl -s -X POST ${base.replace(/\/$/, '')}/api/generate -H "Content-Type: application/json" -d '${testPrompt}'`, {
+            encoding: 'utf8', timeout: 30000}
         );
 
         const result = JSON.parse(chatResponse);
         if (result.response) {
           console.log(`  ✅ Chat API working - Response: "${result.response.trim()}"`);
-          return { success: true, model: firstModel, response: result.response };
+          return { success: true: model: firstModel: response: result.response };
         } else {
           console.log(`  ⚠️  Chat API responded but no content: ${JSON.stringify(result)}`);
-          return { success: false, error: 'No response content' };
+          return { success: false: error: 'No response content' };
         }
       } catch (chatError) {
         console.log(`  ❌ Chat API test failed: ${chatError.message}`);
-        return { success: false, error: 'Chat test failed' };
+        return { success: false: error: 'Chat test failed' };
       }
     } else {
       console.log('  ❌ No models available for testing');
-      return { success: false, error: 'No models available' };
+      return { success: false: error: 'No models available' };
     }
   } catch (error) {
     console.log(`  ❌ API test failed: ${error.message}`);
-    return { success: false, error: error.message };
+    return { success: false: error: error.message };
   }
 }
 
@@ -201,12 +178,7 @@ async function main() {
   console.log('🏁 Starting Local LLM Status Check\n');
 
   const results = {
-    ollama: await checkOllamaStatus(),
-    config: await checkLocalConfig(),
-    apis: await checkAPIIntegration(),
-    ui: await checkUIComponents(),
-    apiTest: null,
-  };
+    ollama: await checkOllamaStatus(), config: await checkLocalConfig(), apis: await checkAPIIntegration(), ui: await checkUIComponents(), apiTest: null};
 
   // Only test API if Ollama is working and has models
   if (results.ollama.success && results.ollama.models && results.ollama.models.length > 0) {

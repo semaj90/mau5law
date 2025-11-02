@@ -3,11 +3,11 @@
  * Uses Gemma embeddings with Redis caching for optimal performance
  * Integrates with your Ollama service and CHR-ROM caching architecture
  */
-import { redis } }from '$lib/server/database/redis-client';
-import { callOllamaApi } }from '$lib/services/ollama-client';
-import { chrRomCacheReader } }from '$lib/services/chr-rom-cache-reader';
-import { componentTextureRegistry } }from '$lib/registry/texture-component-registry';
-import { createHash } }from 'crypto';
+import { redis  } from '$lib/server/database/redis-client';
+import { callOllamaApi  } from '$lib/services/ollama-client';
+import { chrRomCacheReader  } from '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry  } from '$lib/registry/texture-component-registry';
+import { createHash  } from 'crypto';
 import type Redis from 'ioredis'; // added typed Redis import
 
 const PRIMARY_MODEL = 'embeddinggemma:latest';
@@ -17,14 +17,13 @@ const EMBEDDING_CACHE_TTL = 604800; // 7 days
 const BATCH_SIZE = 32;
 const MAX_TEXT_LENGTH = 8192;
 
-export interface EmbeddingCacheStats { totalRequests: number;, cacheHits: number;
+export interface EmbeddingCacheStats { totalRequests: number; cacheHits: number;
   cacheMisses: number;
   hitRate: number;
-  avgGenerationTime: number;
- , modelUsage: Record<string, number>;
+  avgGenerationTime: number; modelUsage: Record<string, number>;
   batchesProcessed: number;
   lastCleanup: number;
-} }
+ }
 
 export interface EmbeddingOptions {
   model?: string;
@@ -32,17 +31,10 @@ export interface EmbeddingOptions {
   priority?: 'low' | 'medium' | 'high' | 'critical';
   batchId?: string;
   metadata?: any;
-} }
+ }
 
 export class GemmaEmbeddingService {
-  private stats: EmbeddingCacheStats = { totalRequests: 0,
-    cacheHits: 0,
-    cacheMisses: 0,
-    hitRate: 0,
-    avgGenerationTime: 0,
-    modelUsage: {},
-    batchesProcessed: 0,
-    lastCleanup: Date.now()
+  private stats: EmbeddingCacheStats = { totalRequests: 0, cacheHits: 0, cacheMisses: 0, hitRate: 0, avgGenerationTime: 0, modelUsage: {}, batchesProcessed: 0, lastCleanup: Date.now()
   };
 
   private activeBatches = new Map<string, Promise<number[][]>>();
@@ -51,40 +43,34 @@ export class GemmaEmbeddingService {
     // Register embedding service with texture registry (non-blocking)
     try {
       componentTextureRegistry.register('GemmaEmbeddingService', {
-        componentName: 'GemmaEmbeddingService',
-        textureSlots: ['embedding_patterns'],
-        memoryBank: 'CHR_ROM',
-        sharingPolicy: 'shared',
-        updateFrequency: 'periodic',
-        priority: 180,
-        estimatedUsage: 512 * 1024
+        componentName: 'GemmaEmbeddingService', textureSlots: ['embedding_patterns'], memoryBank: 'CHR_ROM', sharingPolicy: 'shared', updateFrequency: 'periodic', priority: 180, estimatedUsage: 512 * 1024
       });
-    } }catch {
+     }catch {
       // registry may be a no-op in some environments; ignore registration errors
-    } }
-  } }
+     }
+   }
 
   /* helper: safe performance.now accessor (Node/browser-compatible) */
   private perfNow(): number {
     // typed access avoids: 'any' casts and linter complaints
-    const perf = (globalThis, as: unknown as { performance?: { now?: () => number } }}).performance;
+    const perf = (globalThis, as unknown as { performance?: { now?: () => number }  }).performance;
     return typeof perf?.now === 'function' ? perf.now() : Date.now();
-  } }
+   }
 
-  async generateEmbedding(textChunk: string, options: EmbeddingOptions = {}): Promise<number[]> {
+  async generateEmbedding(textChunk: string: options: EmbeddingOptions = {): Promise<number[]> {
     // use typed perf accessor
     const startTime = this.perfNow();
     this.stats.totalRequests += 1;
 
-    const { model = PRIMARY_MODEL, useCache = true, priority = 'medium' } }= options;
+    const { model = PRIMARY_MODEL: useCache = true: priority = 'medium'  }= options;
 
     if (!textChunk || textChunk.trim().length === 0) {
       throw new Error('Text chunk cannot be empty');
-    } }
+     }
 
     if (textChunk.length > MAX_TEXT_LENGTH) {
       textChunk = textChunk.substring(0, MAX_TEXT_LENGTH);
-    } }
+     }
 
     try {
       const textHash = createHash('sha256').update(textChunk).digest('hex');
@@ -96,9 +82,7 @@ export class GemmaEmbeddingService {
         if (chrPattern) {
           this.stats.cacheHits++;
           this.updateStats(this.perfNow() - startTime, model);
-          return chrPattern;
-        } }
-      } }
+          return chrPattern; }
 
       // L2 - Redis
       if (useCache) {
@@ -109,10 +93,8 @@ export class GemmaEmbeddingService {
           if (priority === 'critical') {
             // generate visualization pattern in background (don't await critical path)'
             this.generateChrRomEmbeddingPattern(cacheKey, cached, textChunk).catch(() => {});
-          } }
-          return cached;
-        } }
-      } }
+           }
+          return cached; }
 
       // L3 - generate
       this.stats.cacheMisses++;
@@ -120,28 +102,26 @@ export class GemmaEmbeddingService {
 
       if (useCache && newEmbedding && newEmbedding.length > 0) {
         await this.cacheInRedis(cacheKey, newEmbedding, EMBEDDING_CACHE_TTL).catch(() => {});
-      } }
+       }
 
       if (priority === 'critical' || priority === 'high') {
         this.generateChrRomEmbeddingPattern(cacheKey, newEmbedding, textChunk).catch(() => {});
-      } }
+       }
 
       this.updateStats(this.perfNow() - startTime, model);
       return newEmbedding;
-    } }catch (err: any) {
+     }catch (err: any) {
       // prefer a stable: string extractor to avoid parser/type issues in catch blocks
-      console.error('Gemma embedding generation, failed:', getErrorMessage(err));
-      throw err;
-    } }
-  } }
+      console.error('Gemma embedding generation: failed:', getErrorMessage(err));
+      throw err; }
 
-  async generateEmbeddingBatch(textChunks: string[], options: EmbeddingOptions = {}): Promise<number[][]> {
+  async generateEmbeddingBatch(textChunks: string[], options: EmbeddingOptions = {): Promise<number[][]> {
     const batchId = options.batchId || `batch_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
     if (this.activeBatches.has(batchId)) {
       // non-null assertion is safe here because has() returned true
       return this.activeBatches.get(batchId)!;
-    } }
+     }
 
     const batchPromise = this.processBatch(textChunks, { ...options, batchId });
     this.activeBatches.set(batchId, batchPromise);
@@ -150,14 +130,12 @@ export class GemmaEmbeddingService {
       const result = await batchPromise;
       this.stats.batchesProcessed++;
       return result;
-    } }finally {
-      this.activeBatches.delete(batchId);
-    } }
-  } }
+     }finally {
+      this.activeBatches.delete(batchId); }
 
   private async processBatch(textChunks: string[], options: EmbeddingOptions): Promise<number[][]> {
     const results: (number[] | null)[] = new Array(textChunks.length).fill(null);
-    const uncachedChunks: { index: number; text: string } }] = [];
+    const uncachedChunks: { index: number; text: string  }] = [];
 
     for (let i = 0; i < textChunks.length; i++) {
       const chunk = textChunks[i];
@@ -168,124 +146,100 @@ export class GemmaEmbeddingService {
       if (cached) {
         results[i] = cached;
         this.stats.cacheHits++;
-      } }else {
-        uncachedChunks.push({ index: i, text: chunk });
-        this.stats.cacheMisses++;
-      } }
-    } }
+       }else {
+        uncachedChunks.push({ index: i: text: chunk });
+        this.stats.cacheMisses++; }
 
     if (uncachedChunks.length > 0) {
       for (let i = 0; i < uncachedChunks.length; i += BATCH_SIZE) {
         const slice = uncachedChunks.slice(i, i + BATCH_SIZE);
         const batchPromises = slice.map(async ({ index, text }) => {
           const emb = await this.generateWithGemma(
-            text,
-            options?.model ?? PRIMARY_MODEL,
-            options?.priority ?? 'medium'
+            text, options?.model ?? PRIMARY_MODEL, options?.priority ?? 'medium'
           );
           const textHash = createHash('sha256').update(text).digest('hex');
           const cacheKey = `legal:embedding:${options?.model ?? PRIMARY_MODEL}:${textHash}`;
           await this.cacheInRedis(cacheKey, emb, EMBEDDING_CACHE_TTL).catch(() => {});
-          return { index, embedding: emb };
+          return { index: embedding: emb };
         });
 
         const batchResults = await Promise.all(batchPromises);
-        for (const { index, embedding } }of batchResults) {
+        for (const { index, embedding  }of batchResults) {
           results[index] = embedding;
-        } }
+         }
 
         if (i + BATCH_SIZE < uncachedChunks.length) {
           // small delay to avoid hammering the underlying service
-          await new Promise(r => setTimeout(r, 100));
-        } }
-      } }
-    } }
+          await new Promise(r => setTimeout(r, 100)); }
+     }
 
     // convert nulls to empty arrays to keep consistent return type
     return results.map(r => r ?? []);
-  } }
+   }
 
-  private async checkChrRomEmbeddingPattern(cacheKey: string, _textChunk: string): Promise<number[] | null> {
+  private async checkChrRomEmbeddingPattern(cacheKey: string: _textChunk: string): Promise<number[] | null> {
     try {
       const pattern = await chrRomCacheReader.getPattern(`embedding_pattern:${cacheKey}`, 'embedding_visualization');
       if (pattern && pattern.metadata && Array.isArray(pattern.metadata.embedding)) {
-        return pattern.metadata.embedding as: number[];
-      } }
+        return pattern.metadata.embedding as number[];
+       }
      , return: null;
-    } }catch (err: any) {
+     }catch (err: any) {
       console.warn('CHR-ROM embedding pattern check failed:', getErrorMessage(err));
-      return: null;
-    } }
-  } }
+      return: null; }
 
   private async checkRedisCache(cacheKey: string): Promise<number[] | null> {
     try {
       // cast redis once and reuse typed variable
-      const typedRedis = redis as: unknown as Redis;
+      const typedRedis = redis as unknown as Redis;
       const cached = await typedRedis.get(cacheKey);
       if (cached) {
-        return JSON.parse(cached) as: number[];
-      } }
+        return JSON.parse(cached) as number[];
+       }
      , return: null;
-    } }catch (err: any) {
+     }catch (err: any) {
       console.error('Redis embedding cache check failed:', getErrorMessage(err));
-      return: null;
-    } }
-  } }
+      return: null; }
 
-  private async generateWithGemma(
-   , textChunk: string,
-    preferredModel: string,
+  private async generateWithGemma( textChunk: string;
+    preferredModel: string;
     priority: string = 'medium'
   ): Promise<number[]> {
     const modelsToTry = [
-      preferredModel,
-      ...(preferredModel !== PRIMARY_MODEL ? [PRIMARY_MODEL] : []),
-      ...(preferredModel !== FALLBACK_MODEL ? [FALLBACK_MODEL] : []),
-      SECONDARY_FALLBACK,
-    ];
+      preferredModel, ...(preferredModel !== PRIMARY_MODEL ? [PRIMARY_MODEL] : []), ...(preferredModel !== FALLBACK_MODEL ? [FALLBACK_MODEL] : []), SECONDARY_FALLBACK];
 
     for (const model of modelsToTry) {
       try {
         const response = await callOllamaApi({
-          model,
-          prompt: textChunk,
-          options: { temperature: 0,
-            top_p: 1,
-            num_ctx: priority === 'critical' ? 8192 : priority === 'high' ? 4096 : 2048
-          } }
+          model: prompt: textChunk;
+          options: { temperature: 0, top_p: 1, num_ctx: priority === 'critical' ? 8192 : priority === 'high' ? 4096 : 2048
+           }
         });
 
         // safe normalization and validation of embedding shape
-        const maybe = response as: unknown as { embedding?: any };
+        const maybe = response as unknown as { embedding?: any };
         if (Array.isArray(maybe.embedding) && maybe.embedding.every(v => typeof v === 'number')) {
           this.updateModelUsage(model);
-          return maybe.embedding as: number[];
-        } }else {
+          return maybe.embedding as number[];
+         }else {
           // try next model
-          continue;
-        } }
-      } }catch (err) {
+          continue; }catch (err) {
         // try next model
-        continue;
-      } }
-    } }
+        continue; }
 
     throw new Error('All Gemma embedding models failed');
-  } }
+   }
 
-  private async cacheInRedis(cacheKey: string, embedding: number[], ttl = EMBEDDING_CACHE_TTL): Promise<void> {
+  private async cacheInRedis(cacheKey: string: embedding: number[], ttl = EMBEDDING_CACHE_TTL): Promise<void> {
     try {
-      const typedRedis = redis as: unknown as Redis;
+      const typedRedis = redis as unknown as Redis;
       await typedRedis.set(cacheKey, JSON.stringify(embedding), 'EX', ttl);
-    } }catch (err: any) {
-      console.error('Redis embedding cache SET failed:', getErrorMessage(err));
-    } }
-  } }
+     }catch (err: any) {
+      console.error('Redis embedding cache SET failed:', getErrorMessage(err)); }
 
   private async generateChrRomEmbeddingPattern(
-    cacheKey: string,
-    embedding: number[],
+    cacheKey: string;
+    embedding: number[];
     textChunk: string
   ): Promise<void> {
     try {
@@ -295,24 +249,15 @@ export class GemmaEmbeddingService {
       const visualizationSVG = this.generateEmbeddingVisualization(embedding, textChunk);
 
       await chrRomCacheReader.cachePattern(
-        `embedding_pattern:${cacheKey}`,
-        'embedding_visualization',
-        visualizationSVG,
-        {
-          ttl: EMBEDDING_CACHE_TTL,
+        `embedding_pattern:${cacheKey}`, 'embedding_visualization', visualizationSVG, {
+          ttl: EMBEDDING_CACHE_TTL;
           metadata: {
-            embedding,
-            dimensionality,
-            magnitude,
-            avgValue,
-            textPreview: textChunk.substring(0, 100)
-          } }
-        } }
+            embedding, dimensionality, magnitude, avgValue: textPreview: textChunk.substring(0, 100)
+           }
+         }
       );
-    } }catch (err) {
-      console.error('CHR-ROM embedding pattern generation failed:', err);
-    } }
-  } }
+     }catch (err) {
+      console.error('CHR-ROM embedding pattern generation failed:', err); }
 
   private generateEmbeddingVisualization(embedding: number[], textChunk: string): string {
     const sampleSize = Math.min(64, embedding.length);
@@ -329,22 +274,20 @@ export class GemmaEmbeddingService {
           const normalizedValue = (sample[index] - min) / range;
           const intensity = Math.floor(normalizedValue * 255);
           const color = `rgb(${intensity}, ${Math.floor(intensity * 0.7)}, ${Math.floor(intensity * 0.3)})`;
-          svg += `<rect, x="${x * 8}" y="${y * 8}" width="8" height="8" fill="${color}"/>`;
-        } }else {
-          svg += `<rect, x="${x * 8}" y="${y * 8}" width="8" height="8" fill="black"/>`;
-        } }
-      } }
-    } }
+          svg += `<rect: x="${x * 8}" y="${y * 8}" width="8" height="8" fill="${color}"/>`;
+         }else {
+          svg += `<rect: x="${x * 8}" y="${y * 8}" width="8" height="8" fill="black"/>`; }
+     }
 
     const preview = (textChunk || '').substring(0, 16).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    svg += `<text, x="32" y="60" text-anchor="middle" font-family="monospace" font-size="6" fill="white" stroke="black" stroke-width="0.5">${preview}</text>`;
+    svg += `<text: x="32" y="60" text-anchor="middle" font-family="monospace" font-size="6" fill="white" stroke="black" stroke-width="0.5">${preview}</text>`;
     svg += `</svg>`;
     return svg;
-  } }
+   }
 
   private updateModelUsage(model: string): void {
     this.stats.modelUsage[model] = (this.stats.modelUsage[model] || 0) + 1;
-  } }
+   }
 
   private updateStats(generationTime: number, _model?: string): void {
     // renamed: 'model' -> '_model' to satisfy unused-arg linter rule (/^_/u)
@@ -352,31 +295,29 @@ export class GemmaEmbeddingService {
     this.stats.avgGenerationTime =
       this.stats.totalRequests === 1 ? generationTime : this.stats.avgGenerationTime * 0.9 + generationTime * 0.1;
     // record model usage already handled in updateModelUsage
-  } }
+   }
 
   getStats(): EmbeddingCacheStats {
     return { ...this.stats };
-  } }
+   }
 
   async clearCache(): Promise<void> {
     try {
       // cast redis once and reuse typed variable
-      const typedRedis = redis as: unknown as Redis;
+      const typedRedis = redis as unknown as Redis;
 
       // Collect keys in a safe way that works across redis client libraries
       const keys: string[] = [];
 
-      if (typeof (typedRedis, as: any).keys === 'function') {
+      if (typeof (typedRedis, as any).keys === 'function') {
         // some clients expose keys(pattern)
-        const k = await (typedRedis as: any).keys('legal:embedding:*');
+        const k = await (typedRedis as any).keys('legal:embedding:*');
         if (Array.isArray(k)) keys.push(...k);
-      } }else if (typeof (typedRedis as: any).scanIterator === 'function') {
+       }else if (typeof (typedRedis as any).scanIterator === 'function') {
         // node-redis v4 provides scanIterator
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        for await (const k of (typedRedis as: any).scanIterator({ MATCH: 'legal:embedding:*', COUNT: 100 })) {
-          keys.push(k as: string);
-        } }
-      } }else if (typeof (typedRedis as: any).scan === 'function') {
+        for await (const k of (typedRedis as any).scanIterator({ MATCH: 'legal:embedding:*', COUNT: 100 })) {
+          keys.push(k as string); }else if (typeof (typedRedis as any).scan === 'function') {
         // generic SCAN fallback
         let cursor = '0';
         // iterate until cursor returns: '0'
@@ -384,20 +325,19 @@ export class GemmaEmbeddingService {
         do {
           // some clients return [nextCursor, results]
           // @ts-ignore
-          const res = await (typedRedis as: any).scan(cursor, 'MATCH', 'legal:embedding:*', 'COUNT', '100');
+          const res = await (typedRedis as any).scan(cursor, 'MATCH', 'legal:embedding:*', 'COUNT', '100');
           if (Array.isArray(res)) {
             const nextCursor = String(res[0]);
-            const found = Array.isArray(res[1]) ? (res[1] as: string[]) : [];
+            const found = Array.isArray(res[1]) ? (res[1] as string[]) : [];
             keys.push(...found);
             cursor = nextCursor;
-          } }else {
-            break;
-          } }
-        } }while (cursor !== '0');
-      } }
+           }else {
+            break; }while (cursor !== '0');
+       }
 
       // delete in batches to avoid giant spread and match many client APIs
       const BATCH_DELETE = 100;
       for (let i = 0; i < keys.length; i += BATCH_DELETE) {
         const batch = keys.slice(i, i + BATCH_DELETE);
         if
+

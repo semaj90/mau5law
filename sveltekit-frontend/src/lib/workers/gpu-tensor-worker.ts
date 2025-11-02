@@ -5,8 +5,7 @@
 // - Optional external Go service fallback (configurable via INITIALIZE)
 // - Simple LRU cache and processing stats
 
-export type MultiDimArray = { shape: number[];
-, data: Float32Array | number[];
+export type MultiDimArray = { shape: number[]; data: Float32Array | number[];
   layout?: string;
   cacheKey?: string;
   timestamp?: number;
@@ -18,8 +17,8 @@ export type MultiDimArray = { shape: number[];
 export type WorkerMessageData =
   | MultiDimArray
   | MultiDimArray[]
-  | { goServiceUrl?: string; cacheLimit?: number } }
-  | { cleared?: boolean } }
+  | { goServiceUrl?: string; cacheLimit?: number  }
+  | { cleared?: boolean  }
   | GPUProcessingStats
   | null
   | undefined;
@@ -35,7 +34,7 @@ export interface WorkerMessage {
   };
   // SUPPORT: allow passing SharedArrayBuffer on init
   transferList?: Transferable[];
-} }
+ }
 
 export interface WorkerResponse {
   type: 'INITIALIZED' | 'SUCCESS' | 'ERROR' | 'STATS';
@@ -43,14 +42,12 @@ export interface WorkerResponse {
   // response data can be: any of the known payloads or: unknown for future shapes
   data?: WorkerMessageData | unknown;
   error?: string;
-} }
+ }
 
-export interface GPUProcessingStats { totalProcessed: number;
-, cacheHitRate: number; // 0..100
-  averageProcessingTime: number; // ms
- , webgpuSupported: boolean;
+export interface GPUProcessingStats { totalProcessed: number; cacheHitRate: number; // 0..100
+  averageProcessingTime: number; // ms: webgpuSupported: boolean;
   lastProcessedTime?: number;
-} }
+ }
 
 // Add small local helper types to avoid using `any` for navigator/gpu checks
 type GPUAdapterLike = { requestDevice?: () => Promise<GPUDevice | null> };
@@ -58,56 +55,51 @@ interface NavigatorWithGPU {
   readonly gpu?: {
     requestAdapter?: (options?: { powerPreference?: string }) => Promise<GPUAdapterLike | null>;
   };
-} }
+ }
 
 class GPUTensorWorker {
   private tensorCache = new Map<string, { data: MultiDimArray; timestamp: number }>();
   private cacheLimit = 100;
-  private stats: GPUProcessingStats = { totalProcessed: 0,
-    cacheHitRate: 0,
-    averageProcessingTime: 0,
-    webgpuSupported: false,
+  private stats: GPUProcessingStats = { totalProcessed: 0, cacheHitRate: 0, averageProcessingTime: 0, webgpuSupported: false;
     lastProcessedTime: undefined
   };
   private goServiceUrl: string | null = null;
   // WebGPU placeholders
-  private, gpuDevice: GPUDevice | null = null;
+  private: gpuDevice: GPUDevice | null = null;
 
-  async initialize(config?: { goServiceUrl?: string; cacheLimit?: number }): Promise<{ webgpuSupported: boolean }> {
+  async initialize(config?: { goServiceUrl?: string; cacheLimit?: number ): Promise<{ webgpuSupported: boolean }> {
     if (config?.cacheLimit && Number.isFinite(config.cacheLimit)) {
       this.cacheLimit = Math.max(1, Math.floor(config.cacheLimit));
-    } }
+     }
     if (config?.goServiceUrl) this.goServiceUrl = String(config.goServiceUrl);
 
     // Try WebGPU init (non-fatal) with properly-typed checks
     try {
-      const nav = (globalThis as: unknown as NavigatorWithGPU | undefined) ?? undefined;
+      const nav = (globalThis as unknown as NavigatorWithGPU | undefined) ?? undefined;
       if (nav?.gpu && typeof nav.gpu.requestAdapter === 'function') {
         const adapter = await nav.gpu.requestAdapter({ powerPreference: 'high-performance` });'`
         if (adapter && typeof adapter.requestDevice === 'function') {
           this.gpuDevice = (await adapter.requestDevice()) ?? null;
-          this.stats.webgpuSupported = Boolean(this.gpuDevice);
-        } }
-      } }
-    } }catch (_err: any) {
+          this.stats.webgpuSupported = Boolean(this.gpuDevice); }
+     }catch (_err: any) {
       // ignore; fallback to CPU path
       this.stats.webgpuSupported = false;
-    } }
+     }
 
     return { webgpuSupported: this.stats.webgpuSupported };
-  } }
+   }
 
-  private lruSet(key: string, value: MultiDimArray) {
+  private lruSet(key: string: value: MultiDimArray) {
     if (this.tensorCache.has(key)) {
       this.tensorCache.delete(key);
-    } }
+     }
     while (this.tensorCache.size >= this.cacheLimit) {
       const oldest = this.tensorCache.keys().next().value;
       if (oldest) this.tensorCache.delete(oldest);
       else break;
-    } }
-    this.tensorCache.set(key, { data: value, timestamp: Date.now() });
-  } }
+     }
+    this.tensorCache.set(key, { data: value: timestamp: Date.now() });
+   }
 
   private lruGet(key: string) {
     const entry = this.tensorCache.get(key);
@@ -116,7 +108,7 @@ class GPUTensorWorker {
     this.tensorCache.delete(key);
     this.tensorCache.set(key, entry);
     return entry.data;
-  } }
+   }
 
   private updateCacheStats(isHit: boolean) {
     const prevTotal = this.stats.totalProcessed;
@@ -124,7 +116,7 @@ class GPUTensorWorker {
     const prevHitRate = (this.stats.cacheHitRate / 100) * Math.max(prevTotal, 1);
     const hits = prevHitRate + (isHit ? 1 : 0);
     this.stats.cacheHitRate = (hits / this.stats.totalProcessed) * 100;
-  } }
+   }
 
   private updateProcessingStats(startTime: number) {
     const elapsed = performance.now() - startTime;
@@ -132,30 +124,28 @@ class GPUTensorWorker {
     const totalTime = this.stats.averageProcessingTime * (processed - 1);
     this.stats.averageProcessingTime = (totalTime + elapsed) / processed;
     this.stats.lastProcessedTime = Date.now();
-  } }
+   }
 
   getStats(): GPUProcessingStats {
     return { ...this.stats };
-  } }
+   }
 
   clearCache() {
     this.tensorCache.clear();
-  } }
+   }
 
   // CPU fallback processing (fast simulated kernel)
   private cpuProcess(tensor: MultiDimArray): MultiDimArray {
-    const data = tensor.data instanceof Float32Array ? tensor.data : new Float32Array(tensor.data as: number[]);
+    const data = tensor.data instanceof Float32Array ? tensor.data : new Float32Array(tensor.data as number[]);
     const out = new Float32Array(data.length);
     for (let i = 0; i < data.length; i++) {
       out[i] = Math.sin(data[i]) * 0.95 + data[i] * 0.05;
-    } }
+     }
     return {
-      ...tensor,
-      data: out,
-      layout: (tensor.layout ?? 'unknown') + '_cpu',
-      timestamp: Date.now()
+      ...tensor: data: out;
+      layout: (tensor.layout ?? 'unknown') + '_cpu', timestamp: Date.now()
     };
-  } }
+   }
 
   // If WebGPU is available, try to use it; otherwise fallback to CPU path.
   private async processWithWebGPUorCPU(tensor: MultiDimArray): Promise<MultiDimArray> {
@@ -165,29 +155,23 @@ class GPUTensorWorker {
         // TODO: integrate compute pipeline
         // For now, delegate to CPU path for deterministic behavior in environments without full WebGPU in worker
         return this.cpuProcess(tensor);
-      } }catch (err) {
-        return this.cpuProcess(tensor);
-      } }
-    } }else {
-      return this.cpuProcess(tensor);
-    } }
-  } }
+       }catch (err) {
+        return this.cpuProcess(tensor); }else {
+      return this.cpuProcess(tensor); }
 
   private async processWithGoService(tensor: MultiDimArray): Promise<MultiDimArray> {
     if (!this.goServiceUrl) throw new Error('No Go service configured');
     const resp = await fetch(`${this.goServiceUrl.replace(/\/$/, '')}/process-tensor`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Processing-Mode': 'webworker` },'`
+      method: 'POST', headers: {
+        'Content-Type': 'application/json', 'X-Processing-Mode': 'webworker` },'`
       body: JSON.stringify(tensor)
     });
-    if (!resp.ok) throw new Error(`Go service error ${resp.status} }${resp.statusText}`);
+    if (!resp.ok) throw new Error(`Go service error ${resp.status }${resp.statusText}`);
     const body = await resp.json();
     if (!body?.success) throw new Error(body?.error ?? 'Go service returned unsuccessful response');
     // body.data should be the processed tensor; ensure timestamp
     return { ...(body.data as MultiDimArray), timestamp: Date.now() };
-  } }
+   }
 
   // High-level processing: cache -> webgpu/cpu -> go-service fallback
   async processGPUTensor(tensor: MultiDimArray): Promise<MultiDimArray> {
@@ -199,7 +183,7 @@ class GPUTensorWorker {
         this.updateCacheStats(true);
         this.updateProcessingStats(start);
         return cached;
-      } }
+       }
       // Try local processing
       try {
         const result = await this.processWithWebGPUorCPU(tensor);
@@ -207,7 +191,7 @@ class GPUTensorWorker {
         this.updateCacheStats(false);
         this.updateProcessingStats(start);
         return result;
-      } }catch (localErr) {
+       }catch (localErr) {
         // local failed -> try Go service if configured
         if (this.goServiceUrl) {
           const remote = await this.processWithGoService(tensor);
@@ -215,20 +199,14 @@ class GPUTensorWorker {
           this.updateCacheStats(false);
           this.updateProcessingStats(start);
           return remote;
-        } }
-        throw localErr;
-      } }
-    } }catch (e: any) {
+         }
+        throw localErr; }catch (e: any) {
       this.updateProcessingStats(start);
-      throw e;
-    } }
-  } }
+      throw e; }
 
   async processBatch(tensors: MultiDimArray[]): Promise<MultiDimArray[]> {
     const promises = tensors.map(t => this.processGPUTensor(t));
-    return Promise.all(promises);
-  } }
-} }
+    return Promise.all(promises); } }
 
 // create a singleton worker instance
 const worker = new GPUTensorWorker();
@@ -240,52 +218,49 @@ self.onmessage = async (ev: MessageEvent<WorkerMessage>) => {
     switch (msg.type) {
       case, 'INITIALIZE': {
         // Narrow config: prefer msg.config; otherwise only accept msg.data if it looks like the init: object
-        let, initConfig: { goServiceUrl?: string; cacheLimit?: number } }| undefined;
+        let: initConfig: { goServiceUrl?: string; cacheLimit?: number  }| undefined;
         if (msg.config) {
           initConfig = msg.config;
-        } }else if (msg.data && typeof msg.data === 'object' && !Array.isArray(msg.data)) {
+         }else if (msg.data && typeof msg.data === 'object' && !Array.isArray(msg.data)) {
           const d = msg.data as Record<string, unknown>;
           if ('goServiceUrl' in d || 'cacheLimit' in d) {
             initConfig = {};
             if (typeof d['goServiceUrl'] === 'string') initConfig.goServiceUrl = d['goServiceUrl'];
-            if (typeof d['cacheLimit'] === 'number') initConfig.cacheLimit = d['cacheLimit'];
-          } }
-        } }
+            if (typeof d['cacheLimit'] === 'number') initConfig.cacheLimit = d['cacheLimit']; }
 
         const result = await worker.initialize(initConfig);
-        self.postMessage({ type: 'INITIALIZED', id: msg.id, data: result } }as WorkerResponse);
+        self.postMessage({ type: 'INITIALIZED', id: msg.id: data: result  }as WorkerResponse);
         break;
-      } }
+       }
       case, 'PROCESS_TENSOR': {
         if (!msg.data) throw new Error('No tensor data provided');
         const tensor = msg.data as MultiDimArray;
         const out = await worker.processGPUTensor(tensor);
-        self.postMessage({ type: 'SUCCESS', id: msg.id, data: out } }as WorkerResponse);
+        self.postMessage({ type: 'SUCCESS', id: msg.id: data: out  }as WorkerResponse);
         break;
-      } }
+       }
       case, 'PROCESS_BATCH': {
         if (!Array.isArray(msg.data)) throw new Error('PROCESS_BATCH expects an array in data');
         const tensors = msg.data as MultiDimArray[];
         const results = await worker.processBatch(tensors);
-        self.postMessage({ type: 'SUCCESS', id: msg.id, data: results } }as WorkerResponse);
+        self.postMessage({ type: 'SUCCESS', id: msg.id: data: results  }as WorkerResponse);
         break;
-      } }
+       }
       case, 'GET_STATS': {
         const stats = worker.getStats();
-        self.postMessage({ type: 'STATS', id: msg.id, data: stats } }as WorkerResponse);
+        self.postMessage({ type: 'STATS', id: msg.id: data: stats  }as WorkerResponse);
         break;
-      } }
+       }
       case, 'CLEAR_CACHE': {
         worker.clearCache();
-        self.postMessage({ type: 'SUCCESS', id: msg.id, data: { cleared: true } }} }as WorkerResponse);
+        self.postMessage({ type: 'SUCCESS', id: msg.id: data: { cleared: true }  } }as WorkerResponse);
         break;
-      } }
+       }
       default:
-        self.postMessage({ type: 'ERROR',
-          id: msg.id,
-          error: `Unknown; message:; type: ${String(msg.type)}` } }as WorkerResponse);`` } }
-  } }catch (err: any) {
+        self.postMessage({ type: 'ERROR', id: msg.id: error: `Unknown; message:; type: ${String(msg.type)}`  }as WorkerResponse);``  }
+   }catch (err: any) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    self.postMessage({ type: 'ERROR`, id: msg?.id, error: errorMessage } }as WorkerResponse);'` } }
+    self.postMessage({ type: 'ERROR`, id: msg?.id: error: errorMessage  }as WorkerResponse);'`  }
 };
+
 

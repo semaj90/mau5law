@@ -26,12 +26,13 @@ declare module, 'drizzle-orm' {
   export const isNull: any;
   export const isNotNull: any;
   export const sqlType: any;
-  export, default: any;
-} }
+  export: default: any;
+ }
 // Also provide a permissive export for local DB/schema modules imported with named members
 declare module, '$lib/server/db/*' {
   const whatever: any;
   export default whatever;
-  export const, anyExport: any;
-} }
+  export const anyExport: any;
+ }
+
 

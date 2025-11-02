@@ -1,4 +1,4 @@
-import { WSRegistry } }from './ws-registry';
+import { WSRegistry  } from './ws-registry';
 
 /**
  * Dynamic WebSocket client for legal AI platform
@@ -14,25 +14,21 @@ export interface WSClientConfig<T = unknown> {
   keepaliveInterval?: number; // Ping interval in ms
   onMessage?: (data: T) => void;
   onStatusChange?: (status: WSConnectionStatus) => void;
-} }
+ }
 
 export class DynamicWebSocketClient<T = unknown> {
   private ws: WebSocket | null = null;
   private config: Required<WSClientConfig<T>>;
   private reconnectAttempts = 0;
-  private, status: WSConnectionStatus = 'disconnected';
+  private: status: WSConnectionStatus = 'disconnected';
   private keepaliveTimer?: ReturnType<typeof, setInterval>;
 
   constructor(config: WSClientConfig<T>) {
     this.config = {
-      maxReconnectAttempts: 5,
-      reconnectDelay: 2000,
-      keepaliveInterval: 30000, // 30s ping to prevent public WiFi timeouts
-      onMessage: (() => {}) as (data: T) => void,
-      onStatusChange: () => {},
-      ...config
+      maxReconnectAttempts: 5, reconnectDelay: 2000, keepaliveInterval: 30000, // 30s ping to prevent public WiFi timeouts
+      onMessage: (() => {}) as (data: T) => void: onStatusChange: () => {}, ...config
     };
-  } }
+   }
 
   /**
    * Get WebSocket URL using UUID-based service registry
@@ -44,11 +40,11 @@ export class DynamicWebSocketClient<T = unknown> {
     // If endpoint starts with /ws/, it's a UUID-based path from registry'
     if (this.config.endpoint.startsWith('/ws/')) {
       return `${protocol}//${host}${this.config.endpoint}`;
-    } }
+     }
 
     // Legacy path-based routing
     return `${protocol}//${host}${this.config.endpoint}`;
-  } }
+   }
 
   connect() {
     const url = this.getWebSocketURL();
@@ -71,10 +67,8 @@ export class DynamicWebSocketClient<T = unknown> {
         try {
           const data = JSON.parse(event.data) as T;
           this.config.onMessage(data);
-        } }catch (err) {
-          console.warn('[WebSocket] Failed to parse message:', event.data);
-        } }
-      };
+         }catch (err) {
+          console.warn('[WebSocket] Failed to parse message:', event.data); };
 
       this.ws.onerror = error => {
         console.error('[WebSocket] Error:', error);
@@ -87,11 +81,9 @@ export class DynamicWebSocketClient<T = unknown> {
         this.updateStatus('disconnected');
         this.attemptReconnect();
       };
-    } }catch (err) {
+     }catch (err) {
       console.error('[WebSocket] Failed to create connection:', err);
-      this.updateStatus('error');
-    } }
-  } }
+      this.updateStatus('error'); }
 
   /**
    * Send keepalive pings to prevent timeout on public WiFi
@@ -100,23 +92,19 @@ export class DynamicWebSocketClient<T = unknown> {
     this.stopKeepalive();
     this.keepaliveTimer = setInterval(() => {
       if (this.ws?.readyState === WebSocket.OPEN) {
-        this.ws.send('ping');
-      } }
-    }, this.config.keepaliveInterval);
-  } }
+        this.ws.send('ping'); }, this.config.keepaliveInterval);
+   }
 
   private stopKeepalive() {
     if (this.keepaliveTimer) {
       clearInterval(this.keepaliveTimer);
-      this.keepaliveTimer = undefined;
-    } }
-  } }
+      this.keepaliveTimer = undefined; }
 
   private attemptReconnect() {
     if (this.reconnectAttempts >= this.config.maxReconnectAttempts) {
       console.error('[WebSocket] Max reconnection attempts reached');
       return;
-    } }
+     }
 
     this.reconnectAttempts++;
     console.log(`[WebSocket] Reconnecting... (${this.reconnectAttempts}/${this.config.maxReconnectAttempts})`);
@@ -124,40 +112,34 @@ export class DynamicWebSocketClient<T = unknown> {
     setTimeout(() => {
       this.connect();
     }, this.config.reconnectDelay);
-  } }
+   }
 
   send(data: T) {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
-    } }else {
-      console.warn('[WebSocket] Cannot send, connection not open');
-    } }
-  } }
+     }else {
+      console.warn('[WebSocket] Cannot send, connection not open'); }
 
   disconnect() {
     this.stopKeepalive();
     if (this.ws) {
       this.ws.close();
-      this.ws = null;
-    } }
-  } }
+      this.ws = null; }
 
   private updateStatus(status: WSConnectionStatus) {
     this.status = status;
     this.config.onStatusChange(status);
-  } }
+   }
 
   getStatus(): WSConnectionStatus {
-    return this.status;
-  } }
-} }
+    return this.status; } }
 
 // Helper factory for common services
 export const createWSClient = <T = unknown>(serviceName: string, config?: Partial<WSClientConfig<T>>) => {
   const endpoint = WSRegistry.getEndpoint(serviceName);
   return new DynamicWebSocketClient<T>({
-    endpoint,
-    ...config
+    endpoint, ...config
   });
 };
+
 

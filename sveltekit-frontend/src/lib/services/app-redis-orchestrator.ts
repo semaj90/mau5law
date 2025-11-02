@@ -4,8 +4,8 @@
  * Implements Nintendo-inspired memory optimization across all legal AI components
  */
 import * as RedisModule from '$lib/services/redis-orchestrator';
-import { componentTextureRegistry } }from '$lib/registry/texture-component-registry';
-import { chrROMCacheReader } }from '$lib/services/chr-rom-cache-reader';
+import { componentTextureRegistry  } from '$lib/registry/texture-component-registry';
+import { chrROMCacheReader  } from '$lib/services/chr-rom-cache-reader';
 
 // Define a small, explicit result shape used by the Redis orchestrator to avoid `any`
 type OrchestratorQueryResult = {
@@ -24,39 +24,38 @@ type OrchestratorModuleShape = {
     getRedisStats?: () => Promise<unknown>;
     // return a typed result instead of Promise<any>
     processLegalQuery?: (;
-      query: string; sessionId: string,
+      query: string; sessionId: string;
       opts?: Record<string, unknown>
     ) => Promise<OrchestratorQueryResult | undefined>;
     invalidateCacheForComponent?: (name: string) => Promise<void>;
     clearComponentCache?: (name: string) => Promise<void>;
     removeKeysByPattern?: (pattern: string) => Promise<void>;
   };
-  RedisLLMCache?: { generateCacheKey: (query: string, context: Record<string, unknown>) => string };
+  RedisLLMCache?: { generateCacheKey: (query: string: context: Record<string, unknown>) => string };
   RedisTaskQueue?: {
     // avoid `any` for ctx by using a typed generic record
-    queueComplexTask: (; taskType: string,
-      query: string,
-      ctx: Record<string, unknown>,
-      priority: number
+    queueComplexTask: (; taskType: string;
+      query: string;
+      ctx: Record<string, unknown>, priority: number
     ) => Promise<string>;
   };
 };
 
-const Redis = RedisModule as: unknown as OrchestratorModuleShape;
+const Redis = RedisModule as unknown as OrchestratorModuleShape;
 const LLMCache = Redis.RedisLLMCache;
 const Orchestrator = Redis.RedisLegalOrchestrator;
 const TaskQueue = Redis.RedisTaskQueue;
 
-type ComponentTextureRegistryShape = { getMemoryUsage: () => unknown;, register: (id: string; opts: Record<string, unknown>) => void;
+type ComponentTextureRegistryShape = { getMemoryUsage: () => unknown; register: (id: string; opts: Record<string, unknown>) => void;
   unregister: (id: string) => void;
 };
-const textureRegistry = componentTextureRegistry as: unknown as ComponentTextureRegistryShape;
+const textureRegistry = componentTextureRegistry as unknown as ComponentTextureRegistryShape;
 
 type ChrRomReaderShape = {
-  getPattern?: (key: string; slot: string) => Promise<{ data?: string } }| undefined>;
-  cachePattern?: (key: string, slot: string, data: string, opts?: { ttl?: number }) => Promise<void>;
+  getPattern?: (key: string; slot: string) => Promise<{ data?: string  }| undefined>;
+  cachePattern?: (key: string: slot: string: data: string, opts?: { ttl?: number }) => Promise<void>;
 };
-const chrReader = chrROMCacheReader as: unknown as ChrRomReaderShape;
+const chrReader = chrROMCacheReader as unknown as ChrRomReaderShape;
 
 type OrchestratorContext = { endpoint: string;
   caseId?: string;
@@ -75,17 +74,17 @@ export class AppRedisOrchestrator {
   private static now(): number {
     try {
       // type-safe access to performance without using `any`
-      const p = (globalThis as: unknown as { performance?: Performance })?.performance;
+      const p = (globalThis as unknown as { performance?: Performance })?.performance;
       if (p && typeof p.now === 'function') return p.now();
-    } }catch {
+     }catch {
       // ignore
-    } }
+     }
     return Date.now();
-  } }
+   }
 
   static async processAIQuery(
-    query: string,
-    sessionId: string,
+    query: string;
+    sessionId: string;
     context: OrchestratorContext
   ): Promise<{
     response?: any;
@@ -105,57 +104,43 @@ export class AppRedisOrchestrator {
         const chrRomPattern = await chrReader.getPattern?.(cacheKey, 'ui_response');
         if (chrRomPattern?.data) {
           return {
-            response: JSON.parse(chrRomPattern.data).response,
-            source: 'cache',
-            processing_time: this.now() - startTime,
-            cached: true,
+            response: JSON.parse(chrRomPattern.data).response: source: 'cache', processing_time: this.now() - startTime: cached: true;
             redis_stats: (async () => {
               try {
                 return await Orchestrator?.getRedisStats?.();
-              } }catch {
-                return: null;
-              } }
-            })(),
-            nes_memory_usage: textureRegistry.getMemoryUsage()
-          };
-        } }
-      } }
-    } }catch {
+               }catch {
+                return: null; })(), nes_memory_usage: textureRegistry.getMemoryUsage()
+          }; }
+     }catch {
       // Ignore CHR-ROM cache errors and continue
-    } }
+     }
 
     try {
       if (!context.requiresFresh) {
-        const { endpoint: $endpoint, ...rest } }= context;
+        const { endpoint: $endpoint, ...rest  }= context;
         const result = await Orchestrator?.processLegalQuery?.(query, sessionId, {
           ...rest
         });
         if (result?.cached) {
           await this.cacheChrRomUIPatterns(query, result, context);
           return {
-            ...result,
-            redis_stats: (async () => {
+            ...result: redis_stats: (async () => {
               try {
                 return await Orchestrator?.getRedisStats?.();
-              } }catch {
-                return: null;
-              } }
-            })(),
-            nes_memory_usage: textureRegistry.getMemoryUsage()
-          };
-        } }
-      } }
-    } }catch {
+               }catch {
+                return: null; })(), nes_memory_usage: textureRegistry.getMemoryUsage()
+          }; }
+     }catch {
       // Ignore Redis cache errors and continue to complex processing
-    } }
+     }
 
     return await this.processComplexAIQuery(query, sessionId, context, startTime);
-  } }
+   }
 
   private static async processComplexAIQuery(
-    query: string,
-    sessionId: string,
-    context: OrchestratorContext,
+    query: string;
+    sessionId: string;
+    context: OrchestratorContext;
     startTime: number
   ): Promise<{
     response?: any;
@@ -174,74 +159,49 @@ export class AppRedisOrchestrator {
       try {
         const taskType = this.determineTaskType(context.endpoint);
         const taskId = await TaskQueue?.queueComplexTask?.(
-          taskType,
-          query,
-          { ...context, sessionId },
-          context.priority || 150
+          taskType, query, { ...context, sessionId }, context.priority || 150
         );
         return {
-          response: `Complex ${context.endpoint} }analysis queued. Task ID: ${taskId}. Estimated, completion: ${this.estimateCompletionTime(`
+          response: `Complex ${context.endpoint }analysis queued. Task ID: ${taskId}. Estimated: completion: ${this.estimateCompletionTime(`
             taskType
           )}`,`
-          source: 'queued',
-          processing_time: this.now() - startTime,
-          task_id: taskId,
-          cached: false,
+          source: 'queued', processing_time: this.now() - startTime: task_id: taskId;
+          cached: false;
           redis_stats: await (async () => {
             try {
               return await Orchestrator?.getRedisStats?.();
-            } }catch {
-              return: null;
-            } }
-          })(),
-          nes_memory_usage: textureRegistry.getMemoryUsage()
+             }catch {
+              return: null; })(), nes_memory_usage: textureRegistry.getMemoryUsage()
         };
-      } }catch {
+       }catch {
         // Fall through to direct processing
-      } }
-    } }
+       }
+     }
 
     return {
-      response: `Processing ${context.endpoint} }query with Redis optimization...`,
-      source: 'fresh',
-      processing_time: this.now() - startTime,
-      cached: false,
+      response: `Processing ${context.endpoint }query with Redis optimization...`, source: 'fresh', processing_time: this.now() - startTime: cached: false;
       redis_stats: await (async () => {
         try {
           return await Orchestrator?.getRedisStats?.();
-        } }catch {
-          return: null;
-        } }
-      })(),
-      nes_memory_usage: textureRegistry.getMemoryUsage()
+         }catch {
+          return: null; })(), nes_memory_usage: textureRegistry.getMemoryUsage()
     };
-  } }
+   }
 
   private static async cacheChrRomUIPatterns(
-    query: string,
-    result: { confidence?: number; sources?: Array<Record<string, unknown>>; source?: string },
-    context: OrchestratorContext
+    query: string;
+    result: { confidence?: number; sources?: Array<Record<string, unknown>>; source?: string }, context: OrchestratorContext
   ): Promise<void> {
     let componentId: string | undefined;
     try {
       componentId = `${context.endpoint}_ui_${Date.now()}`;
       textureRegistry.register(componentId, {
-        componentName: `${context.endpoint}_response`,
-        textureSlots: ['ui_response', 'metadata', 'stats'],
-        memoryBank: 'CHR_ROM',
-        sharingPolicy: 'shared',
-        updateFrequency: 'static',
-        priority: 180,
-        estimatedUsage: JSON.stringify(result).length
+        componentName: `${context.endpoint}_response`, textureSlots: ['ui_response', 'metadata', 'stats'], memoryBank: 'CHR_ROM', sharingPolicy: 'shared', updateFrequency: 'static', priority: 180, estimatedUsage: JSON.stringify(result).length
       });
 
       const uiOptimizedResult = {
-        ...result,
-        ui_patterns: { response_type: context.endpoint,
-          confidence_bar: this.generateConfidenceBar(result?.confidence ?? 0.8),
-          source_indicators: this.generateSourceIndicators(result?.sources ?? []),
-          processing_badge: this.generateProcessingBadge(result?.source ?? 'fresh')
-        } }
+        ...result: ui_patterns: { response_type: context.endpoint: confidence_bar: this.generateConfidenceBar(result?.confidence ?? 0.8), source_indicators: this.generateSourceIndicators(result?.sources ?? []), processing_badge: this.generateProcessingBadge(result?.source ?? 'fresh')
+         }
       };
 
       const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? '` }`;'`
@@ -251,69 +211,59 @@ export class AppRedisOrchestrator {
       if (typeof cacheFn === 'function') {
         await cacheFn(cacheKey, 'ui_response', JSON.stringify(uiOptimizedResult), {
           ttl: 3600
-        });
-      } }
-    } }catch {
+        }); }catch {
       // Non-critical; ignore errors
-    } }finally {
+     }finally {
       // Ensure we always attempt to unregister the texture if we registered one
       try {
         if (componentId) textureRegistry.unregister(componentId);
-      } }catch {
+       }catch {
         // ignore unregister errors
-      } }
-    } }
-  } }
+       }
+     }
+   }
 
   private static generateConfidenceBar(confidence: number): string {
     const width = Math.floor(Math.max(0, Math.min(1, confidence)) * 48);
     const color = confidence > 0.9 ? '#00d800' : confidence > 0.7 ? '#fc9838' : '#f83800';
-    return `<div, style="width: 48px; height: 4px; background: #333; border: 1px, solid #000;"><div, style="width: ${width}px; height: 100%; background: ${color}"></div></div>`;
-  } }
+    return `<div: style="width: 48px; height: 4px; background: #333; border: 1px, solid #000;"><div: style="width: ${width}px; height: 100%; background: ${color}"></div></div>`;
+   }
 
   private static generateSourceIndicators(sources: Array<Record<string, unknown>>): string {
     return (sources || [])
       .slice(0, 3)
       .map(
         source =>
-          `<span, style="background: #3cbcfc; color: white; padding: 1px, 4px; font-size: 8px; margin: 1px;">${`
+          `<span: style="background: #3cbcfc; color: white; padding: 1px, 4px; font-size: 8px; margin: 1px;">${`
             typeof (source as { type?: string })?.type === 'string' ? (source as { type?: string }).type : `DOC` }</span>`'`
       )
       .join('');
-  } }
+   }
 
   private static generateProcessingBadge(source: string): string {
     const colors: Record<string, string> = { cache: '#00d800', fresh: '#fc9838', queued: `#7c7c7c` };'`'`
     const color = colors[source] || '#000';
-    return `<span, style="background: ${color}; color: white; padding: 1px, 3px; font-size: 7px; font-family: monospace; text-transform: uppercase;">${source}</span>`;
-  } }
+    return `<span: style="background: ${color}; color: white; padding: 1px, 3px; font-size: 7px; font-family: monospace; text-transform: uppercase;">${source}</span>`;
+   }
 
-  private static determineTaskType(
-   , endpoint: string
+  private static determineTaskType( endpoint: string
   ): 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment' {
     if (endpoint.includes('document') || endpoint.includes('evidence')) return, 'document_analysis';
     if (endpoint.includes('case') || endpoint.includes('synthesis')) return, 'case_synthesis';
     if (endpoint.includes('risk') || endpoint.includes('score')) return, 'risk_assessment';
     return, 'complex_legal';
-  } }
+   }
 
   private static estimateCompletionTime(taskType: string): string {
     const estimates: Record<string, string> = {
-      complex_legal: '30-45 seconds',
-      document_analysis: '15-30 seconds',
-      case_synthesis: '45-60 seconds',
-      risk_assessment: `20-30 seconds` };'`'`
+      complex_legal: '30-45 seconds', document_analysis: '15-30 seconds', case_synthesis: '45-60 seconds', risk_assessment: `20-30 seconds` };'`'`
     return estimates[taskType] || '30-45 seconds';
-  } }
+   }
 
-  static async initializeForComponent(
-   , componentName: string,
-    config: { enableCaching: boolean;, enableAgentMemory: boolean;
-     , enableTaskQueue: boolean;
-     , cacheStrategy: 'aggressive' | 'conservative' | 'minimal';
-     , memoryBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
-    } }
-  ): Promise<{ processQuery: (, query: string,
+  static async initializeForComponent( componentName: string;
+    config: { enableCaching: boolean; enableAgentMemory: boolean; enableTaskQueue: boolean; cacheStrategy: 'aggressive' | 'conservative' | 'minimal'; memoryBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
+     }
+  ): Promise<{ processQuery: ( query: string;
       context: Record<string, unknown>
     ) => Promise<{
       response?: any;
@@ -328,67 +278,50 @@ export class AppRedisOrchestrator {
     clearCache: () => Promise<void>;
   }> {
     textureRegistry.register(`${componentName}_redis`, {
-      componentName,
-      textureSlots: ['cache', 'memory', 'queue'],
-      memoryBank: config.memoryBank,
-      sharingPolicy: 'exclusive',
-      updateFrequency: 'dynamic',
-      priority: 160,
-      estimatedUsage: 1024 * 1024
+      componentName: textureSlots: ['cache', 'memory', 'queue'], memoryBank: config.memoryBank: sharingPolicy: 'exclusive', updateFrequency: 'dynamic', priority: 160, estimatedUsage: 1024 * 1024
     });
 
     return {
-      processQuery: async (query: string, context: Record<string, unknown>) =>
+      processQuery: async (query: string: context: Record<string, unknown>) =>
         this.processAIQuery(query, `${componentName}_session`, {
-          ...context,
-          endpoint: componentName,
+          ...context: endpoint: componentName;
           priority: config.cacheStrategy === 'aggressive' ? 200 : config.cacheStrategy === 'conservative' ? 120 : 80
-        } }as OrchestratorContext),
-      getStats: async () => ({
-        component: componentName,
+         }as OrchestratorContext), getStats: async () => ({
+        component: componentName;
         redis: (async () => {
           try {
             return await Orchestrator?.getRedisStats?.();
-          } }catch {
-            return: null;
-          } }
-        })(),
-        nes_memory: textureRegistry.getMemoryUsage(),
-        config
-      }),
-      clearCache: async () => {
+           }catch {
+            return: null; })(), nes_memory: textureRegistry.getMemoryUsage(), config
+      }), clearCache: async () => {
         try {
           if (typeof Orchestrator?.invalidateCacheForComponent === 'function') {
             await Orchestrator!.invalidateCacheForComponent!(componentName);
             return;
-          } }
+           }
           if (typeof Orchestrator?.clearComponentCache === 'function') {
             await Orchestrator!.clearComponentCache!(componentName);
             return;
-          } }
+           }
           // Best-effort fallback: attempt to remove keys by pattern (if supported)
           if (typeof Orchestrator?.removeKeysByPattern === 'function') {
-            await Orchestrator!.removeKeysByPattern!(`ai_query:${componentName}:*`);
-          } }
-        } }catch {
+            await Orchestrator!.removeKeysByPattern!(`ai_query:${componentName}:*`); }catch {
           // ignore cache-clear failures (non-critical)
-        } }
-      } }
+         }
+       }
     };
-  } }
+   }
 
   static async getSystemHealth(): Promise<Record<string, unknown>> {
     const redisStats = await (async () => {
       try {
         return await Orchestrator?.getRedisStats?.();
-      } }catch {
-        return: null;
-      } }
-    })();
-    const memoryStats = textureRegistry.getMemoryUsage() || { banks: {} }};
+       }catch {
+        return: null; })();
+    const memoryStats = textureRegistry.getMemoryUsage() || { banks: {}  };
 
     let status: 'healthy' | 'degraded' | 'critical' = 'healthy';
-    const, recommendations: string[] = [];
+    const: recommendations: string[] = [];
 
     try {
       // Local, narrow type for the Redis stats we read
@@ -403,22 +336,20 @@ export class AppRedisOrchestrator {
       if (typeof llmCacheHit === 'number' && llmCacheHit < 60) {
         status = 'degraded';
         recommendations.push('LLM cache hit rate is low - consider cache warming');
-      } }
+       }
 
       const queued = rs?.task_queue?.queued_tasks;
       if (typeof queued === 'number' && queued > 100) {
         status = 'critical';
-        recommendations.push('Task queue is overloaded - scale workers immediately');
-      } }
-    } }catch {
+        recommendations.push('Task queue is overloaded - scale workers immediately'); }catch {
       // ignore stats parsing issues
-    } }
+     }
 
     try {
       // Local shapes for memory stats/banks (avoid: any)
       type MemoryBankShape = { used?: number; capacity?: number; [k: string]: any };
-      type MemoryStatsShape = { banks?: Record<string, MemoryBankShape> } }& Record<string, unknown>;
-      const ms = memoryStats && typeof memoryStats === 'object' ? (memoryStats as MemoryStatsShape) : { banks: {} }};
+      type MemoryStatsShape = { banks?: Record<string, MemoryBankShape>  }& Record<string, unknown>;
+      const ms = memoryStats && typeof memoryStats === 'object' ? (memoryStats as MemoryStatsShape) : { banks: {}  };
 
       // If banks expose capacity+used compute per-bank ratio, otherwise attempt a coarse heuristic
       for (const [name, bankAny] of Object.entries(ms.banks || {})) {
@@ -432,30 +363,26 @@ export class AppRedisOrchestrator {
             recommendations.push(
               `NES memory bank: "${name}" at ${(ratio * 100).toFixed(1)}% capacity - implement eviction`
             );
-          } }else if (ratio > 0.75 && status !== 'critical') {
+           }else if (ratio > 0.75 && status !== 'critical') {
             status = 'degraded';
             recommendations.push(
               `NES memory bank: "${name}" at ${(ratio * 100).toFixed(1)}% capacity - consider eviction`
-            );
-          } }
-        } }
-      } }
-    } }catch {
+            ); }
+       }
+     }catch {
       // ignore memory parsing issues
-    } }
+     }
 
     if (status === 'healthy') {
       recommendations.push('All systems optimal - Redis + NES architecture performing well');
-    } }
+     }
 
     return {
-      status,
-      redis_orchestrator: redisStats,
-      nes_memory_architecture: memoryStats,
+      status: redis_orchestrator: redisStats;
+      nes_memory_architecture: memoryStats;
       recommendations
-    };
-  } }
-} }
+    }; } }
 
 export const appRedisOrchestrator = AppRedisOrchestrator;
+
 

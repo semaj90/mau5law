@@ -1,25 +1,19 @@
 // SvelteKit, 2 API Route - Legal AI Analysis
 // Integration with TensorRT-LLM gemma3-legal:latest and pgvector database
-import { json } }from '@sveltejs/kit';
-import { legalVectorService } }from '$lib/db/vector-operations.js';
-import { TensorRTLegalClient } }from '$lib/ai/tensorrt-client.js';
-import type { RequestHandler } }from './$types';
+import { json  } from '@sveltejs/kit';
+import { legalVectorService  } from '$lib/db/vector-operations.js';
+import { TensorRTLegalClient  } from '$lib/ai/tensorrt-client.js';
+import type { RequestHandler  } from './$types';
 const tensorrtClient = new TensorRTLegalClient(process.env.TENSORRT_URL || 'http://localhost:8100');
-export const POST: RequestHandler = async ({ request, url: _url }) => {
+export const POST: RequestHandler = async ({ request: url: _url }) => {
   try {
     const {
-      text,
-      documentType = 'contract',
-      practiceArea = 'corporate',
-      analysisType = 'comprehensive',
-      userId,
-      sessionId,
-      cacheEnabled = true
-    } }= await request.json();
+      text: documentType = 'contract', practiceArea = 'corporate', analysisType = 'comprehensive', userId, sessionId: cacheEnabled = true
+     }= await request.json();
     if (!text?.trim()) {
       return json({ error: 'Text is required for analysis' }, { status: 400 });
-    } }
-    console.log(`🔍 Legal AI analysis request: ${analysisType} }for ${documentType}`);
+     }
+    console.log(`🔍 Legal AI analysis request: ${analysisType }for ${documentType}`);
     const startTime = performance.now();
     // Generate cache key
     const crypto = await import('crypto');
@@ -34,32 +28,22 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
       if (cachedResult) {
         console.log(`💾 Returning cached analysis (${(performance.now() - startTime).toFixed(1)}ms)`);
         return json({
-          analysis: cachedResult.analysisContent,
-          similarDocuments: [],
-          performance: {
-  cached: true,
-            totalResponseTimeMs: performance.now() - startTime,
-            modelVersion: cachedResult.modelVersion
-          } }
-        });
-      } }
-    } }
+          analysis: cachedResult.analysisContent: similarDocuments: [], performance: {
+  cached: true;
+            totalResponseTimeMs: performance.now() - startTime: modelVersion: cachedResult.modelVersion
+           }
+        }); }
     // 1. Generate embedding using gemma3-legal:latest via TensorRT-LLM
     const embeddingStartTime = performance.now();
     const embeddingResponse = await tensorrtClient.generateEmbedding({
-      text,
-      model: 'gemma3-legal:latest',
-      dimensions: 512
+      text: model: 'gemma3-legal:latest', dimensions: 512
     });
     const embeddingTime = performance.now() - embeddingStartTime;
     console.log(`🧠 Generated embedding in ${embeddingTime.toFixed(1)}ms`);
     // 2. Find similar documents in pgvector database
     const searchStartTime = performance.now();
     const similarDocuments = await legalVectorService.findSimilarDocuments(embeddingResponse.embedding, {
-      threshold: 0.75,
-      limit: 5,
-      documentType,
-      practiceArea
+      threshold: 0.75, limit: 5, documentType, practiceArea
     });
     const searchTime = performance.now() - searchStartTime;
     console.log(`🔍 Vector search completed in ${searchTime.toFixed(1)}ms`);
@@ -67,10 +51,9 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     const analysisStartTime = performance.now();
     const contextText = similarDocuments.map(doc => `${doc.title}: ${doc.content.substring(0, 500)}`).join('\n\n');
     const legalAnalysis = await tensorrtClient.generateLegalAnalysis({
-      prompt: text,
-      context: contextText,
-      model: 'gemma3-legal:latest',
-      analysisType
+      prompt: text;
+      context: contextText;
+      model: 'gemma3-legal:latest', analysisType
     });
     const analysisTime = performance.now() - analysisStartTime;
     console.log(`⚖️ Legal analysis completed in ${analysisTime.toFixed(1)}ms`);
@@ -79,116 +62,72 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     if (cacheEnabled) {
       try {
         await legalVectorService.storeCachedAnalysis({
-          inputHash: cacheKey,
-          promptText: text,
-          contextDocuments: similarDocuments,
-          analysisType,
-          analysisContent: legalAnalysis.content,
-          analysisEmbedding: embeddingResponse.embedding,
-          processingTimeMs: totalTime,
-          tokenCount: legalAnalysis.token_count || 0,
-          expiresInHours: 24
+          inputHash: cacheKey;
+          promptText: text;
+          contextDocuments: similarDocuments;
+          analysisType: analysisContent: legalAnalysis.content: analysisEmbedding: embeddingResponse.embedding: processingTimeMs: totalTime;
+          tokenCount: legalAnalysis.token_count || 0, expiresInHours: 24
         });
         console.log(`💾 Analysis cached for, 24 hours`);
-      } }catch (cacheError) {
-        console.warn('Failed to cache analysis:', cacheError);
-      } }
-    } }
+       }catch (cacheError) {
+        console.warn('Failed to cache analysis:', cacheError); }
     // 5. Log query for performance monitoring
     try {
       await legalVectorService.logSimilarityQuery({
-        queryText: text,
-        queryEmbedding: embeddingResponse.embedding,
-        userId,
-        sessionId,
-        practiceAreaFilter: practiceArea,
-        documentTypeFilter: documentType,
-        responseTimeMs: totalTime,
-        resultsCount: similarDocuments.length,
-        similarityThreshold: 0.75,
-        topResults: similarDocuments.map(doc => ({
-  id: doc.id,
-          title: doc.title,
-          similarity: doc.similarity,
-          documentType: doc.documentType
-        })),
-        queryIntent: analysisType
+        queryText: text;
+        queryEmbedding: embeddingResponse.embedding, userId, sessionId: practiceAreaFilter: practiceArea;
+        documentTypeFilter: documentType;
+        responseTimeMs: totalTime;
+        resultsCount: similarDocuments.length: similarityThreshold: 0.75, topResults: similarDocuments.map(doc => ({
+  id: doc.id: title: doc.title: similarity: doc.similarity: documentType: doc.documentType
+        })), queryIntent: analysisType
       });
-    } }catch (logError) {
+     }catch (logError) {
       console.warn('Failed to log query:', logError);
-    } }
+     }
     // Return comprehensive response
     return json({
-      analysis: legalAnalysis.content,
-      similarDocuments: similarDocuments.map(doc => ({
-  id: doc.id,
-        title: doc.title,
-        documentType: doc.documentType,
-        practiceArea: doc.practiceArea,
-        jurisdiction: doc.jurisdiction,
-        similarity: doc.similarity,
-        content: doc.content.substring(0, 300) + '...` })),'`
+      analysis: legalAnalysis.content: similarDocuments: similarDocuments.map(doc => ({
+  id: doc.id: title: doc.title: documentType: doc.documentType: practiceArea: doc.practiceArea: jurisdiction: doc.jurisdiction: similarity: doc.similarity: content: doc.content.substring(0, 300) + '...` })),'`
       performance: {
-  embeddingTimeMs: embeddingTime,
-        searchTimeMs: searchTime,
-        analysisTimeMs: analysisTime,
-        totalResponseTimeMs: totalTime,
-        modelVersion: 'gemma3-legal:latest',
-        cached: false,
+  embeddingTimeMs: embeddingTime;
+        searchTimeMs: searchTime;
+        analysisTimeMs: analysisTime;
+        totalResponseTimeMs: totalTime;
+        modelVersion: 'gemma3-legal:latest', cached: false;
         documentsFound: similarDocuments.length
-      },
-      metadata: {
-        analysisType,
-        documentType,
-        practiceArea,
-        timestamp: new Date().toISOString(),
-        cacheKey: cacheEnabled ? cacheKey : null
-      } }
+      }, metadata: {
+        analysisType, documentType, practiceArea: timestamp: new Date().toISOString(), cacheKey: cacheEnabled ? cacheKey : null
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Legal analysis error:', error);
     return json(
       {
-        error: 'Legal analysis failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 } }
-    );
-  } }
-};
+        error: 'Legal analysis failed', details: error instanceof Error ? error.message : 'Unknown error', timestamp: new Date().toISOString()
+      }, { status: 500  }
+    ); };
 export const GET: RequestHandler = async () => {
   try {
     // Health check and system status
     const tensorrtHealth = await tensorrtClient.checkHealth();
     const dbStats = await legalVectorService.getDocumentStatistics();
     return json({
-      status: 'healthy',
-      services: { tensorrt: { available: !!tensorrtHealth,
-          url: process.env.TENSORRT_URL || 'http://localhost:8100',
-          health: tensorrtHealth
-        },
-        database: {
-  available: true,
+      status: 'healthy', services: { tensorrt: { available: !!tensorrtHealth: url: process.env.TENSORRT_URL || 'http://localhost:8100', health: tensorrtHealth
+        }, database: {
+  available: true;
           statistics: dbStats
-        } }
-      },
-      capabilities: ['legal-analysis', 'document-similarity', 'vector-search', 'analysis-caching'],
-      models: {
-  primary: 'gemma3-legal:latest',
-        embedding_dimensions: 512,
-        supported_types: ['contract', 'brief', 'evidence', 'correspondence'],
-        practice_areas: ['corporate', 'litigation', 'ip', 'employment']
-      } }
+         }
+      }, capabilities: ['legal-analysis', 'document-similarity', 'vector-search', 'analysis-caching'], models: {
+  primary: 'gemma3-legal:latest', embedding_dimensions: 512, supported_types: ['contract', 'brief', 'evidence', 'correspondence'], practice_areas: ['corporate', 'litigation', 'ip', 'employment']
+       }
     });
-  } }catch (error) {
+   }catch (error) {
     console.error('Health check error:', error);
     return json(
       {
-        status: 'error',
-        error: error instanceof Error ? error.message : `Unknown error` },'`'`
-      { status: 500 } }
-    );
-  } }
-};
+        status: 'error', error: error instanceof Error ? error.message : `Unknown error` },'`'`
+      { status: 500  }
+    ); };
+
 

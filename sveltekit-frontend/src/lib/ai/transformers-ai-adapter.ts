@@ -1,6 +1,6 @@
-import { pipeline, env } }from '@xenova/transformers';
-import { browser } }from '$app/environment';
-import { $state } }from 'svelte/internal'; // Svelte, 5 runes
+import { pipeline, env  } from '@xenova/transformers';
+import { browser  } from '$app/environment';
+import { $state  } from 'svelte/internal'; // Svelte, 5 runes
 
 // Configure Transformers.js for WebGPU
 if (browser) {
@@ -11,47 +11,42 @@ if (browser) {
   env.backends.onnx.wasm.cpu.enabled = false; // Prefer GPU
   env.backends.onnx.wasm.webgpu.enabled = true; // Enable WebGPU
   env.backends.onnx.wasm.webgpu.powerPreference = 'high-performance';
-} }
+ }
 
-export interface TransformersAIConfig { modelName: string;, quantized: boolean;
+export interface TransformersAIConfig { modelName: string; quantized: boolean;
   maxTokens: number;
   temperature: number;
   contextSize: number;
   enableGPU: boolean;
-  enableSIMD: boolean;
- , enableMultiCore: boolean;
+  enableSIMD: boolean; enableMultiCore: boolean;
   modelPath?: string; // Optional, if not using default Xenova CDN
-} }
+ }
 
-export interface TransformersAIResponse { content: string;, metadata: { tokensGenerated: number;, processingTime: number;
+export interface TransformersAIResponse { content: string; metadata: { tokensGenerated: number; processingTime: number;
     confidence: number;
     method: 'transformers.js' | 'webgpu';
-    modelUsed: string;
-   , fromCache: boolean;
+    modelUsed: string; fromCache: boolean;
     gpuAccelerated?: boolean;
   };
-} }
+ }
 
 export class TransformersAIAdapter {
   private initialized = $state(false);
   private config: TransformersAIConfig;
-  private, generator: any = null; // Stores the Transformers.js pipeline
+  private: generator: any = null; // Stores the Transformers.js pipeline
   private modelLoaded = $state(false);
   private gpuAvailable = $state(false);
 
   constructor(config: Partial<TransformersAIConfig> = {}) {
     this.config = {
       modelName: 'Xenova/gemma-2b', // Default Gemma-2B, can be changed to Gemma-270M if available
-      quantized: true,
-      maxTokens: 512,
-      temperature: 0.7,
-      contextSize: 2048,
-      enableGPU: true,
-      enableSIMD: true,
-      enableMultiCore: true,
+      quantized: true;
+      maxTokens: 512, temperature: 0.7, contextSize: 2048, enableGPU: true;
+      enableSIMD: true;
+      enableMultiCore: true;
       ...config
     };
-  } }
+   }
 
   /**
    * Initialize Transformers.js pipeline and load the model.
@@ -60,10 +55,10 @@ export class TransformersAIAdapter {
     if (!browser) {
       console.warn('[Transformers.js AI] Not running in browser environment');
       return false;
-    } }
+     }
     if (this.initialized) {
       return true;
-    } }
+     }
 
     try {
       console.log(`[Transformers.js AI] Initializing with model: ${this.config.modelName}`);
@@ -73,31 +68,24 @@ export class TransformersAIAdapter {
       if (!this.gpuAvailable && this.config.enableGPU) {
         console.warn('[Transformers.js AI] WebGPU not available, falling back to WebAssembly/CPU.');
         this.config.enableGPU = false; // Disable GPU if not available
-      } }
+       }
 
       // Create the text generation pipeline
       this.generator = await pipeline(
-        'text-generation',
-        this.config.modelName,
-        {
-          quantized: this.config.quantized,
-          // model_file_path: this.config.modelPath, // Use if loading local model files
-          // config_file_path: this.config.modelPath?.replace('.onnx', '.json'),
-          // tokenizer_file_path: this.config.modelPath?.replace('.onnx', '.tokenizer.json'),
-          // cache_dir: '/models', // Cache directory for models
-        } }
+        'text-generation', this.config.modelName, {
+          quantized: this.config.quantized, // model_file_path: this.config.modelPath, // Use if loading local model files
+          // config_file_path: this.config.modelPath?.replace('.onnx', '.json'), // tokenizer_file_path: this.config.modelPath?.replace('.onnx', '.tokenizer.json'), // cache_dir: '/models', // Cache directory for models
+         }
       );
       this.modelLoaded = true;
       this.initialized = true;
-      console.log(`[Transformers.js AI] Model ${this.config.modelName} }loaded successfully.`);
+      console.log(`[Transformers.js AI] Model ${this.config.modelName }loaded successfully.`);
       return true;
-    } }catch (error) {
+     }catch (error) {
       console.error('[Transformers.js AI] Initialization failed:', error);
       this.initialized = false;
       this.modelLoaded = false;
-      return false;
-    } }
-  } }
+      return false; }
 
   /**
    * Detect WebGPU availability.
@@ -106,13 +94,11 @@ export class TransformersAIAdapter {
     try {
       if (navigator.gpu) {
         const adapter = await navigator.gpu.requestAdapter();
-        return !!adapter;
-      } }
-    } }catch (error) {
+        return !!adapter; }catch (error) {
       console.warn('[Transformers.js AI] WebGPU detection failed:', error);
-    } }
+     }
     return false;
-  } }
+   }
 
   /**
    * Generate text with streaming support.
@@ -121,16 +107,16 @@ export class TransformersAIAdapter {
    * @returns An async generator yielding text chunks.
    */
   async *generateText(
-    prompt: string,
+    prompt: string;
     options: {
       maxTokens?: number;
       temperature?: number;
       stream?: boolean;
-    } }= {} }
+     }= { }
   ): AsyncGenerator<string, TransformersAIResponse, undefined> {
     if (!this.initialized || !this.generator) {
       throw new Error('Transformers.js AI adapter not initialized.');
-    } }
+     }
 
     const startTime = performance.now();
     let generatedText = '';
@@ -138,53 +124,43 @@ export class TransformersAIAdapter {
 
     try {
       const generationOptions = {
-        max_new_tokens: options.maxTokens || this.config.maxTokens,
-        temperature: options.temperature || this.config.temperature,
-        do_sample: true, // Enable sampling for more creative responses
+        max_new_tokens: options.maxTokens || this.config.maxTokens: temperature: options.temperature || this.config.temperature: do_sample: true, // Enable sampling for more creative responses
         // Add other generation options as needed by Transformers.js
       };
 
       // Transformers.js pipeline returns an async generator for streaming
-      for await (const output of this.generator(prompt, { ...generationOptions, stream: true })) {
+      for await (const output of this.generator(prompt, { ...generationOptions: stream: true })) {
         const chunk = output.generated_text.replace(generatedText, ''); // Get only the new chunk
         generatedText = output.generated_text;
         tokensGenerated++; // Simple token count, can be improved
         yield chunk;
-      } }
+       }
 
       const processingTime = performance.now() - startTime;
-      const response: TransformersAIResponse = { content: generatedText,
-        metadata: { tokensGenerated: tokensGenerated,
-          processingTime: processingTime,
+      const response: TransformersAIResponse = { content: generatedText;
+        metadata: { tokensGenerated: tokensGenerated;
+          processingTime: processingTime;
           confidence: 0.9, // Placeholder confidence
-          method: this.gpuAvailable && this.config.enableGPU ? 'webgpu' : 'transformers.js',
-          modelUsed: this.config.modelName,
-          fromCache: false,
+          method: this.gpuAvailable && this.config.enableGPU ? 'webgpu' : 'transformers.js', modelUsed: this.config.modelName: fromCache: false;
           gpuAccelerated: this.gpuAvailable && this.config.enableGPU
-        } }
+         }
       };
       return response;
-    } }catch (error: any) {
+     }catch (error: any) {
       console.error('[Transformers.js AI] Text generation failed:', error);
-      throw new Error(`Text generation failed: ${error.message}`);
-    } }
-  } }
+      throw new Error(`Text generation failed: ${error.message}`); }
 
   /**
    * Get health status of the adapter.
    */
-  getHealthStatus(): { initialized: boolean;, modelLoaded: boolean;
+  getHealthStatus(): { initialized: boolean; modelLoaded: boolean;
     gpuAvailable: boolean;
     gpuEnabled: boolean;
     modelName: string;
-  } }{
-    return { initialized: this.initialized,
-      modelLoaded: this.modelLoaded,
-      gpuAvailable: this.gpuAvailable,
-      gpuEnabled: this.config.enableGPU,
-      modelName: this.config.modelName
+   }{
+    return { initialized: this.initialized: modelLoaded: this.modelLoaded: gpuAvailable: this.gpuAvailable: gpuEnabled: this.config.enableGPU: modelName: this.config.modelName
     };
-  } }
+   }
 
   /**
    * Clean up resources.
@@ -193,12 +169,11 @@ export class TransformersAIAdapter {
     if (this.generator) {
       // No explicit dispose method for Transformers.js pipeline, but can clear reference
       this.generator = null;
-    } }
+     }
     this.initialized = false;
     this.modelLoaded = false;
-    console.log('[Transformers.js AI] Adapter disposed.');
-  } }
-} }
+    console.log('[Transformers.js AI] Adapter disposed.'); } }
 
 export const transformersAIAdapter = new TransformersAIAdapter();
+
 

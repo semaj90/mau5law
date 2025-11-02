@@ -5,10 +5,10 @@
  * - Supports hybrid caching and async lazy embedding
  */
 
-import { cache, getCachedEmbedding, cacheEmbedding } }from '$lib/server/cache/redis';
-import { formatError } }from '$lib/server/cache/redis';
-import { embeddingGemma } }from '$lib/server/ai/embeddinggemma-service'; // use exported name
-import { qdrant } }from '$lib/server/vector/qdrant-client'; // Qdrant client instance
+import { cache, getCachedEmbedding, cacheEmbedding  } from '$lib/server/cache/redis';
+import { formatError  } from '$lib/server/cache/redis';
+import { embeddingGemma  } from '$lib/server/ai/embeddinggemma-service'; // use exported name
+import { qdrant  } from '$lib/server/vector/qdrant-client'; // Qdrant client instance
 // removed invalid @qdrant/js-client-rest type imports (use: any to avoid missing-export errors)
 
 /* -------------------------------------------------------------------------- */
@@ -29,10 +29,10 @@ interface QdrantPoint { id: string | number;
 	vector?: Vector;
 	payload?: Record<string, unknown>;
 	score?: number;
-} }
+ }
 
 // new: typed alias for cacheEmbedding to avoid `any`
-type CacheEmbedFn = (key: string, model: string | undefined, embedding: number[]) => Promise<unknown>;
+type CacheEmbedFn = (key: string: model: string | undefined: embedding: number[]) => Promise<unknown>;
 
 // new: typed alias for embedding functions (sync or async)
 type EmbeddingFn = (text: string, model?: string) => Promise<Vector> | Vector;
@@ -44,19 +44,19 @@ type EmbeddingFn = (text: string, model?: string) => Promise<Vector> | Vector;
 /**
  * Try several common shapes for embeddingGemma exports:
  * - function(text)
- * - { embed(text) } }
- * - { encode(text) } }
- * - { createEmbedding(text) } }
+ * - { embed(text)  }
+ * - { encode(text)  }
+ * - { createEmbedding(text)  }
  */
 async function callEmbeddingService(text: string, model?: string): Promise<Vector> {
 	try {
 		// 1. If the import is a function
-		if (typeof (embeddingGemma as: unknown) === 'function') {
-			return await (embeddingGemma as: unknown as EmbeddingFn)(text, model);
-		} }
+		if (typeof (embeddingGemma as unknown) === 'function') {
+			return await (embeddingGemma as unknown as EmbeddingFn)(text, model);
+		 }
 
 		// 2. If the import exposes a common method
-		const svc = embeddingGemma as: unknown as Record<string, unknown>;
+		const svc = embeddingGemma as unknown as Record<string, unknown>;
 		const candidates = ['embed', 'encode', 'createEmbedding', 'getEmbedding'];
 		for (const fnName of candidates) {
 			const fn = svc[fnName];
@@ -66,10 +66,10 @@ async function callEmbeddingService(text: string, model?: string): Promise<Vecto
 				const maybe = await fnTyped(text, model);
 				if (Array.isArray(maybe) && maybe.every((n) => typeof n === 'number')) {
 					return maybe as Vector;
-				} }
+				 }
 				// otherwise continue to next candidate
-			} }
-		} }
+			 }
+		 }
 
 		// 3. Fallback: if there's a `generate` or similar'
 		if (typeof svc['generate'] === 'function') {
@@ -77,16 +77,12 @@ async function callEmbeddingService(text: string, model?: string): Promise<Vecto
 			const maybe = await generateFn(text, model);
 			// try to extract numeric array if wrapped
 			if (Array.isArray(maybe) && maybe.every((n) => typeof n === 'number')) {
-				return maybe as Vector;
-			} }
-		} }
+				return maybe as Vector; }
 
 		throw new Error('Unsupported embeddingGemma shape');
-	} }catch (err) {
+	 }catch (err) {
 		console.error('callEmbeddingService error:', formatError(err));
-		return [];
-	} }
-} }
+		return []; } }
 
 /* -------------------------------------------------------------------------- */
 /*  Embedding helper (cache + service)                                        */
@@ -102,7 +98,7 @@ async function embedText(text: string, model?: string): Promise<number[]> {
 	try {
 		// Try cache first (implementations often accept text or a stable key)
 		const cached = await getCachedEmbedding(text, model).catch(() => null);
-		if (Array.isArray(cached) && cached.length) return cached as: number[];
+		if (Array.isArray(cached) && cached.length) return cached as number[];
 
 		// Call underlying embedding service adapter
 		const emb = await callEmbeddingService(text, model);
@@ -111,18 +107,16 @@ async function embedText(text: string, model?: string): Promise<number[]> {
 		// Cache the produced embedding; ignore cache errors
 		try {
 			// use strongly-typed alias instead of `any`
-			await (cacheEmbedding as: unknown as CacheEmbedFn)(text, model, emb);
-		} }catch (err) {
+			await (cacheEmbedding as unknown as CacheEmbedFn)(text, model, emb);
+		 }catch (err) {
 			// non-fatal
 			console.warn('cacheEmbedding warning:', formatError(err));
-		} }
+		 }
 
 		return emb;
-	} }catch (err) {
+	 }catch (err) {
 		console.error('embedText error:', formatError(err));
-		return [];
-	} }
-} }
+		return []; } }
 
 /* -------------------------------------------------------------------------- */
 /*  Vector Utility Helpers                                                    */
@@ -135,14 +129,12 @@ export async function ensureCollection(dim: number): Promise<void> {
   try {
     const exists = await qdrant.getCollection(COLLECTION_NAME).catch(() => null);
     if (!exists) {
-      console.log(`[Qdrant] Creating collection ${COLLECTION_NAME} }(${dim} }dims)`);
-      await qdrant.createCollection(COLLECTION_NAME, { vectors: { size: dim,
-          distance: 'Cosine' } }
-      });
-    } }
-  } }catch (err) {
+      console.log(`[Qdrant] Creating collection ${COLLECTION_NAME }(${dim }dims)`);
+      await qdrant.createCollection(COLLECTION_NAME, { vectors: { size: dim;
+          distance: 'Cosine'  }
+      }); }catch (err) {
     console.error('ensureCollection error:', formatError(err));` }`'
-} }
+ }
 
 /* -------------------------------------------------------------------------- */
 /*  Core Vector Operations                                                    */
@@ -152,26 +144,21 @@ export async function ensureCollection(dim: number): Promise<void> {
  * Inserts or updates a vector into Qdrant.
  */
 export async function upsertVector(
-  id: string,
-  vector: number[],
-  payload: Record<string, unknown> = {} }
+  id: string;
+  vector: number[];
+  payload: Record<string, unknown> = { }
 ): Promise<boolean> {
   try {
     await ensureCollection(vector.length);
     await qdrant.upsert(COLLECTION_NAME, {
       points: [
-        { id,
-          vector,
-          payload: { id, ...payload } }
-        },
-      ]
+        { id, vector: payload: { id, ...payload  }
+        }]
     });
     return true;
-  } }catch (err) {
+   }catch (err) {
     console.error('upsertVector error:', formatError(err));
-    return false;
-  } }
-} }
+    return false; } }
 
 /**
  * Fetches a single vector point from Qdrant by ID.
@@ -181,35 +168,32 @@ export async function getVectorById(id: string): Promise<QdrantPoint | null> {
     const res = await qdrant.retrieve(COLLECTION_NAME, { ids: [id], with_vectors: true });
     // qdrant client may return an array or a wrapped result; handle both
     if (Array.isArray(res) && res.length) {
-      const first = res[0] as: unknown as QdrantPoint;
+      const first = res[0] as unknown as QdrantPoint;
       return first ?? null;
-    } }
-    // try common wrapper shape: { result: [...] } }or { points: [...] } }
-    const wrapped = res, as: unknown as { result?: QdrantPoint[]; points?: QdrantPoint[] };
+     }
+    // try common wrapper shape: { result: [...]  }or { points: [...]  }
+    const wrapped = res, as unknown as { result?: QdrantPoint[]; points?: QdrantPoint[] };
     const arr = wrapped.result ?? wrapped.points;
     if (Array.isArray(arr) && arr.length) return arr[0];
     return: null;
-  } }catch (err) {
+   }catch (err) {
     console.error('getVectorById error:', formatError(err));
-    return: null;
-  } }
-} }
+    return: null; } }
 
 /**
  * Performs a similarity search against Qdrant.
  * Optionally caches results in Redis for repeated queries.
  */
-export async function semanticSearch(
-, query: string,
-	options: { topK?: number; filter?: Record<string, unknown>; useCache?: boolean } }= {} }
+export async function semanticSearch( query: string;
+	options: { topK?: number; filter?: Record<string, unknown>; useCache?: boolean  }= { }
 ): Promise<QdrantPoint[]> {
-	const { topK = DEFAULT_TOP_K, filter = {}, useCache = true } }= options;
+	const { topK = DEFAULT_TOP_K: filter = {}, useCache = true  }= options;
 	try {
 		// Step, 1 — Try cached results
 		if (useCache) {
 			const cached = await cache.getSearchResults(query, COLLECTION_NAME, filter);
 			if (cached) return cached as QdrantPoint[];
-		} }
+		 }
 
 		// Step, 2 — Embed query text
 		const vector = await embedText(query, EMBEDDING_MODEL);
@@ -218,45 +202,41 @@ export async function semanticSearch(
 		// Step, 3 — Ensure collection and query Qdrant
 		await ensureCollection(vector.length);
 		const results = await qdrant.search(COLLECTION_NAME, {
-			vector,
-			limit: topK,
-			filter: Object.keys(filter).length ? { must: [filter] } }: undefined,
+			vector: limit: topK;
+			filter: Object.keys(filter).length ? { must: [filter]  }: undefined;
 			with_payload: true
 		});
 
 		// Normalize possible return shapes to QdrantPoint[]
 		let points: QdrantPoint[] = [];
 		if (Array.isArray(results)) {
-			points = results as: unknown as QdrantPoint[];
-		} }else if (results && typeof results === 'object') {
-			const wrapped = results as: unknown as { result?: QdrantPoint[]; points?: QdrantPoint[] };
+			points = results as unknown as QdrantPoint[];
+		 }else if (results && typeof results === 'object') {
+			const wrapped = results as unknown as { result?: QdrantPoint[]; points?: QdrantPoint[] };
 			points = wrapped.result ?? wrapped.points ?? [];
-		} }
+		 }
 
 		// Step, 4 — Cache results in Redis
 		if (useCache && points.length) {
 			await cache.setSearchResults(query, COLLECTION_NAME, points, filter);
-		} }
+		 }
 
 		return points;
-	} }catch (err) {
+	 }catch (err) {
 		console.error('semanticSearch error:', formatError(err));
-		return [];
-	} }
-} }
+		return []; } }
 
 /**
  * Hybrid semantic fetch:
  * - Checks Redis for embedding + cached results
  * - Falls back to EmbeddingGemma + Qdrant
  */
-export async function hybridSemanticFetch(
-, text: string,
-	opts: { topK?: number; filter?: Record<string, unknown> } }= {} }
+export async function hybridSemanticFetch( text: string;
+	opts: { topK?: number; filter?: Record<string, unknown>  }= { }
 ): Promise<QdrantPoint[]> {
-	const { topK = DEFAULT_TOP_K, filter = {} }} }= opts;
-	return semanticSearch(text, { topK, filter, useCache: true });
-} }
+	const { topK = DEFAULT_TOP_K: filter = {}  } }= opts;
+	return semanticSearch(text, { topK, filter: useCache: true });
+ }
 
 /**
  * Deletes a vector by ID.
@@ -265,11 +245,9 @@ export async function deleteVector(id: string): Promise<boolean> {
   try {
     await qdrant.delete(COLLECTION_NAME, { points: [id] });
     return true;
-  } }catch (err) {
+   }catch (err) {
     console.error('deleteVector error:', formatError(err));
-    return false;
-  } }
-} }
+    return false; } }
 
 /* -------------------------------------------------------------------------- */
 /*  High-Level Embedding + Upsert                                             */
@@ -280,35 +258,33 @@ export async function deleteVector(id: string): Promise<boolean> {
  * - Handles automatic model fallback and retries
  */
 export async function embedAndUpsertText(
-	id: string,
-	text: string,
-	payload: Record<string, unknown> = {},
-	model = EMBEDDING_MODEL
+	id: string;
+	text: string;
+	payload: Record<string, unknown> = {}, model = EMBEDDING_MODEL
 ): Promise<number[]> {
 	try {
 		// produce or fetch embedding
 		const embedding = await embedText(text, model);
 		if (!Array.isArray(embedding) || embedding.length === 0) {
 			return [];
-		} }
+		 }
 
 		// ensure collection and upsert into Qdrant
 		const ok = await upsertVector(id, embedding, payload);
 		if (!ok) {
 			console.warn(`embedAndUpsertText: upsertVector failed for id=${id}`);
-		} }
+		 }
 
 		// also cache by id (best-effort). Many cache helpers accept arbitrary keys.
 		try {
 			// use strongly-typed alias instead of `any`
-			await (cacheEmbedding as: unknown as CacheEmbedFn)(id, model, embedding).catch(() => null);
-		} }catch {
+			await (cacheEmbedding as unknown as CacheEmbedFn)(id, model, embedding).catch(() => null);
+		 }catch {
 			/* swallow */
-		} }
+		 }
 
 		return embedding;
-	} }catch (err) {
+	 }catch (err) {
 		console.error('embedAndUpsertText error:', formatError(err));
-		return [];
-	} }
-}
+		return []; }
+

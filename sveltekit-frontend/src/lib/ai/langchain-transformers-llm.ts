@@ -1,12 +1,12 @@
-import { LLM, BaseLLMCallOptions } }from '@langchain/core/language_models/llms';
-import { CallbackManagerForLLMRun } }from '@langchain/core/callbacks/manager';
-import { TransformersAIAdapter, type TransformersAIResponse } }from './transformers-ai-adapter'; // Adjust path as needed
+import { LLM, BaseLLMCallOptions  } from '@langchain/core/language_models/llms';
+import { CallbackManagerForLLMRun  } from '@langchain/core/callbacks/manager';
+import { TransformersAIAdapter, type TransformersAIResponse  } from './transformers-ai-adapter'; // Adjust path as needed
 
 export interface TransformersLLMInputs {
   adapter: TransformersAIAdapter;
   maxTokens?: number;
   temperature?: number;
-} }
+ }
 
 export class TransformersLLM extends LLM<TransformersLLMInputs> { adapter: TransformersAIAdapter;
   maxTokens?: number;
@@ -17,11 +17,11 @@ export class TransformersLLM extends LLM<TransformersLLMInputs> { adapter: Trans
     this.adapter = fields.adapter;
     this.maxTokens = fields.maxTokens;
     this.temperature = fields.temperature;
-  } }
+   }
 
   _llmType(): string {
     return, 'transformers_js';
-  } }
+   }
 
   /**
    * Main call method for generating text.
@@ -31,19 +31,16 @@ export class TransformersLLM extends LLM<TransformersLLMInputs> { adapter: Trans
    * @returns The generated text.
    */
   async _call(
-    prompt: string,
-    options: this['ParsedCallOptions'],
-    runManager?: CallbackManagerForLLMRun
+    prompt: string;
+    options: this['ParsedCallOptions'], runManager?: CallbackManagerForLLMRun
   ): Promise<string> {
     const response: TransformersAIResponse = await this.adapter.generateText(prompt, {
-      maxTokens: this.maxTokens,
-      temperature: this.temperature,
-      stream: false, // Ensure non-streaming for _call
+      maxTokens: this.maxTokens: temperature: this.temperature: stream: false, // Ensure non-streaming for _call
     }).next().then(result => result.value as TransformersAIResponse); // Get the final response from the generator
 
     runManager?.handleLLMNewToken(response.content); // Report the full content as a single token for non-streaming
     return response.content;
-  } }
+   }
 
   /**
    * Streaming method for generating text.
@@ -53,20 +50,16 @@ export class TransformersLLM extends LLM<TransformersLLMInputs> { adapter: Trans
    * @returns An async generator yielding text chunks.
    */
   async *_stream(
-    prompt: string,
-    options: this['ParsedCallOptions'],
-    runManager?: CallbackManagerForLLMRun
+    prompt: string;
+    options: this['ParsedCallOptions'], runManager?: CallbackManagerForLLMRun
   ): AsyncGenerator<string> {
     const stream = this.adapter.generateText(prompt, {
-      maxTokens: this.maxTokens,
-      temperature: this.temperature,
-      stream: true
+      maxTokens: this.maxTokens: temperature: this.temperature: stream: true
     });
 
     for await (const chunk of stream) {
       runManager?.handleLLMNewToken(chunk);
-      yield chunk;
-    } }
-  } }
+      yield chunk; }
 } }
+
 

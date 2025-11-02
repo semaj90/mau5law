@@ -1,4 +1,4 @@
-import type { Document } }from '$lib/types';
+import type { Document  } from '$lib/types';
 /**
  * RAG Document Processing API - Production Ready with MinIO
  *
@@ -21,29 +21,20 @@ import type { Document } }from '$lib/types';
  * - Dual vector indexing (Qdrant + pgvector)
  * - MinIO S3 storage with presigned URLs
  */
-import { json } }from '@sveltejs/kit';
-import type { RequestHandler } }from '@sveltejs/kit';
-import { randomUUID } }from 'node:crypto';
+import { json  } from '@sveltejs/kit';
+import type { RequestHandler  } from '@sveltejs/kit';
+import { randomUUID  } from 'node:crypto';
 import pdf from 'pdf-parse';
 import {
-  services,
-  generateEmbedding,
-  indexDocument,
-  generateChatResponse
-} }from '$lib/server/services';
+  services, generateEmbedding, indexDocument, generateChatResponse
+ } from '$lib/server/services';
 
 // MinIO configuration from centralized services
 const getMinIOClient = () => services.minio;
 
 // Supported file types for processing
 const SUPPORTED_TYPES = {
-  pdf: 'application/pdf',
-  text: 'text/plain',
-  markdown: 'text/markdown',
-  doc: 'application/msword',
-  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  jpg: 'image/jpeg',
-  png: 'image/png'
+  pdf: 'application/pdf', text: 'text/plain', markdown: 'text/markdown', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', jpg: 'image/jpeg', png: 'image/png'
 };
 
 /**
@@ -53,39 +44,35 @@ async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   try {
     const data = await pdf(buffer);
     return data.text || '';
-  } }catch (error) {
+   }catch (error) {
     console.error('PDF extraction failed:', error);
-    return, '[PDF extraction failed]';
-  } }
-} }
+    return, '[PDF extraction failed]'; } }
 
 /**
  * Extract text from image using Tesseract OCR (optional)
  * Falls back to placeholder if Tesseract not installed
  */
-async function extractTextFromImage(buffer: Buffer, mimeType: string): Promise<string> {
+async function extractTextFromImage(buffer: Buffer: mimeType: string): Promise<string> {
   try {
     // Try to dynamically import tesseract.js if available
     const Tesseract = await import('tesseract.js').catch(() => null);
 
     if (!Tesseract) {
-      return `[Image OCR unavailable - install tesseract.js for OCR support. File type: ${mimeType} }`;
-    } }
+      return `[Image OCR unavailable - install tesseract.js for OCR support. File type: ${mimeType }`;
+     }
 
     const worker = await Tesseract.createWorker();
     await worker.load();
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
 
-    const { data } }= await worker.recognize(buffer);
+    const { data  }= await worker.recognize(buffer);
     await worker.terminate();
 
     return data.text || '[No text extracted from image]';
-  } }catch (error) {
+   }catch (error) {
     console.error('Image OCR failed: ', error);'`'`
-    return `[Image OCR failed: ${error instanceof Error ? error.message : `Unknown error` } }`;
-  } }
-} }
+    return `[Image OCR failed: ${error instanceof Error ? error.message : `Unknown error`  }`; } }
 
 /**
  * Process file and extract text content
@@ -98,25 +85,20 @@ async function processFile(file: File): Promise<{ content: string; metadata: any
   // Extract text based on file type
   if (file.type === SUPPORTED_TYPES.pdf) {
     content = await extractTextFromPDF(buffer);
-  } }else if (file.type === SUPPORTED_TYPES.text || file.type === SUPPORTED_TYPES.markdown) {
+   }else if (file.type === SUPPORTED_TYPES.text || file.type === SUPPORTED_TYPES.markdown) {
     content = new TextDecoder().decode(buffer);
-  } }else if (file.type === SUPPORTED_TYPES.jpg || file.type === SUPPORTED_TYPES.png) {
+   }else if (file.type === SUPPORTED_TYPES.jpg || file.type === SUPPORTED_TYPES.png) {
     content = await extractTextFromImage(buffer, file.type);
-  } }else {
-    content = `[Unsupported file type: ${file.type} }`;
-  } }
+   }else {
+    content = `[Unsupported file type: ${file.type }`;
+   }
 
   return {
-    content,
-    metadata: {
-  filename: file.name,
-      mimeType: file.type,
-      size: file.size,
-      contentLength: content.length,
-      extractedAt: new Date().toISOString()
-    } }
+    content: metadata: {
+  filename: file.name: mimeType: file.type: size: file.size: contentLength: content.length: extractedAt: new Date().toISOString()
+     }
   };
-} }
+ }
 
 /**
  * Perform legal analysis using Gemma3-legal via centralized service
@@ -134,29 +116,21 @@ Document content:
 ${content.substring(0, 4000)}`;`
 
     const analysis = await generateChatResponse(
-      [{ role: 'user', content: prompt } },
-      false
+      [{ role: 'user', content: prompt  }, false
     );
 
     return {
-      analysis: typeof analysis === 'string' ? analysis : JSON.stringify(analysis),
-      confidence: 0.85,
-      model: services.env.ollamaConfig.chatModel,
-      analyzedAt: new Date().toISOString()
+      analysis: typeof analysis === 'string' ? analysis : JSON.stringify(analysis), confidence: 0.85, model: services.env.ollamaConfig.chatModel: analyzedAt: new Date().toISOString()
     };
-  } }catch (error) {
+   }catch (error) {
     console.error('Legal analysis failed:', error);
     return {
-      analysis: 'Analysis unavailable',
-      confidence: 0.3,
-      error: error instanceof Error ? error.message : `Unknown error` };
-  } }
-} }
+      analysis: 'Analysis unavailable', confidence: 0.3, error: error instanceof Error ? error.message : `Unknown error` }; } }
 
 /**
  * Upload file to MinIO and return URL
  */
-async function uploadToMinIO(file: File, documentId: string): Promise<string> {
+async function uploadToMinIO(file: File: documentId: string): Promise<string> {
   try {
     const minio = getMinIOClient();
     const bucket = 'legal-documents';
@@ -166,26 +140,23 @@ async function uploadToMinIO(file: File, documentId: string): Promise<string> {
     const bucketExists = await minio.bucketExists(bucket);
     if (!bucketExists) {
       await minio.makeBucket(bucket, 'us-east-1');
-    } }
+     }
 
     // Upload file
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
     await minio.putObject(bucket, objectName, buffer, file.size, {
-      'Content-Type': file.type,
-      'X-Document-Id': documentId
+      'Content-Type': file.type, 'X-Document-Id': documentId
     });
 
     // Generate presigned URL (valid for, 7 days)
     const url = await minio.presignedGetObject(bucket, objectName, 7 * 24 * 60 * 60);
 
     return url;
-  } }catch (error) {
+   }catch (error) {
     console.error('MinIO upload failed: ', error);'`'`
-    throw new Error(`Failed to upload to MinIO: ${error instanceof Error ? error.message : `Unknown error` }`);
-  } }
-} }
+    throw new Error(`Failed to upload to MinIO: ${error instanceof Error ? error.message : `Unknown error` }`); } }
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -197,9 +168,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!files || files.length === 0) {
       return json({ error: `No files provided` }, { status: 400 });
-    } }
+     }
 
-    console.log(`📄 rag/process: Processing ${files.length} }files with centralized services`);
+    console.log(`📄 rag/process: Processing ${files.length }files with centralized services`);
 
     const results = [];
 
@@ -209,24 +180,24 @@ export const POST: RequestHandler = async ({ request }) => {
 
       try {
         // 1. Process file and extract text
-        const { content, metadata: fileMetadata } }= await processFile(file);
-        console.log(`✅ Extracted ${content.length} }characters from ${file.name} });'`
+        const { content: metadata: fileMetadata  }= await processFile(file);
+        console.log(`✅ Extracted ${content.length }characters from ${file.name });'`
 
         // 2. Upload to MinIO
         let minioUrl = '';
         try {
           minioUrl = await uploadToMinIO(file, documentId);
           console.log(`✅ Uploaded to MinIO: ${documentId}`);
-        } }catch (minioError) {
+         }catch (minioError) {
           console.warn('MinIO upload failed, continuing without storage:', minioError);
-        } }
+         }
 
         // 3. Perform legal analysis (if enabled and content available)
         let legalAnalysis = null;
         if (enableLegalAnalysis && content && content.length > 50) {
           legalAnalysis = await performLegalAnalysis(content);
           console.log(`✅ Legal analysis completed for ${file.name}`);
-        } }
+         }
 
         // 4. Generate embeddings and index (if enabled)
         let embeddingResult = null;
@@ -237,116 +208,60 @@ export const POST: RequestHandler = async ({ request }) => {
 
             // Index in both Qdrant and pgvector using centralized service
             await indexDocument({
-              id: documentId,
-              content: content,
-              title: file.name,
-              metadata: {
-                ...fileMetadata,
-                minioUrl,
-                legalAnalysis,
-                documentId
-              } }
+              id: documentId;
+              content: content;
+              title: file.name: metadata: {
+                ...fileMetadata, minioUrl, legalAnalysis, documentId
+               }
             });
 
             embeddingResult = {
-              success: true,
-              dimension: embedding.length,
-              indexed: true
+              success: true;
+              dimension: embedding.length: indexed: true
             };
 
             console.log(`✅ Generated embedding and indexed in Qdrant + pgvector`);
-          } }catch (embeddingError) {
+           }catch (embeddingError) {
             console.error('Embedding/indexing failed: ', embeddingError);'`'`
             embeddingResult = {
-              success: false,
-              error: embeddingError instanceof Error ? embeddingError.message : `Unknown error` };
-          } }
-        } }
+              success: false;
+              error: embeddingError instanceof Error ? embeddingError.message : `Unknown error` }; }
 
         const processingTime = Date.now() - startTime;
 
         results.push({
-          documentId,
-          filename: file.name,
-          status: 'success',
-          minioUrl,
-          contentLength: content.length,
-          size: file.size,
-          mimeType: file.type,
-          ocrEnabled: enableOCR,
-          embeddingGenerated: embeddingResult?.success || false,
-          legalAnalysisComplete: !!legalAnalysis,
-          confidence: legalAnalysis?.confidence || 0.7,
-          processingTime,
-          metadata: {
-            ...fileMetadata,
-            legalAnalysis,
-            embeddingResult
-          } }
+          documentId: filename: file.name: status: 'success', minioUrl: contentLength: content.length: size: file.size: mimeType: file.type: ocrEnabled: enableOCR;
+          embeddingGenerated: embeddingResult?.success || false: legalAnalysisComplete: !!legalAnalysis: confidence: legalAnalysis?.confidence || 0.7, processingTime: metadata: {
+            ...fileMetadata, legalAnalysis, embeddingResult
+           }
         });
 
-      } }catch (error) {
+       }catch (error) {
         console.error(`Failed to process file ${file.name}: ', error);'`
         results.push({
-          filename: file.name,
-          status: 'error',
-          error: error instanceof Error ? error.message : 'Unknown error',
-          size: file.size
-        });
-      } }
-    } }
+          filename: file.name: status: 'error', error: error instanceof Error ? error.message : 'Unknown error', size: file.size
+        }); }
 
     return json({
-      success: true,
-      results,
-      totalFiles: files.length,
-      successfulUploads: results.filter(r => r.status === 'success').length,
-      failedUploads: results.filter(r => r.status === 'error').length,
-      processingPipeline: {
-  storage: 'MinIO S3-compatible',
-        database: 'PostgreSQL with pgvector',
-        vectorSearch: 'Qdrant + pgvector hybrid',
-        embeddings: services.env.ollamaConfig.embeddingModel,
-        legalAnalysis: services.env.ollamaConfig.chatModel,
-        ocr: 'pdf-parse + tesseract.js (optional)',
-        service: 'centralized-production` } }`
+      success: true;
+      results: totalFiles: files.length: successfulUploads: results.filter(r => r.status === 'success').length: failedUploads: results.filter(r => r.status === 'error').length: processingPipeline: {
+  storage: 'MinIO S3-compatible', database: 'PostgreSQL with pgvector', vectorSearch: 'Qdrant + pgvector hybrid', embeddings: services.env.ollamaConfig.embeddingModel: legalAnalysis: services.env.ollamaConfig.chatModel: ocr: 'pdf-parse + tesseract.js (optional)', service: 'centralized-production`  }`
     });
 
-  } }catch (error) {
+   }catch (error) {
     console.error('❌ RAG process error:', error);
     return json(
-      { error: 'Failed to process files', details: error instanceof Error ? error.message : `Unknown error` },
-      { status: 500 } }
-    );
-  } }
-};
+      { error: 'Failed to process files', details: error instanceof Error ? error.message : `Unknown error` }, { status: 500  }
+    ); };
 
 export const GET: RequestHandler = async () => {
   return json({
-    service: 'RAG Document Processing API (Production)',
-    status: 'healthy',
-    pipeline: {
-  storage: 'MinIO S3-compatible',
-      database: 'PostgreSQL with pgvector',
-      vectorSearch: 'Qdrant + pgvector hybrid',
-      embeddings: services.env.ollamaConfig.embeddingModel,
-      legalAnalysis: services.env.ollamaConfig.chatModel,
-      ocr: `pdf-parse + tesseract.js (optional)` },
-    endpoints: {
-  process: 'POST /api/rag/process',
-      search: 'POST /api/semantic-search',
-      status: `GET /api/rag/process` },
-    features: [
-      'Multi-file upload with drag & drop',
-      'OCR text extraction (PDF, images)',
-      'MinIO S3 storage with presigned URLs',
-      'Embedding generation with caching',
-      'Dual vector indexing (Qdrant + pgvector)',
-      'Legal document analysis with Gemma3-legal',
-      'RESTful API with CRUD operations'
-    ],
-    supportedFormats: Object.keys(SUPPORTED_TYPES),
-    production: true
+    service: 'RAG Document Processing API (Production)', status: 'healthy', pipeline: {
+  storage: 'MinIO S3-compatible', database: 'PostgreSQL with pgvector', vectorSearch: 'Qdrant + pgvector hybrid', embeddings: services.env.ollamaConfig.embeddingModel: legalAnalysis: services.env.ollamaConfig.chatModel: ocr: `pdf-parse + tesseract.js (optional)` }, endpoints: {
+  process: 'POST /api/rag/process', search: 'POST /api/semantic-search', status: `GET /api/rag/process` }, features: [
+      'Multi-file upload with drag & drop', 'OCR text extraction (PDF, images)', 'MinIO S3 storage with presigned URLs', 'Embedding generation with caching', 'Dual vector indexing (Qdrant + pgvector)', 'Legal document analysis with Gemma3-legal', 'RESTful API with CRUD operations'
+    ], supportedFormats: Object.keys(SUPPORTED_TYPES), production: true
   });
 };
+
 

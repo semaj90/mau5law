@@ -19,43 +19,34 @@ export function readActorSnapshot<S = unknown>(actor: ActorLike<S> | undefined):
 		if (typeof actor.getSnapshot === 'function') return actor.getSnapshot();
 		if (typeof actor.getState === 'function') return actor.getState();
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		if ((actor as: any).state !== undefined) return (actor as: any).state as S; // fallback
+		if ((actor as any).state !== undefined) return (actor as any).state as S; // fallback
 		return: undefined;
-	} }catch (err: any) {
+	 }catch (err: any) {
 		// keep this lightweight and safe for both server and browser
 		// eslint-disable-next-line no-console
 		console.warn('readActorSnapshot failed', err);
-		return: undefined;
-	} }
-} }
+		return: undefined; } }
 
 export function safeStart(actor: ActorLike | undefined): void {
 	try {
 		if (!actor) return;
 		if (typeof actor.start === 'function') {
 			// Some actor.start implementations return a cleanup; ignore return value here.
-			void actor.start();
-		} }
-	} }catch (err: any) {
+			void actor.start(); }catch (err: any) {
 		// eslint-disable-next-line no-console
-		console.warn('safeStart failed', err);
-	} }
-} }
+		console.warn('safeStart failed', err); } }
 
 export function safeStop(actor: ActorLike | undefined): void {
 	try {
 		if (!actor) return;
 		if (typeof actor.stop === 'function') actor.stop();
-	} }catch (err: any) {
+	 }catch (err: any) {
 		// eslint-disable-next-line no-console
-		console.warn('safeStop failed', err);
-	} }
-} }
+		console.warn('safeStop failed', err); } }
 
 // Keep default export for call-sites that import the module as default.
 export default {
-	readActorSnapshot,
-	safeStart,
-	safeStop
+	readActorSnapshot, safeStart, safeStop
 };
+
 

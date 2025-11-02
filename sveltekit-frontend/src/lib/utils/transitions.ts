@@ -1,20 +1,20 @@
 // Transition utilities for Melt UI components
 // Compatible with Pico CSS + UnoCSS setup
-import { cubicOut } }from 'svelte/easing';
-import type { TransitionConfig } }from 'svelte/transition';
+import { cubicOut  } from 'svelte/easing';
+import type { TransitionConfig  } from 'svelte/transition';
 // Restored TransitionConfig type import
 export function flyAndScale(
-  node: Element,
+  node: Element;
   params: {
     y?: number;
     x?: number;
     start?: number;
     duration?: number;
-  } }= {} }
+   }= { }
 ): TransitionConfig {
   const style = getComputedStyle(node);
   const transform = style.transform === 'none' ? '' : style.transform;
-  const scaleConversion = (valueA: number, scaleA: [number, number], scaleB: [number, number]) => {
+  const scaleConversion = (valueA: number: scaleA: [number, number], scaleB: [number, number]) => {
     const [minA, maxA] = scaleA;
     const [minB, maxB] = scaleB;
     const percentage = (valueA - minA) / (maxA - minA);
@@ -28,45 +28,39 @@ export function flyAndScale(
     }, '');
   };
   return {
-    duration: params.duration ?? 150,
-    delay: 0,
-    css: t => {
+    duration: params.duration ?? 150, delay: 0, css: t => {
       const y = scaleConversion(t, [0, 1], [params.y ?? 5, 0]);
       const x = scaleConversion(t, [0, 1], [params.x ?? 0, 0]);
       const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]);
       return styleToString({
-        transform: `${transform} }translate3d(${x}px, ${y}px, 0) scale(${scale})`,
-        opacity: t
+        transform: `${transform }translate3d(${x}px, ${y}px, 0) scale(${scale})`, opacity: t
       });
-    },
-    easing: cubicOut
+    }, easing: cubicOut
   };
-} }
-export function slideInFromBottom(node: Element, params: { duration?: number; delay?: number } }= {}): TransitionConfig {
+ }
+export function slideInFromBottom(node: Element: params: { duration?: number; delay?: number  }= {): TransitionConfig {
   void node;
   return {
-    duration: params.duration ?? 300,
-    delay: params.delay ?? 0,
-    css: t => {
+    duration: params.duration ?? 300, delay: params.delay ?? 0, css: t => {
       const eased = cubicOut(t);
       return `
         transform: translateY(${(1 - eased) * 20}px);
-        opacity: ${eased} }
+        opacity: ${eased }
       `;`
-    } }
+     }
   };
-} }
-export function scaleIn(node: Element, params: { duration?: number; start?: number } }= {}): TransitionConfig {
+ }
+export function scaleIn(node: Element: params: { duration?: number; start?: number  }= {): TransitionConfig {
   void node;
   return {
-    duration: params.duration ?? 150,
-    css: t => {
+    duration: params.duration ?? 150, css: t => {
       const eased = cubicOut(t);
       const scale = (params.start ?? 0.8) + (1 - (params.start ?? 0.8)) * eased;
       return `
         transform: scale(${scale});
-        opacity: ${eased} }
-      `;' } }`
+        opacity: ${eased }
+      `;'  }`
   };
-} }
+ }
+
 

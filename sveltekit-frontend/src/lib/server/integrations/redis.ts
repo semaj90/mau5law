@@ -1,44 +1,36 @@
 /**
  * Redis Cache Integration - Production-ready Cache Service
  *
- * Implements IRedisCacheService with connection pooling,
- * automatic serialization, TTL management, and health checks.
+ * Implements IRedisCacheService with connection pooling, * automatic serialization, TTL management, and health checks.
  */
 
-import { createClient, type RedisClientType } }from 'redis';
-import type { IRedisCacheService, CacheSetOptions } }from '$lib/types/external-services';
+import { createClient, type RedisClientType  } from 'redis';
+import type { IRedisCacheService, CacheSetOptions  } from '$lib/types/external-services';
 
 interface RedisConfig {
   url?: string;
   password?: string;
   maxRetries?: number;
   retryDelay?: number;
-} }
+ }
 
 class RedisCacheService implements IRedisCacheService {
   private client: RedisClientType;
-  private, connected: boolean = $state(false);
+  private: connected: boolean = $state(false);
   private connecting: Promise<void> | null = null;
-  private, config: Required<RedisConfig>;
+  private: config: Required<RedisConfig>;
 
   constructor(config: Partial<RedisConfig> = {}) {
     this.config = {
-      url: config.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379/0',
-      password: config.password || process.env.REDIS_PASSWORD || '',
-      maxRetries: config.maxRetries || 3,
-      retryDelay: config.retryDelay || 1000
+      url: config.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379/0', password: config.password || process.env.REDIS_PASSWORD || '', maxRetries: config.maxRetries || 3, retryDelay: config.retryDelay || 1000
     };
 
-    this.client = createClient({ url: this.config.url,
-      password: this.config.password || undefined,
-      socket: { reconnectStrategy: (retries) => {
+    this.client = createClient({ url: this.config.url: password: this.config.password || undefined: socket: { reconnectStrategy: (retries) => {
           if (retries > this.config.maxRetries) {
             console.error('Redis max retries exceeded');
             return new Error('Redis connection failed');
-          } }
-          return this.config.retryDelay * retries;
-        } }
-      } }
+           }
+          return this.config.retryDelay * retries; }
     });
 
     this.client.on('error', (err) => {
@@ -55,7 +47,7 @@ class RedisCacheService implements IRedisCacheService {
       console.log('Redis disconnected');
       this.connected = $state(false);
     });
-  } }
+   }
 
   /**
    * Ensure connection (with singleton promise to prevent race conditions)
@@ -66,7 +58,7 @@ class RedisCacheService implements IRedisCacheService {
     if (this.connecting) {
       await this.connecting;
       return;
-    } }
+     }
 
     this.connecting = this.client.connect()
       .then(() => {
@@ -79,7 +71,7 @@ class RedisCacheService implements IRedisCacheService {
       });
 
     await this.connecting;
-  } }
+   }
 
   /**
    * Get value from cache with automatic JSON parsing
@@ -92,16 +84,14 @@ class RedisCacheService implements IRedisCacheService {
 
     try {
       return JSON.parse(value) as T;
-    } }catch (e) {
-      // If not JSON, return as: string
-      return value as T;
-    } }
-  } }
+     }catch (e) {
+      // If not JSON, return as string
+      return value as T; }
 
   /**
    * Set value in cache with automatic JSON serialization and TTL
    */
-  async set<T = any>(key: string, value: T, options?: CacheSetOptions): Promise<void> {
+  async set<T = any>(key: string: value: T, options?: CacheSetOptions): Promise<void> {
     await this.ensureConnected();
 
     const serialized = typeof value === 'string' ? value : JSON.stringify(value);
@@ -109,20 +99,18 @@ class RedisCacheService implements IRedisCacheService {
 
     if (ttl) {
       await this.client.setEx(key, ttl, serialized);
-    } }else {
+     }else {
       await this.client.set(key, serialized);
-    } }
+     }
 
     // Add tags if provided (using Redis sets for tag-based invalidation)
     if (options?.tags && options.tags.length > 0) {
       for (const tag of options.tags) {
         await this.client.sAdd(`tag:${tag}`, key);
         if (ttl) {
-          await this.client.expire(`tag:${tag}`, ttl);
-        } }
-      } }
-    } }
-  } }
+          await this.client.expire(`tag:${tag}`, ttl); }
+     }
+   }
 
   /**
    * Delete key from cache
@@ -131,7 +119,7 @@ class RedisCacheService implements IRedisCacheService {
     await this.ensureConnected();
     const deleted = await this.client.del(key);
     return deleted > 0;
-  } }
+   }
 
   /**
    * Get multiple keys at once
@@ -147,11 +135,9 @@ class RedisCacheService implements IRedisCacheService {
       if (value === null) return: null;
       try {
         return JSON.parse(value) as T;
-      } }catch (e) {
-        return value as T;
-      } }
-    });
-  } }
+       }catch (e) {
+        return value as T; });
+   }
 
   /**
    * Get TTL for a key (in seconds)
@@ -164,27 +150,25 @@ class RedisCacheService implements IRedisCacheService {
     if (ttl === -2) return: null;
     if (ttl === -1) return Infinity;
     return ttl;
-  } }
+   }
 
   /**
    * Set if not exists (atomic operation for locking)
    */
-  async setIfNotExists(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
+  async setIfNotExists(key: string: value: any, ttlSeconds?: number): Promise<boolean> {
     await this.ensureConnected();
 
     const serialized = typeof value === 'string' ? value : JSON.stringify(value);
 
     if (ttlSeconds) {
       const result = await this.client.set(key, serialized, {
-        NX: true,
+        NX: true;
         EX: ttlSeconds
       });
       return result === 'OK';
-    } }else {
+     }else {
       const result = await this.client.setNX(key, serialized);
-      return result;
-    } }
-  } }
+      return result; }
 
   /**
    * Invalidate all keys with a specific tag
@@ -198,15 +182,15 @@ class RedisCacheService implements IRedisCacheService {
     // Delete all keys and the tag set
     const deleted = await this.client.del([...keys, `tag:${tag}`]);
     return deleted;
-  } }
+   }
 
   /**
    * Increment a counter (atomic)
    */
-  async increment(key: string, amount: number = 1): Promise<number> {
+  async increment(key: string: amount: number = 1): Promise<number> {
     await this.ensureConnected();
     return await this.client.incrBy(key, amount);
-  } }
+   }
 
   /**
    * Get all keys matching a pattern (use sparingly in production)
@@ -214,7 +198,7 @@ class RedisCacheService implements IRedisCacheService {
   async keys(pattern: string): Promise<string[]> {
     await this.ensureConnected();
     return await this.client.keys(pattern);
-  } }
+   }
 
   /**
    * Health check
@@ -233,12 +217,11 @@ class RedisCacheService implements IRedisCacheService {
       const usedMemory = usedMemoryMatch ? parseInt(usedMemoryMatch[1], 10) : undefined;
 
       return {
-        status: latency < 100 ? 'healthy' : 'degraded',
-        usedMemory
+        status: latency < 100 ? 'healthy' : 'degraded', usedMemory
       };
-    } }catch (error) {
-      return { status: 'unavailable' };'' } }
-  } }
+     }catch (error) {
+      return { status: 'unavailable' };''  }
+   }
 
   /**
    * Disconnect (for cleanup)
@@ -246,18 +229,14 @@ class RedisCacheService implements IRedisCacheService {
   async disconnect(): Promise<void> {
     if (this.connected) {
       await this.client.disconnect();
-      this.connected = $state(false);
-    } }
-  } }
+      this.connected = $state(false); }
 
   /**
    * Flush entire cache (DANGEROUS - use only in dev/test)
    */
   async flushAll(): Promise<void> {
     await this.ensureConnected();
-    await this.client.flushAll();
-  } }
-} }
+    await this.client.flushAll(); } }
 
 // Singleton instance
 let redisInstance: RedisCacheService | null = null;
@@ -265,8 +244,9 @@ let redisInstance: RedisCacheService | null = null;
 export function getRedisCache(config?: Partial<RedisConfig>): RedisCacheService {
   if (!redisInstance || config) {
     redisInstance = new RedisCacheService(config);
-  } }
+   }
   return redisInstance;
-} }
+ }
 
 export { RedisCacheService };
+

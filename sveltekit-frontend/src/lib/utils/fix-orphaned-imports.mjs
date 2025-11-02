@@ -16,8 +16,7 @@ for (const filePath of files) {
     
     // Pattern 1: Fix orphaned imports with drizzle-orm
     content = content.replace(
-      /\/\/ Orphaned content: import \{\s*([\s\S]*?)\s*(?=import|export|\/\/|$)/g,
-      (match, importContent) => {
+      /\/\/ Orphaned content: import \{\s*([\s\S]*?)\s*(?=import|export|\/\/|$)/g, (match, importContent) => {
         const cleanImports = importContent
           .split(/[,\n]/)
           .map(item => item.trim())
@@ -46,14 +45,12 @@ for (const filePath of files) {
     
     // Pattern 2: Fix standalone orphaned import lines
     content = content.replace(
-      /^(sql|eq|and|desc|asc|or|isNotNull|ilike|inArray)\s*$/gm,
-      '} from "drizzle-orm";'
+      /^(sql|eq|and|desc|asc|or|isNotNull|ilike|inArray)\s*$/gm, '} from "drizzle-orm";'
     );
     
     // Pattern 3: Fix missing import statement starts
     content = content.replace(
-      /^([a-zA-Z_$][a-zA-Z0-9_$]*(?:\s*,\s*[a-zA-Z_$][a-zA-Z0-9_$]*)*)\s*$/gm,
-      (match, imports) => {
+      /^([a-zA-Z_$][a-zA-Z0-9_$]*(?:\s*,\s*[a-zA-Z_$][a-zA-Z0-9_$]*)*)\s*$/gm, (match, imports) => {
         // Only if line looks like orphaned imports
         if (match.includes(',') || ['sql', 'eq', 'and', 'desc'].some(term => match.includes(term))) {
           return `import { ${imports} } from "drizzle-orm";`;

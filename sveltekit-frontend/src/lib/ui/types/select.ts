@@ -1,4 +1,4 @@
-import type { HTMLAttributes, HTMLButtonAttributes } }from 'svelte/elements';
+import type { HTMLAttributes, HTMLButtonAttributes  } from 'svelte/elements';
 
 // Base props for the main Select component
 export interface SelectProps<T = string> {
@@ -32,7 +32,7 @@ export interface SelectProps<T = string> {
    * Whether the select is required.
    */
   required?: boolean;
-} }
+ }
 
 // Props for the SelectTrigger component
 export interface SelectTriggerProps extends HTMLButtonAttributes {
@@ -44,7 +44,7 @@ export interface SelectTriggerProps extends HTMLButtonAttributes {
    * If true, renders the child component as a trigger.
    */
   asChild?: boolean;
-} }
+ }
 
 // Props for the SelectValue component
 export interface SelectValueProps extends HTMLAttributes<HTMLSpanElement> {
@@ -56,7 +56,7 @@ export interface SelectValueProps extends HTMLAttributes<HTMLSpanElement> {
    * A placeholder to display when no item is selected.
    */
   placeholder?: string;
-} }
+ }
 
 // Props for the SelectContent component
 export interface SelectContentProps extends HTMLAttributes<HTMLDivElement> {
@@ -84,7 +84,7 @@ export interface SelectContentProps extends HTMLAttributes<HTMLDivElement> {
    * @default true
    */
   modal?: boolean;
-} }
+ }
 
 // Props for the SelectGroup component
 export interface SelectGroupProps extends HTMLAttributes<HTMLDivElement> {
@@ -92,7 +92,7 @@ export interface SelectGroupProps extends HTMLAttributes<HTMLDivElement> {
    * Custom class to apply to the select group.
    */
   class?: string;
-} }
+ }
 
 // Props for the SelectLabel component
 export interface SelectLabelProps extends HTMLAttributes<HTMLLabelElement> {
@@ -100,7 +100,7 @@ export interface SelectLabelProps extends HTMLAttributes<HTMLLabelElement> {
    * Custom class to apply to the select label.
    */
   class?: string;
-} }
+ }
 
 // Props for the SelectItem component
 export interface SelectItemProps<T = string> extends HTMLAttributes<HTMLDivElement> {
@@ -116,7 +116,7 @@ export interface SelectItemProps<T = string> extends HTMLAttributes<HTMLDivEleme
    * Custom class to apply to the select item.
    */
   class?: string;
-} }
+ }
 
 // Props for the SelectSeparator component
 export interface SelectSeparatorProps extends HTMLAttributes<HTMLDivElement> {
@@ -124,5 +124,6 @@ export interface SelectSeparatorProps extends HTMLAttributes<HTMLDivElement> {
    * Custom class to apply to the select separator.
    */
   class?: string;
-} }
+ }
+
 
