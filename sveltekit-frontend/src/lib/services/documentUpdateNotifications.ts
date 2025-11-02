@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 
 // Real-time Document Update Notifications
 // WebSocket-based notifications for document re-embedding and re-ranking progress

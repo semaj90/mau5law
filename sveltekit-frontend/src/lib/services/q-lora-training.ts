@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Q-LoRA (Quantized Low-Rank Adaptation) Training Service
  * Advanced reinforcement learning with parameter-efficient fine-tuning

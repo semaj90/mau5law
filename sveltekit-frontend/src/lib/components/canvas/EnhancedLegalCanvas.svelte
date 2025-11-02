@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Enhanced Legal Canvas with YoRHa styling and WebGPU acceleration
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
@@ -39,7 +40,7 @@
   let hoveredNode: CanvasDataPoint | null = $state(null);
   let selectedNode: CanvasDataPoint | null = $state(null);
   let mousePos = $state({ x: 0, y: 0 });
-  let isWebGPUSupported = $state(false);
+  let isWebGPUSupported = $state<boolean>(false);
   // Theme configurations
   const themes = {
     yorha: {

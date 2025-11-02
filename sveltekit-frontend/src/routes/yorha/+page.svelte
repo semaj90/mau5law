@@ -1,5 +1,7 @@
 <!-- YoRHa Main Interface Page -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
   import * as YoRHaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
@@ -114,7 +116,7 @@
     goto(path);
   }
   // Initialize legal AI session
-  async function initializeLegalSession() {
+  async function initializeLegalSession(): Promise<void> {
     try {
       const resp = await fetch('/api/v1/legal/session/create', {
         method: 'POST',
@@ -151,7 +153,7 @@
     activeSection = moduleName;
   }
   // API integration functions
-  async function performRAGQuery(query: string = 'Legal case precedent analysis') {
+  async function performRAGQuery(query: string = 'Legal case precedent analysis'): Promise<any> {
     isLoading = true;
     ragResult = null;
     const { promise, abort } = withAbort(async (signal: AbortSignal) => {
@@ -176,7 +178,7 @@
     }
     return () => abort();
   }
-  async function performSemanticSearch(searchTerm: string = 'contract liability') {
+  async function performSemanticSearch(searchTerm: string = 'contract liability'): Promise<any> {
     isLoading = true;
     searchResults = [];
     let localResults: SearchResult[] = [];
@@ -234,7 +236,7 @@
     }
     return () => abort();
   }
-  async function checkClusterHealth() {
+  async function checkClusterHealth(): Promise<any> {
     isLoading = true;
     const { promise, abort } = withAbort(async (signal: AbortSignal) => {
       const resp = await fetch('/api/yorha/cluster-health', { signal });

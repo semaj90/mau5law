@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { z } from 'zod';
 export const fileUploadSchema = z.object({
   caseId: z.string().optional(), // Case ID can be optional, assigned later

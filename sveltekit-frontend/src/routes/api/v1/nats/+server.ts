@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // Handler functions - accept a safe Record<string, unknown> body and use runtime checks
-async function handlePublish(nats: EnhancedNATSMessagingService, body: Record<string, unknown>) {
+async function handlePublish(nats: EnhancedNATSMessagingService, body: Record<string, unknown>): Promise<any> {
   if (typeof body.subject !== 'string' || body.data === undefined) {
     throw new Error('Subject (string) and data are required for publish');
   }
@@ -157,7 +157,7 @@ async function handlePublish(nats: EnhancedNATSMessagingService, body: Record<st
   });
 }
 
-async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Record<string, unknown>) {
+async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Record<string, unknown>): Promise<any> {
   const messages = body.messages;
   if (!Array.isArray(messages)) {
     throw new Error('Messages array is required for batch publish');
@@ -192,7 +192,7 @@ async function handlePublishBatch(nats: EnhancedNATSMessagingService, body: Reco
   });
 }
 
-async function handleRequest(nats: EnhancedNATSMessagingService, body: Record<string, unknown>) {
+async function handleRequest(nats: EnhancedNATSMessagingService, body: Record<string, unknown>): Promise<any> {
   if (typeof body.subject !== 'string' || body.data === undefined) {
     throw new Error('Subject (string) and data are required for request');
   }
@@ -215,7 +215,7 @@ async function handleRequest(nats: EnhancedNATSMessagingService, body: Record<st
 async function handleSubscribe(
   /* nats param kept for signature parity */ _nats: EnhancedNATSMessagingService,
   body: Record<string, unknown>
-) {
+): Promise<any> {
   if (typeof body.subject !== 'string') {
     throw new Error('Subject (string) is required for subscription');
   }
@@ -231,7 +231,7 @@ async function handleSubscribe(
   );
 }
 
-async function handleUnsubscribe(nats: EnhancedNATSMessagingService, body: Record<string, unknown>) {
+async function handleUnsubscribe(nats: EnhancedNATSMessagingService, body: Record<string, unknown>): Promise<any> {
   if (typeof body.subject !== 'string') {
     throw new Error('Subject (string) is required for unsubscribe');
   }
@@ -251,7 +251,7 @@ async function handleUnsubscribe(nats: EnhancedNATSMessagingService, body: Recor
   });
 }
 
-async function handleCreateStream(nats: EnhancedNATSMessagingService, body: Record<string, unknown>) {
+async function handleCreateStream(nats: EnhancedNATSMessagingService, body: Record<string, unknown>): Promise<any> {
   const cfg = body.stream_config as Record<string, unknown> | undefined;
   if (!cfg || typeof cfg.name !== 'string') {
     throw new Error('Stream configuration with a name is required');
@@ -273,7 +273,7 @@ async function handleCreateStream(nats: EnhancedNATSMessagingService, body: Reco
   });
 }
 
-async function handleCreateConsumer(nats: EnhancedNATSMessagingService, body: Record<string, unknown>) {
+async function handleCreateConsumer(nats: EnhancedNATSMessagingService, body: Record<string, unknown>): Promise<any> {
   const streamName = body.stream_name as string | undefined;
   const consumerCfg = body.consumer_config as Record<string, unknown> | undefined;
   if (!streamName || !consumerCfg) {

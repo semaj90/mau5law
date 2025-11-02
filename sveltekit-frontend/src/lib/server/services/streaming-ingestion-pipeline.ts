@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Streaming ingestion pipeline with MinIO for legal document processing
 // Supports: PDF → Text extraction → Chunking → Embedding → pgvector storage

@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- QLorA Training Panel with Checkbox Toggle -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly } from 'svelte/transition';
@@ -35,9 +36,9 @@ https://svelte.dev/e/attribute_duplicate -->
   }: Props = $props();
   // State
   let trainingEnabled = $state(enabledByDefault);
-  let showAdvancedConfig = $state(false);
-  let dragActive = $state(false);
-  let uploadProgress = $state(0);
+  let showAdvancedConfig = $state<boolean>(false);
+  let dragActive = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
   let selectedFiles = $state<File[]>([]);
   // Reactive values
   let config = $state<QLorATrainingConfig | null>(null);
@@ -59,7 +60,7 @@ https://svelte.dev/e/attribute_duplicate -->
     unsubscribeAnalytics?.();
   });
   // Handlers
-  async function handleTrainingToggle() {
+  async function handleTrainingToggle(): Promise<any> {
     if (!config) return;
     trainingEnabled = !trainingEnabled;
     // Update service configuration
@@ -72,7 +73,7 @@ https://svelte.dev/e/attribute_duplicate -->
       await startTraining(filesToTrain);
     }
   }
-  async function startTraining(files: File[]) {
+  async function startTraining(files: File[]): Promise<any> {
     if (!files.length) return;
     try {
       uploadProgress = 0;
@@ -92,7 +93,7 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function handleFileDrop(_event: DragEvent) {
     event.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     const files = Array.from(event.dataTransfer?.files || []);
     const caseFiles = files.filter(file =>
       file.name.endsWith('.case') ||
@@ -139,13 +140,13 @@ https://svelte.dev/e/attribute_duplicate -->
       default: return 'bg-gray-500';
     }
   }
-  async function pauseTraining() {
+  async function pauseTraining(): Promise<any> {
     await qloraTrainingService.pauseTraining();
   }
-  async function resumeTraining() {
+  async function resumeTraining(): Promise<any> {
     await qloraTrainingService.resumeTraining();
   }
-  async function stopTraining() {
+  async function stopTraining(): Promise<any> {
     await qloraTrainingService.stopTraining();
   }
 </script>

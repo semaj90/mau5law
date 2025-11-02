@@ -62,8 +62,8 @@
   let confidenceLevel = $derived(evidence.confidence > 0.8 ? 'high' : evidence.confidence > 0.6 ? 'medium' : 'low');
   // Expand/collapse state for children
   let isExpanded = $state(depth < 3); // Auto-expand first 3 levels
-  let showChainDetails = $state(false);
-  let showRelationshipDetails = $state(false);
+  let showChainDetails = $state<boolean>(false);
+  let showRelationshipDetails = $state<boolean>(false);
   // Add current evidence to visited set (immutable update)
   let updatedVisitedIds = $derived(new Set([...visitedIds, evidence.evidenceId]));
   function calculateChainIntegrity(chainOfCustody: any[]): number {

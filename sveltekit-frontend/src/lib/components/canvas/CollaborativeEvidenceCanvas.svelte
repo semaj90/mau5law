@@ -3,6 +3,7 @@
   Real-time collaborative evidence mapping with advanced visualization and AI integration
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onDestroy } from 'svelte';
   import { browser } from '$app/environment';
@@ -107,7 +108,7 @@
   let fabricCanvas: any;
   let canvasContainer: HTMLDivElement;
   let selectedTool = $state<'select' | 'evidence' | 'connection' | 'note' | 'highlight' | 'draw'>('select');
-  let isDrawing = $state(false);
+  let isDrawing = $state<boolean>(false);
   let canvasState = $state<any>(null);
   let collaborators = $state<Map<string, any>>(new Map());
   let cursors = $state<Map<string, any>>(new Map());
@@ -115,9 +116,9 @@
   let connections = $state<Map<string, any>>(new Map());
   let annotations = $state<Map<string, any>>(new Map());
   let aiSuggestions = $state<any[]>([]);
-  let showAISuggestions = $state(false);
-  let isGeneratingLayout = $state(false);
-  let sidebarOpen = $state(true);
+  let showAISuggestions = $state<boolean>(false);
+  let isGeneratingLayout = $state<boolean>(false);
+  let sidebarOpen = $state<boolean>(true);
   let propertiesPanel = $state<any>(null);
   let contextMenu = $state<any>(null);
   let undoStack = $state<any[]>([]);
@@ -153,7 +154,7 @@
     if (pubSubController && pubSubController.stop) await pubSubController.stop();
     if (fabricCanvas && fabricCanvas.dispose) fabricCanvas.dispose();
   });
-  async function initializeCanvas() {
+  async function initializeCanvas(): Promise<void> {
     const fabric = await getFabric();
     fabricCanvas = new fabric.Canvas(canvasElement, {
       width: canvasWidth,
@@ -171,7 +172,7 @@
     if (showGrid) await addGridToCanvas();
     await setupZoomPan();
   }
-  async function addGridToCanvas() {
+  async function addGridToCanvas(): Promise<any> {
     const fabric = await getFabric();
     const gridSize = 20;
     const grid: any[] = [];
@@ -200,7 +201,7 @@
       if (fabricCanvas.sendToBack) fabricCanvas.sendToBack(line);
     });
   }
-  async function setupZoomPan() {
+  async function setupZoomPan(): Promise<any> {
     const fabric = await getFabric();
     fabricCanvas.on &&
       fabricCanvas.on('mouse:wheel', (opt: any) => {
@@ -219,7 +220,7 @@
           // ignore
         }
       });
-    let panning = $state(false);
+    let panning = $state<boolean>(false);
     fabricCanvas.on &&
       fabricCanvas.on('mouse:down', (opt: any) => {
         const evt = opt.e;
@@ -242,12 +243,12 @@
       });
     fabricCanvas.on &&
       fabricCanvas.on('mouse:up', () => {
-        panning = $state(false);
+        panning = false;
         fabricCanvas.selection = true;
         fabricCanvas.defaultCursor = 'default';
       });
   }
-  async function loadCanvasData() {
+  async function loadCanvasData(): Promise<any> {
     try {
       const cached = await loadFromRedisCache();
       if (cached) {
@@ -269,7 +270,7 @@
       console.error('Failed to load canvas data:', err);
     }
   }
-  async function addEvidenceNodes() {
+  async function addEvidenceNodes(): Promise<any> {
     for (let i = 0; i < evidenceData.length; i++) {
       const evidence = evidenceData[i];
       if (!evidenceNodes.has(evidence.id)) {
@@ -283,7 +284,7 @@
     }
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
-  async function createEvidenceNode(evidence: any, position: { x: number; y: number }) { // Fixed: added colon
+  async function createEvidenceNode(evidence: any, position: { x: number; y: number }): Promise<any> { // Fixed: added colon
     const fabric = await getFabric();
     const nodeGroup = new fabric.Group([], {
       left: position.x,
@@ -361,7 +362,7 @@
     nodeGroup.on?.('moving', () => saveCanvasState()); // Fixed: optional chaining
     return nodeGroup;
   }
-  async function createConnection(fromNode: any, toNode: any, connectionType: string = 'related') {
+  async function createConnection(fromNode: any, toNode: any, connectionType: string = 'related'): Promise<any> {
     const fabric = await getFabric();
     const fromCenter = fromNode.getCenterPoint ? fromNode.getCenterPoint() : { x: fromNode.left, y: fromNode.top };
     const toCenter = toNode.getCenterPoint ? toNode.getCenterPoint() : { x: toNode.left, y: toNode.top };
@@ -397,7 +398,7 @@
     });
     return group;
   }
-  async function createAnnotation(position: { x: number; y: number }, text: string, type: string = 'note') { // Fixed: added colon
+  async function createAnnotation(position: { x: number; y: number }, text: string, type: string = 'note'): Promise<any> { // Fixed: added colon
     const fabric = await getFabric();
     const annotation = new fabric.Group([], {
       left: position.x,
@@ -480,7 +481,7 @@
     };
   }
   let connectionStartNode: any = null;
-  async function handleConnectionStart(node: any) {
+  async function handleConnectionStart(node: any): Promise<void> {
     if (node.nodeType !== 'evidence') return;
     if (!connectionStartNode) {
       connectionStartNode = node;
@@ -612,7 +613,7 @@
     }
     return actions;
   }
-  async function analyzeEvidence(evidenceId: string) {
+  async function analyzeEvidence(evidenceId: string): Promise<any> {
     try {
       const resp = await fetch('/api/v1/evidence/advanced-analysis', {
         method: 'POST',
@@ -627,7 +628,7 @@
       console.error('Failed to analyze evidence:', err);
     }
   }
-  async function updateEvidenceNode(evidenceId: string, analysisResults: any) {
+  async function updateEvidenceNode(evidenceId: string, analysisResults: any): Promise<any> {
     const fabric = await getFabric();
     const node = evidenceNodes.get(evidenceId);
     if (!node) return;
@@ -642,7 +643,7 @@
     node.addWithUpdate && node.addWithUpdate(indicator);
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
-  async function setupCollaboration() {
+  async function setupCollaboration(): Promise<any> {
     try {
       pubSubController = createPubSubHelper({
         channels: Object.values(redisChannels),
@@ -681,7 +682,7 @@
         /* remove objects */ break;
     }
   }
-  async function updateCollaboratorCursor(userId: string, cursorData: any) {
+  async function updateCollaboratorCursor(userId: string, cursorData: any): Promise<any> {
     const fabric = await getFabric();
     if (!collaboratorCursors.has(userId)) {
       const cursor = new fabric.Circle({
@@ -713,7 +714,7 @@
   function setupAIIntegration() {
     generateAISuggestions();
   }
-  async function generateAISuggestions() {
+  async function generateAISuggestions(): Promise<any> {
     if (!aiAssisted) return;
     try {
       const resp = await fetch('/api/v1/ai/canvas-suggestions', {
@@ -729,7 +730,7 @@
       console.error('Failed to generate AI suggestions:', err);
     }
   }
-  async function applyAILayout() {
+  async function applyAILayout(): Promise<any> {
     isGeneratingLayout = true;
     try {
       const resp = await fetch('/api/v1/ai/generate-layout', {
@@ -747,7 +748,7 @@
       isGeneratingLayout = false;
     }
   }
-  async function applyLayout(positions: any) {
+  async function applyLayout(positions: any): Promise<any> {
     evidenceNodes.forEach((node, evidenceId) => {
       const pos = positions[evidenceId];
       if (pos) {
@@ -770,7 +771,7 @@
       }, 2000);
     }
   }
-  async function saveCanvas() {
+  async function saveCanvas(): Promise<void> {
     try {
       const canvasData = fabricCanvas.toJSON ? fabricCanvas.toJSON() : {};
       const savePayload = {
@@ -803,7 +804,7 @@
       console.error('Failed to save canvas:', err);
     }
   }
-  async function saveToRedisCache(canvasPayload: any) {
+  async function saveToRedisCache(canvasPayload: any): Promise<void> {
     try {
       const resp = await fetch('/api/v1/redis/cache', {
         method: 'POST',
@@ -848,7 +849,7 @@
     });
     console.log('Auto-save enabled');
   }
-  async function publishCanvasChange(action: string) { // Fixed: added colon
+  async function publishCanvasChange(action: string): Promise<any> { // Fixed: added colon
     if (!pubSubController || !collaborative) return;
     try {
       await pubSubController.publish(redisChannels.collaboration, {
@@ -861,7 +862,7 @@
       console.error('Failed to publish canvas change:', err);
     }
   }
-  async function loadCanvasFromRedis(canvasData: any) {
+  async function loadCanvasFromRedis(canvasData: any): Promise<any> {
     try {
       fabricCanvas.loadFromJSON &&
         fabricCanvas.loadFromJSON(canvasData, () => {
@@ -891,7 +892,7 @@
       highlightSuggestedConnection(data.suggestion);
     }
   }
-  async function highlightSuggestedConnection(suggestion: any) { // Fixed: added colon
+  async function highlightSuggestedConnection(suggestion: any): Promise<void> { // Fixed: added colon
     const fabric = await getFabric();
     const fromNode = evidenceNodes.get(suggestion.fromId);
     const toNode = evidenceNodes.get(suggestion.toId);
@@ -908,7 +909,7 @@
       fabricCanvas.remove && fabricCanvas.remove(highlight);
     }, 5000);
   }
-  async function loadCanvasFromJSON(jsonData: string) {
+  async function loadCanvasFromJSON(jsonData: string): Promise<any> {
     try {
       fabricCanvas.loadFromJSON &&
         fabricCanvas.loadFromJSON(jsonData, () => {
@@ -948,7 +949,7 @@
       downloadFile(svgData, `canvas-${caseId}.svg`, 'image/svg+xml');
     }
   }
-  async function downloadFile(data: string, filename: string, mimeType: string, isDataURL = false) {
+  async function downloadFile(data: string, filename: string, mimeType: string, isDataURL = false): Promise<any> {
     if (isDataURL) {
       const res = await fetch(data);
       const blob = await res.blob();
@@ -975,7 +976,7 @@
     annotations.clear();
     saveCanvasState();
   }
-  async function zoomFit() {
+  async function zoomFit(): Promise<any> {
     const fabric = await getFabric();
     fabricCanvas.setViewportTransform && fabricCanvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
     const objects = fabricCanvas.getObjects ? fabricCanvas.getObjects() : [];

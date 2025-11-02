@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 import { json } from '@sveltejs/kit';
 // Import DB module as a loose/any import so this route stays resilient to barrel export changes

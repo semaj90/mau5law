@@ -3,6 +3,7 @@
   Real-time monitoring and analytics
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -31,7 +32,7 @@
   const health = writable<SystemHealth | null>(null);
   const logs = writable<LogEntry[]>([]); // changed from unknown[]
   let refreshInterval: NodeJS.Timeout;
-  let autoRefresh = $state(true);
+  let autoRefresh = $state<boolean>(true);
   $effect(() => {
     loadMetrics();
     if (autoRefresh) {
@@ -41,7 +42,7 @@
       if (refreshInterval) clearInterval(refreshInterval);
     };
   });
-  async function loadMetrics() {
+  async function loadMetrics(): Promise<any> {
     try {
       // Load performance metrics
       const metricsResponse = await fetch('/api/admin/metrics');
@@ -149,7 +150,7 @@
       </div>
       <div class="space-y-4">
         <h3>Error Rate</h3>
-        <div class="space-y-4>
+        <div class="space-y-4">
           {($metrics.errorRate * 100).toFixed(2)}%
         </div>
       </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import {
@@ -120,7 +121,7 @@
     clearNoteFilters();
   }
   // Note creation
-  async function createNote() {
+  async function createNote(): Promise<any> {
     if (!newNote.title.trim() || !newNote.content.trim()) return;
     // Safely obtain the XState global state:
     // prefer xstateIntegration.getGlobalState() if available, otherwise read the Svelte store snapshot
@@ -153,7 +154,7 @@
     };
     await saveLegalNote(note);
     resetNewNoteForm();
-    showCreateNote = $state(false);
+    showCreateNote = false;
   }
   function resetNewNoteForm() {
     newNote = {
@@ -170,7 +171,7 @@
   function startEditNote(note: LegalNote) {
     editingNote = { ...note };
   }
-  async function saveEditedNote() {
+  async function saveEditedNote(): Promise<void> {
     if (!editingNote) return;
     await saveLegalNote({
       ...editingNote,
@@ -183,7 +184,7 @@
     editingNote = null;
   }
   // Note actions
-  async function toggleStar(note: LegalNote) {
+  async function toggleStar(note: LegalNote): Promise<any> {
     const updated = {
       ...note,
       metadata: {
@@ -193,20 +194,20 @@
     };
     await saveLegalNote(updated);
   }
-  async function deleteNote(noteId: string) {
+  async function deleteNote(noteId: string): Promise<void> {
     if (confirm('Are you sure you want to delete this note?')) {
       await removeLegalNote(noteId);
     }
   }
   // Semantic search
-  async function performSemSearch() {
+  async function performSemSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     const results = await performSemanticSearch(searchQuery, 10);
     semanticResults = results;
     showSemanticSearch = true;
   }
   // Export functionality
-  async function exportNotes(format: 'json' | 'markdown' | 'legal_brief') {
+  async function exportNotes(format: 'json' | 'markdown' | 'legal_brief'): Promise<any> {
     await exportLegalNotes(format);
   }
   // Utility functions

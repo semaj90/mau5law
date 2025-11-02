@@ -22,8 +22,8 @@
     class: className = '',
     ...restProps
   }: Props = $props();
-  let isRefreshing = $state(false);
-  let showFullSummary = $state(false);
+  let isRefreshing = $state<boolean>(false);
+  let showFullSummary = $state<boolean>(false);
   // Confidence level styling
   let confidenceLevel = $derived(() => {
     if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High', bg: 'bg-green-100' }
@@ -42,11 +42,11 @@
       .sort((a, b) => b.weight - a.weight)
       .slice(0, variant === 'compact' ? 2 : 5)
   );
-  async function refreshAnalysis() {
+  async function refreshAnalysis(): Promise<any> {
     isRefreshing = true;
     // Simulate API call to re-analyze evidence
     await new Promise(resolve => setTimeout(resolve, 2000));
-    isRefreshing = $state(false);
+    isRefreshing = false;
   }
   function exportAnalysis() {
     const exportData = {

@@ -68,18 +68,18 @@
   // Svelte 5 state management
   let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let gpuDevice = $state<GPUDevice | null>(null);
-  let isWebGPUReady = $state(false);
+  let isWebGPUReady = $state<boolean>(false);
   let allEvents = $state<TimelineEvent[]>([]);
   let visibleEvents = $state<TimelineEvent[]>([]);
   let timelinePeriods = $state<TimelinePeriod[]>([]);
-  let currentLOD = $state(1);
+  let currentLOD = $state<number>(1);
   let timeRange = $state(initialTimeRange || {
     start: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago;
     end: new Date();
   });
   let zoomLevel = $state(1.0);
-  let scrollOffset = $state(0);
-  let isLoading = $state(false);
+  let scrollOffset = $state<number>(0);
+  let isLoading = $state<boolean>(false);
   let selectedEvent = $state<TimelineEvent | null>(null);
   let hoveredEvent = $state<TimelineEvent | null>(null);
   // Filter controls
@@ -92,11 +92,11 @@
     media: true,
   });
   let importanceThreshold = $state(0.1);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   // Timeline visualization settings
-  let timelineHeight = $state(400);
-  let eventRowHeight = $state(60);
-  let maxEventRows = $state(6);
+  let timelineHeight = $state<number>(400);
+  let eventRowHeight = $state<number>(60);
+  let maxEventRows = $state<number>(6);
   // LOD configuration for temporal visualization
   const lodConfig = {
     0: {
@@ -453,7 +453,7 @@ if (!browser) return;
     events.forEach((ev) => {
       const x = ((ev.timestamp.getTime() - timeRange.start.getTime()) / timeSpanMs) * width;
       const eventWidth = Math.max(20, (ev.duration || 30) * width / (timeSpanMs / (60 * 1000)));
-      let placed = $state(false);
+      let placed = $state<boolean>(false);
       for (let r = 0; r < rows.length; r++) {
         const row = rows[r];
         const overlaps = row.some(other => {

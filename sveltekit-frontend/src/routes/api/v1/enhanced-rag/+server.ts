@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 /*
  * Enhanced RAG API - Direct Integration with Go Microservices

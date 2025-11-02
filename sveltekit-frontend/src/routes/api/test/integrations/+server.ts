@@ -3,10 +3,10 @@ import EnhancedRabbitMQCudaBridge from '../../../../lib/integrations/enhanced-ra
 
 const timeoutMs = 5000;
 
-async function runCheck() {
+async function runCheck(): Promise<any> {
   const bridge = new EnhancedRabbitMQCudaBridge();
   const start = Date.now();
-  let initialized = $state(false);
+  let initialized = $state<boolean>(false);
   try {
     const initPromise = bridge.initialize();
     const res = await Promise.race([

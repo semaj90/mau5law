@@ -89,7 +89,7 @@ export class ShaderCacheManager {
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
     }
-    let cacheHit = $state(false);
+    let cacheHit = $state<boolean>(false);
     try {
       // Check server-side cache
       if (!browser) {

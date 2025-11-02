@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { PageServerLoad, Actions } from './$types';

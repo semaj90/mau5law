@@ -4,6 +4,8 @@ Provides access to user's cases, evidence, citations, reports, AI assistant, and
 Enhanced with session management, persistent storage, and drizzle-orm integration
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   // Use a resilient namespace import and create aliases to handle different possible exports
   import * as unified from '$lib/stores/unified';
@@ -51,14 +53,14 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   // Sidebar state management
   let isOpenState = $state(isOpen);
   let activeSection = $state(defaultSection);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let isCollapsed = $state(compactMode);
   // Section toggles
-  let showCases = $state(true);
-  let showEvidence = $state(false);
-  let showCitations = $state(false);
-  let showReports = $state(false);
-  let showAIAssistant = $state(false);
+  let showCases = $state<boolean>(true);
+  let showEvidence = $state<boolean>(false);
+  let showCitations = $state<boolean>(false);
+  let showReports = $state<boolean>(false);
+  let showAIAssistant = $state<boolean>(false);
   // Derived reactive data
   let currentUser = $derived(user);
   let authenticated = $derived(isAuthenticated);
@@ -116,7 +118,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       isCollapsed = !isCollapsed;
     } else {
       activeSection = section;
-      isCollapsed = $state(false);
+      isCollapsed = false;
     }
   }
   function navigateTo(path: string) {

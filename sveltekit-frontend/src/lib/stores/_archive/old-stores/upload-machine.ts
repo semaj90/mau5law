@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { createMachine, assign, createActor, type StateFrom, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 // Context interfaces

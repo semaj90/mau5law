@@ -3,6 +3,7 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Enhanced AI Assistant - Simplified Version -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import {
     Brain,
@@ -18,18 +19,18 @@ https://svelte.dev/e/attribute_duplicate -->
   let { maxHeight = $bindable()  }: { maxHeight = $bindable() : any } = $props(); // "400px"
   let { showReferences = $bindable()  }: { showReferences = $bindable() : any } = $props(); // true
   // State
-  let query = $state("");
-  let isLoading = $state(false);
+  let query = $state<string>("");
+  let isLoading = $state<boolean>(false);
   let messages = $state<any[] >([]);
-  let showSettings = $state(false);
-  let showCitationDialog = $state(false);
-  let selectedCitation = $state("");
+  let showSettings = $state<boolean>(false);
+  let showCitationDialog = $state<boolean>(false);
+  let selectedCitation = $state<string>("");
   // Settings
-  let selectedModel = $state("gpt-4");
+  let selectedModel = $state<string>("gpt-4");
   let temperature = $state(0.7);
   let searchThreshold = $state(0.7);
-  let maxResults = $state(5);
-  async function handleSubmit() {
+  let maxResults = $state<number>(5);
+  async function handleSubmit(): Promise<any> {
     if (!query.trim() || isLoading) return;
     isLoading = true;
     const userMessage = { role: "user", content: query }
@@ -60,7 +61,7 @@ https://svelte.dev/e/attribute_duplicate -->
         ],
       }
       messages = [...messages, aiResponse];
-      isLoading = $state(false);
+      isLoading = false;
     }, 1500);
   }
   function handleReferenceClick(reference: any) {
@@ -69,7 +70,7 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function insertCitation() {
     ondispatch?.(selectedCitation);
-    showCitationDialog = $state(false);
+    showCitationDialog = false;
   }
   function clearMessages() {
     messages = [];
@@ -218,7 +219,7 @@ https://svelte.dev/e/attribute_duplicate -->
         onclick
         keydown={(e) => {
           if (e.key === "Escape") {
-            showCitationDialog = $state(false);
+            showCitationDialog = false;
           }
         }}
         <div class="flex items-center gap-2 mb-4">

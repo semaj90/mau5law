@@ -41,10 +41,10 @@
     children,
   }: Props = $props();
   // Reactive state for texture streaming
-  let webgpuSupported = $state(false);
-  let textureData = $state('');
+  let webgpuSupported = $state<boolean>(false);
+  let textureData = $state<string>('');
   let currentLOD = $state<0 | 1 | 2 | 3>(3); // Start with lowest detail
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   let error = $state<string | null>(null);
   let containerElement: HTMLElement;
   // NES-style loading states (converted to derived values)
@@ -55,7 +55,7 @@
       if (!browser || !enableGPU) {
         // Fallback for SSR or disabled GPU
         textureData = fallbackContent || generateFallbackPattern();
-        isLoading = $state(false);
+        isLoading = false;
         return;
       }
       try {
@@ -73,14 +73,14 @@
         console.error('🎮 WebGPU initialization failed:', err);
         error = err instanceof Error ? err.message : 'WebGPU failed';
         textureData = generateFallbackPattern();
-        isLoading = $state(false);
+        isLoading = false;
       }
     })();
   });
   /**
    * Initialize NES-inspired texture streaming with LOD management
    */
-  async function initializeTextureStreaming() {
+  async function initializeTextureStreaming(): Promise<void> {
     // Placeholder initialization could warm up pipelines or allocate buffers
     // For now just proceed to streaming logic executed below
     return Promise.resolve();
@@ -103,7 +103,7 @@
       } else {
         throw new Error(`Failed to stream texture for ${assetId}`);
       }
-      isLoading = $state(false);
+      isLoading = false;
       // Set up progressive enhancement - load higher quality on hover/interaction
       if (containerElement) {
         setupProgressiveEnhancement();
@@ -111,7 +111,7 @@
     } catch (err) {
       error = err instanceof Error ? err.message : 'Streaming failed';
       textureData = generateFallbackPattern();
-      isLoading = $state(false);
+      isLoading = false;
     }
   })();
   /**

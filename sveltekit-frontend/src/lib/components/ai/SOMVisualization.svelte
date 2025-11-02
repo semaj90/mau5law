@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected keyword: 'class' -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { createSOMRAGSystem, type SOMConfig } from '$lib/ai/som-rag-system';
   import { createEnhancedIngestionPipeline, type IngestionStats } from '$lib/ai/enhanced-ingestion-pipeline';
@@ -24,8 +25,8 @@ https://svelte.dev/e/js_parse_error -->
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
   // Visualization state
-  let isInitialized = $state(false);
-  let isTraining = $state(false);
+  let isInitialized = $state<boolean>(false);
+  let isTraining = $state<boolean>(false);
   let visualizationData = $state<SOMNode[]>([]);
   let stats = $state<IngestionStats & { queue_size: number; is_processing: boolean; som_visualization any[] }>({
     total_processed: 0,

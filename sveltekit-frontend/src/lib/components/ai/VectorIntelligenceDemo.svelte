@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Search, Database, Brain, FileText, AlertCircle, Loader2, Star, Clock } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
@@ -23,8 +25,8 @@
     similarityThreshold: number;
   };
   // Modern Svelte 5 runes
-  let query = $state('');
-  let isSearching = $state(false);
+  let query = $state<string>('');
+  let isSearching = $state<boolean>(false);
   let results = $state<SearchResult[]>([]);
   let metrics = $state<SearchMetrics | null>(null);
   let error = $state<string | null>(null);
@@ -34,7 +36,7 @@
   const showMetrics = $derived(() => metrics !== null);
   const searchButtonDisabled = $derived(() => isSearching || query.trim().length === 0);
   // Vector intelligence search function
-  async function performSemanticSearch() {
+  async function performSemanticSearch(): Promise<any> {
     if (!query.trim() || isSearching) return;
     isSearching = true;
     error = null;

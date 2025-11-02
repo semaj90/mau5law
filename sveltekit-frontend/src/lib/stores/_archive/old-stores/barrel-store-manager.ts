@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * TypeScript Barrel Store Pattern Implementation
  * Provides centralized, type-safe state management with performance optimizations

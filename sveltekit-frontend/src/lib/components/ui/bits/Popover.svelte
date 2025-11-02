@@ -29,7 +29,7 @@
     ...props
   }: EnhancedPopoverProps = $props();
   const dispatch = createEventDispatcher();
-  let open = $state(false);
+  let open = $state<boolean>(false);
   const themeClasses = {
     default: 'bg-popover text-popover-foreground border border-border shadow-md',
     primary: 'bg-primary text-primary-foreground border border-primary shadow-lg',

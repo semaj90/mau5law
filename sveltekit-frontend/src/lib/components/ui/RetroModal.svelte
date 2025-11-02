@@ -31,7 +31,7 @@
     isOpen = true;
   }
   function closeModal() {
-    isOpen = $state(false);
+    isOpen = false;
     // ensure parent callback is invoked
     onClose?.();
   }

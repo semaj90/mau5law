@@ -2,8 +2,8 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { redisOrchestratorClient  } from '$lib/stores/unified';
-  let endpointMetrics = $state([]);
-  let isLoading = $state(true);
+  let endpointMetrics = $state<any[]>([]);
+  let isLoading = $state<boolean>(true);
   const endpoints = [
     {
       name: 'analyze-element',
@@ -462,7 +462,7 @@
     const interval = setInterval(loadEndpointMetrics, 30000);
     return () => clearInterval(interval);
   });
-  async function loadEndpointMetrics() {
+  async function loadEndpointMetrics(): Promise<any> {
     try {
       const health = await redisOrchestratorClient.getSystemHealth();
       // Simulate endpoint-specific metrics
@@ -474,10 +474,10 @@
         requestCount: Math.floor(Math.random() * 1000),
         errorRate: Math.random() * 2, // 0-2%
       }));
-      isLoading = $state(false);
+      isLoading = false;
     } catch (error) {
       console.error('Failed to load endpoint metrics:', error);
-      isLoading = $state(false);
+      isLoading = false;
     }
   }
 </script>

@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 // Real-time Legal Search with WebSocket/NATS Integration
 // Optimized for Svelte 5 and SvelteKit 2 with bits-ui components
 import { writable, derived, type Writable } from 'svelte/store';
@@ -413,7 +414,7 @@ export class RealTimeSearchService {
     const promise = new Promise<SearchResult[]>((resolve, reject) => {
       const searchId = `search_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const results: SearchResult[] = [];
-      let searchCompleted = $state(false);
+      let searchCompleted = $state<boolean>(false);
 
       const messageHandler = (event: MessageEvent) => {
         try {

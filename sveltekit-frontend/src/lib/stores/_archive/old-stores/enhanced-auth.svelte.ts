@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 export interface User {

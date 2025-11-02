@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { fly, fade } from 'svelte/transition';
   // Mock user data (as if signed in)
@@ -13,15 +14,15 @@
     convictionRate: 94.2,
   };
   // Demo state
-  let activeView = $state('dashboard');
-  let isAIActive = $state(true);
-  let currentPrompt = $state('');
-  let isTyping = $state(false);
-  let typewriterIndex = $state(0);
-  let showQuickInput = $state(false);
-  let quickInput = $state('');
-  let workflowStep = $state(0);
-  let timestamp = $state('');
+  let activeView = $state<string>('dashboard');
+  let isAIActive = $state<boolean>(true);
+  let currentPrompt = $state<string>('');
+  let isTyping = $state<boolean>(false);
+  let typewriterIndex = $state<number>(0);
+  let showQuickInput = $state<boolean>(false);
+  let quickInput = $state<string>('');
+  let workflowStep = $state<number>(0);
+  let timestamp = $state<string>('');
   // Demo data
   let cases = $state([
     {
@@ -95,7 +96,7 @@
           typewriterIndex++;
         } else {
           clearInterval(typeInterval);
-          isTyping = $state(false);
+          isTyping = false;
         }
       },
       30 + Math.random() * 20
@@ -125,7 +126,7 @@
     // Start workflow
     workflowAnswers.what = quickInput;
     workflowStep = 1;
-    showQuickInput = $state(false);
+    showQuickInput = false;
     startTypewriter(
       `I understand: "${quickInput}". Let me help you build this case systematically. ${prosecutionWorkflow[1].question}`
     );
@@ -427,7 +428,7 @@
           <button
             class="nes-btn"
             onclick={() => {
-              showQuickInput = $state(false);
+              showQuickInput = false;
               quickInput = '';
             }}
           >

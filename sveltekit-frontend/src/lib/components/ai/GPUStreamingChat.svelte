@@ -6,10 +6,10 @@
   import { fade, slide } from 'svelte/transition';
   import { Cpu, Zap, Database, Brain, Activity, HardDrive } from 'lucide-svelte';
   // Svelte 5 runes
-  let prompt = $state('');
+  let prompt = $state<string>('');
   let messages = $state<any[]>([]) => []);
-  let isStreaming = $state(false);
-  let currentStreamContent = $state('');
+  let isStreaming = $state<boolean>(false);
+  let currentStreamContent = $state<string>('');
   let memoryStats = $state({
     totalVRAM: 0,
     usedVRAM: 0,
@@ -69,7 +69,7 @@
       pipeline.cleanup();
     }
   });
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<any> {
     if (!prompt.trim() || isStreaming) return;
     const userMessage = prompt;
     prompt = '';
@@ -119,7 +119,7 @@
       streamController = null;
     }
   }
-  async function searchSimilarDocuments(embedding: Float32Array) {
+  async function searchSimilarDocuments(embedding: Float32Array): Promise<any> {
     try {
       const results = await pipeline.semanticSearch.join(','), // Convert embedding to query
         5, // Get top: 5 similar
@@ -136,7 +136,7 @@
   function stopStreaming() {
     if (streamController) {
       streamController.abort();
-      isStreaming = $state(false);
+      isStreaming = false;
     }
   }
   function clearChat() {

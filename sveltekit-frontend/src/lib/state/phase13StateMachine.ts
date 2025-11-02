@@ -206,14 +206,14 @@ const webglVertexStreamingService = (context: Phase13Context) => {
 
     const listener = (event: { type?: string } | Phase13Event) => {
       if ((event as { type?: string }).type === 'STOP_STREAMING') {
-        streamingActive = $state(false);
+        streamingActive = false;
         if (vertexBuffer) gl.deleteBuffer(vertexBuffer);
       }
     };
 
     onReceive(listener);
     return () => {
-      streamingActive = $state(false);
+      streamingActive = false;
       if (vertexBuffer) gl.deleteBuffer(vertexBuffer);
     };
   };
@@ -307,7 +307,7 @@ const enhancedRAGService = async (context: Phase13Context, event?: Phase13Event)
 // --- replace apiCoordinationService fromCallback with service factory compatible with createMachine ---
 const apiCoordinationService = (_arg?: any) => { // explicitly typed param to avoid implicit any
   return (sendBack: (e: Phase13Event | { type: string; [k: string]: any }) => void, onReceive: (listener: (e: Phase13Event | { type: string; [k: string]: any }) => void) => void) => {
-    let coordinationActive = $state(false);
+    let coordinationActive = $state<boolean>(false);
     let redisConnections: string[] = [];
     let natsChannels: string[] = [];
     let heartbeat: ReturnType<typeof setInterval> | null = null;
@@ -339,7 +339,7 @@ const apiCoordinationService = (_arg?: any) => { // explicitly typed param to av
           break;
         }
         case 'API_COORDINATION_STOP': {
-          coordinationActive = $state(false);
+          coordinationActive = false;
           redisConnections = [];
           natsChannels = [];
           if (heartbeat) {

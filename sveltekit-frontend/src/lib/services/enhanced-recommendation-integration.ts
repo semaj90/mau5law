@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Enhanced Recommendation Integration Service
  * Connects RecommendationContainer UI with enhanced recommendation worker

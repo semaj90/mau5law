@@ -49,8 +49,8 @@ function generateRequestId(): string {
   return `grpo_${Date.now()}_${createHash('sha256').update(Math.random().toString()).digest('hex').slice(0, 8)}`;
 }
 // Initialize GRPO database on startup
-let grpoInitialized = $state(false);
-async function ensureGrpoInitialized() {
+let grpoInitialized = $state<boolean>(false);
+async function ensureGrpoInitialized(): Promise<void> {
   if (!grpoInitialized) {
     try {
       await initializeGrpoThinkingTable();

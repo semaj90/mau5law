@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   // Demo state
   let canvas: HTMLCanvasElement;
   let demoContainer: HTMLDivElement;
-  let isSystemInitialized = $state(false);
+  let isSystemInitialized = $state<boolean>(false);
   let currentDemo = $state<'reranker' | 'matrix' | 'lod' | 'prefetch'>('reranker');
   let performanceMetrics = $state({
     frameRate: 0,

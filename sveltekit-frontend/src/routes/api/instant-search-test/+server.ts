@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Instant Search Test API - Redis + Loki.js + Fuse.js Integration Test
  *
@@ -452,7 +454,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-async function runPerformanceBenchmark(options?: { iterations?: number; queries?: string[] }) {
+async function runPerformanceBenchmark(options?: { iterations?: number; queries?: string[] }): Promise<any> {
   const iterations = options?.iterations ?? 100;
   const queries = options?.queries ?? ['contract', 'evidence', 'legal document', 'case law'];
   const results = {

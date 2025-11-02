@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
 	import { generate, getCapabilities, type GenerateResult } from '$lib/ai/unified-llama';
 	import type { GenerateOptions } from '$lib/ai/unified-llama';
 
@@ -23,10 +24,10 @@
 
 	// State
 	let messages = $state<Message[]>([]);
-	let inputMessage = $state('');
-	let isGenerating = $state(false);
+	let inputMessage = $state<string>('');
+	let isGenerating = $state<boolean>(false);
 	let capabilities = $state<Awaited<ReturnType<typeof getCapabilities>> | null>(null);
-	let currentTokens = $state('');
+	let currentTokens = $state<string>('');
 	let selectedMode = $state<'auto' | 'wasm' | 'native' | 'remote'>('auto');
 
 	// Load capabilities on mount
@@ -47,7 +48,7 @@
 		})();
 	});
 
-	async function sendMessage() {
+	async function sendMessage(): Promise<any> {
 		if (!inputMessage.trim() || isGenerating) return;
 
 		const userMessage: Message = {

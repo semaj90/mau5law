@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * User-Owned Data Store (Svelte 5)
  * Manages all user-specific data: AI assistant history, reports, citations, cases, evidence, etc.
@@ -313,7 +314,7 @@ const createUserDataStore = () => {
     },
   };
   // Helper functions
-  async function loadFromCache(userId: string) {
+  async function loadFromCache(userId: string): Promise<any> {
     if (!browser) return;
     try {
       const cached = localStorage.getItem('legal_ai_user_data_cache');
@@ -337,7 +338,7 @@ const createUserDataStore = () => {
     }
     return false;
   }
-  async function syncWithServer(userId: string) {
+  async function syncWithServer(userId: string): Promise<any> {
     try {
       // Sync all data types in parallel
       const [casesRes, evidenceRes, citationsRes, reportsRes, conversationsRes] = await Promise.allSettled([

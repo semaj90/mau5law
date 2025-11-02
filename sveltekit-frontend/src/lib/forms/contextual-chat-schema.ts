@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Contextual Chat Form Schema
  *

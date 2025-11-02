@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 // WebAssembly AI Adapter for AIAssistantManager
 // Bridges XState-managed AI assistant with Transformers.js (WebGPU) service
 // Integrates WebGPU tensor acceleration for client-side AI processing

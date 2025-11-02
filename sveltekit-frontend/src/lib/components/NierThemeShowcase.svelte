@@ -1,14 +1,17 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // import Button from 'bits-ui';
   // import * as Dialog from 'bits-ui'; // Removed melt dependency
   import { fly, fade } from 'svelte/transition';
   // Demo states
-  let isDarkMode = $state(false);
-  let showModal = $state(false);
-  let activeTab = $state('overview');
-  let inputValue = $state('');
-  let selectedStatus = $state('active');
+  let isDarkMode = $state<boolean>(false);
+  let showModal = $state<boolean>(false);
+  let activeTab = $state<string>('overview');
+  let inputValue = $state<string>('');
+  let selectedStatus = $state<string>('active');
   // Create bits-ui dialog
   // const {
   //   elements: { trigger, overlay, content, title, description, close },
@@ -31,7 +34,7 @@
 
   // Add modal helper functions for keyboard accessibility
   function closeModal() {
-    showModal = $state(false);
+    showModal = false;
   }
 
   function handleOverlayKeydown(e: KeyboardEvent) {

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { Driver } from 'neo4j-driver-core';
 // Self-Organizing Map (SOM) Enhanced RAG System
 // Implements dimensionality reduction, k-means clustering, and boolean storage for legal AI
@@ -216,7 +217,7 @@ export class SelfOrganizingMapRAG {
       const randomNode = nodes[Math.floor(Math.random() * nodes.length)];
       centroids.push([...randomNode.weights]);
     }
-    let hasConverged = $state(false);
+    let hasConverged = $state<boolean>(false);
     let iteration = 0;
     const maxIterations = 100;
     while (!hasConverged && iteration < maxIterations) {
@@ -234,7 +235,7 @@ export class SelfOrganizingMapRAG {
         }
         if (node.cluster !== bestCluster) {
           node.cluster = bestCluster;
-          hasConverged = $state(false);
+          hasConverged = false;
         }
       }
       // Update centroids

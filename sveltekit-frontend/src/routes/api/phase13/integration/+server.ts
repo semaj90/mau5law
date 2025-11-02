@@ -39,7 +39,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
     const ollamaOk = ollamaRes.status === 'fulfilled' && (ollamaRes.value as Response).ok;
     const qdrantOk = qdrantRes.status === 'fulfilled' && (qdrantRes.value as Response).ok;
     // Best-effort DB check (HTTP probe may not be available for Postgres; treat failures as offline)
-    let dbOk = $state(false);
+    let dbOk = $state<boolean>(false);
     try {
       const dbResp = await fetch('http://localhost:5432/', { signal: timeoutSignal(timeout) });
       dbOk = dbResp.ok;
@@ -47,7 +47,7 @@ async function getSystemHealth(): Promise<SystemHealthResult> {
       dbOk = false;
     }
     // Optional Redis HTTP probe (usually Redis doesn't expose HTTP; keep conservative)
-    let redisOk = $state(false);
+    let redisOk = $state<boolean>(false);
     try {
       const redisResp = await fetch('http://localhost:6379/', { signal: timeoutSignal(timeout) });
       redisOk = redisResp.ok;

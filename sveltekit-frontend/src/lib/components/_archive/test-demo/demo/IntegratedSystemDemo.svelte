@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
@@ -42,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/stores/aiAssistant.svelte.js';
   import { productionServiceClient } from '$lib/services/productionServiceClient.js';
   // Component state using Svelte 5 runes
-  let showAuthDialog = $state(false);
+  let showAuthDialog = $state<boolean>(false);
   let systemStatus = $state({
     authentication: false
     sessionManagement: false
@@ -83,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
     })();
   });
   // Comprehensive system health check
-  async function checkSystemHealth() {
+  async function checkSystemHealth(): Promise<any> {
     try {
       // Check authentication system
       const authHealthy = authService.state.isAuthenticated || !authService.state.error;
@@ -139,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
     serviceMetrics.totalInteractions = sessionAnalytics().activityCount + aiUsage().totalQuerie;
   }
   // Demo authentication flow
-  async function demoLogin() {
+  async function demoLogin(): Promise<any> {
     try {
       const result = await authService.login('admin@prosecutor.com', 'password');
       if ((result as { success?: any; error?: any }).success) {
@@ -153,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Demo logout
-  async function demoLogout() {
+  async function demoLogout(): Promise<any> {
     try {
       await authService.logout();
       console.log('Demo logout successful');
@@ -163,7 +164,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Demo AI interaction
-  async function demoAIInteraction() {
+  async function demoAIInteraction(): Promise<any> {
     try {
       await aiAssistantManager.sendMessage(
         "Analyze the integration of XState machines with Svelte 5 runes for legal AI applications",
@@ -196,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
   // Handle authentication success
   function handleAuthSuccess(user: any) {
     console.log('Authentication successful in demo:', user);
-    showAuthDialog = $state(false);
+    showAuthDialog = false;
     demoMode = 'session';
   }
 </script>

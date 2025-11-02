@@ -2,6 +2,7 @@
 AI Document Summarization - Generate summaries of legal documents
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
 	// Safe imports (works with default or named exports)
 	import * as EssentialRoutePageModule from '$lib/templates/EssentialRoutePage.svelte';
 	const EssentialRouteComponent = EssentialRoutePageModule.default ?? EssentialRoutePageModule.EssentialRoutePage ?? EssentialRoutePageModule;
@@ -19,9 +20,9 @@ AI Document Summarization - Generate summaries of legal documents
 	// State (Svelte 5 runes are auto-imported)
 	let selectedFile = $state<FileMetadata | null>(null);
 	let rawFile = $state<File | null>(null);
-	let isUploading = $state(false);
-	let isSummarizing = $state(false);
-	let summary = $state('');
+	let isUploading = $state<boolean>(false);
+	let isSummarizing = $state<boolean>(false);
+	let summary = $state<string>('');
 	let summaryType = $state<'brief' | 'detailed' | 'bullet'>('detailed');
 
 	const summaryTypes = [
@@ -35,7 +36,7 @@ AI Document Summarization - Generate summaries of legal documents
 	$derived readMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
 	// File upload handler — now posts to /api/ai/upload
-	async function handleFileUpload(event: Event) {
+	async function handleFileUpload(event: Event): Promise<any> {
 		const input = event.currentTarget as HTMLInputElement | null;
 		const file = input?.files?.[0] ?? (event.target as HTMLInputElement | null)?.files?.[0];
 		if (!file) return;
@@ -62,7 +63,7 @@ AI Document Summarization - Generate summaries of legal documents
 	}
 
 	// Generate summary — call /api/ai/summarize
-	async function generateSummary() {
+	async function generateSummary(): Promise<any> {
 		if (!selectedFile) return;
 		isSummarizing = true;
 		try {

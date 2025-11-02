@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Gaming UI Constants and Color Palettes
  * Authentic retro gaming colors and presets

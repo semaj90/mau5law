@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Master Component Barrel Export
  * Legal AI Platform - SvelteKit 2 + Svelte 5

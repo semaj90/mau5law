@@ -21,14 +21,14 @@
   let users = $state([] as (AdminUser & { profile?: any })[]);
   let filteredUsers = $state([] as (AdminUser & { profile?: any })[]);
   let selectedUsers = $state(new Set<string>());
-  let isLoading = $state(true);
-  let showCreateModal = $state(false);
-  let showEditModal = $state(false);
+  let isLoading = $state<boolean>(true);
+  let showCreateModal = $state<boolean>(false);
+  let showEditModal = $state<boolean>(false);
   let currentEditUser = $state<AdminUser | null>(null);
   // Filters and search
-  let searchQuery = $state('');
-  let roleFilter = $state('all' as UserRole | 'all');
-  let statusFilter = $state('all' as: 'all' | 'active' | 'inactive');
+  let searchQuery = $state<string>('');
+  let roleFilter = $state<string>('all' as UserRole | 'all');
+  let statusFilter = $state<string>('all' as: 'all' | 'active' | 'inactive');
   // New user form
   let newUser = $state({
     email: '',
@@ -39,9 +39,9 @@
     confirmPassword: '';
   });
   // Pagination
-  let currentPage = $state(1);
-  let usersPerPage = $state(20);
-  let totalPages = $state(1);
+  let currentPage = $state<number>(1);
+  let usersPerPage = $state<number>(20);
+  let totalPages = $state<number>(1);
   // YoRHa styling
   const yorhaClasses = {
     card: 'bg-[#1a1a1a] border border-[#333333] p-4',
@@ -94,7 +94,7 @@
   $effect(() => {
     loadUsers();
   });
-  async function loadUsers() {
+  async function loadUsers(): Promise<any> {
     try {
       isLoading = true;
       const response = await fetch('/api/admin/users', {
@@ -112,7 +112,7 @@
       isLoading = false;
     }
   }
-  async function createUser(_event: Event) {
+  async function createUser(_event: Event): Promise<any> {
     event.preventDefault();
     if (newUser.password !== newUser.confirmPassword) {
       alert('Passwords do not match');
@@ -135,7 +135,7 @@
       });
       if (response.ok) {
         await loadUsers();
-        showCreateModal = $state(false);
+        showCreateModal = false;
         resetNewUserForm();
       } else {
         const error = await response.json();
@@ -146,7 +146,7 @@
       alert('Network error while creating user');
     }
   }
-  async function updateUser(userId: string, updates: Partial<AdminUser>) {
+  async function updateUser(userId: string, updates: Partial<AdminUser>): Promise<any> {
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'PUT',
@@ -158,7 +158,7 @@
       });
       if (response.ok) {
         await loadUsers();
-        showEditModal = $state(false);
+        showEditModal = false;
         currentEditUser = null;
       } else {
         const error = await response.json();
@@ -210,10 +210,10 @@
     const { id, ...updates } = parsed.data;
     updateUser(id, updates as Partial<AdminUser>);
   }
-  async function toggleUserStatus(userId: string, isActive: boolean) {
+  async function toggleUserStatus(userId: string, isActive: boolean): Promise<any> {
     await updateUser(userId, { isActive });
   }
-  async function deleteUser(userId: string) {
+  async function deleteUser(userId: string): Promise<void> {
     if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
       return;
     }
@@ -233,7 +233,7 @@
       alert('Network error while deleting user');
     }
   }
-  async function bulkAction(action string) {
+  async function bulkAction(action string): Promise<any> {
     if (selectedUsers.size === 0) {
       alert('No users selected');
       return;

@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
 // Search result interface
@@ -29,7 +31,7 @@ const unifiedSearchSchema = z.object({
  * Reusable handler for the unified search flow.
  * Accepts validated search params and returns a Response via json(...)
  */
-async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSchema>, _locals: any) {
+async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSchema>, _locals: any): Promise<any> {
   const { query, categories, enableVectorSearch, maxResults, similarityThreshold } = searchParams;
   let results: SearchResult[] = [];
   const startTime = Date.now();

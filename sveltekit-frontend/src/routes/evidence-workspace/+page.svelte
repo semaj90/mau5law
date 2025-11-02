@@ -9,6 +9,8 @@ Features:
 - Real-time AI analysis with GPU acceleration
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import * as Card from '$lib/components/ui/card.svelte';
@@ -29,16 +31,16 @@ Features:
   } from 'lucide-svelte';
 
   // Reactive state
-  let currentTab = $state('upload');
-  let caseId = $state('');
-  let uploadedFiles = $state([]);
-  let batchAnalysisResults = $state(null);
-  let timelineData = $state(null);
-  let citationsData = $state(null);
-  let canvasData = $state(null);
-  let isAnalyzing = $state(false);
-  let analysisProgress = $state(0);
-  let showAdvancedOptions = $state(false);
+  let currentTab = $state<string>('upload');
+  let caseId = $state<string>('');
+  let uploadedFiles = $state<any[]>([]);
+  let batchAnalysisResults = $state<any>(null);
+  let timelineData = $state<any>(null);
+  let citationsData = $state<any>(null);
+  let canvasData = $state<any>(null);
+  let isAnalyzing = $state<boolean>(false);
+  let analysisProgress = $state<number>(0);
+  let showAdvancedOptions = $state<boolean>(false);
 
   // Analysis options
   let analysisOptions = $state({
@@ -93,7 +95,7 @@ Features:
   }
 
   // Batch analysis
-  async function startBatchAnalysis() {
+  async function startBatchAnalysis(): Promise<any> {
     if (uploadedFiles.length === 0 || !caseId) {
       alert('Please provide a case ID and upload at least one file');
       return;
@@ -164,7 +166,7 @@ Features:
   }
 
   // Timeline extraction
-  async function extractUnifiedTimeline() {
+  async function extractUnifiedTimeline(): Promise<any> {
     try {
       const allContent = uploadedFiles
         .filter(file => file.content)
@@ -200,7 +202,7 @@ Features:
   }
 
   // Citations discovery
-  async function discoverCitations() {
+  async function discoverCitations(): Promise<any> {
     try {
       // removed unused response assignment
       if (response.ok) {
@@ -282,7 +284,7 @@ Features:
     <div class="max-w-7xl mx-auto px-6">
       <div class="flex space-x-8">
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'upload'
+          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'upload'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'upload')}
@@ -291,7 +293,7 @@ Features:
           Upload & Configure
         </button>
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'results'
+          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'results'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'results')}
@@ -300,7 +302,7 @@ Features:
           Analysis Results
         </button>
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'timeline'
+          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'timeline'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'timeline')}
@@ -309,7 +311,7 @@ Features:
           Timeline
         </button>
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'citations'
+          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'citations'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'citations')}
@@ -318,7 +320,7 @@ Features:
           Citations
         </button>
         <button
-          class="py-4 px-2 border-b-2 font-medium text-sm {currentTab === 'canvas'
+          class="py-4" px-2 border-b-2 font-medium text-sm {currentTab === 'canvas'
             ? 'border-blue-500 text-blue-600'
             : 'border-transparent text-gray-500 hover:text-gray-700'}"
           onclick={() => (currentTab = 'canvas')}
@@ -536,7 +538,7 @@ Features:
               <div class="space-y-4">
                 {#each Array.isArray(batchAnalysisResults.individual_results) ? batchAnalysisResults.individual_results : [] as result}
                   <div
-                    class="border rounded-lg p-4 {result.success
+                    class="border" rounded-lg p-4 {result.success
                       ? 'border-green-200 bg-green-50'
                       : 'border-red-200 bg-red-50'}"
                   >

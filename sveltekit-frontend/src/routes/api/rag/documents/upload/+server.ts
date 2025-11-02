@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Document Upload Endpoint - Upload documents with OCR and embedding generation
  * POST /api/rag/documents/upload

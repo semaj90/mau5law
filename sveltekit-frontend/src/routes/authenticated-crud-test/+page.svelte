@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -26,11 +28,11 @@
     json(): Promise<ApiResponse>;
   }
   // Svelte 5 runes for reactive state
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let testResults = $state<string[]>([]);
   let cases = $state<any[]>([]);
   let currentUser = $state<any>(null);
-  let isAuthenticated = $state(false);
+  let isAuthenticated = $state<boolean>(false);
   let authError = $state<string | null>(null);
   // Test case form data
   let newCase = $state({
@@ -69,7 +71,7 @@
   }
   // --- ADDED/REPLACED HELPERS & AUTH CHECK ---
   // Safe JSON parse helper to avoid repetitive casting and broken casts
-  async function readJson(resp: Response) {
+  async function readJson(resp: Response): Promise<any> {
     try {
       return (await resp.json()) as ApiResponse;
     } catch {
@@ -78,14 +80,14 @@
   }
 
   // Lucia v3 / SvelteKit session check
-  async function checkAuth() {
+  async function checkAuth(): Promise<any> {
     try {
       // Lucia session endpoints typically live on the server; ensure credentials are sent
       const response = await fetch('/api/auth/session', { credentials: 'include' });
       const data = await readJson(response);
 
       if (response.status === 401 || !data || !data.user) {
-        isAuthenticated = $state(false);
+        isAuthenticated = false;
         currentUser = null;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
@@ -101,14 +103,14 @@
       }
 
       // Fallback: server did not provide expected shape
-      isAuthenticated = $state(false);
+      isAuthenticated = false;
       authError = 'Unexpected auth response';
       addResult(`Authentication check unexpected response: ${JSON.stringify(data)}`, 'warning');
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
       addResult(`Authentication check error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
-      isAuthenticated = $state(false);
+      isAuthenticated = false;
       currentUser = null;
       return false;
     }
@@ -116,7 +118,7 @@
 
   // Small helper: request a safe public env variable from the server
   // Note: client code cannot access process.env directly — expose needed values via server endpoints only
-  async function fetchPublicEnvVar(key: string) {
+  async function fetchPublicEnvVar(key: string): Promise<Response> {
     try {
       const resp = await fetch(`/api/public-env?key=${encodeURIComponent(key)}`, { credentials: 'include' });
       if (!resp.ok) {
@@ -137,14 +139,14 @@
   }
   // --- END ADDED/REPLACED HELPERS & AUTH CHECK ---
   // Check authentication status
-  async function checkAuth() {
+  async function checkAuth(): Promise<any> {
     try {
       // Lucia session endpoints typically live on the server; ensure credentials are sent
       const response = await fetch('/api/auth/session', { credentials: 'include' });
       const data = await readJson(response);
 
       if (response.status === 401 || !data || !data.user) {
-        isAuthenticated = $state(false);
+        isAuthenticated = false;
         currentUser = null;
         authError = 'Authentication required - please log in';
         addResult('Authentication check failed - user not logged in', 'error');
@@ -160,20 +162,20 @@
       }
 
       // Fallback: server did not provide expected shape
-      isAuthenticated = $state(false);
+      isAuthenticated = false;
       authError = 'Unexpected auth response';
       addResult(`Authentication check unexpected response: ${JSON.stringify(data)}`, 'warning');
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
       addResult(`Authentication check error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
-      isAuthenticated = $state(false);
+      isAuthenticated = false;
       currentUser = null;
       return false;
     }
   }
   // Test authenticated GET operations
-  async function testAuthenticatedGET() {
+  async function testAuthenticatedGET(): Promise<any> {
     if (!isAuthenticated) {
       addResult('Skipping GET test - not authenticated', 'warning');
       return;
@@ -186,8 +188,8 @@
       const listData = await readJson(listResponse);
       if (listResponse.status === 401) {
         addResult('GET operation failed - session expired', 'error');
-        isAuthenticated = $state(false);
-        isLoading = $state(false);
+        isAuthenticated = false;
+        isLoading = false;
         return;
       }
       if (listResponse.ok && listData.success) {
@@ -220,10 +222,10 @@
     } catch (error) {
       addResult(`GET operations error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    isLoading = $state(false);
+    isLoading = false;
   }
   // Test authenticated POST operation
-  async function testAuthenticatedPOST() {
+  async function testAuthenticatedPOST(): Promise<any> {
     if (!isAuthenticated) {
       addResult('Skipping POST test - not authenticated', 'warning');
       return;
@@ -243,8 +245,8 @@
       const data = await readJson(response);
       if (response.status === 401) {
         addResult('POST operation failed - session expired', 'error');
-        isAuthenticated = $state(false);
-        isLoading = $state(false);
+        isAuthenticated = false;
+        isLoading = false;
         return null;
       }
       if (response.ok && data.success) {
@@ -253,7 +255,7 @@
         addResult(`Created by: ${data.data?.createdBy?.name || data.data?.createdBy?.email}`, 'info');
         // Refresh cases list
         await testAuthenticatedGET();
-        isLoading = $state(false);
+        isLoading = false;
         return data.data.id;
       } else {
         addResult(`POST /api/test-cases - Failed: ${data.message || data.error}`, 'error');
@@ -264,11 +266,11 @@
     } catch (error) {
       addResult(`POST operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    isLoading = $state(false);
+    isLoading = false;
     return null;
   }
   // Test authenticated PUT operation
-  async function testAuthenticatedPUT(caseId?: string) {
+  async function testAuthenticatedPUT(caseId?: string): Promise<any> {
     if (!isAuthenticated) {
       addResult('Skipping PUT test - not authenticated', 'warning');
       return;
@@ -302,13 +304,13 @@
       const data = await readJson(response);
       if (response.status === 401) {
         addResult('PUT operation failed - session expired', 'error');
-        isAuthenticated = $state(false);
-        isLoading = $state(false);
+        isAuthenticated = false;
+        isLoading = false;
         return;
       }
       if (response.status === 403) {
         addResult('PUT operation failed - access denied (not case owner)', 'error');
-        isLoading = $state(false);
+        isLoading = false;
         return;
       }
       if (response.ok && data.success) {
@@ -327,10 +329,10 @@
     } catch (error) {
       addResult(`PUT operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    isLoading = $state(false);
+    isLoading = false;
   }
   // Test authenticated DELETE operation
-  async function testAuthenticatedDELETE(caseId?: string) {
+  async function testAuthenticatedDELETE(caseId?: string): Promise<void> {
     if (!isAuthenticated) {
       addResult('Skipping DELETE test - not authenticated', 'warning');
       return;
@@ -350,13 +352,13 @@
       const data = await readJson(response);
       if (response.status === 401) {
         addResult('DELETE operation failed - session expired', 'error');
-        isAuthenticated = $state(false);
-        isLoading = $state(false);
+        isAuthenticated = false;
+        isLoading = false;
         return;
       }
       if (response.status === 403) {
         addResult('DELETE operation failed - access denied (not case owner or admin)', 'error');
-        isLoading = $state(false);
+        isLoading = false;
         return;
       }
       if (response.ok && data.success) {
@@ -374,10 +376,10 @@
     } catch (error) {
       addResult(`DELETE operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
     }
-    isLoading = $state(false);
+    isLoading = false;
   }
   // Run full authenticated CRUD test suite
-  async function runAuthenticatedCRUDTest() {
+  async function runAuthenticatedCRUDTest(): Promise<any> {
     testResults = [];
     addResult('🚀 Starting authenticated CRUD test suite with PostgreSQL + pgvector...');
     // Check authentication first

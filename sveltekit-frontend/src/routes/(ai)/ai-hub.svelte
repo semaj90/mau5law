@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { Button } from '$lib/components/ui/core.svelte';
   import { routeGroups, getRouteGroupByTheme } from '$lib/data/route-groups-config';

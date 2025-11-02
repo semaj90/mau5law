@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Legal AI WebGPU Integration Bridge
  *
@@ -300,7 +301,7 @@ export namespace LegalAIIntegration {
   export async function setupLegalSimilaritySearch(
     queryDocument: Float32Array,
     documentDatabase: Float32Array[];
-  ) {
+  ): Promise<any> {
     try {
       await legalAIBridge.initialize();
       return await legalAIBridge.performLegalSimilaritySearch(

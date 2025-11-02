@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Demo RAG functionality for testing
  * Simulates AI-powered case analysis with mock data

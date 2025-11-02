@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /*
  * Evidence by Case API Route
  * GET /api/v1/evidence/by-case/[caseId] - Get all evidence for a specific case

@@ -78,7 +78,7 @@ class KMeansWorker {
         // Mark as not converged if assignment changed
         if (point.clusterId !== bestCluster) {
           point.clusterId = bestCluster;
-          hasConverged = $state(false);
+          hasConverged = false;
         }
       }
       // Update centroids
@@ -100,7 +100,7 @@ class KMeansWorker {
         // Check convergence
         const centroidMovement = this.euclideanDistance(centroids[i], newCentroid);
         if (centroidMovement > this.convergenceThreshold) {
-          hasConverged = $state(false);
+          hasConverged = false;
         }
         centroids[i] = newCentroid;
       }

@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Transaction Manager with Advisory Locks for Legal AI Platform
  * Ensures ACID properties for critical legal operations

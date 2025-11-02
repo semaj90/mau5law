@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Database Integration API for Legal Documents
 // Handles storage with Drizzle ORM and PostgreSQL
 import { json } from '@sveltejs';
@@ -164,7 +167,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 };
 // Background task to generate search embeddings
-async function generateSearchEmbeddings(documentIds: string[]) {
+async function generateSearchEmbeddings(documentIds: string[]): Promise<any> {
   try {
     for (const documentId of documentIds) {
       // Retrieve document content

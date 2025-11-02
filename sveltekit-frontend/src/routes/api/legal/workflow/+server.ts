@@ -4,9 +4,9 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { rabbitmqService, type LegalDocumentMessage } from '$lib/server/messaging/rabbitmq-service';
 import { logger } from '$lib/server/ai/logger';
-let isInitialized = $state(false);
+let isInitialized = $state<boolean>(false);
 // Initialize RabbitMQ on first request
-async function ensureRabbitMQInitialized() {
+async function ensureRabbitMQInitialized(): Promise<void> {
   if (!isInitialized && !rabbitmqService.connected) {
     try {
       await rabbitmqService.initialize();

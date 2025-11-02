@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 // src/routes/api/cases/[id]/evidence/+server.ts
 // API endpoint to get evidence for a specific case

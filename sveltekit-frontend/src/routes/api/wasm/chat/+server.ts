@@ -1,3 +1,6 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * WebAssembly Chat API - Fallback for Ollama
  *

@@ -22,7 +22,7 @@
   }: Props & { children?: Snippet; footer?: Snippet } = $props();
   let modalElement = $state<HTMLDivElement>();
   function handleClose() {
-    open = $state(false);
+    open = false;
     onclose?.();
   }
   function handleKeydown(_event: KeyboardEvent) {

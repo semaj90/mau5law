@@ -51,10 +51,10 @@
   }: Props = $props();
   // Svelte 5 state
   let nodeElement = $state<HTMLDivElement>();
-  let isDragging = $state(false);
-  let isAnalyzing = $state(false);
-  let showDetails = $state(false);
-  let analysisProgress = $state(0);
+  let isDragging = $state<boolean>(false);
+  let isAnalyzing = $state<boolean>(false);
+  let showDetails = $state<boolean>(false);
+  let analysisProgress = $state<number>(0);
   // Derived properties
   let nodeClass = $derived(`
     evidence-node
@@ -90,12 +90,12 @@
     isDragging = true;
   }
   function handleDragEnd(x: number, y: number) {
-    isDragging = $state(false);
+    isDragging = false;
     handlePositionUpdate(x, y);
     showSuccess(`Evidence moved to (${Math.round(x)}, ${Math.round(y)})`);
   }
   // AI Analysis
-  async function analyzeEvidence() {
+  async function analyzeEvidence(): Promise<any> {
     if (isAnalyzing) return;
     isAnalyzing = true;
     analysisProgress = 0;

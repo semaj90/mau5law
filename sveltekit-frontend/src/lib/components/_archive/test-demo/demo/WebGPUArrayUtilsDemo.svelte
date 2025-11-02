@@ -22,8 +22,8 @@ https://svelte.dev/e/expected_token -->
   } from '$lib/utils/webgpu-array-utils';
   import { webgpuRAGService } from '$lib/webgpu/webgpu-rag-service';
   // Component state
-  let webgpuSupported = $state(false);
-  let isProcessing = $state(false);
+  let webgpuSupported = $state<boolean>(false);
+  let isProcessing = $state<boolean>(false);
   let results: {
     original?: { type: string; size: number, }
     normalized?: { type: string; size: number, }

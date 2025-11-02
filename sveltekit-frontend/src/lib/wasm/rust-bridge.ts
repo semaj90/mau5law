@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // @ts-nocheck - Complex experimental service with external dependencies
 // Rust WASM Bridge for Legal AI Native Windows Integration
 // Provides secure filesystem access, system monitoring, and performance optimization

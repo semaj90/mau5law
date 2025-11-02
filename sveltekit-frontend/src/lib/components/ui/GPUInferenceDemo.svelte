@@ -16,12 +16,12 @@ https://svelte.dev/e/expected_token -->
   }
   // State
   let status = $state<'idle' | 'model-loading' | 'inference' | 'complete' | 'error'>('idle');
-  let progress = $state(0);
-  let queryText = $state('What are the essential elements of a valid contract under common law?');
+  let progress = $state<number>(0);
+  let queryText = $state<string>('What are the essential elements of a valid contract under common law?');
   let response = $state<InferenceResponse | null>(null);
-  let isFirstCall = $state(true); // Track if this is the first call (model loading required)
+  let isFirstCall = $state<boolean>(true); // Track if this is the first call (model loading required)
   // GPU inference function
-  async function runInference() {
+  async function runInference(): Promise<any> {
     if (!queryText.trim()) return;
     try {
       response = null;
@@ -71,7 +71,7 @@ https://svelte.dev/e/expected_token -->
       clearInterval(progressInterval);
       status = 'complete';
       progress = 100;
-      isFirstCall = $state(false); // Subsequent calls won't need full model loading
+      isFirstCall = false; // Subsequent calls won't need full model loading
       console.log('Inference completed:', {
         totalTime: totalTime + 'ms',
         cached: data.metadata?.cached,

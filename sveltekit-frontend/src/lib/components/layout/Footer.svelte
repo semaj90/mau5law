@@ -9,7 +9,7 @@
   let currentYear = new Date().getFullYear();
   // reactive values derived from the SvelteKit page store
   let currentPath = '';
-  let isDemoRoute = $state(false);
+  let isDemoRoute = $state<boolean>(false);
   // use Svelte 5 runes $effect to derive reactive values from the page store
   $effect(() => {
     currentPath = $page?.url?.pathname ?? '';

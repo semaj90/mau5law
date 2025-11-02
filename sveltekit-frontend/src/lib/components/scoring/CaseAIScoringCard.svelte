@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Button from 'bits-ui';
   import { onMount } from 'svelte';
@@ -23,9 +24,9 @@
   }
   let { caseId, evidenceId, content, evidenceType, autoScore = true }: Props = $props();
   let scoring = $state<CaseScore | null>(null);
-  let loading = $state(false);
-  let error = $state('');
-  async function calculateScore() {
+  let loading = $state<boolean>(false);
+  let error = $state<string>('');
+  async function calculateScore(): Promise<any> {
     loading = true;
     error = '';
     try {

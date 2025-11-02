@@ -85,9 +85,9 @@
     success,
     class: className = '',
   }: Props = $props();
-  let isFocused = $state(false);
-  let isHovered = $state(false);
-  let hasContent = $state(false);
+  let isFocused = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
+  let hasContent = $state<boolean>(false);
   let inputElement = $state<HTMLInputElement | null>(null);
   let audioContext = $state<AudioContext | null>(null);
   // Derived state
@@ -156,7 +156,7 @@
     dispatch('focus');
   };
   const handleBlur = () => {
-    isFocused = $state(false);
+    isFocused = false;
     playInputSound(440, 0.1);
     dispatch('blur');
   };
@@ -166,7 +166,7 @@
     playInputSound(550, 0.08);
   };
   const handleUnhover = () => {
-    isHovered = $state(false);
+    isHovered = false;
   };
   const handleKeyDown = (event: KeyboardEvent) => {
     // Play different sounds for different key types

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Case Management Components Export
  * Legal case management and filtering components

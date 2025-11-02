@@ -43,7 +43,7 @@
   // Get user from context (SSR-safe)
   const getUser = getContext<unknown>('user');
   const user = typeof getUser === 'function' ? getUser() : undefined;
-  let errorMessage = $state('');
+  let errorMessage = $state<string>('');
   // Component lifecycle
   $effect(() => {
     // Initialize if needed
@@ -54,7 +54,7 @@
     aiGlobalActions.summarize(caseId, contextItems, user?.id || '');
   }
   // Save summary to DB using the comprehensive summaries API
-  async function saveSummary() {
+  async function saveSummary(): Promise<void> {
     if (!($aiGlobalStore as AIStore).context.summary || !caseId || !user?.id) return;
     try {
       const response = await fetch('/api/summaries', {

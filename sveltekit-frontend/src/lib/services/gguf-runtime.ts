@@ -1,3 +1,6 @@
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Windows-Native GGUF Runtime for Legal AI Platform
  * Enterprise-grade GGUF model runtime with RTX 3060 optimization
@@ -370,7 +373,7 @@ export class GGUFRuntimeService extends EventEmitter {
   private generateWorkerScript(): string {
     return `
       // GGUF Worker for Windows-Native Legal AI Inference
-      let modelLoaded = $state(false);
+      let modelLoaded = $state<boolean>(false);
       let inferenceEngine = null;
       let workerMetrics = {
         processedRequests: 0,
@@ -617,7 +620,7 @@ export class GGUFRuntimeService extends EventEmitter {
             case 'SHUTDOWN':
               // Cleanup resources
               inferenceEngine = null;
-              modelLoaded = $state(false);
+              modelLoaded = false;
               self.postMessage({ type: 'SHUTDOWN_COMPLETE', id });
               break;
           }

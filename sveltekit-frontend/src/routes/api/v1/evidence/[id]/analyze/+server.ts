@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Individual Evidence AI Analysis API Route

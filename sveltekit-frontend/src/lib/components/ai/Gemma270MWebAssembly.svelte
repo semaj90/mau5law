@@ -4,19 +4,20 @@
   Architecture: WebAssembly + WebGL + Shared Memory for real-time legal document processing
 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
 	// Removed unused onMount import and switched Alert to a default import (compiler suggested)
 	import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits.svelte';
 	import { Alert } from '$lib/components/ui/enhanced-bits.svelte'; // use default import as compiler suggested
 	// Svelte 5 runes for reactive state
 	let wasmModule: any = $state(null);
-	let isLoaded = $state(false);
-	let isProcessing = $state(false);
-	let processingProgress = $state(0);
+	let isLoaded = $state<boolean>(false);
+	let isProcessing = $state<boolean>(false);
+	let processingProgress = $state<number>(0);
 	let lastResult = $state<any | null>(null);
-	let errorMessage = $state('');
-	let wasmSupported = $state(true);
-	let webglSupported = $state(true);
-	let sharedMemorySupported = $state(true);
+	let errorMessage = $state<string>('');
+	let wasmSupported = $state<boolean>(true);
+	let webglSupported = $state<boolean>(true);
+	let sharedMemorySupported = $state<boolean>(true);
 	// WebAssembly configuration (fixed missing punctuation and property names)
 	const wasmConfig = {
 		modelSize: '270M',
@@ -53,7 +54,7 @@
 			const startTime = performance.now();
 			// Check for WebAssembly support
 			if (!(window as any).WebAssembly) {
-				wasmSupported = $state(false);
+				wasmSupported = false;
 				errorMessage = 'WebAssembly not supported in this browser';
 				return;
 			}
@@ -122,7 +123,7 @@
 		}
 	}
 	// Client-side AI operations (added parameter typings)
-	async function processText(text: string, operation: 'inference' | 'embedding' | 'summarize' | 'extract' = 'inference') {
+	async function processText(text: string, operation: 'inference' | 'embedding' | 'summarize' | 'extract' = 'inference'): Promise<any> {
 		if (!isLoaded || !wasmModule) {
 			errorMessage = 'WebAssembly module not loaded';
 			return null;
@@ -166,7 +167,7 @@
 			processingProgress = 100;
 		}
 	}
-	async function performClientInference(text: string) {
+	async function performClientInference(text: string): Promise<any> {
 		// Simulate progress updates
 		for (let i = 0; i <= 100; i += 10) {
 			processingProgress = i;
@@ -187,7 +188,7 @@
 			processingLocation: 'client-side'
 		};
 	}
-	async function generateClientEmbedding(text: string) {
+	async function generateClientEmbedding(text: string): Promise<any> {
 		const result = await wasmModule.embedding({
 			text: text,
 			dimensions: 384,
@@ -200,7 +201,7 @@
 			processingLocation: 'client-side'
 		};
 	}
-	async function summarizeClientSide(text: string) {
+	async function summarizeClientSide(text: string): Promise<any> {
 		const result = await wasmModule.summarize({
 			text: text,
 			maxSummaryLength: 200,
@@ -214,7 +215,7 @@
 			processingLocation: 'client-side'
 		};
 	}
-	async function extractClientSide(text: string) {
+	async function extractClientSide(text: string): Promise<any> {
 		const result = await wasmModule.extract({
 			text: text,
 			schema: 'legal-entities',
@@ -236,7 +237,7 @@
 		return parseFloat(((estimatedTokens / (inferenceTime / 1000))).toFixed(2));
 	}
 	// Simulated WASM module functions (typed params)
-	async function simulateInference(params: any) {
+	async function simulateInference(params: any): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 200));
 		return {
 			generatedText: `AI response to: ${String(params?.text ?? '').substring(0, 30)}...`,
@@ -244,14 +245,14 @@
 			tokensGenerated: 45
 		};
 	}
-	async function simulateEmbedding(params: any) {
+	async function simulateEmbedding(params: any): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 100));
 		const dims = Number(params?.dimensions) || 384;
 		return {
 			vector: new Array(dims).fill(0).map(() => Math.random())
 		};
 	}
-	async function simulateSummarization(params: any) {
+	async function simulateSummarization(params: any): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 150));
 		return {
 			summary: `Summary: ${String(params?.text ?? '').substring(0, Number(params?.maxSummaryLength ?? 200))}`,
@@ -259,7 +260,7 @@
 			keyPoints: ['Point 1', 'Point 2']
 		};
 	}
-	async function simulateExtraction(params: any) {
+	async function simulateExtraction(params: any): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 120));
 		return {
 			entities: [{ type: 'person', value: 'Client Entity', confidence: 0.9 }],

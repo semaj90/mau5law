@@ -14,8 +14,8 @@
     { name: 'RAG Search', href: '/ai/rag' },
     { name: 'YoRHa', href: '/yorha' },
   ]);
-  let searchOpen = $state(false);
-  let searchQuery = $state('');
+  let searchOpen = $state<boolean>(false);
+  let searchQuery = $state<string>('');
   let searchInput: HTMLInputElement | null = null;
   function toggleSearch() {
     searchOpen = !searchOpen;

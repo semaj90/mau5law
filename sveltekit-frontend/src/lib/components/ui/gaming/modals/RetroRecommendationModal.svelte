@@ -26,8 +26,8 @@ https://svelte.dev/e/attribute_duplicate -->
     sound = true
   }: Props = $props();
   let modalElement: HTMLDivElement;
-  let selectedIndex = $state(0);
-  let isAnimating = $state(false);
+  let selectedIndex = $state<number>(0);
+  let isAnimating = $state<boolean>(false);
   let audioContext: AudioContext;
   let closeTimer: number;
   // Console-specific styling and animations
@@ -164,8 +164,8 @@ https://svelte.dev/e/attribute_duplicate -->
     playSound('close');
     isAnimating = true;
     setTimeout(() => {
-      show = $state(false);
-      isAnimating = $state(false);
+      show = false;
+      isAnimating = false;
       onClose?.();
     }, 300);
   }

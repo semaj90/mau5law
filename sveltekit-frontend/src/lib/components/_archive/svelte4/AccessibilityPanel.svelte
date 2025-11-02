@@ -29,19 +29,19 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     wcagGuideline?: string;
   }
   let auditResults = $state<AccessibilityIssue[] >([]);
-  let isAuditing = $state(false);
-  let isLoading = $state(false);
-  let auditProgress = $state(0);
-  let totalIssues = $state(0);
-  let errorCount = $state(0);
-  let warningCount = $state(0);
-  let infoCount = $state(0);
+  let isAuditing = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
+  let auditProgress = $state<number>(0);
+  let totalIssues = $state<number>(0);
+  let errorCount = $state<number>(0);
+  let warningCount = $state<number>(0);
+  let infoCount = $state<number>(0);
   // Accessibility settings
-  let highContrast = $state(false);
-  let reducedMotion = $state(false);
-  let largeText = $state(false);
-  let keyboardNavigation = $state(false);
-  let screenReaderMode = $state(false);
+  let highContrast = $state<boolean>(false);
+  let reducedMotion = $state<boolean>(false);
+  let largeText = $state<boolean>(false);
+  let keyboardNavigation = $state<boolean>(false);
+  let screenReaderMode = $state<boolean>(false);
   $effect(() => {
     // Load saved accessibility preferences
     if (browser) {
@@ -127,7 +127,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     }
     saveAccessibilitySettings();
   }
-  async function runAccessibilityAudit() {
+  async function runAccessibilityAudit(): Promise<any> {
     if (!browser) return;
     isAuditing = true;
     auditProgress = 0;
@@ -177,7 +177,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       isAuditing = false;
     }
   }
-  async function checkHeadingStructure() {
+  async function checkHeadingStructure(): Promise<any> {
     const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
     const headingLevels: number[] = [];
     headings.forEach((heading) => {
@@ -211,7 +211,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       }
     }
   }
-  async function checkImageAltText() {
+  async function checkImageAltText(): Promise<any> {
     const images = document.querySelectorAll("img");
     images.forEach((img, index) => {
       if (!img.hasAttribute("alt")) {
@@ -242,7 +242,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       }
     });
   }
-  async function checkFormLabels() {
+  async function checkFormLabels(): Promise<any> {
     const inputs = document.querySelectorAll("input, select, textarea");
     inputs.forEach((input, index) => {
       const id = input.id;
@@ -267,7 +267,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       }
     });
   }
-  async function checkColorContrast() {
+  async function checkColorContrast(): Promise<any> {
     // Simplified contrast check - in real implementation, you'd check computed colors
     const textElements = document.querySelectorAll(
       "p, span, a, button, h1, h2, h3, h4, h5, h6"
@@ -284,7 +284,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       wcagGuideline: "WCAG 2.1 - 1.4.3 Contrast (Minimum)",
     });
   }
-  async function checkKeyboardAccessibility() {
+  async function checkKeyboardAccessibility(): Promise<any> {
     const interactiveElements = document.querySelectorAll(
       "button, a, input, select, textarea, [tabindex]"
     );
@@ -318,7 +318,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       }
     });
   }
-  async function checkAriaLabels() {
+  async function checkAriaLabels(): Promise<any> {
     const elementsWithAriaHidden = document.querySelectorAll(
       '[aria-hidden="true"]'
     );
@@ -340,7 +340,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       }
     });
   }
-  async function checkFocusManagement() {
+  async function checkFocusManagement(): Promise<any> {
     // Check if focus indicators are visible
     auditResults.push({
       id: "focus-indicators",
@@ -353,7 +353,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       wcagGuideline: "WCAG 2.1 - 2.4.7 Focus Visible",
     });
   }
-  async function checkSemanticHTML() {
+  async function checkSemanticHTML(): Promise<any> {
     const hasMain = document.querySelector("main");
     const hasNav = document.querySelector("nav");
     if (!hasMain) {

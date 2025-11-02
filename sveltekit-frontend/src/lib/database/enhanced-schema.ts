@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 * Enhanced PostgreSQL + pgvector Schema for Drizzle ORM v0.44
  * ------------------------------------------------------------
  * - Compatible with drizzle-orm@0.44.x

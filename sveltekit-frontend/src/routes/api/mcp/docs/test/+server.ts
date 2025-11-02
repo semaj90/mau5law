@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import {

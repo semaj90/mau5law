@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /*
  * Gallery Item API - Individual Item Operations
  * Handles CRUD operations for specific gallery items

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { EventEmitter } from 'events';
 /**
  * Ultra-High Performance WebAssembly JSON Processor
@@ -308,12 +309,12 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
     const objects: any[] = [];
     let depth = 0;
     let start = -1;
-    let inString = $state(false);
-    let escape = $state(false);
+    let inString = $state<boolean>(false);
+    let escape = $state<boolean>(false);
     for (let i = 0; i < chunk.length; i++) {
       const code = chunk.charCodeAt(i);
       if (escape) {
-        escape = $state(false);
+        escape = false;
         continue;
       }
       if (code === 92) {

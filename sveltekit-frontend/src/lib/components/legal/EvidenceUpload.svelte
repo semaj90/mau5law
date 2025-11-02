@@ -147,12 +147,12 @@
     return 'document';
   }
   // Process all pending files
-  async function processFiles() {
+  async function processFiles(): Promise<any> {
     if (isProcessing) return;
     isProcessing = true;
     const pendingFiles = files.filter(f => f.status === 'pending');
     if (pendingFiles.length === 0) {
-      isProcessing = $state(false);
+      isProcessing = false;
       return;
     }
     processingStats.totalFiles = files.length;
@@ -172,11 +172,11 @@
     processingStats.completed = files.filter(f => f.status === 'completed').length;
     processingStats.failed = files.filter(f => f.status === 'error').length;
     processingStats.processing = 0;
-    isProcessing = $state(false);
+    isProcessing = false;
     dispatch('update', { files, stats: processingStats });
   }
   // Process individual file
-  async function processFile(evidenceFile: EvidenceFile) {
+  async function processFile(evidenceFile: EvidenceFile): Promise<any> {
     try {
       const startTime = Date.now();
       // Step 1: Upload file
@@ -316,7 +316,7 @@
   // Clear all files
   function clearAll() {
     files = [];
-    isProcessing = $state(false);
+    isProcessing = false;
     processingStats = {
       totalFiles: 0,
       completed: 0,

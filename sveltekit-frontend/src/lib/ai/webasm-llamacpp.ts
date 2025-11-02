@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // WebAssembly llama.cpp with WebGPU acceleration for client-side AI
 // Supports Gemma 3 Legal models in browser with hardware acceleration
 import '../types/index.js';

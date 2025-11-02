@@ -6,18 +6,20 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   WASM Graph Engine with Neo4j Remote Query Caching
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { wasmGraphEngine } from '$lib/wasm/graphEngine';
   import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
   import ModernButton from '$lib/components/ui/Button.svelte';
-  let engineStats = $state(null);
-  let hotQueries = $state([]);
-  let queryInput = $state('MATCH (n) RETURN n LIMIT 10');
-  let queryResult = $state(null);
-  let queryHistory = $state([]);
-  let isExecuting = $state(false);
-  let cacheStats = $state(null);
+  let engineStats = $state<any>(null);
+  let hotQueries = $state<any[]>([]);
+  let queryInput = $state<string>('MATCH (n) RETURN n LIMIT 10');
+  let queryResult = $state<any>(null);
+  let queryHistory = $state<any[]>([]);
+  let isExecuting = $state<boolean>(false);
+  let cacheStats = $state<any>(null);
   $effect(() => {
     (async () => {
 await loadEngineData();
@@ -26,12 +28,12 @@ await loadEngineData();
     return () => clearInterval(interval);
     })();
   });
-  async function loadEngineData() {
+  async function loadEngineData(): Promise<any> {
     engineStats = wasmGraphEngine.getStats();
     hotQueries = await unifiedServiceRegistry.getHotQueries(10);
     cacheStats = unifiedServiceRegistry.getCacheStats();
   }
-  async function executeQuery() {
+  async function executeQuery(): Promise<any> {
     if (!queryInput.trim() || isExecuting) return;
     isExecuting = true;
     const startTime = Date.now();
@@ -64,11 +66,11 @@ await loadEngineData();
       isExecuting = false;
     }
   }
-  async function useHotQuery(query) {
+  async function useHotQuery(query): Promise<any> {
     queryInput = query;
     await executeQuery();
   }
-  async function getRecommendations() {
+  async function getRecommendations(): Promise<any> {
     if (queryResult?.nodes?.length > 0) {
       const firstNode = queryResult.nodes[0];
       const recommendations = await wasmGraphEngine.getRecommendations(firstNode.id, firstNode.type);
@@ -78,7 +80,7 @@ await loadEngineData();
       }
     }
   }
-  async function hydrateCache() {
+  async function hydrateCache(): Promise<any> {
     const hydrated = await wasmGraphEngine.hydrateFromCache();
     await loadEngineData();
     // Show notification
@@ -267,7 +269,7 @@ await loadEngineData();
         <h3 class="font-bold text-nier-accent-warm">Query Results</h3>
         <div class="flex gap-4 text-sm text-nier-text-secondary">
           <span>Source:
-            <span class="font-mono px-2 py-1 rounded text-xs
+            <span class="font-mono" px-2 py-1 rounded text-xs
               {queryResult.metadata.source === 'wasm' ? 'bg-blue-500/20 text-blue-400' :
                 queryResult.metadata.source === 'cache' ? 'bg-green-500/20 text-green-400' :
                 queryResult.metadata.source === 'remote' ? 'bg-yellow-500/20 text-yellow-400' :

@@ -10,6 +10,8 @@ https://svelte.dev/e/js_parse_error -->
   - Integration with case management system
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   const { caseId: string, citation Partial<Citation> | null = null, mode: 'create' | 'edit' = 'create', disabled = false } = $props();
   import { onMount } from "svelte";
@@ -41,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   // Quill editor instance
   let quillEditor: any = null;
   let editorContainer: HTMLElement;
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let errors = writable<Record<string, string>( );
   // Citation types
   const citationTypes = [
@@ -141,7 +143,7 @@ try {
     }
   }
   // Save citation
-  async function handleSave() {
+  async function handleSave(): Promise<void> {
     if (!validateForm()) return;
     isLoading = true;
     try {
@@ -171,7 +173,7 @@ try {
     }
   }
   // Delete citation
-  async function handleDelete() {
+  async function handleDelete(): Promise<void> {
     if (!citation?.id || mode === 'create') return;
     if (!confirm('Are you sure you want to delete this citation?')) return;
     isLoading = true;

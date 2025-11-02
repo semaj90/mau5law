@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Master Service Coordinator Hub
  * Unified integration hub for all 38 Go microservices with comprehensive error resolution

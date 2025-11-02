@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import pgClient from '$lib/server/db-shim';
 import { cache } from '$lib/server/cache/redis';
 import { publishToQueue } from '$lib/server/rabbitmq';

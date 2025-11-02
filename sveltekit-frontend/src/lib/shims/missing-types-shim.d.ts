@@ -1,3 +1,5 @@
+import type { AIResponse } from '$lib/types';
+import type { Case } from '$lib/types';
 // Missing type definitions shim for common global types
 // Progressive replacement: Using proper Svelte 5 TypeScript patterns
 import type {

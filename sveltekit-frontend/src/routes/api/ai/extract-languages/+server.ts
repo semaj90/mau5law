@@ -55,18 +55,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// Validation
 		if (!text || text.trim().length === 0) {
-			throw error(400, {
-				message: 'Text is required for language extraction',
-				code: 'MISSING_TEXT',
-			});
-		}
+      throw error(400, 'Text is required for language extraction');
+    }
 
-		// Sample text if too long (language detection doesn't need full document)
-		const sampleText =
-			text.length > maxSampleLength ? text.substring(0, maxSampleLength) : text;
+    // Sample text if too long (language detection doesn't need full document)
+    const sampleText = text.length > maxSampleLength ? text.substring(0, maxSampleLength) : text;
 
-		// Prompt for language detection
-		const prompt = `Analyze this text and identify all languages present. Return ONLY a JSON array of language names (e.g., ["English", "Spanish"]).
+    // Prompt for language detection
+    const prompt = `Analyze this text and identify all languages present. Return ONLY a JSON array of language names (e.g., ["English", "Spanish"]).
 
 Common legal languages: ${LEGAL_LANGUAGES.join(', ')}
 
@@ -75,31 +71,28 @@ ${sampleText}
 
 JSON array of detected languages:`;
 
-		// Call Ollama API
-		const startTime = Date.now();
-		const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				model,
-				prompt,
-				stream: false,
-				options: {
-					temperature: 0.3, // Low temperature for factual extraction
-					top_p: 0.9,
-					num_predict: 100, // Short response expected
-				},
-			}),
-			signal: AbortSignal.timeout(30000), // 30s timeout
-		});
+    // Call Ollama API
+    const startTime = Date.now();
+    const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        prompt,
+        stream: false,
+        options: {
+          temperature: 0.3, // Low temperature for factual extraction
+          top_p: 0.9,
+          num_predict: 100, // Short response expected
+        },
+      }),
+      signal: AbortSignal.timeout(30000), // 30s timeout
+    });
 
-		if (!ollamaResponse.ok) {
-			const errorText = await ollamaResponse.text();
-			throw error(ollamaResponse.status, {
-				message: `Ollama API error: ${errorText}`,
-				code: 'OLLAMA_ERROR',
-			});
-		}
+    if (!ollamaResponse.ok) {
+      const errorText = await ollamaResponse.text();
+      throw error(ollamaResponse.status, `Ollama API error: ${errorText}`);
+    }
 
 		const ollamaData: OllamaGenerateResponse = await ollamaResponse.json();
 		const processingTime = Date.now() - startTime;

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { QdrantClient } from '@qdrant/js-client-rest';
 
 /**

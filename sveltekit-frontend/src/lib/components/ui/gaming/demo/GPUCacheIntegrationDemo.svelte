@@ -26,7 +26,7 @@
   let { showProgressionDemo = true, enableRealTimeMetrics = true, debugMode = false }: Props = $props();
   // XState machine actor
   let cacheActor = $state<any>(null);
-  let machineState = $state('idle');
+  let machineState = $state<string>('idle');
   // Demo state
   let currentEra = $state<'8bit' | '16bit' | 'n64' | 'yorha'>('8bit');
   let cacheMetrics = $state({

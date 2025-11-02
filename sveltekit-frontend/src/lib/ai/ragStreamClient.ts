@@ -176,7 +176,7 @@ export async function* streamRagGenerator(
   }
   let attempt = 0;
   while (true) {
-    let doneEmitted = $state(false);
+    let doneEmitted = $state<boolean>(false);
     try {
       const body = JSON.stringify({
         query: base.query,
@@ -344,7 +344,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   const summaryW = writable<string | undefined>(undefined);
   // Runtime state
   let abortCtrl: AbortController | null = null;
-  let running = $state(false);
+  let running = $state<boolean>(false);
   let persistenceKey: string | undefined;
   let pendingBatch: string[] = [];
   let batchTimer: ReturnType<typeof setTimeout> | null = null;
@@ -417,7 +417,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   }
   function cancel() {
     abortCtrl?.abort();
-    running = $state(false);
+    running = false;
     statusW.set('aborted');
     flushBatch();
   }
@@ -484,7 +484,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
                 const prevObj = get(appliedObjectW) ?? initial?.patches?.initialObject ?? {};
                 const mode = initial.patches?.mode ?? 'auto';
                 const newObj = prevObj ? JSON.parse(JSON.stringify(prevObj)) : {};
-                let changed = $state(false);
+                let changed = $state<boolean>(false);
                 if ((mode === 'auto' || mode === 'json-patch') && Array.isArray(ev.patch)) {
                   changed = applyJsonPatch(newObj, ev.patch as JsonPatchOp[]);
                 } else if (mode === 'merge' && ev.patch && typeof ev.patch === 'object' && !Array.isArray(ev.patch)) {
@@ -510,14 +510,14 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
             metricsW.update(m => ({ ...(m ?? { reconnects: 0, errors: 0 }), errors: (m?.errors ?? 0) + 1 }));
             if (ev.final) {
               statusW.set('error');
-              running = $state(false);
+              running = false;
               return;
             }
             break;
           case 'done':
             statusW.set('done');
             flushBatch();
-            running = $state(false);
+            running = false;
             return;
           default:
             // unknown - ignore
@@ -534,7 +534,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
       running = false;
     }
   }
-  async function interrupt(mode: 'graceful' | 'force' = 'graceful') {
+  async function interrupt(mode: 'graceful' | 'force' = 'graceful'): Promise<any> {
     if (!running) return;
     if (mode === 'graceful') {
       try {
@@ -613,7 +613,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
 /** Apply a minimal subset of JSON Patch operations */
 function applyJsonPatch(target: Record<string, unknown>, patch: JsonPatchOp[]): boolean {
   if (!Array.isArray(patch)) return false;
-  let changed = $state(false);
+  let changed = $state<boolean>(false);
   for (const op of patch) {
     if (!op || typeof op.path !== 'string' || typeof op.op !== 'string') continue;
     const pathParts = op.path.split('/').slice(1).map(decodePointerToken);

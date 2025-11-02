@@ -1,5 +1,6 @@
 <!-- Enhanced File Upload with Real OCR, Embeddings, and Database Integration -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { createUploadMachine } from '$lib/machines/uploadMachine';
   import type { ProcessingPipeline } from '$lib/types/upload';
@@ -31,9 +32,9 @@
   // State variables (correct $state usage)
   let files = $state<File[]>([]);
   let fileStates = $state<Map<string, any>>(new Map());
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<unknown[]>([]);
-  let isSearching = $state(false);
+  let isSearching = $state<boolean>(false);
   let systemStatus = $state<any>(null);
   // === MCP INTEGRATION LAYER ===
   const MCP_ENDPOINTS = {
@@ -77,7 +78,7 @@
       console.warn('[UploadWS] init failed', e);
     }
   }
-  async function checkSystemStatus() {
+  async function checkSystemStatus(): Promise<any> {
     const status = { ocr: false, embeddings: false, search: false, storage: false };
     try {
       const aggregate = await fetch(MCP_ENDPOINTS.status).catch(() => null);
@@ -130,7 +131,7 @@
   } as any;
   const uploadMachineActor = createActor(createUploadMachine(basePipeline));
   // File upload handler with real RAG processing
-  async function handleFileUpload(e: Event) {
+  async function handleFileUpload(e: Event): Promise<any> {
     const input = e.target as HTMLInputElement;
     if (!input?.files?.length) return;
     const incoming: File[] = Array.from(input.files);
@@ -220,7 +221,7 @@
     }
   }
   // Semantic search with real API
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {

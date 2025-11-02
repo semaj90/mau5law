@@ -31,9 +31,9 @@
   // typed tabs array
   const tabs: LegalCaseContext['activeTab'][] = ['overview', 'evidence', 'analysis', 'search'];
   // Form state (avoid generic type args on $state)
-  let newCaseTitle = $state('');
-  let newCaseDescription = $state('');
-  let newCaseNumber = $state('');
+  let newCaseTitle = $state<string>('');
+  let newCaseDescription = $state<string>('');
+  let newCaseNumber = $state<string>('');
   // Handle route changes and load case
   $effect(() => {
     const routeCaseId = page.params.caseId;

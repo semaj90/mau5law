@@ -324,7 +324,7 @@ export class QdrantAutoTagger {
     for (const rule of sortedRules) {
       const target = `${error.errorCode} ${error.message} ${error.filePath}`;
 
-      let matches = $state(false);
+      let matches = $state<boolean>(false);
       if (rule.pattern instanceof RegExp) {
         matches = rule.pattern.test(target);
       } else {

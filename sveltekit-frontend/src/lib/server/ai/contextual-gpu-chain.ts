@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { RunnableSequence } from '@langchain/core/runnables';
 import { ChatOllama } from '@langchain/community/chat_models/ollama';
 import { QdrantVectorStore } from '@langchain/community/vectorstores/qdrant';

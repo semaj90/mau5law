@@ -13,12 +13,12 @@
     form?: any;
   }
   let { text = 'Retro Auth', variant = 'primary', size = 'medium', icon = '🎮', form }: Props = $props();
-  let isModalOpen = $state(false);
+  let isModalOpen = $state<boolean>(false);
   function openModal() {
     isModalOpen = true;
   }
   function closeModal() {
-    isModalOpen = $state(false);
+    isModalOpen = false;
   }
   // compute classes synchronously
   function getButtonClasses() {

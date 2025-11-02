@@ -34,8 +34,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     autonomousEngineering: true,
     serviceWorkers: true,
   });
-  let showArchitecture = $state(false);
-  let showIntegration = $state(false);
+  let showArchitecture = $state<boolean>(false);
+  let showIntegration = $state<boolean>(false);
 
   function toggleArchitecture() {
     showArchitecture = !showArchitecture;
@@ -46,7 +46,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
     checkSystemStatus();
   });
 
-  async function checkSystemStatus() {
+  async function checkSystemStatus(): Promise<any> {
     try {
       const response = await fetch('/api/system/status');
       if (response.ok) {

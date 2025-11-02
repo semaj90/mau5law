@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Legal Document Analyzer - Agentic Function Calling for gemma3-legal:latest
  *

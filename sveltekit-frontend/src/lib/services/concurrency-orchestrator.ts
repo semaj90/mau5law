@@ -55,7 +55,7 @@ type SubmitTaskEvent = {
 // Module-level service holders (so init functions can expose instances to the orchestrator)
 let lokiInstance: any | null = null;
 let redisInstance: any | null = null;
-let rabbitmqInitialized = $state(false);
+let rabbitmqInitialized = $state<boolean>(false);
 
 // --- New: simple in-process worker pool -------------------------------------------------
 type WorkerTask<T = unknown> = () => Promise<T>;
@@ -927,13 +927,13 @@ async function initializeRabbitMQ(): Promise<boolean> {
           await (setupFn as () => Promise<void>)();
           rabbitmqInitialized = true;
         } else {
-          rabbitmqInitialized = $state(false);
+          rabbitmqInitialized = false;
         }
       } else {
-        rabbitmqInitialized = $state(false);
+        rabbitmqInitialized = false;
       }
     } catch (err) {
-      rabbitmqInitialized = $state(false);
+      rabbitmqInitialized = false;
     }
     console.log('✅ RabbitMQ initialization attempted');
     return rabbitmqInitialized;

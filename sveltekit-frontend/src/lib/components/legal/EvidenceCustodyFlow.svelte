@@ -7,6 +7,7 @@ Main UI component for managing the complete custody workflow with real-time coll
 and AI-powered verification features.
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Props (clean, explicit exports)
   const { evidenceId } = $props<{ evidenceId: string }>()
@@ -31,7 +32,7 @@ and AI-powered verification features.
   // State machine actor
   let custodyActor = $state(createActor(evidenceCustodyMachine));
   let currentState = $state(custodyActor.getSnapshot());
-  let isWorkflowActive = $state(false);
+  let isWorkflowActive = $state<boolean>(false);
   // Reactive state derived from machine (use arrow selectors)
   let progress = $derived(() => currentState.context?.progress);
   let stage = $derived(() => currentState.context?.workflowStage ?? 'idle');
@@ -42,10 +43,10 @@ and AI-powered verification features.
   let error = $derived(() => currentState.context?.error);
   let warnings = $derived(() => currentState.context?.warnings ?? []);
   // UI state
-  let isCollaborationExpanded = $state(false);
-  let showIntegrityDetails = $state(false);
-  let transferReason = $state('');
-  let showTransferDialog = $state(false);
+  let isCollaborationExpanded = $state<boolean>(false);
+  let showIntegrityDetails = $state<boolean>(false);
+  let transferReason = $state<string>('');
+  let showTransferDialog = $state<boolean>(false);
   // WebSocket for real-time updates
   let wsConnection: WebSocket | null = null;
   $effect(() => {
@@ -105,7 +106,7 @@ and AI-powered verification features.
         newCustodian: userId,
         reason: transferReason,
       } as EvidenceCustodyEvent);
-      showTransferDialog = $state(false);
+      showTransferDialog = false;
       transferReason = '';
     }
   }

@@ -1,6 +1,8 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import * as Dialog from '$lib/components/ui/dialog/index.js';
   // --- Types ---
@@ -33,8 +35,8 @@
   } = $props() as Props;
   // Use typed state to avoid `never` inferences
   let messages = $state<ChatMessage[]>([]);
-  let currentMessage = $state('');
-  let isLoading = $state(false);
+  let currentMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let chatContainer: HTMLElement | null = $state(null);
   let inputElement: HTMLTextAreaElement | null = $state(null);
   // Auto-scroll to bottom when messages change (capture ref to avoid: "possibly null" inside timeout)
@@ -83,7 +85,7 @@
     }
   }
   // --- Fixed sendMessage: valid fetch, JSON parsing, and error handling ---
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isLoading) return;
     const userMessage: ChatMessage = {
       id: Date.now(),
@@ -156,7 +158,7 @@
       addSystemMessage();
     }
   }
-  async function copyToClipboard(text: string) {
+  async function copyToClipboard(text: string): Promise<any> {
     try {
       await navigator.clipboard.writeText(text);
     } catch (error) {
@@ -174,7 +176,7 @@
     currentMessage = suggestion;
     sendMessage();
   }
-  async function provideFeedback(messageId: number | string, feedback: 'positive' | 'negative') {
+  async function provideFeedback(messageId: number | string, feedback: 'positive' | 'negative'): Promise<any> {
     try {
       await fetch('/api/ai/feedback', {
         method: 'POST',

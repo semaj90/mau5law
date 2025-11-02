@@ -14,7 +14,7 @@ https://svelte.dev/e/expected_token -->
      Snippet;
   }
   let { title, description = '', showGpuStatus = false, showWelcome = false, children }: Props = $props();
-  let pageLoaded = $state(false);
+  let pageLoaded = $state<boolean>(false);
   let gpuStatus = $state({
     gpu: 'RTX 3060 Ti',
     status: 'Active',

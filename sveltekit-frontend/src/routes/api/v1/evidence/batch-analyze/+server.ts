@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Multi-File Evidence Batch Analysis API
  *
@@ -82,7 +83,7 @@ type IndividualResult = {
 };
 
 // AI Integration
-async function analyzeDocumentBatch(files: EvidenceFile[], options: AnalysisOptions) {
+async function analyzeDocumentBatch(files: EvidenceFile[], options: AnalysisOptions): Promise<any> {
   const model = await getOptimalModel();
 
   // Process files in parallel if enabled
@@ -93,7 +94,7 @@ async function analyzeDocumentBatch(files: EvidenceFile[], options: AnalysisOpti
   }
 }
 
-async function processBatchParallel(files: EvidenceFile[], model: string, options: AnalysisOptions) {
+async function processBatchParallel(files: EvidenceFile[], model: string, options: AnalysisOptions): Promise<any> {
   const concurrency = Math.min(options.maxConcurrency, files.length);
   const batches: EvidenceFile[][] = [];
 
@@ -132,7 +133,7 @@ async function processBatchParallel(files: EvidenceFile[], model: string, option
   return results;
 }
 
-async function processBatchSequential(files: EvidenceFile[], model: string, _options: AnalysisOptions) {
+async function processBatchSequential(files: EvidenceFile[], model: string, _options: AnalysisOptions): Promise<any> {
   const results: IndividualResult[] = [];
 
   for (const file of files) {
@@ -250,7 +251,7 @@ Provide analysis in this exact JSON format:
 }
 
 // Cross-document analysis (use typed IndividualResult[])
-async function performCrossDocumentAnalysis(analysisResults: IndividualResult[]) {
+async function performCrossDocumentAnalysis(analysisResults: IndividualResult[]): Promise<any> {
   const allEntities = analysisResults.flatMap(result => result.analysis?.key_entities || []);
   const allDates = analysisResults.flatMap(result => result.analysis?.important_dates || []);
   const allIssues = analysisResults.flatMap(result => result.analysis?.legal_issues || []);

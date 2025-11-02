@@ -27,7 +27,7 @@ export function clientSideFuzzySearch(query: string) {
 // 5. Enhanced Fuzzy Search (combining client-side with optional server-side vector search)
 // This function can make a call to a SvelteKit API endpoint for server-side vector search.
 // We'll assume the endpoint is at /api/enhanced-search
-export async function enhancedFuzzySearch(query: string, useServerSearch: boolean = true) {
+export async function enhancedFuzzySearch(query: string, useServerSearch: boolean = true): Promise<any> {
   let serverResults: any[] = [];
 
   if (useServerSearch) {

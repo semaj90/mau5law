@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { ollamaChatStream } from '$lib/services/ollamaChatStream';
@@ -7,8 +8,8 @@ import {
   type VectorSearchResult,
 } from '$lib/server/services/vectorDBService';
 // Initialize database on startup
-let dbInitialized = $state(false);
-async function ensureDbInitialized() {
+let dbInitialized = $state<boolean>(false);
+async function ensureDbInitialized(): Promise<void> {
   if (!dbInitialized) {
     await initializeChatEmbeddingsTable();
     dbInitialized = true;
@@ -280,7 +281,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // For non-streaming responses
     let fullResponse = '';
     let sources: VectorSearchResult[] = [];
-    let vectorSearchUsed = $state(false);
+    let vectorSearchUsed = $state<boolean>(false);
     const streamGenerator = (ollamaChatStream as unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>)(
       {
         message: userMessage,

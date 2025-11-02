@@ -91,10 +91,10 @@
     success,
     class: className = '';
   }: Props = $props();
-  let isOpen = $state(false);
-  let isFocused = $state(false);
-  let isHovered = $state(false);
-  let searchTerm = $state('');
+  let isOpen = $state<boolean>(false);
+  let isFocused = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
+  let searchTerm = $state<string>('');
   let selectedIndex = $state(-1);
   let selectElement = $state<HTMLElement | null>(null);
   let dropdownElement = $state<HTMLElement | null>(null);
@@ -175,7 +175,7 @@
     }
   }
   const closeDropdown = async () => {
-    isOpen = $state(false);
+    isOpen = false;
     selectedIndex = -1;
     searchTerm = '';
     await playSelectSound(440, 0.15);
@@ -209,7 +209,7 @@
     playSelectSound(500, 0.1);
   }
   const handleBlur = () => {
-    isFocused = $state(false);
+    isFocused = false;
   }
   const handleHover = () => {
     if (disabled) return;
@@ -217,7 +217,7 @@
     playSelectSound(480, 0.08);
   }
   const handleUnhover = () => {
-    isHovered = $state(false);
+    isHovered = false;
   }
   const handleKeyDown = (_event: KeyboardEvent) => {
     if (disabled) return;

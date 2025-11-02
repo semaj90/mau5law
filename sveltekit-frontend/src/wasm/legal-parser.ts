@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Legal Document Parser in AssemblyScript
  */
@@ -138,7 +139,7 @@ function indexOf(str: string, search: string, start: i32 = 0): i32 {
     let found = true;
     for (let j = 0; j < search.length; j++) {
       if (str.charCodeAt(i + j) != search.charCodeAt(j)) {
-        found = $state(false);
+        found = false;
         break;
       }
     }

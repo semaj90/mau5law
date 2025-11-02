@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // FlatBuffer utilities for legal document processing
 // Integrates with Go microservices for high-performance data exchange
 import { Builder } from 'flatbuffers';
@@ -210,7 +211,7 @@ export class FlatBufferLegalProcessor {
           const reader = response.body.getReader();
 
           // Avoid: "constant condition" by using a mutable flag
-          let finished = $state(false);
+          let finished = $state<boolean>(false);
           while (!finished) {
             const { done, value } = await reader.read();
             if (done) {

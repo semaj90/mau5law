@@ -11,6 +11,8 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   - Detective mode integration
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   const { caseId: string, detectiveMode = false, readonly = false } = $props();
   import { onMount } from "svelte";
@@ -22,20 +24,20 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   // State
   let citations = writable<Citation[]>([]);
   let filteredCitations = writable<Citation[]>([]);
-  let isLoading = $state(false);
-  let showEditor = $state(false);
+  let isLoading = $state<boolean>(false);
+  let showEditor = $state<boolean>(false);
   let selectedCitation = $state<Citation | null>(null);
   let editMode = $state<'create' | 'edit'>('create');
   // Filters
-  let searchQuery = $state('');
-  let typeFilter = $state('all');
-  let verifiedFilter = $state('all');
+  let searchQuery = $state<string>('');
+  let typeFilter = $state<string>('all');
+  let verifiedFilter = $state<string>('all');
   let sortBy = $state<'relevance' | 'date' | 'title'>('relevance');
   let sortOrder = $state<'asc' | 'desc'>('desc');
   // Pagination
-  let currentPage = $state(1);
-  let itemsPerPage = $state(20);
-  let totalPages = $state(1);
+  let currentPage = $state<number>(1);
+  let itemsPerPage = $state<number>(20);
+  let totalPages = $state<number>(1);
   // Citation types for filtering
   const citationTypes = [
     { value: 'all', label: 'All Types' },
@@ -51,7 +53,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     { value: 'other', label: 'Other' }
   ];
   // Load citations
-  async function loadCitations() {
+  async function loadCitations(): Promise<any> {
     isLoading = true;
     try {
       const params = new URLSearchParams({
@@ -109,7 +111,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       );
     }
     applyClientSideSort();
-    showEditor = $state(false);
+    showEditor = false;
     selectedCitation = null;
     // ondispatch removed;
   }
@@ -118,7 +120,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     const citationId = e(vent as CustomEvent).detail;
     citations.update.id !== citationId));
     applyClientSideSort();
-    showEditor = $state(false);
+    showEditor = false;
     selectedCitation = null;
     // ondispatch removed;
   }
@@ -136,7 +138,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   }
   // Close editor
   function closeEditor() {
-    showEditor = $state(false);
+    showEditor = false;
     selectedCitation = null;
   }
   // Select citation

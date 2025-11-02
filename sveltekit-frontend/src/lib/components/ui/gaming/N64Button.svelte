@@ -140,7 +140,7 @@
   }
   function handleMouseUp(_event: MouseEvent) {
     if (disabled) return;
-    pressed = $state(false);
+    pressed = false;
     playSound('release');
     dispatch('mouseup', event);
     onmouseup?.(event);

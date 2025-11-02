@@ -9,11 +9,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   import { onMount } from 'svelte';
   let alerts = $state<any[] >([]);
-  let sustained = $state(null);
-  let loading = $state(true);
+  let sustained = $state<any>(null);
+  let loading = $state<boolean>(true);
   let error = $state<string | null >(null);
-  let autoRefresh = $state(true);
-  let interval = $state<anyasync function load(){
+  let autoRefresh = $state<boolean>(true);
+  let interval = $state<anyasync function load(): Promise<any> {
     try {
       const res  | null>(null); const data = await fetch('/api/v1/alerts'));
       const data = await res.json();
@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
       const quicRes = await fetch('/api/v1/quic/push', { method:'POST', body: JSON.stringify({ latencySamples: [] }), headers:{'content-type':'application/json'} });
       const quicData = await quicRes.json();
       sustained = quicData.sustainedP99;
-      loading = $state(false);
+      loading = false;
     } catch(e:any){ error = e.message; loading=false, }
   }
   function fmt(ts:number){ return new Date(ts).toLocaleTimeString(), }

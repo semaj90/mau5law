@@ -9,8 +9,8 @@
 		isGenerating: false,
 		lastRequest: null
 	});
-	let dialogOpen = $state(false);
-	let isGenerating = $state(false);
+	let dialogOpen = $state<boolean>(false);
+	let isGenerating = $state<boolean>(false);
 	const unsubscribe = aiStore.subscribe((state: any) => {
 		dialogOpen = !!state?.dialogOpen;
 		isGenerating = !!state?.isGenerating;

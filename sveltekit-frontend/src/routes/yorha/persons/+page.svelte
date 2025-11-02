@@ -57,9 +57,9 @@
       photo: null,
     },
   ]);
-  let searchQuery = $state('');
-  let selectedThreatLevel = $state('all');
-  let showNewPersonModal = $state(false);
+  let searchQuery = $state<string>('');
+  let selectedThreatLevel = $state<string>('all');
+  let showNewPersonModal = $state<boolean>(false);
   // New person form state for the modal
   let newPerson = $state({
     name: '',
@@ -70,7 +70,7 @@
     last_seen: '',
     location: ''
   });
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error: string | null = $state(null);
   // Filter persons based on search and threat level
   let filteredPersons = $derived(() => {
@@ -117,7 +117,7 @@
     }
   }
   // Load persons from API
-  async function loadPersons() {
+  async function loadPersons(): Promise<any> {
     try {
       isLoading = true;
       error = null;
@@ -134,7 +134,7 @@
     }
   }
   // Add new person
-  async function addPerson(personData: any) {
+  async function addPerson(personData: any): Promise<any> {
     try {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
@@ -152,7 +152,7 @@
     }
   }
   // Handler wired to modal's ADD PERSON button
-  async function handleAddPerson() {
+  async function handleAddPerson(): Promise<any> {
     // minimal validation
     if (!newPerson.name || newPerson.name.trim().length === 0) {
       error = 'Name is required';

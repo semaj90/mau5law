@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'
   // Svelte 5 runes are auto-imported with Advanced Rich Text Editor/Google Slides/Photoshop-like Features
   import { onMount, onDestroy } from 'svelte';
@@ -102,13 +103,13 @@
   // typed editor and elements
   let editor: InstanceType<typeof TiptapEditor> | null = $state(null);
   let editorElement: HTMLElement | null;
-  let isFullscreen = $state(false);
-  let errorMessage = $state('');
-  let currentZoom = $state(100);
-  let showGrid = $state(false);
-  let showRuler = $state(true);
-  let wordCount = $state(0);
-  let characterCount = $state(0);
+  let isFullscreen = $state<boolean>(false);
+  let errorMessage = $state<string>('');
+  let currentZoom = $state<number>(100);
+  let showGrid = $state<boolean>(false);
+  let showRuler = $state<boolean>(true);
+  let wordCount = $state<number>(0);
+  let characterCount = $state<number>(0);
   // local plain object used in template for property access
   let state: EditorState = $state(defaultEditorState);
   // Auto-save timeout typed to be compatible with browser/node

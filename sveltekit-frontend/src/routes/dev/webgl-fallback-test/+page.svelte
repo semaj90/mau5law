@@ -4,12 +4,12 @@
   import { Button, Card, CardContent, CardHeader, CardTitle, Alert } from '$lib/components/ui/enhanced-bits.svelte';
   import { LodCacheEngine } from '$lib/gpu/lod-cache-engine.js';
   // import { GpuVectorProcessor } from '$lib/gpu/GpuVectorProcessor.js'; // Temporarily disabled due to TypeScript compilation issues
-  let log = $state('');
-  let isRunning = $state(false);
+  let log = $state<string>('');
+  let isRunning = $state<boolean>(false);
   function append(msg: string) {
     log += msg + '\n';
   }
-  async function runTest() {
+  async function runTest(): Promise<any> {
     if (isRunning) return;
     isRunning = true;
     log = '';

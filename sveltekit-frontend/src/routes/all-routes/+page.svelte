@@ -3,6 +3,7 @@ All Routes Explorer - Comprehensive Legal AI Platform Route Analysis
 Integrates with Gemma Embeddings Vector Architecture for route categorization
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
@@ -20,15 +21,15 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   }
   let { data }: Props = $props();
   let selectedRoute = $state<any>(null);
-  let showModal = $state(false);
-  let searchTerm = $state('');
-  let selectedCategory = $state('all');
-  let selectedSection = $state('all');
-  let isLoaded = $state(false);
-  let showStats = $state(true);
-  let showSSRTest = $state(false);
+  let showModal = $state<boolean>(false);
+  let searchTerm = $state<string>('');
+  let selectedCategory = $state<string>('all');
+  let selectedSection = $state<string>('all');
+  let isLoaded = $state<boolean>(false);
+  let showStats = $state<boolean>(true);
+  let showSSRTest = $state<boolean>(false);
   let layoutMode = $state<'grid' | 'flexbox'>('grid');
-  let showClustered = $state(false);
+  let showClustered = $state<boolean>(false);
 
   // Dialog open state per cluster for API service dialogs
   let openClusterDialog = $state<boolean[]>([]);
@@ -336,7 +337,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     showModal = true;
   }
   function closeModal() {
-    showModal = $state(false);
+    showModal = false;
     selectedRoute = null;
   }
   function visitRoute(path: string) {
@@ -721,9 +722,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <button
             onclick={() => {
               layoutMode = 'grid';
-              showClustered = $state(false);
+              showClustered = false;
             }}
-            class="px-3 py-1 rounded text-sm transition-colors {layoutMode === 'grid' && !showClustered
+            class="px-3" py-1 rounded text-sm transition-colors {layoutMode === 'grid' && !showClustered
               ? 'bg-blue-500 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
           >
@@ -732,9 +733,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <button
             onclick={() => {
               layoutMode = 'flexbox';
-              showClustered = $state(false);
+              showClustered = false;
             }}
-            class="px-3 py-1 rounded text-sm transition-colors {layoutMode === 'flexbox' && !showClustered
+            class="px-3" py-1 rounded text-sm transition-colors {layoutMode === 'flexbox' && !showClustered
               ? 'bg-blue-500 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
           >
@@ -742,7 +743,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           </button>
           <button
             onclick={() => (showClustered = !showClustered)}
-            class="px-3 py-1 rounded text-sm transition-colors {showClustered
+            class="px-3" py-1 rounded text-sm transition-colors {showClustered
               ? 'bg-green-500 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
           >
@@ -1164,7 +1165,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <div>
           <span class="font-semibold text-gray-700">Type:</span>
           <span
-            class="ml-2 px-2 py-1 rounded text-xs {selectedRoute.type === 'configured'
+            class="ml-2" px-2 py-1 rounded text-xs {selectedRoute.type === 'configured'
               ? 'bg-green-100 text-green-800'
               : 'bg-purple-100 text-purple-800'}"
           >

@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 
 // Self-Prompting & Auto-Save System
 // Intelligent user intent detection with contextual recommendations

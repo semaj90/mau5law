@@ -4,6 +4,8 @@ Uses Gemma3 summarization service for converting 200-page legal documents into c
 Enhanced-bits UI integration with real-time progress and quality metrics
 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import Alert, { Button, Card, CardContent, CardHeader, CardTitle, Label } from '$lib/components/ui/enhanced-bits.svelte';
@@ -51,16 +53,16 @@ Enhanced-bits UI integration with real-time progress and quality metrics
     serviceUrl = '/api/gemma3-summarization'
   }: Props = $props();
   // State management using Svelte 5 runes
-  let documentTitle = $state('');
+  let documentTitle = $state<string>('');
   let documentContent = $state(defaultContent);
   let documentType = $state<'contract' | 'judgment' | 'brief' | 'statute'>('contract');
   let summaryType = $state<'executive' | 'detailed' | 'bullet_points' | 'legal_analysis'>('executive');
-  let maxLength = $state(500);
+  let maxLength = $state<number>(500);
   let focusAreas = $state<string[]>(['key_findings']);
-  let isProcessing = $state(false);
-  let processingProgress = $state(0);
+  let isProcessing = $state<boolean>(false);
+  let processingProgress = $state<number>(0);
   let currentSummary = $state<SummarizationResponse | null>(null);
-  let errorMessage = $state('');
+  let errorMessage = $state<string>('');
   let serviceHealth = $state<'healthy' | 'degraded' | 'unavailable'>('healthy');
   // Available focus areas
   const availableFocusAreas = [

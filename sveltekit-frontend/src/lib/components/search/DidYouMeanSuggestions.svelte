@@ -63,11 +63,11 @@
   let suggestions = $state<Suggestion[]>([]);
   let taskSuggestions = $state<TaskSuggestion[]>([]);
   let userProfile = $state<UserProfile | null>(null);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let metadata = $state<{ took_ms?: number; cached?: boolean }>({});
   let debounceTimer = $state<ReturnType<typeof setTimeout> | null>(null);
-  let open = $state(false);
+  let open = $state<boolean>(false);
   let inputEl = $state<HTMLInputElement | null>(null);
   // Debounced search trigger
   function scheduleSearch(q: string) {
@@ -85,7 +85,7 @@
       userProfile = null;
     }
   });
-  async function performSearch(searchQuery: string) {
+  async function performSearch(searchQuery: string): Promise<any> {
     if (!searchQuery || searchQuery.length < 2) {
       suggestions = [];
       taskSuggestions = [];
@@ -121,7 +121,7 @@
       suggestions = [];
       taskSuggestions = [];
       userProfile = null;
-      open = $state(false);
+      open = false;
     } finally {
       loading = false;
     }
@@ -130,13 +130,13 @@
     const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || '';
     query = suggestionText;
     onSelect?.(suggestion);
-    open = $state(false);
+    open = false;
     // keep focus on input for quick further edits
     inputEl?.focus();
   }
   function handleTaskSelection(task: TaskSuggestion) {
     onTaskSelect?.(task);
-    open = $state(false);
+    open = false;
     inputEl?.focus();
   }
   function getIconComponent(source?: string, type?: string) {
@@ -207,7 +207,7 @@
     const target = e.target as Node;
     if (!inputEl) return;
     if (!inputEl.contains(target) && open) {
-      open = $state(false);
+      open = false;
     }
   }
   onMount(() => {
@@ -231,7 +231,7 @@
           suggestions = [];
           taskSuggestions = [];
           userProfile = null;
-          open = $state(false);
+          open = false;
         }
       }}
       onfocus={() => {
@@ -239,7 +239,7 @@
       }}
       onkeydown={e => {
         if (e.key === 'Escape') {
-          open = $state(false);
+          open = false;
           inputEl?.blur();
         }
       }}

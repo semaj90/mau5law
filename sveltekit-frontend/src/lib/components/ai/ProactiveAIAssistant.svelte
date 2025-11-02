@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   let { userId, onCaseCreated: (caseId) = > void = () =>  } = $props();
 </script>
@@ -12,23 +13,23 @@ https://svelte.dev/e/js_parse_error -->
 	import { enhance } from '$app/forms';
 	// Props
 	// State
-	let isVisible = $state(false);
-	let currentPrompt = $state('');
-	let isTyping = $state(false);
-	let isProcessing = $state(false);
-	let showCreateForm = $state(false);
-	let showQuickInput = $state(false);
-	let typewriterIndex = $state(0);
-	let currentSuggestionIndex = $state(0);
-	let currentWorkflowStep = $state(0);
+	let isVisible = $state<boolean>(false);
+	let currentPrompt = $state<string>('');
+	let isTyping = $state<boolean>(false);
+	let isProcessing = $state<boolean>(false);
+	let showCreateForm = $state<boolean>(false);
+	let showQuickInput = $state<boolean>(false);
+	let typewriterIndex = $state<number>(0);
+	let currentSuggestionIndex = $state<number>(0);
+	let currentWorkflowStep = $state<number>(0);
 	// Form data
-	let caseTitle = $state('');
-	let caseDescription = $state('');
-	let priority = $state('medium');
-	let category = $state('criminal');
+	let caseTitle = $state<string>('');
+	let caseDescription = $state<string>('');
+	let priority = $state<string>('medium');
+	let category = $state<string>('criminal');
 	// Quick input for: "what's wrong"
-	let quickInput = $state('');
-	let timestamp = $state('');
+	let quickInput = $state<string>('');
+	let timestamp = $state<string>('');
 	// Prosecution workflow state
 	let workflowAnswers = $state({
 		what: '',
@@ -88,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
 				typewriterIndex++;
 			} else {
 				clearInterval(typeInterval);
-				isTyping = $state(false);
+				isTyping = false;
 			}
 		}, 50 + Math.random() * 30); // Vary typing speed for realism
 	}
@@ -110,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
 		}, 8000 + Math.random() * 4000); // Vary timing for natural feel
 	}
 	// Quick case creation
-	async function createQuickCase(template: any) {
+	async function createQuickCase(template: any): Promise<any> {
 		isProcessing = true;
 		try {
 			const response = await fetch('/api/v1/cases', {
@@ -130,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
 				onCaseCreated((result as { data?: any }).data.id);
 				// Reset form
 				setTimeout(() => {
-					showCreateForm = $state(false);
+					showCreateForm = false;
 				}, 3000);
 			} else {
 				throw new Error('Failed to create case');
@@ -142,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
 		}
 	}
 	// Custom case creation
-	async function createCustomCase() {
+	async function createCustomCase(): Promise<any> {
 		if (!caseTitle.trim()) return;
 		isProcessing = true;
 		try {
@@ -166,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
 				caseDescription = '';
 				priority = 'medium';
 				category = 'criminal';
-				showCreateForm = $state(false);
+				showCreateForm = false;
 			} else {
 				throw new Error('Failed to create case');
 			}

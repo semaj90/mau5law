@@ -9,6 +9,7 @@
   - Evidence relationship mapping
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy, createEventDispatcher } from "svelte";
   import { page } from '$app/stores'; // Changed from '$app/state' to: '$app/stores'
@@ -61,10 +62,10 @@
   const ondispatch = createEventDispatcher(); // Initialize event dispatcher
   // State
   let evidenceList = $state<EvidenceItem[]>(initialEvidence); // Use EvidenceItem interface
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let organizationStructure = $state<any>();
   let selectedEvidence = $state<EvidenceItem[]>([]); // Use EvidenceItem interface
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let filterCriteria = $state({
     evidenceType: 'all',
     dateRange: 'all',
@@ -73,12 +74,12 @@
   });
   // AI-powered organization state
   let aiClusters = $state<any[]>([]);
-  let isGeneratingClusters = $state(false);
-  let clusteringProgress = $state(0);
+  let isGeneratingClusters = $state<boolean>(false);
+  let clusteringProgress = $state<number>(0);
   // Collaboration state
   let wsManager: DetectiveWebSocketManager | null = null;
   let collaborativeUsers = $state<any[]>([]);
-  let isConnectedToCollaboration = $state(false);
+  let isConnectedToCollaboration = $state<boolean>(false);
   // Organization metrics
   let organizationMetrics = $state({
     totalEvidence: 0,
@@ -149,7 +150,7 @@
   /**
    * Load evidence for the case
    */
-  async function loadCaseEvidence() {
+  async function loadCaseEvidence(): Promise<any> {
     if (!caseId) return;
     isLoading = true;
     try {
@@ -170,7 +171,7 @@
   /**
    * Initialize WebSocket collaboration
    */
-  async function initializeCollaboration() {
+  async function initializeCollaboration(): Promise<void> {
     try {
       const userId = `organizer_${Math.random().toString(36).substring(2, 8)}`; // Fixed random ID generation
       wsManager = new DetectiveWebSocketManager(caseId, userId);
@@ -198,7 +199,7 @@
   /**
    * Reorganize evidence based on current mode
    */
-  async function reorganizeEvidence() {
+  async function reorganizeEvidence(): Promise<any> {
     isLoading = true;
     try {
       switch (organizationMode) {
@@ -243,7 +244,7 @@
   /**
    * Organize evidence by category
    */
-  async function organizeByCategory() {
+  async function organizeByCategory(): Promise<any> {
     const categories: { [key: string]: any } = {}; // Explicitly type categories
     filteredEvidence.forEach(evidence => {
       const category = evidence.evidenceType || 'uncategorized';
@@ -266,7 +267,7 @@
   /**
    * Organize evidence by timeline
    */
-  async function organizeByTimeline() {
+  async function organizeByTimeline(): Promise<any> {
     const timeline = filteredEvidence
       .filter(item => item.collected_at || item.uploaded_at) // Filter items with dates
       .sort((a, b) => { // Fixed item.sort
@@ -304,7 +305,7 @@
   /**
    * Organize evidence by priority
    */
-  async function organizeByPriority() {
+  async function organizeByPriority(): Promise<any> {
     const priorities: { [key: string]: any } = { // Explicitly type priorities
       critical: { name: 'Critical', evidence: [], color: '#dc2626' },
       high: { name: 'High', evidence: [], color: '#ea580c' },
@@ -334,7 +335,7 @@
   /**
    * Organize evidence using AI clustering with Gemma embeddings
    */
-  async function organizeByAIClusters() {
+  async function organizeByAIClusters(): Promise<any> {
     isGeneratingClusters = true;
     clusteringProgress = 0;
     try {
@@ -371,7 +372,7 @@
   /**
    * Organize evidence by chain of custody
    */
-  async function organizeByChainOfCustody() {
+  async function organizeByChainOfCustody(): Promise<any> {
     const custodyChains: { [key: string]: any } = {}; // Explicitly type custodyChains
     filteredEvidence.forEach(evidence => {
       const custody = evidence.chain_of_custody || [];
@@ -405,7 +406,7 @@
   /**
    * Get embeddings for evidence using MCP server (fallback to Ollama)
    */
-  async function getEvidenceEmbeddings() {
+  async function getEvidenceEmbeddings(): Promise<any> {
     const evidenceWithEmbeddings: EvidenceItem[] = [];
     for (const evidence of filteredEvidence) {
       try {
@@ -478,7 +479,7 @@
   /**
    * Generate AI clusters using MCP server
    */
-  async function generateAIClusters(evidenceWithEmbeddings: EvidenceItem[]) {
+  async function generateAIClusters(evidenceWithEmbeddings: EvidenceItem[]): Promise<any> {
     try {
       const response = await fetch(`${getMcpEndpoint()}/mcp/cluster-evidence`, { // Use getMcpEndpoint()
         method: 'POST',
@@ -513,7 +514,7 @@
   /**
    * Organize clusters with metadata
    */
-  async function organizeClusters(clusters: any[]) { // Explicitly type
+  async function organizeClusters(clusters: any[]): Promise<any> { // Explicitly type
     return clusters.map((cluster, index) => ({
       id: `cluster_${index}`,
       name: cluster.name || `Cluster ${index + 1}`,
@@ -591,7 +592,7 @@
   /**
    * Handle organization mode change
    */
-  async function onOrganizationModeChange(newMode: Props['organizationMode']) { // Renamed for clarity
+  async function onOrganizationModeChange(newMode: Props['organizationMode']): Promise<any> { // Renamed for clarity
     organizationMode = newMode;
     await reorganizeEvidence();
   }

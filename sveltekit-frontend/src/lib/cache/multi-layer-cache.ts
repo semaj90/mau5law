@@ -107,7 +107,7 @@ export class MultiLayerCacheSystem {
     if (layerName) {
       return this.deleteFromLayer(key, layerName);
     }
-    let deleted = $state(false);
+    let deleted = $state<boolean>(false);
     for (const [name] of this.layers) {
       if (this.deleteFromLayer(key, name)) deleted = true;
     }

@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {

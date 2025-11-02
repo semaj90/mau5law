@@ -3,6 +3,7 @@ Prosecutor Dashboard - Complete Legal AI Workflow
 Features: Case management, evidence upload, AI chat, vector search
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { SearchResults } from '$lib/types/global';
   import { Button } from '$lib/components/ui/button.svelte';
@@ -46,16 +47,16 @@ Features: Case management, evidence upload, AI chat, vector search
     };
   }
   // State management
-  let selectedCaseId = $state('');
+  let selectedCaseId = $state<string>('');
   let cases: Case[] = $state([]);
   let personsOfInterest: PersonOfInterest[] = $state([]);
   let recentEvidence: Evidence[] = $state([]);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults: SearchResult[] = $state([]);
-  let activeTab = $state('overview');
+  let activeTab = $state<string>('overview');
   // AI features state
-  let webGPUEnabled = $state(false);
-  let ragSystemStatus = $state('initializing');
+  let webGPUEnabled = $state<boolean>(false);
+  let ragSystemStatus = $state<string>('initializing');
   onMount(() => {
     (async () => {
       // Check WebGPU availability

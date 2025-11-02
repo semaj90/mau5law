@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Simplified Mock API Sync System
  * Clean, minimal implementation used for testing and to unblock formatting/typechecks.

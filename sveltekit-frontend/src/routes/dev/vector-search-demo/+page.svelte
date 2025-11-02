@@ -2,16 +2,19 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
 </script>` element and/or a single top-level `<script module>
 </script>` element
 https://svelte.dev/e/script_duplicate -->
 <script lang="ts">
-  let query = $state('contract liability terms'
+  let query = $state<string>('contract liability terms'
   let results: any[] = []
   let wsMsg = ''
-  async function runSearch() {
+  async function runSearch(): Promise<any> {
     const res = await fetch('/api/ai/vector-search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -71,16 +74,16 @@ https://svelte.dev/e/script_duplicate -->
     model: string;
     timestamp: string;
   }
-  let query = $state('contract liability terms');
-  let model = $state('claude');
+  let query = $state<string>('contract liability terms');
+  let model = $state<string>('claude');
   let threshold = $state(0.7);
-  let limit = $state(5);
-  let caseId = $state('');
-  let isSearching = $state(false);
+  let limit = $state<number>(5);
+  let caseId = $state<string>('');
+  let isSearching = $state<boolean>(false);
   let searchResult = $state<VectorSearchResponse | null>(null);
   let error = $state<string | null>(null);
   let serviceHealth = $state<any>(null);
-  async function checkServiceHealth() {
+  async function checkServiceHealth(): Promise<any> {
     try {
       // removed unused response assignment
       if (response.ok) {
@@ -92,7 +95,7 @@ https://svelte.dev/e/script_duplicate -->
       serviceHealth = { error: 'Connection failed' }
     }
   }
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!query.trim()) return;
     isSearching = true;
     error = null;
@@ -123,7 +126,7 @@ https://svelte.dev/e/script_duplicate -->
       isSearching = false;
     }
   }
-  async function indexSampleDocument() {
+  async function indexSampleDocument(): Promise<any> {
     try {
       const sampleDoc = {
         documentId: 'demo-doc-' + Date.now(),

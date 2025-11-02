@@ -20,7 +20,7 @@
     showProgressiveDisclosure = true
   }: Props = $props();
   let containerElement: HTMLElement;
-  let voiceCommandsActive = $state(false);
+  let voiceCommandsActive = $state<boolean>(false);
   $effect(() => {
     // Initialize AI accessibility patterns
     aiAccessibilityPatterns?.updateOptions({
@@ -47,7 +47,7 @@
   function toggleVoiceCommands() {
     if (voiceCommandsActive) {
       aiAccessibilityPatterns?.stopVoiceCommands();
-      voiceCommandsActive = $state(false);
+      voiceCommandsActive = false;
     } else {
       aiAccessibilityPatterns?.startVoiceCommands();
       voiceCommandsActive = true;

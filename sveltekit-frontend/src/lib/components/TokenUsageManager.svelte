@@ -44,9 +44,9 @@
   // Reactive state using Svelte 5 runes
   let tokenLimit = $state<number>(initialLimit);
   let tokensUsed = $state<number>(0);
-  let showHistory = $state(false);
-  let showOptimization = $state(true);
-  let autoOptimize = $state(true);
+  let showHistory = $state<boolean>(false);
+  let showOptimization = $state<boolean>(true);
+  let autoOptimize = $state<boolean>(true);
 
   // Token usage history
   let usageHistory = $state<UsageEntry[]>([]);

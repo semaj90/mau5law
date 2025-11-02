@@ -20,7 +20,7 @@ const chatStore = (() => {
   let sessionMessages = $state<SessionMap>(new Map();
   let currentSessionId = $state<string | null>(null);
   let connectionStatus = $state<ConnectionStatus>("disconnected");
-  let isTyping = $state(false);
+  let isTyping = $state<boolean>(false);
   let userActivity = $state<UserActivity[]>([]);
   let recommendations = $state<Recommendation[]>([]);
   return {

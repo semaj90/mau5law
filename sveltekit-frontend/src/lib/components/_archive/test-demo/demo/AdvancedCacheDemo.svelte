@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
  	import { fade, fly, scale } from 'svelte/transition';
  	// Import our advanced services
@@ -10,10 +11,10 @@
  	let cacheStats = $state({ hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 });
  	let recommendations: any[] = $state([]);
  	let bestPractices: any[] = $state([]);
- 	let demoQuery = $state('Review contract liability clauses for potential risks');
- 	let isLoading = $state(false);
- 	let showTypewriter = $state(false);
- 	let aiResponse = $state('');
+ 	let demoQuery = $state<string>('Review contract liability clauses for potential risks');
+ 	let isLoading = $state<boolean>(false);
+ 	let showTypewriter = $state<boolean>(false);
+ 	let aiResponse = $state<string>('');
  	let userActivity: any[] = $state([]);
  	// Demo data
  	const legalQueries = [
@@ -41,7 +42,7 @@
 +  const interval = setInterval(loadCacheStats, 2000);
 +  return () => clearInterval(interval);
   	});
-  	async function loadCacheStats() {
+  	async function loadCacheStats(): Promise<any> {
 +    const defaults = { hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 };
 +    try {
 +      // Normalize the provider to a resolved value (handles sync return, Promise, or Svelte store)
@@ -82,14 +83,14 @@
 +      cacheStats = { hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 };
 +    }
   	}
-  	async function loadBestPractices() {
+  	async function loadBestPractices(): Promise<any> {
   		try {
   			bestPractices = await context7MCPIntegration.generateBestPractices('performance');
   		} catch (error) {
   			console.error('Failed to load best practices:', error);
   		}
   	}
-  	async function generateRecommendations() {
+  	async function generateRecommendations(): Promise<any> {
   		isLoading = true;
   		try {
   			// Simulate thinking time
@@ -119,7 +120,7 @@
   			{ timestamp: Date.now() - 1800, action: 'pause', duration: 500 }
   		];
   	}
-  	async function testCaching() {
+  	async function testCaching(): Promise<any> {
 -    const testKey = `demo_${Date.now()}`;
 -    const testData = { message: 'Cached legal document', timestamp: Date.now() };
 -    // Set cache item (fixed object literal punctuation)
@@ -152,7 +153,7 @@
 +      await loadCacheStats();
 +    }
   	}
-  	async function testLazyLoading() {
+  	async function testLazyLoading(): Promise<any> {
   		const loader = async () => {
   			// Simulate API call
   			await new Promise(resolve => setTimeout(resolve, 1000));
@@ -176,7 +177,7 @@
   	}
   	function selectQuery(query: string) {
   		demoQuery = query;
-  		showTypewriter = $state(false);
+  		showTypewriter = false;
   		recommendations = [];
   	}
   	function getRiskLevelClass(level: string) {
@@ -408,7 +409,7 @@
           class="bg-yorha-warning text-yorha-bg-primary px-4 py-2 rounded border border-yorha-warning hover:opacity-80 transition-opacity focus-ring-enhanced"
           onclick={() => {
             recommendations = [];
-            showTypewriter = $state(false);
+            showTypewriter = false;
           }}
         >
           Clear Results
@@ -459,7 +460,7 @@
 </style>
           onclick={() => {
             recommendations = [];
-            showTypewriter = $state(false);
+            showTypewriter = false;
           }}
         >
           Clear Results

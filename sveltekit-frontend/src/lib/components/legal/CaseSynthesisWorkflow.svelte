@@ -2,6 +2,7 @@
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   interface Props {
     caseId: string;
     documents: CaseDocument[];
@@ -615,7 +616,7 @@ https: //svelte.dev/e/js_parse_error -->
           </div>
           <div class="text-center">
             <div
-              class="text-2xl font-bold {getScoreColor(
+              class="text-2xl" font-bold {getScoreColor(
                 $state.context.synthesisResult.strengthAssessment.evidenceQuality
               )}"
             >
@@ -633,7 +634,7 @@ https: //svelte.dev/e/js_parse_error -->
           </div>
           <div class="text-center">
             <div
-              class="text-2xl font-bold {getScoreColor(
+              class="text-2xl" font-bold {getScoreColor(
                 $state.context.synthesisResult.strengthAssessment.witnessCredibility
               )}"
             >
@@ -643,7 +644,7 @@ https: //svelte.dev/e/js_parse_error -->
           </div>
           <div class="text-center">
             <div
-              class="text-2xl font-bold {getScoreColor(
+              class="text-2xl" font-bold {getScoreColor(
                 $state.context.synthesisResult.strengthAssessment.expertOpinions
               )}"
             >

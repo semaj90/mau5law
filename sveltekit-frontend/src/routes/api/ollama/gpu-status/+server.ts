@@ -21,7 +21,7 @@ let cached: { ts: number; payload: FetchResult } | null = null
 function isValidGpuStatus(payload: any): payload is GPUStatus {
   return !!payload && typeof payload === 'object' && typeof payload.enabled === 'boolean'
 }
-async function delay(ms: number) {
+async function delay(ms: number): Promise<any> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 async function fetchWithTimeoutAndRetries(path: string, timeoutMs = TIMEOUT_MS, retries = RETRIES, delayMs = RETRY_DELAY_MS): Promise<GPUStatus> {

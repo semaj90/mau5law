@@ -11,7 +11,7 @@
   import { Activity, Database, Cpu, Zap, Clock, CheckCircle, XCircle, AlertTriangle } from 'lucide-svelte';
   // Component state
   let healthCheckInterval: NodeJS.Timeout;
-  let isMonitoring = $state(true);
+  let isMonitoring = $state<boolean>(true);
   let lastHealthCheck = $state(Date.now());
   let systemMetrics = $state({
     memoryUsage: 0,
@@ -57,7 +57,7 @@
   /**
    * Perform health check on all backends
    */
-  async function performHealthCheck() {
+  async function performHealthCheck(): Promise<any> {
     try {
       // removed unused response assignment
       const healthData = await response.json();
@@ -109,7 +109,7 @@
   /**
    * Update system metrics
    */
-  async function updateSystemMetrics() {
+  async function updateSystemMetrics(): Promise<any> {
     try {
       // Get conversation analytics
       const analytics = await pgVectorSearch.getConversationAnalytics();
@@ -135,7 +135,7 @@
   /**
    * Load initial metrics
    */
-  async function loadInitialMetrics() {
+  async function loadInitialMetrics(): Promise<any> {
     await updateSystemMetrics();
   }
   /**

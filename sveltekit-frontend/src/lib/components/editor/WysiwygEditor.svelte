@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     content?: string;
@@ -29,7 +30,7 @@
   // Stores
   let editorElement: HTMLElement;
   let hugerte: any;
-  let isInitialized = $state(false);
+  let isInitialized = $state<boolean>(false);
   const wordCount: Writable<number> = writable(0);
   const charCount: Writable<number> = writable(0);
   const aiOpen = writable(false);
@@ -42,12 +43,12 @@
   }
 
   // AI Assistant state
-  let aiQuery = $state('');
-  let aiResults = $state('');
-  let isProcessingAI = $state(false);
-  let selectedText = $state('');
+  let aiQuery = $state<string>('');
+  let aiResults = $state<string>('');
+  let isProcessingAI = $state<boolean>(false);
+  let selectedText = $state<string>('');
   // Citation state
-  let citationQuery = $state('');
+  let citationQuery = $state<string>('');
   let citationResults = $state<Array<{ title: string; citation: string; relevance: number }>>([]);
 
   $effect(() => {
@@ -56,7 +57,7 @@
     })();
   });
 
-  async function initializeEditor() {
+  async function initializeEditor(): Promise<void> {
     try {
       // Dynamically import TinyMCE as an alternative
       // const { default: Hugerte } = await import('hugerte')
@@ -194,7 +195,7 @@
     citeOpen.set(true);
   }
 
-  async function processAIRequest() {
+  async function processAIRequest(): Promise<any> {
     if (!aiQuery.trim()) return;
     isProcessingAI = true;
     try {
@@ -226,7 +227,7 @@
     }
   }
 
-  async function searchCitations() {
+  async function searchCitations(): Promise<any> {
     if (!citationQuery.trim()) return;
     try {
       const response = await fetch('/api/search/citations', {

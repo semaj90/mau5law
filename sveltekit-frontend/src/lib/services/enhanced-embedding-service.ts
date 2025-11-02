@@ -187,7 +187,7 @@ export class EnhancedEmbeddingService {
         // Fallback to adapter for testing/development without full backend
         const result = await this.adapter.embed(text);
         embedding = (result as EmbeddingResult).vector;
-        cacheHit = $state(false); // Adapter doesn't use cache in this context
+        cacheHit = false; // Adapter doesn't use cache in this context
       }
 
       return {

@@ -11,7 +11,7 @@
     autoLoad = true
   } = $props();
   let prediction = $state<CaseOutcomePrediction | null>(null);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = $state<string | null>(null);
   // Console theme configurations
   const themeConfig = {
@@ -38,7 +38,7 @@
     }
   }
   let currentTheme = $derived(themeConfig[consoleTheme as keyof typeof themeConfig] || themeConfig.n64);
-  async function loadPrediction() {
+  async function loadPrediction(): Promise<any> {
     if (!caseId) return;
     loading = true;
     error = null;

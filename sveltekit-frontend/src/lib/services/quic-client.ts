@@ -321,7 +321,7 @@ class QUICClient {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
-    let done = $state(false);
+    let done = $state<boolean>(false);
     try {
       while (!done) {
         const result = await reader.read();

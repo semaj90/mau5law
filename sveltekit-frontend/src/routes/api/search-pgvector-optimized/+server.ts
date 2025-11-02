@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { requireAuth } from '$lib/server/auth-helpers';

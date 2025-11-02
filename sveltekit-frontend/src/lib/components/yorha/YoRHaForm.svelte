@@ -103,7 +103,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   function handleSubmit() {
     // Validate all fields
-    let hasErrors = $state(false);
+    let hasErrors = $state<boolean>(false);
     const newErrors: Record<string, string> = {}
     fields.forEach(field => {
       const error = validateField(field, formData[field.id]);

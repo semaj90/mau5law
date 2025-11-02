@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Complete Service Router & Integration Layer
  * Routes all 33 Go microservices with error handling and fallback

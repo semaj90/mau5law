@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { enhancedSearchWithNeo4j } from '$lib/ai/custom-reranker';
 import { mcpContext72GetLibraryDocs } from '$lib/mcp-context72-get-library-docs';
@@ -6,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 import { getLegalRecommendations } from '$lib/server/ai/quic-recommendation-service';
 
 // Memory access helper for MCP integration
-async function accessMemoryMCP(query: string, userContext: any) {
+async function accessMemoryMCP(query: string, userContext: any): Promise<any> {
   // Simulate memory access - would integrate with actual MCP memory system
   return [
     { relatedId: 'memory-1', content: query, relevance: 0.8 },
@@ -15,7 +16,7 @@ async function accessMemoryMCP(query: string, userContext: any) {
 }
 
 // Safe wrappers to avoid TS errors when service methods may not exist
-async function safeAnalyzeUserPatterns(userId: string) {
+async function safeAnalyzeUserPatterns(userId: string): Promise<any> {
   // @ts-ignore - runtime-safe call
   const svc: any = userRecommendationService as any;
   if (svc && typeof svc.analyzeUserPatterns === 'function') {
@@ -31,7 +32,7 @@ async function safeAnalyzeUserPatterns(userId: string) {
   };
 }
 
-async function safeGenerateRecommendations(userId: string, limit = 3) {
+async function safeGenerateRecommendations(userId: string, limit = 3): Promise<any> {
   // @ts-ignore - runtime-safe call
   const svc: any = userRecommendationService as any;
   if (svc && typeof svc.generateRecommendations === 'function') {

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
 
   import { tick } from 'svelte';
   import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
@@ -7,9 +8,9 @@
   // defensive wrapper in case the store import is undefined at runtime
   const store = (enhancedRAGStore as any) ?? {};
   let searchQuery = '';
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let lastDuration = 0;
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     if (!searchQuery || !searchQuery.trim()) return;
     isLoading = true;
     const t0 = performance.now();
@@ -26,7 +27,7 @@
       }
     }
   }
-  async function handleOptimize() {
+  async function handleOptimize(): Promise<any> {
     if (typeof store?.optimizeCache === 'function') await store.optimizeCache().catch(() => null);
   }
   // safe reactive defaults if store.state is missing

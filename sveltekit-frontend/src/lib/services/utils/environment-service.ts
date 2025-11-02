@@ -72,7 +72,7 @@ class LLMHealthChecker {
         const data = await response.json().catch(() => null);
         // data.models expected to be array of { name?, model? }
         const modelName = endpoint.model ?? 'unknown';
-        let hasModel = $state(false);
+        let hasModel = $state<boolean>(false);
         if (Array.isArray(data?.models)) {
           hasModel = data.models.some((m: any) => {
             const n = typeof m?.name === 'string' ? m.name : typeof m?.model === 'string' ? m.model : '';

@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Legal Strategy Recommendation Engine

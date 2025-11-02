@@ -13,7 +13,7 @@ type EmscriptenModule = {
 
 let wasmModule: EmscriptenModule | null = null;
 
-export async function initAutoencoderWASM(entryPath = '/native/autoencoder/som_autoencoder.js') {
+export async function initAutoencoderWASM(entryPath = '/native/autoencoder/som_autoencoder.js'): Promise<void> {
   if (wasmModule) return wasmModule;
   // Dynamic import of emscripten-generated module
   // Adjust path based on where you serve the compiled JS/WASM

@@ -2,7 +2,7 @@
 import { parentPort, workerData } from 'worker_threads';
 import type { ChunkJob, EmbedResult } from '$lib/types/pipeline';
 import { getEmbeddingViaGate } from '$lib/server/embedding-gateway';
-async function run() {
+async function run(): Promise<any> {
   const job = workerData as ChunkJob;
   try {
     const res = await getEmbeddingViaGate(fetch as unknown as typeof globalThis.fetch, job.text, {

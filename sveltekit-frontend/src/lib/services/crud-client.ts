@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /* Clean, typed CRUD client for the Legal AI platform */
 
 export interface CrudResponse<T = unknown> {

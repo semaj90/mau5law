@@ -1,3 +1,5 @@
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
 // 🔧 Svelte 5 State Management Type Fixes
 // Fixes $state(), $derived(), and runes syntax errors
 import type { Readable, Writable } from 'svelte/store';

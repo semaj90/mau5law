@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Search from 'lucide-svelte/icons/search';
   import File from 'lucide-svelte/icons/file';
@@ -25,8 +26,8 @@
   // Events now handled via props in Svelte 5
   //
   let searchInput: HTMLInputElement;
-  let searchQuery = $state('');
-  let selectedIndex = $state(0);
+  let searchQuery = $state<string>('');
+  let selectedIndex = $state<number>(0);
 
   const allItems: CommandItem[] = [
     // Navigation
@@ -141,7 +142,7 @@
     close();
   }
   function close() {
-    open = $state(false);
+    open = false;
     // ondispatch removed;
   }
   $effect(() => {

@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { scale, fly, fade } from 'svelte/transition';
@@ -45,16 +47,16 @@
   }
   let { caseContext, isVisible = true }: Props = $props();
   // Component States
-  let showAIInterface = $state(false);
-  let showNierAssistant = $state(false);
-  let isExpanded = $state(false);
+  let showAIInterface = $state<boolean>(false);
+  let showNierAssistant = $state<boolean>(false);
+  let isExpanded = $state<boolean>(false);
   let aiMode = $state<'idle' | 'thinking' | 'active'>('idle');
-  let isConnected = $state(true);
+  let isConnected = $state<boolean>(true);
   let systemStatus = $state<'online' | 'processing' | 'offline'>('online');
   // Gaming UI States
   let scanlinePosition = spring(0, { stiffness: 0.1, damping: 0.8 });
-  let glitchEffect = $state(false);
-  let terminalMode = $state(false);
+  let glitchEffect = $state<boolean>(false);
+  let terminalMode = $state<boolean>(false);
   // AI Messages
   let messages = $state<AIMessage[]>([
     {
@@ -66,10 +68,10 @@
       metadata: { confidence: 100, model: 'gemma3-legal' },
     },
   ]);
-  let inputValue = $state('');
-  let isTyping = $state(false);
+  let inputValue = $state<string>('');
+  let isTyping = $state<boolean>(false);
   // Real AI Integration
-  async function sendMessage(content?: string) {
+  async function sendMessage(content?: string): Promise<any> {
     if (!content || !content.trim()) return;
     // Add user message
     const userMessage: AIMessage = {
@@ -166,7 +168,7 @@
       border: 'border-green-500/40',
     },
   };
-  let currentTheme = $state('yorha');
+  let currentTheme = $state<string>('yorha');
   let theme = $derived(() => themes[currentTheme as keyof typeof themes]);
   // System monitoring data
   let systemMetrics = $state({
@@ -216,7 +218,7 @@
       },
     };
     messages = [...messages, aiResponse];
-    isTyping = $state(false);
+    isTyping = false;
     aiMode = 'active';
     // Reset to idle after showing result
     setTimeout(() => {
@@ -234,7 +236,7 @@
   };
   const openNierAssistant = () => {
     showNierAssistant = true;
-    showAIInterface = $state(false);
+    showAIInterface = false;
   };
   // System monitoring simulation
   $effect(() => {
@@ -275,7 +277,7 @@
     ></div>
     <!-- Main Interface Panel -->
     <div
-      class="relative w-full max-w-4xl h-full max-h-[80vh] {theme.panel} backdrop-blur-md
+      class="relative" w-full max-w-4xl h-full max-h-[80vh] {theme.panel} backdrop-blur-md
              border-2 {theme.border} rounded-2xl overflow-hidden"
       class:animate-pulse={glitchEffect}
     >
@@ -369,7 +371,7 @@
                       {/if}
                     {/if}
                   <div
-                    class="px-4 py-3 rounded-lg {message.role === 'user'
+                    class="px-4" py-3 rounded-lg {message.role === 'user'
                       ? 'bg-blue-600 text-white ml-auto'
                       : message.role === 'system'
                         ? 'bg-gray-700/50 border border-gray-600/50 ' + theme.secondary
@@ -420,7 +422,7 @@
                   bind:value={inputValue}
                   placeholder={isTyping ? 'AI is processing...' : 'Enter command or query...'}
                   disabled={isTyping}
-                  class="w-full px-4 py-3 bg-gray-800/50 border {theme.border} rounded-lg
+                  class="w-full" px-4 py-3 bg-gray-800/50 border {theme.border} rounded-lg
                          {theme.primary} placeholder-gray-500 focus:border-{theme.accent.split('-')[1]}-400;
                          focus:outline-none transition-colors font-mono"
                 />
@@ -429,7 +431,7 @@
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isTyping}
-                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600
+                class="px-6" py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600
                        text-white rounded-lg transition-colors font-medium"
               >
                 EXECUTE
@@ -443,7 +445,7 @@
                     inputValue = cmd;
                     sendMessage(cmd);
                   }}
-                  class="px-3 py-1 text-xs bg-gray-700/50 hover:bg-gray-600/50 {theme.secondary}
+                  class="px-3" py-1 text-xs bg-gray-700/50 hover:bg-gray-600/50 {theme.secondary}
                          rounded border {theme.border} transition-colors uppercase font-mono"
                 >
                   {cmd}
@@ -460,7 +462,7 @@
             {#each [{ id: 'analysis', label: 'Deep Analysis', icon Brain }, { id: 'search', label: 'Evidence Search', icon Search }, { id: 'document', label: 'Document Gen', icon FileText }, { id: 'rapid', label: 'Rapid Response', icon Zap }] as mode}
               <button
                 onclick={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
-                class="w-full flex items-center gap-3 p-3 rounded-lg border {theme.border}
+                class="w-full" flex items-center gap-3 p-3 rounded-lg border {theme.border}
                        hover:bg-gray-700/30 transition-colors text-left"
               >
                 {#key mode.icon}
@@ -485,7 +487,7 @@
       <!-- Scanline Effect -->
       <div class="absolute inset-0 pointer-events-none overflow-hidden">
         <div
-          class="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-{theme.accent.split(
+          class="absolute" w-full h-0.5 bg-gradient-to-r from-transparent via-{theme.accent.split(
             '-'
           )[1]}-400/50 to-transparent
                  animate-[scanner_3s_infinite]"

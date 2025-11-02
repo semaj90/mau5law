@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // lib/server/ai/ollama-local-llm.ts
 // Ollama integration for local LLM inference with legal models
 import { logger } from './logger.js';
@@ -252,7 +254,7 @@ TEMPLATE: """{{ if .System }}<|system|>
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let fullResponse = '';
-      let done = $state(false); // Initialize done flag
+      let done = $state<boolean>(false); // Initialize done flag
       // Loop until the stream is done, as indicated by `reader.read()`
       while (!done) {
         // Use the done flag in the loop condition

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * RAG Document Processing API - Production Ready with MinIO
  *

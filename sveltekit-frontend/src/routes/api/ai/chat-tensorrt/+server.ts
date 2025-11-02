@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * TensorRT-LLM Chat API - Direct integration with Go bridge on port 8086
  * Routes: ChatBox.svelte → /api/ai/chat-tensorrt → Go bridge :8086 → TensorRT-LLM

@@ -19,7 +19,7 @@
 	}
 
 	// Svelte 5 reactive state runes
-	let messageInput = $state('');
+	let messageInput = $state<string>('');
 	let chatContainer = $state<HTMLDivElement | null>(null);
 
 	const models = [

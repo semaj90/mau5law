@@ -1,11 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Svelte 5 runes pattern
-  let inputText = $state('');
+  let inputText = $state<string>('');
   let result: string | null = $state(null);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error: string | null = $state(null);
-  async function analyzeWWWH() {
+  async function analyzeWWWH(): Promise<any> {
     if (!inputText.trim()) return;
     loading = true;
     error = null;

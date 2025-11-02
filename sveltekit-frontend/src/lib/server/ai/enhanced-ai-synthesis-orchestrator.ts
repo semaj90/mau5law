@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 import { Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
 import { logger } from '../logger.js';

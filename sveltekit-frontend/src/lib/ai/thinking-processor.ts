@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Enhanced thinking style processor for legal AI
 export interface ThinkingAnalysis {
   thinking: string;

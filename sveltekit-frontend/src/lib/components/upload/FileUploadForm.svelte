@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Use modular components
   import {
@@ -58,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
     },
   });
   let uploadFiles: UploadFile[] = $state([]);
-  let uploadProgress = $state(0);
+  let uploadProgress = $state<number>(0);
   // Initialize form with caseId if provided
   $effect(() => {
     if (caseId) {

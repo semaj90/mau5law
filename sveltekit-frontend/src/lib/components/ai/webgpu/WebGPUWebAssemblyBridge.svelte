@@ -31,17 +31,17 @@ https://svelte.dev/e/js_parse_error -->
     enableDemo = true
   }: Props = $props();
   // State
-  let initialized = $state(false);
-  let loading = $state(false);
+  let initialized = $state<boolean>(false);
+  let loading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let webgpuClient: WebGPUGemmaClient | null = $state(null);
   let capabilities = $state<string[]>([]);
   let processingModes = $state<string[]>([]);
   let systemInfo = $state<any>(null);
   // Demo state
-  let demoText = $state('Analyze this legal contract for potential risks and compliance issues.');
+  let demoText = $state<string>('Analyze this legal contract for potential risks and compliance issues.');
   let demoResult = $state<string | null>(null);
-  let demoProcessing = $state(false);
+  let demoProcessing = $state<boolean>(false);
   // Performance metrics
   let metrics = $state({
     initTime: 0,
@@ -51,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
     lastProcessingTime: 0,
     throughput: 0,
   });
-  async function initializeWebGPUWebAssembly() {
+  async function initializeWebGPUWebAssembly(): Promise<void> {
     loading = true;
     error = null;
     const startTime = performance.now();
@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
       loading = false;
     }
   }
-  async function runDemo() {
+  async function runDemo(): Promise<any> {
     if (!initialized || !demoText.trim()) return;
     demoProcessing = true;
     demoResult = null;

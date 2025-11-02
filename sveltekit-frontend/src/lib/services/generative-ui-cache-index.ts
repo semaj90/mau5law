@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Comprehensive Indexing and Caching System for Generative UI Components
  * Revolutionary system that combines all our advanced AI technologies:

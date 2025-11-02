@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Frontend Service Client
  * Production-ready client for communicating with backend services

@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   import Fuse from "fuse.js";
   import { Search, X, Tag, Calendar, FileType } from 'lucide-svelte';
   import type { Evidence  } from '$lib/stores/unified';
-  let searchValue = $state('');
+  let searchValue = $state<string>('');
   let fuse: Fuse<Evidence> = $state(undefined as any);
   let searchResults = $state<Evidence[]>([]);
   let allTags = $state<string[]>([]);

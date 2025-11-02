@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Loki.js Caching Layer with VS Code Task Integration
  * High-performance in-memory database with VS Code automation

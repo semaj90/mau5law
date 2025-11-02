@@ -195,7 +195,7 @@ export class KeyboardNavigation {
         if (candidate) index = elements.indexOf(candidate);
       }
       if (index === -1) return;
-      let handled = $state(false);
+      let handled = $state<boolean>(false);
       const newIndex = this.handleArrowKeys(elements, index, e.key);
       if (newIndex !== index) {
         handled = true;

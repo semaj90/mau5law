@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Redis pub/sub service for real-time updates
 import { createClient } from '$lib/shims/redis-shim';

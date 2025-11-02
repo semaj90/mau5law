@@ -17,6 +17,7 @@ https://svelte.dev/e/expected_token -->
   - Fuse.js: Fuzzy search with legal-specific weighting
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import {
     instantSearchEngine,
@@ -60,12 +61,12 @@ https://svelte.dev/e/expected_token -->
     class?: string;
   } = $props();
   // Search state
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<InstantSearchResult[]>([]);
-  let isSearching = $state(false);
-  let showFiltersPanel = $state(false);
-  let searchStartTime = $state(0);
-  let lastSearchTime = $state(0);
+  let isSearching = $state<boolean>(false);
+  let showFiltersPanel = $state<boolean>(false);
+  let searchStartTime = $state<number>(0);
+  let lastSearchTime = $state<number>(0);
   // Filters
   let selectedFilters = $state<SearchFilters>({
     documentTypes: [],
@@ -131,7 +132,7 @@ https://svelte.dev/e/expected_token -->
       }
     })();
     return () => {
-      mounted = $state(false);
+      mounted = false;
     };
   });
   onDestroy(() => {
@@ -146,7 +147,7 @@ https://svelte.dev/e/expected_token -->
     }
     if (!searchQuery || searchQuery.trim().length < 2) {
       searchResults = [];
-      isSearching = $state(false);
+      isSearching = false;
     } else {
       isSearching = true;
       searchStartTime = Date.now();
@@ -155,20 +156,20 @@ https://svelte.dev/e/expected_token -->
       }, 150);
     }
   });
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery || !searchQuery.trim()) {
       searchResults = [];
-      isSearching = $state(false);
+      isSearching = false;
       return;
     }
     try {
       const results = await instantSearchEngine.search(searchQuery.trim(), selectedFilters, `search_${Date.now()}`);
       searchResults = Array.isArray(results) ? results.slice(0, maxResults) : [];
-      isSearching = $state(false);
+      isSearching = false;
     } catch (error) {
       console.error('❌ Search failed:', error);
       searchResults = [];
-      isSearching = $state(false);
+      isSearching = false;
     } finally {
       lastSearchTime = Date.now() - searchStartTime;
     }
@@ -221,7 +222,7 @@ https://svelte.dev/e/expected_token -->
       handleResultClick(searchResults[0]);
     } else if (event.key === 'Escape') {
       searchQuery = '';
-      showFiltersPanel = $state(false);
+      showFiltersPanel = false;
     }
   }
 </script>

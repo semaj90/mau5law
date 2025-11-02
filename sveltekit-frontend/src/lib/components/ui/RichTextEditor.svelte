@@ -34,13 +34,13 @@ https://svelte.dev/e/js_parse_error -->
   import { onDestroy, onMount  } from "svelte";
   let element: HTMLElement;
   let editor: Editor;
-  let isReady = $state(false);
+  let isReady = $state<boolean>(false);
   let autoSaveTimer: NodeJS.Timeout;
   // Toolbar state
-  let isBold = $state(false);
-  let isItalic = $state(false);
-  let isBulletList = $state(false);
-  let isOrderedList = $state(false);
+  let isBold = $state<boolean>(false);
+  let isItalic = $state<boolean>(false);
+  let isBulletList = $state<boolean>(false);
+  let isOrderedList = $state<boolean>(false);
   $effect(() => {
         }),
         Image.configure({
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
         return content.replace(/<li[^>]*>(.*?)<\/li>/g, "- $1\n") + "\n";
       })
       .replace(/<ol[^>]*>(.*?)<\/ol>/gs, (match, content) => {
-  let counter = $state(1);
+  let counter = $state<number>(1);
         return (
           content.replace(/<li[^>]*>(.*?)<\/li>/g, () => `${counter++}. $1\n`) +
           "\n"

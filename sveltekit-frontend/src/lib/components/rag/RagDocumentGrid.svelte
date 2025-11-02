@@ -23,12 +23,12 @@
     };
   }
   let documents = $state<Document[]>([]);
-  let loading = $state(true);
-  let searchQuery = $state('');
+  let loading = $state<boolean>(true);
+  let searchQuery = $state<string>('');
   let viewMode = $state<'grid' | 'list'>('grid');
   let selectedDocument = $state<Document | null>(null);
-  let showModal = $state(false);
-  let message = $state('');
+  let showModal = $state<boolean>(false);
+  let message = $state<string>('');
   let messageType = $state<'success' | 'error'>('success');
   // Computed property for filtered documents
   let filteredDocuments = $derived.by(() => {
@@ -42,7 +42,7 @@
     );
   });
   // Keep $state types but ensure documents are normalized when loaded
-  async function loadDocuments() {
+  async function loadDocuments(): Promise<any> {
     try {
       loading = true;
       const response = await fetch('/api/rag/documents');
@@ -70,7 +70,7 @@
     selectedDocument = doc;
     showModal = true;
   }
-  async function handleDeleteDocument(docId: string) {
+  async function handleDeleteDocument(docId: string): Promise<void> {
     try {
       const response = await fetch(`/api/rag/documents/${docId}`, {
         method: 'DELETE',

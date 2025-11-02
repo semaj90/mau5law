@@ -1,6 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   interface Props {
     caseId: string;
   }
@@ -39,12 +40,12 @@ https://svelte.dev/e/js_parse_error -->
   // State
   let evidenceFiles: any[] = [];
   let filteredFiles: any[] = [];
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error: string | null = null;
   let uploadProgress = 0;
-  let uploading = $state(false);
+  let uploading = $state<boolean>(false);
   let selectedFiles = new Set<string>();
-  let showBulkActions = $state(false);
+  let showBulkActions = $state<boolean>(false);
 
   // Filters and view options
   let searchQuery = '';
@@ -54,8 +55,8 @@ https://svelte.dev/e/js_parse_error -->
   let sortOrder = 'desc';
 
   // Upload modal state
-  let showUploadModal = $state(false);
-  let dragActive = $state(false);
+  let showUploadModal = $state<boolean>(false);
+  let dragActive = $state<boolean>(false);
   let uploadFiles: FileList | null = null;
   let uploadDescription = '';
   let uploadTags = '';
@@ -83,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 
-  async function loadEvidenceFiles() {
+  async function loadEvidenceFiles(): Promise<any> {
     if (!caseId) {
       error = 'Case ID is required';
       return;
@@ -165,11 +166,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
 
     const files = e.dataTransfer?.files;
     if (files && files.length > 0) {
@@ -192,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   }
-  async function uploadSingleFile() {
+  async function uploadSingleFile(): Promise<any> {
     if (!uploadFiles || uploadFiles.length === 0 || !caseId) return;
 
     uploading = true;
@@ -220,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
           message: `${file.name} uploaded successfully`,
         });
 
-        showUploadModal = $state(false);
+        showUploadModal = false;
         uploadDescription = '';
         uploadTags = '';
         uploadFiles = null;
@@ -242,7 +243,7 @@ https://svelte.dev/e/js_parse_error -->
       uploadProgress = 0;
     }
   }
-  async function uploadMultipleFiles() {
+  async function uploadMultipleFiles(): Promise<any> {
     if (!uploadFiles || uploadFiles.length === 0 || !caseId) return;
 
     uploading = true;
@@ -463,7 +464,7 @@ https://svelte.dev/e/js_parse_error -->
             onclick={() => {
               selectedFiles.clear();
               selectedFiles = selectedFiles;
-              showBulkActions = $state(false);
+              showBulkActions = false;
             }}
           >
             Cancel
@@ -748,7 +749,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="nes-btn"
           onclick={() => {
-            showUploadModal = $state(false);
+            showUploadModal = false;
             uploadFiles = null;
             uploadDescription = '';
             uploadTags = '';

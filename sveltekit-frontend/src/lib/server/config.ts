@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Server Configuration - Legal AI Platform
  * Centralized configuration for all backend services

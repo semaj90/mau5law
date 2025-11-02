@@ -40,9 +40,9 @@ https://svelte.dev/e/attribute_duplicate -->
   // COMPONENT STATE
   // ======================================================================
   let machines = $state<any>(null);
-  let evidenceText = $state('');
-  let selectedCaseId = $state('demo-case-001');
-  let processingActive = $state(false);
+  let evidenceText = $state<string>('');
+  let selectedCaseId = $state<string>('demo-case-001');
+  let processingActive = $state<boolean>(false);
   let realTimeUpdates = $state<any[]>([]);
   // Demo evidence samples
   const demoEvidences = [
@@ -115,7 +115,7 @@ https://svelte.dev/e/attribute_duplicate -->
   // ======================================================================
   // EVENT HANDLERS
   // ======================================================================
-  async function addCustomEvidence() {
+  async function addCustomEvidence(): Promise<any> {
     if (!evidenceText.trim() || !machines?.evidenceActor) return;
     const evidence = {
       id: `evidence-${Date.now()}`,
@@ -162,7 +162,7 @@ https://svelte.dev/e/attribute_duplicate -->
     evidenceText = '';
     processingActive = true;
   }
-  async function addDemoEvidence(demoEvidence: any) {
+  async function addDemoEvidence(demoEvidence: any): Promise<any> {
     if (!machines?.evidenceActor) return;
     machines.evidenceActor.send({
       type: 'ADD_EVIDENCE',

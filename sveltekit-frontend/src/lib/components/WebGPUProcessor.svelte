@@ -172,7 +172,7 @@
   let canvas: HTMLCanvasElement | null = $state(null);
   let computePipelines = $state<Map<string, GPUComputePipeline>>(new Map());
   let bufferPool = $state<Map<string, GPUBuffer>>(new Map());
-  let operationId = $state(0);
+  let operationId = $state<number>(0);
   let animationFrame: number | null = $state(null);
   let attentionTracker: AttentionTracker | null = $state(null);
   // Attention tracking class
@@ -272,7 +272,7 @@
   			const regions: { start: number; end: number; weight: number }[] = [];
   			const threshold = 50; // pixels
   			for (let i = 0; i < positions.length; i++) {
-  				let found = $state(false);
+  				let found = $state<boolean>(false);
   				for (const region of regions) {
   					const regionCenter = (region.start + region.end) / 2;
   					const distance = Math.abs(positions[i].y - regionCenter);
@@ -304,7 +304,7 @@
   		}
   	}
   	// Initialize WebGPU
-  	async function initializeWebGPU() {
+  	async function initializeWebGPU(): Promise<void> {
     try {
       if (!navigator.gpu) {
         console.warn('WebGPU not supported');
@@ -356,7 +356,7 @@
     }
   }
   // Initialize compute pipelines
-  	async function initializeComputePipelines(device: GPUDevice) {
+  	async function initializeComputePipelines(device: GPUDevice): Promise<void> {
   		try {
   			// Embedding pipeline
   			const embeddingModule = device.createShaderModule({
@@ -492,7 +492,7 @@
   		return operation.id;
   	}
   	// Process next operation in queue
-  	async function processNextOperation() {
+  	async function processNextOperation(): Promise<any> {
     const queue = processingQueue;
     if (queue.length === 0) return;
     const operation = queue[0];
@@ -591,7 +591,7 @@
   	}
   	// Component lifecycle
   	$effect(() => {
-    async function setup() {
+    async function setup(): Promise<any> {
       if (enableWebGPU) {
         await initializeWebGPU();
       }

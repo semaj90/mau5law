@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Llama.cpp + Ollama Integration Service
  * Replaces vLLM with native Windows-compatible stack

@@ -1,6 +1,7 @@
 <!-- Enhanced-Bits Legal AI Dashboard -->
 <!-- Complete integration of Citations, Reports, and POI systems -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import {
     Button,
@@ -21,10 +22,10 @@
   import { poiStore } from '$lib/stores/legal-poi.js';
   import { legalPlatformStore, unifiedSearch } from '$lib/stores/legal-platform-integration.js';
   // Component state using Svelte 5 runes
-  let activeTab = $state('dashboard');
-  let searchQuery = $state('');
+  let activeTab = $state<string>('dashboard');
+  let searchQuery = $state<string>('');
   let searchResults = $state<any>({});
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   // Reactive dashboard data
   let dashboardData = $derived(() => {
     const platform = $state.snapshot(legalPlatformStore);
@@ -48,7 +49,7 @@
     initializeEnhancedBits(LegalDesignTokens);
   });
   // Search functionality
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     loading = true;
     try {

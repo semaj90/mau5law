@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 
 // Legal Case Store - Svelte 5 Runes Implementation
 // Define types locally since they're not available

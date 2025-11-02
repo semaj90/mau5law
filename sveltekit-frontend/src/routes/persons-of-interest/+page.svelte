@@ -147,7 +147,7 @@
   ]);
   // Initialize selectedPerson without capturing the initial value of `persons`
   let selectedPerson: FugitiveDexPerson | null = $state<FugitiveDexPerson | null>(null);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
 
   // Ensure we set a default selected person whenever `persons` becomes non-empty
   $effect(() => {
@@ -157,7 +157,7 @@
   });
 
   // Function to load POIs from API
-  async function loadPersonsFromAPI() {
+  async function loadPersonsFromAPI(): Promise<any> {
     try {
       const response = await fetch('/api/persons-of-interest');
       if (response.ok) {

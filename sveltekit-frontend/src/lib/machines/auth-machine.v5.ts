@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { setup, assign, createActor, fromPromise } from 'xstate';
 import { AuthService } from '$lib/server/auth.js';
 // Authentication context interface

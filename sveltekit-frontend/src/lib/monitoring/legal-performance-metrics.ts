@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Legal Document Processing Performance Metrics
  * Comprehensive monitoring for Gemma3:legal-latest model and caching systems

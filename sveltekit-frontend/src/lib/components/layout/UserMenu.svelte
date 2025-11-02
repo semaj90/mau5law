@@ -1,5 +1,6 @@
 <!-- Gaming-Themed User Menu with Console Aesthetics -->
 <script lang="ts">
+import type { User } from '$lib/types';
   import { goto } from '$app/navigation';
   import type { ConsolePaletteName } from '$lib/themes/retro-console-palettes';
   interface User {
@@ -15,13 +16,13 @@
   }
   let { user, theme = 'legal' }: Props = $props();
   // State management
-  let showDropdown = $state(false);
+  let showDropdown = $state<boolean>(false);
   let dropdownElement: HTMLElement = $state(undefined as any);
   // Close dropdown when clicking outside
   $effect(() => {
     function handleClickOutside(_event: MouseEvent) {
       if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-        showDropdown = $state(false);
+        showDropdown = false;
       }
     }
     if (showDropdown) {
@@ -32,7 +33,7 @@
   // Close dropdown on escape key
   function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      showDropdown = $state(false);
+      showDropdown = false;
     }
   }
   function toggleDropdown() {
@@ -40,7 +41,7 @@
   }
   function handleNavigation(path: string) {
     goto(path);
-    showDropdown = $state(false);
+    showDropdown = false;
   }
   function handleLogout() {
     // Create logout form and submit
@@ -49,7 +50,7 @@
     form.action = '/?/logout';
     document.body.appendChild(form);
     form.submit();
-    showDropdown = $state(false);
+    showDropdown = false;
   }
   // Menu items based on user role
   let menuItems = $derived([

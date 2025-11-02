@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * 🤖 AI Assistant for Recommendations
  * Integrates Gemma3 Legal model with recommendation engine

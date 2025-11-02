@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/database';
@@ -312,11 +313,11 @@ export const GET: RequestHandler = async ({ url }) => {
       }
 
       // Check qdrant health if available
-      let qdrantHealthy = $state(false);
+      let qdrantHealthy = $state<boolean>(false);
       try {
         qdrantHealthy = await qdrantService.healthCheck();
       } catch (e) {
-        qdrantHealthy = $state(false);
+        qdrantHealthy = false;
       }
 
       return json({

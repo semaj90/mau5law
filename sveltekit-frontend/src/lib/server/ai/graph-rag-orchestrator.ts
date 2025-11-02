@@ -170,7 +170,7 @@ async function qdrantSearch(collectionName: string, body: SearchRequestBody): Pr
 // -----------------------------------------------------------------------------
 // Qdrant Init
 // -----------------------------------------------------------------------------
-export async function initQdrantIndexes() {
+export async function initQdrantIndexes(): Promise<void> {
   try {
     const cols = await qdrantGetCollections();
     const exists = cols?.collections?.some((c: { name: string }) => c.name === COLLECTION);

@@ -46,7 +46,7 @@ await initializeUnifiedSystems();
   		startPerformanceMonitoring();
     })();
   });
-  	async function initializeUnifiedSystems() {
+  	async function initializeUnifiedSystems(): Promise<void> {
   		console.log('🚀 Initializing Unified Canvas Integration for caseItem:', caseId);
   		// Initialize canvas system
   		systemIntegration.canvasActive = true;
@@ -77,7 +77,7 @@ await initializeUnifiedSystems();
   		viewMode = mod;
   		console.log(`📋 Switched to ${mode} view mode`);
   	}
-  	async function handleEvidenceAnalysis(evidenceItem: any) {
+  	async function handleEvidenceAnalysis(evidenceItem: any): Promise<any> {
   		console.log('🔍 Starting evidence analysis:', evidenceItem.title);
   		// Add to processing queue
   		processingQueue = [...processingQueue, evidenceItem];
@@ -117,15 +117,15 @@ await initializeUnifiedSystems();
   		activeAnalysis = [...activeAnalysis, analysisData];
   	}
   	// Integration bridge functions
-  	async function syncCanvasToBoard() {
+  	async function syncCanvasToBoard(): Promise<any> {
   		console.log('🔄 Syncing canvas data to detective board...');
   		// Convert canvas evidence to detective board format
   	}
-  	async function syncBoardToCanvas() {
+  	async function syncBoardToCanvas(): Promise<any> {
   		console.log('🔄 Syncing detective board data to canvas...');
   		// Convert detective board evidence to canvas format
   	}
-  	async function processUnifiedAnalysis() {
+  	async function processUnifiedAnalysis(): Promise<any> {
   		console.log('🧠 Starting unified AI analysis across all evidence...');
   		// Combine evidence from both canvas and board
   		const allEvidence = [...canvasEvidence, ...evidence];

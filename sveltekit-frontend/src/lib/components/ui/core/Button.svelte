@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { Snippet } from 'svelte';
   import { cva, type VariantProps } from 'class-variance-authority';

@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 import amqp from 'amqplib';
 import type { Connection, Channel } from 'amqplib';
 import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';

@@ -119,7 +119,7 @@ function calculateTemporalScore(createdAt: Date, halfLifeDays: number = 30): num
   return Math.max(0.1, Math.min(1.0, decayFactor));
 }
 // Get similar responses from database using vector similarity
-async function getSimilarResponses(queryEmbedding: number[], maxResults: number = 5) {
+async function getSimilarResponses(queryEmbedding: number[], maxResults: number = 5): Promise<any> {
   try {
     const embeddingVector = `[${queryEmbedding.join(',')}]`
     const results = await db.execute(sql`
@@ -167,7 +167,7 @@ async function saveEnhancedResponse(data: {
   confidence: number
   userId?: string
   legalDomain?: string
-}) {
+}): Promise<void> {
   try {
     const result = await db.execute(sql`
       INSERT INTO ai_responses (

@@ -1,6 +1,7 @@
 <!-- Enhanced-Bits POI Card Component -->
 <!-- Integrates with legal-poi.ts store for Persons of Interest management -->
 <script lang="ts">
+import type { User } from '$lib/types';
   import { Button, Card, CardHeader, CardTitle, CardContent } from './index.js';
   import type { PersonOfInterest } from '$lib/stores/legal-poi.js';
   import { createWantedPoster, addToWatchList, recordSighting } from '$lib/stores/legal-poi.js';
@@ -41,7 +42,7 @@
     }
   });
   // Action handlers
-  async function handleCreateWantedPoster() {
+  async function handleCreateWantedPoster(): Promise<any> {
     if (poi.criminalProfile) {
       try {
         const posterBlob = await createWantedPoster(poi.id, {
@@ -63,7 +64,7 @@
       }
     }
   }
-  async function handleAddToFBIMostWanted() {
+  async function handleAddToFBIMostWanted(): Promise<any> {
     try {
       await addToWatchList(poi.id, 'fbi_most_wanted', 'High priority suspect', 'critical');
       // Could trigger a store update or show success message
@@ -71,7 +72,7 @@
       console.error('Failed to add to FBI Most Wanted:', error);
     }
   }
-  async function handleRecordSighting() {
+  async function handleRecordSighting(): Promise<any> {
     // This would typically open a dialog for sighting details
     try {
       await recordSighting(poi.id, {

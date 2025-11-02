@@ -6,6 +6,7 @@ https://svelte.dev/e/expected_token -->
   Legal AI Platform - Text Editor
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
@@ -13,10 +14,10 @@ https://svelte.dev/e/expected_token -->
   import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
   import { NesCard } from '$lib/components/ui/nes-ui.svelte';
   // Editor state
-  let editorValue = $state('');
-  let documentTitle = $state('Untitled Document');
+  let editorValue = $state<string>('');
+  let documentTitle = $state<string>('Untitled Document');
   let lastSaved = $state<Date | null>(null);
-  let isModified = $state(false);
+  let isModified = $state<boolean>(false);
   // Document metadata
   let documentStats = $derived(() => {
     const trimmed = editorValue.trim();
@@ -35,7 +36,7 @@ https://svelte.dev/e/expected_token -->
     // In a real app, this would save to backend
     console.log('Saving document:', { title: documentTitle, content: editorValue });
     lastSaved = new Date();
-    isModified = $state(false);
+    isModified = false;
   }
   function handleDownload() {
     const blob = new Blob([editorValue], { type: 'text/plain' });

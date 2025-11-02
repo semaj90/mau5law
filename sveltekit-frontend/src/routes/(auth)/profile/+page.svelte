@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   import type { PageData } from './$types';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -73,10 +74,10 @@
     lastName: initialUser?.lastName ?? '',
     email: initialUser?.email ?? '',
   });
-  let isSaving = $state(false);
+  let isSaving = $state<boolean>(false);
   let isHydrating = $state(!initialUser);
   let feedback = $state<{ text: string; intent: 'success' | 'error' | 'info' | null }>({ text: '', intent: null });
-  let showRagUpload = $state(false);
+  let showRagUpload = $state<boolean>(false);
   let ragSummary = $state<RagUploadSummary | null>(null);
   let stats = $state<ProfileStats>({
     totalCases: toNumber(statsData['totalCases']) ?? 0,
@@ -234,7 +235,7 @@
     feedback = { text, intent };
   }
 
-  async function refreshProfile() {
+  async function refreshProfile(): Promise<any> {
     try {
       const response = await fetch(resolveApi('/api/user/profile'), {
         method: 'GET',
@@ -258,7 +259,7 @@
     }
   }
 
-  async function loadStats() {
+  async function loadStats(): Promise<any> {
     try {
       const response = await fetch(resolveApi('/api/dashboard/stats'), {
         method: 'GET',
@@ -283,7 +284,7 @@
     }
   }
 
-  async function submitProfileUpdate(event: Event) {
+  async function submitProfileUpdate(event: Event): Promise<any> {
     event.preventDefault();
     if (isSaving) return;
 

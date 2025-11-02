@@ -204,7 +204,7 @@ export function loadGamingComponent(name: keyof typeof GAMING_COMPONENTS, cache 
 /**
  * Preload essential components for better performance
  */
-export async function preloadEssentialComponents() {
+export async function preloadEssentialComponents(): Promise<any> {
   const essentialComponents = [
     'EvidenceBoard',
     'EmbeddingGemmaChat',

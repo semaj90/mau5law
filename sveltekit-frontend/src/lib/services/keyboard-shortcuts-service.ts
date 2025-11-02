@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Remote Control Keyboard Shortcuts Service
  * Advanced keyboard shortcut system with remote control capabilities

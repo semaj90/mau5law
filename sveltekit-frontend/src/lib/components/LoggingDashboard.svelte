@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
   import { onDestroy } from 'svelte';
   // Svelte runes are declared globally in src/types/svelte-helpers.d.ts
   import {
@@ -11,10 +13,10 @@
   // Modern Svelte 5 props via $props rune
   let { visible = true, height = '600px' } = $props();
   let selectedLevel = $state<LogLevel | 'all'>('all');
-  let selectedCategory = $state('all');
-  let searchQuery = $state('');
-  let autoScroll = $state(true);
-  let showDetails = $state(false);
+  let selectedCategory = $state<string>('all');
+  let searchQuery = $state<string>('');
+  let autoScroll = $state<boolean>(true);
+  let showDetails = $state<boolean>(false);
   let selectedEntry = $state<LogEntry | null>(null);
   let filteredEntries = $derived(() =>
     $logEntries.filter((entry: LogEntry) => {

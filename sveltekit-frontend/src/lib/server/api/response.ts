@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // Standardized API Response Handlers for SvelteKit 2
 // Production-ready response patterns with comprehensive error handling
 import { json, type RequestEvent } from '@sveltejs/kit';

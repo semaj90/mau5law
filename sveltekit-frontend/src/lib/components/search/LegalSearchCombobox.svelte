@@ -8,6 +8,7 @@
   - Advanced filtering capabilities
 -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
   import { onMount } from "svelte";
   import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';
   import { debounce } from 'lodash-es';
@@ -59,10 +60,10 @@
   } = $props();
 
   // State
-  let open = $state(false);
+  let open = $state<boolean>(false);
   let inputValue = $state(value);
   let searchResults = $state<SearchResult[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let selectedResult = $state<SearchResult | null>(null);
   let recentSearches = $state<string[]>([]);
   let suggestions = $state<string[]>([]);
@@ -153,7 +154,7 @@
   }, 300);
 
   // Load AI-powered suggestions
-  async function loadAISuggestions() {
+  async function loadAISuggestions(): Promise<any> {
     try {
       const res = await fetch(`/api/search/suggestions`);
       const data = await res.json();
@@ -182,7 +183,7 @@
     selectedResult = result;
     inputValue = result.title;
     value = inputValue;
-    open = $state(false);
+    open = false;
     // Add to recent searches
     if (!recentSearches.includes(result.title)) {
       recentSearches = [result.title, ...recentSearches.slice(0, 4)];

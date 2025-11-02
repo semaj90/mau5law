@@ -100,7 +100,7 @@
     animate();
   }
   function closeModal() {
-    open = $state(false);
+    open = false;
     dispatch('close');
   }
   function handleKeydown(event: KeyboardEvent) {

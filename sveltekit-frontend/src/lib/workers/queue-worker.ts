@@ -12,7 +12,7 @@ import { closeRabbitMQ } from '$lib/server/rabbitmq';
 import { emitCacheEvent } from '$lib/server/cache/cache-events';
 // Use postgres-js client from db-shim for Drizzle
 const db = drizzle(pgClient as any);
-let shuttingDown = $state(false);
+let shuttingDown = $state<boolean>(false);
 // Wire globalLoki to Redis client if available
 (async () => {
   try {
@@ -26,7 +26,7 @@ let shuttingDown = $state(false);
   } catch (error) {}
 })();
 // Ensure DB-level idempotency support: unique index on metadata->>'jobId'
-async function ensureDbIndexes() {
+async function ensureDbIndexes(): Promise<any> {
   try {
     await db.execute(
       sql`CREATE UNIQUE INDEX IF NOT EXISTS document_chunks_jobid_uidx ON document_chunks ((metadata->>'jobId'));`
@@ -36,7 +36,7 @@ async function ensureDbIndexes() {
     console.warn('⚠️ Failed to ensure unique index for jobId (non-fatal):', e?.message || e);
   }
 }
-async function processJob(job: { id: string; text: string; model?: string }) {
+async function processJob(job: { id: string; text: string; model?: string }): Promise<any> {
   console.log('📥 Processing job:', job.id);
   // Dedupe: skip if already processed
   try {
@@ -91,7 +91,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     );
     // Prefer DB-level idempotency via unique index on (metadata->>'jobId').
     // Use onConflictDoNothing to treat duplicates as success.
-    let inserted = $state(false);
+    let inserted = $state<boolean>(false);
     await db
       .insert(document_chunks)
       .values({
@@ -149,7 +149,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     throw err;
   }
 }
-async function runRabbitConsumer() {
+async function runRabbitConsumer(): Promise<any> {
   try {
     const { consumeFromQueue } = await import('$lib/server/rabbitmq');
     await consumeFromQueue('evidence.embedding.queue', async (payload, ack, nack) => {
@@ -171,7 +171,7 @@ async function runRabbitConsumer() {
     return false;
   }
 }
-async function runRedisLoop() {
+async function runRedisLoop(): Promise<any> {
   console.log('🚀 Redis BLPOP loop started on embedding:jobs');
   while (!shuttingDown) {
     try {
@@ -190,7 +190,7 @@ async function runRedisLoop() {
     }
   }
 }
-async function runWorker() {
+async function runWorker(): Promise<any> {
   console.log('🚀 Embedding queue worker starting');
   await ensureDbIndexes();
   const rabbitOk = await runRabbitConsumer();

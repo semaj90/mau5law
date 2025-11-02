@@ -47,12 +47,12 @@
   // State management using Svelte 5 runes
   let editorElement: HTMLDivElement;
   let suggestionPopup: HTMLDivElement | undefined = $state(undefined); // Declared with $state
-  let isShowingSuggestions = $state(false);
+  let isShowingSuggestions = $state<boolean>(false);
   let currentSuggestions = $state<AISuggestion[]>([]);
   let selectedSuggestionIndex = $state(-1);
   let cursorPosition = $state({ x: 0, y: 0 });
-  let isProcessing = $state(false);
-  let lastProcessedText = $state('');
+  let isProcessing = $state<boolean>(false);
+  let lastProcessedText = $state<string>('');
   // Define a type for the AI processing machine's context
   interface AIProcessingSnapshotContext {
     result?: any; // Adjust to a more specific type if known
@@ -322,7 +322,7 @@
   }
   // Hide suggestions
   function hideSuggestions() {
-    isShowingSuggestions = $state(false);
+    isShowingSuggestions = false;
     currentSuggestions = [];
     selectedSuggestionIndex = -1;
   }

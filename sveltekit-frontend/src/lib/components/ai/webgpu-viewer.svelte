@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   let isPlaying = $state(autoRotate);
   let zoom = $state(1.0);
   let rotation = $state({ x: 0, y: 0, z: 0 });
-  let mouseDown = $state(false);
+  let mouseDown = $state<boolean>(false);
   let lastMouse = $state({ x: 0, y: 0 });
   let animationFrame = $state<number | null>(null);
   let embedBuffer: GPUBuffer | null = null;
@@ -106,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
       ws.close();
     }
   });
-  async function initWebGPU() {
+  async function initWebGPU(): Promise<void> {
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) {
       console.error('No GPU adapter found');
@@ -297,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
     render();
   }
   function handleMouseUp() {
-    mouseDown = $state(false);
+    mouseDown = false;
   }
   function handleWheel(e: WheelEvent) {
     e.preventDefault();

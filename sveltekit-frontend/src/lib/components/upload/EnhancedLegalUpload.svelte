@@ -4,6 +4,8 @@
   Preserves OCR + LegalBERT RAG Flow with enhanced UX
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -70,17 +72,17 @@
   // State management
   let selectedFile: File | null = $state(null);
   let filePreview: string | null = $state(null);
-  let dragOver = $state(false);
-  let processingStage = $state('');
+  let dragOver = $state<boolean>(false);
+  let processingStage = $state<string>('');
   let ocrResults = $state<any>(null);
   let legalAnalysis = $state<any>(null);
   let semanticEmbeddings = $state<any>(null);
-  let showAdvancedOptions = $state(false);
-  let showProcessingDetails = $state(false);
+  let showAdvancedOptions = $state<boolean>(false);
+  let showProcessingDetails = $state<boolean>(false);
   // XState evidence processing actor for the existing flow
   let evidenceActor = $state<ReturnType<typeof createActor> | null>(null);
   // Enhanced file selection with Superforms integration
-  async function handleFileSelect(file: File) {
+  async function handleFileSelect(file: File): Promise<any> {
     selectedFile = fil;
     // Clear previous results and errors
     ocrResults = null;
@@ -135,7 +137,7 @@
     return true;
   }
   // Run preliminary analysis using your existing OCR + LegalBERT flow
-  async function runPreliminaryAnalysis(file: File) {
+  async function runPreliminaryAnalysis(file: File): Promise<any> {
     processingStage = 'Starting preliminary analysis...';
     try {
       // Step 1: OCR Processing (preserving your existing flow)
@@ -194,7 +196,7 @@
     }
   }
   // Enhanced webhook processing preserving your existing RAG flow
-  async function triggerWebhookProcessing(uploadResult: any, formData: FormData) {
+  async function triggerWebhookProcessing(uploadResult: any, formData: FormData): Promise<any> {
     try {
       // Prepare webhook payload with enhanced analysis data
       const webhookPayload = {
@@ -281,7 +283,7 @@
   }
   function onDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const file = event.dataTransfer?.files?.[0];
     if (file) {
       handleFileSelect(file);
@@ -292,7 +294,7 @@
     dragOver = true;
   }
   function onDragLeave() {
-    dragOver = $state(false);
+    dragOver = false;
   }
   function removeFile() {
     selectedFile = null;

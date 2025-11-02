@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 /*
  * RabbitMQ Message Publishing API Endpoint
  *

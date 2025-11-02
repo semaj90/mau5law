@@ -281,7 +281,7 @@ export class EnhancedEmbeddingWorker {
       // Step 4: Try to get cached embedding first
       await globalLoki.updateProgress(job.id, 25);
       let embedding: number[] | null = null;
-      let cached = $state(false);
+      let cached = $state<boolean>(false);
       try {
         embedding = await this.getCachedEmbedding(job.text, job.model);
         cached = !!embedding;

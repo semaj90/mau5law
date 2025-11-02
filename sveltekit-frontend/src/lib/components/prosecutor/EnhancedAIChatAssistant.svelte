@@ -3,6 +3,8 @@ Enhanced AI Chat Assistant for Prosecutors
 Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { Props } from '$lib/types/global';
   // Replace the incorrect named import block with explicit default imports

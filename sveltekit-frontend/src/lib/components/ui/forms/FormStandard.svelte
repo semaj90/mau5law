@@ -70,7 +70,7 @@
   use:enhance={enhancedSubmit}
   aria-label={ariaLabel}
   aria-describedby={ariaDescribedBy}
-  class="form-standard {variantClasses[variant]} {sizeClasses[size]}
+  class="form-standard" {variantClasses[variant]} {sizeClasses[size]}
          {variant !== 'inline' ? spacingClasses[spacing] : ''} {className}"
   {...formProps}
 >

@@ -11,7 +11,7 @@ export const reports = writable<ReportDraft[]>([]);
 export const activeReport = writable<ReportDraft | null>(null);
 export const isSaving = writable(false);
 
-export async function saveReport(draft: ReportDraft) {
+export async function saveReport(draft: ReportDraft): Promise<void> {
   isSaving.set(true);
   try {
     const res = await fetch('/api/reports/save', {
@@ -41,7 +41,7 @@ export async function saveReport(draft: ReportDraft) {
   }
 }
 
-export async function loadReports() {
+export async function loadReports(): Promise<any> {
   try {
     const res = await fetch('/api/reports');
     if (!res.ok) return [];
@@ -62,7 +62,7 @@ export const reports = writable<Report[]>([]);
 export const activeReport = writable<Report | null>(null);
 export const isSaving = writable(false);
 
-export async function saveReport(report: Report) {
+export async function saveReport(report: Report): Promise<void> {
   isSaving.set(true);
   try {
     const res = await fetch('/api/reports/save', {

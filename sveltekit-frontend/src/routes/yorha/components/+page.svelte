@@ -24,9 +24,9 @@
   };
 
   // Component instances and options
-  let selectedComponent = $state('button');
-  let previewMode = $state('3d');
-  let isLoading = $state(false);
+  let selectedComponent = $state<string>('button');
+  let previewMode = $state<string>('3d');
+  let isLoading = $state<boolean>(false);
 
   // Component configurations
   let buttonConfig = $state<YoRHaButton3DOptions>({
@@ -108,7 +108,7 @@
       }
     })();
   });
-  async function loadComponentConfigs() {
+  async function loadComponentConfigs(): Promise<any> {
     isLoading = true;
     try {
       const [button, panel, input, modal] = await Promise.all([
@@ -174,7 +174,7 @@
     a.click();
     URL.revokeObjectURL(url);
   }
-  async function saveConfig() {
+  async function saveConfig(): Promise<void> {
     try {
       const currentConfig = getCurrentConfig();
       if (currentConfig) {

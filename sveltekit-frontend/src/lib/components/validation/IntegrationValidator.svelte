@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { goTensorService } from '$lib/services/go-tensor-service-client';
@@ -22,10 +24,10 @@
     totalDuration: number; // Fixed syntax
   }
   let validationSuites = $state<ValidationSuite[]>([]);
-  let isRunning = $state(false);
+  let isRunning = $state<boolean>(false);
   let overallStatus = $state<'idle' | 'running' | 'completed' | 'failed'>('idle');
   let startTime: number;
-  let totalDuration = $state(0);
+  let totalDuration = $state<number>(0);
   // Test suites configuration
   const suiteConfigs = [
     {
@@ -85,7 +87,7 @@
     }));
   }
   // Run all validation tests
-  async function runAllValidationTests() {
+  async function runAllValidationTests(): Promise<any> {
     if (isRunning) return;
     isRunning = true;
     overallStatus = 'running';
@@ -105,7 +107,7 @@
     }
   }
   // Run individual validation suite
-  async function runValidationSuite(suite: ValidationSuite) {
+  async function runValidationSuite(suite: ValidationSuite): Promise<any> {
     const suiteStartTime = Date.now();
     suite.passed = 0;
     suite.failed = 0;
@@ -135,7 +137,7 @@
     suite.totalDuration = Date.now() - suiteStartTime; // Fixed variable name
   }
   // Run individual test
-  async function runIndividualTest(test: ValidationTest) {
+  async function runIndividualTest(test: ValidationTest): Promise<any> {
     switch (test.id) {
       case 'dropdown-test':
         await testDropdownComponent(test);
@@ -181,7 +183,7 @@
     }
   }
   // Individual test implementations
-  async function testDropdownComponent(test: ValidationTest) {
+  async function testDropdownComponent(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 500));
     // Simulate dropdown component testing
     const dropdownExists = document.querySelector('select') !== null;
@@ -193,17 +195,17 @@
       test.details = 'Dropdown component not found on page, but class exists in codebase'; // Fixed type assertion
     }
   }
-  async function testCheckboxComponent(test: ValidationTest) {
+  async function testCheckboxComponent(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 400));
     test.status = 'passed';
     test.details = 'Checkbox component state management and accessibility features working correctly'; // Fixed type assertion
   }
-  async function testSearchBarComponent(test: ValidationTest) {
+  async function testSearchBarComponent(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 600));
     test.status = 'passed';
     test.details = 'SearchBar debouncing (300ms), filtering, and event handling working correctly'; // Fixed type assertion
   }
-  async function testTensorService(test: ValidationTest) {
+  async function testTensorService(test: ValidationTest): Promise<any> {
     try {
       const health = await goTensorService.healthCheck();
       if (health.status === 'healthy') {
@@ -221,7 +223,7 @@
       test.details = 'Tensor service using fallback mode - Go service not available'; // Fixed type assertion
     }
   }
-  async function testGPUProcessing(test: ValidationTest) {
+  async function testGPUProcessing(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 1000));
     try {
       // Test GPU processing pipeline
@@ -246,7 +248,7 @@
       test.details = 'GPU processing fallback mode - mock processing successful'; // Fixed type assertion
     }
   }
-  async function testPerformanceMonitoring(test: ValidationTest) {
+  async function testPerformanceMonitoring(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 800));
     const isMonitoring = gpuPerformanceOptimizer.monitoring;
     if (isMonitoring) {
@@ -257,12 +259,12 @@
       test.details = 'Performance monitoring available but not currently active'; // Fixed type assertion
     }
   }
-  async function testEvidenceUpload(test: ValidationTest) {
+  async function testEvidenceUpload(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 700));
     test.status = 'passed';
     test.details = 'Evidence upload system with AI processing and GPU acceleration ready'; // Fixed type assertion
   }
-  async function testCaseAutomation(test: ValidationTest) {
+  async function testCaseAutomation(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 900));
     // Test case automation API endpoint
     try {
@@ -294,12 +296,12 @@
       test.error = `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`;
     }
   }
-  async function testDocumentClassification(test: ValidationTest) {
+  async function testDocumentClassification(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 1200));
     test.status = 'passed';
     test.details = 'AI document classification with 7 processing options and GPU acceleration ready'; // Fixed type assertion
   }
-  async function testAPIEndpoints(test: ValidationTest) {
+  async function testAPIEndpoints(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 1000));
     // Test multiple API endpoints
     const endpoints = [
@@ -332,18 +334,18 @@
       test.details = 'API endpoints not responding correctly'; // Fixed type assertion
     }
   }
-  async function testDatabaseIntegration(test: ValidationTest) {
+  async function testDatabaseIntegration(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 800));
     // Simulate database connectivity test
     test.status = 'passed';
     test.details = 'Database integration ready - PostgreSQL schema and connections configured'; // Fixed type assertion
   }
-  async function testErrorHandling(test: ValidationTest) {
+  async function testErrorHandling(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 500));
     test.status = 'passed';
     test.details = 'Error handling and fallback mechanisms implemented across all systems'; // Fixed type assertion
   }
-  async function testPerformanceBenchmarks(test: ValidationTest) {
+  async function testPerformanceBenchmarks(test: ValidationTest): Promise<any> {
     await new Promise(resolve => setTimeout(resolve, 1500));
     // Simulate performance benchmarking
     const metrics = {
@@ -448,7 +450,7 @@
       <div class="flex items-center justify-between mb-2">
         <span class="font-medium">Overall Success Rate</span>
         <span
-          class="text-2xl font-bold {overallSuccessRate >= 80
+          class="text-2xl" font-bold {overallSuccessRate >= 80
             ? 'text-green-400'
             : overallSuccessRate >= 60
               ? 'text-yellow-400'
@@ -459,7 +461,7 @@
       </div>
       <div class="w-full bg-slate-600 rounded-full h-3">
         <div
-          class="h-3 rounded-full transition-all duration-500 {overallSuccessRate >= 80
+          class="h-3" rounded-full transition-all duration-500 {overallSuccessRate >= 80
             ? 'bg-green-400'
             : overallSuccessRate >= 60
               ? 'bg-yellow-400'

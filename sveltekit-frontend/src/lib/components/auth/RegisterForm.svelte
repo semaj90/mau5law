@@ -3,6 +3,7 @@
   Using Bits UI v2 + Superforms + XState + MCP GPU Orchestrator
 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // runtime helpers ($props, $state, $derived, $effect) are available in runes mode — do not import them
   import { enhance } from '$app/forms';
@@ -52,13 +53,13 @@
   }
   let { data, redirectTo = '/dashboard', showLogin = true, enableGPUValidation = true }: Props = $props();
   // Form state
-  let showPassword = $state(false);
-  let showConfirmPassword = $state(false);
-  let isLoading = $state(false);
-  let errorMessage = $state('');
-  let successMessage = $state('');
+  let showPassword = $state<boolean>(false);
+  let showConfirmPassword = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
+  let errorMessage = $state<string>('');
+  let successMessage = $state<string>('');
   let gpuValidationStatus = $state<'idle' | 'processing' | 'success' | 'warning' | 'error'>('idle');
-  let securityScore = $state(0);
+  let securityScore = $state<number>(0);
   // Legal role options
   const roleOptions = [
     { value: 'prosecutor', label: 'Prosecutor', icon Scale },
@@ -154,7 +155,7 @@
       });
     },
     onResult: ({ result }) => {
-      isLoading = $state(false);
+      isLoading = false;
       if ((result as { type?: any; data?: any; error?: any }).type === 'success') {
         const data = (result as { type?: any; data?: any; error?: any }).data as any;
         if (data?.requiresVerification) {

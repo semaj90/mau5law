@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Unified Database Schema with PostgreSQL + pgvector Support
  * Production-ready schema for Legal AI Platform

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // Self-prompting endpoint: expands user query into enriched prompt using passages + graph context.
 import type { RequestHandler } from '@sveltejs/kit';
 import { getRedisService } from '$lib/server/redis/redis-service';

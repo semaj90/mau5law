@@ -9,6 +9,8 @@
 -->
 
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { goto } from '$app/navigation';
   import { Upload, FileText, Image, Video, AlertCircle, CheckCircle, X } from 'lucide-svelte';
   import type { PageData } from './$types.js';
@@ -23,20 +25,20 @@
   let { data }: { data: PageData } = $props();
 
   // Form state
-  let caseId = $state('');
-  let evidenceType = $state('document');
-  let title = $state('');
-  let description = $state('');
-  let isAdmissible = $state(true);
-  let collectedBy = $state('');
+  let caseId = $state<string>('');
+  let evidenceType = $state<string>('document');
+  let title = $state<string>('');
+  let description = $state<string>('');
+  let isAdmissible = $state<boolean>(true);
+  let collectedBy = $state<string>('');
   let collectedAt = $state(new Date().toISOString().split('T')[0]);
-  let tags = $state('');
+  let tags = $state<string>('');
 
   // Upload state
-  let dragOver = $state(false);
+  let dragOver = $state<boolean>(false);
   let uploadQueue = $state<UploadFile[]>([]);
-  let isUploading = $state(false);
-  let uploadMessage = $state('');
+  let isUploading = $state<boolean>(false);
+  let uploadMessage = $state<string>('');
   let uploadMessageType = $state<'success' | 'error'>('success');
 
   // Helper functions
@@ -92,12 +94,12 @@
 
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
   }
 
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const files = e.dataTransfer?.files;
     if (files) {
       for (let i = 0; i < files.length; i++) {
@@ -138,7 +140,7 @@
     uploadQueue = uploadQueue;
   }
 
-  async function uploadFile(uploadFile: UploadFile) {
+  async function uploadFile(uploadFile: UploadFile): Promise<any> {
     uploadFile.status = 'uploading';
 
     const formData = new FormData();
@@ -179,7 +181,7 @@
     }
   }
 
-  async function handleUpload() {
+  async function handleUpload(): Promise<any> {
     if (!caseId) {
       uploadMessage = 'Please select a case';
       uploadMessageType = 'error';
@@ -202,7 +204,7 @@
       }
     }
 
-    isUploading = $state(false);
+    isUploading = false;
   }
 
   function handleReset() {
@@ -213,7 +215,7 @@
     uploadMessage = '';
   }
 
-  async function goToCase() {
+  async function goToCase(): Promise<any> {
     if (caseId) {
       await goto(`/cases/${caseId}`);
     }

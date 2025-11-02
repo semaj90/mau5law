@@ -120,7 +120,7 @@
   ];
   function handleSelect(item: any) {
     ondispatch?.(item);
-    open = $state(false);
+    open = false;
     onOpenChange?.(open);
   }
   function handleOpenChange(newOpen: boolean) {

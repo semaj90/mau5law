@@ -2,11 +2,12 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
-  import { Button } from '$lib/components/ui/button.svelte'";
-  import { Label } from '$lib/components/ui/label.svelte'";
-  import { Progress } from '$lib/components/ui/progress.svelte'";
-  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte'";
+  import { Button } from '$lib/components/ui/button.svelte';
+  import { Label } from '$lib/components/ui/label.svelte';
+  import { Progress } from '$lib/components/ui/progress.svelte';
+  import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert.svelte';
   import { FileUp, BrainCircuit, Search, Loader2 } from "lucide-svelte";
   import { FeedbackIntegration } from '$lib/components/feedback/FeedbackIntegration.svelte';
 
@@ -24,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   let currentInteractionId: string | null = null;
   let uploadStartTime: number = 0;
 
-  async function handleUpload() {
+  async function handleUpload(): Promise<any> {
     if (!files || files.length === 0) {
       error = "Please select a file to upload.";
       return;
@@ -64,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
     };
 
     xhr.onload = () => {
-      isUploading = $state(false);
+      isUploading = false;
       const processingTime = Date.now() - uploadStartTime;
 
       if (xhr.status >= 200 && xhr.status < 300) {
@@ -105,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
     };
 
     xhr.onerror = () => {
-      isUploading = $state(false);
+      isUploading = false;
       const errorMsg = "Upload failed. Please check your network connection.";
       error = errorMsg;
 

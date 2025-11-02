@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
     // Check Ollama Status
     let ollamaStatus = 'offline';
-    let ollamaModels = [];
+    let ollamaModels: any[] = [];
     try {
       const ollamaResponse = await fetch('http://localhost:11434/api/tags');
       if (ollamaResponse.ok) {

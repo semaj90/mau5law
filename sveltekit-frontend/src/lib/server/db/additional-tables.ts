@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // Additional Legal AI Database Tables
 // These will be imported and added to the main unified-schema.ts
 import { pgTable, uuid, varchar, text, timestamp, integer, decimal, boolean, jsonb } from 'drizzle-orm/pg-core';

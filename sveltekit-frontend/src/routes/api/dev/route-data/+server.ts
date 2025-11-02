@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import type { RouteDataInput, RouteConfig, FileRoute, EnhancedAnalyticsResult } from '$lib/types/route-analytics';
 
 const execAsync = promisify(exec)
-export async function GET() {
+export async function GET(): Promise<any> {
   try {
     // Get the SvelteKit frontend directory
     const __dirname = path.dirname(fileURLToPath(import.meta.url));

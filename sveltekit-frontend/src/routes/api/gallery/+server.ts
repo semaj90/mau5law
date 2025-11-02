@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /*
  * Gallery API Server - Main Gallery Data Handler
  * Provides unified access to all media types across the legal AI platform
@@ -172,7 +173,7 @@ async function getEvidenceItems(
   pageSize: number,
   sortBy: string,
   sortOrder: string
-) {
+): Promise<any> {
   try {
     const conditions = [];
     if (filters.caseId) {
@@ -276,7 +277,7 @@ async function getDocumentItems(
   pageSize: number,
   sortBy: string,
   sortOrder: string
-) {
+): Promise<any> {
   try {
     const conditions = [];
     if (filters.caseId) {
@@ -380,7 +381,7 @@ async function getAIGeneratedItems(
   _pageSize: number, // PREFIXED with _
   _sortBy: string, // PREFIXED with _
   _sortOrder: string // PREFIXED with _
-) {
+): Promise<any> {
   try {
     // Check if we have AI-generated content in local storage or service
     // This would integrate with the image generation service we created
@@ -393,7 +394,7 @@ async function getAIGeneratedItems(
     return { items: [], total: 0 };
   }
 }
-async function getCategories() {
+async function getCategories(): Promise<any> {
   return [
     { name: 'Legal Evidence', count: 0 },
     { name: 'Case Documents', count: 0 },
@@ -407,7 +408,7 @@ async function getCategories() {
     { name: 'Spreadsheets', count: 0 },
   ];
 }
-async function getCases() {
+async function getCases(): Promise<any> {
   try {
     return await db
       .select({
@@ -422,7 +423,7 @@ async function getCases() {
     return [];
   }
 }
-async function getUsers() {
+async function getUsers(): Promise<any> {
   try {
     // Cast users for type safety
     return await db
@@ -479,16 +480,16 @@ export const POST: RequestHandler = async ({ request, locals: _locals }) => {
     throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
 };
-async function handleBulkDelete(ids: string[]) {
+async function handleBulkDelete(ids: string[]): Promise<void> {
   // TODO: Implement bulk delete across different item types
   return json({ success: true, deleted: ids.length });
 }
-async function handleBulkTag(ids: string[], _tags: string[]) {
+async function handleBulkTag(ids: string[], _tags: string[]): Promise<any> {
   // Renamed: 'tags' to: '_tags'
   // TODO: Implement bulk tagging across different item types
   return json({ success: true, tagged: ids.length });
 }
-async function handleBulkMove(ids: string[], _caseId: string) {
+async function handleBulkMove(ids: string[], _caseId: string): Promise<any> {
   // Renamed: 'caseId' to: '_caseId'
   // TODO: Implement bulk move to different case
   return json({ success: true, moved: ids.length });

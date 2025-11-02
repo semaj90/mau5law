@@ -1,5 +1,6 @@
 <!-- Enhanced RAG Demo Component with WebGPU/CUDA acceleration and Svelte 5 runes -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import {
     semanticAnalyzer,
@@ -33,21 +34,21 @@ NOW, THEREFORE, in consideration of the mutual covenants contained herein, the p
 This MOU shall be governed by Delaware law and shall remain in effect until December 31, 2024, unless terminated earlier in accordance with its terms.
 IN WITNESS WHEREOF, the parties have executed this MOU as of the date first written above.
   `);
-  let queryText = $state('What are the liability limitations in this contract?');
-  let isAnalyzing = $state(false);
+  let queryText = $state<string>('What are the liability limitations in this contract?');
+  let isAnalyzing = $state<boolean>(false);
   let analysisResult = $state<SemanticAnalysisResult | null>(null);
   let ragResponse = $state<RAGResponse | null>(null);
   let activeTab = $state<'analyze' | 'query'>('analyze');
   // Advanced search filters with modern TypeScript
-  let useSemanticExpansion = $state(true);
+  let useSemanticExpansion = $state<boolean>(true);
   let confidenceThreshold = $state(0.7);
   let selectedEntityTypes = $state<string[]>(['LEGAL_CONCEPT', 'PERSON', 'ORGANIZATION', 'MONEY']);
   // GPU acceleration status
   let webgpuStatus = $state<'initializing' | 'available' | 'unavailable'>('initializing');
   let cudaStatus = $state<'initializing' | 'available' | 'unavailable'>('initializing');
   // Performance metrics
-  let processingTime = $state(0);
-  let gpuAcceleration = $state(false);
+  let processingTime = $state<number>(0);
+  let gpuAcceleration = $state<boolean>(false);
   // Subscribe to stores using modern reactive patterns
   $effect(() => {
     const unsubscribeAnalyzing = isAnalyzingStore.subscribe(value => {
@@ -92,7 +93,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     gpuAcceleration = webgpuStatus === 'available' || cudaStatus === 'available';
   });
   // Enhanced analysis function with GPU acceleration
-  async function performAnalysis() {
+  async function performAnalysis(): Promise<any> {
     if (!sampleLegalText.trim()) return;
     const startTime = performance.now();
     isAnalyzing = true;
@@ -117,7 +118,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     }
   }
   // Enhanced RAG query with GPU-accelerated similarity search
-  async function performRAGQuery() {
+  async function performRAGQuery(): Promise<any> {
     if (!queryText.trim()) return;
     const startTime = performance.now();
     isAnalyzing = true;
@@ -206,7 +207,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
   <!-- Tab Navigation -->
   <div class="flex border-b border-gray-200">
     <button
-      class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'analyze'
+      class="px-4" py-2 text-sm font-medium border-b-2 {activeTab === 'analyze'
         ? 'border-blue-500 text-blue-600'
         : 'border-transparent text-gray-500 hover:text-gray-700'}"
       onclick={() => (activeTab = 'analyze')}
@@ -214,7 +215,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       Document Analysis
     </button>
     <button
-      class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'query'
+      class="px-4" py-2 text-sm font-medium border-b-2 {activeTab === 'query'
         ? 'border-blue-500 text-blue-600'
         : 'border-transparent text-gray-500 hover:text-gray-700'}"
       onclick={() => (activeTab = 'query')}
@@ -463,7 +464,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           <span class="font-medium">Acceleration Status:</span>
           WebGPU:
           <span
-            class="font-mono {webgpuStatus === 'available'
+            class="font-mono" {webgpuStatus === 'available'
               ? 'text-green-600'
               : webgpuStatus === 'unavailable'
                 ? 'text-red-600'
@@ -471,7 +472,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           >
           | CUDA-WASM:
           <span
-            class="font-mono {cudaStatus === 'available'
+            class="font-mono" {cudaStatus === 'available'
               ? 'text-green-600'
               : cudaStatus === 'unavailable'
                 ? 'text-red-600'

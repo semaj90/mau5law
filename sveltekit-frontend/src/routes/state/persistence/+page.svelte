@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // XState State Persistence Management
   import { onMount } from 'svelte';
@@ -9,11 +11,11 @@ https://svelte.dev/e/expected_token -->
   import Button from '$lib/components/ui/nes-button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
 
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   let persistedStates = $state<any[]>([]);
-  let loading = $state(true);
+  let loading = $state<boolean>(true);
   let selectedState = $state<any | null>(null);
-  let restoring = $state(false);
+  let restoring = $state<boolean>(false);
 
   // Mock persisted state data (fixed object literal syntax)
   let mockPersistedStates = [
@@ -83,7 +85,7 @@ https://svelte.dev/e/expected_token -->
     loadPersistedStates();
   });
 
-  async function loadPersistedStates() {
+  async function loadPersistedStates(): Promise<any> {
     loading = true;
     try {
       // In production: const response = await fetch('/api/state/persistence')
@@ -96,7 +98,7 @@ https://svelte.dev/e/expected_token -->
     }
   }
 
-  async function restoreState(stateId: string) {
+  async function restoreState(stateId: string): Promise<any> {
     restoring = true;
     try {
       // await fetch(`/api/state/persistence/${stateId}/restore`, { method: 'POST' })
@@ -111,7 +113,7 @@ https://svelte.dev/e/expected_token -->
     }
   }
 
-  async function deletePersistedState(stateId: string) {
+  async function deletePersistedState(stateId: string): Promise<void> {
     if (!confirm('Are you sure you want to delete this persisted state? This action cannot be undone.')) {
       return;
     }

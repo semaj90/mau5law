@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import { legalAIIntegration } from '$lib/services/quic-legal-ai-integration.js'
 import type { RequestHandler } from './$types.js'

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   const { r } = $props<{ r: any }>()
 </script>
 <div class="vector-card">

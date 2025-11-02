@@ -10,8 +10,8 @@
     form?: any;
   }
   let { data, form }: Props = $props();
-  let isLoading = $state(false);
-  let showPassword = $state(false);
+  let isLoading = $state<boolean>(false);
+  let showPassword = $state<boolean>(false);
 </script>
 
 <svelte:head>
@@ -36,7 +36,7 @@
         use:enhance={({ formData, cancel }) => {
           isLoading = true;
           return async ({ result }) => {
-            isLoading = $state(false);
+            isLoading = false;
             if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }

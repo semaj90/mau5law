@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 /*
  * Enhanced Vector Intelligence Recommendations API
@@ -95,8 +96,8 @@ type RLCacheOptimizer = {
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   let cacheStatus: 'hit' | 'miss' | 'generated' = 'miss';
-  let gpuUtilized = $state(false);
-  let rlOptimizationApplied = $state(false);
+  let gpuUtilized = $state<boolean>(false);
+  let rlOptimizationApplied = $state<boolean>(false);
   try {
     const body = await request.json();
     const enhancedRequest = {
@@ -531,7 +532,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Use the same enhanced logic as POST endpoint
     const startTime = Date.now();
     let cacheStatus: 'hit' | 'miss' | 'generated' = 'miss';
-    let gpuUtilized = $state(false);
+    let gpuUtilized = $state<boolean>(false);
     // Try cache first
     let recommendations: Recommendation[] = [];
     if (enhancedRequest.enableCaching) {

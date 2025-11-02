@@ -13,12 +13,12 @@
     address: '',
     status: 'Person of Interest',
   });
-  let tempPoiId = $state('');
-  let createdPoiName = $state(''); // To hold name after form reset
-  let loading = $state(false);
-  let message = $state('');
+  let tempPoiId = $state<string>('');
+  let createdPoiName = $state<string>(''); // To hold name after form reset
+  let loading = $state<boolean>(false);
+  let message = $state<string>('');
   let messageType = $state<'success' | 'error'>('success');
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<any> {
     try {
       loading = true;
       message = '';
@@ -52,7 +52,7 @@
     }
   }
   function closeModal() {
-    open = $state(false);
+    open = false;
   }
 </script>
 <!-- Modal Trigger Button -->

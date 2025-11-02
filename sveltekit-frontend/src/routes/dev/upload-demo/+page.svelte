@@ -15,7 +15,7 @@
     last = `Error: ${(e as CustomEvent).detail?.message ?? 'unknown'}`;
   }
 
-  async function saveMetadata() {
+  async function saveMetadata(): Promise<void> {
     last = 'Saving metadata...';
     try {
       const res = await submitWithProgress('/api/metadata/save', metadata);

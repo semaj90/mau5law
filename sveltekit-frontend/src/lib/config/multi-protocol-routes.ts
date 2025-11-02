@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import http from "http";
 /**
  * Multi-Protocol API Routing Configuration

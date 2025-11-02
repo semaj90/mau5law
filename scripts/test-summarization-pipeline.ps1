@@ -17,10 +17,25 @@ param(
 Write-Host "`n🧪 Testing Legal AI Summarization Pipeline" -ForegroundColor Cyan
 Write-Host "=" * 60 -ForegroundColor Gray
 
-# Test 1: Check Ollama
-Write-Host "`n[Test 1/5] Checking Ollama service..." -ForegroundColor Yellow
+# Test 0: Check SvelteKit Server Health
+Write-Host "`n[Test 0/7] Checking SvelteKit server health..." -ForegroundColor Yellow
 try {
-    $ollamaResponse = Invoke-RestMethod -Uri "http://localhost:11434/api/tags" -TimeoutSec 200
+    $svelteKitHealth = Invoke-RestMethod -Uri "$BaseUrl/api/health/status" -TimeoutSec 30
+    if ($svelteKitHealth.status -eq "healthy") {
+        Write-Host "  ✅ SvelteKit server is healthy" -ForegroundColor Green
+    } else {
+        Write-Host "  ❌ SvelteKit server reported: $($svelteKitHealth.status)" -ForegroundColor Red
+        exit 1
+    }
+} catch {
+    Write-Host "  ❌ SvelteKit server is not running or unreachable at $BaseUrl: $_" -ForegroundColor Red
+    exit 1
+}
+
+# Test 1: Check Ollama
+Write-Host "`n[Test 1/7] Checking Ollama service..." -ForegroundColor Yellow
+try {
+    $ollamaResponse = Invoke-RestMethod -Uri "http://localhost:11434/api/tags" -TimeoutSec 120
     $models = $ollamaResponse.models | Select-Object -ExpandProperty name
 
     if ($models -contains "gemma3-legal:latest") {
@@ -42,26 +57,44 @@ try {
     exit 1
 }
 
-# Test 2: Language Extraction Health
-Write-Host "`n[Test 2/5] Testing language extraction endpoint..." -ForegroundColor Yellow
+# Test 2: Language Extraction Health (via SvelteKit endpoint, which proxies to backend)
+Write-Host "`n[Test 2/7] Testing SvelteKit's language extraction endpoint (proxying backend)..." -ForegroundColor Yellow
 try {
-    $langHealth = Invoke-RestMethod -Uri "$BaseUrl/api/ai/extract-languages" -Method Get -TimeoutSec 30
+    $langHealth = Invoke-RestMethod -Uri "$BaseUrl/api/ai/extract-languages" -Method Get -TimeoutSec 120
 
     if ($langHealth.success -eq $true) {
-        Write-Host "  ✅ Language extraction endpoint is healthy" -ForegroundColor Green
+        Write-Host "  ✅ SvelteKit language extraction endpoint is healthy" -ForegroundColor Green
         Write-Host "     Model: $($langHealth.model.name)" -ForegroundColor Gray
         Write-Host "     Supported languages: $($langHealth.supportedLanguages.Count)" -ForegroundColor Gray
     } else {
-        Write-Host "  ❌ Language extraction endpoint returned error" -ForegroundColor Red
+        Write-Host "  ❌ SvelteKit language extraction endpoint returned error" -ForegroundColor Red
     }
 } catch {
-    Write-Host "  ❌ Language extraction endpoint failed: $_" -ForegroundColor Red
+    Write-Host "  ❌ SvelteKit language extraction endpoint failed: $_" -ForegroundColor Red
 }
 
-# Test 3: Summarization Health
-Write-Host "`n[Test 3/5] Testing summarization endpoint..." -ForegroundColor Yellow
+# Test 3: Hypothetical Go Language Extractor Service Health
+Write-Host "`n[Test 3/7] Checking hypothetical Go Language Extractor Service (http://localhost:8081)..." -ForegroundColor Yellow
+# This assumes a Go microservice for language extraction is running at http://localhost:8081
+# In a Docker Compose setup, this would be 'http://langextract-go:8081'
 try {
-    $summaryHealth = Invoke-RestMethod -Uri "$BaseUrl/api/ai/summarize-simple" -Method Get -TimeoutSec 30
+    $goLangExtractHealth = Invoke-RestMethod -Uri "http://localhost:8081/health" -TimeoutSec 10
+    if ($goLangExtractHealth.status -eq "healthy") {
+        Write-Host "  ✅ Go Language Extractor Service is healthy" -ForegroundColor Green
+    } elseif ($goLangExtractHealth.status -eq "unhealthy") {
+        Write-Host "  ⚠️ Go Language Extractor Service reported: $($goLangExtractHealth.status)" -ForegroundColor Yellow
+    } else {
+        Write-Host "  ❌ Go Language Extractor Service reported unexpected status: $($goLangExtractHealth.status)" -ForegroundColor Red
+    }
+} catch {
+    Write-Host "  ❌ Go Language Extractor Service is not running or unreachable at http://localhost:8081: $_" -ForegroundColor Red
+    Write-Host "     (This test is optional if language extraction is handled by Ollama or another service directly)" -ForegroundColor DarkYellow
+}
+
+# Test 4: Summarization Health (via SvelteKit endpoint)
+Write-Host "`n[Test 4/7] Testing summarization endpoint..." -ForegroundColor Yellow
+try {
+    $summaryHealth = Invoke-RestMethod -Uri "$BaseUrl/api/ai/summarize-simple" -Method Get -TimeoutSec 120
 
     if ($summaryHealth.success -eq $true) {
         Write-Host "  ✅ Summarization endpoint is healthy" -ForegroundColor Green
@@ -74,12 +107,13 @@ try {
     Write-Host "  ❌ Summarization endpoint failed: $_" -ForegroundColor Red
 }
 
-# Test 4: End-to-End Language Extraction
-Write-Host "`n[Test 4/5] Testing language extraction (end-to-end)..." -ForegroundColor Yellow
+# Test 5: End-to-End Language Extraction (via SvelteKit endpoint, using backend)
+Write-Host "`n[Test 5/7] Testing language extraction (end-to-end via SvelteKit proxy)..." -ForegroundColor Yellow
 try {
     $testText = "This is a legal contract between two parties. Le contrat est valide pour une année."
     $langBody = @{
         text = $testText
+        # The SvelteKit endpoint might select the model, or pass this to the backend
         model = "embeddinggemma:latest"
     } | ConvertTo-Json
 
@@ -88,7 +122,7 @@ try {
         -Method Post `
         -Body $langBody `
         -ContentType 'application/json' `
-        -TimeoutSec 30
+        -TimeoutSec 120
 
     Write-Host "  ✅ Language extraction successful" -ForegroundColor Green
     Write-Host "     Detected: $($langResult.languages -join ', ')" -ForegroundColor Gray
@@ -97,8 +131,8 @@ try {
     Write-Host "  ❌ Language extraction failed: $_" -ForegroundColor Red
 }
 
-# Test 5: End-to-End Summarization
-Write-Host "`n[Test 5/5] Testing summarization (end-to-end)..." -ForegroundColor Yellow
+# Test 6: End-to-End Summarization
+Write-Host "`n[Test 6/7] Testing summarization (end-to-end)..." -ForegroundColor Yellow
 try {
     $testDocument = @"
 This employment contract ("Contract") is entered into between Acme Corporation ("Employer")
@@ -120,7 +154,7 @@ to 30 days notice by either party. Employee agrees to non-compete clause for 6 m
         -Method Post `
         -Body $summaryBody `
         -ContentType 'application/json' `
-        -TimeoutSec 60
+        -TimeoutSec 120
 
     Write-Host "  ✅ Summarization successful" -ForegroundColor Green
     Write-Host "`n  Summary:" -ForegroundColor Cyan

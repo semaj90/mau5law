@@ -11,6 +11,8 @@ https://svelte.dev/e/js_parse_error -->
   5. GPU acceleration for document analysis
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, createEventDispatcher } from 'svelte';
   import { fade } from 'svelte/transition';
@@ -359,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
    * Close modal and cleanup
    */
   function handleClose(): void {
-    isOpen = $state(false);
+    isOpen = false;
     if (onClose) onClose();
     document = null;
     relatedDocuments = [];

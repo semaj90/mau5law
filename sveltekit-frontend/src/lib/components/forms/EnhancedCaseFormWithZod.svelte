@@ -177,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
             }
             // update lastSaved on success
             lastSaved = new Date();
-            isAutoSaving = $state(false);
+            isAutoSaving = false;
           } else {
             // Safely construct an error message by narrowing on the discriminant: 'type'
             let errorMsg = 'Submission failed';

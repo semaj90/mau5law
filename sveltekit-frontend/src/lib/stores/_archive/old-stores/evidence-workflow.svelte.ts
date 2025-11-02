@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // SvelteKit + xState integration for Legal AI PNG Evidence Workflow
 import { createMachine, assign, interpret } from 'xstate';
 import { writable, derived } from 'svelte/store';

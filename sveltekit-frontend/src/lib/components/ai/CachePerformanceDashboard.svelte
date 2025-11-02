@@ -52,10 +52,10 @@
     evictions: 0,
     bankSwitches: 0,
   });
-  let recentQueries = $state([]);
-  let systemHealth = $state('healthy');
-  let isRefreshing = $state(false);
-  let autoRefresh = $state(true);
+  let recentQueries = $state<any[]>([]);
+  let systemHealth = $state<string>('healthy');
+  let isRefreshing = $state<boolean>(false);
+  let autoRefresh = $state<boolean>(true);
   let refreshInterval: number;
   // Calculated metrics
   let totalHitRate = $derived(() => {
@@ -88,7 +88,7 @@
       clearInterval(refreshInterval);
     }
   });
-  async function refreshMetrics() {
+  async function refreshMetrics(): Promise<any> {
     performance.mark('refresh-start');
     if (isRefreshing) return;
     isRefreshing = true;
@@ -172,7 +172,7 @@
       }
     }
   }
-  async function updateCacheMetrics() {
+  async function updateCacheMetrics(): Promise<any> {
     performance.mark('function-start');
     // Simulate API call to get cache metrics
     await new Promise(resolve => setTimeout(resolve, 200));
@@ -205,7 +205,7 @@
       },
     };
   }
-  async function updateNintendoStats() {
+  async function updateNintendoStats(): Promise<any> {
     performance.mark('function-start');
     // Simulate Nintendo memory manager stats
     nintendoStats = {
@@ -218,7 +218,7 @@
       bankSwitches: Math.floor(Math.random() * 3),
     };
   }
-  async function updateRecentQueries() {
+  async function updateRecentQueries(): Promise<any> {
     performance.mark('function-start');
     const sampleQueries = [
       { query: 'breach of contract elements', cached: true, responseTime: 23 },
@@ -229,7 +229,7 @@
     ];
     recentQueries = sampleQueries.slice(0, Math.floor(Math.random() * 3) + 3);
   }
-  async function checkSystemHealth() {
+  async function checkSystemHealth(): Promise<any> {
     performance.mark('function-start');
     const hitRate = totalHitRate();
     const memUsage = memoryEfficiency();
@@ -251,7 +251,7 @@
       clearInterval(refreshInterval);
     }
   }
-  async function clearCache() {
+  async function clearCache(): Promise<any> {
     performance.mark('function-start');
     // In a real implementation, this would call the cache clearing API
     console.log('Clearing cache...');

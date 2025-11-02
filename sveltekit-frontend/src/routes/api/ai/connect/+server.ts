@@ -21,7 +21,7 @@ interface AIConnectionResponse {
   error?: string; // Include error for consistency with project's error handling pattern
 }
 
-async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, timeoutMs = 10000) {
+async function fetchWithTimeout(input: RequestInfo, init: RequestInit = {}, timeoutMs = 10000): Promise<Response> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   try {

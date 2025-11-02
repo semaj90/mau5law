@@ -13,8 +13,8 @@
   import { Database, Cpu, Zap, Palette, Globe, Server } from 'lucide-svelte';
   // Svelte 5 state
   let integrationStatus = $state<IntegrationStatus | null>(null);
-  let isLoading = $state(false);
-  let testPrompt = $state('What are the legal implications of AI in healthcare?');
+  let isLoading = $state<boolean>(false);
+  let testPrompt = $state<string>('What are the legal implications of AI in healthcare?');
   let testResult = $state<string | null>(null);
   let error = $state<string | null>(null);
   // Component demonstration data
@@ -30,7 +30,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     await checkAllIntegrations();
     })();
   });
-  async function checkAllIntegrations() {
+  async function checkAllIntegrations(): Promise<any> {
     isLoading = true;
     error = null;
     try {
@@ -44,7 +44,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       isLoading = false;
     }
   }
-  async function testWebAssemblyRuntime() {
+  async function testWebAssemblyRuntime(): Promise<any> {
     try {
       console.log('🧪 Testing WebAssembly runtime...');
       demoData.webassemblyTest = 'Running...';
@@ -64,7 +64,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       console.error('❌ WebAssembly test failed:', err);
     }
   }
-  async function testDatabaseIntegration() {
+  async function testDatabaseIntegration(): Promise<any> {
     try {
       console.log('🧪 Testing database integration...');
       demoData.databaseTest = 'Running...';
@@ -84,7 +84,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       console.error('❌ Database test failed:', err);
     }
   }
-  async function testWebGPUCapabilities() {
+  async function testWebGPUCapabilities(): Promise<any> {
     try {
       console.log('🧪 Testing WebGPU capabilities...');
       demoData.webgpuTest = 'Running...';
@@ -101,7 +101,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       console.error('❌ WebGPU test failed:', err);
     }
   }
-  async function testCacheSystem() {
+  async function testCacheSystem(): Promise<any> {
     try {
       console.log('🧪 Testing cache system...');
       demoData.cacheTest = 'Running...';

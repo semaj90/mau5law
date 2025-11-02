@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Multi-Library Startup Service
 // Initializes all integrated libraries: Loki.js + Fuse.js + Fabric.js + XState + Redis + RabbitMQ
 // Platform: Native Windows (No Docker) with SvelteKit 2 + Svelte 5

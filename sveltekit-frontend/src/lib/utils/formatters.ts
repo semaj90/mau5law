@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * App-wide Utility Functions
  * Timestamp formatting, mini-text truncation, and consistent UI helpers

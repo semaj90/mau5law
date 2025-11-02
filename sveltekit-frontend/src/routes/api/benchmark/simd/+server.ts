@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * SIMD JSON Performance Benchmark Endpoint
  * Quantifies performance gains across the legal AI data pipeline

@@ -1,3 +1,4 @@
+import type { AIResponse } from '$lib/types';
 /**
  * TypeScript types for AI Service Worker system
  */

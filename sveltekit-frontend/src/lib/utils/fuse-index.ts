@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import Fuse from 'fuse.js';
 
 // Narrow T so keyof T may include non-strings but we only accept string keys

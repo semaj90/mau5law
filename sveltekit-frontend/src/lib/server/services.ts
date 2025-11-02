@@ -40,7 +40,7 @@ export function getServices() {
 /**
  * Get unified legal AI system (singleton)
  */
-export async function getLegalSystem() {
+export async function getLegalSystem(): Promise<any> {
 	if (!legalSystemInstance) {
 		const { getUnifiedLegalSystem } = await import(
 			'$lib/services/unified-legal-simd-pgvector-production'
@@ -105,7 +105,7 @@ export async function generateEmbedding(text: string, cacheKey?: string): Promis
 /**
  * Helper: Search for similar documents (hybrid Qdrant + pgvector)
  */
-export async function searchSimilarDocuments(query: string, limit: number = 10) {
+export async function searchSimilarDocuments(query: string, limit: number = 10): Promise<any> {
 	// Generate query embedding
 	const queryEmbedding = await generateEmbedding(query, `query:${query}`);
 
@@ -128,7 +128,7 @@ export async function indexDocument(doc: {
 	content: string;
 	title?: string;
 	metadata?: Record<string, unknown>;
-}) {
+}): Promise<any> {
 	// Generate embedding
 	const embedding = await generateEmbedding(doc.content, doc.id);
 
@@ -168,7 +168,7 @@ export async function indexDocument(doc: {
 export async function generateChatResponse(
 	messages: Array<{ role: string; content: string }>,
 	stream: boolean = false
-) {
+): Promise<any> {
 	return await ollama.chat?.(messages, {
 		model: env.ollamaConfig.chatModel,
 		stream
@@ -183,7 +183,7 @@ export async function uploadFile(
 	key: string,
 	data: Buffer,
 	contentType?: string
-) {
+): Promise<any> {
 	// Ensure bucket exists
 	const exists = await minio.bucketExists?.(bucket);
 	if (!exists) {
@@ -213,7 +213,7 @@ export async function downloadFile(bucket: string, key: string): Promise<Buffer>
 /**
  * Helper: Publish job to RabbitMQ
  */
-export async function publishJob(queue: string, payload: any) {
+export async function publishJob(queue: string, payload: any): Promise<any> {
 	if (!env.rabbitmqConfig.enabled) {
 		console.warn('RabbitMQ is disabled, job will not be processed');
 		return;
@@ -233,7 +233,7 @@ export async function queryGraph<T = unknown>(cypher: string, params?: Record<st
 /**
  * Helper: Get service health status
  */
-export async function getServicesHealth() {
+export async function getServicesHealth(): Promise<any> {
 	const health: Record<string, boolean> = {};
 
 	// Redis
@@ -297,7 +297,7 @@ export async function getServicesHealth() {
 /**
  * Cleanup all service connections (call on server shutdown)
  */
-export async function cleanupServices() {
+export async function cleanupServices(): Promise<any> {
 	console.log('🧹 Cleaning up service connections...');
 
 	await redis.disconnect();

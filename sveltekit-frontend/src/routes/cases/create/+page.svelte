@@ -1,16 +1,17 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/button/Button.svelte';
 
-  let title = $state('');
-  let caseNumber = $state('');
-  let description = $state('');
+  let title = $state<string>('');
+  let caseNumber = $state<string>('');
+  let description = $state<string>('');
   // Align with server schema (maps 'active' -> 'open') and prefer canonical values on client
   let status = $state<'open' | 'pending' | 'closed'>('open');
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = $state<string | null>(null);
 
-  async function handleSubmit(e: Event) {
+  async function handleSubmit(e: Event): Promise<any> {
     e.preventDefault();
 
     try {

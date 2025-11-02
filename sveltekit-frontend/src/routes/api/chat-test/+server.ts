@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // Simple chat test without database dependencies
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';

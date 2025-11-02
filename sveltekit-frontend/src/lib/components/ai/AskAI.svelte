@@ -3,6 +3,8 @@
 <!-- import { ErrorBoundary } from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { debounce } from '$lib/utils/debounce';
   interface Props {
@@ -54,10 +56,10 @@
     metadata?: { [key: string]: any }
   }
   // Component state
-  let query = $state("");
-  let errorMessage = $state('');
-  let isLoading = $state(false);
-  let error = $state("");
+  let query = $state<string>("");
+  let errorMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  let error = $state<string>("");
   let conversation = $state<ConversationMessage[] >([]);
   let textareaRef: HTMLTextAreaElement;
   let messagesContainer: HTMLDivElement;
@@ -67,16 +69,16 @@
   // - searchThreshold: Adjusts the minimum relevance score for vector search results (higher = stricter).
   // - maxResults: Limits the number of context documents retrieved for the AI.
   // - temperature: Controls randomness/creativity of AI responses (higher = more creative).
-  let showAdvancedOptions = $state(false);
+  let showAdvancedOptions = $state<boolean>(false);
   let selectedModel = $state<"openai" | "ollama" >("openai");
   let searchThreshold = $state(0.7);
-  let maxResults = $state(10);
+  let maxResults = $state<number>(10);
   let temperature = $state(0.7);
   // Voice input state
-  let isListening = $state(false);
+  let isListening = $state<boolean>(false);
   // Fix SpeechRecognition type for browser
   let recognition = $state<any >(null);
-  let ttsLoading = $state(false);
+  let ttsLoading = $state<boolean>(false);
   // Reusable AudioContext for TTS playback
   let audioContext = $state<AudioContext | null >(null);
   // Simple localStorage wrapper for conversation storage
@@ -121,16 +123,16 @@
         textareaRef?.focus();
       }
       recognition.onerror = () => {
-        isListening = $state(false);
+        isListening = false;
       }
       recognition.onend = () => {
-        isListening = $state(false);
+        isListening = false;
       }
   }
     // Load conversation history from IndexedDB
     loadConversationHistory();
   });
-  async function loadConversationHistory() {
+  async function loadConversationHistory(): Promise<any> {
     try {
       const contextKey = caseId ? `case_${caseId}` : "general";
       const localStorageService = getLocalStorageService();
@@ -143,7 +145,7 @@
     } catch (error) {
       console.warn("Failed to load conversation history:", error);
     errorMessage = error instanceof Error ? error.message: 'An error occurred'}}
-  async function saveConversationHistory() {
+  async function saveConversationHistory(): Promise<void> {
     try {
       const contextKey = caseId ? `case_${caseId}` : "general";
       const localStorageService = getLocalStorageService();
@@ -154,7 +156,7 @@
     } catch (error) {
       console.warn("Failed to save conversation history:", error);
     errorMessage = error instanceof Error ? error.message: 'An error occurred'}}
-  async function askAI() {
+  async function askAI(): Promise<any> {
     if (!query.trim() || isLoading) return;
     const userMessage: ConversationMessage = {
       id: generateId(),
@@ -229,8 +231,8 @@
         // Streaming response (Ollama/Gemma3)
         const reader = response.body.getReader();
         let decoder = new TextDecoder();
-  let done = $state(false);
-  let buffer = $state("");
+  let done = $state<boolean>(false);
+  let buffer = $state<string>("");
         // In the streaming loop:
   let meta = $state<{ [key: string]: any }('') >( );
         while (!done) {
@@ -329,13 +331,13 @@
         const transcript = event.results[0][0].transcript;
         query = transcript;
         textareaRef?.focus();
-        isListening = $state(false);
+        isListening = false;
       }
       recognition.onerror = () => {
-        isListening = $state(false);
+        isListening = false;
       }
       recognition.onend = () => {
-        isListening = $state(false);
+        isListening = false;
       }
     }
     if (!isListening) {
@@ -346,11 +348,11 @@
   function stopVoiceInput() {
     if (recognition && isListening) {
       recognition.stop();
-      isListening = $state(false);
+      isListening = false;
     }
   }
   // Voice output (text-to-speech)
-  async function speak(text: string) {
+  async function speak(text: string): Promise<any> {
     ttsLoading = true;
     try {
       // Try Coqui TTS HTTP API via SvelteKit endpoint

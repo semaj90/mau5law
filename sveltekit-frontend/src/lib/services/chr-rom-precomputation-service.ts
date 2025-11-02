@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * CHR-ROM Pre-computation Service
  * Proactive background service that anticipates user actions and pre-computes UI patterns

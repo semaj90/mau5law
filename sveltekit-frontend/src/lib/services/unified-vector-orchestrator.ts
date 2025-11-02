@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Unified Vector Orchestrator - Complete Integration Hub
  * Wires together all vector systems: WebGPU SOM, WebAssembly RAG, PageRank,

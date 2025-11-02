@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { ensureError } from '$lib/utils/ensure-error';
 import { json, error } from '@sveltejs/kit';
 // Import connection defensively: prefer named `db` but fall back to default export

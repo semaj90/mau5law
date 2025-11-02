@@ -17,15 +17,15 @@
   import { ScrollArea } from '$lib/components/ui/scroll-area/ScrollArea.svelte';
   // Svelte 5 runes for state management
   let messages = $state<any[]>([]);
-  let inputMessage = $state('');
-  let isLoading = $state(false);
+  let inputMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let connectionStatus = $state<'connected' | 'disconnected' | 'testing'>('testing');
   let lastResponse = $state<any>(null);
   // Test connection to CUDA service on mount
   $effect(() => {
     testConnection();
   });
-  async function testConnection() {
+  async function testConnection(): Promise<void> {
     connectionStatus = 'testing';
     try {
       const response = await fetch('/api/chat-test', {
@@ -47,7 +47,7 @@
       console.error('❌ Connection failed:', error);
     }
   }
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!inputMessage.trim() || isLoading) return;
     const userMessage = {
       role: 'user' as const,
@@ -148,7 +148,7 @@
         {#each Array.isArray(messages) ? messages : [] as message}
           <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
             <div
-              class="max-w-[70%] p-3 rounded-lg {message.role === 'user'
+              class="max-w-[70%]" p-3 rounded-lg {message.role === 'user'
                 ? 'bg-primary text-primary-foreground ml-auto'
                 : 'bg-muted text-muted-foreground'}"
             >

@@ -46,37 +46,37 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // State management using Svelte 5 runes
   let evidenceItems = $state<EvidenceItem[]>([]);
   let filteredEvidence = $state<EvidenceItem[]>([]);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let selectedFilter = $state<string>('all');
-  let isUploading = $state(false);
-  let uploadProgress = $state(0);
-  let dragActive = $state(false);
-  let showToast = $state(false);
-  let toastMessage = $state('');
-  let showDeleteModal = $state(false);
+  let isUploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
+  let dragActive = $state<boolean>(false);
+  let showToast = $state<boolean>(false);
+  let toastMessage = $state<string>('');
+  let showDeleteModal = $state<boolean>(false);
   let pendingDeleteId = $state<string | null>(null);
   let searchSuggestions = $state<SearchSuggestion[]>([]);
-  let showSuggestions = $state(false);
+  let showSuggestions = $state<boolean>(false);
   let processingStatus = $state<'idle' | 'processing' | 'complete'>('idle');
   // AI Analysis state
-  let aiEnabled = $state(true);
-  let ollamaConnected = $state(false);
-  let cudaConnected = $state(false);
+  let aiEnabled = $state<boolean>(true);
+  let ollamaConnected = $state<boolean>(false);
+  let cudaConnected = $state<boolean>(false);
   // Advanced analysis state
   let selectedEvidence = $state<string[]>([]);
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
   let aiAnalysisResults = $state<any>(null);
-  let showAnalysisModal = $state(false);
+  let showAnalysisModal = $state<boolean>(false);
   // MinIO upload configuration
-  let minioConnected = $state(false);
-  let uploadToMinIO = $state(true);
-  let currentBucket = $state('legal-documents');
+  let minioConnected = $state<boolean>(false);
+  let uploadToMinIO = $state<boolean>(true);
+  let currentBucket = $state<string>('legal-documents');
   let buckets = $state<string[]>([]);
   // Gaming UI state
-  let gamingMode = $state(true);
-  let particleEffects = $state(true);
-  let spatialAudio = $state(true);
-  let retroTerminalMode = $state(false);
+  let gamingMode = $state<boolean>(true);
+  let particleEffects = $state<boolean>(true);
+  let spatialAudio = $state<boolean>(true);
+  let retroTerminalMode = $state<boolean>(false);
   // Drag and drop state
   let dropZone: HTMLElement;
   let dragCounter = 0;
@@ -104,7 +104,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     })();
   });
   // Service health checks
-  async function checkServiceStatus() {
+  async function checkServiceStatus(): Promise<any> {
     try {
       // Check Ollama connection (send a small health payload)
       const ollamaResponse = await fetch('/api/v1/evidence/analyze', {
@@ -124,17 +124,17 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         minioConnected = minioResponse.ok;
       } catch (error) {
         console.warn('MinIO health check failed:', error);
-        minioConnected = $state(false);
+        minioConnected = false;
       }
       console.log('Service status - Ollama:', ollamaConnected ? '✅' : '❌');
       console.log('Service status - MinIO:', minioConnected ? '✅' : '❌');
     } catch (error) {
       console.warn('Service health check failed:', error);
-      ollamaConnected = $state(false);
+      ollamaConnected = false;
     }
   }
   // Load MinIO buckets for selection
-  async function loadBuckets() {
+  async function loadBuckets(): Promise<any> {
     try {
       const resp = await fetch('/api/v1/storage/buckets');
       if (resp.ok) {
@@ -153,7 +153,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     }
   }
   // Load existing evidence
-  async function loadExistingEvidence() {
+  async function loadExistingEvidence(): Promise<any> {
     try {
       const response = await fetch('/api/v1/evidence/list');
       if (response.ok) {
@@ -183,10 +183,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     filteredEvidence = filtered;
   }
   // Get search suggestions from AI
-  async function getSearchSuggestions(query: string) {
+  async function getSearchSuggestions(query: string): Promise<any> {
     if (query.length < 2) {
       searchSuggestions = [];
-      showSuggestions = $state(false);
+      showSuggestions = false;
       return;
     }
     try {
@@ -223,7 +223,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Apply search suggestion
   function applySuggestion(suggestion SearchSuggestion) {
     searchQuery = suggestion.text;
-    showSuggestions = $state(false);
+    showSuggestions = false;
     filterEvidence();
   }
   // Drag and drop handlers
@@ -238,7 +238,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     e.preventDefault();
     dragCounter--;
     if (dragCounter === 0) {
-      dragActive = $state(false);
+      dragActive = false;
     }
   }
   function handleDragOver(e: DragEvent) {
@@ -246,9 +246,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     e.dataTransfer!.dropEffect = 'copy';
   }
   // Handle drop position
-  async function handleDrop(e: DragEvent) {
+  async function handleDrop(e: DragEvent): Promise<any> {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     dragCounter = 0;
     const files = Array.from(e.dataTransfer?.files || []);
     if (files.length === 0) return;
@@ -261,7 +261,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     await uploadFiles(files, position);
   }
   // File upload with AI processing
-  async function uploadFiles(files: File[], position { x: number; y: number }) {
+  async function uploadFiles(files: File[], position { x: number; y: number }): Promise<any> {
     isUploading = true;
     processingStatus = 'processing';
     for (const file of files) {
@@ -324,7 +324,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 toastMessage = `Uploaded ${file.name} → ${signedJson.bucket}/${namespacedKey}`;
                 showToast = true;
                 setTimeout(() => {
-                  showToast = $state(false);
+                  showToast = false;
                 }, 4000);
                 await analyzeEvidence(evidenceId, file);
               } else {
@@ -379,11 +379,11 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         console.error('File upload failed:', file.name, error);
       }
     }
-    isUploading = $state(false);
+    isUploading = false;
     filterEvidence();
   }
   // AI analysis of evidence
-  async function analyzeEvidence(evidenceId: string, file: File) {
+  async function analyzeEvidence(evidenceId: string, file: File): Promise<any> {
     try {
       let content = '';
       if (file.type.startsWith('text/')) {
@@ -455,7 +455,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     pendingDeleteId = id;
     showDeleteModal = true;
   }
-  async function confirmDelete() {
+  async function confirmDelete(): Promise<void> {
     const id = pendingDeleteId;
     if (!id) return;
     const item = evidenceItems.find(it => it.id === id);
@@ -470,21 +470,21 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         });
         const txt = await resp.text();
         if (!resp.ok) {
-          remoteOk = $state(false);
+          remoteOk = false;
           console.warn('Remote delete failed:', txt);
           toastMessage = `Remote delete failed: ${txt}`;
           showToast = true;
           setTimeout(() => {
-            showToast = $state(false);
+            showToast = false;
           }, 4000);
         }
       } catch (err) {
-        remoteOk = $state(false);
+        remoteOk = false;
         console.warn('Remote delete exception', err);
         toastMessage = `Remote delete exception`;
         showToast = true;
         setTimeout(() => {
-          showToast = $state(false);
+          showToast = false;
         }, 4000);
       }
     }
@@ -494,13 +494,13 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       evidenceItems = evidenceItems.filter(it => it.id !== id);
       selectedEvidence = selectedEvidence.filter(sid => sid !== id);
       pendingDeleteId = null;
-      showDeleteModal = $state(false);
+      showDeleteModal = false;
       filterEvidence();
     }
   }
   function cancelDelete() {
     pendingDeleteId = null;
-    showDeleteModal = $state(false);
+    showDeleteModal = false;
   }
   // Cleanup object URLs when component unmounts
   onDestroy(() => {
@@ -548,7 +548,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     }, 5000);
   }
   // Enhanced AI analysis with all four advanced features
-  async function performAdvancedAnalysis() {
+  async function performAdvancedAnalysis(): Promise<any> {
     if (selectedEvidence.length === 0) {
       alert('Please select evidence for analysis');
       return;
@@ -978,7 +978,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         >
           {#each filteredEvidence as evidence (evidence.id)}
             <div
-              class="evidence-nier-bits-card nes-container {selectedEvidence.includes(evidence.id)
+              class="evidence-nier-bits-card" nes-container {selectedEvidence.includes(evidence.id)
                 ? 'is-success'
                 : 'with-title'} relative"
               class:n64-glow={gamingMode && selectedEvidence.includes(evidence.id)}

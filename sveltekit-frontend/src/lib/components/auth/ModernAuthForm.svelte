@@ -11,9 +11,9 @@
   }
   let { mode = $bindable('login'), open = $bindable(false), onOpenChange, onSuccess }: Props = $props();
   let formData = $state({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '' });
-  let loading = $state(false);
-  let error = $state('');
-  let success = $state('');
+  let loading = $state<boolean>(false);
+  let error = $state<string>('');
+  let success = $state<string>('');
   let emailInput: any = $state(null);
   let passwordInput: any = $state(null);
   let isValid = $derived(() => {
@@ -27,7 +27,7 @@
     }
     return hasValidEmail && hasPassword;
   });
-  async function handleSubmit(event?: Event) {
+  async function handleSubmit(event?: Event): Promise<any> {
     event?.preventDefault?.();
     loading = true;
     error = '';
@@ -44,7 +44,7 @@
         success = result.message || `${mode === 'login' ? 'Login' : 'Registration'} successful!`;
         setTimeout(() => {
           formData = { email: '', password: '', confirmPassword: '', firstName: '', lastName: '' };
-          open = $state(false);
+          open = false;
           onSuccess?.(result.user);
         }, 1000);
       } else {

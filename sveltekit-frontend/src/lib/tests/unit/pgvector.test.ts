@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // We'll mock `pg` so that when the module under test constructs `new Pool()` it gets our fake pool.

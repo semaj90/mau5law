@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /*
  * Unified JSON API Router v1 - SvelteKit 2 Production Implementation
  * Integrates all 37 Go microservices with production-quality endpoints

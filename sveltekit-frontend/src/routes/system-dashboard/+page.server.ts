@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import type { ServerLoad, Actions } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 import { getUserId } from '$lib/server/auth/utils';

@@ -35,7 +35,7 @@
   let searchQuery = $state<string>('');
   let searchResults = $state<any[]>([]);
   let isSearching = $state<boolean>(false);
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {

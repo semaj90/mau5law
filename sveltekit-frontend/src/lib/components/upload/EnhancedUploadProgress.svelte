@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
   import { enhancedUploadStore, type EnhancedUploadState  } from '$lib/stores/unified';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { Progress } from '$lib/components/ui/progress/Progress.svelte';
@@ -186,14 +188,14 @@
         {#each progressStages as stage, index}
           {@const status = getStageStatus(stage, index)}
           {@const IconComponent = stage.icon}
-          <div class="flex items-start gap-4 p-3 rounded-lg border {
+          <div class="flex" items-start gap-4 p-3 rounded-lg border {
             status === 'current' ? 'border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950' :
             status === 'completed' ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950' :
             status === 'error' ? 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950' :
             'border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-950';
           }">
             <div class="flex-shrink-0">
-              <div class="w-8 h-8 rounded-full flex items-center justify-center {
+              <div class="w-8" h-8 rounded-full flex items-center justify-center {
                 status === 'completed' ? 'bg-green-500 text-white' :
                 status === 'current' ? 'bg-blue-500 text-white' :
                 status === 'error' ? 'bg-red-500 text-white' :

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * WebAssembly and LLVM Integration Types
  * Type definitions for WASM compilation and execution

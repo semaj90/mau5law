@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { cases } from '$lib/db/schema';

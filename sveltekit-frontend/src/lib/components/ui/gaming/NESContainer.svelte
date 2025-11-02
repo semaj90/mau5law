@@ -3,6 +3,7 @@
   Nintendo Entertainment System inspired container with retro styling and legal AI integration
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   interface Props {
     variant?: 'cartridge' | 'console' | 'controller' | 'screen' | 'powerpad' | 'zapper';
@@ -52,8 +53,8 @@
     ...restProps
   }: Props = $props();
   let container: HTMLElement;
-  let isLoaded = $state(false);
-  let processingProgress = $state(0);
+  let isLoaded = $state<boolean>(false);
+  let processingProgress = $state<number>(0);
   // NES color schemes
   const nesThemes = {
     classic: {

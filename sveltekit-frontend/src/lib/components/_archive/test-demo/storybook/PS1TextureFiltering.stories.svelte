@@ -5,14 +5,14 @@ https://svelte.dev/e/expected_token -->
   import { onMount } from 'svelte';
   import './PS1TextureFiltering.stories.svelte';
   let containerRef;
-  let filteringType = $state('nearest');
-  let mipmapLevel = $state(0);
-  let anisotropicSamples = $state(1);
-  let textureScale = $state(1);
-  let rotationSpeed = $state(1);
-  let enableAntialiasing = $state(false);
-  let subsampleRate = $state(1);
-  let dithering = $state(true);
+  let filteringType = $state<string>('nearest');
+  let mipmapLevel = $state<number>(0);
+  let anisotropicSamples = $state<number>(1);
+  let textureScale = $state<number>(1);
+  let rotationSpeed = $state<number>(1);
+  let enableAntialiasing = $state<boolean>(false);
+  let subsampleRate = $state<number>(1);
+  let dithering = $state<boolean>(true);
   let texelAccuracy = $state(0.8);
   const filteringTypes = [
     {
@@ -144,7 +144,7 @@ https://svelte.dev/e/expected_token -->
     mipmapLevel = 0;
     anisotropicSamples = 1;
     textureScale = 0.5;
-    enableAntialiasing = $state(false);
+    enableAntialiasing = false;
     subsampleRate = 1;
     dithering = true;
     texelAccuracy = 0.6;
@@ -157,7 +157,7 @@ https://svelte.dev/e/expected_token -->
     textureScale = 2;
     enableAntialiasing = true;
     subsampleRate = 2;
-    dithering = $state(false);
+    dithering = false;
     texelAccuracy = 1.0;
     updateFilteringProperties();
   }

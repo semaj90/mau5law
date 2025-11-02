@@ -22,9 +22,9 @@
   import { Brain, Zap, Settings, Crown, Info } from 'lucide-svelte';
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { cn } from '$lib/utils';
-  let showTooltip = $state(false);
-  let showConfig = $state(false);
-  let thinkingDepth = $state('detailed');
+  let showTooltip = $state<boolean>(false);
+  let showConfig = $state<boolean>(false);
+  let thinkingDepth = $state<string>('detailed');
   let focusAreas = $state({
     precedents: true
     evidence: true,

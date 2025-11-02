@@ -4,7 +4,7 @@
   const { onSelect } = $props<{ onSelect: (item: any) }>()
   let query = '';
   let results: any[] = [];
-  async function doSearch() {
+  async function doSearch(): Promise<any> {
     const res = await fetch(searchUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ queryText: query }) });
     results = (await res.json()).results ?? [];
   }

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // XState v5 Legal Case Management Workflow - Minimal Stub
 import { createMachine } from 'xstate';
 

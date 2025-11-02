@@ -1,3 +1,6 @@
+import type { SearchResult } from '$lib/types';
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import * as protobuf from 'protobufjs';
@@ -465,7 +468,7 @@ async function serializeErrorResponse(error: any): Promise<ArrayBuffer> {
 }
 
 // Vector search execution
-async function executeVectorSearch(searchParams: SearchRequest & { params?: { limit?: number } }) {
+async function executeVectorSearch(searchParams: SearchRequest & { params?: { limit?: number } }): Promise<any> {
   // Mock implementation - replace with actual vector search
   const mockResults = [
     {

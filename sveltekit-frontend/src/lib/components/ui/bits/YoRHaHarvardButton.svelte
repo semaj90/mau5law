@@ -22,8 +22,8 @@
     ...restProps
   }: YoRHaHarvardButtonProps = $props();
   // Svelte 5 - no longer need dispatcher
-  let isPressed = $state(false);
-  let isHovered = $state(false);
+  let isPressed = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-xs',
     md: 'px-4 py-2 text-sm',
@@ -43,7 +43,7 @@
     // Visual press effect
     isPressed = true;
     setTimeout(() => {
-      isPressed = $state(false);
+      isPressed = false;
     }, 150);
     // Svelte 5 - use onclick prop directly
     onclick?.();

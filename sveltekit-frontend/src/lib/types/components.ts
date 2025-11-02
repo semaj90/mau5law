@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // 🔧 Component Type Definitions (resolved duplicate export conflicts)
 // Centralizes commonly used UI component prop & event types
 import type { UploadedFile } from './global.js';

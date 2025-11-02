@@ -265,7 +265,7 @@ export const hybridEmbeddings = new HybridEmbeddings();
  *     await hybridEmbeddings.initialize();
  *   });
  *
- *   async function searchEvidence(query: string) {
+ *   async function searchEvidence(query: string): Promise<any> {
  *     // Auto-selects Ollama if available, falls back to browser
  *     const embedding = await hybridEmbeddings.embed(query);
  *
@@ -277,7 +277,7 @@ export const hybridEmbeddings = new HybridEmbeddings();
  *     );
  *   }
  *
- *   async function privateSearch(query: string) {
+ *   async function privateSearch(query: string): Promise<any> {
  *     // Force browser-only (privacy mode)
  *     const embedding = await hybridEmbeddings.embed(query, {
  *       privacyMode: true

@@ -3,6 +3,8 @@
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import UnifiedCanvasIntegration from '$lib/components/unified.svelte';
   import NierRichTextEditor from '$lib/components/editors.svelte';
@@ -11,7 +13,7 @@
   // UI components are imported via barrel files for consistency and SSR compatibility.
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/Card';
   import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs';
   import FileText from 'lucide-svelte/icons/file-text';
   import Search from 'lucide-svelte/icons/search';
@@ -60,10 +62,10 @@
   let cases = $state<Case[]>([]);
   let evidence = $state<EvidenceItem[]>([]);
   let chatMessages = $state<ChatMessage[]>([]);
-  let activeTab = $state('evidence');
-  let investigationNotes = $state('');
+  let activeTab = $state<string>('evidence');
+  let investigationNotes = $state<string>('');
   let citations = $state<string[]>([]);
-  let isSaving = $state(false);
+  let isSaving = $state<boolean>(false);
   let systemStatus = $state({
     evidenceCanvas: true,
     detectiveAnalysis: true,
@@ -166,7 +168,7 @@
     // Add welcome message
     addChatMessage('assistant', 'Welcome to the Legal Investigation Workspace. I can help you analyze evidence, manage cases, and provide legal insights. How can I assist you today?');
   });
-  async function loadCases() {
+  async function loadCases(): Promise<any> {
     try {
       const response = await fetch('/api/cases');
       if (response.ok) {
@@ -184,7 +186,7 @@
       console.error('Failed to load cases:', error);
     }
   }
-  async function loadSystemStatus() {
+  async function loadSystemStatus(): Promise<any> {
     try {
       const response = await fetch('/api/system/status');
       if (response.ok) {
@@ -196,7 +198,7 @@
     }
   }
   // Save investigation progress
-  async function saveInvestigation() {
+  async function saveInvestigation(): Promise<void> {
     if (!currentCase || isSaving) return;
     isSaving = true;
     try {

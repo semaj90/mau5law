@@ -20,7 +20,7 @@ https://svelte.dev/e/js_parse_error -->
     breaks = true
   }: Props = $props();
   let renderedHtml = $state<string >("");
-  let isClient = $state(false);
+  let isClient = $state<boolean>(false);
   // Configure marked options
   const markedOptions = {
     breaks,
@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
     isClient = true;
     renderMarkdown();
   });
-  async function renderMarkdown() {
+  async function renderMarkdown(): Promise<any> {
     if (!markdown) {
       renderedHtml = "";
       return;

@@ -94,7 +94,7 @@
     shortcuts.subscribe(value => current = value)();
     return current;
   });
-  let helpOpen = $state(false);
+  let helpOpen = $state<boolean>(false);
   // Subscribe to help panel state
   $effect(() => {
     const unsubscribe = isHelpOpen.subscribe(value => {

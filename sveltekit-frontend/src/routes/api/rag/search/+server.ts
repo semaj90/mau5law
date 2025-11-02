@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';

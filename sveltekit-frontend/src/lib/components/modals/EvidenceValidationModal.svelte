@@ -4,6 +4,7 @@ https: //svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Identifier: 'aiEvent' has already been declared;
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     open?: boolean;
@@ -36,8 +37,8 @@ https://svelte.dev/e/js_parse_error -->
     evidenceType: "",
     analysis: "",
   });
-  let isSubmitting = $state(false);
-  let showCorrections = $state(false);
+  let isSubmitting = $state<boolean>(false);
+  let showCorrections = $state<boolean>(false);
   // Initialize corrections with current AI analysis
   $effect(() => {
     if (evidence && open) {
@@ -64,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
   function removeTag(tagToRemove: string) {
     corrections.tags = corrections.tags.filter((tag) => tag !== tagToRemove);
   }
-  async function submitValidation() {
+  async function submitValidation(): Promise<any> {
     if (!evidence || !validationChoice) return;
     isSubmitting = true;
     try {
@@ -86,8 +87,8 @@ https://svelte.dev/e/js_parse_error -->
         // Reset form
         validationChoice = null;
         feedback = "";
-        showCorrections = $state(false);
-        open = $state(false);
+        showCorrections = false;
+        open = false;
       } else {
         console.error(error);
         alert("Failed to submit validation. Please try again.");
@@ -104,8 +105,8 @@ https://svelte.dev/e/js_parse_error -->
   function closeModal() {
     validationChoice = null;
     feedback = "";
-    showCorrections = $state(false);
-    open = $state(false);
+    showCorrections = false;
+    open = false;
   }
 </script>
 <Dialog.RootPrimitive.Root bind:open>

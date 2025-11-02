@@ -1,7 +1,7 @@
 <script lang="ts">
 
   import { createEventDispatcher } from 'svelte';
-  import type { ButtonVariant, ButtonSize } from '$lib/ui/types/button';
+  import type { ButtonVariant, ButtonSize } from '$lib/ui/types/Button';
 
   // Props
   const { type } = $props<{ type: 'button' | 'submit' | 'reset' }>()

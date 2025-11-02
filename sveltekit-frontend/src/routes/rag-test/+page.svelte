@@ -2,11 +2,11 @@
   import { onMount } from 'svelte';
   import { indexedDBService } from '$lib/services/indexeddb-service';
 
-  let status = $state('idle');
+  let status = $state<string>('idle');
   let docId = 'test-' + Date.now();
   let syncedDoc: any = null;
 
-  async function createPendingDoc() {
+  async function createPendingDoc(): Promise<any> {
     await indexedDBService.cacheDocument({
       id: docId,
       type: 'document',
@@ -17,7 +17,7 @@
     status = 'pending';
   }
 
-  async function check() {
+  async function check(): Promise<any> {
     const doc = await indexedDBService.getDocument(docId);
     if (doc) {
       syncedDoc = doc;

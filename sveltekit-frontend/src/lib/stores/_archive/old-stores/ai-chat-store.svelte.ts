@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * YoRHa AI Chat Store - Persistent Chat Management with Svelte 5 Runes
  * Handles conversation history, user preferences, and Enhanced RAG integration

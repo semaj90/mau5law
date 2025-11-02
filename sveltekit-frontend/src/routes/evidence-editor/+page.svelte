@@ -5,7 +5,7 @@
   import { UiButton as Button } from '$lib/components/ui.svelte';
   import { onMount } from 'svelte';
   let caseId: string | null = $state(null);
-  let readOnly = $state(false);
+  let readOnly = $state<boolean>(false);
   $effect(() => {
     // Get case ID from URL params if provided
     caseId = $page.url.searchParams.get('caseId');

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Unified SIMD JSON Parser - Combines all SIMD backends
 // Nintendo-Style Performance with Legal Document Optimization + Redis Integration
 // Normalize/import paths to relative locations and avoid duplicate/ambiguous named imports

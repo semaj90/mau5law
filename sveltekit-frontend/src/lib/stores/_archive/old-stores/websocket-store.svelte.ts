@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Enhanced WebSocket Real-time Dashboard Integration
  * Provides live updates for the Legal AI Dashboard with Svelte 5 runes

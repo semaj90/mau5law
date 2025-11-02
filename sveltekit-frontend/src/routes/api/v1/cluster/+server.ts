@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types';
 /*
  * Cluster API Endpoint - Service Orchestration & Health

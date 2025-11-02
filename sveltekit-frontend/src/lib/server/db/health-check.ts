@@ -3,7 +3,7 @@
  * Validates actual PostgreSQL database connectivity
  */
 import { pool } from './drizzle.js';
-export async function validateDatabaseOnStartup() {
+export async function validateDatabaseOnStartup(): Promise<any> {
   let client;
   try {
     // Get a client from the pool

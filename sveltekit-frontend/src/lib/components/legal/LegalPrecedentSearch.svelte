@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
     yearTo: null;
   }
   let precedents: LegalPrecedent[] = [];
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = '';
   let totalCount = 0;
   let currentPage = 1;
@@ -52,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
     'Circuit Court',
     'Administrative Court'
   ];
-  async function searchPrecedents() {
+  async function searchPrecedents(): Promise<any> {
     if (!searchFilters.query.trim()) {
       error = 'Please enter a search query';
       return;

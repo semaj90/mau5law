@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * SSR Chat AI Assistant with User Dictionary, QLoRA Cache, and GPU Acceleration
  *

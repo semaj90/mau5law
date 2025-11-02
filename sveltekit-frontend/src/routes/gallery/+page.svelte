@@ -3,6 +3,8 @@ Unified Gallery - Main Gallery Route
 Displays all media: evidence, generated images, documents, uploads
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 	// Svelte 5 runes are auto-imported
 	import { onMount } from 'svelte';
 
@@ -12,11 +14,11 @@ Displays all media: evidence, generated images, documents, uploads
 	// Gallery state
 	let mediaItems = $state<GalleryItem[]>([]);
 	let filteredItems = $state<GalleryItem[]>([]);
-	let isLoading = $state(false);
+	let isLoading = $state<boolean>(false);
 	let error = $state<string | null>(null);
 
 	// Filter and view options
-	let searchQuery = $state('');
+	let searchQuery = $state<string>('');
 	let selectedCategory = $state<'all' | 'evidence' | 'images' | 'documents' | 'ai-generated'>('all');
 	let selectedCaseId = $state<string>('all');
 	let viewMode = $state<'grid' | 'list' | 'masonry'>('grid');
@@ -25,7 +27,7 @@ Displays all media: evidence, generated images, documents, uploads
 
 	// UI state
 	let selectedItem = $state<GalleryItem | null>(null);
-	let showUploadModal = $state(false);
+	let showUploadModal = $state<boolean>(false);
 	let availableCases = $state<any[]>([]);
 
 	// Gallery stats
@@ -112,7 +114,7 @@ Displays all media: evidence, generated images, documents, uploads
 		}
 	});
 
-	async function loadGalleryData() {
+	async function loadGalleryData(): Promise<any> {
 		isLoading = true;
 		error = null;
 		try {
@@ -131,7 +133,7 @@ Displays all media: evidence, generated images, documents, uploads
 		}
 	}
 
-	async function loadCases() {
+	async function loadCases(): Promise<any> {
 		try {
 			const response = await fetch('/api/cases');
 			if (response.ok) {
@@ -192,7 +194,7 @@ Displays all media: evidence, generated images, documents, uploads
 		document.body.removeChild(a);
 	}
 
-	async function deleteItem(item: GalleryItem) {
+	async function deleteItem(item: GalleryItem): Promise<void> {
 		const it = item as GalleryItem;
 		if (!confirm(`Delete "${it.title}"? This action cannot be undone.`)) {
 			return;
@@ -227,7 +229,7 @@ Displays all media: evidence, generated images, documents, uploads
 		}
 	}
 
-	async function handleFileUpload(e: Event) {
+	async function handleFileUpload(e: Event): Promise<any> {
 		const target = e.target as HTMLInputElement | null;
 		const files = target?.files;
 		if (!files || files.length === 0) return;
@@ -237,7 +239,7 @@ Displays all media: evidence, generated images, documents, uploads
 		await loadGalleryData();
 	}
 
-	async function uploadFile(file: File) {
+	async function uploadFile(file: File): Promise<any> {
 		const formData = new FormData();
 		formData.append('file', file);
 		formData.append('category', 'documents'); // Default category

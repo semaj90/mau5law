@@ -7,11 +7,11 @@
     maxFiles?: number;
   }
   let { onFileSelected = (files: File[]) => {}, accept = '*', multiple = false }: Props = $props();
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   let fileInput = $state<HTMLInputElement | null>(null);
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     const dt = e.dataTransfer;
     if (dt?.files && dt.files.length) {
       const files = Array.from(dt.files) as File[];

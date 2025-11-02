@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Button, Card, Dialog, Input, Label, Select, Textarea, Progress } from '$lib/components/ui/enhanced-bits.svelte';
@@ -8,14 +9,14 @@
   // Props
   let { caseId = '', onUploadComplete = () => {} } = $props();
   // State
-  let isUploading = $state(false);
-  let uploadProgress = $state(0);
-  let showUploadDialog = $state(false);
-  let dragOver = $state(false);
-  let selectedFiles = $state([]);
-  let uploadQueue = $state([]);
-  let completedUploads = $state([]);
-  let failedUploads = $state([]);
+  let isUploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
+  let showUploadDialog = $state<boolean>(false);
+  let dragOver = $state<boolean>(false);
+  let selectedFiles = $state<any[]>([]);
+  let uploadQueue = $state<any[]>([]);
+  let completedUploads = $state<any[]>([]);
+  let failedUploads = $state<any[]>([]);
   // Form data
   let evidenceData = $state({
     title: '',
@@ -68,11 +69,11 @@
   }
   function handleDragLeave(event) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
   }
   function handleDrop(event) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const files = Array.from(event.dataTransfer.files);
     addFiles(files);
   }
@@ -118,7 +119,7 @@
     selectedFiles = selectedFiles.map(f => (f.id === fileId ? { ...f, [field]: value } : f));
   }
   // Upload files
-  async function uploadFiles() {
+  async function uploadFiles(): Promise<any> {
     if (selectedFiles.length === 0) return;
     isUploading = true;
     uploadProgress = 0;
@@ -156,11 +157,11 @@
       }
       uploadProgress = ((i + 1) / selectedFiles.length) * 100;
     }
-    isUploading = $state(false);
+    isUploading = false;
     if (completedUploads.length > 0) {
       onUploadComplete(completedUploads);
       selectedFiles = [];
-      showUploadDialog = $state(false);
+      showUploadDialog = false;
     }
   }
   // Clear all files
@@ -194,7 +195,7 @@
       <h3 class="text-lg font-semibold mb-4">Upload Evidence</h3>
       <!-- Upload Area -->
       <div
-        class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors {dragOver
+        class="border-2" border-dashed border-gray-300 rounded-lg p-8 text-center transition-colors {dragOver
           ? 'border-blue-500 bg-blue-50'
           : 'hover:border-gray-400'}"
         ondragover={handleDragOver}

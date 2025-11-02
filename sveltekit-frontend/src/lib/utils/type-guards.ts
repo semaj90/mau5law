@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // @ts-nocheck - Emergency TypeScript error suppression
 // ---
 // TYPE GUARD UTILITIES

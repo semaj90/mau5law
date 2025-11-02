@@ -3,6 +3,9 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Identifier: 'Card' has already been declared -->
 <!-- Real-time Communication Demo Component -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import {
@@ -30,14 +33,14 @@ https://svelte.dev/e/js_parse_error -->
   let status = $state($connectionStatus);
   let messageList = $state<RealtimeMessage[]>([]);
   let streamingList = $state(new Map();
-  let isInitialized = $state(false);
-  let isInitializing = $state(false);
+  let isInitialized = $state<boolean>(false);
+  let isInitializing = $state<boolean>(false);
   // Demo state
-  let testMessage = $state('Hello from Legal AI platform!');
+  let testMessage = $state<string>('Hello from Legal AI platform!');
   let selectedMessageType = $state<RealtimeMessage['type']>('ai_response');
   let selectedPriority = $state<RealtimeMessage['priority']>('normal');
   let streamingRequestType = $state<StreamingResponse['type']>('ai_chat');
-  let streamingData = $state('Analyze this legal document for contract violations...');
+  let streamingData = $state<string>('Analyze this legal document for contract violations...');
   // Performance metrics
   let performanceMetrics = $state({
     messagesPerSecond: 0,
@@ -45,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
     totalMessages: 0,
     connectionUptime: 0,
   });
-  let metricsInterval = $state({}) {
+  let metricsInterval = $state<Record<string, any>>({}) {
     status = $connectionStatus);
     messageList = $messages.slice(-50); // Keep last 50 messages for display
     streamingList = new Map($streamingResponses);
@@ -53,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Initialize real-time communication
    */
-  async function initializeConnection() {
+  async function initializeConnection(): Promise<void> {
     isInitializing = true;
     try {
       const userId = `user_${Date.now()}`;
@@ -91,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Send test message
    */
-  async function sendTestMessage() {
+  async function sendTestMessage(): Promise<any> {
     if (!isInitialized) return;
     try {
       await realtimeComm.sendMessage.toISOString(),
@@ -110,7 +113,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Start streaming request
    */
-  async function startStreamingRequest() {
+  async function startStreamingRequest(): Promise<any> {
     if (!isInitialized) return;
     try {
       const requestId = await realtimeComm.sendStreamingRequest(streamingRequestType, {
@@ -130,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Test connection performance
    */
-  async function testPerformance() {
+  async function testPerformance(): Promise<any> {
     if (!isInitialized) return;
     const startTime = performance.now();
     const messageCount = 100;
@@ -180,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
    */
   function disconnect() {
     realtimeComm.disconnect();
-    isInitialized = $state(false);
+    isInitialized = false;
     if (metricsInterval) {
       clearInterval(metricsInterval);
     }
@@ -454,7 +457,7 @@ Run Performance Test
                 <div class="flex-1">
                   <div class="flex items-center space-x-2 mb-1">
                     <span
-                      class="inline-flex items-center px-2 py-1 rounded text-xs font-medium {getMessageTypeColor(
+                      class="inline-flex" items-center px-2 py-1 rounded text-xs font-medium {getMessageTypeColor(
                         message.type
                       )}">
                       {message.type}

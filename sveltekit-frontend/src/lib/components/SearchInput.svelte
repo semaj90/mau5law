@@ -6,7 +6,7 @@
   let { placeholder = 'Search...', value = $bindable(''), debounceTime = 300, onsearch = undefined } = $props();
   let debounceTimer = $state<number | undefined>(undefined);
   let inputElement = $state<HTMLInputElement | null>(null);
-  let isFocused = $state(false);
+  let isFocused = $state<boolean>(false);
   function triggerSearch() {
     onsearch?.({ query: value });
   }
@@ -29,7 +29,7 @@
     isFocused = true;
   }
   function handleBlur() {
-    isFocused = $state(false);
+    isFocused = false;
   }
   function clearValue() {
     value = '';

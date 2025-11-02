@@ -48,7 +48,7 @@
 	let autoRefresh = true;
 	let refreshRate = 5000; // ms
 	let selectedTier: 'all' | string = 'all';
-	let showOnlyIssues = $state(false);
+	let showOnlyIssues = $state<boolean>(false);
 	// Real-time snapshot holder for coordinator data (populated during fetch)
 	let systemStatusSnapshot: any = {
 		services: new Map<string, any>(),
@@ -236,7 +236,7 @@
 		return `${time}ms`;
 	}
 	// Service actions
-	async function restartService(serviceId: string) {
+	async function restartService(serviceId: string): Promise<any> {
 		try {
 			const response = await fetch('/api/v1/coordinator', {
 				method: 'POST',
@@ -254,7 +254,7 @@
 			console.error(`Failed to restart ${serviceId}:`, error);
 		}
 	}
-	async function startAllServices() {
+	async function startAllServices(): Promise<any> {
 		try {
 			const response = await fetch('/api/v1/coordinator', {
 				method: 'POST',
@@ -269,7 +269,7 @@
 			console.error('Failed to start all services:', error);
 		}
 	}
-	async function forceHealthCheck() {
+	async function forceHealthCheck(): Promise<any> {
 		try {
 			const response = await fetch('/api/v1/coordinator', {
 				method: 'POST',

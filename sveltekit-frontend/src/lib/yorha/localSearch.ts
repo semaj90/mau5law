@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import Fuse from 'fuse.js';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
 export interface LocalLegalDoc {
@@ -10,7 +11,7 @@ export interface LocalLegalDoc {
 }
 let fuse: Fuse<LocalLegalDoc> | null = null;
 let documents: LocalLegalDoc[] = [];
-let loadedFromCache = $state(false);
+let loadedFromCache = $state<boolean>(false);
 const cacheKey = 'yorha-local-doc-index-v1';
 const options: any = {
   keys: [

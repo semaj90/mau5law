@@ -44,12 +44,12 @@
     stats = [],
     tags = [],
   }: Props = $props();
-  let isHovered = $state(false);
-  let isPressed = $state(false);
+  let isHovered = $state<boolean>(false);
+  let isPressed = $state<boolean>(false);
   let animationFrame = $state<number | null>(null);
   // Pixel art animation: state
-  let pixelOffset = $state(0);
-  let glowIntensity = $state(0);
+  let pixelOffset = $state<number>(0);
+  let glowIntensity = $state<number>(0);
   function handleMouseEnter() {
     if (!interactive) return;
     isHovered = true;
@@ -58,8 +58,8 @@
     }
   }
   function handleMouseLeave() {
-    isHovered = $state(false);
-    isPressed = $state(false);
+    isHovered = false;
+    isPressed = false;
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
       animationFrame = null;
@@ -70,7 +70,7 @@
     isPressed = true;
   }
   function handleMouseUp() {
-    isPressed = $state(false);
+    isPressed = false;
   }
   function handleClick() {
     if (interactive && onclick) {

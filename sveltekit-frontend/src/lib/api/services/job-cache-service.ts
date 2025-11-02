@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Specialized Job Cache Service
  * High-level caching functions for job management, queue operations, and progress tracking

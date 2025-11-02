@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Unified Production Pipeline Orchestrator
  *
@@ -123,7 +125,7 @@ export class LegalAIPipeline {
       // 2. Generate embedding
       const cacheKey = `embedding:${this.hashContent(content)}`;
       let embedding: Float32Array;
-      let cached = $state(false);
+      let cached = $state<boolean>(false);
       if (this.config.cacheEnabled) {
         const cachedEmbedding = await this.redis.get<number[]>(cacheKey);
         if (cachedEmbedding) {
@@ -235,7 +237,7 @@ export class LegalAIPipeline {
     try {
       // Check cache for complete RAG response
       const cacheKey = `rag:${this.hashContent(query + JSON.stringify(options))}`;
-      let cacheHit = $state(false);
+      let cacheHit = $state<boolean>(false);
       if (this.config.cacheEnabled) {
         const cached = await this.redis.get<RAGResponse>(cacheKey);
         if (cached) {

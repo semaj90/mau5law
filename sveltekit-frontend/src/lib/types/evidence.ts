@@ -1,3 +1,5 @@
+import type { AIResponse } from '$lib/types';
+import type { Message } from '$lib/types';
 // Evidence Management Types for SvelteKit 2 AI Platform
 // Optimized for PostgreSQL + PGVector + Qdrant + MinIO + Redis
 

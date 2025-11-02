@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import crypto from "crypto";
 import { getOllamaEndpoint } from '$lib/server/ollama'; // Import getOllamaEndpoint
 

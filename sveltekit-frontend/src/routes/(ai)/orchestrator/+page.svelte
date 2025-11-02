@@ -3,6 +3,8 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Badge } from '$lib/components/ui/badge.svelte';
@@ -43,7 +45,7 @@ Showcases the service worker-based AI orchestration system
   // Local demo state (avoid runtime $state magic here for compile stability)
   let selectedModel: LLMModel | undefined;
   let userPrompt = 'Analyze the following legal document for key terms, potential issues, and recommendations...';
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let demoResults: DemoResult[] = [];
 
   // Demo scenarios
@@ -81,7 +83,7 @@ Showcases the service worker-based AI orchestration system
   ];
 
   // Run a demo scenario by creating analysis tasks and submitting them to the aiWorkerManager.
-  async function runDemoScenario(scenario: any) {
+  async function runDemoScenario(scenario: any): Promise<any> {
     if (!selectedModel) return;
     isProcessing = true;
     demoResults = [];
@@ -127,7 +129,7 @@ Showcases the service worker-based AI orchestration system
     }
   }
 
-  async function submitCustomTask() {
+  async function submitCustomTask(): Promise<any> {
     if (!selectedModel || !userPrompt || !userPrompt.trim()) return;
     isProcessing = true;
     let task: AITask | undefined;

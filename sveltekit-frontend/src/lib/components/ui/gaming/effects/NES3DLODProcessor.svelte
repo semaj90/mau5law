@@ -1,5 +1,6 @@
 <!-- 3D NES.css LOD Effects for Document Processing -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
@@ -38,11 +39,11 @@
   let animationFrame: number;
   let particles: Array = [];
   let processingStage = $state<'parsing' | 'analyzing' | 'connecting' | 'synthesizing' | 'complete'>('parsing');
-  let rotationX = $state(0);
-  let rotationY = $state(0);
-  let rotationZ = $state(0);
-  let zoom = $state(1);
-  let pulseIntensity = $state(0);
+  let rotationX = $state<number>(0);
+  let rotationY = $state<number>(0);
+  let rotationZ = $state<number>(0);
+  let zoom = $state<number>(1);
+  let pulseIntensity = $state<number>(0);
   // Adaptive Rendering Engine State
   let performanceMetrics = $state({
     fps: 60,
@@ -365,7 +366,7 @@
     const targetIntensity = stageIntensities[processingStage];
     pulseIntensity += (targetIntensity - pulseIntensity) * 0.05;
   }
-  async function runProcessingSequence() {
+  async function runProcessingSequence(): Promise<any> {
     const stages = [
       { stage: 'parsing', duration 2000 },
       { stage: 'analyzing', duration 3000 },

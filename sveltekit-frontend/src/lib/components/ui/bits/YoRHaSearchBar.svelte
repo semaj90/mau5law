@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { createEventDispatcher } from 'svelte';
   import { fade, fly, scale } from 'svelte/transition';
   import { quintOut, elasticOut } from 'svelte/easing';
@@ -36,9 +37,9 @@
   }: YoRHaSearchBarProps = $props();
   const dispatch = createEventDispatcher();
   let inputElement: HTMLInputElement;
-  let isVisible = $state(true);
-  let isFocused = $state(false);
-  let showSuggestions = $state(false);
+  let isVisible = $state<boolean>(true);
+  let isFocused = $state<boolean>(false);
+  let showSuggestions = $state<boolean>(false);
   let selectedIndex = $state(-1);
   let searchTerms = $state<string[]>([]);
   // Sample legal AI suggestions
@@ -180,8 +181,8 @@
   function handleBlur() {
     // Delay hiding suggestions to allow for clicks
     setTimeout(() => {
-      isFocused = $state(false);
-      showSuggestions = $state(false);
+      isFocused = false;
+      showSuggestions = false;
       selectedIndex = -1;
     }, 200);
     dispatch('blur');
@@ -206,7 +207,7 @@
         }
         break;
       case 'Escape':
-        showSuggestions = $state(false);
+        showSuggestions = false;
         selectedIndex = -1;
         inputElement.blur();
         break;
@@ -220,7 +221,7 @@
   }
   function selectSuggestion(suggestion SearchSuggestion) {
     value = suggestion.text;
-    showSuggestions = $state(false);
+    showSuggestions = false;
     selectedIndex = -1;
     dispatch('suggestionSelect', { suggestion });
     handleSearch();
@@ -241,7 +242,7 @@
   function clearSearch() {
     value = '';
     searchTerms = [];
-    showSuggestions = $state(false);
+    showSuggestions = false;
     selectedIndex = -1;
     inputElement.focus();
     dispatch('clear');
@@ -253,8 +254,8 @@
     }
   });
   // Simulated typing animation: for placeholder
-  let placeholderIndex = $state(0);
-  let showingPlaceholder = $state(true);
+  let placeholderIndex = $state<number>(0);
+  let showingPlaceholder = $state<boolean>(true);
   const fullPlaceholder = placeholder;
   $effect(() => {
     if (!isFocused && value === '') {

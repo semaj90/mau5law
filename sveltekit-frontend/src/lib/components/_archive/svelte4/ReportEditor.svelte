@@ -13,13 +13,13 @@ https://svelte.dev/e/props_duplicate -->
   let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // false
   let editorElement: HTMLDivElement;
   let citationSidebar: HTMLDivElement;
-  let isDirty = $state(false);
-  let isLoading = $state(false);
+  let isDirty = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
   let autoSaveTimer = $state<NodeJS.Timeout | null >(null);
   let lastSaved = $state<Date | null >(null);
-  let wordCount = $state(0);
-  let characterCount = $state(0);
-  let estimatedReadTime = $state(0);
+  let wordCount = $state<number>(0);
+  let characterCount = $state<number>(0);
+  let estimatedReadTime = $state<number>(0);
   // Report state
   let title = report?.title || "Untitled Report";
   let content = report?.content || "";
@@ -28,11 +28,11 @@ https://svelte.dev/e/props_duplicate -->
   let availableCitations = $state<CitationPoint[] >([]);
   // AI suggestions state
   let aiSuggestions = $state<string[] >([]);
-  let showAiPanel = $state(false);
-  let isGeneratingAi = $state(false);
+  let showAiPanel = $state<boolean>(false);
+  let isGeneratingAi = $state<boolean>(false);
   // Selection and cursor state
   let currentSelection = $state<Range | null >(null);
-  let cursorPosition = $state(0);
+  let cursorPosition = $state<number>(0);
   $effect(() => {
     if (browser && editorElement) {
       setupEditor();
@@ -158,7 +158,7 @@ https://svelte.dev/e/props_duplicate -->
     // Show citation picker modal or sidebar
     citationSidebar.style.display = "block";
   }
-  async function loadAvailableCitations() {
+  async function loadAvailableCitations(): Promise<any> {
     try {
       // removed unused response assignment
       if (response.ok) {
@@ -210,7 +210,7 @@ https://svelte.dev/e/props_duplicate -->
       saveReport();
     }, 2000); // Auto-save after 2 seconds of inactivity
   }
-  async function saveReport() {
+  async function saveReport(): Promise<void> {
     if (!isDirty || isLoading) return;
     isLoading = true;
     try {
@@ -237,7 +237,7 @@ https://svelte.dev/e/props_duplicate -->
       if (response.ok) {
         const savedReport = await response.json();
         report = savedReport;
-        isDirty = $state(false);
+        isDirty = false;
         lastSaved = new Date());
         await onSave(savedReport);
       } else {
@@ -258,7 +258,7 @@ https://svelte.dev/e/props_duplicate -->
       await generateAiSuggestions();
     }, 1000);
   }
-  async function generateAiSuggestions() {
+  async function generateAiSuggestions(): Promise<any> {
     if (isGeneratingAi) return;
     isGeneratingAi = true;
     try {

@@ -1,3 +1,6 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // src/lib/types/index.ts
 export interface CanvasState {
   id: string;

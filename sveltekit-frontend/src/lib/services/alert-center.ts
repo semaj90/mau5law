@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Alert Center - Legal AI Platform
  *

@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
 import { cuidSchema } from '$lib/server/z-schemas';
 // Legal AI Form State Machines with XState
 // Advanced state management for legal document processing workflows

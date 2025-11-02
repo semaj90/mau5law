@@ -31,11 +31,11 @@ https://svelte.dev/e/js_parse_error -->
     visible?: boolean;
     context?: string[];
   };
-  let searchQuery = $state('');
-  let selectedCategory = $state('all');
-  let showRemoteOnly = $state(false);
-  let helpModalVisible = $state(false);
-  let remoteStatusVisible = $state(false);
+  let searchQuery = $state<string>('');
+  let selectedCategory = $state<string>('all');
+  let showRemoteOnly = $state<boolean>(false);
+  let helpModalVisible = $state<boolean>(false);
+  let remoteStatusVisible = $state<boolean>(false);
   // Fixed derived logic and typo'ed variables; guard against undefined stores
   let filteredShortcutIds = $derived(() => {
     const list = $shortcuts || [];

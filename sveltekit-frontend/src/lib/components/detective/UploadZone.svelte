@@ -25,14 +25,14 @@
   const allowedExact = ['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','text/plain'];
   // Avoid referencing File in SSR environment (Node) where it's undefined
   const hasFileAPI = typeof File !== 'undefined';
-  let isDragOver = $state(false);
-  let isUploading = $state(false);
-  let uploadProgress = $state(0); // aggregate across batch
+  let isDragOver = $state<boolean>(false);
+  let isUploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0); // aggregate across batch
   let lastError = $state<string | null>(null);
-  let statusMessage = $state(''); // aria-live
+  let statusMessage = $state<string>(''); // aria-live
   let fileInput: HTMLInputElement | null = null;
   let currentXhr: XMLHttpRequest | null = null;
-  let canceled = $state(false);
+  let canceled = $state<boolean>(false);
   function validateFiles(files: FileList) {
     if (!hasFileAPI) return; // skip during SSR hydration stage
     const errs: string[] = [];
@@ -53,7 +53,7 @@
   function handleFileSelect(e: Event) { const target = e.target as HTMLInputElement; if (target.files?.length) handleFileUpload(target.files), }
   function openFileDialog() { fileInput?.click(), }
   function cancelUpload() { canceled = true; currentXhr?.abort(); statusMessage = 'Upload canceled'; if (enableTelemetry) telemetry.emit('upload_canceled', { component: 'UploadZone' }), }
-  async function handleFileUpload(files: FileList) {
+  async function handleFileUpload(files: FileList): Promise<any> {
     lastError = null; canceled = $state(false); statusMessage = '';
     try { validateFiles(files), } catch (err: any) { lastError = err.message; statusMessage = 'Validation failed'; return, }
     isUploading = true; uploadProgress = 0;
@@ -69,7 +69,7 @@
         break;
       }
     }
-    isUploading = $state(false); currentXhr = null;
+    isUploading = false; currentXhr = null;
     if (!lastError && !canceled) { onupload?.(summary); statusMessage = 'All files uploaded', }
   }
   function uploadWithRetry(file: File, index: number, total: number): Promise {
@@ -180,7 +180,7 @@
   </button>
 {:else}
   <div
-    class="upload-zone border-2 border-dashed rounded p-6 text-center transition-colors select-none {isDragOver
+    class="upload-zone" border-2 border-dashed rounded p-6 text-center transition-colors select-none {isDragOver
       ? 'bg-gray-100 border-gray-400'
       : 'border-gray-300'}"
     ondragover={handleDragOver}

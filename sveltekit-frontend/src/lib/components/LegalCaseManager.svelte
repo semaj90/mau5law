@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
@@ -109,7 +110,7 @@
       }
     }, 2000);
   });
-  async function loadFormData() {
+  async function loadFormData(): Promise<any> {
     try {
       const saved = localStorage.getItem(`legal-case-form-${caseId || 'new'}`);
       if (saved) {
@@ -121,7 +122,7 @@
     }
   }
   // Document processing
-  async function processDocuments(files: File[]) {
+  async function processDocuments(files: File[]): Promise<any> {
     isLoading.set(true);
     processingMessage.set('Processing uploaded documents...');
     try {
@@ -164,7 +165,7 @@
     }
   }
   // Evidence extraction
-  async function extractEvidence() {
+  async function extractEvidence(): Promise<any> {
     isLoading.set(true);
     processingMessage.set('Extracting legal entities and evidence...');
     try {
@@ -188,7 +189,7 @@
     }
   }
   // AI analysis
-  async function performAIAnalysis() {
+  async function performAIAnalysis(): Promise<any> {
     isLoading.set(true);
     processingMessage.set('Performing AI case analysis...');
     try {
@@ -223,7 +224,7 @@
     if (step >= 1 && step <= totalSteps) currentStep.set(step);
   }
   // Form submission
-  async function submitForm() {
+  async function submitForm(): Promise<any> {
     isLoading.set(true);
     processingMessage.set('Submitting case for review...');
     try {

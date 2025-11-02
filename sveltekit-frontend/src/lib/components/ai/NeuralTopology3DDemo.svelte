@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
       console.log('✅ Neural Topology Demo ready!');
     })();
   });
-  async function initializeNeuralTopologies() {
+  async function initializeNeuralTopologies(): Promise<void> {
     console.log('🧠 Initializing neural topology systems...');
     neuralTopologyStatus.transformer = 'active';
     console.log('🔤 Transformer: Ollama gemma3-legal model active');
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
     neuralTopologyStatus.rnn = 'active';
     console.log(`🔄 RNN: Sequence prediction active (${rlStats.cacheSize} patterns)`);
   }
-  async function setupDemoEnvironment() {
+  async function setupDemoEnvironment(): Promise<any> {
     const legalAssets = [
       { id: 'contract_3d', type: 'document_stack', complexity: 'medium', context: 'contract' },
       { id: 'evidence_3d', type: 'container', complexity: 'high', context: 'evidence' },
@@ -142,7 +142,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     console.log(`📦 Pre-cached ${legalAssets.length} 3D assets in CHR-ROM`);
   }
-  async function runNeuralTopologyDemo() {
+  async function runNeuralTopologyDemo(): Promise<any> {
     if (isRunningDemo) return;
     isRunningDemo = true;
     demoStage = 'running';
@@ -156,10 +156,10 @@ https://svelte.dev/e/js_parse_error -->
     }
     await generatePerformanceSummary();
     demoStage = 'completed';
-    isRunningDemo = $state(false);
+    isRunningDemo = false;
     console.log('🏁 Neural Topology Demo completed!');
   }
-  async function demonstrateTopologyIntegration(userAction string, step: number) {
+  async function demonstrateTopologyIntegration(userAction string, step: number): Promise<any> {
     const startTime = performance.now();
     console.log(`\n🎯 Step ${step + 1}: Demonstrating: "${userAction}"`);
     // RNN prediction
@@ -236,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
     };
     console.log(`⚡ Step ${step + 1} completed in ${processingTime.toFixed(2)}ms`);
   }
-  async function searchPredictive3DAssets(query: string, context: any) {
+  async function searchPredictive3DAssets(query: string, context: any): Promise<any> {
     try {
       const response = await fetch('/api/brain/3d-assets/search', {
         method: 'POST',
@@ -260,7 +260,7 @@ https://svelte.dev/e/js_parse_error -->
       { assetId: `${context.documentType}_visualization`, predictedUsage: 0.7, assetType: 'animation' }
     ];
   }
-  async function processVisualPatterns(predicted3D: any, userAction string) {
+  async function processVisualPatterns(predicted3D: any, userAction string): Promise<any> {
     const patterns = {
       geometric: predicted3D?.geometryComplexity === 'high' ? 0.9 : 0.6,
       textural: userAction.includes('hover') ? 0.8 : 0.5,
@@ -270,7 +270,7 @@ https://svelte.dev/e/js_parse_error -->
     console.log('👁️ Visual patterns processed:', patterns);
     return patterns;
   }
-  async function generatePerformanceSummary() {
+  async function generatePerformanceSummary(): Promise<any> {
     const totalPredictions = predictions.length;
     const totalAnimations = animations.length;
     const totalSearches = searchResults.reduce((sum: number, s: any) => sum + (s.count || 0), 0);
@@ -306,7 +306,7 @@ https://svelte.dev/e/js_parse_error -->
       cacheHitRatio: 0
     };
     currentActionIndex = 0;
-    isRunningDemo = $state(false);
+    isRunningDemo = false;
   }
   async function checkWebGPUSupport(): Promise<boolean> {
     if (!('gpu' in navigator)) return false;
@@ -331,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err: any) {
       console.warn('NeuralTopology3DDemo: WebGPU init failed', err);
       initError = String(err?.message ?? err);
-      webgpuSupported = $state(false);
+      webgpuSupported = false;
       dispatch('ready', { supported: false, error: initError });
     }
   });

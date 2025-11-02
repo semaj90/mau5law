@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // TensorRT-LLM Client for SvelteKit 2
 // Production client for gemma3-legal:latest inference
 export interface EmbeddingRequest {

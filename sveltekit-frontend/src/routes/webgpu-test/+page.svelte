@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   import { onMount } from 'svelte';
 
   type PerformanceStats = {
@@ -8,7 +9,7 @@
   };
 
   let statusMessage = 'Not checked yet';
-  let isSuccess = $state(false);
+  let isSuccess = $state<boolean>(false);
   let errors: string[] = [];
   let recommendations: string[] = [];
   let performanceStats: PerformanceStats = {
@@ -16,7 +17,7 @@
     webglAvailable: false,
     userAgent: navigator.userAgent
   };
-  let checking = $state(false);
+  let checking = $state<boolean>(false);
 
   function checkWebGL(): boolean {
     try {
@@ -42,12 +43,12 @@
     }
   }
 
-  async function runDiagnostics() {
+  async function runDiagnostics(): Promise<any> {
     checking = true;
     errors = [];
     recommendations = [];
     statusMessage = 'Checking...';
-    isSuccess = $state(false);
+    isSuccess = false;
 
     const webgl = checkWebGL();
     const webgpu = await checkWebGPU();
@@ -69,13 +70,13 @@
       recommendations.push('Update browser or enable experimental features for WebGPU.');
     } else {
       statusMessage = 'No GPU graphics API detected';
-      isSuccess = $state(false);
+      isSuccess = false;
       errors.push('No WebGL or WebGPU support found.');
       recommendations.push('Ensure hardware acceleration is enabled in your browser.');
       recommendations.push('Try a recent Chrome/Edge/Firefox build that supports WebGPU.');
     }
 
-    checking = $state(false);
+    checking = false;
   }
 
   onMount(() => {

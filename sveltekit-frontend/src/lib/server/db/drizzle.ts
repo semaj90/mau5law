@@ -14,7 +14,7 @@ import { eq } from './utils.js';
 const _CFG: any = (typeof globalThis !== 'undefined' && (globalThis as any)._CFG) || undefined;
 // Lazy-load project's cache/redis helper at runtime.
 // Returns undefined when the module cannot be found or fails to import.
-let _cacheInitialized = $state(false);
+let _cacheInitialized = $state<boolean>(false);
 let _cache: any = undefined;
 async function getCache(): Promise<any | undefined> {
   // simple memoization to avoid repeated dynamic imports
@@ -96,7 +96,7 @@ export async function storeEmbedding(
   vectorColumn: { name?: string } | unknown,
   embedding: number[],
   metadata: Record<string, unknown> = {}
-) {
+): Promise<any> {
   try {
     await (db as any)
       .update(table as any)
@@ -140,7 +140,7 @@ function makeMinioClient(): MinioClient {
     secretKey,
   });
 }
-export async function fetchDocumentFromMinIO(bucket: string, key: string) {
+export async function fetchDocumentFromMinIO(bucket: string, key: string): Promise<Response> {
   try {
     const client = makeMinioClient();
     const stream = await client.getObject(bucket, key);

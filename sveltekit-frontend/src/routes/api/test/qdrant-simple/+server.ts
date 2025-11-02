@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js'
 // Simple Qdrant Service Test API
 // Basic test without Redis dependencies

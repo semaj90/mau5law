@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // CrewAI Legal Team Integration
 // Orchestrated multi-agent workflows for legal case management
 export interface CrewMember {

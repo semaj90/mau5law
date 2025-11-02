@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
   import { Dialog } from '$lib/components/ui/MeltDialog.svelte';
@@ -81,7 +83,7 @@
   let passwordStrength = $derived(() => {
     const password = formData.password;
     if (!password) return 0;
-  let strength = $state(0);
+  let strength = $state<number>(0);
     if (password.length >= 8) strength += 25;
     if (/[a-z]/.test(password)) strength += 25;
     if (/[A-Z]/.test(password)) strength += 25;
@@ -90,7 +92,7 @@
     return Math.min(strength, 100);
   });
   // Real-time email validation
-  async function checkEmailExists() {
+  async function checkEmailExists(): Promise<any> {
     if (!validation.hasValidEmail) return;
     try {
       const response = await fetch('/api/auth/check-email', {
@@ -105,7 +107,7 @@
     }
   }
   // Enhanced form submission with comprehensive security
-  async function handleSubmit(_event: Event) {
+  async function handleSubmit(_event: Event): Promise<any> {
     const form = event.target as HTMLFormElement;
     formState.loading = true;
     formState.error = '';
@@ -154,7 +156,7 @@
         // Close dialog after delay
         setTimeout(() => {
           resetForm();
-          open = $state(false);
+          open = false;
           onSuccess?.((result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).user);
         }, mode === 'register' && (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).requiresVerification ? 3000 : 1500);
       } else {
@@ -178,7 +180,7 @@
       return 'unknown';
     }
   }
-  async function logAuthEvent(type: 'success' | 'failed', context: any, result: any) {
+  async function logAuthEvent(type: 'success' | 'failed', context: any, result: any): Promise<any> {
     try {
       await mcpGPUOrchestrator.processLegalDocument(
         `Authentication ${type}: ${mode} for ${formData.email}`,
@@ -223,7 +225,7 @@
     formData.lastName = '';
     formData.acceptTerms = $state(false);
   }
-  async function handleGuestLogin() {
+  async function handleGuestLogin(): Promise<any> {
     if (!allowGuestMode) return;
     formState.loading = true;
     try {
@@ -234,7 +236,7 @@
       const result = await (response as { json?: any; ok?: any }).json();
       if ((response as { json?: any; ok?: any }).ok) {
         onSuccess?.((result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).user);
-        open = $state(false);
+        open = false;
       }
     } catch (error) {
       console.error('Guest login failed:', error);

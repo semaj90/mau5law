@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Dropdown } from './Dropdown.svelte';
   import { Checkbox } from './Checkbox.svelte';
@@ -12,10 +13,10 @@
     { value: 'corporate', label: 'Corporate Law' },
   ];
   // Component state
-  let selectedCaseType = $state('');
-  let acceptTerms = $state(false);
-  let searchQuery = $state('');
-  let urgentCaseOnly = $state(false);
+  let selectedCaseType = $state<string>('');
+  let acceptTerms = $state<boolean>(false);
+  let searchQuery = $state<string>('');
+  let urgentCaseOnly = $state<boolean>(false);
   // Event handlers
   function handleSearch(_event: CustomEvent<string>) {
     console.log('Search query:', e(vent as CustomEvent).detail);

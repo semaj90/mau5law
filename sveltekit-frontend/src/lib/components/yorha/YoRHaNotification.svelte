@@ -33,8 +33,8 @@
     position = 'top-right',
     showProgress = true
   : any } = $props();
-  let visible = $state(true);
-  let progress = $state(100);
+  let visible = $state<boolean>(true);
+  let progress = $state<number>(100);
   let progressInterval: NodeJS.Timeout;
   let autoCloseTimeout: NodeJS.Timeout;
   let notificationElement = $state<HTMLDivElement | null>(null);
@@ -58,7 +58,7 @@
     }
   });
   function closeNotification() {
-    visible = $state(false);
+    visible = false;
     setTimeout(() => {
       // ondispatch removed;
     }, 300);

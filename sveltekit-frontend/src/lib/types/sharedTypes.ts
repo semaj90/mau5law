@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Comprehensive Shared TypeScript Types for Legal AI Platform
  * Includes: HMM, LangExtract, Redis contextual understanding

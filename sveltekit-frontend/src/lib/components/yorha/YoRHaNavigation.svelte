@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   }>();
   // Navigation state
   let expandedSections = $state(new Set(['main', 'demo', 'admin']);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let filteredRoutes = $state(routes);
   let hoveredRoute = $state<string | null>(null);
   // Organize routes into sections
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="search-results p-2">
         {#each Array.isArray(filteredRoutes) ? filteredRoutes : [] as route}
           <button
-            class="nes-nav-item nes-legal-priority-medium yorha-3d-button w-full text-left {isRouteActive(route.route)
+            class="nes-nav-item" nes-legal-priority-medium yorha-3d-button w-full text-left {isRouteActive(route.route)
               ? 'nes-legal-priority-high neural-sprite-active'
               : ''}"
             onclick={() => navigateToRoute(route.route)}
@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
               </div>
               {#if !collapsed}
                 <span
-                  class="text-yorha-muted transition-transform duration-200 {expandedSections.has(sectionId)
+                  class="text-yorha-muted" transition-transform duration-200 {expandedSections.has(sectionId)
                     ? 'rotate-90'
                     : ''}"
                 >
@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="section-routes ml-2 mt-1">
                 {#each Array.isArray(sectionRoutes) ? sectionRoutes : [] as route}
                   <button
-                    class="nav-item w-full text-left p-3 mb-1 rounded border border-transparent hover:border-yorha-accent-warm/50 hover:bg-yorha-accent-warm/10 transition-all duration-200 {isRouteActive(
+                    class="nav-item" w-full text-left p-3 mb-1 rounded border border-transparent hover:border-yorha-accent-warm/50 hover:bg-yorha-accent-warm/10 transition-all duration-200 {isRouteActive(
                       route.route
                     )
                       ? 'active bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-accent-warm'

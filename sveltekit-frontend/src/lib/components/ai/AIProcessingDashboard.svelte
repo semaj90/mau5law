@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- AI Processing Dashboard - Integration Demo -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Progress } from 'bits-ui';
@@ -22,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
   } = { totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
 
   let selectedProvider: LLMProvider | null = null;
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let processingResults: AITaskResult[] = [];
   let testInput = "Analyze this legal document for key compliance issues and regulatory requirements.";
 
@@ -101,11 +103,11 @@ https://svelte.dev/e/js_parse_error -->
           }
         };
         processingResults = [mockResult, ...processingResults].slice(0, 10); // Keep last 10
-        isProcessing = $state(false);
+        isProcessing = false;
       }, Math.random() * 3000 + 1000);
     } catch (error) {
       console.error('Task processing failed:', error);
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   };
 
@@ -143,10 +145,10 @@ https://svelte.dev/e/js_parse_error -->
         }));
       }
       processingResults = [...results.reverse(), ...processingResults].slice(0, 10);
-      isProcessing = $state(false);
+      isProcessing = false;
     } catch (error) {
       console.error('Parallel processing failed:', error);
-      isProcessing = $state(false);
+      isProcessing = false;
     }
   };
 

@@ -253,7 +253,7 @@ export class WebGPUTextureStreamer {
       }
       // Convert to ArrayBuffer and compress texture if enabled
       let finalData = toArrayBuffer(data);
-      let compressed = $state(false);
+      let compressed = $state<boolean>(false);
       if (compress && this.compressionWorker) {
         finalData = await this.compressTexture(finalData, width, height, legalContext);
         compressed = true;

@@ -300,7 +300,7 @@ export class AISuggestionsGRPCClient {
 
   private async *handleStreamingResponse(eventSource: EventSource): AsyncGenerator<SuggestionResponse> {
     const queue: SuggestionResponse[] = [];
-    let closed = $state(false);
+    let closed = $state<boolean>(false);
 
     eventSource.onmessage = (e: MessageEvent) => {
       try {

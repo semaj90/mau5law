@@ -1,5 +1,6 @@
 <!-- YoRHa Terminal/Console Component -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   interface TerminalProps {
@@ -29,11 +30,11 @@
     "Type 'help' for available commands",
     '',
   ]);
-  let currentCommand = $state('');
+  let currentCommand = $state<string>('');
   let commandHistory: string[] = $state([]);
   let historyIndex = $state(-1);
-  let isProcessing = $state(false);
-  let cursor = $state(true);
+  let isProcessing = $state<boolean>(false);
+  let cursor = $state<boolean>(true);
   $effect(() => {
     // Focus input when terminal is clicked
     terminalRef?.addEventListener('click', () => {
@@ -114,7 +115,7 @@
     isProcessing = true;
     setTimeout(() => {
       processCommand(cmd);
-      isProcessing = $state(false);
+      isProcessing = false;
       currentCommand = '';
       scrollToBottom();
     }, 100);

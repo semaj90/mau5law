@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // @ts-nocheck
 // Production PostgreSQL schema with pgvector for vector search
 import { createId } from '@paralleldrive/cuid2';

@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // src/lib/services/__tests__/setup.ts
 import { beforeEach, vi } from 'vitest';
 import type { LegalAIServiceMap } from '../types.js';

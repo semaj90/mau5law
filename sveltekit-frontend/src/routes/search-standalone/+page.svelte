@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import SearchBox from '$lib/components/ui/SearchBox.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
@@ -22,7 +23,7 @@
 
   let searchResults = $state<VectorResult[]>([]); // Use VectorResult type
   let selectedDocument = $state<VectorResult | null>(null); // Use VectorResult type
-  let isAnalyzing = $state(false);
+  let isAnalyzing = $state<boolean>(false);
 
   const handleSearchResults = (results: VectorResult[]) => { // Use VectorResult type
     searchResults = results; // Corrected typo: result -> results

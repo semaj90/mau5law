@@ -40,10 +40,10 @@
     onExport,
     class: className = '';
   }: DataTableProps = $props();
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let sortColumn = $state<string | null>(null);
   let sortDirection = $state<'asc' | 'desc'>('asc');
-  let currentPage = $state(0);
+  let currentPage = $state<number>(0);
   let selectedRows = $state<Set<number>(0)>(new Set());
   // Filter and sort data
   let filteredData = $derived(() => {

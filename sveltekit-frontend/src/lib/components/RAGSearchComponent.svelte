@@ -4,6 +4,9 @@
   Enhanced with bits-ui professional components
 -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { unifiedServiceRegistry } from '$lib/services/unified-service-registry';
@@ -66,14 +69,14 @@
     const interval = setInterval(loadSystemStatus, 10000);
     return () => clearInterval(interval);
   });
-  async function loadSystemStatus() {
+  async function loadSystemStatus(): Promise<any> {
     try {
       systemStatus = await unifiedServiceRegistry.getSystemStatus();
     } catch (error) {
       console.error('Failed to load system status:', error);
     }
   }
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim() || isSearching) return;
     isSearching = true;
     errorMessage = null;
@@ -142,7 +145,7 @@
       isSearching = false;
     }
   }
-  async function ingestDocument() {
+  async function ingestDocument(): Promise<any> {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.txt,.pdf,.doc,.docx';
@@ -209,7 +212,7 @@
     {#if systemStatus}
       <div class="flex items-center gap-2 text-sm">
         <div
-          class="w-3 h-3 rounded-full {systemStatus.healthScore > 80
+          class="w-3" h-3 rounded-full {systemStatus.healthScore > 80
             ? 'bg-green-500'
             : systemStatus.healthScore > 60
               ? 'bg-yellow-500'

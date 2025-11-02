@@ -22,10 +22,10 @@
   }>();
   // Optional callback prop for consumers; keep typed shape for consistent usage
   let isAuthenticated = $state(citationsManager.isAuthenticated());
-  let isSaved = $state(false);
-  let isSaving = $state(false);
+  let isSaved = $state<boolean>(false);
+  let isSaving = $state<boolean>(false);
   let collections = $state<CitationCollection[]>([]);
-  let showCollectionSelector = $state(false);
+  let showCollectionSelector = $state<boolean>(false);
   // Check if citation is already saved
   $effect(() => {
     if (isAuthenticated) {
@@ -42,11 +42,11 @@
       isSaved = savedCitations.some(c => c.id === citation.id);
       collections = citationsManager.getCollections();
     } else {
-      isSaved = $state(false);
+      isSaved = false;
       collections = [];
     }
   });
-  async function handleSave() {
+  async function handleSave(): Promise<void> {
     if (!isAuthenticated) {
       ondispatch?.({
         citation,
@@ -75,7 +75,7 @@
       isSaving = false;
     }
   }
-  async function handleRemove() {
+  async function handleRemove(): Promise<any> {
     if (!isAuthenticated) return;
     isSaving = true;
     try {
@@ -93,7 +93,7 @@
       isSaving = false;
     }
   }
-  async function handleSaveToCollection(collectionId: string) {
+  async function handleSaveToCollection(collectionId: string): Promise<void> {
     if (!isAuthenticated) return;
     try {
       // First save the citation if not already saved
@@ -104,7 +104,7 @@
         // Just add to collection
         await citationsManager.addCitationToCollection(collectionId, citation.id);
       }
-      showCollectionSelector = $state(false);
+      showCollectionSelector = false;
       ondispatch?.({ citation, success: true });
     } catch (error) {
       ondispatch?.({

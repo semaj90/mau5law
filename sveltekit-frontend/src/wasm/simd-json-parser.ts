@@ -24,7 +24,7 @@ export class SIMDStringOps {
       let match = true;
       for (let j = 0; j < patternLen; j++) {
         if (text[i + j] !== pattern[j]) {
-          match = $state(false);
+          match = false;
           break;
         }
       }

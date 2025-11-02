@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Button, Card, Input } from '$lib/components/ui/enhanced-bits.svelte';
   import { onMount } from 'svelte';
@@ -19,7 +20,7 @@
   // replace server-provided data usage with local state that can be refreshed
   let cases: Case[] = data.cases ?? [];
 
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
 
   // make filteredCases a reactive derived value so it updates correctly
   let filteredCases = $derived(() => {
@@ -41,7 +42,7 @@
     }
   });
 
-  async function runAnalysis(caseId: string) {
+  async function runAnalysis(caseId: string): Promise<any> {
     try {
       const res = await fetch(`/api/cases/${caseId}`, {
         method: 'POST',
@@ -57,7 +58,7 @@
     }
   }
 
-  async function generateReport(caseId: string) {
+  async function generateReport(caseId: string): Promise<any> {
     try {
       const res = await fetch(`/api/cases/${caseId}`, {
         method: 'POST',
@@ -72,7 +73,7 @@
     }
   }
 
-  async function deleteCase(caseId: string) {
+  async function deleteCase(caseId: string): Promise<void> {
     if (!confirm(`Are you sure you want to delete this case? This action cannot be undone.`)) return;
     try {
       const res = await fetch(`/api/cases/${caseId}`, { method: 'DELETE' });
@@ -86,10 +87,10 @@
 
   // use goto for navigation (avoid using href prop on Button)
   // replace on:click with onclick (component expects onclick prop in this codebase)
-  async function openEvidenceBoard(caseId: string) {
+  async function openEvidenceBoard(caseId: string): Promise<any> {
     await goto(`/evidenceboard?case=${caseId}`);
   }
-  async function openDetails(caseId: string) {
+  async function openDetails(caseId: string): Promise<any> {
     await goto(`/system-dashboard/cases/${caseId}`);
   }
 </script>

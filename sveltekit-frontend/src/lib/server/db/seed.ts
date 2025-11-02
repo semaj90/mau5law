@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { db, pool } from './drizzle';
 import { users, cases, evidence } from './schema';
 import bcrypt from 'bcryptjs';
@@ -8,7 +9,7 @@ const sampleEmbeddings = {
   legal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.2),
   criminal: Array.from({ length: 768 }, () => Math.random() * 0.1 + 0.3),
 };
-async function seed() {
+async function seed(): Promise<any> {
   console.log('[seed] Starting database seed...');
   try {
     console.log('[seed] Creating or refreshing demo users...');

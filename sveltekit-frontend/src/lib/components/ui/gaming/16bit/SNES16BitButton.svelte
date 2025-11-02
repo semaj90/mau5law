@@ -59,8 +59,8 @@
     onFocus = undefined,
   }: Props = $props();
   // State
-  let isPressed = $state(false);
-  let isHovered = $state(false);
+  let isPressed = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
   let buttonElement = $state<HTMLButtonElement | null>(null);
   const handleClick = async () => {
     if (disabled || loading) return;
@@ -69,7 +69,7 @@
       await retroAudio.playSNESButtonClick({ volume: 0.3, harmonics: true });
     }
     setTimeout(() => {
-      isPressed = $state(false);
+      isPressed = false;
     }, 120);
     // call only if a function was provided to avoid TS: "not callable" error
     if (typeof onClick === 'function') onClick();
@@ -81,7 +81,7 @@
     if (typeof onHover === 'function') onHover();
   };
   const handleUnhover = () => {
-    isHovered = $state(false);
+    isHovered = false;
   };
   const handleFocus = () => {
     if (disabled) return;
@@ -99,7 +99,7 @@
   );
   const mode7Transform = $derived(getMode7Transform(isPressed, isHovered, enableMode7));
 </script>
-<div class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7
+<div class="snes-16bit-button" {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7
     ? 'mode7'
     : ''} {plasmaEffect ? 'plasma' : ''}">
   <BitsButton bind:el={buttonElement}

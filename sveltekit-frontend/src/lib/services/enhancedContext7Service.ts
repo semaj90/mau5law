@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import type { LegalEntities } from './legalRAGEngine.js';
 /**
  * Enhanced Context7 Service with Legal AI Integration

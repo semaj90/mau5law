@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Complete Legal AI Case Workflow Demo
  *
@@ -149,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     );
   }
 };
-async function createLegalCase(data: any) {
+async function createLegalCase(data: any): Promise<any> {
   console.log('🏛️ Step 1: Creating legal case...');
   // Generate embeddings for case title and description
   const titleEmbeddingRaw = (await embedText(data.title)) as EmbeddingResponse | undefined;
@@ -209,7 +210,7 @@ async function createLegalCase(data: any) {
     nextStep: 'Upload evidence files using the drag-drop canvas',
   });
 }
-async function uploadEvidenceToCase(data: any) {
+async function uploadEvidenceToCase(data: any): Promise<any> {
   console.log('📄 Step 2: Processing evidence upload...');
   const { caseId, files, canvasPositions } = data;
   const results = [];
@@ -265,7 +266,7 @@ async function uploadEvidenceToCase(data: any) {
   });
 }
 
-async function updateCanvasPositions(data: UpdateCanvasPositionsPayload) {
+async function updateCanvasPositions(data: UpdateCanvasPositionsPayload): Promise<any> {
   console.log('🎨 Step 3: Updating canvas positions...');
   const { caseId, evidencePositions, userId } = data;
 
@@ -356,7 +357,7 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload) {
     nextStep: 'Generate timeline from evidence and activities',
   });
 }
-async function generateTimeline(data: any) {
+async function generateTimeline(data: any): Promise<any> {
   console.log('⏱️ Step 4: Generating case timeline...');
   const { caseId } = data;
   // Ensure documents table exists before attempting to read processed evidence
@@ -446,7 +447,7 @@ async function generateTimeline(data: any) {
     nextStep: 'Chat with case using RAG to get insights',
   });
 }
-async function chatWithCase(data: ChatWithCasePayload) {
+async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   // Validate input
   const { caseId, query, topK = 5 } = data || {};
   if (!caseId || !query) {

@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request, url: _url }) => {
     );
     try {
       // Perform vector similarity search if enabled
-      let similar_documents = [];
+      let similar_documents: any[] = [];
       if (use_vector_search) {
         try {
           // Generate embedding for the prompt (simplified - in production use proper embedding model)

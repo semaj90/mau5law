@@ -384,7 +384,7 @@ export interface ThemeContext {
 }
 export function createThemeContext(initialSystem: DesignSystem = NESDesignSystem): ThemeContext {
   let currentSystem = initialSystem;
-  let isDarkMode = $state(false);
+  let isDarkMode = $state<boolean>(false);
   return {
     designSystem: currentSystem,
     isDarkMode,

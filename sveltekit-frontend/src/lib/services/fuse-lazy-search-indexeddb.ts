@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Fuse.js Lazy Search with IndexedDB Integration
  * High-performance keyword and embedding search with persistence

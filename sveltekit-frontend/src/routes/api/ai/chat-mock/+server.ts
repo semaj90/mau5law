@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * 🎮 NES-STYLE AI CHAT + RAG ENDPOINT - CHR_ROM Pattern-Based Retrieval
  *

@@ -286,7 +286,7 @@ class SIMDJSONCache {
       }
     }
     let result: any;
-    let usedSIMD = $state(false);
+    let usedSIMD = $state<boolean>(false);
     try {
       if (this.simdLoaded && this.simdModule) {
         // Use SIMD JSON parser
@@ -334,7 +334,7 @@ class SIMDJSONCache {
       }
     }
     let result: string;
-    let usedSIMD = $state(false);
+    let usedSIMD = $state<boolean>(false);
     try {
       if (this.simdLoaded && this.simdModule) {
         result = this.simdModule.stringify(obj);

@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { writable } from 'svelte/store';
 export interface Notification {
   id: string;

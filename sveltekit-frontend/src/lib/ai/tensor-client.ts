@@ -3,7 +3,7 @@
 // Inputs: text string; options { simdParse?: boolean; gpuTile?: boolean }
 // Output: { embedding|tensor: number[]; tensorMeta?: any; gpuMeta?: any }
 let __gpuAccelerator: any | null = null;
-async function runGpuTile(embedding: number[]) {
+async function runGpuTile(embedding: number[]): Promise<any> {
   try {
     // Lazy import WebGPU accelerator and initialize once
     if (!__gpuAccelerator) {
@@ -37,7 +37,7 @@ async function runGpuTile(embedding: number[]) {
     return { op: 'simdGpuTiling', error: e?.message || String(e) };
   }
 }
-export async function embedText(text: string, opts?: { simdParse?: boolean; gpuTile?: boolean }) {
+export async function embedText(text: string, opts?: { simdParse?: boolean; gpuTile?: boolean }): Promise<any> {
   const res = await fetch('/api/ai/tensor', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -1,7 +1,7 @@
 // Lightweight fast JSON parsing helpers with optional SIMD addon support.
 // Non-breaking: falls back to JSON.parse when addon isn't available.
 let simdParser: { parse: (s: string) => any } | null = null;
-async function ensureSimd() {
+async function ensureSimd(): Promise<any> {
   if (simdParser !== null) return simdParser;
   const enable = process.env.USE_SIMDJSON_NODE === '1' || process.env.USE_JSON_FAST === '1';
   if (!enable) {

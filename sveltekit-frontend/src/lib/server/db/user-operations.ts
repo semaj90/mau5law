@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * User Management Database Operations
  * Complete CRUD with PostgreSQL + pgvector + Drizzle ORM

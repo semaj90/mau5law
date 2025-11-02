@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import { db } from '$lib/server/db';
 import { evidence, vectorMetadata, embeddingCache } from '$lib/server/db/schema-postgres-enhanced';
 import { ollamaService as originalOllamaService } from './ollamaService.js';

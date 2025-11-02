@@ -12,6 +12,8 @@ https://svelte.dev/e/js_parse_error -->
   - Legal knowledge base integration
 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   const { caseId: string | null = null, caseData: Case | null = null, detectiveMode = false, readonly = false, height = '600px' } = $props();
   import { onMount,  , tick  } from "svelte";
@@ -34,17 +36,17 @@ https://svelte.dev/e/js_parse_error -->
   }
   // State
   let messages = writable<ChatMessage[]>([]);
-  let currentMessage = $state('');
-  let isLoading = $state(false);
-  let isStreaming = $state(false);
+  let currentMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  let isStreaming = $state<boolean>(false);
   let conversationId = $state(`conv_${Date.now()}_${Math.random().toString().slice(2)}`);
-  let webAssemblyMode = $state(false);
-  let ollamaConnected = $state(false);
+  let webAssemblyMode = $state<boolean>(false);
+  let ollamaConnected = $state<boolean>(false);
   // Chat settings
-  let selectedModel = $state('gemma2:7b');
+  let selectedModel = $state<string>('gemma2:7b');
   let temperature = $state(0.7);
-  let useVectorSearch = $state(true);
-  let maxTokens = $state(2048);
+  let useVectorSearch = $state<boolean>(true);
+  let maxTokens = $state<number>(2048);
   // Available models
   const availableModels = [
     { value: 'gemma2:7b', label: 'Gemma 2 7B (Recommended)', description: 'Fast, accurate legal reasoning' },
@@ -94,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
       return ollamaConnected;
     } catch (error) {
       console.warn('Ollama connection check failed:', error);
-      ollamaConnected = $state(false);
+      ollamaConnected = false;
       webAssemblyMode = true;
       return false;
     }
@@ -175,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
     return messag;
   }
   // Send message
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isLoading) return;
     const userMessage: ChatMessage = {
       id: `user_${Date.now()}`,
@@ -196,7 +198,7 @@ https://svelte.dev/e/js_parse_error -->
     await processAIResponse(messageText);
   }
   // Process AI response
-  async function processAIResponse(userMessage: string) {
+  async function processAIResponse(userMessage: string): Promise<any> {
     isLoading = true;
     isStreaming = true;
     // Create assistant message for streaming
@@ -306,7 +308,7 @@ https://svelte.dev/e/js_parse_error -->
       });
     } finally {
       isLoading = false;
-      isStreaming = $state(false);
+      isStreaming = false;
       await tick();
       scrollToBottom();
     }

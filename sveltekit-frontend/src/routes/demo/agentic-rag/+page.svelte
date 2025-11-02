@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
   /**
    * 🤖 Agentic RAG Demo
    *
@@ -15,9 +16,9 @@
   import { Bot, Zap, Tool, Database, Search, Upload } from 'lucide-svelte';
 
   // State using Svelte 5 runes
-  let query = $state('');
+  let query = $state<string>('');
   let messages = $state<any[]>([]);
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let availableTools = $state<string[]>([]);
   let selectedDocument = $state<any>(null);
 
@@ -35,7 +36,7 @@
     loadTools();
   });
 
-  async function loadTools() {
+  async function loadTools(): Promise<any> {
     try {
       const response = await fetch('/api/agent/tools');
       const data = await response.json();
@@ -48,7 +49,7 @@
     }
   }
 
-  async function sendQuery() {
+  async function sendQuery(): Promise<any> {
     if (!query.trim() || isProcessing) return;
 
     isProcessing = true;
@@ -215,7 +216,7 @@
               <div class="space-y-2">
                 {#each Array.isArray(message.toolCalls) ? message.toolCalls : [] as toolCall}
                   <div
-                    class="bg-slate-900 p-2 rounded text-xs {toolCall.success
+                    class="bg-slate-900" p-2 rounded text-xs {toolCall.success
                       ? 'border-l-4 border-green-500'
                       : 'border-l-4 border-red-500'}"
                   >

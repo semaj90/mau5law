@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Button from '$lib/components/ui/Button.svelte';
   import { fade, slide } from 'svelte/transition';
@@ -17,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   let { formData = $bindable() }: { formData: FormData } = $props();
   let { allFormData = $bindable() }: { allFormData: any } = $props();
-  let isSubmitting = $state(false);
+  let isSubmitting = $state<boolean>(false);
   let submissionProgress = writable(0);
   let currentSubmissionStep = writable('');
   // Quality assessment criteria
@@ -96,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.reviewed_sections = [...formData.reviewed_sections, sectionId];
     }
   }
-  async function submitCase() {
+  async function submitCase(): Promise<any> {
     if (!formData.completeness_check) {
       alert('Please ensure all required sections are complete before submitting.');
       return;
@@ -185,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="bg-gray-200 rounded-full h-4 mb-4">
         <div
-          class="h-4 rounded-full transition-all duration-1000 {formData.quality_score >= 80
+          class="h-4" rounded-full transition-all duration-1000 {formData.quality_score >= 80
             ? 'bg-green-500'
             : formData.quality_score >= 60
               ? 'bg-yellow-500'
@@ -221,7 +222,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Completeness Check -->
       <div
-        class="mt-4 p-3 rounded-lg {formData.completeness_check
+        class="mt-4" p-3 rounded-lg {formData.completeness_check
           ? 'bg-green-50 border border-green-200'
           : 'bg-red-50 border border-red-200'}"
       >

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import http from "http";
 /**
  * Production Service Registry - Central mapping of all 37 Go binaries

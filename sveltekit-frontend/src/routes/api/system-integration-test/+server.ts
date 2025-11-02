@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Comprehensive System Integration Test API
  * Tests the complete legal AI platform with all integrated services

@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { cuidSchema } from '$lib/server/z-schemas';
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
@@ -120,7 +122,7 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<Respo
       return json({ error: 'Document not found' }, { status: 404 });
     }
     // Check if file exists in MinIO
-    let fileExists = $state(false);
+    let fileExists = $state<boolean>(false);
     let fileSize = 0;
     try {
       const stat = await minioClient.statObject(BUCKET_NAME, document.minioPath);

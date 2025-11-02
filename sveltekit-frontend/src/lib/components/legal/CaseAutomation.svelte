@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from "svelte";
   import { Dropdown } from '$lib/components/ui/Dropdown.svelte';
@@ -24,8 +26,8 @@
   let batchSize: number = $state(50);
   let confidenceThreshold: number = $state(0.85);
   // State management
-  let loadingAutomationTypes = $state(true);
-  let processing = $state(false);
+  let loadingAutomationTypes = $state<boolean>(true);
+  let processing = $state<boolean>(false);
   let automationTypeOptions: { value: string; label: string }[] = $state([]);
   let processingStats = $state({
     documentsProcessed: 0,
@@ -35,7 +37,7 @@
     processingTime: 0
   });
   // Legal automation types with AI capabilities
-  async function fetchAutomationTypes() {
+  async function fetchAutomationTypes(): Promise<Response> {
     await new Promise(resolve => setTimeout(resolve, 500));
     automationTypeOptions = [
       { value: 'folder_watch', label: 'Folder Watch with AI Classification' },
@@ -46,7 +48,7 @@
       { value: 'case_discovery', label: 'Discovery Document Processing' },
       { value: 'contract_analysis', label: 'Contract Analysis Pipeline' }
     ];
-    loadingAutomationTypes = $state(false);
+    loadingAutomationTypes = false;
   }
   // Enhanced source options for legal workflows
   const sourceOptions = [
@@ -123,7 +125,7 @@
       // Reset form
       selectedAutomationType = '';
       selectedSource = '';
-      enableAutoProcessing = $state(false);
+      enableAutoProcessing = false;
       selectedProcessingOptions.clear();
     } catch (error) {
       ondispatch?.(error instanceof Error ? error.message : 'Configuration failed');
@@ -132,7 +134,7 @@
     }
   };
   // Simulate batch document processing with GPU acceleration
-  async function simulateBatchProcessing(config: AutomationConfig) {
+  async function simulateBatchProcessing(config: AutomationConfig): Promise<any> {
     const mockDocuments = generateMockLegalDocuments(config.batchSize);
     processingStats.totalDocuments = mockDocuments.length;
     processingStats.totalBatches = Math.ceil(mockDocuments.length / 10);

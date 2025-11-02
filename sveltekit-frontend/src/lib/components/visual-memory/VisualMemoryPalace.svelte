@@ -1,5 +1,6 @@
 <!-- 🧠 Visual Memory Palace with Glyph Integration -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import NeuralSpriteAutoencoder from '$lib/ai/neural-sprite-autoencoder';
@@ -30,7 +31,7 @@
   let selectedRoom = $state<MemoryPalaceRoom | null>(null);
   let glyphCache = new Map<string, ImageData>();
   let animationFrame: number;
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   // 7-bit compression for glyphs (127:1 ratio)
   const GLYPH_SIZE = 64; // 64x64 pixels
   const LATENT_SIZE = 32; // Compressed to 32 dimensions
@@ -44,7 +45,7 @@
       }
     }
   });
-  async function initializeMemoryPalace() {
+  async function initializeMemoryPalace(): Promise<void> {
     // Initialize neural autoencoder for glyph compression
     autoencoder = new NeuralSpriteAutoencoder(LATENT_SIZE);
     // Initialize WebGPU shaders for efficient rendering
@@ -147,7 +148,7 @@
     documentContent: string,
     documentId: string,
     roomId: string
-  ) {
+  ): Promise<any> {
     isProcessing = true;
     try {
       const glyph = await generateGlyphFromDocument(documentContent, documentId);

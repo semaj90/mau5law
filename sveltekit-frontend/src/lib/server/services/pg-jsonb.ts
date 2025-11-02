@@ -2,11 +2,11 @@ import { db } from '$lib/server/db';
 import { documents } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 
-export async function saveJsonbDocument(id: string, metadata: Record<string, unknown>, embedding: number[]) {
+export async function saveJsonbDocument(id: string, metadata: Record<string, unknown>, embedding: number[]): Promise<void> {
   await db.insert(documents).values({ id, metadata, embedding });
 }
 
-export async function getDocument(id: string) {
+export async function getDocument(id: string): Promise<any> {
   const [doc] = await db.select().from(documents).where(eq(documents.id, id));
   return doc;
 }
@@ -18,7 +18,7 @@ export async function saveJsonbDocument(
   id: string,
   metadata: Record<string, unknown>,
   embedding: number[]
-) {
+): Promise<void> {
   await db.insert(documents).values({
     id,
     metadata,
@@ -26,7 +26,7 @@ export async function saveJsonbDocument(
   });
 }
 
-export async function getDocument(id: string) {
+export async function getDocument(id: string): Promise<any> {
   const [doc] = await db.select().from(documents).where(eq(documents.id, id));
   return doc;
 }

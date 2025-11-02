@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 // In-memory message queue system with Redis/RabbitMQ compatibility
 import { EventEmitter } from 'events';
 interface QueueMessage {

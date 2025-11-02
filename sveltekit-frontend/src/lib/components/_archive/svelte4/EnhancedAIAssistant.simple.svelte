@@ -5,7 +5,7 @@ https://svelte.dev/e/props_duplicate -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Brain, Loader2, Quote, Search, Settings, Trash2 } from 'lucide-svelte';
-  import * as Dialog from 'bits-ui/dialog';
+  import * as Dialog from 'bits-ui/Dialog';
 
   // Replace export lets with a single $props() destructuring for runes mode
   interface Props {
@@ -29,19 +29,19 @@ https://svelte.dev/e/props_duplicate -->
   } = $props() as Props;
 
   // State
-  let query = $state('');
-  let isLoading = $state(false);
+  let query = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let messages = $state<any[]>([]);
-  let showSettings = $state(false);
-  let showCitationDialog = $state(false);
-  let selectedCitation = $state('');
-  let selectedModel = $state('gpt-4');
+  let showSettings = $state<boolean>(false);
+  let showCitationDialog = $state<boolean>(false);
+  let selectedCitation = $state<string>('');
+  let selectedModel = $state<string>('gpt-4');
   let searchThreshold = $state(0.7);
-  let maxResults = $state(5);
+  let maxResults = $state<number>(5);
   let temperature = $state(0.7);
   let enabledSources = $state(['cases', 'statutes', 'regulations', 'secondary']);
   // Mock AI response
-  async function handleSubmit(event: SubmitEvent) {
+  async function handleSubmit(event: SubmitEvent): Promise<any> {
     event.preventDefault();
     if (!query.trim() || isLoading) return;
     isLoading = true;
@@ -75,7 +75,7 @@ https://svelte.dev/e/props_duplicate -->
         ],
       };
       messages = [...messages, aiResponse];
-      isLoading = $state(false);
+      isLoading = false;
     }, 1500);
   }
   function handleReferenceClick(reference: any) {
@@ -84,7 +84,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   function insertCitation() {
     ondispatch?.(selectedCitation);
-    showCitationDialog = $state(false);
+    showCitationDialog = false;
   }
   function clearMessages() {
     messages = [];

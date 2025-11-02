@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Evidence Upload Server Actions
  * Integrates with Superforms + Zod + Rich Evidence Schema

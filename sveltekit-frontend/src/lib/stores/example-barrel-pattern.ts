@@ -13,7 +13,7 @@
 // Example 1: Simple Counter Store
 // ==================================================
 export const counterStore = (() => {
-  let count = $state(0);
+  let count = $state<number>(0);
   let doubled = $derived(count * 2);
 
   return {

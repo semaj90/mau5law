@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import { db, uploads } from '$lib/server/db';

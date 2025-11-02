@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { Document } from '$lib/types';
 // @ts-nocheck
 /**
  * Vector Search and Ranking Service with Nomic-Embed Integration

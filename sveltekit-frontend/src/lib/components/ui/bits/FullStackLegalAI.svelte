@@ -69,12 +69,12 @@ let {
 	onsearch
 }: Props = $props();
 // State using Svelte 5 runes
-let query = $state('');
-let isSearching = $state(false);
+let query = $state<string>('');
+let isSearching = $state<boolean>(false);
 let results = $state<RAGResult[]>([]);
 let serviceStatus = $state<ServiceStatus | null>(null);
 let performance = $state<PerformanceMetrics | null>(null);
-let errorMessage = $state('');
+let errorMessage = $state<string>('');
 let wsConnection = $state<WebSocket | null>(null);
 // GPU metrics for real-time monitoring
 let gpuMetrics = $state({
@@ -94,7 +94,7 @@ await checkServiceHealth();
     })();
   });
 // Check backend service status
-async function checkServiceHealth() {
+async function checkServiceHealth(): Promise<any> {
 	try {
 		const response = await fetch('/api/ai/rl-rag', {
 			method: 'GET',
@@ -140,7 +140,7 @@ function setupRealtimeUpdates() {
 	console.log('Real-time GPU monitoring enabled');
 }
 // Perform full-stack legal AI search
-async function performFullStackSearch() {
+async function performFullStackSearch(): Promise<any> {
 	if (!query.trim()) return;
 	isSearching = true;
 	errorMessage = '';
@@ -191,7 +191,7 @@ async function performFullStackSearch() {
 	}
 }
 // Client-side WebAssembly fallback
-async function tryClientSideFallback() {
+async function tryClientSideFallback(): Promise<any> {
 	try {
 		// This would use the WebAssembly Gemma3-270M client-side model
 		// For now, provide a mock response indicating fallback mode

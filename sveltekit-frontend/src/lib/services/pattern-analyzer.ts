@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Enhanced Pattern Analyzer with Production-Ready Features
  *

@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   const { enableDebugMode } = $props<{ enableDebugMode: boolean }>()
 
   // State
-  let isInitialized = $state(false);
+  let isInitialized = $state<boolean>(false);
   let currentTooltip: HTMLElement | null = null;
   let interactionStats = {
     totalInteractions: 0,
@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
     cleanupSystem();
   });
 
-  async function initializeZeroLatencySystem() {
+  async function initializeZeroLatencySystem(): Promise<void> {
     try {
       if (isInitialized) return;
       if (enableDebugMode) console.log('⚡ Initializing Zero-Latency UI Interaction System...');
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
     element.setAttribute('data-chr-rom-ready', 'true');
   }
 
-  async function handleZeroLatencyInteraction(_event: Event, elementId: string, target: HTMLElement) {
+  async function handleZeroLatencyInteraction(_event: Event, elementId: string, target: HTMLElement): Promise<any> {
     const startTime = performance.now();
     interactionStats.totalInteractions++;
 
@@ -147,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function handleCacheMiss(elementId: string, target: HTMLElement, startTime: number) {
+  async function handleCacheMiss(elementId: string, target: HTMLElement, startTime: number): Promise<any> {
     interactionStats.cacheMisses++;
     try {
       showLoadingTooltip(target);
@@ -258,7 +258,7 @@ https://svelte.dev/e/js_parse_error -->
            null;
   }
 
-  async function storeInCHRROM(patternId: string, pattern: any) {
+  async function storeInCHRROM(patternId: string, pattern: any): Promise<any> {
     try {
       const chrRomPattern = {
         renderableHTML: String(pattern.renderableHTML || ''),
@@ -278,7 +278,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function cacheApiResult(elementId: string, html: string) {
+  async function cacheApiResult(elementId: string, html: string): Promise<any> {
     try {
       const chrRomPattern = {
         renderableHTML: html,

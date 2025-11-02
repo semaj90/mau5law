@@ -20,8 +20,8 @@
   }
   let { open = $bindable(false), personId, onClose  }: Props = $props();
   // Svelte 5 runes for reactive state
-  let loading = $state(false);
-  let foafData = $state(null);
+  let loading = $state<boolean>(false);
+  let foafData = $state<any>(null);
   let error = $state<string | null>(null);
   // Melt-UI dialog builder
   // Melt UI component creation removed - replace with bits-ui declarative components
@@ -51,7 +51,7 @@ if (open && personId && !foafData) {
     })();
   });
   function handleClose() {
-    open = $state(false);
+    open = false;
     onClose?.();
   }
   function getConfidenceColor(confidence: number): string {

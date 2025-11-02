@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Ollama Agent Shell - Real-time Terminal Modal with Streaming Support -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { OllamaAgentShellProps } from '$lib/types/component-props.js';
   import { agentShellMachine } from "$lib/machines/agentShellMachine";
@@ -41,8 +42,8 @@ https://svelte.dev/e/js_parse_error -->
   }
   // State
   let messages: Message[] = $state([]);
-  let input = $state("");
-  let isLoading = $state(false);
+  let input = $state<string>("");
+  let isLoading = $state<boolean>(false);
   let copiedIndex = $state<number | null>(null);
   let terminalElement = $state<HTMLDivElement;
   let inputElement = $state<HTMLTextAreaElement// WebSocket for real-time updates
@@ -94,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
       });
     }
   }
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<any> {
     if (!input.trim() || isLoading) return;
     const userMessage: Message = {
       role: "user",
@@ -152,7 +153,7 @@ https://svelte.dev/e/js_parse_error -->
       messages[messages.length - 1].status = "streaming";
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-  let content = $state("");
+  let content = $state<string>("");
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -235,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
         });
     }
   }
-  async function checkGPUStatus() {
+  async function checkGPUStatus(): Promise<any> {
     if (navigator.gpu) {
       const adapter = await navigator.gpu.requestAdapter();
       messages.push({

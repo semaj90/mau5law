@@ -27,13 +27,13 @@
   let { data, form }: { data: PageData; form: ActionData } = $props();
   // Svelte 5 runes for CUDA streaming state
   let selectedOperation = $state<string>('document_vectorization');
-  let inputText = $state('');
-  let batchSize = $state(10);
-  let useGpu = $state(true);
-  let isStreaming = $state(false);
+  let inputText = $state<string>('');
+  let batchSize = $state<number>(10);
+  let useGpu = $state<boolean>(true);
+  let isStreaming = $state<boolean>(false);
   let currentSession = $state<string | null>(null);
   let streamResults = $state<any[]>([]);
-  let processingProgress = $state(0);
+  let processingProgress = $state<number>(0);
   let liveMetrics = $state((data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).sessionStats);
   let selectedTab = $state<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
   // Real-time metrics update
@@ -47,7 +47,7 @@
     (data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.utilization?.gpu > 50 ? 'text-yellow-600' : 'text-green-600'
   );
   // CUDA streaming functions
-  async function startCudaStream() {
+  async function startCudaStream(): Promise<any> {
     if (!canStream) return;
     isStreaming = true;
     processingProgress = 0;
@@ -69,10 +69,10 @@
       }
     } catch (error) {
       console.error('Failed to start CUDA stream:', error);
-      isStreaming = $state(false);
+      isStreaming = false;
     }
   }
-  async function stopCudaStream() {
+  async function stopCudaStream(): Promise<any> {
     if (!currentSession) return;
     const formData = new FormData();
     formData.append('sessionId', currentSession);
@@ -121,7 +121,7 @@
     metricsInterval = updateInterval;
   }
   function stopStreamingUpdates() {
-    isStreaming = $state(false);
+    isStreaming = false;
     currentSession = null;
     processingProgress = 0;
     if (metricsInterval) {
@@ -129,7 +129,7 @@
       metricsInterval = null;
     }
   }
-  async function processSingleDocument() {
+  async function processSingleDocument(): Promise<any> {
     if (!inputText.trim()) return;
     const startTime = Date.now();
     const formData = new FormData();
@@ -244,7 +244,7 @@
       ] as tab}
         <button
           onclick={() => selectedTab = tab.id}
-          class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
+          class="flex" items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
           {@render tab.icon({ class: "w-4 h-4" })}

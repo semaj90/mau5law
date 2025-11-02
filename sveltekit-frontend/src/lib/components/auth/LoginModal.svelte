@@ -20,7 +20,7 @@
         if (f.valid) {
           toastStore.success('✅ Signed in successfully!');
           onlogin?.();
-          open = $state(false);
+          open = false;
           // Redirect to dashboard after successful login
           setTimeout(() => {
             goto('/dashboard').catch(err => console.error('Navigation error:', err));
@@ -30,7 +30,7 @@
     }
   );
   function closeModal() {
-    open = $state(false);
+    open = false;
   }
 </script>
 <Dialog.Root bind:open>

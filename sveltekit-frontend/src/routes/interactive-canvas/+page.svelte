@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     data: PageData;
@@ -30,12 +31,12 @@ https://svelte.dev/e/js_parse_error -->
   	let caseId = (data as any)?.reportData?.id || (data as any)?.reportId || 'demo-case-' + Date.now();
   	// Canvas state
   	let canvasElement: HTMLCanvasElement;
-  	let canvasWidth = $state(0);
-  	let canvasHeight = $state(0);
-  	let isFullscreen = $state(false);
+  	let canvasWidth = $state<number>(0);
+  	let canvasHeight = $state<number>(0);
+  	let isFullscreen = $state<boolean>(false);
   	// Layout state
   	let mainContainer: HTMLElement;
-  	let sidebarOpen = $state(false);
+  	let sidebarOpen = $state<boolean>(false);
   	$effect(() => {
   		// Initialize canvas dimensions
   		updateCanvasDimensions();
@@ -68,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
   let uploadingFiles = $state( );
   let completedUploads = $state( );
   	// Handle file drops with hash calculation
-  	async function handleFileDrop(_event: DragEvent) {
+  	async function handleFileDrop(_event: DragEvent): Promise<any> {
   		event.preventDefault();
   		const files = event.dataTransfer?.file;
   		if (files && files.length > 0) {
@@ -78,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
   		event.preventDefault();
   }
   	// Process multiple file uploads with hash calculation
-  	async function processFileUploads(files: File[]) {
+  	async function processFileUploads(files: File[]): Promise<any> {
   		for (const file of files) {
   			const fileId = crypto.randomUUID();
   			uploadingFiles[fileId] = {

@@ -104,7 +104,7 @@ export function parseMinioUrl(url: string): { bucket: string; key: string } {
 /**
  * Fetch object from MinIO using minio:// URL
  */
-export async function fetchMinioObject(url: string) {
+export async function fetchMinioObject(url: string): Promise<Response> {
   const { bucket, key } = parseMinioUrl(url);
   try {
     const client = await getS3Client();
@@ -115,7 +115,7 @@ export async function fetchMinioObject(url: string) {
     throw new Error(`Failed to fetch ${url}: ${error}`);
   }
 }
-export async function uploadMinioObject(bucket: string, key: string, file: File, userId: string) {
+export async function uploadMinioObject(bucket: string, key: string, file: File, userId: string): Promise<any> {
 	const buffer = Buffer.from(await file.arrayBuffer());
 	const client = await getS3Client();
 	await client.send(new PutObjectCommand({ Bucket: bucket, Key: `${userId}/${key}`, Body: buffer, ContentType: file.type }));

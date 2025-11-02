@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { Queue } from "bullmq";
 import Redis from "ioredis";
 

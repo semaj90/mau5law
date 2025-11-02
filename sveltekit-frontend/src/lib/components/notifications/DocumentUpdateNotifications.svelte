@@ -4,6 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Document Update Notifications Component -->
 <!-- Shows real-time updates for document re-embedding and re-ranking -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import {
     documentUpdateNotifications,
@@ -28,9 +29,9 @@ https://svelte.dev/e/js_parse_error -->
   // State
   let notifications = $state<UpdateNotification[]>([]);
   let activeUpdates = $state(new Map<string, UpdateNotification>();
-  let connectionStatus = $state("disconnected");
-  let showNotifications = $state(true);
-  let notificationPermissionGranted = $state(false);
+  let connectionStatus = $state<string>("disconnected");
+  let showNotifications = $state<boolean>(true);
+  let notificationPermissionGranted = $state<boolean>(false);
   // Subscribe to notifications store
   let unsubscribe = $state<(() =>(null) => void) | null>(null);
   onload(async () => {[ .. ]
@@ -96,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 <!-- Notification Container -->
 <div
-  class="document-notifications fixed {position === 'top-right'
+  class="document-notifications" fixed {position === 'top-right'
     ? 'top-4 right-4'
     : 'bottom-4 right-4'} z-50 w-96 max-w-sm"
 >
@@ -219,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
                 {#if typedNotification.data.priority}
                   <span
-                    class="inline-block px-2 py-1 text-xs rounded-full {getPriorityColor(
+                    class="inline-block" px-2 py-1 text-xs rounded-full {getPriorityColor(
                       typedNotification.data.priority
                     )}"
                   >

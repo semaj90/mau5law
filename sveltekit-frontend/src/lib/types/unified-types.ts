@@ -1,3 +1,5 @@
+import type { SearchResult } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * Unified Types - Consolidates duplicate type exports across the application
  * Replaces scattered type definitions with single source of truth

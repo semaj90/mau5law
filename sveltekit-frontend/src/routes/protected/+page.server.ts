@@ -1,6 +1,6 @@
 import { requireAuth } from '$lib/server/auth';
 import { error } from '@sveltejs/kit';
-export async function load(event) {
+export async function load(event): Promise<any> {
   try {
     // This will throw an error if user is not authenticated
     const { user, session } = await requireAuth(event);

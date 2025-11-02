@@ -20,9 +20,9 @@
     onclear = undefined as ((_event: CustomEvent<void>) => void) | undefined
   } = $props();
   // Component state
-  let searchInput = $state('');
-  let isSearching = $state(false);
-  let showResults = $state(false);
+  let searchInput = $state<string>('');
+  let isSearching = $state<boolean>(false);
+  let showResults = $state<boolean>(false);
   let results: SearchResult[] = $state([]);
   let suggestions: SearchSuggestion[] = $state([]);
   let selectedCategories = $state(['cases', 'evidence', 'documents']);
@@ -63,7 +63,7 @@
       searchTimeout = setTimeout(() => performSearch(), 300);
     } else {
       results = [];
-      showResults = $state(false);
+      showResults = false;
     }
   });
   // Load recent searches from localStorage and optimize component
@@ -85,7 +85,7 @@
       }
     }
   });
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchInput.trim() || isSearching) return;
     isSearching = true;
     showResults = true;
@@ -239,13 +239,13 @@
     if (onselect) {
       onselect(new CustomEvent('select', { detail: { result } }));
     }
-    showResults = $state(false);
+    showResults = false;
     searchInput = '';
   }
   function clearSearch() {
     searchInput = '';
     results = [];
-    showResults = $state(false);
+    showResults = false;
     if (onclear) {
       onclear(new CustomEvent('clear'));
     }
@@ -302,7 +302,7 @@
         onfocus={() => showResults = true}
         onkeydown={(e) => {
           if (e.key === 'Escape') {
-            showResults = $state(false);
+            showResults = false;
             searchInput = '';
           }
         }}

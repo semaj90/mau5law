@@ -1,20 +1,23 @@
 <!-- Legal AI Embedding & Search Test Component -->
 <script lang="ts">
+import type { SearchResult } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // No onMount or props required for this component
 
   // State management with Svelte 5 runes
-  let embeddingText = $state('Legal contract clause regarding intellectual property rights and patent licensing agreements');
-  let searchQuery = $state('intellectual property patent');
-  let caseId = $state('CASE_2024_001');
-  let searchLimit = $state(5);
-  let embeddingStatus = $state('idle');
+  let embeddingText = $state<string>('Legal contract clause regarding intellectual property rights and patent licensing agreements');
+  let searchQuery = $state<string>('intellectual property patent');
+  let caseId = $state<string>('CASE_2024_001');
+  let searchLimit = $state<number>(5);
+  let embeddingStatus = $state<string>('idle');
   let searchResults = $state<SearchResult[]>([]);
   let searchStats = $state<SearchStats>({ totalDocuments: 0, uniqueCases: 0, avgPayloadLength: 0 });
   let systemHealth = $state<SystemHealth>({ status: 'checking', database: 'checking', ollama: 'checking', embeddings: 0 });
   let cudaStatus = $state<CudaStatus>({ status: 'checking', gpu_model: 'unknown', cuda_cores: 0, memory_gb: 0 });
-  let isLoading = $state(false);
-  let errorMessage = $state('');
+  let isLoading = $state<boolean>(false);
+  let errorMessage = $state<string>('');
   // Prefer public env vars (set PUBLIC_LEGAL_AI_BASE / PUBLIC_CUDA_BASE), fall back to localhost for dev
   const API_BASE = import.meta.env.PUBLIC_LEGAL_AI_BASE || 'http://localhost:8095/api/v1';
   const CUDA_BASE = import.meta.env.PUBLIC_CUDA_BASE || 'http://localhost:8096/api/v1';
@@ -26,7 +29,7 @@ await checkSystemHealth();
     await checkCUDAStatus();
     })();
   });
-  async function checkSystemHealth() {
+  async function checkSystemHealth(): Promise<any> {
     try {
       const res = await fetch(`${API_BASE}/health`);
       if (res.ok) systemHealth = await res.json();
@@ -36,7 +39,7 @@ await checkSystemHealth();
       systemHealth = { status: 'unavailable', database: 'unavailable', ollama: 'unavailable', embeddings: 0 };
     }
   }
-  async function checkCUDAStatus() {
+  async function checkCUDAStatus(): Promise<any> {
     try {
       const res = await fetch(`${CUDA_BASE}/health`);
       if (res.ok) cudaStatus = await res.json();
@@ -46,7 +49,7 @@ await checkSystemHealth();
       cudaStatus = { status: 'unavailable', gpu_model: 'unknown', cuda_cores: 0, memory_gb: 0 };
     }
   }
-  async function loadSearchStats() {
+  async function loadSearchStats(): Promise<any> {
     try {
       const res = await fetch(`${API_BASE}/stats`);
       if (res.ok) {
@@ -63,7 +66,7 @@ await checkSystemHealth();
       searchStats = { totalDocuments: 0, uniqueCases: 0, avgPayloadLength: 0 };
     }
   }
-  async function submitEmbedding() {
+  async function submitEmbedding(): Promise<any> {
     if (!embeddingText.trim()) {
       errorMessage = 'Please enter text to embed';
       return;
@@ -90,7 +93,7 @@ await checkSystemHealth();
       isLoading = false;
     }
   }
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) {
       errorMessage = 'Please enter a search query';
       return;
@@ -112,7 +115,7 @@ await checkSystemHealth();
       isLoading = false;
     }
   }
-  async function performAdvancedSearch() {
+  async function performAdvancedSearch(): Promise<any> {
     if (!searchQuery.trim()) {
       errorMessage = 'Please enter a search query';
       return;
@@ -138,7 +141,7 @@ await checkSystemHealth();
       isLoading = false;
     }
   }
-  async function testCUDAEmbedding() {
+  async function testCUDAEmbedding(): Promise<any> {
     isLoading = true;
     errorMessage = '';
     try {

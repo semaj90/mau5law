@@ -14,11 +14,11 @@
   let loginUnsub: (() => void) | null = null;
   let registerUnsub: (() => void) | null = null;
   function handleLoginSuccess() {
-    showLoginModal = $state(false);
+    showLoginModal = false;
     window.location.href = '/profile';
   }
   function handleRegisterSuccess() {
-    showRegisterModal = $state(false);
+    showRegisterModal = false;
     showLoginModal = true;
   }
   onMount(() => {

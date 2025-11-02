@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -48,23 +50,23 @@ https://svelte.dev/e/js_parse_error -->
   // State management with Svelte 5 runes
   let documents = $state<Document[]>([]);
   let filteredDocuments = $state<Document[]>([]);
-  let loading = $state(true);
-  let uploading = $state(false);
-  let uploadProgress = $state(0);
-  let searchQuery = $state('');
-  let statusFilter = $state('all');
-  let typeFilter = $state('all');
-  let showUploadDialog = $state(false);
-  let showAIAnalysisDialog = $state(false);
+  let loading = $state<boolean>(true);
+  let uploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
+  let searchQuery = $state<string>('');
+  let statusFilter = $state<string>('all');
+  let typeFilter = $state<string>('all');
+  let showUploadDialog = $state<boolean>(false);
+  let showAIAnalysisDialog = $state<boolean>(false);
   let selectedDocument = $state<Document | null>(null);
-  let dragOver = $state(false);
+  let dragOver = $state<boolean>(false);
   // Upload form state
-  let uploadTitle = $state('');
-  let uploadType = $state('other');
+  let uploadTitle = $state<string>('');
+  let uploadType = $state<string>('other');
   let uploadFile = $state<File | null>(null);
-  let uploadCaseId = $state('');
-  let uploadTags = $state('');
-  let enableAIProcessing = $state(true);
+  let uploadCaseId = $state<string>('');
+  let uploadTags = $state<string>('');
+  let enableAIProcessing = $state<boolean>(true);
   // Computed properties
   let documentStats = $derived(() => {
     const total = documents.length;
@@ -86,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
       await loadDocuments();
     })();
   });
-  async function loadDocuments() {
+  async function loadDocuments(): Promise<any> {
     try {
       loading = true;
       // Try real API, fallback to mockDocuments
@@ -222,18 +224,18 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const file = event.dataTransfer?.files?.[0] ?? null;
     if (file) {
       uploadFile = file;
       if (!uploadTitle) uploadTitle = file.name.replace(/\.[^/.]+$/, '');
     }
   }
-  async function uploadDocument() {
+  async function uploadDocument(): Promise<any> {
     if (!uploadFile || !uploadTitle) {
       toast.error('Please provide a file and title');
       return;
@@ -255,7 +257,7 @@ https://svelte.dev/e/js_parse_error -->
       if (response.ok) {
         const result = await response.json();
         toast.success('Document uploaded successfully');
-        showUploadDialog = $state(false);
+        showUploadDialog = false;
         resetUploadForm();
         await loadDocuments();
         if (enableAIProcessing) {
@@ -287,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
   function editDocument(doc: Document) {
     goto(`/legal/documents/${doc.id}/edit`);
   }
-  async function deleteDocument(doc: Document) {
+  async function deleteDocument(doc: Document): Promise<void> {
     if (!confirm('Are you sure you want to delete this document?')) return;
     try {
       const response = await fetch(`/api/legal/documents/${doc.id}`, {
@@ -533,7 +535,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="grid gap-2">
         <Label>Document File *</Label>
         <div
-          class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
+          class="border-2" border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
                  {dragOver ? 'border-primary bg-primary/5' : 'border-muted-foreground/25 hover:border-muted-foreground/50'}
                  {uploadFile ? 'border-green-500 bg-green-50' : ''}"
           ondragover={handleDragOver}

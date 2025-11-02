@@ -28,7 +28,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   let chartComponent: any = $state(null);
   let loadError: Error | null = $state(null);
   // Load chart component when visible
-  async function loadChartComponent() {
+  async function loadChartComponent(): Promise<any> {
     try {
       // Dynamic import based on chart type - replace with your actual chart library
       switch (chartType) {

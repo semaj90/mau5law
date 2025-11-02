@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * src/lib/server/auth.ts
  * Production-Grade Lucia v3 Authentication with SvelteKit 2 + Drizzle ORM

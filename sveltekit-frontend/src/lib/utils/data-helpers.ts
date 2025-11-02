@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Data Management Utilities
  * API integration, caching, validation, and state management helpers

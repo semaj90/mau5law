@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * API Endpoint: Case Outcome Prediction
  * Phase 4 - Predictive Analytics Integration

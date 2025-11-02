@@ -35,7 +35,7 @@
   });
   // Handle close events
   function handleClose() {
-    open = $state(false);
+    open = false;
     onClose?.();
   }
   // Dynamic classes for size

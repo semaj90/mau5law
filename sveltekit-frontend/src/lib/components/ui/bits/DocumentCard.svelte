@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { createEventDispatcher, getContext } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -39,8 +40,8 @@
   const dispatch = createEventDispatcher();
   const themeContext = getContext<any>('theme');
   const currentTheme = themeContext?.resolvedTheme?.() || 'light';
-  let showModal = $state(false);
-  let isHovered = $state(false);
+  let showModal = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
   const fileTypeIcons = {
     pdf: '📄',
     doc: '📝',

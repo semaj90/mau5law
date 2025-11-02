@@ -2,6 +2,9 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   import { afterUpdate, onMount, tick } from "svelte";
   import { elasticOut, quintOut } from "svelte/easing";
   import { writable, type Writable } from "svelte/store";
@@ -66,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
     scrollToBottom();
   });
 
-  async function loadConversationHistory() {
+  async function loadConversationHistory(): Promise<any> {
     try {
       const res = await fetch(`/api/chat?conversationId=${conversationId}&userId=${userId}&limit=50`);
       if (res.ok) {
@@ -108,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
     sendMessage();
   }
 
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isGenerating) return;
 
     const userMessage: Message = {
@@ -193,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function storeMessageEmbedding(content: string, role: "user" | "assistant") {
+  async function storeMessageEmbedding(content: string, role: "user" | "assistant"): Promise<any> {
     try {
       await fetch("/api/embed", {
         method: "POST",
@@ -216,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function closeChat() {
-    open = $state(false);
+    open = false;
     if (onclose) onclose();
   }
 
@@ -292,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
                     class:selected={mode.id === selectedMode}
                     onclick={() => {
                       selectedMode = mode.id;
-                      showModeSelector = $state(false);
+                      showModeSelector = false;
                     }}
                     aria-label="Switch to {mode.label} mode"
                   >

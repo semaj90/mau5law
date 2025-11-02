@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * 🌉 Hybrid RAG + SIMD Pipeline Bridge
  *

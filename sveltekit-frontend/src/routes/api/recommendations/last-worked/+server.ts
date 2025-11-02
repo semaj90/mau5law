@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * 💼 Last Worked On Items API
  * Returns user's recent work activity with time tracking

@@ -21,11 +21,11 @@
   // State (use normal let bindings so the file is valid)
   let canvasContainer: HTMLDivElement | undefined;
   let fabricCanvas: any = null;
-  let fabricLoaded = $state(false);
+  let fabricLoaded = $state<boolean>(false);
   let canvasHistory: string[] = [];
   let historyIndex = -1;
   let zoom = 1;
-  let readonly = $state(false);
+  let readonly = $state<boolean>(false);
   let caseId: string | undefined;
   let evidenceItems: any[] = [];
   let selectedTool = 'select';
@@ -81,7 +81,7 @@
       fabricCanvas.dispose();
     }
   });
-  async function addEvidenceToCanvas(item: any) {
+  async function addEvidenceToCanvas(item: any): Promise<any> {
     if (!fabricCanvas) return;
     try {
       const mod = await import('fabric');
@@ -169,7 +169,7 @@
         fabricCanvas.selection = true;
     }
   }
-  async function addShape(shape: 'rectangle' | 'circle') {
+  async function addShape(shape: 'rectangle' | 'circle'): Promise<any> {
     if (!fabricCanvas) return;
     try {
       const mod = await import('fabric');
@@ -203,7 +203,7 @@
       console.error('Error adding shape:', error);
     }
   }
-  async function addTextBox() {
+  async function addTextBox(): Promise<any> {
     if (!fabricCanvas) return;
     try {
       const mod = await import('fabric');
@@ -290,7 +290,7 @@
       saveCanvasState();
     }
   }
-  async function saveCanvas() {
+  async function saveCanvas(): Promise<void> {
     if (!fabricCanvas) return;
     try {
       const canvasData = JSON.stringify(fabricCanvas.toJSON(['evidenceId', 'evidenceType', 'customType']));
@@ -323,7 +323,7 @@
       console.error('Save error:', error);
     }
   }
-  async function exportCanvas() {
+  async function exportCanvas(): Promise<any> {
     if (!fabricCanvas) return;
     try {
       const dataURL = fabricCanvas.toDataURL({

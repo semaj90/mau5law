@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Temporary triage: disable TS checks in this file to reduce noise (remove when types are fixed)
 // @ts-nocheck
 // TensorFlow.js Synthesizer Middleware

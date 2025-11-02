@@ -26,8 +26,8 @@ https://svelte.dev/e/js_parse_error -->
     onError
   }: Props = $props();
   // Svelte 5 runes
-  let isDragOver = $state(false);
-  let isProcessing = $state(false);
+  let isDragOver = $state<boolean>(false);
+  let isProcessing = $state<boolean>(false);
   let selectedFiles = $state<File[]>([]);
   let fileInput: HTMLInputElement;
   // Drag and drop event handlers
@@ -53,13 +53,13 @@ https://svelte.dev/e/js_parse_error -->
       event.clientY > rect.bottom
     );
     if (isOutside) {
-      isDragOver = $state(false);
+      isDragOver = false;
     }
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    isDragOver = $state(false);
+    isDragOver = false;
     if (disabled || isProcessing) return;
     const files = Array.from(event.dataTransfer?.files || []);
     processFiles(files);
@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
     if (validFiles.length > 0) {
       onFilesSelected?.(validFiles);
     }
-    isProcessing = $state(false);
+    isProcessing = false;
   }
   function isFileTypeAccepted(file: File): boolean {
     if (accept === '*/*') return true;

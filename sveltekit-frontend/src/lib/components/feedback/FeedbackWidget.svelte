@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount  } from "svelte";
   import { page } from '$app/stores';
@@ -38,7 +39,7 @@
   function setRating(score: number) {
     rating = scor;
   }
-  async function submitFeedback() {
+  async function submitFeedback(): Promise<any> {
     if (rating === 0) return;
     isSubmitting = true;
     try {
@@ -72,8 +73,8 @@
         ondispatch?.({ rating, feedback, interactionId });
         // Auto-hide after 2 seconds
         setTimeout(() => {
-          show = $state(false);
-          isSubmitted = $state(false);
+          show = false;
+          isSubmitted = false;
           rating = 0;
           feedback = '';
         }, 2000);
@@ -88,10 +89,10 @@
     }
   }
   function close() {
-    show = $state(false);
+    show = false;
     rating = 0;
     feedback = '';
-    isSubmitted = $state(false);
+    isSubmitted = false;
   }
   // Rating type labels
   const ratingTypeLabels = {

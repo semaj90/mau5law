@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // simd-json-wrapper.ts - single, minimal development shim
 // Provides a safe JS fallback while the real WebAssembly module is built.
 
@@ -403,7 +404,7 @@ export const simdJSONAccelerator = new SIMDJSONAccelerator();
     })
     .catch(error => {
       console.warn('⚠️ Failed to initialize SIMD JSON accelerator, falling back to JavaScript:', error);
-      isWASMReady = $state(false);
+      isWASMReady = false;
     });
 }
 
@@ -420,7 +421,7 @@ export async function initWASM(timeoutMs = 3000): Promise<boolean> {
     isWASMReady = true;
     return true;
   } catch (err) {
-    isWASMReady = $state(false);
+    isWASMReady = false;
     return false;
   }
 }

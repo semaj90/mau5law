@@ -5,8 +5,8 @@
   import WebGPUEvidenceGraphVisualization from '$lib/components/visualizations/WebGPUEvidenceGraphVisualization.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
-  let showWebGPUDemo = $state(false);
-  let webGPUSupported = $state(false);
+  let showWebGPUDemo = $state<boolean>(false);
+  let webGPUSupported = $state<boolean>(false);
   // Sample analysis for WebGPU demo
   const sampleAnalysis = {
     id: 'analysis-demo-001',

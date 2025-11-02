@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         console.warn(`QUIC Gateway attempt ${attempt + 1} failed:`, normalized);
         // On first attempt failure with HTTP/3, try HTTP/2 fallback
         if (attempt === 0 && useHttp3) {
-          useHttp3 = $state(false);
+          useHttp3 = false;
           targetUrl = `${QUIC_GATEWAY_CONFIG.fallbackUrl}${targetPath}`;
         }
       }

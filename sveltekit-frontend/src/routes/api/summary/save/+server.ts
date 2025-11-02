@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 /*
  * AI Summary Save Endpoint

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { registerSchema } from '$lib/schemas/auth';
 import { db, users, helpers } from '$lib/server/db';
 import { hashPassword } from '$lib/server/lucia';

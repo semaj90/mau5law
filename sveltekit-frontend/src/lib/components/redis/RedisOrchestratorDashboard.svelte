@@ -21,8 +21,8 @@
   const { isInitialized, initError, initialize } = useRedisInit({ autoStart: true });
   const { healthData, isLoading, stats, isHealthy, refresh, clearCache } = useRedisMonitoring();
   const { tasks, getAllTasks, getTasksByStatus, clearCompletedTasks } = useRedisTaskQueue();
-  let showClearConfirm = $state(false);
-  let clearingCache = $state(false);
+  let showClearConfirm = $state<boolean>(false);
+  let clearingCache = $state<boolean>(false);
   // Real-time data
   let currentStats = $state($redisStats);
   let currentHealthy = $state($isRedisHealthy);

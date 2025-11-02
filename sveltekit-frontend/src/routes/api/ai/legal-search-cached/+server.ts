@@ -140,7 +140,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     // Get or generate embedding
     let embedding: number[];
-    let embeddingFromCache = $state(false);
+    let embeddingFromCache = $state<boolean>(false);
     const cachedEmbedding = await getEmbeddingCache(embeddingCacheKey, 'ollama');
     if (cachedEmbedding?.entry) {
       embedding = cachedEmbedding.entry.embedding;

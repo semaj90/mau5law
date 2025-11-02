@@ -104,7 +104,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   async parseJSON<T = unknown>(jsonString: string): Promise<{ data: T; stats: OptimizedJSON }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let result: T;
-    let wasm_acceleration = $state(false);
+    let wasm_acceleration = $state<boolean>(false);
     try {
       if (this.initialized && this.wasmModule && jsonString.length > 1000) {
         // Use WebAssembly for large JSON
@@ -134,7 +134,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   async stringifyJSON(data: any): Promise<{ json: string; stats: OptimizedJSON }> {
     const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let result: string;
-    let wasm_acceleration = $state(false);
+    let wasm_acceleration = $state<boolean>(false);
     try {
       if (this.initialized && this.wasmModule && this.estimateSize(data) > 1000) {
         // Use WebAssembly for large objects
@@ -300,13 +300,13 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   }
   private removeWhitespacePreservingStrings(json: string): string {
     let result = '';
-    let inString = $state(false);
-    let escaped = $state(false);
+    let inString = $state<boolean>(false);
+    let escaped = $state<boolean>(false);
     for (let i = 0; i < json.length; i++) {
       const char = json[i];
       if (escaped) {
         result += char;
-        escaped = $state(false);
+        escaped = false;
         continue;
       }
       if (char === '\\' && inString) {

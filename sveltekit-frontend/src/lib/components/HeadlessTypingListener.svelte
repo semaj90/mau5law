@@ -10,6 +10,7 @@
   />
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are available
   import { createActor } from 'xstate';
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
@@ -42,8 +43,8 @@
   // Reactive state
   let currentState = $state<TypingState>('idle');
   let currentContext: TypingContext = $state(undefined as any);
-  let isTyping = $state(false);
-  let lastTypingTime = $state(0);
+  let isTyping = $state<boolean>(false);
+  let lastTypingTime = $state<number>(0);
   let typingTimeout: number | null = $state(null);
   // Reactive derived values
   const userEngagement = $derived(currentContext?.analytics?.userEngagement || 'medium');
@@ -160,7 +161,7 @@
     }
   }
   function handleStoppedTyping(currentText: string) {
-    isTyping = $state(false);
+    isTyping = false;
     if (typingTimeout) {
       clearTimeout(typingTimeout);
       typingTimeout = null;

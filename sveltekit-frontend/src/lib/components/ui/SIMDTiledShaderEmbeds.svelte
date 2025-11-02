@@ -61,7 +61,7 @@ let {
   onCompressionComplete
 }: Props = $props();
 // Tiled shader embed state
-let isProcessing = $state(false);
+let isProcessing = $state<boolean>(false);
 let tiledData = $state<any[]>([]);
 let generatedShaders = $state<Map<string, string>('')>(new Map());
 let compressionResults = $state<any>(null);

@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
   let progress = 0;
   let errorMsg: string | null = null;
   let processingSteps: string[] = [];
-  let completed = $state(false);
+  let completed = $state<boolean>(false);
   let artifactUrl: string | null = null;
   // Watch for outcomes (Svelte reactive statements)
   $: if (completed && artifactUrl && onUploadComplete) {
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragover = $state(false);
+    dragover = false;
     const file = e.dataTransfer?.files?.[0];
     if (file) validateAndSetFile(file);
   }
@@ -110,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
     evidenceId = `${caseId || 'case'}-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     errorMsg = null;
   }
-  async function startProcessing() {
+  async function startProcessing(): Promise<any> {
     if (!selectedFile) return;
     processing = true;
     progress = 0;
@@ -155,10 +155,10 @@ https://svelte.dev/e/js_parse_error -->
     if (typeof resetProcessorFn === 'function') resetProcessorFn();
     selectedFile = null;
     evidenceId = '';
-    processing = $state(false);
+    processing = false;
     progress = 0;
     errorMsg = null;
-    completed = $state(false);
+    completed = false;
     artifactUrl = null;
     if (fileInput) fileInput.value = '';
   }

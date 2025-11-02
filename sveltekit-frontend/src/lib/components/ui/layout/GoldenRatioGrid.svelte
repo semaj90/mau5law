@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils/cn';

@@ -12,11 +12,11 @@ export type Pattern = {
   description?: string;
   template?: string;
 }
-let isInitialized = $state(false);
+let isInitialized = $state<boolean>(false);
 let readyPromise: Promise<void> | null = null;
 let patterns: Pattern[] = [];
 let mockLatency = 50;
-export async function initialize(_options: Context7InitOptions = {}) {
+export async function initialize(_options: Context7InitOptions = {}): Promise<void> {
   if (isInitialized) return;
   mockLatency = options.mockLatencyMs ?? mockLatency;
   readyPromise = new Promise((resolve) => {
@@ -31,7 +31,7 @@ export async function initialize(_options: Context7InitOptions = {}) {
 export function isReady() {
   return isInitialized;
 }
-export async function loadPatterns(prebuilt: Pattern[] = []) {
+export async function loadPatterns(prebuilt: Pattern[] = []): Promise<any> {
   await ensureReady();
   // shallow merge by id
   const map = new Map(patterns.map((p) => [p.id, p]);
@@ -41,12 +41,12 @@ export async function loadPatterns(prebuilt: Pattern[] = []) {
   await sleep(mockLatency);
   return patterns;
 }
-export async function listPatterns() {
+export async function listPatterns(): Promise<any> {
   await ensureReady();
   await sleep(mockLatency / 2);
   return patterns.slice();
 }
-export async function runPattern(id: string, input: any = {}) {
+export async function runPattern(id: string, input: any = {}): Promise<any> {
   await ensureReady();
   const p = patterns.find((x) => x.id === id);
   await sleep(mockLatency + 10);
@@ -61,7 +61,7 @@ export async function runPattern(id: string, input: any = {}) {
   }
   return { success: true, output }
 }
-export async function processFile(fileName: string, bytes: Uint8Array) {
+export async function processFile(fileName: string, bytes: Uint8Array): Promise<any> {
   await ensureReady();
   await sleep(mockLatency + 20);
   // Return a tiny mock text extraction
@@ -71,7 +71,7 @@ export async function processFile(fileName: string, bytes: Uint8Array) {
     size: bytes.length
   }
 }
-export async function fetchAndProcessUrl(url: string) {
+export async function fetchAndProcessUrl(url: string): Promise<Response> {
   await ensureReady();
   await sleep(mockLatency + 20);
   return {
@@ -100,7 +100,7 @@ function inferMime(name: string) {
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms);
 }
-async function ensureReady() {
+async function ensureReady(): Promise<any> {
   if (!readyPromise) await initialize();
   if (readyPromise) await readyPromise;
 }

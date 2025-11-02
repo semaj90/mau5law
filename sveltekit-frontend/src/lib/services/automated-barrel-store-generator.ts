@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /* Automated barrel store generator - corrected, typed, and production-ready.
    - Adds typed interfaces for external services (UltraJSONParser, WasmClusteringService, NESGPUBridge).
    - Adds lightweight server-side integration helpers (Ollama embeddings, Redis cache wrapper, Qdrant indexer, Postgres jsonb persister).

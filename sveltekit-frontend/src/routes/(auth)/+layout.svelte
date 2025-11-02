@@ -14,7 +14,7 @@
   let { data, children }: Props = $props();
 
   // State management
-  let sidebarOpen = $state(true);
+  let sidebarOpen = $state<boolean>(true);
   let selectedTheme = $state<ConsolePaletteName>('legal');
 
   // Derived values

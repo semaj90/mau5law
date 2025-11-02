@@ -336,7 +336,7 @@ const chatHandler: RequestHandler = async ({ request, locals }) => {
           let buffer = '';
 
           // Read loop: consume streamed chunks, split lines, and handle known message shapes
-          let finished = $state(false);
+          let finished = $state<boolean>(false);
           while (!finished) {
             const { done, value } = await reader.read();
             if (done) {

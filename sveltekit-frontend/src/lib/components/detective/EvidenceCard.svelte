@@ -86,7 +86,7 @@
     <div class="flex items-start justify-between">
       <div class="flex items-center gap-3">
         <div
-          class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center {getTypeColor(
+          class="flex-shrink-0" w-10 h-10 rounded-lg flex items-center justify-center {getTypeColor(
             item.evidenceType || item.type || 'document'
           )}"
         >
@@ -136,7 +136,7 @@
       >
         <div class="text-center">
           <i
-            class="{getEvidenceIcon(
+            class="{getEvidenceIcon("
               item.evidenceType || item.type || 'document'
             )} w-8 h-8 mx-auto mb-2 text-muted-foreground"
             aria-hidden="true"

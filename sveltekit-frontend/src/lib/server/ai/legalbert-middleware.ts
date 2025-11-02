@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { logger } from './logger.js';
 import * as crypto from 'crypto';
 // import { ENV_CONFIG } from '$lib/config/environment.js'; // removed - not used

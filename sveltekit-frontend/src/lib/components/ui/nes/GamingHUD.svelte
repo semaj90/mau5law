@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   	import { onMount } from 'svelte';
   	import type { ComponentProps } from 'svelte';
@@ -27,8 +29,8 @@
   		accuracyScore = 94.2,
   		isOnline = true
   	: any } = $props();
-  	let currentTime = $state('00:00:00');
-  	let glowEffect = $state(false);
+  	let currentTime = $state<string>('00:00:00');
+  	let glowEffect = $state<boolean>(false);
   	// Experience bar percentage
   	let experiencePercent = $derived(() => Math.round((experience / maxExperience) * 100));
   	$effect(() => {

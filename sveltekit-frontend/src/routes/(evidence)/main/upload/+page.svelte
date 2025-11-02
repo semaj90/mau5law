@@ -3,6 +3,8 @@
   Rich metadata support with type-safe validation
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -27,12 +29,12 @@
   // File upload state
   let selectedFile: File | null = $state(null);
   let filePreview: string | null = $state(null);
-  let dragOver = $state(false);
-  let uploading = $state(false);
-  let progressPercent = $state(0);
+  let dragOver = $state<boolean>(false);
+  let uploading = $state<boolean>(false);
+  let progressPercent = $state<number>(0);
   let metadata = $state<any>(null);
   // Handle file selection
-  async function handleFileSelect(file: File) {
+  async function handleFileSelect(file: File): Promise<any> {
     selectedFile = fil;
     // Validate file size
     if (!validateFileSize(file)) {
@@ -98,11 +100,11 @@
   }
   function onDragLeave(_event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
   }
   function onDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     const file = event.dataTransfer?.files?.[0];
     if (file) {
       handleFileSelect(file);

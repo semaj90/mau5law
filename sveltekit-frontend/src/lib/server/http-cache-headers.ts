@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * HTTP Cache Headers Utility
  * Provides optimal caching strategies for different endpoint types

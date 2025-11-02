@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 // Production TODO block should be copied into service files
 /**
  * ============================

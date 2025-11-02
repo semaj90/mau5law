@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 // ranking-cache-worker.ts
 // Web Worker for WASM-accelerated ranking cache packing/unpacking & QUIC fetch
 // Message protocol
@@ -19,7 +20,7 @@ interface WorkerGlobalScopeWithWasm extends WorkerGlobalScope {
 }
 
 let wasm: WasmExports | null = null;
-let wasmReady = $state(false);
+let wasmReady = $state<boolean>(false);
 // Attempt to detect pre-injected WASM module (e.g., from wasm-pack bundle attaching to self.RankingWasm)
 declare const self: WorkerGlobalScopeWithWasm; // Type: 'self' as WorkerGlobalScopeWithWasm
 if (typeof self !== 'undefined' && self.RankingWasm) {
@@ -46,7 +47,7 @@ self.onmessage = async (ev: MessageEvent) => {
               wasmReady = true;
             } catch (e) {
               console.error('Failed to load WASM from URL:', e);
-              wasmReady = $state(false); // fallback JS
+              wasmReady = false; // fallback JS
             }
           } else {
             // Optional dynamic import stub (future Rust/wasm-pack bundle)

@@ -80,16 +80,16 @@ https://svelte.dev/e/js_parse_error -->
   let canvasElement = $state<HTMLCanvasElement | null >(null);
   let gpuDevice = $state<GPUDevice | null >(null);
   let gpuContext = $state<GPUCanvasContext | null >(null);
-  let isInitialized = $state(false);
-  let isCompiling = $state(false);
-  let hasError = $state(false);
-  let errorMessage = $state('');
+  let isInitialized = $state<boolean>(false);
+  let isCompiling = $state<boolean>(false);
+  let hasError = $state<boolean>(false);
+  let errorMessage = $state<string>('');
   // Shader cache state
   let shaderCache: CompiledShaderCache | null = $state(null);
-  let compilationTime = $state(0);
-  let lastCompileTime = $state(0);
-  let cacheHitRate = $state(0);
-  let shaderHotReloadCount = $state(0);
+  let compilationTime = $state<number>(0);
+  let lastCompileTime = $state<number>(0);
+  let cacheHitRate = $state<number>(0);
+  let shaderHotReloadCount = $state<number>(0);
   // Performance metrics
   let performanceMetrics = $state({
     fps: 0,
@@ -105,12 +105,12 @@ https://svelte.dev/e/js_parse_error -->
   let currentAAType = $state<string>(aaConfig.type);
   let currentAAQuality = $state<string>(aaConfig.quality || 'medium');
   let aaConfigHistory: AntiAliasingConfig[] = $state([]);
-  let qualityAdjustmentCount = $state(0);
+  let qualityAdjustmentCount = $state<number>(0);
   // Animation and monitoring
   let animationId = $state<number | null >(null);
   let performanceMonitorId = $state<number | null >(null);
-  let lastFrameTime = $state(0);
-  let frameCount = $state(0);
+  let lastFrameTime = $state<number>(0);
+  let frameCount = $state<number>(0);
   // Shader source templates for YoRHa style
   const yorhaShaderTemplates = {
     vertex: `
@@ -385,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!adaptiveQuality || !performanceMetrics.fps) return;
     const fpsRatio = performanceMetrics.fps / targetFPS;
   let newConfig = $state({ ...aaConfig });
-  let qualityChanged = $state(false);
+  let qualityChanged = $state<boolean>(false);
     if (fpsRatio < 0.7) {
       // Performance is poor, reduce quality
       if (aaConfig.quality === 'ultra') {

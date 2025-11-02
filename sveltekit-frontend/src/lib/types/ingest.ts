@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Type definitions for Document Ingest Integration
  * Supports both single and batch document processing

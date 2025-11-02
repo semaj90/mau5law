@@ -44,9 +44,9 @@
   let simdParser: any = null;
   let neo4jEngine: any = null;
   let idleDetectionService: any = null;
-  let isInitialized = $state(false);
-  let isProcessing = $state(false);
-  let currentProgress = $state(0);
+  let isInitialized = $state<boolean>(false);
+  let isProcessing = $state<boolean>(false);
+  let currentProgress = $state<number>(0);
   let progressStages = $state([
     { name: 'GPU Initialization', progress: 0, status: 'pending' },
     { name: 'SIMD Parser Setup', progress: 0, status: 'pending' },
@@ -55,7 +55,7 @@
     { name: 'XState Machine Start', progress: 0, status: 'pending' },
     { name: 'System Ready', progress: 0, status: 'pending' }
   ]);
-  let userInput = $state('');
+  let userInput = $state<string>('');
   let chatMessages = $state<ChatMessage[]>([]);
   let recommendations = $state<Recommendation[]>([]);
   let parsedDocument: ParsedDocument = null;
@@ -76,7 +76,7 @@
   onDestroy(() => {
     cleanup();
   });
-  async function initializeSystem() {
+  async function initializeSystem(): Promise<void> {
     console.log('🚀 Initializing Enhanced 3D Legal AI Interface...');
     await initializeWebGL();
     await initializeServicesWithProgress();
@@ -88,7 +88,7 @@
     addSystemMessage('System initialized successfully. All services operational.');
     console.log('✅ Enhanced 3D Legal AI Interface initialized');
   }
-  async function initializeWebGL() {
+  async function initializeWebGL(): Promise<void> {
     if (!canvasRef) return;
     gl = canvasRef.getContext('webgl2') || canvasRef.getContext('webgl');
     if (!gl) throw new Error('WebGL not supported');
@@ -167,7 +167,7 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(interleavedData), gl.DYNAMIC_DRAW);
   }
-  async function initializeServicesWithProgress() {
+  async function initializeServicesWithProgress(): Promise<void> {
     const stages = progressStages;
     try {
       stages[0].status = 'active'; stages[0].progress = 0.1;
@@ -249,7 +249,7 @@
       }
     });
   }
-  async function handleUserInput() {
+  async function handleUserInput(): Promise<any> {
     const text = userInput.trim();
     if (!text || isProcessing) return;
     addSystemMessage(text, 'user');
@@ -472,7 +472,7 @@
     }
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(interleavedData), gl.DYNAMIC_DRAW);
   }
-  async function initializeServicesWithProgress() {
+  async function initializeServicesWithProgress(): Promise<void> {
     const stages = progressStages; // Fixed: progressStage -> progressStages
     try {
       // Stage 1: GPU Initialization

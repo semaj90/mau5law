@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 interface PrecedentSearchRequest {
@@ -120,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: false, error: 'Precedent search failed', results: null }, { status: 500 });
   }
 };
-async function performPrecedentSearch(request: PrecedentSearchRequest) {
+async function performPrecedentSearch(request: PrecedentSearchRequest): Promise<any> {
   const {
     query,
     factPattern,
@@ -262,7 +263,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
     alternativeTheories,
   };
 }
-async function analyzeApplicability(matches: PrecedentMatch[], _request: PrecedentSearchRequest) {
+async function analyzeApplicability(matches: PrecedentMatch[], _request: PrecedentSearchRequest): Promise<any> {
   const bindingCount = matches.filter(item => item.precedentialValue === 'BINDING').length;
   const persuasiveCount = matches.filter(item => item.precedentialValue === 'PERSUASIVE').length;
   const avgSimilarity = matches.reduce((sum, m) => sum + m.similarityScore, 0) / matches.length;
@@ -293,7 +294,7 @@ async function analyzeApplicability(matches: PrecedentMatch[], _request: Precede
     ],
   };
 }
-async function generateStrategicRecommendations(matches: PrecedentMatch[], reasoningChain: LegalReasoningChain) {
+async function generateStrategicRecommendations(matches: PrecedentMatch[], reasoningChain: LegalReasoningChain): Promise<any> {
   const bindingMatches = matches.filter(m => m.precedentialValue === 'BINDING');
   const strongMatches = matches.filter(m => m.similarityScore > 0.8);
   const vulnerabilities = reasoningChain.steps.flatMap(step => step.vulnerabilities);

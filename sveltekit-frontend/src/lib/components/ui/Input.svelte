@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { HTMLInputAttributes } from 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes, 'size' | 'disabled' | 'required' | 'readonly'> {
@@ -47,7 +48,7 @@
     ...restProps
   }: Props = $props();
   let inputElement: HTMLInputElement;
-  let isFocused = $state(false);
+  let isFocused = $state<boolean>(false);
   const hasValue = $derived(value !== '' && value !== null && value !== undefined);
   const showClearButton = $derived(clearable && hasValue && !disabled && !readonly);
   const hasError = $derived(!!error);
@@ -68,7 +69,7 @@
     onfocus?.(event);
   }
   function handleBlur(_event: FocusEvent) {
-    isFocused = $state(false);
+    isFocused = false;
     onblur?.(event);
   }
   function handleClear() {

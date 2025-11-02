@@ -20,7 +20,7 @@ interface HealthResponse {
   };
 }
 // Simple health check for existing services
-async function checkExistingServices() {
+async function checkExistingServices(): Promise<any> {
   const services = [];
   // Check existing Redis (port 6379)
   try {

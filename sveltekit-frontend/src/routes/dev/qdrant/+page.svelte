@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let result: any = null;
   let error: string | null = null;
   let limit = 6;
@@ -10,7 +10,7 @@
   let tag = '';
 
   // Modal preview state
-  let previewOpen = $state(false);
+  let previewOpen = $state<boolean>(false);
   let previewTitle = '';
   let previewSnippet = '';
   // Copy feedback
@@ -26,7 +26,7 @@
     return params.toString();
   }
 
-  async function runQuery() {
+  async function runQuery(): Promise<any> {
     loading = true;
     error = null;
     result = null;
@@ -64,7 +64,7 @@
       }, 0);
     });
   }
-  async function copyId(id: string) {
+  async function copyId(id: string): Promise<any> {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(id);
@@ -91,10 +91,10 @@
   }
 
   // Modal markdown rendering toggle + tiny sanitizer
-  let previewRenderMarkdown = $state(false);
+  let previewRenderMarkdown = $state<boolean>(false);
   let purified: ((html: string) => string) | null = null;
   let markdownToHtml: ((md: string) => string) | null = null;
-  async function ensureMarkdownLibs() {
+  async function ensureMarkdownLibs(): Promise<any> {
     if (!purified || !markdownToHtml) {
       try {
         // use awaited dynamic imports and cast to any to avoid TS type errors when types are missing
@@ -299,13 +299,13 @@
           class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
           tabindex="0"
           onclick={() => {
-            previewOpen = $state(false);
+            previewOpen = false;
             restoreFocus();
           }}
           onkeydown={(e: KeyboardEvent) => {
             // make overlay keyboard-operable (Enter / Space)
             if (e.key === 'Enter' || e.key === ' ') {
-              previewOpen = $state(false);
+              previewOpen = false;
               restoreFocus();
             }
           }}
@@ -326,7 +326,7 @@
             <button
               class="absolute top-2 right-2 text-gray-500 hover:text-black"
               onclick={() => {
-                previewOpen = $state(false);
+                previewOpen = false;
                 restoreFocus();
               }}
               aria-label="Close">✕</button

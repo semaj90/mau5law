@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     currentStep: number;
@@ -38,7 +39,7 @@
           <!-- Step Circle -->
           <div class="flex items-center">
             <div
-              class="relative flex h-8 w-8 items-center justify-center rounded-full border-2 {getStepColor(
+              class="relative" flex h-8 w-8 items-center justify-center rounded-full border-2 {getStepColor(
                 status
               )} transition-all duration-200"
             >
@@ -57,7 +58,7 @@
             <!-- Step Label -->
             <div class="ml-3">
               <p
-                class="text-sm font-medium {status === 'current'
+                class="text-sm" font-medium {status === 'current'
                   ? 'text-blue-600'
                   : status === 'completed'
                     ? 'text-green-600'
@@ -70,7 +71,7 @@
           <!-- Connector Line -->
           {#if index !== labels.length - 1}
             <div
-              class="absolute top-4 left-4 -ml-px mt-0.5 h-full w-0.5 {getConnectorColor(
+              class="absolute" top-4 left-4 -ml-px mt-0.5 h-full w-0.5 {getConnectorColor(
                 index + 1
               )} transition-all duration-200"
               aria-hidden="true"

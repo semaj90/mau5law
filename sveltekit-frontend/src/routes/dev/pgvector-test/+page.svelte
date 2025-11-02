@@ -6,6 +6,7 @@ https://svelte.dev/e/expected_token -->
   Best Practices Implementation for Vector Similarity Search
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';
@@ -30,7 +31,7 @@ https://svelte.dev/e/expected_token -->
   let dbStats: any = null;
   let searchResults: any[] = [];
   let testQuery = 'contract liability and indemnification terms';
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let lastError = '';
   // Performance metrics
   let performanceMetrics = {
@@ -42,7 +43,7 @@ https://svelte.dev/e/expected_token -->
   /**
    * Test PostgreSQL + pgvector connection
    */
-  async function testConnection() {
+  async function testConnection(): Promise<void> {
     isLoading = true;
     lastError = '';
     try {
@@ -64,7 +65,7 @@ https://svelte.dev/e/expected_token -->
   /**
    * Get database statistics and performance metrics
    */
-  async function getDatabaseStats() {
+  async function getDatabaseStats(): Promise<any> {
     isLoading = true;
     lastError = '';
     try {
@@ -84,7 +85,7 @@ https://svelte.dev/e/expected_token -->
   /**
    * Seed database with sample legal documents
    */
-  async function seedDatabase(count: number = 20) {
+  async function seedDatabase(count: number = 20): Promise<any> {
     isLoading = true;
     lastError = '';
     try {
@@ -104,7 +105,7 @@ https://svelte.dev/e/expected_token -->
   /**
    * Create IVFFLAT index for performance optimization
    */
-  async function createIndex(lists: number = 100, metric: string = 'cosine') {
+  async function createIndex(lists: number = 100, metric: string = 'cosine'): Promise<any> {
     isLoading = true;
     lastError = '';
     try {
@@ -124,7 +125,7 @@ https://svelte.dev/e/expected_token -->
   /**
    * Perform vector similarity search
    */
-  async function performVectorSearch() {
+  async function performVectorSearch(): Promise<any> {
     if (!testQuery.trim()) return;
     isLoading = true;
     lastError = '';
@@ -155,7 +156,7 @@ https://svelte.dev/e/expected_token -->
   /**
    * Test document insertion with embedding
    */
-  async function testDocumentInsert() {
+  async function testDocumentInsert(): Promise<any> {
     isLoading = true;
     lastError = '';
     const sampleDoc = {

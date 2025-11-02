@@ -6,7 +6,7 @@ export async function upsertVector(
   vector: number[],
   payload: Record<string, unknown>,
   collection = 'legal_docs'
-) {
+): Promise<any> {
   const client: any = QdrantVectorService as any;
   // common qdrant-js method shapes
   if (typeof client.upsert === 'function') {
@@ -37,7 +37,7 @@ export async function searchVector(
   vector: number[],
   limit = 5,
   collection = 'legal_docs'
-) {
+): Promise<any> {
   const client: any = QdrantVectorService as any;
   if (typeof client.search === 'function') {
     return await client.search({

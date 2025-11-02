@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Recommendations Store - AI-Powered User Analytics & Suggestions
  * Integrates with NVIDIA go-llama and multi-core Ollama cluster

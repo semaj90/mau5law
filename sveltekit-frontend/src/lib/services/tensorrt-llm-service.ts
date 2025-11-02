@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * TensorRT-LLM Service with Ollama Fallback

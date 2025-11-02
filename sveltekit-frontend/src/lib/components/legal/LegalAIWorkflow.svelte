@@ -5,11 +5,11 @@
     let uploadedFile = $state<File | null>(null);
     let analysisResult = $state<LegalDocumentResponse | null>(null);
     let recommendations = $state<RecommendationResponse | null>(null);
-    let isProcessing = $state(false);
-    let uploadProgress = $state(0);
+    let isProcessing = $state<boolean>(false);
+    let uploadProgress = $state<number>(0);
     let currentStep = $state<'upload' | 'analysis' | 'recommendations' | 'complete'>('upload');
     let error = $state<string | null>(null);
-    let servicesHealth = $state(null);
+    let servicesHealth = $state<any>(null);
     // Processing options
     let processingOptions = $state({
         extract_entities: true
@@ -21,7 +21,7 @@
     });
     // Check services health on mount
     checkServicesHealth();
-    async function checkServicesHealth() {
+    async function checkServicesHealth(): Promise<any> {
         try {
             servicesHealth = await legalAIClient.healthCheck();
         } catch (err) {
@@ -36,7 +36,7 @@
             error = null;
         }
     }
-    async function processDocument() {
+    async function processDocument(): Promise<any> {
         if (!uploadedFile) return;
         isProcessing = true;
         error = null;
@@ -118,7 +118,7 @@
       <span class="step-label">Upload</span>
     </div>
     <div
-      class="step {currentStep === 'analysis'
+      class="step" {currentStep === 'analysis'
         ? 'active'
         : currentStep === 'recommendations' || currentStep === 'complete'
           ? 'completed'

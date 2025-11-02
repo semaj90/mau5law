@@ -3,6 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Modular File Upload Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
@@ -57,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     ...restProp
   }: Props = $props();
   let fileInput: HTMLInputElement;
-  let isDragOver = $state(false);
+  let isDragOver = $state<boolean>(false);
   // UnoCSS-based upload variants
   const uploadVariants = cva(
     // Base classes: 'relative border-2 border-dashed rounded-lg transition-all duration-200 cursor-pointer',
@@ -171,11 +172,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   function handleDragLeave(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = $state(false);
+    isDragOver = false;
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    isDragOver = $state(false);
+    isDragOver = false;
     if (disabled || !event.dataTransfer?.files) return;
     handleFiles(event.dataTransfer.files);
   }

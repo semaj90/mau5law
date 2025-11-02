@@ -29,10 +29,10 @@
     onComplete,
   }: TypewriterProps = $props();
   // State management
-  let currentIndex = $state(0);
-  let isTyping = $state(false);
-  let displayText = $state('');
-  let cursor = $state(true);
+  let currentIndex = $state<number>(0);
+  let isTyping = $state<boolean>(false);
+  let displayText = $state<string>('');
+  let cursor = $state<boolean>(true);
   // Derived state
   const visibleText = $derived(displayText.slice(0, currentIndex));
   // Texture cache for alphabet characters
@@ -257,7 +257,7 @@
     const frameDelay = 1000 / 60; // 16.67ms per frame
     typewriterInterval = setInterval(() => {
       if (currentIndex >= text.length) {
-        isTyping = $state(false);
+        isTyping = false;
         clearInterval(typewriterInterval);
         onComplete?.();
         return;

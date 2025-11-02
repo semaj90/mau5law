@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * SearchStore - Unified Search & Filtering
  *

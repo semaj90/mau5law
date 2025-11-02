@@ -65,7 +65,7 @@
     }
   });
 
-  async function loadGraph() {
+  async function loadGraph(): Promise<any> {
     try {
       const response = await fetch('/api/admin/service-graph');
       const data = await response.json();
@@ -99,7 +99,7 @@
     selectedService = service;
   }
 
-  async function checkServiceHealth(serviceId: string) {
+  async function checkServiceHealth(serviceId: string): Promise<any> {
     try {
       const response = await fetch(`/api/admin/service-health?service=${serviceId}`);
       const health = await response.json();

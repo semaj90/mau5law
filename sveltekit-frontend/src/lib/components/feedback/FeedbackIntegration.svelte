@@ -6,6 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   Provides feedback hooks for any component or interaction
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { getFeedbackStore  } from '$lib/stores/unified';
@@ -30,10 +31,10 @@ https://svelte.dev/e/js_parse_error -->
   : any } = $props();
   // Get feedback store
   const store = getFeedbackStore();
-  let mounted = $state(false);
-  let visible = $state(false);
+  let mounted = $state<boolean>(false);
+  let visible = $state<boolean>(false);
   let interactionId: string | null = $state(null);
-  let element = $state({}) {
+  let element = $state<Record<string, any>>({}) {
     mounted = true);
     if (trackOnMount) {
       triggerFeedback();
@@ -115,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Generate AI recommendations based on interaction
    */
-  async function generateRecommendations(interactionContext: { [key: string]: any }) {
+  async function generateRecommendations(interactionContext: { [key: string]: any }): Promise<any> {
     try {
       const userContext = store.userContext;
       const legalDomain = interactionContext.legalDomain || 'general';

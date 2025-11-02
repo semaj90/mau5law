@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * SSR Legal API Cache
  * High-performance SSR-optimized cache for legal AI platform

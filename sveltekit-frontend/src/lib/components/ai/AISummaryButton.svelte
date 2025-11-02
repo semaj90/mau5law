@@ -9,13 +9,13 @@
   // Receive props (Svelte 5 runes)
   let { text = '', onsummary }: Props = $props();
   // reactive state
-  let summary = $state('');
-  let errorMessage = $state('');
-  let loading = $state(false);
+  let summary = $state<string>('');
+  let errorMessage = $state<string>('');
+  let loading = $state<boolean>(false);
   // keep a controller so subsequent clicks abort previous requests
   let currentController: AbortController | null = null;
   const REQUEST_TIMEOUT_MS = 30000; // 30s
-  async function getSummary(input: string) {
+  async function getSummary(input: string): Promise<any> {
     if (!input || !input.trim()) return;
     // abort previous
     currentController?.abort();

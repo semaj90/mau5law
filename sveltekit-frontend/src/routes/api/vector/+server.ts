@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Minimal Vector API - Simplified for error reduction
  */

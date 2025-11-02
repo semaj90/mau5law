@@ -15,19 +15,19 @@
   let gpu = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
   let animationFrame: number;
-  let isInitialized = $state(false);
+  let isInitialized = $state<boolean>(false);
   // WebGPU capability service
   const webgpuCapability = useWebGPUCapability();
   // Visualization states
-  let neurons = $state([]);
-  let connections = $state([]);
-  let quantumParticles = $state([]);
-  let consciousnessNodes = $state([]);
-  let matrixStreams = $state([]);
+  let neurons = $state<any[]>([]);
+  let connections = $state<any[]>([]);
+  let quantumParticles = $state<any[]>([]);
+  let consciousnessNodes = $state<any[]>([]);
+  let matrixStreams = $state<any[]>([]);
   // Performance metrics
-  let fps = $state(60);
-  let frameCount = $state(0);
-  let lastTime = $state(0);
+  let fps = $state<number>(60);
+  let frameCount = $state<number>(0);
+  let lastTime = $state<number>(0);
   $effect(() => {
     (async () => {
 // Initialize WebGPU capability service first
@@ -44,7 +44,7 @@
       cancelAnimationFrame(animationFrame);
     }
   });
-  async function initializeWebGPU() {
+  async function initializeWebGPU(): Promise<void> {
     try {
       const capabilities = webgpuCapability.getCapabilities();
       if (!capabilities?.isAvailable) {

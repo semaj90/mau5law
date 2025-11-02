@@ -99,9 +99,9 @@
     return [...map.values()].sort((a, b) => a.path.localeCompare(b.path));
   })();
   // UI state
-  let search = $state('');
-  let showAPI = $state(true);
-  let showPages = $state(true);
+  let search = $state<string>('');
+  let showAPI = $state<boolean>(true);
+  let showPages = $state<boolean>(true);
   let groupCollapse: Record<string, boolean> = $state();
   const filtered = $derived.by(() =>
     merged.filter(r => {

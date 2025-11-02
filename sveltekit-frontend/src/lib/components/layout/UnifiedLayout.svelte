@@ -17,8 +17,8 @@
   let user: any = _props?.user ?? null;
   let title: string = _props?.title ?? '';
   let hideNav: boolean = _props?.hideNav ?? false;
-  let sidebarOpen = $state(false);
-  let mounted = $state(false);
+  let sidebarOpen = $state<boolean>(false);
+  let mounted = $state<boolean>(false);
   let autoVariant = $state(variant);
   // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
   function updateVariantFromPath(p: string) {
@@ -109,8 +109,8 @@
   let user: any = _props?.user ?? null;
   let title: string = _props?.title ?? '';
   let hideNav: boolean = _props?.hideNav ?? false;
-  let sidebarOpen = $state(false);
-  let mounted = $state(false);
+  let sidebarOpen = $state<boolean>(false);
+  let mounted = $state<boolean>(false);
   let autoVariant = $state(variant);
   // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
   function updateVariantFromPath(p: string) {

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
   import { mcpApi } from '$lib/api/mcp-client.js';

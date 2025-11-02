@@ -31,7 +31,7 @@ const metaEnv = getMetaEnv();
 
 // Redis client for worker communication (local wrapper over shared client)
 let redisClient: ReturnType<typeof sharedRedis.createClient> | null = null;
-let redisUnavailable = $state(false);
+let redisUnavailable = $state<boolean>(false);
 
 async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createClient> | null> {
   if (redisUnavailable) return null;
@@ -350,7 +350,7 @@ export const POST: RequestHandler = async event => {
       console.log(`✅ Case created successfully: ID=${newCase.id}, Number=${newCase.caseNumber}, User=${user.id}`);
 
       // Trigger PostgreSQL-first worker for auto-tagging and processing
-      let workerTriggered = $state(false);
+      let workerTriggered = $state<boolean>(false);
       try {
         workerTriggered = await triggerWorkerProcessing(newCase.id, {
           priority: validatedCaseData.priority, // No: 'as string' needed, type is correct
@@ -377,7 +377,7 @@ export const POST: RequestHandler = async event => {
         // This catch is unlikely to be hit now because triggerWorkerProcessing returns false on internal failure,
         // but keep it defensively to avoid bubbling unexpected exceptions.
         console.warn(`⚠️ Worker trigger threw for case ${newCase.id}:`, workerError);
-        workerTriggered = $state(false);
+        workerTriggered = false;
       }
 
       return {

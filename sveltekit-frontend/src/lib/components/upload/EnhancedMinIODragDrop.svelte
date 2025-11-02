@@ -46,9 +46,9 @@
     useMsvcOptimizations = true
   }: Props = $props();
   // State
-  let dragOver = $state(false);
-  let uploading = $state(false);
-  let uploadProgress = $state(0);
+  let dragOver = $state<boolean>(false);
+  let uploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
   let files = $state<UploadFile[]>([]);
   let errorMessage = $state<string | null>(null);
   let successMessage = $state<string | null>(null);
@@ -66,7 +66,7 @@
       testCudaWorkerAvailability();
     }
   });
-  async function testCudaWorkerAvailability() {
+  async function testCudaWorkerAvailability(): Promise<any> {
     try {
       const response = await fetch('/api/v1/gpu/cuda/health', {
         method: 'GET',
@@ -95,18 +95,18 @@
     const y = event.clientY;
     // Only hide drag overlay if mouse is actually outside the drop zone
     if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-      dragOver = $state(false);
+      dragOver = false;
     }
   }
   function handleDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     if (disabled || uploading) return;
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     processDroppedFiles(droppedFiles);
   }
   // File processing with CUDA acceleration
-  async function processDroppedFiles(droppedFiles: File[]) {
+  async function processDroppedFiles(droppedFiles: File[]): Promise<any> {
     errorMessage = null;
     successMessage = null;
     // Validate files
@@ -144,7 +144,7 @@
     await uploadFilesToMinIO(uploadFiles);
   }
   // Optimized MinIO upload with CUDA preprocessing
-  async function uploadFilesToMinIO(uploadFiles: UploadFile[]) {
+  async function uploadFilesToMinIO(uploadFiles: UploadFile[]): Promise<any> {
     uploading = true;
     uploadProgress = 0;
     const startTime = Date.now();
@@ -159,7 +159,7 @@
         });
         // CUDA preprocessing for supported file types
         let preprocessedData = uploadFile.fil;
-        let cudaProcessed = $state(false);
+        let cudaProcessed = $state<boolean>(false);
         if (enableCudaAcceleration && shouldUseCudaPreprocessing(uploadFile.file)) {
           const cudaResult = await preprocessWithCuda(uploadFile.file);
           if (cudaResult.success) {
@@ -235,7 +235,7 @@
       return { success: false }
     }
   }
-  async function uploadSingleFile(uploadFile: UploadFile, file: File, cudaProcessed: boolean) {
+  async function uploadSingleFile(uploadFile: UploadFile, file: File, cudaProcessed: boolean): Promise<any> {
     const formData = new FormData();
     // Add file and metadata
     formData.append('file', file);
@@ -279,7 +279,7 @@
       error: 'Invalid response from upload service',
     }
   }
-  async function publishMinIOSyncEvent(uploadResult: UploadResult, caseId: string) {
+  async function publishMinIOSyncEvent(uploadResult: UploadResult, caseId: string): Promise<any> {
     try {
       await fetch('/api/v1/redis/publish', {
         method: 'POST',

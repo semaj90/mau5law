@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Type definitions for vector operations and API interfaces
  */

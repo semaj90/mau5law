@@ -7,9 +7,9 @@ Tests the demo RAG functionality with a working interface
   import { demoQueryLLM, demoGenerateCaseSummary, type RAGDemoQuery, type RAGDemoResponse } from '$lib/rag/demo-rag';
   // Simple reactive state instead of stores
   let currentCase = $state({ id: '1', title: 'Demo Financial Fraud Case' });
-  let currentEvidence = $state([]);
-  let query = $state('');
-  let isLoading = $state(false);
+  let currentEvidence = $state<any[]>([]);
+  let query = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let chatHistory = $state<any[]>([]);
   // Sample queries for testing
   const sampleQueries = [
@@ -19,7 +19,7 @@ Tests the demo RAG functionality with a working interface
     'Analyze patterns in the evidence',
     'Who are the persons of interest?',
   ];
-  async function sendQuery() {
+  async function sendQuery(): Promise<any> {
     if (!query.trim() || isLoading) return;
     const userQuery = query.trim();
     query = '';

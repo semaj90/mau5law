@@ -3,22 +3,24 @@
   AI-powered legal document creation using Enhanced-Bits UI components
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Note: removed unused onMount and Button imports and replaced external dialog usage
   // with a lightweight inline modal to avoid dependency/import errors.
   // Document drafting state
   let documentTypes = $state<DocumentType[]>([]);
   let currentDocument = $state<DocumentDraft | null>(null);
   let templates = $state<DocumentTemplate[]>([]);
-  let isDrafting = $state(false);
-  let isGenerating = $state(false);
-  let showPreview = $state(false);
+  let isDrafting = $state<boolean>(false);
+  let isGenerating = $state<boolean>(false);
+  let showPreview = $state<boolean>(false);
   let draftHistory = $state<DocumentDraft[]>([]);
   // Editor state
-  let selectedDocumentType = $state('');
-  let selectedTemplate = $state('');
-  let documentTitle = $state('');
-  let documentContent = $state('');
-  let caseContext = $state('');
+  let selectedDocumentType = $state<string>('');
+  let selectedTemplate = $state<string>('');
+  let documentTitle = $state<string>('');
+  let documentContent = $state<string>('');
+  let caseContext = $state<string>('');
   let draftingMode = $state<'guided' | 'template' | 'freeform'>('guided');
   let aiAssistanceLevel = $state<'minimal' | 'moderate' | 'extensive'>('moderate');
   interface DocumentType {
@@ -88,7 +90,7 @@
     loadTemplates();
     loadDraftHistory();
   });
-  async function loadDocumentTypes() {
+  async function loadDocumentTypes(): Promise<any> {
     try {
       const response = await fetch('/api/ai/document-drafting/types', {
         method: 'GET',
@@ -116,7 +118,7 @@
       console.error('Error loading document types:', error);
     }
   }
-  async function loadTemplates() {
+  async function loadTemplates(): Promise<any> {
     try {
       const response = await fetch('/api/ai/document-drafting/templates', {
         method: 'GET',
@@ -144,7 +146,7 @@
       console.error('Error loading templates:', error);
     }
   }
-  async function loadDraftHistory() {
+  async function loadDraftHistory(): Promise<any> {
     try {
       const response = await fetch('/api/ai/document-drafting/history', {
         method: 'GET',
@@ -172,7 +174,7 @@
       console.error('Error loading draft history:', error);
     }
   }
-  async function startNewDocument() {
+  async function startNewDocument(): Promise<any> {
     if (!selectedDocumentType) return;
     isDrafting = true;
     try {
@@ -206,7 +208,7 @@
       isDrafting = false;
     }
   }
-  async function generateContent(prompt: string) {
+  async function generateContent(prompt: string): Promise<any> {
     if (!currentDocument) return;
     isGenerating = true;
     try {
@@ -249,7 +251,7 @@
       target.value = '';
     }
   }
-  async function saveDocument() {
+  async function saveDocument(): Promise<void> {
     if (!currentDocument) return;
     try {
       const request = {
@@ -271,7 +273,7 @@
       console.error('Error saving document:', error);
     }
   }
-  async function applySuggestion(suggestion AISuggestion) {
+  async function applySuggestion(suggestion AISuggestion): Promise<any> {
     if (!currentDocument) return;
     try {
       const response = await fetch(`/api/ai/document-drafting/suggestions/${suggestion.id}/apply`, {

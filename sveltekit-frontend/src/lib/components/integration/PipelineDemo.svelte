@@ -14,14 +14,14 @@ https://svelte.dev/e/unexpected_reserved_word -->
     CardContent
   } from '$lib/components/ui/enhanced-bits.svelte';
   // Reactive state using Svelte 5 runes
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let results = $state<PipelineResult[]>([]);
   let systemHealth = $state<any>(null);
   let performanceReport = $state<any>(null);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<any>(null);
   let selectedPipeline = $state<PipelineType>('optimized');
-  let cacheKey = $state('demo_legal_documents');
+  let cacheKey = $state<string>('demo_legal_documents');
   // Performance metrics
   let metrics = $state({
     totalOperations: 0,
@@ -30,7 +30,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     lastUpdate: new Date()
   });
   // Pipeline execution with XState management
-  async function executePipeline() {
+  async function executePipeline(): Promise<any> {
     if (isProcessing) return;
     isProcessing = true;
     try {
@@ -50,7 +50,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // Auto-select optimal pipeline
-  async function autoExecutePipeline() {
+  async function autoExecutePipeline(): Promise<any> {
     if (isProcessing) return;
     isProcessing = true;
     try {
@@ -70,7 +70,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // Batch processing demo
-  async function batchProcess() {
+  async function batchProcess(): Promise<any> {
     if (isProcessing) return;
     isProcessing = true;
     try {
@@ -90,7 +90,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // Search across all pipelines
-  async function searchPipelines() {
+  async function searchPipelines(): Promise<any> {
     if (!searchQuery.trim()) return;
     try {
       console.log(`🔍 Searching all pipelines for: "${searchQuery}"`);
@@ -101,7 +101,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // System health check
-  async function checkSystemHealth() {
+  async function checkSystemHealth(): Promise<any> {
     try {
       console.log('🏥 Checking system health');
       systemHealth = await pipelineManager.getSystemHealth();
@@ -126,7 +126,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
     }
   }
   // Cleanup resources
-  async function cleanup() {
+  async function cleanup(): Promise<any> {
     try {
       console.log('🧹 Cleaning up pipeline resources');
       await pipelineManager.cleanup();

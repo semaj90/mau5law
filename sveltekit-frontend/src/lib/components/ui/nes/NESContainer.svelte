@@ -33,8 +33,8 @@
     class: className = '',
     style = '',
   }: Props = $props();
-  let isMinimized = $state(false);
-  let isDragging = $state(false);
+  let isMinimized = $state<boolean>(false);
+  let isDragging = $state<boolean>(false);
   let dragOffset = $state({ x: 0, y: 0 });
   function handleClose() {
     onClose?.();
@@ -58,7 +58,7 @@
     container.style.top = `${event.clientY - dragOffset.y}px`;
   }
   function handleDragEnd() {
-    isDragging = $state(false);
+    isDragging = false;
   }
   // NES styling classes
   let containerClasses = $derived(() => {

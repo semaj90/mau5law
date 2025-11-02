@@ -12,7 +12,7 @@
     opacity: number;
     offsetY: number;
   }
-  let scrollY = $state(0);
+  let scrollY = $state<number>(0);
   let smoothScrollY = spring(0, { stiffness: 0.05, damping: 0.9 });
   let container: HTMLDivElement;
   let rafId: number;

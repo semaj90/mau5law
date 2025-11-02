@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // Authentication Service - Production Implementation
 import { goto } from '$app/navigation';
 

@@ -349,9 +349,9 @@ export async function healthCheck(): Promise<{
 }> {
   const config = getConfig();
 
-  let redisConnected = $state(false);
-  let databaseConnected = $state(false);
-  let ollamaConnected = $state(false);
+  let redisConnected = $state<boolean>(false);
+  let databaseConnected = $state<boolean>(false);
+  let ollamaConnected = $state<boolean>(false);
 
   // Check Redis
   try {

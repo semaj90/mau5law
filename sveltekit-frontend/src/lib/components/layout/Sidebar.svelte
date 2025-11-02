@@ -1,4 +1,7 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
   import { Button } from '$lib/components/ui/bits/Button.svelte';
@@ -31,7 +34,7 @@
     Settings,
   } from 'lucide-svelte';
   import { onMount } from 'svelte';
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   $effect(() => {
     mounted = true;
   });
@@ -124,7 +127,7 @@
     },
   ]);
   function closeSidebar() {
-    open = $state(false);
+    open = false;
   }
 </script>
 <!-- Mobile backdrop -->

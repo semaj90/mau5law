@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // removed unused: 'User' import
 
@@ -122,8 +124,8 @@ https://svelte.dev/e/js_parse_error -->
   import { keyboardShortcuts, loadShortcutsFromAI } from '$lib/stores/keyboardShortcutsStore'; // Updated import path
   import { get } from 'svelte/store';
 
-  let searchQuery = $state("");
-  let selectedIndex = $state(0);
+  let searchQuery = $state<string>("");
+  let selectedIndex = $state<number>(0);
   let filteredShortcuts: ShortcutItem[] = $state([]); // Typed and initialized
   let filteredCommands: CommandItem[] = $state([]); // Typed and initialized
   let commandInput: HTMLInputElement | null = $state(null); // Reactive state
@@ -207,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
         switch (event.key) {
           case "Escape":
             event.preventDefault();
-            open = $state(false);
+            open = false;
             break;
           case "ArrowDown":
             event.preventDefault();
@@ -264,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function executeCommand(command: CommandItem) { // Typed parameter: 'command'
     if (!command) return;
-    open = $state(false);
+    open = false;
     searchQuery = "";
     try {
       command.action && command.action();
@@ -306,7 +308,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function closeModals() {
     document.dispatchEvent(new CustomEvent("close-modals"));
-    open = $state(false);
+    open = false;
   }
 
   function toggleDarkMode() {

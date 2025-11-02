@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Cached RAG API Endpoint
  * Provides cached RAG functionality with embeddinggemma and gemma3:legal-latest
@@ -101,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * Handle RAG query with caching
  */
-async function handleRAGQuery(queryData: any, _options: any) {
+async function handleRAGQuery(queryData: any, _options: any): Promise<any> {
   try {
     // If the runtime-resolved function isn't available, return a clear error response.
     if (typeof enhancedRAGQueryWithCache !== 'function') {
@@ -204,7 +205,7 @@ async function handleRAGQuery(queryData: any, _options: any) {
  *
  * documents: any[] (validated at runtime)
  */
-async function handleDocumentIngestion(documents: any, _options: any) {
+async function handleDocumentIngestion(documents: any, _options: any): Promise<any> {
   try {
     if (!documents || !Array.isArray(documents) || documents.length === 0) {
       return json({ error: 'Documents array is required' }, { status: 400 });
@@ -255,7 +256,7 @@ async function handleDocumentIngestion(documents: any, _options: any) {
 /**
  * Handle cache testing
  */
-async function handleCacheTest(_options: any) {
+async function handleCacheTest(_options: any): Promise<any> {
   try {
     // safe runtime extraction of `type` from unknown options (avoid `any`)
     const opts = typeof _options === 'object' && _options !== null ? (_options as Record<string, unknown>) : {};
@@ -288,7 +289,7 @@ async function handleCacheTest(_options: any) {
 /**
  * Handle cache metrics
  */
-async function handleCacheMetrics() {
+async function handleCacheMetrics(): Promise<any> {
   try {
     // Safe typed view to avoid TypeScript errors if method doesn't exist
     const service = enhancedCachingService as unknown as EnhancedCachingServiceLike;
@@ -322,7 +323,7 @@ async function handleCacheMetrics() {
 /**
  * Handle cache warmup
  */
-async function handleCacheWarmup() {
+async function handleCacheWarmup(): Promise<any> {
   try {
     const service = cachedRAGService as unknown as CachedRAGServiceLike;
     await service.warmupCacheWithLegalQueries?.();

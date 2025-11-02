@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               onclick={() => handleStepClick(index)}
               disabled={!isClickable}
-              class="group flex items-center w-full text-left
+              class="group" flex items-center w-full text-left
                                    {isClickable
                 ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700'
                 : 'cursor-not-allowed'}
@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
               <!-- Step indicator -->
               <div class="flex-shrink-0 relative">
                 <div
-                  class="flex items-center justify-center w-8 h-8 rounded-full
+                  class="flex" items-center justify-center w-8 h-8 rounded-full
                                            {status === 'completed' ? 'bg-green-100 dark:bg-green-900' : ''}
                                            {status === 'current'
                     ? 'bg-blue-100 dark:bg-blue-900 border-2 border-blue-600'
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
                 <!-- Step number badge for smaller screens -->
                 <div
-                  class="absolute -top-1 -right-1 w-4 h-4 bg-gray-100 dark: bg-gray-700 rounded-full
+                  class="absolute" -top-1 -right-1 w-4 h-4 bg-gray-100 dark: bg-gray-700 rounded-full
                                            flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-400;
                                            lg:hidden"
                 >
@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="ml-3 min-w-0 flex-1">
                 <div class="flex items-center space-x-2">
                   <p
-                    class="text-sm font-medium text-gray-900 dark:text-white truncate
+                    class="text-sm" font-medium text-gray-900 dark:text-white truncate
                                              {status === 'current' ? 'text-blue-600 dark:text-blue-400' : ''}"
                   >
                     {step.title}

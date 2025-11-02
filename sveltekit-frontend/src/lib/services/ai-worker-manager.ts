@@ -1,3 +1,4 @@
+import type { AIResponse } from '$lib/types';
 import crypto from 'crypto';
 import type { AITask, WorkerStatus } from '$lib/services/types/service-types.js';
 

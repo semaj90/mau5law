@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // CrewAI Legal Document Review Multi-Agent System
 // Integrates Claude Code CLI + Local Gemma3 + Self-Prompting + Auto-Save
 import { ChatOllama } from '@langchain/ollama';

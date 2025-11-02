@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // Enhanced Drizzle ORM Schema with JSONB Support
 // File: schema-jsonb.ts
 import {

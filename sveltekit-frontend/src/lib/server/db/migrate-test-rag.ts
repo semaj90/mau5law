@@ -9,7 +9,7 @@ import { sql } from 'drizzle-orm';
 const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 const migrationClient = postgres(connectionString, { max: 1 });
 const db = drizzle(migrationClient);
-async function migrate() {
+async function migrate(): Promise<any> {
   console.log('🚀 Starting Test RAG migration...\n');
   try {
     // Enable pgvector extension if not already enabled

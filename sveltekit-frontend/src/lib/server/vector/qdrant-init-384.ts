@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Qdrant Collection Initialization for 384-Dimension Vectors
  *

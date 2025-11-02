@@ -11,10 +11,10 @@
   import {
     Input
   } from '$lib/components/ui/enhanced-bits.svelte';
-  let messages = $state([]);
-  let input = $state('');
-  let isLoading = $state(false);
-  async function sendMessage() {
+  let messages = $state<Message[]>([]);
+  let input = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  async function sendMessage(): Promise<any> {
     if (!input.trim()) return;
     messages.push({ role: 'user', content: input });
     const userMessage = input;

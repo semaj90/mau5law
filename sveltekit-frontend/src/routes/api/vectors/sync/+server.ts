@@ -259,7 +259,7 @@ export const GET: RequestHandler = async () => {
     const [pgTest] = await db.select().from(vectors).limit(1);
 
     // Check Redis connection (ioredis)
-    let redisOk = $state(false);
+    let redisOk = $state<boolean>(false);
     try {
       type RedisLike = { ping?: () => Promise<string> };
       const pong = await (redis as unknown as RedisLike | null)?.ping?.();

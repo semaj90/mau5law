@@ -1,9 +1,10 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported — do NOT import runes explicitly.
   // XState Transition Monitoring & Visualization
 
-  let mounted = $state(false);
-  let machineId = $state('auth-machine'); // simplified default
+  let mounted = $state<boolean>(false);
+  let machineId = $state<string>('auth-machine'); // simplified default
   let transitions = $state<any[]>([]);
   // Precompute a stable sorted list for the template to iterate over.
   // Using $derived keeps this reactive in Svelte 5 runes mode.
@@ -13,8 +14,8 @@
       (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
   });
-  let currentState = $state('');
-  let loading = $state(true);
+  let currentState = $state<string>('');
+  let loading = $state<boolean>(true);
   let selectedTransition = $state<any | null>(null);
 
   // Mock transition data (fixed syntax: colons, property names)
@@ -97,7 +98,7 @@
     }
   });
 
-  async function loadTransitions() {
+  async function loadTransitions(): Promise<any> {
     loading = true;
     try {
       // production: fetch(`/api/state/machines/${machineId}/transitions`)
@@ -114,7 +115,7 @@
     }
   }
 
-  async function triggerTransition(eventName: string) {
+  async function triggerTransition(eventName: string): Promise<any> {
     try {
       // production post to API to trigger event
       console.log('Triggering transition', eventName);

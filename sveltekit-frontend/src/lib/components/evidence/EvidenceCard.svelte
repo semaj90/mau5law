@@ -48,8 +48,8 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
   const fileSize = evidence?.metadata?.size ?? evidence?.fileSize ?? 0;
-  let isHovered = $state(false);
-  let comparing = $state(false);
+  let isHovered = $state<boolean>(false);
+  let comparing = $state<boolean>(false);
   let compareError: string | null = null;
   const IconComponent = getIcon(evidence?.evidenceType ?? evidence?.type ?? 'document');
   function handleMouseEnter() {
@@ -58,7 +58,7 @@
   function handleMouseLeave() {
     if (expandOnHover) isHovered = $state(false);
   }
-  async function handleCompareClick() {
+  async function handleCompareClick(): Promise<any> {
     try {
       compareError = null;
       comparing = true;

@@ -1,4 +1,5 @@
 <script lang="ts" module>
+import type { Case } from '$lib/types';
   // Module-level exports remain permissive; attempt to read from adapter at runtime
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   const _ns = await getBitsNamespace();

@@ -20,7 +20,7 @@
     DialogFooterProps,
     DialogCloseProps,
     DialogOverlayProps
-  } from '$lib/ui/types/dialog';
+  } from '$lib/ui/types/Dialog';
   import { cn } from '$lib/utils'; // Assuming a utility for class merging exists
 
   // --- Dialog Root Props ---

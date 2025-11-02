@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';

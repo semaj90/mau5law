@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
 	// Svelte 5 runes are auto-imported
 	import type { Evidence } from '$lib/types/api';
 	// onMount not used — remove to avoid unused import
@@ -12,10 +14,10 @@
 	let evidence: Evidence[] = $state([]);
 	let citationPoints: CitationPoint[] = $state([]);
 	let activeTab: 'editor' | 'canvas' | 'ai-chat' = $state('editor');
-	let isLoading = $state(false);
-	let error = $state('');
+	let isLoading = $state<boolean>(false);
+	let error = $state<string>('');
 	// Demo case ID - default, will be overridden from route params if present
-	let caseId = $state('demo-case-123');
+	let caseId = $state<string>('demo-case-123');
 
 	// AI Chat context - built from current case data
 	let aiChatContext = $derived(() => {
@@ -38,7 +40,7 @@ Provide helpful analysis, suggestions, and insights for the prosecutor working o
 			await loadDemoData();
 		})();
 	});
- 	async function loadDemoData() {
+ 	async function loadDemoData(): Promise<any> {
  		try {
  			isLoading = true;
  			// Load sample citation points
@@ -147,7 +149,7 @@ Provide helpful analysis, suggestions, and insights for the prosecutor working o
   			error = 'Failed to load demo data';
   			isLoading = false;
   }}
-  	async function handleReportSave(report: Report) {
+  	async function handleReportSave(report: Report): Promise<void> {
   		try {
   			currentReport = report;
   			console.log('Report saved:', report);
@@ -155,7 +157,7 @@ Provide helpful analysis, suggestions, and insights for the prosecutor working o
   			console.error('Failed to save report:', err);
   			error = 'Failed to save report';
   }}
-  	async function handleCanvasSave(canvasState: CanvasState) {
+  	async function handleCanvasSave(canvasState: CanvasState): Promise<void> {
   		try {
   			currentCanvasState = canvasState;
   			console.log('Canvas saved:', canvasState);

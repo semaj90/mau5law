@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Document Ingestion Worker
  * High-performance document processing with RTX Tensor Upscaler integration

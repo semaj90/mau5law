@@ -3,7 +3,7 @@
   import { onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
-  import * as Dialog from 'bits-ui/components/dialog'; // Dialog primitives (kept as namespace for Content/Header API)
+  import * as Dialog from 'bits-ui/components/Dialog'; // Dialog primitives (kept as namespace for Content/Header API)
   import * as Tooltip from 'bits-ui/components/tooltip'; // Tooltip primitives
   // Use named UI primitives from bits-ui where available (avoid default vs named export mismatch)
   import { Button, Textarea } from 'bits-ui';
@@ -43,16 +43,16 @@
   // Component state using $state runes
   let chatContainer = $state<HTMLDivElement | null>(null);
   let messageInput = $state<any>(null); // Changed type from HTMLTextAreaElement | null to any
-  let isConnected = $state(false);
-  let isTyping = $state(false);
-  let streamingResponse = $state('');
+  let isConnected = $state<boolean>(false);
+  let isTyping = $state<boolean>(false);
+  let streamingResponse = $state<string>('');
   let currentAnalysis = $state<MessageAnalysis | null>(null);
   let ragContext = $state<LocalRAGContext | null>(null); // Use LocalRAGContext
   let userAttention = $state({ focused: true, lastActivity: Date.now() });
   // Chat state (UI messages require `id`)
   let messages = $state<UIMessage[]>([]);
   let sessionId = $state<string>('');
-  let currentMessage = $state('');
+  let currentMessage = $state<string>('');
   let wsConnection = $state<WebSocket | null>(null);
   // WebGPU accelerator state
   let webgpuAccelerator = $state<any>(null);
@@ -64,7 +64,7 @@
   // Dialog state for analysis panel
   // Melt UI component creation removed - replace with bits-ui declarative components
   // Initialize WebSocket connection
-  async function initializeConnection() {
+  async function initializeConnection(): Promise<void> {
     if (!browser) return;
     try {
       const proto = location && location.protocol === 'https:' ? 'wss' : 'ws';
@@ -83,21 +83,21 @@
         }
       };
       wsConnection.onclose = () => {
-        isConnected = $state(false);
+        isConnected = false;
         console.log('❌ Enhanced AI Chat disconnected');
       };
       wsConnection.onerror = error => {
         console.error('❌ WebSocket error:', error);
-        isConnected = $state(false);
+        isConnected = false;
       };
     } catch (error) {
       console.error('Failed to initialize connection', error);
-      isConnected = $state(false);
+      isConnected = false;
       wsConnection = null;
     }
   }
   // Initialize WebGPU acceleration if enabled
-  async function initializeWebGPU() {
+  async function initializeWebGPU(): Promise<void> {
     if (!enableWebGPU || !browser) return;
     try {
       // Placeholder for WebGPU initialization
@@ -105,7 +105,7 @@
       webgpuAccelerator = { initialized: true };
     } catch (error) {
       console.warn('WebGPU not available:', error);
-      enableWebGPU = $state(false);
+      enableWebGPU = false;
     }
   }
   // Handle WebSocket messages
@@ -165,12 +165,12 @@
           ];
           streamingResponse = '';
         }
-        isTyping = $state(false);
+        isTyping = false;
         break;
     }
   }
   // Helper to send via HTTP (extracted to avoid duplication)
-  async function sendViaHttp(messageToSend: string) {
+  async function sendViaHttp(messageToSend: string): Promise<any> {
     try {
       const response = await fetch('/api/contextual/chat', { // Changed from /api/chat-test to /api/contextual/chat
         method: 'POST',
@@ -229,7 +229,7 @@
       isTyping = false;
     }
   }
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     // allow fallback to HTTP when WS is not connected; only block empty messages or when already typing
     if (!currentMessage.trim() || isTyping) return;
     const userMessage: UIMessage = {

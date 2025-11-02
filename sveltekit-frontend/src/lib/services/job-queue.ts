@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { Queue, Worker as BullMQWorker, type Job as BullMQJob, type JobsOptions } from 'bullmq';
 import { redis, redisConnection } from '$lib/server/redis';
 import type { Redis as RedisClient } from 'ioredis';

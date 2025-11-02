@@ -124,7 +124,7 @@
   });
 
   // make initD3 async and perform a dynamic import of d3
-  async function initD3() {
+  async function initD3(): Promise<void> {
     if (!graphContainer) return;
     try {
       // prefer default export if the bundler provides one, otherwise use the module namespace
@@ -298,7 +298,7 @@
     svg = null;
   }
 
-  async function loadSystemData() {
+  async function loadSystemData(): Promise<any> {
     try {
       // Resolve API functions at runtime to tolerate different module shapes
       const getSystemStatus =

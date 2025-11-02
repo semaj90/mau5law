@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * User Activity Detection Store for GPU Lifecycle Management
  * Tracks user interactions to trigger GPU memory optimization

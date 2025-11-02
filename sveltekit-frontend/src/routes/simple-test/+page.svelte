@@ -2,10 +2,11 @@
   Minimal Case Creation Test - Testing API integration without UI library dependencies
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
 
-let isSubmitting = $state(false);
-let submitResult = $state('');
+let isSubmitting = $state<boolean>(false);
+let submitResult = $state<string>('');
 let formData = $state({
     caseNumber: '',
     title: '',
@@ -14,8 +15,8 @@ let formData = $state({
 });
 
 // computed style strings instead of inline JS expressions in attributes
-let resultStyle = $state('');
-let buttonStyle = $state('padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 14px;');
+let resultStyle = $state<string>('');
+let buttonStyle = $state<string>('padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 14px;');
 
 $effect(() => {
   resultStyle = submitResult && submitResult.includes('✅')
@@ -26,7 +27,7 @@ $effect(() => {
   buttonStyle = `padding: 10px 20px; ${isSubmitting || !formData.caseNumber || !formData.title ? 'cursor: not-allowed; opacity: 0.6;' : 'cursor: pointer; opacity: 1;' } border: none; border-radius: 4px; font-size: 14px; color: white; background: ${isSubmitting || !formData.caseNumber || !formData.title ? '#6ea0ff' : '#007bff' };`;
 });
 
-async function handleSubmit(e: Event) {
+async function handleSubmit(e: Event): Promise<any> {
     e.preventDefault(); // use passed event
     isSubmitting = true;
     submitResult = '';
@@ -55,7 +56,7 @@ async function handleSubmit(e: Event) {
 }
 
 // Test database connectivity - performs a real fetch and reports status
-async function testDatabaseConnection() {
+async function testDatabaseConnection(): Promise<void> {
     try {
       const response = await fetch('/api/test-db'); // endpoint to check DB connectivity (adjust if your project uses a different route)
       const result = await response.json();

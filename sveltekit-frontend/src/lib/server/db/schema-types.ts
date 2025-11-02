@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // @ts-nocheck
 // Production schema type exports for SvelteKit 2 + Drizzle ORM
 import type { InferSelectModel, InferInsertModel } from 'drizzle-orm';

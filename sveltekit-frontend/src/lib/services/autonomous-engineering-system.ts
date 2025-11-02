@@ -1,3 +1,4 @@
+import type { AIResponse } from '$lib/types';
 import crypto from "crypto";
 /**
  * Autonomous Engineering System

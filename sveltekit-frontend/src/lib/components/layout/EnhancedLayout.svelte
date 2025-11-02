@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
@@ -32,8 +34,8 @@
     hideHeader = false,
     fullWidth = false,
   }: Props = $props();
-  let sidebarOpen = $state(false);
-  let mounted = $state(false);
+  let sidebarOpen = $state<boolean>(false);
+  let mounted = $state<boolean>(false);
   let currentPath = $derived($page.url.pathname);
   // Auto-detect optimal layout based on route
   let layoutVariant = $derived(() => {

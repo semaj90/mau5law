@@ -1,5 +1,6 @@
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   interface DocumentUpload {
     id: string;
@@ -16,9 +17,9 @@
   }
   // Replaced incorrect $state usage with plain reactive vars
   let uploads: DocumentUpload[] = [];
-  let isDragging = $state(false);
+  let isDragging = $state<boolean>(false);
   let errorMessage = '';
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let fileInput: HTMLInputElement | null = null;
   const API_BASE = 'http://localhost:8081/api';
   const MAX_LOCAL_STORAGE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -275,7 +276,7 @@
   }
   function handleDrop(event: DragEvent): void {
     event.preventDefault();
-    isDragging = $state(false);
+    isDragging = false;
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       Array.from(files).forEach(file => simulateUpload(file));

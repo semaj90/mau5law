@@ -1,6 +1,6 @@
 <script lang="ts">
   // Compatibility shim: forward to real Card implementation
-  import { Card as RealCard } from '$lib/components/ui/card';
+  import { Card as RealCard } from '$lib/components/ui/Card';
   let { className = undefined, style = undefined, ...rest } = $props<{
     className?: string;
     style?: string;

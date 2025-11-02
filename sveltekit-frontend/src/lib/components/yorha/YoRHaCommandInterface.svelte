@@ -1,5 +1,6 @@
 <!-- YoRHa Advanced Command Interface - Complete 3D System -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte'; // createEventDispatcher is replaced by $event rune
   import { writable, get } from 'svelte/store'; // import 'get' for store access in functions
@@ -31,12 +32,12 @@
     neural_activity: 94.6,
   });
   // Command input
-  let commandInput = $state('');
-  let isProcessingCommand = $state(false);
+  let commandInput = $state<string>('');
+  let isProcessingCommand = $state<boolean>(false);
   // Visual effects
-  let glitchActive = $state(false);
+  let glitchActive = $state<boolean>(false);
   let scanlineOpacity = $state(0.3);
-  let hologramFlicker = $state(false);
+  let hologramFlicker = $state<boolean>(false);
   // YoRHa modules configuration
   const yorhaModules: YoRHaModule[] = [
     {
@@ -232,7 +233,7 @@
       }))
     );
   }
-  async function executeCommand(command: string) {
+  async function executeCommand(command: string): Promise<any> {
     if (isProcessingCommand) return;
     isProcessingCommand = true;
     commandInput = '';
@@ -342,8 +343,8 @@
     glitchActive = true;
     hologramFlicker = true;
     setTimeout(() => {
-      glitchActive = $state(false);
-      hologramFlicker = $state(false);
+      glitchActive = false;
+      hologramFlicker = false;
     }, 200);
   }
   function handleKeyPress(_event: KeyboardEvent) {
@@ -379,7 +380,7 @@
   // Removed unused function
   // Removed unused function handleExecuteCommand and its references to dispatch (Svelte 5 migration)
   // Removed unused variable
-  // let currentCommandInput = $state('');
+  // let currentCommandInput = $state<string>('');
 </script>
 <!-- YoRHa Command Interface -->
 <div

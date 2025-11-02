@@ -34,8 +34,8 @@
   // Internal state for tags, initialized from prop
   let _tags = $state(initialTags);
   // State using Svelte 5 syntax
-  let inputValue = $state('');
-  let showSuggestions = $state(false);
+  let inputValue = $state<string>('');
+  let showSuggestions = $state<boolean>(false);
   let inputElement: HTMLInputElement;
   let suggestionsContainer = $state<HTMLElement | undefined>(); // This will be bound to the suggestions div
   let activeIndex = $state(-1);
@@ -80,7 +80,7 @@
     onAdd(trimmedTag);
     onChange(_tags);
     inputValue = '';
-    showSuggestions = $state(false);
+    showSuggestions = false;
   }
   function handleInput() {
     showSuggestions = inputValue.length > 0;
@@ -110,7 +110,7 @@
         activeIndex = Math.max(activeIndex - 1, -1);
         break;
       case 'Escape':
-        showSuggestions = $state(false);
+        showSuggestions = false;
         activeIndex = -1;
         break;
       case 'Backspace':
@@ -132,7 +132,7 @@
       inputElement &&
       !inputElement.contains(event.target as Node)
     ) {
-      showSuggestions = $state(false);
+      showSuggestions = false;
       activeIndex = -1;
     }
   }

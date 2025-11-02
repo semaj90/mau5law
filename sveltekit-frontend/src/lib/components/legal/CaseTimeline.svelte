@@ -1,5 +1,6 @@
 <!-- Case Timeline Component for Legal AI App -->
 <script context="module" lang="ts">
+import type { Case } from '$lib/types';
   // Move interface here so modifiers are allowed
   export interface TimelineEvent {
     id: string;

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
   // $props is a Svelte rune; do not import it.
   interface Props {
     size?: 'sm' | 'md' | 'lg';

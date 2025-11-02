@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // @ts-nocheck
 /**
  * GPU Shader Cache Database Schema - PostgreSQL + pgvector Integration

@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Loki.js + Redis High-Performance Caching - Phase 14
  *

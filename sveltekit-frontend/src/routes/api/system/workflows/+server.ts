@@ -1,3 +1,6 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { productionLogger } from '$lib/server/production-logger';
 import { db } from '$lib/server/db/index';

@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import { db, testConnection, healthCheck } from '$lib/server/db'
 import { users, cases, evidence, documentChunks } from '$lib/server/db/schema-postgres'

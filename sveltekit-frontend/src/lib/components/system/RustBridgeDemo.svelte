@@ -15,7 +15,7 @@
   } from '$lib/wasm/rust-bridge';
   import type { SystemInfo, PerformanceMetrics } from '$lib/types/rust-bridge';
   // Reactive state
-  let bridgeInitialized = $state(false);
+  let bridgeInitialized = $state<boolean>(false);
   let systemInfo = $state<SystemInfo | null>(null);
   let gpuInfo = $state<string[]>([]);
   let performanceMetrics = $state<PerformanceMetrics | null>(null);
@@ -23,9 +23,9 @@
   let bridgeStatus = $state<any>(null);
   let benchmarkResults = $state<any>(null);
   // Demo state
-  let sampleText = $state('This is a sample legal document for processing with the Rust WASM bridge.');
+  let sampleText = $state<string>('This is a sample legal document for processing with the Rust WASM bridge.');
   let textProcessingResult = $state<any>(null);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let errorMessage = $state<string | null>(null);
   $effect(() => {
     (async () => {
@@ -50,7 +50,7 @@
       }
     })();
   });
-  async function loadSystemData() {
+  async function loadSystemData(): Promise<any> {
     try {
       systemInfo = getSystemInfo();
       gpuInfo = detectGpuAcceleration();
@@ -61,7 +61,7 @@
       errorMessage = `Failed to load system data: ${error}`;
     }
   }
-  async function processText() {
+  async function processText(): Promise<any> {
     if (!bridgeInitialized) return;
     try {
       isLoading = true;
@@ -74,7 +74,7 @@
       isLoading = false;
     }
   }
-  async function runBenchmark() {
+  async function runBenchmark(): Promise<any> {
     if (!bridgeInitialized) return;
     try {
       isLoading = true;

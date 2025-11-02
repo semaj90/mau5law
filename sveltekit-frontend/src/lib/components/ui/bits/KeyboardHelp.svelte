@@ -1,6 +1,8 @@
 <!-- Enhanced Bits UI: Keyboard Shortcuts Help Panel -->
 <!-- Professional help panel for displaying available keyboard shortcuts -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -36,8 +38,8 @@
     open?: boolean;
   } = $props();
   // Local state
-  let searchQuery = $state('');
-  let selectedCategory = $state('all');
+  let searchQuery = $state<string>('');
+  let selectedCategory = $state<string>('all');
   // Default legal shortcuts for display
   const defaultShortcuts: KeyboardShortcut[] = [
     // Case Management
@@ -142,13 +144,13 @@
   // Handle escape key to close
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      open = $state(false);
+      open = false;
     }
   }
   // Handle backdrop click
   function handleBackdropClick(e: MouseEvent) {
     if ((e.target as EventTarget) === (e.currentTarget as EventTarget)) {
-      open = $state(false);
+      open = false;
     }
   }
   // Global shortcut listener (Shift + ? toggles panel)

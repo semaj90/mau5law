@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * XState Machine for Case Management
  * Uses MCP Tools Layer for all database operations

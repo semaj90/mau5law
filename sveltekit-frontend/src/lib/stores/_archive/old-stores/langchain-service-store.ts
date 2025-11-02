@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * LangChain Service Logic Layer with Database Sync
  * Decoupled reactive store that handles complex LangChain/Ollama operations

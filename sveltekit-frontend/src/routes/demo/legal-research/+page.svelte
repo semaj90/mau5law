@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import type { PageData } from './$types';
   import { onMount } from 'svelte';
 
@@ -7,7 +8,7 @@
 
   // ✅ SVELTE 5: State
   let selectedFeature = $state<string | null>(null);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let demoResults = $state<any[]>([]);
 
   // ✅ SVELTE 5: Derived

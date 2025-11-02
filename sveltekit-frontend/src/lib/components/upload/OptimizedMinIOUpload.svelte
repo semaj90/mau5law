@@ -67,18 +67,18 @@
   }
   let files = $state<File[]>([]); // retained for backwards compatibility & simple length checks
   let fileStates = $state<FileState[]>([]);
-  let uploading = $state(false);
-  let dragOver = $state(false);
-  let uploadProgress = $state(0); // aggregate
+  let uploading = $state<boolean>(false);
+  let dragOver = $state<boolean>(false);
+  let uploadProgress = $state<number>(0); // aggregate
   // Overall batch status (subset; mirrors dominant file state). Include: 'canceled' for consistency.
   type BatchStatus = 'idle' | 'uploading' | 'processing' | 'completed' | 'error' | 'canceled';
   let uploadStatus: BatchStatus = $state<BatchStatus>('idle');
   let errorMessage = $state<string | null>(null);
   let minioHealthy = $state<boolean | null>(null);
   let fileInput: HTMLInputElement | null = null;
-  let liveMessage = $state(''); // aria-live updates
+  let liveMessage = $state<string>(''); // aria-live updates
   // Parallel processing state
-  let activeUploads = $state(0);
+  let activeUploads = $state<number>(0);
   let uploadQueue = $state<FileState[]>([]);
   let batchToastId = $state<string | null>(null);
   let performanceMetrics = $state({
@@ -210,7 +210,7 @@
     telemetry.emit('upload_retry_scheduled', { file: fs.file.name, attemptNext: (fs.attempts + 1), maxRetries, delayMs: delay });
   }
   // Live retry countdown ticker (increments state so countdown re-renders)
-  let retryTicker = $state(0);
+  let retryTicker = $state<number>(0);
   let retryInterval: any = null;
   function ensureRetryTicker() {
     if (retryInterval) return; // already running
@@ -240,7 +240,7 @@
       }
       return fs;
     });
-    uploading = $state(false);
+    uploading = false;
     liveMessage = 'All uploads canceled';
     if (enableToastNotifications) {
       toastService.info('Uploads canceled', 'All in‑flight and queued uploads have been canceled.', { duration: 4000 });
@@ -258,12 +258,12 @@
   function handleDragLeave(_event: DragEvent) {
     _event.preventDefault();
     if (disabled || uploading) return;
-    dragOver = $state(false);
+    dragOver = false;
   }
   function handleDrop(_event: DragEvent) {
     _event.preventDefault();
     if (disabled || uploading) return;
-    dragOver = $state(false);
+    dragOver = false;
     const droppedFiles = Array.from(_event.dataTransfer?.files || []);
     processFiles(droppedFiles);
   }
@@ -342,7 +342,7 @@
     if (fileStates.length === 0) return 0;
     return Math.round(fileStates.reduce((sum, f) => sum + f.progress, 0) / fileStates.length);
   }
-  async function finalizeAggregateStatus() {
+  async function finalizeAggregateStatus(): Promise<any> {
     const anyError = fileStates.some(f => f.status === 'error');
     const allDone = fileStates.every(f => ['completed','canceled'].includes(f.status));
     uploadProgress = aggregateProgress();
@@ -415,7 +415,7 @@
       uploadQueue.push(fs);
     }
   }
-  async function uploadFiles() {
+  async function uploadFiles(): Promise<any> {
     if (fileStates.length === 0 || uploading) return;
     const realPending = fileStates.filter(f => f.status === 'pending' && !f.placeholder);
     if (realPending.length === 0) {
@@ -483,7 +483,7 @@
       }
     }
   }
-  async function uploadSingleFile(fs: FileState) {
+  async function uploadSingleFile(fs: FileState): Promise<any> {
     // Correct property name
     const file = fs.file;
     fs.status = 'uploading';

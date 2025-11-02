@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 // Protobuf types are dynamically imported to avoid TypeScript checking JS

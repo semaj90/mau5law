@@ -5,10 +5,12 @@ Vector Search Widget
 Compact searchable component for embedding in other interfaces
 -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge.svelte'";
+  import { Badge } from '$lib/components/ui/badge.svelte';
   import {
     Search,
     Loader2,
@@ -41,10 +43,10 @@ Compact searchable component for embedding in other interfaces
     onResultSelect = () => ,
     compact = false
   }: Props = $props();
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchResults = $state<VectorSearchResult[]>([]);
-  let isSearching = $state(false);
-  let isOpen = $state(false);
+  let isSearching = $state<boolean>(false);
+  let isOpen = $state<boolean>(false);
   let searchTimeout = $state<number | null>(null);
   let inputElement = $state<HTMLInputElement | null>(null);
   // Debounced search
@@ -54,10 +56,10 @@ Compact searchable component for embedding in other interfaces
       searchTimeout = setTimeout(performSearch, 300);
     } else {
       searchResults = [];
-      isOpen = $state(false);
+      isOpen = false;
     }
   });
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim() || isSearching) return;
     isSearching = true;
     try {
@@ -81,13 +83,13 @@ Compact searchable component for embedding in other interfaces
     onResultSelect(result);
     searchQuery = '';
     searchResults = [];
-    isOpen = $state(false);
+    isOpen = false;
     inputElement?.blur();
   }
   function clearSearch() {
     searchQuery = '';
     searchResults = [];
-    isOpen = $state(false);
+    isOpen = false;
     inputElement?.focus();
   }
   function getEntityIcon(type: string) {
@@ -110,7 +112,7 @@ Compact searchable component for embedding in other interfaces
     function handleClickOutside(_event: MouseEvent) {
       // removed unused target assignment
       if (!target.closest('.vector-search-widget')) {
-        isOpen = $state(false);
+        isOpen = false;
       }
     }
     document.addEventListener('click', handleClickOutside);

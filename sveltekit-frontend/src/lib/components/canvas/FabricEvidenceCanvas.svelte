@@ -89,11 +89,11 @@
   let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let fabricCanvas: any = $state(null);
   let selectedEvidence = $state<string | null>(null);
-  let isDragMode = $state(true);
-  let showGrid = $state(true);
+  let isDragMode = $state<boolean>(true);
+  let showGrid = $state<boolean>(true);
   let zoom = $state(1.0);
-  let dragActive = $state(false);
-  let dragCounter = $state(0);
+  let dragActive = $state<boolean>(false);
+  let dragCounter = $state<number>(0);
   // Evidence object cache
   let evidenceObjects = $state<Map<string, any>>(new Map());
   // MinIO-WebGPU Evidence Service
@@ -118,7 +118,7 @@
       syncEvidenceObjects();
     }
   });
-  async function initializeFabricCanvas() {
+  async function initializeFabricCanvas(): Promise<void> {
     if (!canvasElement) return;
     const fabric = await getFabric();
     fabricCanvas = new fabric.Canvas(canvasElement, {
@@ -151,7 +151,7 @@
     // Load existing evidence
     syncEvidenceObjects();
   }
-  async function addGrid() {
+  async function addGrid(): Promise<any> {
     if (!fabricCanvas) return;
     const fabric = await getFabric();
     const gridSize = 40;
@@ -244,7 +244,7 @@
     e.preventDefault();
     dragCounter--;
     if (dragCounter === 0) {
-      dragActive = $state(false);
+      dragActive = false;
       hideDropOverlay();
     }
   }
@@ -256,7 +256,7 @@
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     dragCounter = 0;
     hideDropOverlay();
     const files = Array.from(e.dataTransfer?.files || []);
@@ -316,7 +316,7 @@
     objectsToRemove.forEach(obj => fabricCanvas.remove(obj));
     fabricCanvas.renderAll();
   }
-  async function handleExternalFileDrop(files: File[], position { x: number; y: number }) {
+  async function handleExternalFileDrop(files: File[], position { x: number; y: number }): Promise<any> {
     console.log('🎯 Evidence files dropped:', files, 'at position', position);
     // Initialize MinIO-WebGPU evidence service if not already done
     if (!evidenceService) {
@@ -379,7 +379,7 @@
     });
   }
   // WASM-enhanced file processing
-  async function tryWASMParsing(files: File[], position { x: number; y: number }) {
+  async function tryWASMParsing(files: File[], position { x: number; y: number }): Promise<any> {
     try {
       // Use dynamic script loading for public directory files
       const { loadSIMDParser, checkWASMSupport } = await loadWASMWrapper();
@@ -710,7 +710,7 @@
     }
   }
   // MinIO-WebGPU Evidence Processing Functions
-  async function createProcessingEvidenceObject(evidenceFile: any, position { x: number; y: number }) {
+  async function createProcessingEvidenceObject(evidenceFile: any, position { x: number; y: number }): Promise<any> {
     if (!fabricCanvas) return;
     console.log(`🎨 Creating canvas object for: ${evidenceFile.name}`);
     // Create a visual representation immediately, update as processing completes
@@ -829,7 +829,7 @@
     }
     fabricCanvas.renderAll();
   }
-  async function finalizeEvidenceObject(jobId: string, result: any) {
+  async function finalizeEvidenceObject(jobId: string, result: any): Promise<any> {
     const obj = evidenceObjects.get(jobId);
     if (!obj || !fabricCanvas) return;
     console.log(`✅ Finalizing evidence object for job: ${jobId}`, result);
@@ -952,7 +952,7 @@
       }
     });
   }
-  async function showProcessingError(jobId: string, error: string) {
+  async function showProcessingError(jobId: string, error: string): Promise<any> {
     const obj = evidenceObjects.get(jobId);
     if (!obj || !fabricCanvas) return;
     console.error(`❌ Processing error for job ${jobId}:`, error);

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Unified API Router for Legal AI Platform
  * Consolidates all API endpoints with binary encoding support

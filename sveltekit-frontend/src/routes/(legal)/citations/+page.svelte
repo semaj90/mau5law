@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { Button } from '$lib/components/ui/core.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { onMount } from 'svelte';
@@ -16,15 +17,15 @@
   }
 
   let citations = $state<Citation[]>([]);
-  let loading = $state(true);
-  let searchQuery = $state('');
-  let citationType = $state('all');
+  let loading = $state<boolean>(true);
+  let searchQuery = $state<string>('');
+  let citationType = $state<string>('all');
 
   onMount(async () => {
     await loadCitations();
   });
 
-  async function loadCitations() {
+  async function loadCitations(): Promise<any> {
     try {
       loading = true;
       const params = new URLSearchParams();
@@ -41,7 +42,7 @@
     }
   }
 
-  async function handleSearch() {
+  async function handleSearch(): Promise<any> {
     await loadCitations();
   }
 </script>

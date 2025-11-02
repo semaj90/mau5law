@@ -419,7 +419,7 @@ type WasmComputeFn = (input: any, dims?: number) => Promise<WasmComputeResult | 
  * Wrapper that adapts calling code to the wasm bridge computeEmbedding signature.
  * The cast is isolated here so the rest of the code remains properly typed.
  */
-async function safeComputeEmbedding(text: string, dimensions: number) {
+async function safeComputeEmbedding(text: string, dimensions: number): Promise<any> {
   const bridge: any = llvmWasmBridge as unknown;
   const fn = (bridge as { computeEmbedding?: WasmComputeFn }).computeEmbedding;
   if (typeof fn !== 'function') {

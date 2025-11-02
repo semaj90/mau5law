@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Enhanced API Client for Legal AI Platform
  * TypeScript integration with Zod validation and Superforms compatibility

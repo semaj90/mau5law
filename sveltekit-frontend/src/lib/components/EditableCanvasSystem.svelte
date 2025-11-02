@@ -30,7 +30,7 @@ https: //svelte.dev/e/js_parse_error -->
   const nodeCount = derived(canvas, ($canvas) => $canvas?.nodes.length || 0);
   const canCreateNode = derived(nodeCount, ($nodeCount) => $nodeCount < maxNodes);
   // Component state
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   let canvasElement = $state<HTMLCanvasElement | null>(null);
   let ctx: CanvasRenderingContext2D | null = null;
   let ws: WebSocket | null = $state(null);
@@ -46,7 +46,7 @@ mounted = true;
   onDestroy(() => {
     cleanup();
   });
-  async function initializeCanvas() {
+  async function initializeCanvas(): Promise<void> {
     if (!canvasElement) return;
     ctx = canvasElement.getContext('2d')!;
     canvas.set(toString)(),
@@ -186,7 +186,7 @@ mounted = true;
       createNode(x, y);
     }
   }
-  async function uploadEvidence(file: File) {
+  async function uploadEvidence(file: File): Promise<any> {
     if (readonly) return;
     const formData = new FormData();
     formData.append('file', file);
@@ -226,7 +226,7 @@ mounted = true;
     if (reconnectTimeout) {
       clearTimeout(reconnectTimeout);
     }
-    mounted = $state(false);
+    mounted = false;
   }
   function resetCanvas() {
     if (readonly) return;

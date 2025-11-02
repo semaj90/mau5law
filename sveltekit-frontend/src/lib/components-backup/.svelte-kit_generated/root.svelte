@@ -24,9 +24,9 @@
 		stores.page.notify();
 	});
 
-	let mounted = $state(false);
-	let navigated = $state(false);
-	let title = $state(null);
+	let mounted = $state<boolean>(false);
+	let navigated = $state<boolean>(false);
+	let title = $state<any>(null);
 
 	$effect(() => {
 		const unsubscribe = stores.page.subscribe(() => {

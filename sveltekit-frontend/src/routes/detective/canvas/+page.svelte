@@ -4,7 +4,7 @@
   import { AdvancedEvidenceCanvas } from '$lib/canvas/advanced-evidence-canvas.js';
   let canvasElement: HTMLCanvasElement;
   let evidenceCanvas: AdvancedEvidenceCanva;
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   // Sample evidence data for the canvas
   let evidenceData = $state([
     {

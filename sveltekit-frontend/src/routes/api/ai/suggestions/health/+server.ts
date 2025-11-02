@@ -12,7 +12,7 @@ type ServiceHealth = { status: HealthStatus } & Record<string, unknown>;
 /*
  * Health check endpoint for AI Suggestions services
  */
-export async function GET(_event: RequestEvent) {
+export async function GET(_event: RequestEvent): Promise<any> {
   const startTime = Date.now();
   try {
     // Check all AI suggestion services in parallel

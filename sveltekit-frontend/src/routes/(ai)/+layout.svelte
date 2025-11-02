@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import type { Snippet } from 'svelte';
   import { afterNavigate } from '$app/navigation';
   import { browser } from '$app/environment';
@@ -32,7 +34,7 @@
   const consolePalette: ConsolePaletteName = 'cyberpunk';
 
   // Get current route (make reactive with Svelte 5 runes)
-  let currentPath = $state('');
+  let currentPath = $state<string>('');
 
   // Use $effect for side-effects in runes mode.
   // Initialize palette and keep currentPath in sync using afterNavigate (SSR-safe).

@@ -13,8 +13,8 @@
     type: 'system' | 'user' | 'success' | 'error' | 'info';
   };
   let terminalHistory = $state<TerminalEntry[]>([]);
-  let currentInput = $state('');
-  let isExecuting = $state(false);
+  let currentInput = $state<string>('');
+  let isExecuting = $state<boolean>(false);
   let terminalRef = $state<HTMLElement | null>(null);
   // Terminal commands
   type Command = {
@@ -72,7 +72,7 @@
       },
     ];
   }
-  async function executeCommand(command: string) {
+  async function executeCommand(command: string): Promise<any> {
     if (!command.trim()) return;
     isExecuting = true;
     addOutput(`> ${command}`, 'user');
@@ -139,7 +139,7 @@
     }
   }
 
-  async function getSystemStatus() {
+  async function getSystemStatus(): Promise<any> {
     try {
       addOutput('Fetching system status...', 'info');
       const status = await safeGetSystemStatus();
@@ -159,7 +159,7 @@
       addOutput('Services: 8 active', 'info');
     }
   }
-  async function executeRAG(query: string) {
+  async function executeRAG(query: string): Promise<any> {
     if (!query) {
       addOutput('Error: Please provide a query. Usage: rag <query>', 'error');
       return;
@@ -183,7 +183,7 @@
       addOutput(`RAG query error: ${e?.message || String(error)}`, 'error');
     }
   }
-  async function searchDatabase(term: string) {
+  async function searchDatabase(term: string): Promise<any> {
     if (!term) {
       addOutput('Error: Please provide a search term. Usage: search <term>', 'error');
       return;
@@ -209,7 +209,7 @@
       addOutput(`Search error: ${e?.message || String(error)}`, 'error');
     }
   }
-  async function clusterCommand(action: string) {
+  async function clusterCommand(action: string): Promise<any> {
     if (!action) {
       addOutput('Error: Please specify action. Usage: cluster <health|status|restart>', 'error');
       return;

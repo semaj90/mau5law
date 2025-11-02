@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * SIMD JSON Integration for WebAssembly Architecture
  * Maps SIMD JSON parsing to all critical performance bottlenecks

@@ -1,5 +1,8 @@
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { Button } from '$lib/components/ui/bitsbutton.svelte';
   import * as RawDialog from '$lib/components/ui/dialog.svelte';
   import * as RawSelect from '$lib/components/ui/Select.svelte';
@@ -90,7 +93,7 @@
   const isDragging = writable(false);
   const isProcessing = writable(false);
   // use plain variables for dialog bindings and nested two-way binds
-  let showMetadata = $state(false);
+  let showMetadata = $state<boolean>(false);
   let selectedFile: UploadFile | null = null;
   // Add: local draft used for dialog binds to avoid binding into nullable selectedFile
   let metadataDraft: UploadFile['metadata'] | null = null;
@@ -203,7 +206,7 @@
     }
   }
   // Upload & processing
-  async function uploadFiles() {
+  async function uploadFiles(): Promise<any> {
     isProcessing.set(true);
     const currentFiles = get(files).filter(file => file.status === 'pending');
     for (const uploadFile of currentFiles) {
@@ -216,7 +219,7 @@
     }
     isProcessing.set(false);
   }
-  async function uploadSingleFile(uploadFile: UploadFile) {
+  async function uploadSingleFile(uploadFile: UploadFile): Promise<any> {
     updateFileStatus(uploadFile.id, 'uploading', 10);
     const formData = new FormData();
     formData.append('file', uploadFile.file);
@@ -291,13 +294,13 @@
     }
     selectedFile = null;
     metadataDraft = null;
-    showMetadata = $state(false);
+    showMetadata = false;
   }
   // When canceling, clear selection and draft
   function cancelMetadataDialog() {
     selectedFile = null;
     metadataDraft = null;
-    showMetadata = $state(false);
+    showMetadata = false;
   }
   function updateFileMetadata(fileId: string, metadata: Partial<UploadFile['metadata']>) {
     files.update(currentFiles =>

@@ -23,7 +23,7 @@
   // System status and navigation
   // Replace rune $state usage with plain local variables to avoid runtime: 'undefined' errors
   let systemStatus = { connected: false, services: 0, errors: 0 };
-  let sidebarOpen = $state(false);
+  let sidebarOpen = $state<boolean>(false);
   let currentPath = '';
 
   // Navigation structure
@@ -137,7 +137,7 @@
 
   // Navigation helpers (moved/ensured inside <script>)
   function navigateTo(path: string) {
-    sidebarOpen = $state(false);
+    sidebarOpen = false;
     goto(path);
   }
 
@@ -149,7 +149,7 @@
   }
 
   function closeSidebar() {
-    sidebarOpen = $state(false);
+    sidebarOpen = false;
   }
 
   function handleSidebarKeydown(e: KeyboardEvent) {

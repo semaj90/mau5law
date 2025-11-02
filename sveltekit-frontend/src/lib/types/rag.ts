@@ -1,3 +1,5 @@
+import type { TextChunk } from '$lib/types';
+import type { SearchResult } from '$lib/types';
 
 /**
  * RAG (Retrieval Augmented Generation) Types

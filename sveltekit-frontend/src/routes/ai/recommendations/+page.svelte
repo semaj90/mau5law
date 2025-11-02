@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
 
   let recommendations = $state<any[]>([]);
-  let loading = $state(true);
+  let loading = $state<boolean>(true);
 
   onMount(async () => {
     try {

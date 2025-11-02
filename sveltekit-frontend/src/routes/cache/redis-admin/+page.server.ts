@@ -128,7 +128,7 @@ export const actions: Actions = {
     }
   },
 };
-async function getRedisInfo() {
+async function getRedisInfo(): Promise<any> {
   try {
     // Get Redis server info - replace with actual Redis client calls
     return await redisService.info();
@@ -136,7 +136,7 @@ async function getRedisInfo() {
     throw new Error('Failed to get Redis info');
   }
 }
-async function getKeyStatistics() {
+async function getKeyStatistics(): Promise<any> {
   try {
     // Get key statistics - replace with actual implementation
     return {
@@ -150,7 +150,7 @@ async function getKeyStatistics() {
     throw new Error('Failed to get key statistics');
   }
 }
-async function getRecentKeys() {
+async function getRecentKeys(): Promise<any> {
   try {
     // Get recent keys - replace with actual implementation
     const keys = await redisService.keys('*');
@@ -166,7 +166,7 @@ async function getRecentKeys() {
     return [];
   }
 }
-async function checkRedisConnection() {
+async function checkRedisConnection(): Promise<void> {
   try {
     await redisService.ping();
     return 'connected';
@@ -174,7 +174,7 @@ async function checkRedisConnection() {
     return 'disconnected';
   }
 }
-async function getPerformanceMetrics() {
+async function getPerformanceMetrics(): Promise<any> {
   try {
     // Calculate performance metrics from Redis INFO
     return {

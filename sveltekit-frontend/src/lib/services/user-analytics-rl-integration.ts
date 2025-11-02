@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * User Analytics & Reinforcement Learning Integration Service
  * Combines user.history and user.analytics with QLorA training and Moogle Graph Synthesizer

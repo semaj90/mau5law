@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
 import Button from '$lib/components/ui/button/Button.svelte';
@@ -12,11 +14,11 @@ import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
 
   // Svelte 5 runes - proper syntax
   let messages = $state<ChatMessage[]>([]);
-  let currentMessage = $state('');
-  let isStreaming = $state(false);
-  let error = $state('');
+  let currentMessage = $state<string>('');
+  let isStreaming = $state<boolean>(false);
+  let error = $state<string>('');
   let conversationId = $state<string | null>(null);
-  let userId = $state('mock-user-id'); // TODO: Get from auth
+  let userId = $state<string>('mock-user-id'); // TODO: Get from auth
   let systemStatus = $state<SystemStatus>({
     gpu: false,
     ollama: false,
@@ -39,16 +41,16 @@ $effect(() => {
   // POI Timeline State
   let poiTimelineData = $state<any[]>([]);
   let selectedPOI = $state<any>(null);
-  let showPOIDialog = $state(false);
-  let timelineLoading = $state(false);
-  let showTimeline = $state(false);
+  let showPOIDialog = $state<boolean>(false);
+  let timelineLoading = $state<boolean>(false);
+  let showTimeline = $state<boolean>(false);
   let evidenceReports = $state<any[]>([]);
   // ragAnalysisResults comes back as an object with a: 'persons' array; type as any (not any[])
   let ragAnalysisResults = $state<any>({});
 
   // User Activity Timeline State
   let userActivityTimeline = $state<any[]>([]);
-  let activityLoading = $state(false);
+  let activityLoading = $state<boolean>(false);
   let focusMetrics = $state({
     sessionsToday: 0,
     totalTime: 0,
@@ -56,7 +58,7 @@ $effect(() => {
     evidenceReviewed: 0
   });
 
-  async function checkSystemStatus() {
+  async function checkSystemStatus(): Promise<any> {
     try {
       const res = await fetch('/api/v1/cluster/health');
       if (!res.ok) {
@@ -90,7 +92,7 @@ $effect(() => {
     }
   }
 
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isStreaming) return;
 
     const userMessage: ChatMessage = {
@@ -164,14 +166,14 @@ $effect(() => {
                     case 'complete':
                       aiMessage.content = eventData.fullResponse; // Corrected typo
                       messages = [...messages];
-                      isStreaming = $state(false);
+                      isStreaming = false;
                       break;
                     case 'error':
                       error = eventData.error;
-                      isStreaming = $state(false);
+                      isStreaming = false;
                       break;
                     case 'close':
-                      isStreaming = $state(false);
+                      isStreaming = false;
                       break;
                   }
                 } catch (parseError) {
@@ -214,7 +216,7 @@ $effect(() => {
     }
   }
 
-  async function handleQuickQuery(query: string) {
+  async function handleQuickQuery(query: string): Promise<any> {
     currentMessage = query;
     await sendMessage();
   }
@@ -232,7 +234,7 @@ $effect(() => {
   }
 
   // Semantic RAG-based POI Timeline Functions
-  async function loadEvidenceReports() {
+  async function loadEvidenceReports(): Promise<any> {
     try {
       const response = await fetch('/api/v1/evidence/reports'); // Declared: 'response' here
       if (!response.ok) {
@@ -269,7 +271,7 @@ $effect(() => {
     }
   }
 
-  async function analyzePersonsOfInterest() {
+  async function analyzePersonsOfInterest(): Promise<any> {
     if (evidenceReports.length === 0) {
       await loadEvidenceReports();
     }
@@ -307,7 +309,7 @@ $effect(() => {
     }
   }
 
-  async function generateUserActivityTimeline() {
+  async function generateUserActivityTimeline(): Promise<any> {
     activityLoading = true;
     try {
       const response = await fetch('/api/v1/user/activity'); // Declared: 'response' here
@@ -335,7 +337,7 @@ $effect(() => {
 
   function closePOIDetails() {
     selectedPOI = null;
-    showPOIDialog = $state(false);
+    showPOIDialog = false;
   }
 
   $effect(() => {

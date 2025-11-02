@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 import type { RequestHandler } from './$types';
 /*
  * WebAssembly Inference Test API Endpoint

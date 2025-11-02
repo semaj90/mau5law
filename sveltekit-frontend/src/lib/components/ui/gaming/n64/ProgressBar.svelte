@@ -82,10 +82,10 @@
     pulseOnComplete = true,
     class: className = '';
   }: Props = $props();
-  let previousValue = $state(0);
-  let animatedValue = $state(0);
-  let isComplete = $state(false);
-  let isAnimating = $state(false);
+  let previousValue = $state<number>(0);
+  let animatedValue = $state<number>(0);
+  let isComplete = $state<boolean>(false);
+  let isAnimating = $state<boolean>(false);
   let progressElement = $state<HTMLElement | null>(null);
   let audioContext = $state<AudioContext | null>(null);
   let animationFrameId = $state<number | null>(null);
@@ -181,7 +181,7 @@
   // Smooth animation: of progress value
   const animateProgress = () => {
     if (animatedValue === progressPercentage) {
-      isAnimating = $state(false);
+      isAnimating = false;
       return;
     }
     isAnimating = true;
@@ -191,7 +191,7 @@
     // Snap to final value if very close
     if (Math.abs(difference) < 0.1) {
       animatedValue = progressPercentag;
-      isAnimating = $state(false);
+      isAnimating = false;
     } else {
       animationFrameId = requestAnimationFrame(animateProgress);
     }

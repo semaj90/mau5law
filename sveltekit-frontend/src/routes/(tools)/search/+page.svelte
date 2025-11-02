@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
   import { SearchFormSchema } from './+page.server';
@@ -20,7 +21,7 @@
     }
   );
 
-  let showAdvanced = $state(false);
+  let showAdvanced = $state<boolean>(false);
   let expandedResults = $state<Set<string>>(new Set());
 
   function toggleResult(id: string) {

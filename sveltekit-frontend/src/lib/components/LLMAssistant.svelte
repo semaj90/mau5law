@@ -2,15 +2,15 @@
   import { env } from '$env/dynamic/public';
   // Svelte 5 runes usage (consistent with other components)
   let messages = $state<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
-  let input = $state('');
-  let loading = $state(false);
-  let error = $state('');
+  let input = $state<string>('');
+  let loading = $state<boolean>(false);
+  let error = $state<string>('');
   function getOllamaEndpoint() {
     // prefer docker service hostname in production (docker hostname), fallback for local dev
     // dynamic env access avoids compile-time missing-export errors
     return env.PUBLIC_OLLAMA_URL || 'http://ollama:11434';
   }
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     const text = input?.trim();
     if (!text) return;
     messages = [...messages, { role: 'user', text }];

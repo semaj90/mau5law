@@ -33,7 +33,7 @@ export const userDisplayName = derived(userStore, ($user) => {
 /**
  * Load user session from API
  */
-export async function loadUserSession() {
+export async function loadUserSession(): Promise<any> {
   try {
     const response = await fetch('/api/auth/me');
     if (response.ok) {

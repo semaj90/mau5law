@@ -445,7 +445,7 @@ export class CHRROMMipmapIntegration {
       // Generate sample mipmap pattern
       const sampleData = new Uint8Array(64 * 64 * 4).fill(128);
       const mockTexture = await this.createTextureFromImageData(sampleData.buffer, 64, 64);
-      let sampleGenerated = $state(false);
+      let sampleGenerated = $state<boolean>(false);
       const performanceMetrics = {
         mipmapGenerationTime: 0,
         chrromConversionTime: 0,

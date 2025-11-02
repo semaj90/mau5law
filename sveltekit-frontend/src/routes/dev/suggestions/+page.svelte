@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from "svelte";
   let items: any[] = $state([]);
-  let count = $state(0);
+  let count = $state<number>(0);
   $effect(() => {
     (async () => {
 try {

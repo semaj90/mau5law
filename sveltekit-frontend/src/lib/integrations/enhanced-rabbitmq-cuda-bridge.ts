@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * Enhanced RabbitMQ-CUDA Bridge Integration (fixed)
  * - uses namespace import for amqplib and amqp.* types

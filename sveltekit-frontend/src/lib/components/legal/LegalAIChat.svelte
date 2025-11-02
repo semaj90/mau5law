@@ -16,10 +16,10 @@
     timestamp?: Date;
   }
   // Svelte 5 state
-  let prompt = $state('');
-  let context = $state('');
-  let isLoading = $state(false);
-  let useVectorSearch = $state(true);
+  let prompt = $state<string>('');
+  let context = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  let useVectorSearch = $state<boolean>(true);
   let queries: LegalQuery[] = $state([]);
   let currentResponse = $state<LegalQuery | null>(null);
   let error = $state<string | null>(null);
@@ -34,7 +34,7 @@
     "Identify potential risks in a merger and acquisition agreement",
     "Evaluate intellectual property clauses in a partnership contract"
   ];
-  async function submitQuery() {
+  async function submitQuery(): Promise<any> {
     if (!canSubmit) return;
     isLoading = true;
     error = null;
@@ -88,7 +88,7 @@
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
-  async function loadRecentQueries() {
+  async function loadRecentQueries(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await response.json();

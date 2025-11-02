@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index';
 import { eq } from 'drizzle-orm';

@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   /**
    * Comprehensive Upload Analytics Interface
@@ -39,7 +41,7 @@
   let uploadActor = $state<ReturnType<typeof createUploadAnalyticsActor> | null>(null);
   let machineState = $state<any>(null);
   let fileInput = $state<HTMLInputElement | null>(null);
-  let dragOver = $state(false);
+  let dragOver = $state<boolean>(false);
   let selectedFiles = $state<File[]>([]);
   // Reactive derived state
   let contextualPrompts = $derived(
@@ -184,7 +186,7 @@
   }
   function handleDrop(evt: DragEvent) {
     evt.preventDefault();
-    dragOver = $state(false);
+    dragOver = false;
     if (evt.dataTransfer?.files) {
       const files = Array.from(evt.dataTransfer.files);
       selectFiles(files);
@@ -195,7 +197,7 @@
     dragOver = true;
   }
   function handleDragLeave() {
-    dragOver = $state(false);
+    dragOver = false;
   }
   function selectFiles(files: File[]) {
     // Filter by allowed types

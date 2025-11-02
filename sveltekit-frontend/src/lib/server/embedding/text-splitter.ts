@@ -1,3 +1,4 @@
+import type { TextChunk } from '$lib/types';
 // Lightweight local text splitter (word-based with overlap) – no heavy deps.
 export interface SplitterOptions {
   chunkSize?: number; // Approx words per chunk (default 350)

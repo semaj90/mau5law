@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { json } from '@sveltejs/kit'
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '$lib/server/db'

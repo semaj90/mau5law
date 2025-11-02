@@ -11,9 +11,9 @@
   // Icons
   import { Link, Sparkles } from 'lucide-svelte';
   let nodeElement: HTMLDivElement | null = null;
-  let isDragging = $state(false);
-  let dragStartX = $state(0);
-  let dragStartY = $state(0);
+  let isDragging = $state<boolean>(false);
+  let dragStartX = $state<number>(0);
+  let dragStartY = $state<number>(0);
   // Add local position state for drag-and-drop
   let position = $state({ x: 100, y: 100 });
   function handleMouseDown(e: MouseEvent) {
@@ -31,14 +31,14 @@
     }
   }
   function handleMouseUp() {
-    isDragging = $state(false);
+    isDragging = false;
   }
-  async function saveCitation(text: string) {
+  async function saveCitation(text: string): Promise<void> {
     if (!text.trim()) return;
     // Implementation for saving citation
     console.log('Saving citation', text);
   }
-  async function summarizeReport() {
+  async function summarizeReport(): Promise<any> {
     // Implementation for AI summary
     console.log('Summarizing report');
   }

@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { dev } from '$app/environment';
 
 // Define interfaces for User, Session, and Case

@@ -1,3 +1,4 @@
+import type { AIResponse } from '$lib/types';
 export interface AIResponse {
   confidence?: number;
   keyTerms?: string[];

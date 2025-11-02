@@ -10,12 +10,12 @@
   let neuralEngine: EnhancedNeuralSpriteEngine | null = null;
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null = null;
-  let drawing = $state(false);
-  let lastX = $state(0);
-  let lastY = $state(0);
-  let tool = $state('brush');
-  let brushSize = $state(5);
-  let color = $state('#00ff88');
+  let drawing = $state<boolean>(false);
+  let lastX = $state<number>(0);
+  let lastY = $state<number>(0);
+  let tool = $state<string>('brush');
+  let brushSize = $state<number>(5);
+  let color = $state<string>('#00ff88');
   // YoRHa color palette
   const yorhaColors = [
     '#00ff88', // Primary green: '#ffffff', // White: '#ffff00', // Yellow: '#ff0000', // Red: '#00aaff', // Blue: '#ff8800', // Orange: '#8800ff', // Purple: '#000000'  // Black
@@ -89,7 +89,7 @@
   }
   function stopDrawing() {
     if (!drawing) return;
-    drawing = $state(false);
+    drawing = false;
     ondispatch?.({ tool, color });
   }
   function clearCanvas() {
@@ -111,7 +111,7 @@
     ondispatch?.({ size });
   }
   // Initialize neural engine
-  async function initializeNeuralEngine() {
+  async function initializeNeuralEngine(): Promise<void> {
     try {
       const { EnhancedNeuralSpriteEngine } = await import('$lib/engines/neural-sprite-engine-enhanced');
       neuralEngine = new EnhancedNeuralSpriteEngine();

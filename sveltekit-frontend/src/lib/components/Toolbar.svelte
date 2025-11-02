@@ -28,8 +28,8 @@
 	let selectedTool = 'select';
 	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14, textAlign: 'left' };
 	let drawing: any = { strokeColor: '#000000', strokeWidth: 2 };
-	let canUndo = $state(false);
-	let canRedo = $state(false);
+	let canUndo = $state<boolean>(false);
+	let canRedo = $state<boolean>(false);
 	let zoom = 100;
 	// subscribe to toolbarStore if available
 	onMount(() => {

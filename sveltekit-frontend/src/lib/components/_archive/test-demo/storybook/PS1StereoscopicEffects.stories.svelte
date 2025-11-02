@@ -7,13 +7,13 @@ https://svelte.dev/e/expected_token -->
   let containerRef;
   let stereoSeparation = $state(0.06);
   let depthStrength = $state(0.8);
-  let anaglyphType = $state('redcyan');
-  let stereoMode = $state('anaglyph');
+  let anaglyphType = $state<string>('redcyan');
+  let stereoMode = $state<string>('anaglyph');
   let convergence = $state(0.5);
   let parallaxOffset = $state(0.02);
-  let frameRate = $state(60);
-  let eyeStrain = $state(0);
-  let autoAdjust = $state(true);
+  let frameRate = $state<number>(60);
+  let eyeStrain = $state<number>(0);
+  let autoAdjust = $state<boolean>(true);
   const anaglyphTypes = [
     { id: 'redcyan', name: 'Red-Cyan', left: '#ff0000', right: '#00ffff' },
     { id: 'redblue', name: 'Red-Blue', left: '#ff0000', right: '#0000ff' },

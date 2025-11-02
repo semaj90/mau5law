@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Comprehensive Multi-Layer Caching Architecture for Legal AI Platform
  *

@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   // onMount not used; Svelte 5 runes are used instead
   import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
   import * as THREE from 'three';
-  let layout = $state(null) as any;
+  let layout = $state<any>(null) as any;
   // --- added types to make node/link shapes explicit ---
   type GraphNode = { id: string; type?: string; [key: string]: any };
   type GraphLink = { source: string; target: string; kind?: string; [key: string]: any };
@@ -21,14 +21,14 @@ https://svelte.dev/e/js_parse_error -->
       }
     },
   });
-  let canvasContainer = $state(null) as HTMLDivElement | null;
-  let renderer = $state(null) as THREE.WebGLRenderer | null;
+  let canvasContainer = $state<any>(null) as HTMLDivElement | null;
+  let renderer = $state<any>(null) as THREE.WebGLRenderer | null;
   let scene: THREE.Scene | undefined;
   let camera: THREE.PerspectiveCamera | undefined;
   let animationId: number;
   // CHANGED: allow undefined entries when resetting/replacing meshes
-  let nodeMeshes = $state({}) as Record<string, THREE.Mesh | undefined>;
-  let linkLines = $state([]) as THREE.Line[];
+  let nodeMeshes = $state<Record<string, any>>({}) as Record<string, THREE.Mesh | undefined>;
+  let linkLines = $state<any[]>([]) as THREE.Line[];
   const nodeGeometry = new THREE.SphereGeometry(0.25, 24, 24);
   const typeColor: Record<string, number> = {
     db: 0x3b82f6,

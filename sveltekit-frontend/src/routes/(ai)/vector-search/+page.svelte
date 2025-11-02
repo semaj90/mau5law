@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { Button } from '$lib/components/ui/core.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
   import { onMount } from 'svelte';
@@ -16,14 +17,14 @@
   }
 
   let results = $state<VectorResult[]>([]);
-  let loading = $state(false);
-  let query = $state('');
+  let loading = $state<boolean>(false);
+  let query = $state<string>('');
   let searchType = $state<'content' | 'cases' | 'evidence'>('content');
   let threshold = $state(0.7);
-  let limit = $state(10);
-  let processingTime = $state(0);
+  let limit = $state<number>(10);
+  let processingTime = $state<number>(0);
 
-  async function performVectorSearch() {
+  async function performVectorSearch(): Promise<any> {
     if (!query.trim()) return;
 
     try {

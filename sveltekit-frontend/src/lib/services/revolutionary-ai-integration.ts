@@ -639,10 +639,10 @@ export async function processLegalQuery(query: string, options?: RevolutionaryAI
   });
 }
 
-export async function getRevolutionaryMetrics() {
+export async function getRevolutionaryMetrics(): Promise<any> {
   return await revolutionaryAI.getSystemMetrics();
 }
 
-export async function optimizeRevolutionaryAI() {
+export async function optimizeRevolutionaryAI(): Promise<any> {
   await revolutionaryAI.optimizeAllSystems();
 }

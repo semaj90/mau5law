@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * WebSocket Real-time Integration System
  * Provides live updates for dashboard, collaborative editing, and processing status

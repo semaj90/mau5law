@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Specialized Worker System - Event-Driven "Hive Programming"
  * Implements RabbitMQ-based job distribution for AI services

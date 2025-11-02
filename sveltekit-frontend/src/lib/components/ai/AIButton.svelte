@@ -29,9 +29,9 @@
     ondeactivate,
   }: Props = $props();
   // State management (Svelte 5 $state)
-  let mounted = $state(false);
+  let mounted = $state<boolean>(false);
   let buttonElement = $state<HTMLButtonElement | null>(null);
-  let showTooltip = $state(false);
+  let showTooltip = $state<boolean>(false);
   // Size configurations
   const sizeClasses = {
     sm: 'w-12 h-12 text-sm',
@@ -78,7 +78,7 @@
     }
   }
   function hideTooltipHandler() {
-    showTooltip = $state(false);
+    showTooltip = false;
   }
   $effect(() => {
     mounted = true;

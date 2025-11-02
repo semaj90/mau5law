@@ -29,7 +29,7 @@
   		children
   	: any } = $props();
   	let buttonElement: HTMLButtonElement = $state(undefined as any);
-  	let isPressed = $state(false);
+  	let isPressed = $state<boolean>(false);
   	function handleClick(_event: MouseEvent) {
   		if (disabled || loading) return;
   		isPressed = true;

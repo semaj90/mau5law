@@ -1,11 +1,11 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
-  let cookiesEnabled = $state(false);
-  let localStorageEnabled = $state(false);
-  let sessionStorageEnabled = $state(false);
-  let devMode = $state(false);
-  let sessionInfo = $state('');
+  let cookiesEnabled = $state<boolean>(false);
+  let localStorageEnabled = $state<boolean>(false);
+  let sessionStorageEnabled = $state<boolean>(false);
+  let devMode = $state<boolean>(false);
+  let sessionInfo = $state<string>('');
   $effect(() => {
     if (!browser) return;
     devMode = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -16,7 +16,7 @@
       // remove test cookie
       document.cookie = 'test=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
     } catch (e) {
-      cookiesEnabled = $state(false);
+      cookiesEnabled = false;
     }
     // Test localStorage support
     try {
@@ -24,7 +24,7 @@
       localStorageEnabled = localStorage.getItem('test') === '1';
       localStorage.removeItem('test');
     } catch (e) {
-      localStorageEnabled = $state(false);
+      localStorageEnabled = false;
     }
     // Test sessionStorage support
     try {
@@ -32,7 +32,7 @@
       sessionStorageEnabled = sessionStorage.getItem('test') === '1';
       sessionStorage.removeItem('test');
     } catch (e) {
-      sessionStorageEnabled = $state(false);
+      sessionStorageEnabled = false;
     }
     // Check for existing session (safely parse cookie string)
     const sessionCookie = document.cookie

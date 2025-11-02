@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * Handle single pattern retrieval
  */
-async function handleSinglePattern(data: any, startTime: number) {
+async function handleSinglePattern(data: any, startTime: number): Promise<any> {
   const { docId, patternType, generateOnMiss = true } = data
   if (!docId || !patternType) {
     return json({
@@ -123,7 +123,7 @@ async function handleSinglePattern(data: any, startTime: number) {
 /**
  * Handle batch pattern retrieval (optimized for lists/tables)
  */
-async function handleBatchPatterns(data: any, startTime: number) {
+async function handleBatchPatterns(data: any, startTime: number): Promise<any> {
   const { requests } = data; // Removed maxConcurrency as it was unused
   if (!Array.isArray(requests) || requests.length === 0) {
     return json(
@@ -181,7 +181,7 @@ async function handleBatchPatterns(data: any, startTime: number) {
 /**
  * Handle prefetch operation
  */
-async function handlePrefetch(data: any, startTime: number) {
+async function handlePrefetch(data: any, startTime: number): Promise<Response> {
   const { docIds, patternTypes = ['summary_icon', 'category_color', 'status_indicator'] } = data
   if (!Array.isArray(docIds) || docIds.length === 0) {
     return json({
@@ -206,7 +206,7 @@ async function handlePrefetch(data: any, startTime: number) {
 /**
  * Handle statistics request
  */
-async function handleGetStats(startTime: number) {
+async function handleGetStats(startTime: number): Promise<any> {
   const stats = chrROMCacheReader.getStats()
   // Add some computed metrics
   const enhancedStats = {

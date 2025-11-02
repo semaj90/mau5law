@@ -36,9 +36,9 @@
     }
   }: Props = $props();
   // State
-  let activeTab = $state('dashboard');
-  let showNewCaseModal = $state(false);
-  let showAIAssistant = $state(false);
+  let activeTab = $state<string>('dashboard');
+  let showNewCaseModal = $state<boolean>(false);
+  let showAIAssistant = $state<boolean>(false);
   let currentTime = $state(new Date());
   let notification = $state({ show: false, message: '', type: 'info' });
   // Navigation items
@@ -121,9 +121,9 @@
     showNewCaseModal = true;
   }
   function closeNewCaseModal() {
-    showNewCaseModal = $state(false);
+    showNewCaseModal = false;
   }
-  async function handleNewCaseSubmit(formData: any) {
+  async function handleNewCaseSubmit(formData: any): Promise<any> {
     try {
       // Show loading notification
       showNotification('Saving case to database...', 'info');
@@ -218,7 +218,7 @@
       <nav class="sidebar-nav">
         {#each Array.isArray(navigationItems) ? navigationItems : [] as item}
           <button
-            class="sidebar-link {activeTab ===
+            class="sidebar-link" {activeTab ===
             (item as { route?: any; id?: any; icon?: any; label?: any }).id
               ? 'active'
               : ''}"
@@ -299,7 +299,7 @@
             </div>
             <div class="health-bar">
               <div
-                class="health-fill {systemData.systemLoad > 80
+                class="health-fill" {systemData.systemLoad > 80
                   ? 'critical'
                   : systemData.systemLoad > 60
                     ? 'warning'
@@ -315,7 +315,7 @@
             </div>
             <div class="health-bar">
               <div
-                class="health-fill {systemData.gpuUtilization > 80
+                class="health-fill" {systemData.gpuUtilization > 80
                   ? 'critical'
                   : systemData.gpuUtilization > 60
                     ? 'warning'
@@ -331,7 +331,7 @@
             </div>
             <div class="health-bar">
               <div
-                class="health-fill {systemData.memoryUsage > 80
+                class="health-fill" {systemData.memoryUsage > 80
                   ? 'critical'
                   : systemData.memoryUsage > 60
                     ? 'warning'
@@ -347,7 +347,7 @@
             </div>
             <div class="network-status">
               <div
-                class="network-indicator {systemData.networkLatency < 50
+                class="network-indicator" {systemData.networkLatency < 50
                   ? 'excellent'
                   : systemData.networkLatency < 100
                     ? 'good'

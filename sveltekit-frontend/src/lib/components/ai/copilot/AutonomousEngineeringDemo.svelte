@@ -49,16 +49,16 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     autoExecuteExamples = false
   }: Props = $props();
   // Component state
-  let userPrompt = $state('');
+  let userPrompt = $state<string>('');
   let selectedMode = $state<'quick' | 'comprehensive' | 'autonomous'>('comprehensive');
   let selectedPlatform = $state<'webapp' | 'desktop' | 'mobile' | 'all'>('webapp');
   let selectedUrgency = $state<'low' | 'medium' | 'high' | 'critical'>('medium');
   let outputFormat = $state<'json' | 'markdown' | 'structured'>('structured');
   // Execution state
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let currentResult = $state<CopilotSelfPromptResult | null>(null);
-  let processingStage = $state('');
-  let processingProgress = $state(0);
+  let processingStage = $state<string>('');
+  let processingProgress = $state<number>(0);
   let executionHistory = $state<any[]>([]) => []);
   // Demo examples
   const demoExamples = [
@@ -113,7 +113,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       executeExample(demoExamples[0]);
     }
   });
-  async function executePrompt() {
+  async function executePrompt(): Promise<any> {
     if (!userPrompt.trim() || isProcessing) return;
     isProcessing = true;
     processingStage = 'Initializing...';
@@ -166,14 +166,14 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       isProcessing = false;
     }
   }
-  async function executeExample(example: typeof demoExamples[0]) {
+  async function executeExample(example: typeof demoExamples[0]): Promise<any> {
     userPrompt = example.prompt;
     selectedMode = example.mode;
     selectedPlatform = example.platform;
     selectedUrgency = example.urgency;
     await executePrompt();
   }
-  async function executeViaAPI() {
+  async function executeViaAPI(): Promise<any> {
     if (!userPrompt.trim()) return;
     isProcessing = true;
     processingStage = 'Calling Copilot API...';

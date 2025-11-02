@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
   import Tooltip from '$lib/components/ui/Tooltip.svelte';
@@ -16,9 +17,9 @@
 
   // Import state
   let importFile: File | null = $state(null);
-  let importType = $state('all');
-  let overwriteExisting = $state(false);
-  let isImporting = $state(false);
+  let importType = $state<string>('all');
+  let overwriteExisting = $state<boolean>(false);
+  let isImporting = $state<boolean>(false);
   // importResults:
   // - results.errors: array of record-level errors (e.g., failed rows in CSV/JSON)
   // - error: top-level import error (e.g., file parse failure, server error)
@@ -39,7 +40,7 @@
   type XmlPreview = { type: 'xml', data: string };
   type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string };
   let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = $state(null);
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   // File input reference
   let fileInput: HTMLInputElement = $state();
   // Supported file types
@@ -103,12 +104,12 @@
   function handleDragLeave(e: DragEvent) {
     e.preventDefault();
     if (!e.relatedTarget) {
-      dragActive = $state(false);
+      dragActive = false;
     }
   }
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     const files = e.dataTransfer?.files;
     if (files && files.length > 0) {
       handleFileSelect(files[0]);
@@ -121,7 +122,7 @@
       handleFileSelect(file);
     }
   }
-  async function handleFileSelect(file: File) {
+  async function handleFileSelect(file: File): Promise<any> {
     importFile = file;
     importResults = null;
     // Validate file type
@@ -179,7 +180,7 @@
       filePreview = null;
     }
   }
-  async function performImport() {
+  async function performImport(): Promise<any> {
     if (!importFile) return;
     isImporting = true;
     importResults = null;

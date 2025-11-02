@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // Enhanced AI Types for Legal Document Processing
 // SvelteKit 2 + Svelte 5 Compatible Types
 export type PracticeArea =

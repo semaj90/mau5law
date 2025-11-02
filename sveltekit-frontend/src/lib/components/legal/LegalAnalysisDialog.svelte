@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     isOpen?: any;
@@ -27,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   let prompt = '';
   let analysisType: 'case_analysis' | 'legal_research' | 'document_review' | 'precedent_search' = 'case_analysis';
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let analysis: LegalAnalysis | null = null;
   let error = '';
   const analysisTypes = [
@@ -36,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'document_review', label: 'Document Review' },
     { value: 'precedent_search', label: 'Precedent Search' }
   ];
-  async function performAnalysis() {
+  async function performAnalysis(): Promise<any> {
     if (!prompt.trim()) {
       error = 'Please enter an analysis prompt';
       return;
@@ -77,10 +79,10 @@ https://svelte.dev/e/js_parse_error -->
     prompt = '';
     analysis = null;
     error = '';
-    loading = $state(false);
+    loading = false;
   }
   function closeDialog() {
-    isOpen = $state(false);
+    isOpen = false;
     resetDialog();
   }
   $effect(() => { if (!isOpen) {

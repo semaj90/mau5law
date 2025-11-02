@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /** Shared, portable types used by client and server */
 
 /** High-level data categories cached and synced across layers */

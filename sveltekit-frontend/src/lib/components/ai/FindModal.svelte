@@ -14,15 +14,15 @@ https://svelte.dev/e/component_invalid_directive -->
   import { phase13Integration, getSystemHealth } from '$lib/integrations/phase13-full-integration';
   const { ondispatch } = $props<{ ondispatch: (result: any) }>()
    // Svelte 5 reactive state
-   let isOpen = $state(false);
-   let searchQuery = $state('');
+   let isOpen = $state<boolean>(false);
+   let searchQuery = $state<string>('');
    let searchResults = $state<unknown[]>([]);
-   let isSearching = $state(false);
+   let isSearching = $state<boolean>(false);
    let selectedType = $state<'all' | 'cases' | 'evidence' | 'documents' | 'ai'>('all');
-   let showAdvanced = $state(false);
+   let showAdvanced = $state<boolean>(false);
    let aiConfidenceThreshold = $state(0.7);
-   let useSemanticSearch = $state(true);
-   let useMCPAnalysis = $state(true);
+   let useSemanticSearch = $state<boolean>(true);
+   let useMCPAnalysis = $state<boolean>(true);
    let searchHistory = $state<string[]>([]);
    let suggestions = $state<string[]>([]);
    // relax types to avoid strict mismatches from external definitions
@@ -44,7 +44,7 @@ https://svelte.dev/e/component_invalid_directive -->
     })();
   });
   // AI-powered search with MCP integration
-  async function performAISearch() {
+  async function performAISearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     isSearching = true;
     try {
@@ -91,7 +91,7 @@ https://svelte.dev/e/component_invalid_directive -->
     }
   }
   // Get search suggestions as user types
-  async function getSuggestions() {
+  async function getSuggestions(): Promise<any> {
     if (searchQuery.length < 3) {
       suggestions = [];
       return;
@@ -109,7 +109,7 @@ https://svelte.dev/e/component_invalid_directive -->
     }
   }
   // Generate MCP auto-suggestions
-  async function generateAutoSuggestions() {
+  async function generateAutoSuggestions(): Promise<any> {
     try {
       const context = await copilotOrchestrator(
         "Analyze current legal AI workflow and suggest improvements",
@@ -130,7 +130,7 @@ https://svelte.dev/e/component_invalid_directive -->
     }
   }
   // Update memory graph with AI context
-  async function updateMemoryWithAIContext(interaction: any) {
+  async function updateMemoryWithAIContext(interaction: any): Promise<any> {
     try {
       await fetch('/api/mcp/memory/create-relations', {
         method: 'POST',
@@ -181,11 +181,11 @@ https://svelte.dev/e/component_invalid_directive -->
     }, 100);
   }
   export function close() {
-    isOpen = $state(false);
+    isOpen = false;
     searchQuery = '';
     searchResults = [];
     suggestions = [];
-    showAdvanced = $state(false);
+    showAdvanced = false;
   }
   // Handle result selection
   function selectResult(result: any) {
@@ -205,7 +205,7 @@ https://svelte.dev/e/component_invalid_directive -->
     performAISearch();
   }
   // Update Phase 13 integration status
-  async function updatePhase13Status() {
+  async function updatePhase13Status(): Promise<any> {
     try {
       const res = await fetch('/api/phase13/status');
       if (res.ok) {
@@ -218,7 +218,7 @@ https://svelte.dev/e/component_invalid_directive -->
     }
   }
   // Apply MCP auto-suggestion with Phase 13 integration
-  async function applyAutoSuggestion(suggestion: any) {
+  async function applyAutoSuggestion(suggestion: any): Promise<any> {
     try {
       const response = await fetch('/api/phase13/integration', {
         method: 'POST',

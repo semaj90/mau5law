@@ -31,7 +31,7 @@ type UserLearningInsights = {
 // Use the imported instance (avoid referencing undefined class)
 const intentPredictionSystem = userIntentPredictionSystem
 
-async function semanticCandidates(query: string, limit: number) {
+async function semanticCandidates(query: string, limit: number): Promise<any> {
   if (!sql) return []
   try {
     // 1. Fetch or derive query embedding (Ollama by default)
@@ -79,7 +79,7 @@ async function semanticCandidates(query: string, limit: number) {
   }
 }
 
-async function lexicalCandidates(query: string, limit: number) {
+async function lexicalCandidates(query: string, limit: number): Promise<any> {
   if (!sql) return [];
   const rows = await sql`
     SELECT term, similarity(term, ${query}) AS score

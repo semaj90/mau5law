@@ -3,7 +3,7 @@
   const { onDone } = $props<{ onDone: (res: any) }>()
   let file: File | null = null;
   let text = '';
-  async function handleUpload() {
+  async function handleUpload(): Promise<any> {
     const form = new FormData();
     if (file) form.append('file', file);
     form.append('text', text);

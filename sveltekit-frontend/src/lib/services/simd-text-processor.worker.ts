@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * SIMD-Accelerated Text Processing Worker
  * Uses SIMD instructions for parallel tokenization and processing
@@ -54,7 +55,7 @@ function tokenizeSubwords(word: string): number[] {
   const tokens: number[] = [];
   let remaining = word;
   while (remaining.length > 0) {
-    let found = $state(false);
+    let found = $state<boolean>(false);
     // Try to find longest matching subword
     for (let len = remaining.length; len > 0; len--) {
       const subword = len === remaining.length ? remaining : '##' + remaining.slice(0, len);

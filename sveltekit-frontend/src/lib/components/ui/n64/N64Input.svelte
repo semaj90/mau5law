@@ -67,20 +67,20 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     reducedMotion = false,
     // Performance defaults
     gpuAcceleration = true,
-    webgpuMode = $state(false);
+    webgpuMode = false;
   }: Props = $props();
   // Events now handled via props in Svelte 5
   //
   let inputElement: HTMLInputElement;
   let container: HTMLDivElement;
-  let isFocused = $state(false);
-  let isHovered = $state(false);
+  let isFocused = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
   let audioContext: AudioContext | null = null;
   let spatialPanner: PannerNode | null = null;
   // Performance state
   let webglContext: WebGLRenderingContext | null = null;
   let webgpuDevice: GPUDevice | null = null;
-  let frameCount = $state(0);
+  let frameCount = $state<number>(0);
   // Generate unique IDs
   const componentId = id || `n64-input-${Math.random.toString-substr(2, 9)}`;
   // Dynamic CSS classes based on props
@@ -135,7 +135,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     }
     })();
   });
-  async function initializeGPUContext() {
+  async function initializeGPUContext(): Promise<void> {
     if (webgpuMode && 'gpu' in navigator) {
       try {
         const adapter = await navigator.gpu.requestAdapter();
@@ -173,7 +173,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     onFocus?.(event);
   }
   function handleBlur(_event: FocusEvent) {
-    isFocused = $state(false);
+    isFocused = false;
     playSpatialSound('blur', 330, 0.1);
     onBlur?.(event);
   }
@@ -191,7 +191,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     playSpatialSound('hover', 880, 0.03);
   }
   function handleMouseLeave() {
-    isHovered = $state(false);
+    isHovered = false;
   }
   function playSpatialSound(type: string, frequency: number, volume: number) {
     if (!spatialAudio || !audioContext || !spatialPanner || reducedMotion) return;

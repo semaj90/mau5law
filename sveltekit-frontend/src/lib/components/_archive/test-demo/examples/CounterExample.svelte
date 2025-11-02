@@ -6,7 +6,7 @@
   let { initialCount = 0 } = $props();
   let count = initialCount;
   let doubled;
-  let history = [];
+  let history: any[] = [];
   // Reactive statement
   let doubled = $derived(count * 2);
   // Reactive statement with side effect

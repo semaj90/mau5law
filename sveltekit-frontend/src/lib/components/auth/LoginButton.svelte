@@ -34,14 +34,14 @@
   }: Props = $props();
 
   // Svelte 5: Use onclick instead of on:click
-  async function handleLogin() {
+  async function handleLogin(): Promise<any> {
     if (redirectAfterLogin && authStore?.setRedirect) {
       authStore.setRedirect(redirectAfterLogin);
     }
     goto('/auth/login');
   }
 
-  async function handleLogout() {
+  async function handleLogout(): Promise<any> {
     if (authStore?.logout) {
       await authStore.logout();
     }

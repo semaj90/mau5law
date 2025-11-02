@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   interface Props {
     user: any;
@@ -7,13 +8,13 @@
   import { onMount } from 'svelte';
   import { avatarStore } from '../stores/avatarStore';
   import { Avatar } from './Avatar.svelte';
-  let dropdownOpen = $state(false);
+  let dropdownOpen = $state<boolean>(false);
   let dropdownElement: HTMLElement = $state(undefined as any);
   $effect(() => {
     // Close dropdown when clicking outside
     function handleClickOutside(_event: MouseEvent) {
       if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-        dropdownOpen = $state(false);
+        dropdownOpen = false;
       }
     }
     document.addEventListener('click', handleClickOutside);

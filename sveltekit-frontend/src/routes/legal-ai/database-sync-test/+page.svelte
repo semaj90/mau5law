@@ -7,6 +7,7 @@
   4. Error handling and loading states
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Logic Layer imports - our decoupled stores
@@ -112,7 +113,7 @@
   let testResults = $state<TestResult | null>(null);
   let testLog = $state<string[]>([]);
   // ===== DATABASE SYNC TESTING FUNCTIONS =====
-  async function testDocumentProcessing() {
+  async function testDocumentProcessing(): Promise<any> {
     addToLog('Starting document processing test...');
     try {
       // Test the database sync via our decoupled store
@@ -129,7 +130,7 @@
       addToLog(`❌ Processing failed: ${error}`);
     }
   }
-  async function testSessionLoading() {
+  async function testSessionLoading(): Promise<any> {
     if (!selectedSession) {
       addToLog('❌ No session selected for loading test');
       return;
@@ -143,7 +144,7 @@
       addToLog(`❌ Session loading failed: ${error}`);
     }
   }
-  async function testDocumentDeletion() {
+  async function testDocumentDeletion(): Promise<any> {
     if (!testResults?.id) {
       addToLog('❌ No document to delete');
       return;
@@ -157,7 +158,7 @@
       addToLog(`❌ Deletion failed: ${error}`);
     }
   }
-  async function testServiceAvailability() {
+  async function testServiceAvailability(): Promise<any> {
     addToLog('Testing service availability...');
     try {
       await langchainServiceLogic.initialize();

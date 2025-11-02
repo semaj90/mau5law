@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 import { createMachine, assign } from 'xstate';
 import type { DoneInvokeEvent, ActorRefFrom } from 'xstate';
 import { caseMemoryEngine } from '../services/case-memory-engine.js';

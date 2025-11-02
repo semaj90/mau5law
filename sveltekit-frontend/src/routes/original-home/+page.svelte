@@ -2,13 +2,15 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import Typewriter from '$lib/components/Typewriter.svelte';
   import UploadArea from '$lib/components/UploadArea.svelte';
   import { browser } from '$app/environment';
   let recentCases: any[] = $state([]);
-  let heroText = $state('Advanced Legal Case Management');
+  let heroText = $state<string>('Advanced Legal Case Management');
   $effect(() => {
     (async () => {
       // Load recent cases
@@ -41,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
       window.location.href = `/upload?files=${files.length}`;
     }
   }
-  async function handleAiSearch(query: string) {
+  async function handleAiSearch(query: string): Promise<any> {
     if (!query.trim()) return;
     try {
       // Navigate to AI search results page

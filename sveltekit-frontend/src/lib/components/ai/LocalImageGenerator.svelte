@@ -47,20 +47,20 @@ Production-ready with native Windows support
   }: Props = $props();
   // Component state
   let prompt = $state(initialPrompt);
-  let negativePrompt = $state('blurry, low quality, distorted, text, watermark, signature');
+  let negativePrompt = $state<string>('blurry, low quality, distorted, text, watermark, signature');
   let selectedStyle = $state<'realistic' | 'artistic' | 'anime' | 'sketch' | 'legal-diagram' | 'evidence-recreation'>(
     'realistic'
   );
   let selectedProvider = $state<'stable-diffusion-webui' | 'comfyui' | 'ollama-vision' | 'fallback'>('fallback');
-  let advancedMode = $state(false);
+  let advancedMode = $state<boolean>(false);
   // Advanced parameters
-  let width = $state(512);
-  let height = $state(512);
-  let steps = $state(20);
+  let width = $state<number>(512);
+  let height = $state<number>(512);
+  let steps = $state<number>(20);
   let cfgScale = $state(7.5);
   let seed = $state(-1);
   // UI state
-  let showHistory = $state(false);
+  let showHistory = $state<boolean>(false);
   let selectedImage = $state<ImageGenerationResult | null>(null); // use local type
   let generationHistory = $state<ImageGenerationResult[]>([]);
   // Provider status
@@ -71,14 +71,14 @@ Production-ready with native Windows support
     // Load generation history
     loadHistory();
   });
-  async function loadHistory() {
+  async function loadHistory(): Promise<any> {
     try {
       generationHistory = await imageGenerationService.getGenerationHistory();
     } catch (error) {
       console.error('Failed to load generation history:', error);
     }
   }
-  async function generateImage() {
+  async function generateImage(): Promise<any> {
     if (!prompt.trim()) {
       alert('Please enter a prompt');
       return;
@@ -126,7 +126,7 @@ Production-ready with native Windows support
       onImageGenerated(result);
     }
   }
-  async function regenerateWithSeed(result: ImageGenerationResult) {
+  async function regenerateWithSeed(result: ImageGenerationResult): Promise<any> {
     prompt = result.prompt;
     if (result.metadata?.seed !== undefined && result.metadata.seed !== -1) {
       seed = result.metadata.seed;
@@ -138,7 +138,7 @@ Production-ready with native Windows support
     height = result.metadata?.size?.height ?? height;
     await generateImage();
   }
-  async function copyPrompt(text: string) {
+  async function copyPrompt(text: string): Promise<any> {
     try {
       await navigator.clipboard.writeText(text);
       // optional: small feedback can be added

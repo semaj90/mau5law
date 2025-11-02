@@ -14,7 +14,7 @@ import { eq } from 'drizzle-orm';
 const redis = createClient({
   url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
 });
-let redisConnected = $state(false);
+let redisConnected = $state<boolean>(false);
 async function connectRedis(): Promise<void> {
   if (!redisConnected) {
     await redis.connect();

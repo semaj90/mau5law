@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { writable } from 'svelte/store';
   import { legalDB } from '$lib/db/client-db.js';
@@ -21,11 +23,11 @@ https://svelte.dev/e/js_parse_error -->
   const caseAssociations = writable<any[]>([]);
   const gpuAnalysis = writable<any>(null);
   const processingMetrics = writable<any>(null);
-  let showGPUAnalysis = $state(false);
-  let cacheHitTime = $state(0);
-  let serverFetchTime = $state(0);
+  let showGPUAnalysis = $state<boolean>(false);
+  let cacheHitTime = $state<number>(0);
+  let serverFetchTime = $state<number>(0);
   // Node click handler with cache-first strategy
-  async function loadDocumentDetails(docId: string, forceRefresh = false) {
+  async function loadDocumentDetails(docId: string, forceRefresh = false): Promise<any> {
     if (!docId) return;
     const startTime = performance.now();
     isLoading.set(true);
@@ -66,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Server fetch with caching
-  async function fetchAndCacheDocument(docId: string, includeGPU = false) {
+  async function fetchAndCacheDocument(docId: string, includeGPU = false): Promise<Response> {
     const serverStartTime = performance.now();
     loadingSource.set('server');
     console.log('🌐 Fetching from server with full analysis...');
@@ -140,12 +142,12 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
   // GPU Analysis toggle
-  async function toggleGPUAnalysis() {
+  async function toggleGPUAnalysis(): Promise<any> {
     if (!showGPUAnalysis && documentId) {
       showGPUAnalysis = true;
       await fetchAndCacheDocument(documentId, true);
     } else {
-      showGPUAnalysis = $state(false);
+      showGPUAnalysis = false;
       gpuAnalysis.set(null);
     }
   }
@@ -250,7 +252,7 @@ https://svelte.dev/e/js_parse_error -->
                     </button>
                     <button
                       onclick={toggleGPUAnalysis}
-                      class="text-sm {showGPUAnalysis
+                      class="text-sm" {showGPUAnalysis
                         ? 'bg-purple-100 text-purple-700'
                         : 'bg-gray-100'} hover:bg-purple-200 px-3 py-1 rounded"
                     >
@@ -405,7 +407,7 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="flex justify-between">
                       <span class="text-gray-600">Vector Embedding:</span>
                       <span
-                        class="font-medium {$processingMetrics.has_vector_embedding
+                        class="font-medium" {$processingMetrics.has_vector_embedding
                           ? 'text-green-600'
                           : 'text-red-600'}"
                       >

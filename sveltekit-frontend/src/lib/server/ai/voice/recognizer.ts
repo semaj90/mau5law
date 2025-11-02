@@ -13,7 +13,7 @@ function getTranscribeApiUrl() {
   return process.env.TRANSCRIBE_API_URL || process.env.OLLAMA_TRANSCRIBE_URL || '';
 }
 
-async function writeTempFile(buffer: Uint8Array | ArrayBuffer, ext = '.wav') {
+async function writeTempFile(buffer: Uint8Array | ArrayBuffer, ext = '.wav'): Promise<any> {
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'transcribe-'));
   const filePath = path.join(tmpDir, `input${ext}`);
   const data = buffer instanceof ArrayBuffer ? Buffer.from(buffer) : Buffer.from(buffer);

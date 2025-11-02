@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 import crypto from "crypto";
 // Enhanced AI Pipeline Service - Real Integration
 // Connects Ollama models with PostgreSQL pgvector for semantic search

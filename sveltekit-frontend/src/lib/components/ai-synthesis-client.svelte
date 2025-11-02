@@ -16,17 +16,17 @@
   const error = writable<string | null>(null);
   const events = writable<unknown[]>([]);
   // Configuration
-  let enableStreaming = $state(true);
-  let enableCache = $state(true);
-  let enableMMR = $state(true);
-  let enableCrossEncoder = $state(true);
-  let maxSources = $state(10);
+  let enableStreaming = $state<boolean>(true);
+  let enableCache = $state<boolean>(true);
+  let enableMMR = $state<boolean>(true);
+  let enableCrossEncoder = $state<boolean>(true);
+  let maxSources = $state<number>(10);
   // SSE connection
   let eventSource = $state<EventSource | null >(null);
   /**
    * Submit query for synthesis
    */
-  async function submitQuery() {
+  async function submitQuery(): Promise<any> {
     try {
       processing.set(true);
       error.set(null);
@@ -161,7 +161,7 @@
   /**
    * Submit feedback for improvement
    */
-  async function submitFeedback(rating: number, feedback?: string) {
+  async function submitFeedback(rating: number, feedback?: string): Promise<any> {
     const currentResult = $result;
     if (!currentResult || !currentResult.metadata?.requestId) {
       console.error('No result to provide feedback for');
@@ -193,7 +193,7 @@
   /**
    * Get health status
    */
-  async function checkHealth() {
+  async function checkHealth(): Promise<any> {
     try {
       // removed unused response assignment
       const health = await (response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).json();

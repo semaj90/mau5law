@@ -2,6 +2,8 @@
 https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { goto } from "$app/navigation";
   import { citationStore  } from '$lib/stores/unified";
@@ -29,8 +31,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
     textareaElement?: HTMLTextAreaElement | undefined;
   } = $props();
   // Command menu state using Svelte 5 syntax
-  let searchQuery = $state("");
-  let selectedIndex = $state(0);
+  let searchQuery = $state<string>("");
+  let selectedIndex = $state<number>(0);
   let inputElement = $state<HTMLInputElement// Create popover
   // const {
   //   elements: { trigger, content, arrow, close },
@@ -43,7 +45,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   //   closeOnOutsideClick: true
   // }))
   // Alternative state management without melt
-  let isOpen = $state(false);
+  let isOpen = $state<boolean>(false);
   // Get recent citations
   let recentCitations = $derived(citationStore.getRecentCitations($citationStore, 5));
   // Available commands

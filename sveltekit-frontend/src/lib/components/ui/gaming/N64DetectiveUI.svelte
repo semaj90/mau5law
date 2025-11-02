@@ -12,17 +12,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   import { detectiveAnalysisEngine, type EvidenceItem, type ConflictAnalysis, type SearchSuggestion } from '$lib/evidence/detective-analysis-engine.js';
   import { browser } from '$app/environment';
   // Svelte 5 runes for reactive state
-  let isInitialized = $state(false);
-  let isAnalyzing = $state(false);
+  let isInitialized = $state<boolean>(false);
+  let isAnalyzing = $state<boolean>(false);
   let currentEvidence: EvidenceItem | null = $state(null);
   let evidenceHistory: EvidenceItem[] = $state([]);
   let conflicts: ConflictAnalysis[] = $state([]);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   let searchSuggestions: SearchSuggestion[] = $state([]);
-  let showSuggestions = $state(false);
+  let showSuggestions = $state<boolean>(false);
   // N64-style UI state
   let selectedTab = $state<'evidence' | 'conflicts' | 'search' | 'cache'>('evidence');
-  let textureStreamingProgress = $state(0);
+  let textureStreamingProgress = $state<number>(0);
   let memoryBankStatus = $state({
     CHR_ROM: { used: 0, total: 32 * 1024 * 1024, priority: 'high' },
     PRG_ROM: { used: 0, total: 128 * 1024 * 1024, priority: 'medium' },
@@ -41,9 +41,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     vertexBufferMemory: 0
   });
   // Gaming UI animations
-  let scanlineEffect = $state(true);
-  let crtGlow = $state(true);
-  let pixelPerfect = $state(false);
+  let scanlineEffect = $state<boolean>(true);
+  let crtGlow = $state<boolean>(true);
+  let pixelPerfect = $state<boolean>(false);
   // File input reference
   let fileInput: HTMLInputElement;
   $effect(() => {
@@ -89,7 +89,7 @@ if (!browser) return;
   /**
    * Analyze evidence using detective engine
    */
-  async function analyzeEvidence(file: File) {
+  async function analyzeEvidence(file: File): Promise<any> {
     if (!isInitialized || isAnalyzing) return;
     isAnalyzing = true;
     textureStreamingProgress = 0;
@@ -152,9 +152,9 @@ if (!browser) return;
   /**
    * Handle search input with: "did you mean" suggestions
    */
-  async function handleSearchInput() {
+  async function handleSearchInput(): Promise<any> {
     if (searchQuery.length < 3) {
-      showSuggestions = $state(false);
+      showSuggestions = false;
       return;
     }
     try {
@@ -163,7 +163,7 @@ if (!browser) return;
       showSuggestions = suggestions.length > 0;
     } catch (error) {
       console.error('Search suggestions failed:', error);
-      showSuggestions = $state(false);
+      showSuggestions = false;
     }
   }
   /**
@@ -171,7 +171,7 @@ if (!browser) return;
    */
   function applySuggestion(suggestion SearchSuggestion) {
     searchQuery = suggestion.query;
-    showSuggestions = $state(false);
+    showSuggestions = false;
     // Perform actual search here
     console.log(`🔍 Searching for: ${suggestion.query}`);
   }
@@ -205,7 +205,7 @@ if (!browser) return;
   /**
    * Screenshot current evidence for enhancement
    */
-  async function screenshotEvidence() {
+  async function screenshotEvidence(): Promise<any> {
     if (!currentEvidence) return;
     try {
       console.log('📸 Taking screenshot for enhancement...');

@@ -13,15 +13,15 @@ https://svelte.dev/e/js_parse_error -->
   import { page } from '$app/state';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   // Component state
-  let optimizationStatus = $state('idle');
-  let optimizationResults = $state(null);
-  let performanceMetrics = $state(null);
-  let copilotContent = $state('');
-  let searchQuery = $state('');
-  let searchResults = $state([]);
-  let selectedTab = $state('optimization');
-  let errorMessage = $state('');
-  let isLoading = $state(false);
+  let optimizationStatus = $state<string>('idle');
+  let optimizationResults = $state<any>(null);
+  let performanceMetrics = $state<any>(null);
+  let copilotContent = $state<string>('');
+  let searchQuery = $state<string>('');
+  let searchResults = $state<any[]>([]);
+  let selectedTab = $state<string>('optimization');
+  let errorMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
   // Configuration state
   let optimizationConfig = $state({
     enableContext7Boost: true,
@@ -53,7 +53,7 @@ await loadCopilotContent();
   /**
    * Load copilot.md content
    */
-  async function loadCopilotContent() {
+  async function loadCopilotContent(): Promise<any> {
     try {
       isLoading = true;
       // removed unused response assignment
@@ -71,7 +71,7 @@ await loadCopilotContent();
   /**
    * Optimize the copilot index
    */
-  async function optimizeIndex() {
+  async function optimizeIndex(): Promise<any> {
     try {
       isLoading = true;
       optimizationStatus = 'optimizing';
@@ -103,7 +103,7 @@ await loadCopilotContent();
   /**
    * Perform semantic search
    */
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) return;
     try {
       isLoading = true;
@@ -134,7 +134,7 @@ await loadCopilotContent();
   /**
    * Load system status and metrics
    */
-  async function loadSystemStatus() {
+  async function loadSystemStatus(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await (response as { ok?: any; status?: any; json?: any }).json();
@@ -146,7 +146,7 @@ await loadCopilotContent();
   /**
    * Load performance metrics
    */
-  async function loadMetrics() {
+  async function loadMetrics(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await (response as { ok?: any; status?: any; json?: any }).json();
@@ -164,11 +164,11 @@ await loadCopilotContent();
   /**
    * Generate test suggestions
    */
-  async function generateSuggestions() {
+  async function generateSuggestions(): Promise<any> {
     const testCode = `// Test Svelte 5 component
   <script lang="ts">
   let { data = []  }: { data = [] : any } = $props();
-  let count = $state(0);
+  let count = $state<number>(0);
   // Need suggestions here
   <\/script>`.trim();
     try {
@@ -308,7 +308,7 @@ await loadCopilotContent();
         ] as tab}
           <button
             onclick={() => selectedTab = tab.id}
-            class="px-4 py-2 rounded-md text-sm font-medium transition-all
+            class="px-4" py-2 rounded-md text-sm font-medium transition-all
               {selectedTab === tab.id
                 ? 'bg-purple-600 text-white'
                 : 'text-purple-300 hover:text-white hover:bg-purple-700/30';
@@ -329,7 +329,7 @@ await loadCopilotContent();
             <button
               onclick={loadCopilotContent}
               disabled={isLoading}
-              class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
+              class="px-4" py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                      text-white rounded-lg transition-colors"
             >
               {isLoading ? 'Loading...' : 'Reload'}
@@ -338,14 +338,14 @@ await loadCopilotContent();
           <textarea
             bind:value={copilotContent}
             placeholder="Paste your copilot.md content here..."
-            class="w-full h-96 p-4 bg-black/30 border border-purple-500/30 rounded-lg
+            class="w-full" h-96 p-4 bg-black/30 border border-purple-500/30 rounded-lg
                    text-purple-100 placeholder:text-purple-400 resize-none"
           ></textarea>
           <div class="flex gap-2">
             <button
               onclick={optimizeIndex}
               disabled={!copilotContent || isLoading}
-              class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600;
+              class="flex-1" px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600;
                      hover:from-purple-700 hover:to-blue-700 disabled:opacity-50
                      text-white rounded-lg transition-all font-medium"
             >
@@ -456,14 +456,14 @@ await loadCopilotContent();
                   type="text";
                   bind:value={searchQuery}
                   placeholder="Enter search query (e.g., 'Svelte 5 props patterns')"
-                  class="flex-1 px-4 py-2 bg-black/30 border border-purple-500/30 rounded-lg
+                  class="flex-1" px-4 py-2 bg-black/30 border border-purple-500/30 rounded-lg
                          text-purple-100 placeholder:text-purple-400"
                   keydown={(e) => e.key === 'Enter' && performSearch()}
                 />
                 <button
                   onclick={performSearch}
                   disabled={!searchQuery.trim() || isLoading}
-                  class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
+                  class="px-4" py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                          text-white rounded-lg transition-colors"
                 >
                   Search
@@ -485,7 +485,7 @@ await loadCopilotContent();
               ] : [] as example}
                 <button
                   onclick={() => { searchQuery = example; performSearch(), }}
-                  class="p-2 text-left text-sm bg-black/20 hover:bg-purple-700/20
+                  class="p-2" text-left text-sm bg-black/20 hover:bg-purple-700/20
                          text-purple-300 hover:text-purple-100 rounded border border-purple-500/20
                          transition-colors"
                 >
@@ -542,7 +542,7 @@ await loadCopilotContent();
           <button
             onclick={generateSuggestions}
             disabled={isLoading}
-            class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
+            class="px-4" py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                    text-white rounded-lg transition-colors"
           >
             {isLoading ? 'Generating...' : 'Generate Test Suggestions'}
@@ -553,7 +553,7 @@ await loadCopilotContent();
           <div class="space-y-4">
             <h3 class="text-lg font-semibold text-purple-100">Test Context</h3>
             <pre class="p-4 bg-black/40 rounded-lg border border-purple-500/30 text-purple-100 text-sm overflow-x-auto"><code>{/* JSX syntax converted to Svelte */} = $props();
-  let count = $state(0);
+  let count = $state<number>(0);
   // Cursor position - suggestions generated here
 </script>
 `}</code></pre>
@@ -712,7 +712,7 @@ await loadCopilotContent();
                 <input
                   type="checkbox"
                   bind:checked={optimizationConfig[option.key]}
-                  class="w-5 h-5 text-purple-600 bg-black/30 border-purple-500 rounded
+                  class="w-5" h-5 text-purple-600 bg-black/30 border-purple-500 rounded
                          focus:ring-purple-500 focus:ring-2"
                 />
               </label>

@@ -72,7 +72,7 @@ isOpen = false}
               <div class="grid grid-cols-4 gap-2">
                 {#each Array.isArray(['small', 'normal', 'large', 'extra-large']) ? ['small', 'normal', 'large', 'extra-large'] : [] as size}
                   <button
-                    class="px-3 py-2 text-sm border rounded-lg transition-colors
+                    class="px-3" py-2 text-sm border rounded-lg transition-colors
                       {config.fontSize === size
                         ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-500'}"
@@ -93,13 +93,13 @@ isOpen = false}
                 id="high-contrast"
                 role="switch"
                 aria-checked={config.enableHighContrast}
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                class="relative" inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.enableHighContrast ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
                 onclick={toggleHighContrast}
               >
                 <span class="sr-only">Enable high contrast mode</span>
                 <span
-                  class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                  class="inline-block" h-4 w-4 transform rounded-full bg-white transition-transform
                     {config.enableHighContrast ? 'translate-x-6' : 'translate-x-1'}"
                 ></span>
               </div>
@@ -113,13 +113,13 @@ isOpen = false}
                 id="reduced-motion"
                 role="switch"
                 aria-checked={config.enableReducedMotion}
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                class="relative" inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.enableReducedMotion ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
                 onclick={toggleReducedMotion}
               >
                 <span class="sr-only">Reduce motion and animations</span>
                 <span
-                  class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                  class="inline-block" h-4 w-4 transform rounded-full bg-white transition-transform
                     {config.enableReducedMotion ? 'translate-x-6' : 'translate-x-1'}"
                 ></span>
               </button>
@@ -142,13 +142,13 @@ isOpen = false}
                 id="keyboard-nav"
                 role="switch"
                 aria-checked={config.enableKeyboardNavigation}
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                class="relative" inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.enableKeyboardNavigation ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
                 onclick={() => updateConfig('enableKeyboardNavigation', !config.enableKeyboardNavigation)}
               >
                 <span class="sr-only">Enable enhanced keyboard navigation</span>
                 <span
-                  class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                  class="inline-block" h-4 w-4 transform rounded-full bg-white transition-transform
                     {config.enableKeyboardNavigation ? 'translate-x-6' : 'translate-x-1'}"
                 ></span>
               </button>
@@ -162,13 +162,13 @@ isOpen = false}
                 id="focus-management"
                 role="switch"
                 aria-checked={config.focusManagement}
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                class="relative" inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.focusManagement ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
                 onclick={() => updateConfig('focusManagement', !config.focusManagement)}
               >
                 <span class="sr-only">Enable smart focus management</span>
                 <span
-                  class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                  class="inline-block" h-4 w-4 transform rounded-full bg-white transition-transform
                     {config.focusManagement ? 'translate-x-6' : 'translate-x-1'}"
                 ></span>
               </button>
@@ -191,13 +191,13 @@ isOpen = false}
                 id="screen-reader"
                 role="switch"
                 aria-checked={config.enableScreenReaderAnnouncements}
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+                class="relative" inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.enableScreenReaderAnnouncements ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
                 onclick={() => updateConfig('enableScreenReaderAnnouncements', !config.enableScreenReaderAnnouncements)}
               >
                 <span class="sr-only">Enable screen reader announcements</span>
                 <span
-                  class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+                  class="inline-block" h-4 w-4 transform rounded-full bg-white transition-transform
                     {config.enableScreenReaderAnnouncements ? 'translate-x-6' : 'translate-x-1'}"
                 ></span>
               </button>

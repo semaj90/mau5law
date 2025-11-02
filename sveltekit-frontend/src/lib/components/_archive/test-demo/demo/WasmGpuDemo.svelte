@@ -3,6 +3,8 @@
   Real-time monitoring and testing interface for the WASM GPU system
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
@@ -14,10 +16,10 @@
   const { initStatus, performanceMetrics, resourceStatus } = wasmGpu.store;
   const { isReady, isRtx3060, systemHealth, performance } = wasmGpu.derived;
   // Demo state
-  let benchmarkRunning = $state(false);
+  let benchmarkRunning = $state<boolean>(false);
   let benchmarkResults: { operation: string; time: number; throughput: number }[] = $state([]);
-  let testVectorCount = $state(100);
-  let testDimensions = $state(384);
+  let testVectorCount = $state<number>(100);
+  let testDimensions = $state<number>(384);
   let similarityResults: Float32Array | null = $state(null);
   // Legal AI test scenarios
   const legalTestScenarios = [
@@ -57,7 +59,7 @@
   /**
    * Run comprehensive benchmark suite
    */
-  async function runBenchmark() {
+  async function runBenchmark(): Promise<any> {
     if (!$isReady || benchmarkRunning) return;
     benchmarkRunning = true;
     benchmarkResults = [];
@@ -119,7 +121,7 @@
   /**
    * Run specific legal AI scenario
    */
-  async function runLegalScenario() {
+  async function runLegalScenario(): Promise<any> {
     if (!$isReady || benchmarkRunning) return;
     benchmarkRunning = true;
     try {

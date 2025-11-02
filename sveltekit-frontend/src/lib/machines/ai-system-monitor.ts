@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import { createMachine, assign } from 'xstate';
 export interface SystemContext {
   lastActivity: number;

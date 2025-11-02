@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   // Svelte 5 runes for reactive state
-  let log = $state('');
+  let log = $state<string>('');
   let testResults = $state({
     webgpu: { supported: false, tested: false, performance: null as any, error: null as string | null },
     webgl2: { supported: false, tested: false, performance: null as any, error: null as string | null },
@@ -11,9 +11,9 @@
     wasm: { supported: false, tested: false, performance: null as any, error: null as string | null },
     recommendation: '';
   });
-  let isTestingInProgress = $state(false);
-  let currentTest = $state('');
-  let progressPercent = $state(0);
+  let isTestingInProgress = $state<boolean>(false);
+  let currentTest = $state<string>('');
+  let progressPercent = $state<number>(0);
   // Test configuration for Gemma3 270M simulation
   const matrixSize = 384; // Gemma3 270M embedding dimension
   const iterations = 50;
@@ -31,12 +31,12 @@ if (browser) {
     }
     })();
   });
-  async function initializeTests() {
+  async function initializeTests(): Promise<void> {
     testData = generateTestMatrices(matrixSize);
     append(`✅ Generated ${matrixSize}×${matrixSize} test matrices for Gemma3 270M simulation`);
     await checkBasicSupport();
   }
-  async function checkBasicSupport() {
+  async function checkBasicSupport(): Promise<any> {
     append('🔍 Checking browser GPU acceleration support...');
     // WebGPU support check
     testResults.webgpu.supported = 'gpu' in navigator;
@@ -68,7 +68,7 @@ if (browser) {
     }
     append('📊 Browser compatibility check complete');
   }
-  async function runPerformanceTests() {
+  async function runPerformanceTests(): Promise<any> {
     if (!testData) {
       append('❌ Test data not initialized');
       return;
@@ -118,7 +118,7 @@ if (browser) {
       currentTest = '';
     }
   }
-  async function testWebGPU() {
+  async function testWebGPU(): Promise<any> {
     testResults.webgpu.tested = true;
     append('🚀 Testing WebGPU compute shaders for Gemma3 270M inference...');
     try {
@@ -175,7 +175,7 @@ if (browser) {
       append(`❌ WebGPU failed: ${(error as Error).message}`);
     }
   }
-  async function testWebGL2() {
+  async function testWebGL2(): Promise<any> {
     testResults.webgl2.tested = true;
     append('⚡ Testing WebGL2 transform feedback for Gemma3 270M...');
     try {
@@ -205,7 +205,7 @@ if (browser) {
       append(`❌ WebGL2 failed: ${(error as Error).message}`);
     }
   }
-  async function testWebGL1() {
+  async function testWebGL1(): Promise<any> {
     testResults.webgl1.tested = true;
     append('⚠️ Testing WebGL1 texture operations for compatibility...');
     try {
@@ -236,7 +236,7 @@ if (browser) {
       append(`❌ WebGL1 failed: ${(error as Error).message}`);
     }
   }
-  async function testWebAssemblyCPU() {
+  async function testWebAssemblyCPU(): Promise<any> {
     testResults.wasm.tested = true;
     append('🔄 Testing WebAssembly SIMD CPU for Gemma3 270M fallback...');
     try {
@@ -274,7 +274,7 @@ if (browser) {
     }
     return { matrixA, matrixB }
   }
-  async function performWebGPUMatrixMultiplication(device: GPUDevice, computePipeline: GPUComputePipeline) {
+  async function performWebGPUMatrixMultiplication(device: GPUDevice, computePipeline: GPUComputePipeline): Promise<any> {
     const matrixSizeBytes = matrixSize * matrixSize * 4;
     const bufferA = device.createBuffer({
       size: matrixSizeBytes;
@@ -310,7 +310,7 @@ if (browser) {
     bufferB.destroy();
     resultBuffer.destroy();
   }
-  async function performWebGL2MatrixMultiplication(gl: WebGL2RenderingContext) {
+  async function performWebGL2MatrixMultiplication(gl: WebGL2RenderingContext): Promise<any> {
     // Simplified WebGL2 matrix multiplication using transform feedback
     const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
     const vertexBuffer = gl.createBuffer();
@@ -321,7 +321,7 @@ if (browser) {
     gl.finish();
     gl.deleteBuffer(vertexBuffer);
   }
-  async function performWebGL1MatrixMultiplication(gl: WebGLRenderingContext) {
+  async function performWebGL1MatrixMultiplication(gl: WebGLRenderingContext): Promise<any> {
     // Simplified WebGL1 matrix multiplication using textures
     const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
     const vertexBuffer = gl.createBuffer();
@@ -331,7 +331,7 @@ if (browser) {
     gl.finish();
     gl.deleteBuffer(vertexBuffer);
   }
-  async function createWebAssemblyMatrixModule() {
+  async function createWebAssemblyMatrixModule(): Promise<any> {
     // Simulated high-performance WebAssembly SIMD module for Gemma3 270M
     return {
       matrixMultiply: (matrixA: Float32Array, matrixB: Float32Array, size: number) => {
@@ -382,7 +382,7 @@ if (browser) {
     if (opsNum > 2) return 'color: #f97316;';  // orange - acceptable
     return 'color: #ef4444;'; // red - poor
   }
-  async function runBasicCompatibilityCheck() {
+  async function runBasicCompatibilityCheck(): Promise<any> {
     append('🔧 Running advanced compatibility check for Gemma3 270M...');
     // Test SharedArrayBuffer for multi-threading
     const sharedMemory = typeof SharedArrayBuffer !== 'undefined';

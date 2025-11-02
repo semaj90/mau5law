@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import type { Report } from '$lib/types/index';
   import TauriAPI from '$lib/tauri';

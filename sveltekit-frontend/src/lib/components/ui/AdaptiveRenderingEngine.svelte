@@ -61,7 +61,7 @@
     gpuUtilization 30,
     drawCalls: 100,
   });
-  let isMonitoring = $state(false);
+  let isMonitoring = $state<boolean>(false);
   let canvasElement = $state<HTMLCanvasElement | undefined>(undefined);
   let renderContext = $state<CanvasRenderingContext2D | WebGLRenderingContext | null>(null);
   let webgpuDevice = $state<GPUDevice | null>(null);
@@ -171,7 +171,7 @@
     requestAnimationFrame(frameTimeCallback);
   }
   function stopPerformanceMonitoring(): void {
-    isMonitoring = $state(false);
+    isMonitoring = false;
     if (monitoringInterval) clearInterval(monitoringInterval);
     if (qualityAdjustmentTimer) clearInterval(qualityAdjustmentTimer);
   }

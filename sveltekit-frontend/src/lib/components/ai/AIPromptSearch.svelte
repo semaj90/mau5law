@@ -13,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
     [key: string]: any;
   };
   // query state
-  let query = $state('');
+  let query = $state<string>('');
   // local copy of history (reactive)
   let history = $state<HistoryItem[]>([]);
   // Fuse index

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Keyword extraction module for legal documents
  * Extracts key terms and concepts using Ollama's Gemma 3:270m

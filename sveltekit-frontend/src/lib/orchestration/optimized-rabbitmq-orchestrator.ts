@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // @ts-nocheck
 /**
  * Optimized RabbitMQ Orchestrator with Auto-Attach Self-Optimization

@@ -37,11 +37,11 @@
     lastSync: 0,
   });
   let currentMode = $state(initialMode);
-  let showYoRHaBoard = $state(false);
-  let canvasObjects = $state([]);
-  let syncInProgress = $state(false);
+  let showYoRHaBoard = $state<boolean>(false);
+  let canvasObjects = $state<any[]>([]);
+  let syncInProgress = $state<boolean>(false);
   // Canvas synchronization
-  async function syncCanvasBoards() {
+  async function syncCanvasBoards(): Promise<any> {
     if (!syncCanvases || syncInProgress) return;
     syncInProgress = true;
     try {
@@ -78,7 +78,7 @@
     if (newMode === 'drawing' || newMode === 'both') {
       showYoRHaBoard = true;
     } else {
-      showYoRHaBoard = $state(false);
+      showYoRHaBoard = false;
     }
     canvasState.update(state => ({
       ...state,

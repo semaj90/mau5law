@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * SIMD JSON Benchmarking API Endpoint
  * Provides comprehensive performance testing for SIMD vs standard JSON parsing

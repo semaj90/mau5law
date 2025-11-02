@@ -1,3 +1,5 @@
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
 /**
  * YoRHa Legal AI Chat - Production Ready with SSE Streaming
  *
@@ -143,7 +145,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           );
 
           // replaced constant-condition loop with a controlled loop
-          let readerDone = $state(false);
+          let readerDone = $state<boolean>(false);
           while (!readerDone) {
             const result = await reader.read();
             readerDone = !!result.done;

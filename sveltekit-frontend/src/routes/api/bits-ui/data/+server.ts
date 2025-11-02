@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /*
  * Enhanced API Route Example for Bits UI SSR
  * Demonstrates proper data extraction and serialization patterns
@@ -20,7 +21,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ url, locals }) => {
   }
 },
 {})
-async function getDashboardData(locals: any) {
+async function getDashboardData(locals: any): Promise<any> {
   const dashboardStats: DashboardStats = {
     activeCases: 42,
     evidenceItems: 1337,

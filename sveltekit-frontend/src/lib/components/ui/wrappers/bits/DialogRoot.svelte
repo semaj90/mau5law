@@ -10,14 +10,14 @@
   }: { open?: boolean; onOpenChange?: (open: boolean) => void; children?: Snippet } = $props();
   // Use $state for reactivity in Svelte 5
   let DialogRoot = $state<any>(null);
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   // SvelteKit 2 compatible: Check for overrides first
   const overrides = getBitsOverrides();
   if (overrides && overrides.Dialog) {
     // Cast overrides.Dialog to any to safely access .Root
     const dialogOverride = overrides.Dialog as any;
     DialogRoot = dialogOverride.Root ?? dialogOverride;
-    isLoading = $state(false);
+    isLoading = false;
   } else if (browser) {
     // Only attempt dynamic import in browser
     onMount(async () => {
@@ -35,7 +35,7 @@
     });
   } else {
     // SSR fallback
-    isLoading = $state(false);
+    isLoading = false;
   }
   function handleOpenChange(newOpen: boolean) {
     open = newOpen;

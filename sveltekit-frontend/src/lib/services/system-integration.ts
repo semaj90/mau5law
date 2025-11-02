@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * System Integration Service
  * Orchestrates MinIO storage, PostgreSQL + pgvector, Redis cache, and Context7 semantic search

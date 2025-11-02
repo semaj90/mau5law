@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { cuidSchema } from '$lib/server/z-schemas';
 import { redis } from '$lib/server/redis-client';
 import type { RequestHandler } from './$types';

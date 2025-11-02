@@ -18,7 +18,7 @@
 			/* ignore */
 		}
 	});
-	async function upload() {
+	async function upload(): Promise<any> {
 		if (!file) return;
 		status = 'uploading';
 		// TODO: implement optimized multipart upload (GPU-assisted hashing / parallel chunking)

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * MinIO Upload Service
  * Handles file uploads to MinIO object storage with concurrent data parallelism

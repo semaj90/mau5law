@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Redis-Optimized AI Analysis Endpoint
  * Demonstrates Redis orchestrator integration for document/evidence analysis

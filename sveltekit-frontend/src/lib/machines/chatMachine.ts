@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 /**
  * Chat Machine - XState v5 Compatible
  * Handles chat conversation state with streaming support

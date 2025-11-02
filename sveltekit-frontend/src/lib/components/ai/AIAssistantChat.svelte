@@ -29,15 +29,15 @@
   }
   let { height = '600px', showSettings = true, enableContext7 = true, autoFocus = true }: Props = $props();
   // Reactive state using Svelte 5 runes
-  let currentMessage = $state('');
-  let errorMessage = $state('');
-  let useContext7 = $state(false);
-  let showSettingsDialog = $state(false);
-  let showExportDialog = $state(false);
+  let currentMessage = $state<string>('');
+  let errorMessage = $state<string>('');
+  let useContext7 = $state<boolean>(false);
+  let showSettingsDialog = $state<boolean>(false);
+  let showExportDialog = $state<boolean>(false);
   let messageInput: HTMLTextAreaElement = $state(null!);
   let chatContainer: HTMLDivElement = $state(null!);
   let availableModels = $state<string[]>(['gemma3-legal', 'nomic-embed-text', 'deeds-web']);
-  let useUnifiedService = $state(false);
+  let useUnifiedService = $state<boolean>(false);
   let selectedMode = $state<'auto' | 'wasm' | 'langchain' | 'gpu'>('auto');
   // Derived state for UI using proper store access (use functions instead of $derived)
   let canSend = () => currentMessage.trim().length > 0 && !isProcessing();
@@ -86,7 +86,7 @@
     }
   });
   // Send message to AI
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!canSend()) return;
     const message = currentMessage.trim();
     currentMessage = '';
@@ -418,7 +418,7 @@
             class="bits-btn"
             onclick={() => {
               exportConversation();
-              showExportDialog = $state(false);
+              showExportDialog = false;
             }}
           >
             Export JSON

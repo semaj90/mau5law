@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { writeFileSync } from 'fs';
 import type { RequestHandler } from './$types.js';
 export const POST: RequestHandler = async ({ request }) => {

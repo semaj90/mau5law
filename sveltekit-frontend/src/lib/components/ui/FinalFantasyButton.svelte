@@ -37,7 +37,7 @@
   }
 </script>
 <button
-  class="relative ff-button {variantClasses[variant]} {sizeClasses[size]}
+  class="relative" ff-button {variantClasses[variant]} {sizeClasses[size]}
          {fullWidth ? 'w-full' : ''} {disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
          border-2 text-white font-bold uppercase tracking-wider
          transform transition-all duration-150 ease-in-out
@@ -64,7 +64,7 @@
   <!-- FF-Style Shine Effect -->
   {#if !disabled && !loading}
     <div
-      class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+      class="absolute" inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
                 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700
                 skew-x-12"
     >{/if}

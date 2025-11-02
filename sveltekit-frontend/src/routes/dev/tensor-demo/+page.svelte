@@ -2,11 +2,11 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { embedText } from '$lib/ai/tensor-client';
-  let input = $state('Contracts and liabilities in commercial agreements.');
+  let input = $state<string>('Contracts and liabilities in commercial agreements.');
   let result: any = $state(null);
   let error: string | null = $state(null);
-  let busy = $state(false);
-  async function run() {
+  let busy = $state<boolean>(false);
+  async function run(): Promise<any> {
     busy = true; error = null; result = null;
     try {
       result = await embedText(input, { simdParse: true });

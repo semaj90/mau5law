@@ -63,7 +63,7 @@
     onFocus,
   }: Props = $props();
   // Reactive state
-  let isPressed = $state(false);
+  let isPressed = $state<boolean>(false);
   let audioContext = $state<AudioContext | null>(null);
   let buttonElement = $state<HTMLButtonElement | null>(null);
   // Play simple NES-like button sound
@@ -97,7 +97,7 @@
     await playButtonSound();
     // short press visual
     setTimeout(() => {
-      isPressed = $state(false);
+      isPressed = false;
     }, 100);
     onClick?.();
   };

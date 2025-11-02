@@ -1,5 +1,6 @@
 <!-- Combobox Component for Legal AI App -->
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import Combobox from 'bits-ui';
   // Some builds export a single Combobox object with subcomponents; destructure it for use as individual Svelte components
@@ -58,8 +59,8 @@
     onValueChange,
     onCreateOption,
   }: ComboboxProps = $props();
-  let inputValue = $state('');
-  let open = $state(false);
+  let inputValue = $state<string>('');
+  let open = $state<boolean>(false);
   // Filter options based on search input
   let filteredOptions = $derived(() => {
     if (!inputValue) return options;
@@ -125,7 +126,7 @@
       onValueChange?.(value);
     }
   }
-  async function handleCreateOption() {
+  async function handleCreateOption(): Promise<any> {
     if (!canCreateOption || !onCreateOption) return;
     try {
       const newOption = await onCreateOption(inputValue);

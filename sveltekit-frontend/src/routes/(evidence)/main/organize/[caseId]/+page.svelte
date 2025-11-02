@@ -17,7 +17,7 @@
   // State
   let caseData = $state<any>(null);
   let organizationHistory = $state<any[]>([]);
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   let error = $state<string | null>(null);
   let selectedEvidence = $state<any[]>([]);
   let organizationStats = $state<any>( );
@@ -28,18 +28,18 @@
     (async () => {
 if (!caseId) {
       error = 'Case ID is required';
-      isLoading = $state(false);
+      isLoading = false;
       return;
     }
     await loadCaseData();
     await loadOrganizationHistory();
-    isLoading = $state(false);
+    isLoading = false;
     })();
   });
   /**
    * Load case information
    */
-  async function loadCaseData() {
+  async function loadCaseData(): Promise<any> {
     try {
       // removed unused response assignment
       if (response.ok) {
@@ -56,7 +56,7 @@ if (!caseId) {
   /**
    * Load organization history for the case
    */
-  async function loadOrganizationHistory() {
+  async function loadOrganizationHistory(): Promise<any> {
     try {
       // This would be a separate API endpoint to track organization changes
       // For now, we'll initialize with empty history
@@ -108,7 +108,7 @@ if (!caseId) {
   /**
    * Export organization results
    */
-  async function exportOrganization() {
+  async function exportOrganization(): Promise<any> {
     if (!organizationStats.structure) {
       alert('No organization data to export');
       return;
@@ -141,7 +141,7 @@ if (!caseId) {
   /**
    * Generate organization report
    */
-  async function generateReport() {
+  async function generateReport(): Promise<any> {
     if (!organizationStats.structure) {
       alert('No organization data to generate report');
       return;

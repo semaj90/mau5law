@@ -1,4 +1,7 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Enhanced UI Preview with Session-Aware Components
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -28,15 +31,15 @@
   // Improved: Use QuickActionButton directly, ensure its props/events are typed correctly
 
   // Component state
-  let showDialog = $state(false);
-  let selectedTab = $state('buttons');
-  let showSidebar = $state(true);
-  let mockSessionActive = $state(false);
+  let showDialog = $state<boolean>(false);
+  let selectedTab = $state<string>('buttons');
+  let showSidebar = $state<boolean>(true);
+  let mockSessionActive = $state<boolean>(false);
 
   // Modal states
-  let showModal = $state(false);
-  let modalVariant = $state('gradient');
-  let modalSize = $state('md');
+  let showModal = $state<boolean>(false);
+  let modalVariant = $state<string>('gradient');
+  let modalSize = $state<string>('md');
   // Mock user data for session/user demo
   let mockUser = $state({
     id: 'demo-user-123',
@@ -61,7 +64,7 @@
     showDialog = true;
   }
   function closeDialog() {
-    showDialog = $state(false);
+    showDialog = false;
   }
 
   // Modal functions
@@ -71,7 +74,7 @@
     showModal = true;
   }
   function closeModal() {
-    showModal = $state(false);
+    showModal = false;
   }
   const buttonVariants = ['primary', 'success', 'warning', 'error', 'info'] as const;
   type ButtonVariant = (typeof buttonVariants)[number];
@@ -94,7 +97,7 @@
     });
   }
   function simulateLogout() {
-    mockSessionActive = $state(false);
+    mockSessionActive = false;
     mockSessionActions.clearSession();
   }
   function simulateRefreshSession() {
@@ -169,7 +172,7 @@
     { title: 'Criminal Defense - Armed Robbery Case', status: 'closed', priority: 'critical' },
     { title: 'Family Law Custody Battle', status: 'open', priority: 'low' },
   ];
-  let focusReady = $state(false);
+  let focusReady = $state<boolean>(false);
   $effect(() => {
     focusReady = true;
   });

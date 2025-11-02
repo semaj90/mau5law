@@ -25,7 +25,7 @@
   }
   let { open = $bindable() }: Props = $props();
   let searchHistory = $state<SearchItem[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let selectedSearch = $state<SearchItem | null>(null);
   let aiSuggestions = $state<string[]>([]);
   let searchFilter = $state<string>('');
@@ -49,9 +49,9 @@
       await loadSearchHistory();
     }
   });
-  async function loadSearchHistory() {
+  async function loadSearchHistory(): Promise<any> {
     isLoading = true;
-    let usingMockData = $state(false);
+    let usingMockData = $state<boolean>(false);
     try {
       // perform an actual fetch; if the endpoint is not available the catch block will provide mock data
       const response = await fetch('/api/recommendations/last-searched');
@@ -104,7 +104,7 @@
       }
     }
   }
-  async function generateAISuggestions() {
+  async function generateAISuggestions(): Promise<any> {
     // AI-powered search suggestions based on history
     const commonQueries = searchHistory
       .map(s => s.query.toLowerCase())
@@ -119,7 +119,7 @@
     ];
     aiSuggestions = suggestions.slice(0, 3);
   }
-  async function repeatSearch(searchItem: SearchItem) {
+  async function repeatSearch(searchItem: SearchItem): Promise<any> {
     // Record the repeated search
     try {
       const response = await fetch('/api/recommendations/last-searched', {
@@ -137,7 +137,7 @@
       // In real app, this would trigger the actual search
       console.log('Repeating search:', searchItem.query);
       // Close modal and navigate to search results
-      open = $state(false);
+      open = false;
     } catch (error) {
       console.error('Failed to repeat search:', error);
       // Show fallback notice
@@ -148,10 +148,10 @@
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock behavior - close modal anyway
-      open = $state(false);
+      open = false;
     }
   }
-  async function deleteSearch(searchId: string) {
+  async function deleteSearch(searchId: string): Promise<void> {
     // In real app, this would delete from database
     searchHistory = searchHistory.filter(s => s.id !== searchId);
   }

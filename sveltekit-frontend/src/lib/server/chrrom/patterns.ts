@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // CHR-ROM UI Pattern schema and generators
 // Tiny, ready-to-render UI blocks: text, svg, or component state
 export type CHRPatternType = 'text' | 'svg' | 'state';

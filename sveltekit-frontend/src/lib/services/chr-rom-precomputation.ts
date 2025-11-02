@@ -313,7 +313,7 @@ export class CHRROMPrecomputationService {
     const pool: Promise<void>[] = [];
     const errors: any[] = [];
 
-    async function runNext() {
+    async function runNext(): Promise<any> {
       if (idx >= promises.length) return;
       const currentIdx = idx++;
       try {

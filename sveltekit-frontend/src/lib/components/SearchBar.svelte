@@ -24,8 +24,8 @@
     onsortChanged,
     onfiltersChanged
   }: Props = $props();
-  let selectedSort = $state('relevance');
-  let filtersOpen = $state(false);
+  let selectedSort = $state<string>('relevance');
+  let filtersOpen = $state<boolean>(false);
   // Filter state
   let selectedFileTypes: string[] = $state([]);
   let dateRange = $state({

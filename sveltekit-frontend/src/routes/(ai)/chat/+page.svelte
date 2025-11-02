@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
   /**
    * Production-Ready Integrated AI Chat (Svelte 5)
    * Features: File upload, RAG, embeddings, CUDA, Redis, self-prompting
@@ -10,17 +12,17 @@
   let messages = $state<
     Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date; metadata?: any }>
   >([]);
-  let currentMessage = $state('');
-  let isLoading = $state(false);
+  let currentMessage = $state<string>('');
+  let isLoading = $state<boolean>(false);
   let chatContainer: HTMLElement;
   let fileInput = $state<HTMLInputElement | null>(null);
 
   // System status
-  let typingIndicator = $state(false);
+  let typingIndicator = $state<boolean>(false);
   let connectionStatus = $state<'connected' | 'disconnected' | 'connecting'>('disconnected');
   // make backend optional to satisfy assignments that may not include it, but still keep it available
   let modelInfo = $state<{ name: string; status: string; backend?: string } | null>(null);
-  let cudaAvailable = $state(false);
+  let cudaAvailable = $state<boolean>(false);
   let uploadedFiles = $state<Array<{ name: string; id: string }>>([]);
   let recommendations = $state<string[]>([]);
 
@@ -34,7 +36,7 @@
   });
 
   // Check TensorRT service health
-  async function checkServiceHealth() {
+  async function checkServiceHealth(): Promise<any> {
     try {
       connectionStatus = 'connecting';
       const response = await fetch('http://localhost:8086/api/health');
@@ -70,7 +72,7 @@
     }
   }
   // Send message to TensorRT service
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isLoading) return;
     const userMessage = {
       id: crypto.randomUUID(),
@@ -140,7 +142,7 @@
       messages = [...messages, mockMessage];
     } finally {
       isLoading = false;
-      typingIndicator = $state(false);
+      typingIndicator = false;
       setTimeout(() => {
         chatContainer?.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
       }, 100);

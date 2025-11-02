@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /// <reference types="vite/client" />
 import { Server } from 'socket.io';
 import { dev } from '$app/environment';

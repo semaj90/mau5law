@@ -26,7 +26,7 @@
   let quantumEffects: YoRHaQuantumEffects3D;
   let animationFrame: number;
   // Performance metrics
-  let fps = $state(60);
+  let fps = $state<number>(60);
   let quantumMetrics = $state({
     coherence: 0,
     entanglement: 0,
@@ -45,9 +45,9 @@
     temporalDistortion 0,
     paradoxes: 0,
   });
-  let isInitialized = $state(false);
-  let lastTime = $state(0);
-  let frameCount = $state(0);
+  let isInitialized = $state<boolean>(false);
+  let lastTime = $state<number>(0);
+  let frameCount = $state<number>(0);
   $effect(() => {
     (async () => {
 await initializeQuantumVisualization();
@@ -66,7 +66,7 @@ await initializeQuantumVisualization();
       quantumEffects.dispose();
     }
   });
-  async function initializeQuantumVisualization() {
+  async function initializeQuantumVisualization(): Promise<void> {
     try {
       // Create Three.js scene
       scene = new THREE.Scene();

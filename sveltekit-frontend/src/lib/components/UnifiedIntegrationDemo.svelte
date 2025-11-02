@@ -1,5 +1,6 @@
 <!-- Unified GPU/WASM Integration Demo Component -->
 <script lang="ts">
+import type { Document } from '$lib/types';
 
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -76,7 +77,7 @@ Both parties acknowledge they have read and agree to these terms.`,
     return () => clearInterval(interval);
   });
 
-  async function updateSystemHealth() {
+  async function updateSystemHealth(): Promise<any> {
     try {
       const resp = await fetch('/api/health/status');
       const data = await resp.json();
@@ -89,7 +90,7 @@ Both parties acknowledge they have read and agree to these terms.`,
     }
   }
 
-  async function updateMetrics() {
+  async function updateMetrics(): Promise<any> {
     try {
       const resp = await fetch('/api/admin/status');
       const data = await resp.json();
@@ -100,7 +101,7 @@ Both parties acknowledge they have read and agree to these terms.`,
     }
   }
 
-  async function executeOperation() {
+  async function executeOperation(): Promise<any> {
     if (!testInput || !testInput.trim()) return;
     isLoading = true;
     errorMessage = '';

@@ -7,7 +7,7 @@ https://svelte.dev/e/expected_token -->
   let loading = true;
   let result: WebGPUDiagResult | null = null;
   let error: string | null = null;
-  async function run() {
+  async function run(): Promise<any> {
     loading = true;
     error = null;
     result = null;

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * GPU Shader Cache Schema with Reinforcement Learning
  * PostgreSQL + pgvector integration for legal visualization AI

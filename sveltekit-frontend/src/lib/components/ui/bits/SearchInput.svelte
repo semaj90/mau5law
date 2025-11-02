@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Search, X, Loader, Filter, Zap, History } from 'lucide-svelte';
   import type { VectorSearchResult } from './types';
@@ -35,10 +36,10 @@
     onfilter,
     ...restProp
   }: Props = $props();
-  let isSearching = $state(false);
-  let showSuggestions = $state(false);
+  let isSearching = $state<boolean>(false);
+  let showSuggestions = $state<boolean>(false);
   let suggestions = $state<VectorSearchResult[]>([]);
-  let showFilters = $state(false);
+  let showFilters = $state<boolean>(false);
   let inputElement: HTMLInputElement;
   let debounceTimer: number;
   // Size configurations
@@ -74,10 +75,10 @@
     'focus:shadow-lg focus:scale-[1.01]'
   ].filter(Boolean).join(' '));
   // Debounced search function
-  async function performSearch(query: string) {
+  async function performSearch(query: string): Promise<any> {
     if (!query.trim()) {
       suggestions = [];
-      showSuggestions = $state(false);
+      showSuggestions = false;
       return;
     }
     isSearching = true;
@@ -116,14 +117,14 @@
   // Handle suggestion selection
   function selectSuggestion(suggestion VectorSearchResult) {
     value = suggestion.content;
-    showSuggestions = $state(false);
+    showSuggestions = false;
     onsearch?.(suggestion.content);
   }
   // Handle clear
   function clearSearch() {
     value = '';
     suggestions = [];
-    showSuggestions = $state(false);
+    showSuggestions = false;
     inputElement?.focus();
     onclear?.();
   }
@@ -135,15 +136,15 @@
   // Close suggestions when clicking outside
   function handleClickOutside(_event: MouseEvent) {
     if (!event.target || !(event.target as Element).closest('.search-container')) {
-      showSuggestions = $state(false);
-      showFilters = $state(false);
+      showSuggestions = false;
+      showFilters = false;
     }
   }
   // Keyboard navigation
   function handleKeydown(_event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      showSuggestions = $state(false);
-      showFilters = $state(false);
+      showSuggestions = false;
+      showFilters = false;
     }
   }
 </script>

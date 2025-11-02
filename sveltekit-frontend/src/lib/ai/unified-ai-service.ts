@@ -692,7 +692,7 @@ export const unifiedAIService = new UnifiedAIService();
  * underlying services if they expose dispose/reset methods. This is best-effort
  * and non-breaking.
  */
-export async function disposeUnifiedAIService() {
+export async function disposeUnifiedAIService(): Promise<any> {
   try {
     unifiedAIService.clearCache();
 

@@ -10,9 +10,9 @@
     disabled?: boolean;
   }
   let { label, model, prompt, onActionComplete, onActionError, disabled = false }: Props = $props();
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let errorMessage = $state<string | null>(null);
-  async function triggerOllamaAction() {
+  async function triggerOllamaAction(): Promise<any> {
     if (!browser) {
       console.warn('Ollama action can only be triggered in the browser context.');
       return;

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Enhanced Accessibility Integration for All Route Categories
  * Ensures consistent accessibility across 268+ routes in the Legal AI platform

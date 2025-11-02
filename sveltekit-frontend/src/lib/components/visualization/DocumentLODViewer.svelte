@@ -12,6 +12,8 @@
   - Cached Palace integration for instant page access
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
@@ -59,13 +61,13 @@
   let canvasElement: HTMLCanvasElement = $state(undefined as any);
   let gpuDevice = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
-  let isWebGPUReady = $state(false);
-  let currentPage = $state(1);
-  let totalPages = $state(0);
+  let isWebGPUReady = $state<boolean>(false);
+  let currentPage = $state<number>(1);
+  let totalPages = $state<number>(0);
   let zoomLevel = $state(initialZoom);
-  let rotation = $state(0);
-  let currentLOD = $state(1);
-  let isLoading = $state(false);
+  let rotation = $state<number>(0);
+  let currentLOD = $state<number>(1);
+  let isLoading = $state<boolean>(false);
   let documentPages = $state<Map<number, DocumentPage>(0)>(new Map());
   let viewportBounds = $state({ x: 0, y: 0, width: 800, height: 600 });
   let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });

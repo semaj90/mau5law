@@ -14,12 +14,12 @@
   }
 
   let sessions = $state<Session[]>([]);
-  let loading = $state(true);
+  let loading = $state<boolean>(true);
   let revoking = $state<string | null>(null);
-  let message = $state('');
+  let message = $state<string>('');
   let messageType = $state<'success' | 'error'>('success');
 
-  async function loadSessions() {
+  async function loadSessions(): Promise<any> {
     try {
       loading = true;
       const response = await fetch('/api/auth/sessions');
@@ -36,7 +36,7 @@
     }
   }
 
-  async function revokeSession(sessionId: string) {
+  async function revokeSession(sessionId: string): Promise<any> {
     try {
       revoking = sessionId;
       const response = await fetch(`/api/auth/sessions/${sessionId}`, {
@@ -58,7 +58,7 @@
     }
   }
 
-  async function revokeAllOtherSessions() {
+  async function revokeAllOtherSessions(): Promise<any> {
     if (!confirm('This will log you out from all other devices. Continue?')) return;
 
     try {

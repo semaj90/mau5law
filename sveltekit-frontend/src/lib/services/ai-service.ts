@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { env } from "$env/dynamic/private";
 import { tauriLLM } from './tauri-llm.js';
 

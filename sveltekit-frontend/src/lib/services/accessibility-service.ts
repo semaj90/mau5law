@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // Accessibility service for legal AI application
 // Provides comprehensive a11y features for screen readers, keyboard navigation, and more
 export interface AccessibilityConfig {

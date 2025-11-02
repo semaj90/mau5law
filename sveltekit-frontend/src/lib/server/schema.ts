@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // src/lib/server/schema.ts - Database schema definitions
 import {
   pgTable,

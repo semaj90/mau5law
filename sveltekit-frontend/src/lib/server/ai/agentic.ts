@@ -1,3 +1,4 @@
+import type { AIResponse } from '$lib/types';
 // AI Agentic System - Ollama Gemma3-Legal + TensorRT-LLM Triton Fallback
 import type {
   AIResponse,

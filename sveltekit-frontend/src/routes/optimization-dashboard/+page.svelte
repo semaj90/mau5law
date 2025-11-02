@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
     recommendations: [] as string[]
   });
 
-  let isMonitoring = $state(false);
+  let isMonitoring = $state<boolean>(false);
   let lastUpdate = $state(new Date());
 
   // Real-time performance metrics
@@ -47,9 +47,9 @@ https://svelte.dev/e/js_parse_error -->
 
   // Demo job for testing worker system
   let testJobResult = $state<any>(null);
-  let isSubmittingJob = $state(false);
+  let isSubmittingJob = $state<boolean>(false);
 
-  async function updateSystemMetrics() {
+  async function updateSystemMetrics(): Promise<any> {
     try {
       // Defensive access because EnhancedRAGStore typings differ across implementations
       const rag: any = enhancedRAGStore;
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function testWorkerSystem() {
+  async function testWorkerSystem(): Promise<any> {
     isSubmittingJob = true;
     testJobResult = null;
     try {
@@ -146,7 +146,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function runRAGSearch() {
+  async function runRAGSearch(): Promise<any> {
     try {
       const rag: any = enhancedRAGStore;
       // Cast options to any to avoid strict RAGSearchOptions mismatch
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function optimizeCache() {
+  async function optimizeCache(): Promise<any> {
     try {
       const rag: any = enhancedRAGStore;
       await rag.optimizeCache?.();
@@ -185,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function stopMonitoring() {
-    isMonitoring = $state(false);
+    isMonitoring = false;
   }
 
   // start monitoring on mount to avoid unused import warnings and provide UX

@@ -175,7 +175,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
       await db.select({ count: count() }).from(legalDocuments).limit(1);
     } catch (error) {
       console.error('PostgreSQL connectivity test failed:', error);
-      postgresqlAvailable = $state(false);
+      postgresqlAvailable = false;
     }
     // Test Redis connectivity (simplified for testing)
     let redisAvailable = true;
@@ -185,7 +185,7 @@ export const load: PageServerLoad = async ({ url: _url, fetch: _fetch }): Promis
       redisAvailable = postgresqlAvailable;
     } catch (error) {
       console.error('Redis connectivity test failed:', error);
-      redisAvailable = $state(false);
+      redisAvailable = false;
     }
     const serverRenderTime = Date.now() - startTime;
     const pageData: DatabaseSyncTestData = {

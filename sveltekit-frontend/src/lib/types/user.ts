@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // User types consolidated
 export interface User {
   id: string;

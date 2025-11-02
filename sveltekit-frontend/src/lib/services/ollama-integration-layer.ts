@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // @ts-nocheck - Advanced experimental service
 /**
  * Ollama Integration Layer

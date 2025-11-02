@@ -14,7 +14,7 @@ import type { SQL } from 'drizzle-orm'; // <-- added type import
 const CACHE_TTL = 300; // 5 minutes
 
 // Add helper to safely delete keys by pattern using scanIterator (no redis.keys typing reliance)
-async function deleteKeysByPattern(pattern: string) {
+async function deleteKeysByPattern(pattern: string): Promise<void> {
   // Fallback/scanning approach compatible with multiple redis clients and typings:
   try {
     let cursor = '0';

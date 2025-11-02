@@ -1,5 +1,6 @@
 <!-- Legal Precedent Card for Legal AI App -->
 <script lang="ts">
+import type { Case } from '$lib/types';
 
   import { Scale } from 'lucide-svelte/icons/scale.svelte';
   import { Calendar } from 'lucide-svelte/icons/calendar.svelte';
@@ -57,7 +58,7 @@
     onViewRelated,
     class: className = ''
   }: LegalPrecedentCardProps = $props();
-  let expanded = $state(false);
+  let expanded = $state<boolean>(false);
   // Precedent type configurations (use className to avoid JS reserved word)
   const precedentTypeConfig = {
     binding: {

@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
 	import { onMount } from 'svelte';
 	// UI components (existing bits-ui / enhanced-bits-ui)
 	import Card from '$lib/components/ui/card/Card.svelte';
@@ -15,8 +16,8 @@
 		postgres: false,
 		neo4j: false
 	});
-	let loading = $state(false);
-	let error = $state('');
+	let loading = $state<boolean>(false);
+	let error = $state<string>('');
 	let toasts = $state<{ id: string; message: string; type: 'info' | 'success' | 'error' }[]>([]);
 
 	function pushToast(message: string, type: 'info' | 'success' | 'error' = 'info') {
@@ -25,7 +26,7 @@
 		setTimeout(() => (toasts = toasts.filter((t) => t.id !== id)), 4500);
 	}
 
-	async function checkSystemStatus() {
+	async function checkSystemStatus(): Promise<any> {
 		loading = true;
 		error = '';
 		try {

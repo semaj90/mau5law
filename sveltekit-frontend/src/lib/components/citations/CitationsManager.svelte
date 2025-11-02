@@ -3,6 +3,8 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- Citations Manager - Legal Citation System with AI-powered search -->
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
 	import { onMount } from 'svelte';
 	import {
@@ -22,10 +24,10 @@ https://svelte.dev/e/attribute_duplicate -->
   	// Svelte 5 state management
   	let citations = $state<any[]>([]);
   	let filteredCitations = $state<any[]>([]);
-  	let searchQuery = $state('');
-  	let selectedCategory = $state('all');
+  	let searchQuery = $state<string>('');
+  	let selectedCategory = $state<string>('all');
   	let sortBy = $state<'date' | 'title' | 'relevance'>('date');
-  	let isLoading = $state(false);
+  	let isLoading = $state<boolean>(false);
   	let citationCategories = $state([
   		{ id: 'all', label: 'All Citations', count: 0 },
   		{ id: 'cases', label: 'Case Law', count: 0 },
@@ -48,7 +50,7 @@ https://svelte.dev/e/attribute_duplicate -->
 		tags: [] as string[],
 		relevanceScore: 0
 	});
-  	let showDetailModal = $state(false);
+  	let showDetailModal = $state<boolean>(false);
   	// Component props
   	let {
   		caseId = '',
@@ -61,9 +63,9 @@ await loadCitations();
   		updateCategoryCounts();
     })();
   });
-  	async function loadCitations() {
+  	async function loadCitations(): Promise<any> {
   		isLoading = true;
-	async function loadCitations() {
+	async function loadCitations(): Promise<any> {
 		isLoading = true;
 		console.log('📚 Loading citations for caseItem:', caseId);
 		try {
@@ -204,9 +206,9 @@ await loadCitations();
   		}
   	}
   	function hideAddCitationForm() {
-  		showAddForm = $state(false);
+  		showAddForm = false;
   	}
-  	async function saveCitation() {
+  	async function saveCitation(): Promise<void> {
   		if (!newCitation.title.trim() || !newCitation.authors.trim()) {
 		const citation = {
 			...newCitation,
@@ -241,7 +243,7 @@ await loadCitations();
   	function viewCitationDetails(citation any) {
   		selectedCitation = citatio;
   		showDetailModal = true;
-	async function deleteCitation(citationId: string) {
+	async function deleteCitation(citationId: string): Promise<void> {
 		if (!confirm('Are you sure you want to delete this citation?')) {
 			return;
 		}
@@ -272,7 +274,7 @@ await loadCitations();
   			case 'cases':
   				return `${citation.title}, ${citation.source} (${citation.year})`;
   			case 'statutes':
-	async function exportCitations() {
+	async function exportCitations(): Promise<any> {
 		console.log('📄 Exporting citations...');
 		const exportData = filteredCitations.map(citation => ({
 			formattedCitation formatCitation(citation),

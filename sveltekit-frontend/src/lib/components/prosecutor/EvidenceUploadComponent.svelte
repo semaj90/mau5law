@@ -6,6 +6,7 @@ Enhanced Evidence Upload Component for Prosecutors
 Features: MinIO storage, AI analysis, multi-file support, drag-drop
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { Props } from '$lib/types/global';
   // Use concrete component modules used elsewhere in the project
@@ -39,10 +40,10 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   }: Props = $props();
   // State management
   let selectedFiles: File[] = $state([]);
-  let uploading = $state(false);
-  let uploadProgress = $state(0);
+  let uploading = $state<boolean>(false);
+  let uploadProgress = $state<number>(0);
   let uploadResults: UploadResult[] = $state([]);
-  let dragActive = $state(false);
+  let dragActive = $state<boolean>(false);
   let queuedJobs: Array<{
     jobId: string;
     fileName: string;
@@ -50,13 +51,13 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
     estimatedTime: string;
   }> = $state([]);
   // Evidence form data
-  let evidenceTitle = $state('');
-  let evidenceDescription = $state('');
-  let evidenceType = $state('document');
-  let collectedBy = $state('');
-  let location = $state('');
-  let tags = $state('');
-  let isAdmissible = $state(true);
+  let evidenceTitle = $state<string>('');
+  let evidenceDescription = $state<string>('');
+  let evidenceType = $state<string>('document');
+  let collectedBy = $state<string>('');
+  let location = $state<string>('');
+  let tags = $state<string>('');
+  let isAdmissible = $state<boolean>(true);
   // File type icons
   const getFileIcon = (mimeType?: string) => {
     const m = mimeType || '';
@@ -74,11 +75,11 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
   };
   const handleDragLeave = (e: DragEvent) => {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
   };
   const handleDrop = (e: DragEvent) => {
     e.preventDefault();
-    dragActive = $state(false);
+    dragActive = false;
     const files = Array.from(e.dataTransfer?.files || []).filter(Boolean) as File[];
     addFiles(files);
   };

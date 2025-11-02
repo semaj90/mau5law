@@ -58,7 +58,7 @@
   >
     <!-- Modal Content -->
     <div
-      class="relative w-full {sizeClasses[
+      class="relative" w-full {sizeClasses[
         size
       ]} max-h-[90vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
       onclick={e => e.stopPropagation()}

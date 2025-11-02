@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // Multi-Embedding Vector Service
 // Manages different embedding models and metadata schemes for optimal semantic search
 // Supports pgvector, Gemma embeddings, specialized legal embeddings, and contextual metadata

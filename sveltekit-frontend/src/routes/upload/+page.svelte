@@ -1,5 +1,7 @@
 <!-- Document Upload Page with MinIO Integration -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
   import { page } from '$app/stores';

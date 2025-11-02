@@ -1,3 +1,4 @@
+import type { Message } from '$lib/types';
 // @ts-nocheck - Advanced experimental service
 // AI Assistant Store with XState + Svelte 5 Integration
 // Bridges AI Assistant machine with reactive Svelte components

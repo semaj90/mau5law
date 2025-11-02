@@ -10,26 +10,27 @@ https://svelte.dev/e/js_parse_error -->
   - Integration with your existing legal AI platform
 -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Removed unused imports (onMount, enhance) and invalid type import ActionData
 
   // Component state
-  let reportText = $state('');
-  let summary = $state('');
-  let isLoading = $state(false);
-  let errorMessage = $state('');
+  let reportText = $state<string>('');
+  let summary = $state<string>('');
+  let isLoading = $state<boolean>(false);
+  let errorMessage = $state<string>('');
   let processingSteps = $state<string[] >([]);
   let metadata = $state<any >(null);
   // Summarization options
   let summaryLength = $state<'short' | 'medium' | 'long' >('medium');
-  let includeKeyTerms = $state(true);
-  let includeLegalAnalysis = $state(true);
+  let includeKeyTerms = $state<boolean>(true);
+  let includeLegalAnalysis = $state<boolean>(true);
   let temperature = $state(0.3);
   // UI state
   let activeTab = $state<'input' | 'summary' | 'analysis' >('input');
-  let wordCount = $state(0);
-  let charCount = $state(0);
-  let estimatedProcessingTime = $state(0);
+  let wordCount = $state<number>(0);
+  let charCount = $state<number>(0);
+  let estimatedProcessingTime = $state<number>(0);
   // Sample legal document for demonstration
   const sampleLegalDoc = `MEMORANDUM OF LAW
   TO: Senior Partner
@@ -94,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
     reader.readAsText(file);
   }
   // Main summarization function
-  async function handleSummarize() {
+  async function handleSummarize(): Promise<any> {
     if (!reportText.trim()) {
       errorMessage = 'Please enter or upload a document to summarize.';
       return;
@@ -154,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   // Copy summary to clipboard
-  async function copySummary() {
+  async function copySummary(): Promise<any> {
     try {
       await navigator.clipboard.writeText(summary);
       // Show brief success feedback

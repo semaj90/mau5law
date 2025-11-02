@@ -67,7 +67,7 @@ class VectorWasmClient {
       forceServer || Boolean(this.wasmModule.shouldUseServer(0, length, complexityScore)) || length > 5000; // Threshold for large vectors
 
     let result: number;
-    let usedServer = $state(false);
+    let usedServer = $state<boolean>(false);
     if (shouldUseServer) {
       // Route to server for GPU processing
       result = await this.computeServerSimilarity(vectorA, vectorB, algorithm);
@@ -75,7 +75,7 @@ class VectorWasmClient {
     } else {
       // Use local WASM with SIMD optimization
       result = this.computeLocalSimilarity(vectorA, vectorB, algorithm);
-      usedServer = $state(false);
+      usedServer = false;
     }
     const processingTime = performance.now() - startTime;
     return { result, usedServer, processingTime };

@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Unified Store Exports - Phase 8 Consolidation
  *

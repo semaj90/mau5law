@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types';
 import { json, error } from '@sveltejs/kit';
 import { ensureError } from '$lib/utils/ensure-error';
@@ -64,49 +65,41 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// Validation
 		if (!text || text.trim().length === 0) {
-			throw error(400, {
-				message: 'Text is required for summarization',
-				code: 'MISSING_TEXT',
-			});
-		}
+      throw error(400, 'Text is required for summarization');
+    }
 
-		// Build prompt based on format
-		const promptTemplate = FORMAT_TEMPLATES[format] || FORMAT_TEMPLATES.summary;
-		const prompt = promptTemplate(text, maxLength);
+    // Build prompt based on format
+    const promptTemplate = FORMAT_TEMPLATES[format] || FORMAT_TEMPLATES.summary;
+    const prompt = promptTemplate(text, maxLength);
 
-		// Add language context if available
-		const languageContext =
-			detectedLanguages.length > 0
-				? `\n\nDetected languages: ${detectedLanguages.join(', ')}`
-				: '';
+    // Add language context if available
+    const languageContext =
+      detectedLanguages.length > 0 ? `\n\nDetected languages: ${detectedLanguages.join(', ')}` : '';
 
-		const finalPrompt = prompt + languageContext;
+    const finalPrompt = prompt + languageContext;
 
-		// Call Ollama API for summarization
-		const startTime = Date.now();
-		const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				model,
-				prompt: finalPrompt,
-				stream: false,
-				options: {
-					temperature,
-					top_p: topP,
-					num_predict: maxLength,
-				},
-			}),
-			signal: AbortSignal.timeout(60000), // 60s timeout
-		});
+    // Call Ollama API for summarization
+    const startTime = Date.now();
+    const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        prompt: finalPrompt,
+        stream: false,
+        options: {
+          temperature,
+          top_p: topP,
+          num_predict: maxLength,
+        },
+      }),
+      signal: AbortSignal.timeout(60000), // 60s timeout
+    });
 
-		if (!ollamaResponse.ok) {
-			const errorText = await ollamaResponse.text();
-			throw error(ollamaResponse.status, {
-				message: `Ollama API error: ${errorText}`,
-				code: 'OLLAMA_ERROR',
-			});
-		}
+    if (!ollamaResponse.ok) {
+      const errorText = await ollamaResponse.text();
+      throw error(ollamaResponse.status, `Ollama API error: ${errorText}`);
+    }
 
 		const ollamaData: OllamaGenerateResponse = await ollamaResponse.json();
 		const processingTime = Date.now() - startTime;

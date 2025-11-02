@@ -5,11 +5,11 @@
    */
   import { ButtonExample } from './ButtonExample.svelte';
   import { counterStore } from '$lib/stores/example-barrel-pattern';
-  let isLoading = $state(false);
-  async function handleAsyncAction() {
+  let isLoading = $state<boolean>(false);
+  async function handleAsyncAction(): Promise<any> {
     isLoading = true;
     await new Promise(resolve => setTimeout(resolve, 2000));
-    isLoading = $state(false);
+    isLoading = false;
     console.log('Async action completed!');
   }
 </script>

@@ -25,7 +25,7 @@ https: //svelte.dev/e/js_parse_error -->
   let { autoFetch = true, data = null }: Props = $props();
 
   // Load validation info
-  async function load() {
+  async function load(): Promise<any> {
     performance.mark('function-start');
     try {
       const res = await fetch('/api/gpu/validate-setup');
@@ -41,7 +41,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
 
   // Pull required model from Ollama and re-validate
-  async function pullModel() {
+  async function pullModel(): Promise<any> {
     performance.mark('function-start');
     const required = data?.details?.ollama?.required_model;
     if (!required) return;

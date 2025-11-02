@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 // Use canonical database connection (node-postgres with connection pooling)
@@ -19,7 +20,7 @@ type RedisCompat = any & {
 const redis = createClient({
   url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
 }) as RedisCompat;
-let redisConnected = $state(false);
+let redisConnected = $state<boolean>(false);
 async function connectRedis(): Promise<void> {
   if (!redisConnected) {
     await redis.connect();

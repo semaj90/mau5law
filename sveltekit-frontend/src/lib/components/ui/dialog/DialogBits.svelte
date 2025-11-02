@@ -30,7 +30,7 @@
     onOpenChange?.(open);
   }
   function close() {
-    open = $state(false);
+    open = false;
   }
   function handleKeydown(event: KeyboardEvent) {
     if (closeOnEscape && event.key === 'Escape') {

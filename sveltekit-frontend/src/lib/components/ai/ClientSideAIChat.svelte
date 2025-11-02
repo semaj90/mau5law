@@ -17,10 +17,10 @@
   }
   let { collapsed = false, showStatus = true }: Props = $props();
   // State
-  let chatInput = $state('');
+  let chatInput = $state<string>('');
   let messages = $state<any[]>([]);
-  let isProcessing = $state(false);
-  let isInitialized = $state(false);
+  let isProcessing = $state<boolean>(false);
+  let isInitialized = $state<boolean>(false);
   let error = $state<string | null>(null);
   // System status
   let systemStatus = $state({
@@ -36,7 +36,7 @@
     'How do AI liability laws work?',
     'What are the privacy risks of machine learning?'
   ];
-  async function initializeAI() {
+  async function initializeAI(): Promise<void> {
     try {
       console.log('🤖 Initializing client-side AI...');
       const initialized = await webAssemblyAIAdapter.initialize();
@@ -68,7 +68,7 @@
       console.error('❌ AI initialization failed:', err);
     }
   }
-  async function sendMessage(prompt?: string) {
+  async function sendMessage(prompt?: string): Promise<any> {
     const message = prompt || chatInput.trim();
     if (!message || isProcessing || !isInitialized) return;
     const userMessage = {

@@ -2,10 +2,10 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  let systemStatus = $state(null);
-  let memoryPrediction = $state(null);
-  let isLoading = $state(true);
-  let error = $state(null);
+  let systemStatus = $state<any>(null);
+  let memoryPrediction = $state<any>(null);
+  let isLoading = $state<boolean>(true);
+  let error = $state<string | null>(null);
   $effect(() => {
     (async () => {
 if (browser) {
@@ -15,7 +15,7 @@ if (browser) {
     }
     })();
   });
-  async function loadData() {
+  async function loadData(): Promise<any> {
     try {
       error = null;
       // Fetch system status and memory prediction
@@ -38,7 +38,7 @@ if (browser) {
       isLoading = false;
     }
   }
-  async function triggerOptimization() {
+  async function triggerOptimization(): Promise<any> {
     isLoading = true;
     try {
       // removed unused response assignment

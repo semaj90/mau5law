@@ -34,8 +34,8 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
   let canvasElement = $state<HTMLCanvasElement | null>(null);
   // Pipeline state
   let pipeline = $state<LegalDocumentTexturePipeline | null>(null);
-  let isInitialized = $state(false);
-  let isLoading = $state(false);
+  let isInitialized = $state<boolean>(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   // Streaming state
   // explicit texture type union to avoid `any`
@@ -87,7 +87,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
   /**
    * Load evidence photo with streaming
    */
-  async function loadEvidencePhoto(photo: EvidencePhoto) {
+  async function loadEvidencePhoto(photo: EvidencePhoto): Promise<any> {
     if (!pipeline) {
       throw new Error('Pipeline not initialized');
     }
@@ -110,7 +110,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
   /**
    * Load document scan with streaming
    */
-  async function loadDocumentScan(scan: DocumentScan, pageData: ImageData[]) {
+  async function loadDocumentScan(scan: DocumentScan, pageData: ImageData[]): Promise<any> {
     if (!pipeline) {
       throw new Error('Pipeline not initialized');
     }
@@ -136,7 +136,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
   /**
    * Load case visualization with streaming
    */
-  async function loadCaseVisualization(visualization: CaseVisualization) {
+  async function loadCaseVisualization(visualization: CaseVisualization): Promise<any> {
     if (!pipeline) {
       throw new Error('Pipeline not initialized');
     }
@@ -159,7 +159,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
   /**
    * Load courtroom display with streaming
    */
-  async function loadCourtroomDisplay(display: CourtroomDisplay) {
+  async function loadCourtroomDisplay(display: CourtroomDisplay): Promise<any> {
     if (!pipeline) {
       throw new Error('Pipeline not initialized');
     }
@@ -236,7 +236,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
       pipeline = null;
     }
     loadedTextures.clear();
-    isInitialized = $state(false);
+    isInitialized = false;
     canvasElement = null;
   }
   // Derived states using $derived

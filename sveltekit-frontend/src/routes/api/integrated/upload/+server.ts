@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Integrated Upload Endpoint
  * MinIO → embeddinggemma → pgvector → Qdrant → Search → Recommendations

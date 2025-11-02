@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Enhanced Vector Service - Auto-generated from 11 files
 // Generated: 2025-07-25T03:29:35.246Z

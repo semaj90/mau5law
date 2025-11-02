@@ -25,7 +25,7 @@ export function getPostgreSQLDatabase(): PostgresJsDatabase<typeof schema> | nul
   return _db;
 }
 // Cleanup function: attempt to close postgres-js client if supported
-export async function closeDatabase() {
+export async function closeDatabase(): Promise<any> {
   try {
     if (typeof (pgClient as any).end === 'function') {
       await (pgClient as any).end();

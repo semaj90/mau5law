@@ -22,14 +22,14 @@
     showRecentEmbeddings = true
   }: Props = $props();
   // Form state using Svelte 5 runes
-  let content = $state('');
-  let isSubmitting = $state(false);
+  let content = $state<string>('');
+  let isSubmitting = $state<boolean>(false);
   let result = $state<any>(null);
   let error = $state<string>('');
   let recentEmbeddings = $state<any[]>([]);
   let validationErrors = $state<Record<string, string>>({});
   // Load recent embeddings on mount
-  async function loadRecentEmbeddings() {
+  async function loadRecentEmbeddings(): Promise<any> {
     try {
       // removed unused response assignment
       const data = await response.json();
@@ -92,7 +92,7 @@
     }
   }
   // Handle form submission
-  async function handleSubmit() {
+  async function handleSubmit(): Promise<any> {
     if (!validateForm()) {
       return;
     }

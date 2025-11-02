@@ -8,7 +8,7 @@
     file = input?.files?.[0] ?? null;
     if (file) message.set('');
   }
-  async function upload() {
+  async function upload(): Promise<any> {
     if (!file) {
       message.set('Please select a file to upload');
       return;

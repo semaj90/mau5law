@@ -2,7 +2,7 @@
   import { interpret } from 'xstate';
   import { chatMachine } from '$lib/machines/chatMachine.js';
   let chatContainer: HTMLDivElement | null = null;
-  let userInput = $state('');
+  let userInput = $state<string>('');
   // Create and start XState service manually so we don't rely on @xstate/svelte types.
   const service = interpret(chatMachine);
   let snapshot: any = service.initialState;
@@ -18,7 +18,7 @@
   const streamChatActorFactory = ({ input }: any) => {
     return (sendBack: (e: any) => void, _receive: any) => {
       const controller = new AbortController();
-      async function stream() {
+      async function stream(): Promise<any> {
         try {
           const response = await fetch('/api/chat', {
             method: 'POST',

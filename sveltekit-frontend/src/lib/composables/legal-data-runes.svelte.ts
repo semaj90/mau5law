@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Legal Data Composables using Svelte 5 Runes
  * Reusable state management for legal entities, cases, evidence, and POIs
@@ -44,7 +45,7 @@ export interface PersonOfInterest {
 export function useLegalCase(initialCaseId?: string) {
   let currentCase = $state<LegalCase | null>(null);
   let cases = $state<LegalCase[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let lastFetched = $state<number>(0);
   // Derived values
@@ -171,7 +172,7 @@ export function useLegalCase(initialCaseId?: string) {
 export function useEvidence(caseId?: string) {
   let evidence = $state<Evidence[]>([]);
   let currentEvidence = $state<Evidence | null>(null);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let uploadProgress = $state<Map<string, number>>(new Map());
   // Derived values
@@ -293,9 +294,9 @@ export function useEvidence(caseId?: string) {
 export function usePersonsOfInterest() {
   let persons = $state<PersonOfInterest[]>([]);
   let currentPerson = $state<PersonOfInterest | null>(null);
-  let isLoading = $state(false);
+  let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
-  let searchQuery = $state('');
+  let searchQuery = $state<string>('');
   // Derived values
   let personsCount = $derived(() => persons.length);
   let hasCurrentPerson = $derived(() => currentPerson !== null);

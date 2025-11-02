@@ -95,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
     visualizationEngine?.cleanup();
     multiLayerCache?.cleanup();
   });
-  async function generateVisualizationsForAllAlgorithms() {
+  async function generateVisualizationsForAllAlgorithms(): Promise<any> {
     if (!visualizationEngine || !currentGraphData) return;
     isGenerating.set(true);
     generationProgress.set(0);
@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
     visualizations.set(results);
     isGenerating.set(false);
   }
-  async function regenerateVisualization(algorithm: string) {
+  async function regenerateVisualization(algorithm: string): Promise<any> {
     if (!visualizationEngine || !currentGraphData) return;
     isGenerating.set(true);
     try {

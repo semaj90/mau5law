@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
 // Enhanced legal AI database schema with pgvector support
 import { pgTable, serial, text, timestamp, real, integer, boolean, jsonb } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';

@@ -6,6 +6,7 @@ https://svelte.dev/e/component_invalid_directive -->
   Provides comprehensive insights into user feedback and system performance
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
@@ -27,11 +28,11 @@ https://svelte.dev/e/component_invalid_directive -->
     ThumbsDown
   } from 'lucide-svelte';
   // Component state
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   let error = $state<string | null>(null);
-  let refreshing = $state(false);
-  let selectedTimeframe = $state('7d');
-  let selectedRatingType = $state('all');
+  let refreshing = $state<boolean>(false);
+  let selectedTimeframe = $state<string>('7d');
+  let selectedRatingType = $state<string>('all');
   // Analytics data
   let dashboardData = $state<any>({
     overview: {
@@ -78,7 +79,7 @@ https://svelte.dev/e/component_invalid_directive -->
   /**
    * Load dashboard analytics data
    */
-  async function loadDashboardData(isRefresh = false) {
+  async function loadDashboardData(isRefresh = false): Promise<any> {
     if (isRefresh) {
       refreshing = true;
     } else {
@@ -99,13 +100,13 @@ https://svelte.dev/e/component_invalid_directive -->
       error = err.message || 'Failed to load analytics data';
     } finally {
       isLoading = false;
-      refreshing = $state(false);
+      refreshing = false;
     }
   }
   /**
    * Export analytics data
    */
-  async function exportData() {
+  async function exportData(): Promise<any> {
     try {
       const response = await fetch(
         `/api/v1/feedback?action=export&timeframe=${selectedTimeframe}&ratingType=${selectedRatingType}`

@@ -40,13 +40,13 @@
   // Initialize evidence canvas for interaction
   const evidenceCanvas = useEvidenceCanvas();
   // Component state
-  let isReady = $state(false);
+  let isReady = $state<boolean>(false);
   let error = $state<string | null>(null);
   let currentTexture = $state<any>(null);
   let renderContext = $state<CanvasRenderingContext2D | null>(null);
   // Performance monitoring
-  let frameRate = $state(0);
-  let lastFrameTime = $state(0);
+  let frameRate = $state<number>(0);
+  let lastFrameTime = $state<number>(0);
   let animationId = $state<number | null>(null);
   // Initialization
   $effect(() => {
@@ -302,7 +302,7 @@
     }
   });
   // Public API for loading textures - fixed object literal syntax and types
-  export async function loadEvidencePhoto(photo: any) {
+  export async function loadEvidencePhoto(photo: any): Promise<any> {
     try {
       const texture = await textureStreaming.loadEvidencePhoto(photo);
       currentTexture = texture;
@@ -322,7 +322,7 @@
       throw err;
     }
   }
-  export async function loadDocumentScan(scan: any, pageData: ImageData[]) {
+  export async function loadDocumentScan(scan: any, pageData: ImageData[]): Promise<any> {
     try {
       const textures: any[] = await textureStreaming.loadDocumentScan(scan, pageData);
       if (textures.length > 0) currentTexture = textures[0];
@@ -344,7 +344,7 @@
       throw err;
     }
   }
-  export async function loadCaseVisualization(visualization: any) {
+  export async function loadCaseVisualization(visualization: any): Promise<any> {
     try {
       const texture = await textureStreaming.loadCaseVisualization(visualization);
       currentTexture = texture;
@@ -354,7 +354,7 @@
       throw err;
     }
   }
-  export async function loadCourtroomDisplay(display: any) {
+  export async function loadCourtroomDisplay(display: any): Promise<any> {
     try {
       const textures: any[] = await textureStreaming.loadCourtroomDisplay(display);
       if (textures.length > 0) currentTexture = textures[0];

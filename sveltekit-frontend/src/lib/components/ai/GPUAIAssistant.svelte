@@ -1,5 +1,7 @@
 <!-- GPU AI Assistant - Real-time streaming chat with server GPU -->
 <script lang="ts">
+import type { Message } from '$lib/types';
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { gpuAIService } from '$lib/services/gpu-ai-service';
@@ -31,9 +33,9 @@
   }: Props = $props();
   // Svelte 5 state
   let messages = $state<ChatMessage[]>([]);
-  let currentMessage = $state('');
-  let isStreaming = $state(false);
-  let isTyping = $state(false);
+  let currentMessage = $state<string>('');
+  let isStreaming = $state<boolean>(false);
+  let isTyping = $state<boolean>(false);
   let gpuStatus = $state({
     available: false,
     utilization 0,
@@ -46,7 +48,7 @@
   // Evidence context
   let evidenceList = $state<any[]>([]);
   // Auto-scroll management
-  let shouldAutoScroll = $state(true);
+  let shouldAutoScroll = $state<boolean>(true);
   // Subscribe to evidence store
   $effect(() => {
     const unsubscribe = evidenceStore.subscribe((state) => {
@@ -66,7 +68,7 @@ await initializeAssistant();
     }
     })();
   });
-  async function initializeAssistant() {
+  async function initializeAssistant(): Promise<void> {
     try {
       // Add welcome message
       addSystemMessage('AI Assistant initialized with GPU acceleration. How can I help analyze your evidence?');
@@ -79,7 +81,7 @@ await initializeAssistant();
       addSystemMessage('AI Assistant initialization failed. Some features may be limited.');
     }
   }
-  async function updateGPUStatus() {
+  async function updateGPUStatus(): Promise<any> {
     try {
       const status = await gpuAIService.getServerStatus();
       gpuStatus = {
@@ -148,7 +150,7 @@ await initializeAssistant();
       }
     }, 50);
   }
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     const messageText = currentMessage.trim();
     if (!messageText || isStreaming) return;
     // Add user message
@@ -207,7 +209,7 @@ await initializeAssistant();
       streamingMessageId = null;
     }
   }
-  async function analyzeSelectedEvidence() {
+  async function analyzeSelectedEvidence(): Promise<any> {
     if (selectedEvidenceIds.length === 0) {
       showError('Please select evidence to analyze');
       return;
@@ -221,11 +223,11 @@ await initializeAssistant();
     currentMessage = analysisPrompt;
     await sendMessage();
   }
-  async function suggestInvestigationSteps() {
+  async function suggestInvestigationSteps(): Promise<any> {
     currentMessage = 'What are the next investigation steps I should take based on the current evidence?';
     await sendMessage();
   }
-  async function identifyEvidenceGaps() {
+  async function identifyEvidenceGaps(): Promise<any> {
     currentMessage = 'What gaps or missing information do you see in the current evidence collection?';
     await sendMessage();
   }

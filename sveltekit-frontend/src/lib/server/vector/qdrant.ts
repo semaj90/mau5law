@@ -50,7 +50,7 @@ export interface QdrantOptions {
   url?: string;
 }
 
-export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: QdrantOptions = {}) {
+export async function upsertToQdrant(item: DocumentItem | VisionItem, opts: QdrantOptions = {}): Promise<any> {
   // Use provided URL (opts.url) if present to create a temporary wrapper, otherwise use configured wrapper.
   const wrapper = opts.url ? createQdrantWrapper({ url: opts.url }) : getQdrantWrapper();
   if (!wrapper) {

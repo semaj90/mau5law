@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 import { json } from '@sveltejs/kit';
 import RedisService from './redis-service'; // Your RedisService class above
 import { z } from 'zod'; // z is imported but not used in the provided snippet, keeping it as per prompt.
@@ -55,7 +56,7 @@ export async function getCachedSearchResults(query: string, computeFn: () => Pro
 /**
  * Example SvelteKit endpoint for embeddings
  */
-export async function POST_embed({ request }: { request: Request }) {
+export async function POST_embed({ request }: { request: Request }): Promise<any> {
   const { text } = await request.json();
   if (!text) return json({ error: 'Missing text' }, { status: 400 });
 
@@ -66,7 +67,7 @@ export async function POST_embed({ request }: { request: Request }) {
 /**
  * Example SvelteKit endpoint for search
  */
-export async function POST_search({ request }: { request: Request }) {
+export async function POST_search({ request }: { request: Request }): Promise<any> {
   const { query } = await request.json();
   if (!query) return json({ error: 'Missing query' }, { status: 400 });
 
@@ -83,6 +84,6 @@ export async function POST_search({ request }: { request: Request }) {
 /**
  * Health endpoint
  */
-export async function GET_health() {
+export async function GET_health(): Promise<any> {
   return json({ redis: redisService.isHealthy(), status: 'ok' });
 }

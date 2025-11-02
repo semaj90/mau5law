@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 import { cuidSchema } from '$lib/server/z-schemas';
 /**
  * User-Scoped CRUD Service

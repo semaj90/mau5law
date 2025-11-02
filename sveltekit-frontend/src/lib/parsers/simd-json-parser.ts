@@ -1,3 +1,4 @@
+import type { TextChunk } from '$lib/types';
 
 /**
  * SIMD-Optimized JSON Parser for Legal Documents

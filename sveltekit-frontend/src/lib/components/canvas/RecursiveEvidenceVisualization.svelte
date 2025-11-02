@@ -92,7 +92,7 @@
       evidenceWorker.terminate();
     }
   });
-  async function initializeCanvas() {
+  async function initializeCanvas(): Promise<void> {
     if (!canvasElement) return;
     fabricCanvas = new (fabric.Canvas as any)(canvasElement, {
       width,
@@ -126,7 +126,7 @@
       }
     }
   }
-  async function loadCaseEvidenceHierarchy() {
+  async function loadCaseEvidenceHierarchy(): Promise<any> {
     if (!caseId || !evidenceWorker) return;
     (processingStatus as any).set('processing');
     try {
@@ -145,7 +145,7 @@
       (processingStatus as any).set('error');
     }
   }
-  async function processEvidenceWithRecursion(rootEvidenceId: string) {
+  async function processEvidenceWithRecursion(rootEvidenceId: string): Promise<any> {
     if (!evidenceWorker) return;
     evidenceWorker.postMessage({
       type: 'PROCESS_EVIDENCE_CHAIN',
@@ -498,7 +498,7 @@
       opt.e.preventDefault();
     });
     // Optional panning support (middle mouse)
-    let isPanning = $state(false);
+    let isPanning = $state<boolean>(false);
     fabricCanvas.on('mouse:down', (opt: any) => {
       if (opt?.e?.which === 2) {
         isPanning = true;
@@ -513,7 +513,7 @@
       }
     });
     fabricCanvas.on('mouse:up', () => {
-      isPanning = $state(false);
+      isPanning = false;
       fabricCanvas.selection = enableInteraction;
     });
   }
@@ -594,7 +594,7 @@
     }
     zoom = scal;
   }
-  async function exportHierarchyVisualization() {
+  async function exportHierarchyVisualization(): Promise<any> {
     if (!fabricCanvas) return;
     const dataURL = fabricCanvas.toDataURL({
       format: 'png',

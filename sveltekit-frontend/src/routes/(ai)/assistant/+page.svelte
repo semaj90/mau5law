@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat)
   import { Button } from '$lib/components/ui/core.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card.svelte';
@@ -11,11 +13,11 @@
   }
 
   let messages = $state<ChatMessage[]>([]);
-  let currentMessage = $state('');
-  let isStreaming = $state(false);
-  let error = $state('');
+  let currentMessage = $state<string>('');
+  let isStreaming = $state<boolean>(false);
+  let error = $state<string>('');
 
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!currentMessage.trim() || isStreaming) return;
 
     const userMessage: ChatMessage = {
@@ -113,7 +115,7 @@
     'Generate a legal brief outline',
   ];
 
-  async function handleQuickQuery(query: string) {
+  async function handleQuickQuery(query: string): Promise<any> {
     currentMessage = query;
     await sendMessage();
   }

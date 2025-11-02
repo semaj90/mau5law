@@ -2,15 +2,16 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { WebGPUSOMCache, type IntelligentTodo, type NPMError, initializeSOMCache } from '$lib/webgpu/som-webgpu-cache.js';
   let somCache: WebGPUSOMCach;
-  let isLoading = $state(false);
-  let webGPUEnabled = $state(false);
+  let isLoading = $state<boolean>(false);
+  let webGPUEnabled = $state<boolean>(false);
   let todos = $state<IntelligentTodo[] >([]);
   let errors = $state<NPMError[] >([]);
-  let processingTime = $state(0);
+  let processingTime = $state<number>(0);
   let npmOutput = $state(`
   src/app.ts(1,25): error TS2307: Cannot find module: '@types/node' or its corresponding type declarations.
   src/utils.ts(15,23): error TS2339: Property: 'foo' does not exist on type: 'Object'.
@@ -30,9 +31,9 @@ https://svelte.dev/e/js_parse_error -->
     cacheHitRatio: 0,
     totalProcessingTime: 0
   });
-  let filterCategory = $state('all');
+  let filterCategory = $state<string>('all');
   let sortBy = $state<'priority' | 'confidence' | 'effort' >('priority');
-  let showDetails = $state(false);
+  let showDetails = $state<boolean>(false);
   $effect(() => {
     (async () => {
 try {
@@ -43,7 +44,7 @@ try {
     }
     })();
   });
-  async function processErrors() {
+  async function processErrors(): Promise<any> {
     if (!somCache) {
       alert('SOM Cache not initialized');
       return;

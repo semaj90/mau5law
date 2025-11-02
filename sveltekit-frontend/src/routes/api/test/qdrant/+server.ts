@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { optimizedQdrantService } from '$lib/services/optimized-qdrant-service';

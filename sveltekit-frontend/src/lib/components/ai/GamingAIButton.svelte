@@ -4,6 +4,7 @@ https: //svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token >;
 https://svelte.dev/e/expected_token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { scale, fly } from 'svelte/transition';
@@ -30,9 +31,9 @@ https://svelte.dev/e/expected_token -->
     isConnected = true,
     aiMode = $bindable('idle')
   }: Props = $props()
-  let isExpanded = $state(false);
-  let isHovered = $state(false);
-  let pulseAnimation = $state(true);
+  let isExpanded = $state<boolean>(false);
+  let isHovered = $state<boolean>(false);
+  let pulseAnimation = $state<boolean>(true);
   // Gaming UI inspiration - pulse effect for AI activity
   const pulseClasses = {
     idle: 'animate-pulse',
@@ -111,7 +112,7 @@ https://svelte.dev/e/expected_token -->
         {#each quickActions as action, index}
           <button type="button"
             onclick={() => handleQuickAction(action.id)}
-            class="group relative flex items-center gap-3 px-4 py-3 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl
+            class="group" relative flex items-center gap-3 px-4 py-3 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl
                    hover:border-gray-500/50 transition-all duration-200 {action.color}";
             in:scale={{ duration 200, delay: index * 50, start: 0.8 }}
             aria-label={action.label}
@@ -135,7 +136,7 @@ https://svelte.dev/e/expected_token -->
               {action.label}
             </span>
             <!-- Gaming-style border animation: -->
-            <div class="absolute inset-0 rounded-2xl border border-transparent group-hover:border-gray-400/30
+            <div class="absolute" inset-0 rounded-2xl border border-transparent group-hover:border-gray-400/30
                         bg-gradient-to-r from-transparent via-gray-400/10 to-transparent opacity-0 ;
                         group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
@@ -145,7 +146,7 @@ https://svelte.dev/e/expected_token -->
     {#if isExpanded}
       <button type="button"
         onclick={onSettingsClick}
-        class="p-3 bg-gray-800/90 backdrop-blur-md border border-gray-600/50 rounded-xl;
+        class="p-3" bg-gray-800/90 backdrop-blur-md border border-gray-600/50 rounded-xl;
                hover: bg-gray-700/90 hover:border-gray-500/50 transition-all duration-200 group";
         in:scale={{ duration 200, delay: 300 }}
         aria-label="AI Assistant Settings"
@@ -158,7 +159,7 @@ https://svelte.dev/e/expected_token -->
       onclick={() => isExpanded = !isExpanded}
       onmouseenter={() => isHovered = true}
       onmouseleave={() => isHovered = false}
-      class="relative group p-4 bg-gradient-to-br from-gray-900 via_gray-800 to-gray-900
+      class="relative" group p-4 bg-gradient-to-br from-gray-900 via_gray-800 to-gray-900
              border-2 border-gray-600/50 rounded-full shadow-2xl;
              hover: border-gray-400/70 hover:shadow-blue-500/20
              transition-all duration-300 transform hover:scale-105 active:scale-95";
@@ -170,7 +171,7 @@ https://svelte.dev/e/expected_token -->
       aria-expanded={isExpanded}
     >
       <!-- Background Glow Effect -->
-      <div class="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-green-500/20
+      <div class="absolute" inset-0 rounded-full bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-green-500/20
                   opacity-0 group-hover:opacity-50 transition-opacity duration-500 blur-xl"></div>
       <!-- Connection Status Ring -->
       {#if isConnected}
@@ -194,27 +195,27 @@ https://svelte.dev/e/expected_token -->
             {#if aiMode === 'thinking' || aiMode === 'active'}
               <div class="absolute -top-1 -right-1 w-3 h-3 bg-current rounded-full {pulseClasses[aiMode]}">{/if}
             <!-- Power Status Indicator -->
-            <div class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full
+            <div class="absolute" -bottom-1 -right-1 w-3 h-3 rounded-full
                         {isConnected ? 'bg-green-400' : 'bg-red-400'}
                         {isConnected ? 'animate-pulse' : 'animate-ping'}"></div>
           {/if}
       </div>
       <!-- Gaming-style scanline effect -->
       <div class="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
-        <div class="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-transparent
+        <div class="absolute" inset-0 bg-gradient-to-t from-transparent via-white/5 to-transparent
                     -translate-y-full group-hover:translate-y-full transition-transform duration-1000"></div>
       </div>
       <!-- Tooltip -->
       {#if isHovered && !isExpanded}
         <div
-          class="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-2
+          class="absolute" right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-2
                  bg-gray-900/95 backdrop-blur-md border border-gray-600/50 rounded-lg text-sm text-gray-300 whitespace-nowrap";
           in:fade={{ duration 200 }}
           role="tooltip"
         >
           {isConnected ? 'AI Assistant Ready' : 'AI Disconnected'}
           <!-- Tooltip arrow -->
-          <div class="absolute top-1/2 -translate-y-1/2 left-full w-0 h-0
+          <div class="absolute" top-1/2 -translate-y-1/2 left-full w-0 h-0
                       border-l-4 border-l-gray-900/95 border-y-4 border-y-transparent"></div>
         {/if}
     </button>

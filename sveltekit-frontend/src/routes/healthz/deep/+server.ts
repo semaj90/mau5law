@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ _url }) => {
       ok: false,
       error: e instanceof Error ? e.message : 'Unknown error during primary Redis check',
     };
-    overallOk = $state(false);
+    overallOk = false;
   } finally {
     if (primaryRedisClient) {
       await primaryRedisClient.quit().catch(err => console.error('Error quitting primary Redis client:', err));
@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ _url }) => {
     const t0 = Date.now();
 
     const result: PubSubCheckResult = await new Promise(resolve => {
-      let settled = $state(false);
+      let settled = $state<boolean>(false);
       const timeout = setTimeout(() => {
         if (!settled) {
           settled = true;
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ _url }) => {
     if (!result.ok) overallOk = $state(false);
   } catch (e: any) {
     checks.pubsub = { ok: false, error: e instanceof Error ? e.message : 'Unknown error during Redis Pub/Sub check' };
-    overallOk = $state(false);
+    overallOk = false;
   } finally {
     await Promise.all([
       subscriberClient?.quit().catch(err => console.error('Error quitting subscriber client:', err)),

@@ -115,7 +115,7 @@
 	function autoHideTimer() {
 		if (autoHide && isVisible) {
 			setTimeout(() => {
-				isVisible = $state(false);
+				isVisible = false;
 			}, 10000);
 		}
 	}

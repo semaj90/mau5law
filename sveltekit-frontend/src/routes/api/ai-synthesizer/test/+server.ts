@@ -399,8 +399,8 @@ async function testOllama(): Promise<TestResult<OllamaTestPayload>> {
 		const latencyMs = now() - healthStart;
 		const available = health.available;
 
-		let generationWorked = $state(false);
-		let embeddingsWorked = $state(false);
+		let generationWorked = $state<boolean>(false);
+		let embeddingsWorked = $state<boolean>(false);
 
 		if (available) {
 			if (typeof ollamaLLM.generate === 'function') {

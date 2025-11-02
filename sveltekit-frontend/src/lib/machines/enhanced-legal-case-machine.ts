@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * Simplified Enhanced Legal Case Machine
  * This replacement is intentionally compact and syntactically correct to restore buildability.

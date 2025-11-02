@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import type { Document as LegalDocument } from '$lib/types/global';
   // Types
@@ -14,7 +15,7 @@
   let similarDocuments = $state<SimilarityResult[]>([]);
   let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
-  async function performSemanticSearch(query: string | undefined) {
+  async function performSemanticSearch(query: string | undefined): Promise<any> {
     const q = String(query ?? '').trim();
     if (!q) {
       similarDocuments = [];

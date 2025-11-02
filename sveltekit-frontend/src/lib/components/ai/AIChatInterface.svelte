@@ -4,6 +4,7 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
+import type { Message } from '$lib/types';
 	import { debounce as _debounce } from '$lib/utils/debounce';
 	import { onMount, tick } from 'svelte';
 	import { fade, fly, scale } from 'svelte/transition';
@@ -95,7 +96,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 		return message;
 	}
 	// Send flow
-	async function sendMessage() {
+	async function sendMessage(): Promise<any> {
 		if (!inputValue.trim() || isTyping) return;
 		const userText = inputValue.trim();
 		inputValue = '';
@@ -154,7 +155,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 			return (data.response?.trim() || data.text?.trim() || data.output?.trim()) ?? null;
 		} catch (err) {
 			console.warn('Primary API failed:', err);
-			isConnected = $state(false);
+			isConnected = false;
 			errorMessage = err instanceof Error ? err.message : String(err);
 			return null;
 		}

@@ -19,8 +19,8 @@
     onresponse,
     onerror
   }: Props = $props();
-  let apiLogs = $state([]);
-  let currentTest = $state(null);
+  let apiLogs = $state<any[]>([]);
+  let currentTest = $state<any>(null);
   const logAPI = (endpoint, status, time, error = null) => {
     apiLogs = [{
       endpoint,
@@ -73,7 +73,7 @@
         detail: { source: 'gemma3', error: error.message }
       }));
     }
-    isProcessing = $state(false);
+    isProcessing = false;
     currentTest = null;
   }
   const testSynthesis = async () => {
@@ -116,7 +116,7 @@
         detail: { source: 'synthesis', error: error.message }
       }));
     }
-    isProcessing = $state(false);
+    isProcessing = false;
     currentTest = null;
   }
   const testRAG = async () => {
@@ -155,7 +155,7 @@
         detail: { source: 'rag', error: error.message }
       }));
     }
-    isProcessing = $state(false);
+    isProcessing = false;
     currentTest = null;
   }
   const getStatusColor = (status) => {

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 // YoRHa Interface Types
 // Complete type definitions for the cyberpunk YoRHa legal AI interface system
 // Core System Types

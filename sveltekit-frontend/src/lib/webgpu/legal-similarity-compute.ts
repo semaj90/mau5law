@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 // WebGPU Legal Similarity Compute Engine
 // Optimized for legal embedding similarity with NES memory integration
 import { nesMemory } from '../memory/nes-memory-architecture';

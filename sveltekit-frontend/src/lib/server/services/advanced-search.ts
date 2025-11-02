@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * Advanced Search & Filtering System (Simplified)
  * Supports full-text search, filters, and suggestions

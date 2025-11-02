@@ -169,7 +169,7 @@ export class DynamicPortManager {
   async isPortAvailable(port: number): Promise<boolean> {
     return new Promise(resolve => {
       const server = createServer();
-      let resolved = $state(false);
+      let resolved = $state<boolean>(false);
       server.once('error', () => {
         if (!resolved) {
           resolved = true;

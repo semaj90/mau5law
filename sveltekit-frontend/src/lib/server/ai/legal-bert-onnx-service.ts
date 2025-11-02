@@ -813,8 +813,9 @@ Text: ${prompt}
     if (process.env.USE_TENSORRT === 'true' && this.triton) {
       if (!Array.isArray(outputs)) {
         console.warn('Triton output was not an array, returning random embeddings.');
-        const embeddingSize = 768;
-        return Array.from({ length: embeddingSize }, () => Math.random() * 2 - 1);
+        // In a production TensorRT environment, returning random data is undesirable.
+        // It's better to throw an error if the expected output is missing.
+        throw new Error('Triton output format unexpected, cannot extract embeddings.');
       }
       const poolerOutput = outputs.find(
         (o: { name: string }) => o.name === this.modelConfig.outputSpec.poolerOutput!.name
@@ -822,9 +823,8 @@ Text: ${prompt}
       if (poolerOutput && poolerOutput.data) {
         return Array.from(poolerOutput.data as number[]);
       }
-      console.warn('Triton output for pooler_output not found, returning random embeddings.');
-      const embeddingSize = 768;
-      return Array.from({ length: embeddingSize }, () => Math.random() * 2 - 1);
+      // If pooler_output is not found from Triton, it's a critical failure for TensorRT.
+      throw new Error('Triton output for pooler_output not found, cannot extract embeddings.');
     } else {
       if (Array.isArray(outputs)) {
         console.warn('ONNX output was an array, returning random embeddings.');

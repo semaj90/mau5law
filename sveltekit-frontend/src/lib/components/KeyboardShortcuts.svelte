@@ -11,9 +11,9 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   import { Minimize2 } from 'lucide-svelte/icons/minimize-2.svelte';
   import { AccessibilityPanel } from './AccessibilityPanel.svelte';
   // local state (simple, compatible with Svelte 5 migration)
-  let showShortcuts = $state(false);
-  let showAccessibilityPanel = $state(false);
-  let isFullscreen = $state(false);
+  let showShortcuts = $state<boolean>(false);
+  let showAccessibilityPanel = $state<boolean>(false);
+  let isFullscreen = $state<boolean>(false);
   // keyboard shortcuts map (fixed object syntax)
   const shortcuts = [
     { key: 'Ctrl+K', description: 'Quick search', action: 'search' },
@@ -57,15 +57,15 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       return;
     }
     if (key === 'escape') {
-      showShortcuts = $state(false);
-      showAccessibilityPanel = $state(false);
+      showShortcuts = false;
+      showAccessibilityPanel = false;
       return;
     }
   }
   function handleFullscreenChange() {
     isFullscreen = !!document.fullscreenElement;
   }
-  async function toggleFullscreen() {
+  async function toggleFullscreen(): Promise<any> {
     try {
       if (!document.fullscreenElement) {
         await document.documentElement.requestFullscreen();

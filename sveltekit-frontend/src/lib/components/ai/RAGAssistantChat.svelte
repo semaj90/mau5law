@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, tick } from 'svelte';
   import { fly, fade, scale } from 'svelte/transition';
@@ -12,15 +13,15 @@
   } = $props();
   const userId: string = 'demo-user'; // External reference only
   // Chat state using $state rune
-  let messages = $state([]);
-  let currentMessage = $state('');
-  let isTyping = $state(false);
-  let isProcessing = $state(false);
+  let messages = $state<Message[]>([]);
+  let currentMessage = $state<string>('');
+  let isTyping = $state<boolean>(false);
+  let isProcessing = $state<boolean>(false);
   let chatContainer = $state<HTMLDivElement | null>(null);
   let messageInput = $state<HTMLTextAreaElement | null>(null);
   // Workflow state using $state
-  let workflowActive = $state(false);
-  let currentStep = $state(0);
+  let workflowActive = $state<boolean>(false);
+  let currentStep = $state<number>(0);
   let workflowData = $state({
     what: '',
     who: '',
@@ -33,9 +34,9 @@
     urgency: 'normal',
   });
   // RAG ingestion state using $state
-  let isIngesting = $state(false);
-  let ingestionProgress = $state(0);
-  let ragContext = $state([]);
+  let isIngesting = $state<boolean>(false);
+  let ingestionProgress = $state<number>(0);
+  let ragContext = $state<any[]>([]);
   const workflowSteps = [
     {
       key: 'what',
@@ -113,7 +114,7 @@
     });
   }
   // Typewriter effect for AI messages
-  async function typeMessage(content: string, metadata = {}) {
+  async function typeMessage(content: string, metadata = {}): Promise<any> {
     isTyping = true;
     const messageId = crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
     pushMessage({
@@ -136,11 +137,11 @@
       // small randomized delay to simulate typing
       await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 20));
     }
-    isTyping = $state(false);
+    isTyping = false;
     scrollToBottom();
   }
   // RAG ingestion simulation
-  async function performRAGIngestion(content: string) {
+  async function performRAGIngestion(content: string): Promise<any> {
     isIngesting = true;
     ingestionProgress = 0;
     addMessage('🧠 Processing your input through our legal knowledge base...', 'system');
@@ -173,11 +174,11 @@
         ];
       }
     }
-    isIngesting = $state(false);
+    isIngesting = false;
     addMessage("✅ RAG analysis complete! I've found relevant legal precedents and statutes.", 'system');
   }
   // Start prosecution workflow
-  async function startWorkflow() {
+  async function startWorkflow(): Promise<any> {
     workflowActive = true;
     currentStep = 0;
     await typeMessage(aiResponses.workflow_start.join(' '));
@@ -185,7 +186,7 @@
     await typeMessage(workflowSteps[currentStep].question);
   }
   // Process workflow step
-  async function processWorkflowStep(answer: string) {
+  async function processWorkflowStep(answer: string): Promise<any> {
     if (!answer || !answer.trim()) return;
     // Add user message
     addMessage(answer.trim(), 'user');
@@ -204,7 +205,7 @@
     }
   }
   // Complete workflow and create case
-  async function completeWorkflow() {
+  async function completeWorkflow(): Promise<any> {
     await typeMessage(aiResponses.case_complete.join(' '));
     isProcessing = true;
     // Create case via API
@@ -245,12 +246,12 @@
       console.error('Case creation error', error);
     } finally {
       isProcessing = false;
-      workflowActive = $state(false);
+      workflowActive = false;
       currentStep = 0;
     }
   }
   // Handle regular chat
-  async function handleChatMessage() {
+  async function handleChatMessage(): Promise<any> {
     if (!currentMessage.trim() || isProcessing) return;
     const userMessage = currentMessage.trim();
     addMessage(userMessage, 'user');
@@ -270,7 +271,7 @@
     }
   }
   // Handle quick workflow answer (wired to UI)
-  async function handleQuickAnswerFromText(textarea: HTMLTextAreaElement | null) {
+  async function handleQuickAnswerFromText(textarea: HTMLTextAreaElement | null): Promise<any> {
     if (!textarea) return;
     const val = textarea.value.trim();
     if (!val) return;

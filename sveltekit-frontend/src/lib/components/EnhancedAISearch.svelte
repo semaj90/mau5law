@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   // Enhanced AI Search Component with Bits UI and UnoCSS
   // Svelte 5 + Go Microservice + Gemma3-Legal Integration
@@ -28,12 +29,12 @@
   // Reactive state
   let query = $state(initialQuery);
   let results: EnhancedSearchResult[] = $state([]);
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error = $state<string | null>(null);
-  let showAdvanced = $state(false);
+  let showAdvanced = $state<boolean>(false);
   let selectedPracticeArea = $state(practiceArea);
   let selectedJurisdiction = $state(jurisdiction);
-  let searchTime = $state(0);
+  let searchTime = $state<number>(0);
   // Search options
   let searchOptions: EnhancedSearchOptions = $state({,
     limit: 10,
@@ -96,7 +97,7 @@
     return mode?.label || valu;
   }
   // Search function
-  async function performSearch() {
+  async function performSearch(): Promise<any> {
     if (!query.trim()) return;
     loading = true;
     error = null;
@@ -168,7 +169,7 @@
           bind:value={query}
           keydown={handleKeydown}
           placeholder="Search legal documents with AI..."
-          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark: border-gray-600
+          class="w-full" px-4 py-3 rounded-lg border border-gray-300 dark: border-gray-600
                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
                  focus:ring-2 focus:ring-blue-500 focus:border-transparent
                  placeholder-gray-500 dark:placeholder-gray-400"
@@ -182,7 +183,7 @@
       <Button.Root
         onclick={performSearch}
         disabled={loading || !query.trim()}
-        class="px-6 py-3 bg-blue-600 hover: bg-blue-700 text-white rounded-lg;
+        class="px-6" py-3 bg-blue-600 hover: bg-blue-700 text-white rounded-lg;
                disabled:opacity-50 disabled:cursor-not-allowed
                flex items-center gap-2 bits-btn bits-btn"
       >

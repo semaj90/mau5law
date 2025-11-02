@@ -16,11 +16,11 @@
 
   let services: ServiceHealth[] = [];
   let lastUpdated: Date | null = null;
-  let loading = $state(false);
+  let loading = $state<boolean>(false);
   let error: string | null = null;
   let timer: number | null = null;
 
-  async function fetchHealth() {
+  async function fetchHealth(): Promise<Response> {
     loading = true;
     error = null;
     try {

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * MinIO Integration Service for Legal Document Processing
  * Handles file uploads, downloads, and metadata management

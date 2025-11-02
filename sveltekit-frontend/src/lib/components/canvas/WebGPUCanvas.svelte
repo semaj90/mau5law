@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // WebGPU-accelerated canvas for high-performance legal data visualization
   import { onMount } from 'svelte';
   import type { Snippet } from 'svelte';
@@ -22,10 +24,10 @@
   let webgpuDevice: GPUDevice | null = null;
   let webgpuContext: GPUCanvasContext | null = null;
   let canvas2dContext: CanvasRenderingContext2D | null = null;
-  let isWebGPUSupported = $state(false);
-  let isWebGPUInitialized = $state(false);
+  let isWebGPUSupported = $state<boolean>(false);
+  let isWebGPUInitialized = $state<boolean>(false);
   let renderingMode = $state<'webgpu' | '2d' | 'none'>('none');
-  let fps = $state(0);
+  let fps = $state<number>(0);
   let frameCount = 0;
   let lastTime = 0;
   // WebGPU shader source (WGSL)
@@ -78,7 +80,7 @@
       if (mounted) startRenderLoop();
     })();
     return () => {
-      mounted = $state(false);
+      mounted = false;
       // Cleanup
     };
   });
@@ -117,7 +119,7 @@
       console.log('WebGPU initialized successfully');
     } catch (error) {
       console.error('WebGPU initialization failed:', error);
-      isWebGPUSupported = $state(false);
+      isWebGPUSupported = false;
       onWebGPUStatus?.(false);
     }
   }

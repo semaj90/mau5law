@@ -242,7 +242,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         status: 'ERROR',
         error: ragError instanceof Error ? ragError.message : 'Unknown error',
       };
-      overallSuccess = $state(false);
+      overallSuccess = false;
     }
     // Test 3: Vector Service via Enhanced RAG
     console.log('Testing Vector service...');
@@ -269,7 +269,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         status: 'ERROR',
         error: vectorError instanceof Error ? vectorError.message : 'Unknown error',
       };
-      overallSuccess = $state(false);
+      overallSuccess = false;
     }
     // Test 4: Upload Service
     console.log('Testing Upload service...');
@@ -290,7 +290,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         status: 'ERROR',
         error: uploadError instanceof Error ? uploadError.message : 'Unknown error',
       };
-      overallSuccess = $state(false);
+      overallSuccess = false;
     }
     // Test 5: QUIC Endpoints Integration Test
     console.log('Testing QUIC endpoints...');
@@ -319,7 +319,7 @@ export const GET: RequestHandler = async ({ url: _url }) => {
         status: 'ERROR',
         error: quicError instanceof Error ? quicError.message : 'Unknown error',
       };
-      overallSuccess = $state(false);
+      overallSuccess = false;
     }
     // Summary
     const summary = {

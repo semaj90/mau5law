@@ -181,7 +181,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
     console.warn('Redis createClient not available on imported module; skipping Redis checks.');
   }
 
-  let redisConnected = $state(false);
+  let redisConnected = $state<boolean>(false);
   let recentActivity = 0;
   let errorCount = 0;
 
@@ -210,7 +210,7 @@ async function getSystemStatus(startTime: number, getClientAddress: () => string
         errorCount = errorKeys.length;
       } else {
         // No redis client available; skip Redis-dependent checks
-        redisConnected = $state(false);
+        redisConnected = false;
       }
     } catch (redisError) {
       console.warn('Redis connection failed:', redisError);

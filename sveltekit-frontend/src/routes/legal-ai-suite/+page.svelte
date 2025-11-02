@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { Card, CardHeader, CardTitle, CardContent } from '$lib/components/ui/enhanced-bits.svelte';
@@ -15,9 +17,9 @@ https://svelte.dev/e/js_parse_error -->
 
   // Svelte 5 runes for state management
   let selectedFiles = $state<File[]>([]);
-  let isProcessing = $state(false);
+  let isProcessing = $state<boolean>(false);
   let processedDocuments = $state<any[]>([]);
-  let ragQuery = $state('');
+  let ragQuery = $state<string>('');
   let ragResults = $state<any[]>([]);
   let systemMetrics = $state({
     gpuAcceleration: false, // Fixed syntax
@@ -25,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
     processingSpeed: 0,
     caseAIScore: 0,
   });
-  let selectedJurisdiction = $state('federal');
+  let selectedJurisdiction = $state<string>('federal');
   let processingSummary = $state<any>(null);
   let realTimeLogs = $state<string[]>([]);
   // Computed properties using Svelte 5 $derived runes
@@ -53,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
     );
     addLog(`📄 Selected ${selectedFiles.length} PDF files for processing`);
   }
-  async function processLegalDocuments() {
+  async function processLegalDocuments(): Promise<any> {
     if (!canProcess) return;
     isProcessing = true;
     processingSummary = null;
@@ -106,7 +108,7 @@ https://svelte.dev/e/js_parse_error -->
       isProcessing = false;
     }
   }
-  async function executeRAGQuery() {
+  async function executeRAGQuery(): Promise<any> {
     if (!ragQuery.trim()) return;
     addLog(`🔍 Executing enhanced RAG query: "${ragQuery}"`);
     try {
@@ -151,7 +153,7 @@ https://svelte.dev/e/js_parse_error -->
       addLog(`❌ RAG query failed: ${error.message}`);
     }
   }
-  async function checkSystemStatus() {
+  async function checkSystemStatus(): Promise<any> {
     try {
       // Check Ollama status using the helper
       const ollamaEndpoint = getOllamaEndpoint();

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Autoencoder Context Switcher - Dynamic QLoRA Model Load Balancer
  * Features:
@@ -182,7 +183,7 @@ export class AutoencoderContextSwitcher {
     const currentModelId = await this.getCurrentActiveModel();
     let bestModel = currentModelId;
     let bestScore = 0;
-    let shouldSwitch = $state(false);
+    let shouldSwitch = $state<boolean>(false);
     // Score each model candidate
     for (const pattern of candidates) {
       const score = this.calculateModelScore(contextVector, pattern);

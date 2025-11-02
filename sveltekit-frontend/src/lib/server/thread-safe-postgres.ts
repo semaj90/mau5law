@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * Thread-Safe PostgreSQL Integration with JSONB and GPU Acceleration
  * Ensures proper synchronization for concurrent database operations

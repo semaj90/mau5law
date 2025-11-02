@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { writable, derived, get } from 'svelte/store';
@@ -104,7 +105,7 @@
 
   // --- Orchestration functions (fixed references, syntax, and store access) ---
 
-  async function executeWorkflow() {
+  async function executeWorkflow(): Promise<any> {
     if (get(isRunning)) return;
     isRunning.set(true);
     currentIteration = 0;
@@ -128,7 +129,7 @@
     }
   }
 
-  async function runOrchestrationLoop(workflow: any, prompt: string) {
+  async function runOrchestrationLoop(workflow: any, prompt: string): Promise<any> {
     let currentPrompt = prompt;
     for (let i = 0; i < maxIterations; i++) {
       currentIteration = i + 1;
@@ -195,7 +196,7 @@
     await generateFinalReport();
   }
 
-  async function executeSemanticSearch(prompt: string) {
+  async function executeSemanticSearch(prompt: string): Promise<any> {
     addLogEntry('semantic-search', 'context7', `Executing semantic search for: ${prompt}`, null);
     updateAgentStatus('context7', 'processing', 'Performing semantic search');
     // Simulate Context7 semantic search
@@ -222,7 +223,7 @@
     return searchResults;
   }
 
-  async function executeMemoryAnalysis(prompt: string) {
+  async function executeMemoryAnalysis(prompt: string): Promise<any> {
     addLogEntry('memory-analysis', 'memory-server', `Reading memory graph for: ${prompt}`, null);
     updateAgentStatus('memory-server', 'processing', 'Analyzing memory graph');
     await new Promise((resolve) => setTimeout(resolve, 600));
@@ -252,7 +253,7 @@
     return memoryResults;
   }
 
-  async function generateSelfPrompt(results: any, agents: string[]) {
+  async function generateSelfPrompt(results: any, agents: string[]): Promise<any> {
     addLogEntry('self-prompting', 'meta-agent', 'Analyzing results for self-prompting', null);
     // Simulate meta-analysis by the orchestration system
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -281,7 +282,7 @@
     return selfPromptResult;
   }
 
-  async function synthesizeIterationResults(results: any, iteration: number, workflow: any) {
+  async function synthesizeIterationResults(results: any, iteration: number, workflow: any): Promise<any> {
     addLogEntry('synthesis', 'synthesizer', `Synthesizing iteration ${iteration} results`, null);
     const synthesis = {
       iteration,
@@ -308,7 +309,7 @@
     return avgConfidence > 0.85 && currentIteration >= 2;
   }
 
-  async function generateFinalReport() {
+  async function generateFinalReport(): Promise<any> {
     currentPhase.set('final-report');
     addLogEntry('final-report', 'orchestrator', 'Generating comprehensive final report', null);
     const finalReport = {
@@ -333,7 +334,7 @@
     addLogEntry('final-report', 'orchestrator', 'Final report generated', finalReport);
   }
 
-  async function demonstrateContext7Integration() {
+  async function demonstrateContext7Integration(): Promise<any> {
     const mcpQueries = [
       commonMCPQueries.analyzeSvelteKit(),
       commonMCPQueries.performanceBestPractices(),

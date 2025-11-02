@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * ONNX Integration Example for Legal-BERT
  * Shows how to use the Legal-BERT ONNX wrapper in production
@@ -7,7 +8,7 @@ import { ollamaService } from '../services/providers/ollama/ollama-client.js';
 /**
  * Example: Process a legal document with ONNX optimization
  */
-export async function processLegalDocumentWithONNX(documentText: string) {
+export async function processLegalDocumentWithONNX(documentText: string): Promise<any> {
   try {
     console.log('🔬 Processing legal document with ONNX Legal-BERT...');
     // Step 1: Extract entities using ONNX (fallback to generate method)
@@ -50,7 +51,7 @@ Analysis:`,
 /**
  * Example: Initialize ONNX services on startup
  */
-export async function initializeONNXServices() {
+export async function initializeONNXServices(): Promise<void> {
   try {
     console.log('🚀 Initializing ONNX Legal-BERT service...');
     // Initialize ONNX Legal-BERT
@@ -72,7 +73,7 @@ export async function initializeONNXServices() {
 /**
  * Example: Batch process multiple legal documents efficiently
  */
-export async function batchProcessLegalDocuments(documents: Array<any>) {
+export async function batchProcessLegalDocuments(documents: Array<any>): Promise<any> {
   // Fixed Array<)
   const results = [];
   const startTime = Date.now();
@@ -113,7 +114,7 @@ export async function batchProcessLegalDocuments(documents: Array<any>) {
 /**
  * Example: Performance comparison between ONNX and Ollama
  */
-export async function performanceComparison(testText: string) {
+export async function performanceComparison(testText: string): Promise<any> {
   console.log('⚡ Running performance comparison: ONNX vs Ollama...');
   const tests = {
     onnx: {

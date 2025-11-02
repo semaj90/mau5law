@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // src/lib/services/__tests__/shared/integration-test-helpers.ts
 import { productionServiceClient } from '../../../api/production-service-client.js';
 // Shared integration test configuration and utilities

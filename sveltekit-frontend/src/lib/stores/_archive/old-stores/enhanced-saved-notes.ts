@@ -1,3 +1,5 @@
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 /**
  * Enhanced Saved Notes Store - Integrated with Legal AI Platform
  * Features: OCR integration, AI-generated notes, legal citations, embeddings

@@ -1,10 +1,11 @@
+import type { Document } from '$lib/types';
 import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import { createHash } from 'node:crypto';
 
 const LANGEXTRACT_URL = process.env.LANGEXTRACT_URL || 'http://localhost:8081/analyze';
 
-async function jsExtract(message: string) {
+async function jsExtract(message: string): Promise<any> {
   const words = message
     .toLowerCase()
     .split(/\s+/)

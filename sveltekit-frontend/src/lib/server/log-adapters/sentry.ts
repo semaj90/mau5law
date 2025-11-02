@@ -1,5 +1,5 @@
 let Sentry: any = null;
-let isEnabled = $state(false);
+let isEnabled = $state<boolean>(false);
 try {
   const dsn = process.env.SENTRY_DSN;
   if (dsn) {

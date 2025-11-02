@@ -7,6 +7,8 @@ https://svelte.dev/e/expected_token -->
   for legal AI document processing
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
 </script>
   import { onMount } from 'svelte';
@@ -19,16 +21,16 @@ https://svelte.dev/e/expected_token -->
   } from '$lib/utils/typed-array-quantization.js';
   import { BufferDebugUtils, toFloat32Array } from '$lib/utils/buffer-conversion.js';
   // Demo state
-  let webgpuSupported = $state(false);
+  let webgpuSupported = $state<boolean>(false);
   let device: GPUDevice | null = $state(null);
   let uploader: WebGPUBufferUploader | null = $state(null);
-  let demoRunning = $state(false);
-  let currentDemo = $state('basic');
+  let demoRunning = $state<boolean>(false);
+  let currentDemo = $state<string>('basic');
   let results = $state<any[]>([]);
-  let errorMessage = $state('');
+  let errorMessage = $state<string>('');
   // Legal AI document simulation
-  let documentCount = $state(100);
-  let embeddingDimensions = $state(768);
+  let documentCount = $state<number>(100);
+  let embeddingDimensions = $state<number>(768);
   let selectedProfile: LegalAIProfile = $state('legal_standard');
   // Performance metrics
   let performanceMetrics = $state({
@@ -75,7 +77,7 @@ https://svelte.dev/e/expected_token -->
 await initializeWebGPU();
     })();
   });
-  async function initializeWebGPU() {
+  async function initializeWebGPU(): Promise<void> {
     try {
       if (!navigator.gpu) {
         errorMessage = 'WebGPU not supported in this browser';
@@ -96,7 +98,7 @@ await initializeWebGPU();
       console.error('WebGPU initialization error:', error);
     }
   }
-  async function runDemo(demoId: string) {
+  async function runDemo(demoId: string): Promise<any> {
     if (!device || !uploader) {
       errorMessage = 'WebGPU not initialized';
       return;
@@ -129,7 +131,7 @@ await initializeWebGPU();
       demoRunning = false;
     }
   }
-  async function runBasicDemo() {
+  async function runBasicDemo(): Promise<any> {
     // Generate legal document embeddings
     const documentEmbeddings = generateLegalDocumentEmbeddings();
     results.push.toFixed(2)} KB`
@@ -162,7 +164,7 @@ await initializeWebGPU();
     // Cleanup
     uploadResult.buffer.destroy();
   }
-  async function runComparisonDemo() {
+  async function runComparisonDemo(): Promise<any> {
     const testData = generateLegalDocumentEmbeddings(50, 384); // Smaller for comparison
     // Test all quantization modes
     const profiles: LegalAIProfile[] = ['legal_critical', 'legal_standard', 'legal_compressed', 'legal_storage'];
@@ -187,7 +189,7 @@ await initializeWebGPU();
       details: comparisonResult;
     });
   }
-  async function runBatchDemo() {
+  async function runBatchDemo(): Promise<any> {
     // Simulate different legal document types
     const legalDocuments = [
       { name: 'Contracts', data: generateLegalDocumentEmbeddings(20, 512), profile: 'critical' },
@@ -225,7 +227,7 @@ await initializeWebGPU();
       }
     });
   }
-  async function runPipelineDemo() {
+  async function runPipelineDemo(): Promise<any> {
     // Simulate full legal AI pipeline
     const pipelineSteps = [
       {
@@ -282,7 +284,7 @@ await initializeWebGPU();
       }
     });
   }
-  async function runCacheDemo() {
+  async function runCacheDemo(): Promise<any> {
     // Test cache performance with repeated uploads
     const testData = generateLegalDocumentEmbeddings(20, 384);
     const cacheResults = [];

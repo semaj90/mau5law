@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * WebGPU SOM Cache Error Fixer - TypeScript Error Resolution Service
  * Fixes the 2000+ TypeScript errors in the WebGPU SOM cache system

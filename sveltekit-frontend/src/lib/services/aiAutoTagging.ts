@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * AI Auto-Tagging Service
  * GPU-accelerated document analysis with Ollama + nomic-embed

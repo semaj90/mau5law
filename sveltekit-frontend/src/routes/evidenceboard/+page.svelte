@@ -15,9 +15,9 @@
   const CardComponent: ComponentType = Card as unknown as ComponentType;
   const ButtonComponent: ComponentType = Button as unknown as ComponentType;
 
-  let pageLoaded = $state(false);
-  let showWelcome = $state(true);
-  let savedLocally = $state(false);
+  let pageLoaded = $state<boolean>(false);
+  let showWelcome = $state<boolean>(true);
+  let savedLocally = $state<boolean>(false);
 
   $effect(() => {
     pageLoaded = true;

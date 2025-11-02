@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * 🚀 Production-Ready Unified Legal SIMD + PGVector Integration
  *

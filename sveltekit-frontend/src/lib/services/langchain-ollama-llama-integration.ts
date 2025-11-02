@@ -1,3 +1,4 @@
+import type { SearchResult } from '$lib/types';
 /**
  * LangChain.js Integration with Ollama and llama.cpp GPU Parsing
  * Complete AI pipeline with Go microservice integration

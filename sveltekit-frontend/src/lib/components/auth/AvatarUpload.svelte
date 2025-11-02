@@ -7,12 +7,12 @@
     currentAvatar?: string;
   }
   let { userId, currentAvatar }: Props = $props();
-  let uploading = $state(false);
-  let message = $state('');
+  let uploading = $state<boolean>(false);
+  let message = $state<string>('');
   let messageType = $state<'success' | 'error'>('success');
   let fileInput: HTMLInputElement | undefined;
   let preview = $state(currentAvatar || '');
-  async function handleFileSelect(event: Event) {
+  async function handleFileSelect(event: Event): Promise<any> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
@@ -37,7 +37,7 @@
     // Upload file
     await uploadAvatar(file);
   }
-  async function uploadAvatar(file: File) {
+  async function uploadAvatar(file: File): Promise<any> {
     try {
       uploading = true;
       message = '';

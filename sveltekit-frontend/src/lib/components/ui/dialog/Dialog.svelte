@@ -35,7 +35,7 @@
     full: 'max-w-[95vw] max-h-[95vh]',
   };
   function close() {
-    open = $state(false);
+    open = false;
   }
   function handleKeydown(event: KeyboardEvent) {
     if (closeOnEscape && event.key === 'Escape') {

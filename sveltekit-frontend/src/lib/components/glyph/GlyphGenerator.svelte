@@ -11,25 +11,25 @@
   }
   let { evidenceId = 0, onGlyphGenerated } = $props<Props>();
   // Generation state
-  let generating = $state(false);
-  let prompt = $state('Legal evidence visualization with professional styling');
-  let style = $state('detective');
+  let generating = $state<boolean>(false);
+  let prompt = $state<string>('Legal evidence visualization with professional styling');
+  let style = $state<string>('detective');
   let dimensions = $state([512, 512]);
   let conditioningTensors = $state<string[]>([]);
   let result = $state<any>(null);
   let error = $state<string | null>(null);
   // GRPMO Extended Thinking state
-  let extendedThinkingEnabled = $state(true);
+  let extendedThinkingEnabled = $state<boolean>(true);
   let thinkingStages = $state<ExtendedThinkingStage[]>([]);
   let currentStage = $state<ExtendedThinkingStage | null>(null);
   let glyphEmbedding = $state<number[] | null>(null);
   let cachePerformance = $state({ hot: 0, warm: 0, cold: 0 });
   // Neural Sprite configuration
-  let enableNeuralSprite = $state(false);
-  let enableCompression = $state(true);
-  let predictiveFrames = $state(3);
-  let enableUILayoutCompression = $state(false);
-  let targetCompressionRatio = $state(50);
+  let enableNeuralSprite = $state<boolean>(false);
+  let enableCompression = $state<boolean>(true);
+  let predictiveFrames = $state<number>(3);
+  let enableUILayoutCompression = $state<boolean>(false);
+  let targetCompressionRatio = $state<number>(50);
   // Available styles
   const styles = [
     { value: 'detective', label: '🔍 Detective', description: 'Dark, investigative theme' }, // Fixed syntax
@@ -44,7 +44,7 @@
     { value: [768, 768], label: '768×768', description: 'Large (detailed)' }, // Fixed syntax
     { value: [1024, 1024], label: '1024×1024', description: 'Extra large (slow)' } // Fixed syntax
   ];
-  async function generateGlyph() {
+  async function generateGlyph(): Promise<any> {
     if (!prompt.trim()) {
       error = 'Please enter a prompt';
       return;

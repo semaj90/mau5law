@@ -2,6 +2,7 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -72,7 +73,7 @@ https://svelte.dev/e/expected_token -->
     loadMachines();
   });
 
-  async function loadMachines() {
+  async function loadMachines(): Promise<any> {
     loading = true;
     try {
       // In production: const response = await fetch('/api/state/machines')
@@ -86,7 +87,7 @@ https://svelte.dev/e/expected_token -->
     }
   }
 
-  async function restartMachine(machineId: string) {
+  async function restartMachine(machineId: string): Promise<any> {
     try {
       // await fetch(`/api/state/machines/${machineId}/restart`, { method: 'POST' })
       console.log('Restarting machine:', machineId);
@@ -96,7 +97,7 @@ https://svelte.dev/e/expected_token -->
     }
   }
 
-  async function stopMachine(machineId: string) {
+  async function stopMachine(machineId: string): Promise<any> {
     try {
       // await fetch(`/api/state/machines/${machineId}/stop`, { method: 'POST' })
       console.log('Stopping machine:', machineId);

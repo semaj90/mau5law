@@ -3,6 +3,7 @@
   Real-time monitoring and control of the multi-model AI system
 -->
 <script lang="ts">
+import type { User } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
@@ -15,9 +16,9 @@
     type SelfPromptingSuggestion
   } from '$lib/ai/intelligent-model-orchestrator';
   // Component state
-  let mounted = $state(false);
-  let queryInput = $state('');
-  let isProcessing = $state(false);
+  let mounted = $state<boolean>(false);
+  let queryInput = $state<string>('');
+  let isProcessing = $state<boolean>(false);
   let results = writable<any>(null);
   let systemStatus = writable<any>(null);
   let userFeedback = writable<Map<string, boolean>(new Map());
@@ -83,7 +84,7 @@
       worker.terminate();
     }
   });
-  async function refreshSystemStatus() {
+  async function refreshSystemStatus(): Promise<any> {
     try {
       const status = intelligentOrchestrator.getModelPerformanceReport();
       systemStatus.set(status);
@@ -91,7 +92,7 @@
       console.error('Failed to refresh system status:', error);
     }
   }
-  async function processQuery() {
+  async function processQuery(): Promise<any> {
     if (!queryInput.trim() || isProcessing) return;
     isProcessing = true;
     try {
@@ -123,7 +124,7 @@
       isProcessing = false;
     }
   }
-  async function acceptSuggestion(suggestion SelfPromptingSuggestion) {
+  async function acceptSuggestion(suggestion SelfPromptingSuggestion): Promise<any> {
     try {
       await intelligentOrchestrator.handleUserFeedback(suggestion.id, true, suggestion.suggestion);
       // Update local feedback tracking
@@ -138,7 +139,7 @@
       console.error('Failed to accept suggestion', error);
     }
   }
-  async function rejectSuggestion(suggestion SelfPromptingSuggestion) {
+  async function rejectSuggestion(suggestion SelfPromptingSuggestion): Promise<any> {
     try {
       await intelligentOrchestrator.handleUserFeedback(suggestion.id, false);
       userFeedback.update(fb => {
@@ -410,7 +411,7 @@
                   </button>
                 {:else}
                   <span
-                    class="px-3 py-1 rounded text-xs {$userFeedback.get(suggestion.id)
+                    class="px-3" py-1 rounded text-xs {$userFeedback.get(suggestion.id)
                       ? 'bg-green-100 text-green-800'
                       : 'bg-red-100 text-red-800'}"
                   >
@@ -451,7 +452,7 @@
                 <td class="px-4 py-2 text-center">{formatLatency(metric.averageLatency)}</td>
                 <td class="px-4 py-2 text-center">
                   <span
-                    class="px-2 py-1 rounded text-xs {metric.successRate > 0.8
+                    class="px-2" py-1 rounded text-xs {metric.successRate > 0.8
                       ? 'bg-green-100 text-green-800'
                       : metric.successRate > 0.6
                         ? 'bg-yellow-100 text-yellow-800'

@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * 🚀 Optimized Redis Pipeline with XState, Worker Threads & Memory Optimization
  * Features: Full concurrency, SIMD JSON, GPU acceleration, LRU caching, XState management

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Replaced script to fix Svelte 5 runes, imports, types and logic typos
   import { Button } from '$lib/components/ui/enhanced-bits.svelte';
   import { Textarea } from '$lib/components/ui/textarea.svelte';
@@ -24,13 +25,13 @@ https://svelte.dev/e/js_parse_error -->
   // props (Svelte 5 runes)
   let { height = '500px', caseId = undefined }: { height?: string; caseId?: string | undefined } = $props();
   // reactive state
-  let messageInput = $state('');
-  let errorMessage = $state('');
+  let messageInput = $state<string>('');
+  let errorMessage = $state<string>('');
   let messagesContainer = $state<HTMLElement | undefined>();
   let inputElement = $state<HTMLTextAreaElement | undefined>();
   let inactivityTimer: ReturnType<typeof setTimeout> | undefined;
-  let thinkingStyleEnabled = $state(false);
-  let analysisMode = $state(false);
+  let thinkingStyleEnabled = $state<boolean>(false);
+  let analysisMode = $state<boolean>(false);
   let lastAnalysisResult = $state<any>(null);
   const IDLE_TIMEOUT = 60_000;
   function handleUserActivity() {
@@ -45,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
       showProactivePrompt.set(true);
     }
   }
-  async function sendMessage() {
+  async function sendMessage(): Promise<any> {
     if (!messageInput || !messageInput.trim()) return;
     const userMessage = messageInput.trim();
     messageInput = '';
@@ -180,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     return responseText;
   }
-  async function handleProactiveResponse() {
+  async function handleProactiveResponse(): Promise<any> {
     if (!$showProactivePrompt || !$currentConversation) return;
     try {
       chatActions.setLoading(true);
@@ -227,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
       : '⚡ Quick Mode enabled. AI will provide concise responses.';
     notifications.add({ type: 'info', title: 'AI Mode Changed', message });
   }
-  async function quickAnalyzeEvidence() {
+  async function quickAnalyzeEvidence(): Promise<any> {
     if (!caseId) {
       notifications.add({ type: 'warning', title: 'No Case Selected', message: 'Please select a case to analyze evidence.' });
       return;

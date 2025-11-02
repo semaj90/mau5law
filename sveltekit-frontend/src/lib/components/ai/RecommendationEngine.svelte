@@ -3,6 +3,7 @@
   AI-powered recommendations using Enhanced-Bits UI components
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
@@ -11,15 +12,15 @@
   // Recommendation state
   let recommendations = $state<Recommendation[]>([]);
   let selectedRecommendation = $state<Recommendation | null>(null);
-  let isGenerating = $state(false);
-  let showRecommendationDetails = $state(false);
+  let isGenerating = $state<boolean>(false);
+  let showRecommendationDetails = $state<boolean>(false);
   let contextData = $state<ContextData | null>(null);
   // Filters and controls
   let categoryFilter = $state<'all' | 'strategy' | 'evidence' | 'legal_research' | 'next_action'>('all');
   let priorityFilter = $state<'all' | 'high' | 'medium' | 'low'>('all');
-  let confidenceThreshold = $state(60);
+  let confidenceThreshold = $state<number>(60);
   let contextType = $state<'case' | 'evidence' | 'investigation' | 'general'>('case');
-  let contextId = $state('');
+  let contextId = $state<string>('');
   interface Recommendation {
     id: string;
     title: string;
@@ -86,7 +87,7 @@
     loadExistingRecommendations();
     loadContextData();
   });
-  async function loadExistingRecommendations() {
+  async function loadExistingRecommendations(): Promise<any> {
     try {
       // Use new integrated legal recommendation engine
       const response = await fetch(`http://localhost:8095/api/v1/cases`, {
@@ -103,7 +104,7 @@
       console.error('Error loading recommendations:', error);
     }
   }
-  async function loadContextData() {
+  async function loadContextData(): Promise<any> {
     if (!contextId) return;
     try {
       const response = await fetch(`/api/ai/recommendations/context?type=${contextType}&id=${contextId}`, {
@@ -120,7 +121,7 @@
       console.error('Error loading context:', error);
     }
   }
-  async function generateRecommendations() {
+  async function generateRecommendations(): Promise<any> {
     isGenerating = true;
     try {
       const request = {
@@ -178,7 +179,7 @@
       isGenerating = false;
     }
   }
-  async function applyRecommendation(recommendationId: string) {
+  async function applyRecommendation(recommendationId: string): Promise<any> {
     try {
       // Get detailed case information from legal recommendation engine
       const response = await fetch(`http://localhost:8095/api/v1/cases/${recommendationId}`, {

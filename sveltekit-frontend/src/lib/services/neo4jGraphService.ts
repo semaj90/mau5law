@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /**
  * Neo4j Graph Service - Enhanced RAG with Knowledge Graph
  * Integrates graph relationships with vector search for contextual AI

@@ -2,6 +2,7 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { writable } from 'svelte/store';
   import { createEventDispatcher } from 'svelte'; // Import createEventDispatcher
@@ -114,17 +115,17 @@ https://svelte.dev/e/js_parse_error -->
     recommendations: [],
   });
   // Form state
-  let isLoading = $state(false);
-  let isSaving = $state(false);
-  let hasUnsavedChanges = $state(false);
+  let isLoading = $state<boolean>(false);
+  let isSaving = $state<boolean>(false);
+  let hasUnsavedChanges = $state<boolean>(false);
   let lastSavedAt = $state<Date | null>(null);
   let autoSaveTimer: ReturnType<typeof setTimeout>;
   // Custom input fields
-  let customTag = $state('');
-  let customPerson = $state('');
-  let customLocation = $state('');
-  let customOrganization = $state('');
-  let customAction = $state('');
+  let customTag = $state<string>('');
+  let customPerson = $state<string>('');
+  let customLocation = $state<string>('');
+  let customOrganization = $state<string>('');
+  let customAction = $state<string>('');
   // Evidence type options with icons
   const evidenceTypes = [
     { value: 'document', label: 'Document', icon: '📄' },
@@ -183,7 +184,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 
-  async function autoPopulateForm(node: NodeData) {
+  async function autoPopulateForm(node: NodeData): Promise<any> {
     if (!node) return;
     isLoading = true;
     try {
@@ -253,7 +254,7 @@ https://svelte.dev/e/js_parse_error -->
         newFormData.customTags = [...(node.customTags || [])];
       }
       formData.set(newFormData);
-      hasUnsavedChanges = $state(false); // Reset after populating
+      hasUnsavedChanges = false; // Reset after populating
     } catch (error) {
       console.error('Auto-population failed:', error);
     } finally {
@@ -261,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function triggerEnhancedAIAnalysis(node: NodeData, currentFormData: FormDataValue) {
+  async function triggerEnhancedAIAnalysis(node: NodeData, currentFormData: FormDataValue): Promise<any> {
     try {
       const response = await fetch('/api/ai/tag', {
         method: 'POST',
@@ -403,7 +404,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     }, 5000); // Auto-save after 5 seconds of inactivity
   }
-  async function autoSave() {
+  async function autoSave(): Promise<void> {
     if (!selectedNode || readOnly) return;
     try {
       const updatedNode: NodeData = {
@@ -451,7 +452,7 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
       if (response.ok) {
-        hasUnsavedChanges = $state(false);
+        hasUnsavedChanges = false;
         lastSavedAt = new Date();
         dispatch('nodeUpdated', updatedNode);
       }
@@ -459,7 +460,7 @@ https://svelte.dev/e/js_parse_error -->
       console.warn('Auto-save failed:', error);
     }
   }
-  async function handleSave() {
+  async function handleSave(): Promise<void> {
     if (!selectedNode || isSaving) return;
     isSaving = true;
     try {
@@ -509,7 +510,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       if (response.ok) {
         const result = await response.json();
-        hasUnsavedChanges = $state(false);
+        hasUnsavedChanges = false;
         lastSavedAt = new Date();
         dispatch('nodeUpdated', result.evidence);
         dispatch('toast', {
@@ -529,7 +530,7 @@ https://svelte.dev/e/js_parse_error -->
       isSaving = false;
     }
   }
-  async function reanalyzeWithAI() {
+  async function reanalyzeWithAI(): Promise<any> {
     if (!selectedNode || isLoading) return;
     isLoading = true;
     try {

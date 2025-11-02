@@ -164,26 +164,26 @@
   let canvas = $state<any | null>(null);
   let canvasElement: HTMLCanvasElement;
   let selectedObject = $state<any | null>(null);
-  let zoomLevel = $state(1);
-  let gridEnabled = $state(true);
-  let snapToGrid = $state(true);
-  let isLoading = $state(false);
-  let error = $state('');
-  let autoSaveEnabled = $state(true);
+  let zoomLevel = $state<number>(1);
+  let gridEnabled = $state<boolean>(true);
+  let snapToGrid = $state<boolean>(true);
+  let isLoading = $state<boolean>(false);
+  let error = $state<string>('');
+  let autoSaveEnabled = $state<boolean>(true);
   let lastSaved = $state<Date | null>(null);
-  let isDirty = $state(false);
+  let isDirty = $state<boolean>(false);
 
   // Tool state
   let activeTool = $state<'select' | 'pan' | 'draw' | 'text' | 'image' | 'evidence'>('select');
-  let drawingMode = $state(false);
+  let drawingMode = $state<boolean>(false);
 
   // Dialog states
-  let showEvidenceDialog = $state(false);
-  let showTaggingDialog = $state(false);
-  let showShareDialog = $state(false);
+  let showEvidenceDialog = $state<boolean>(false);
+  let showTaggingDialog = $state<boolean>(false);
+  let showShareDialog = $state<boolean>(false);
 
   // Auto-tagging state
-  let isAutoTagging = $state(false);
+  let isAutoTagging = $state<boolean>(false);
   let suggestedTags = $state<string[]>([]);
 
   // Centralized Ollama endpoint helper + model constants
@@ -389,7 +389,7 @@
       if (response.ok) {
         const savedState = await response.json();
         lastSaved = new Date();
-        isDirty = $state(false);
+        isDirty = false;
 
         send({ type: 'SAVE_SUCCESS', state: savedState });
 
@@ -466,7 +466,7 @@
 
     canvas?.renderAll();
     isDirty = true;
-    showTaggingDialog = $state(false);
+    showTaggingDialog = false;
   }
 
   // Loki.js caching
@@ -812,17 +812,17 @@
   // Add small backdrop/modal keyboard helpers to satisfy Svelte accessibility rules
   function handleBackdropKeydownForEvidence(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showEvidenceDialog = $state(false);
+      showEvidenceDialog = false;
     }
   }
   function handleBackdropKeydownForTagging(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showTaggingDialog = $state(false);
+      showTaggingDialog = false;
     }
   }
   function handleBackdropKeydownForShare(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showShareDialog = $state(false);
+      showShareDialog = false;
     }
   }
   // helper to stop keyboard propagation from inside the modal (used on inner .modal)
@@ -1094,7 +1094,7 @@
             class="w-full justify-start mb-2"
             onclick={() => {
               addEvidence(item);
-              showEvidenceDialog = $state(false);
+              showEvidenceDialog = false;
             }}
           >
             {item.title}
@@ -1318,26 +1318,26 @@
   let canvas = $state<any | null>(null);
   let canvasElement: HTMLCanvasElement;
   let selectedObject = $state<any | null>(null);
-  let zoomLevel = $state(1);
-  let gridEnabled = $state(true);
-  let snapToGrid = $state(true);
-  let isLoading = $state(false);
-  let error = $state('');
-  let autoSaveEnabled = $state(true);
+  let zoomLevel = $state<number>(1);
+  let gridEnabled = $state<boolean>(true);
+  let snapToGrid = $state<boolean>(true);
+  let isLoading = $state<boolean>(false);
+  let error = $state<string>('');
+  let autoSaveEnabled = $state<boolean>(true);
   let lastSaved = $state<Date | null>(null);
-  let isDirty = $state(false);
+  let isDirty = $state<boolean>(false);
 
   // Tool state
   let activeTool = $state<'select' | 'pan' | 'draw' | 'text' | 'image' | 'evidence'>('select');
-  let drawingMode = $state(false);
+  let drawingMode = $state<boolean>(false);
 
   // Dialog states
-  let showEvidenceDialog = $state(false);
-  let showTaggingDialog = $state(false);
-  let showShareDialog = $state(false);
+  let showEvidenceDialog = $state<boolean>(false);
+  let showTaggingDialog = $state<boolean>(false);
+  let showShareDialog = $state<boolean>(false);
 
   // Auto-tagging state
-  let isAutoTagging = $state(false);
+  let isAutoTagging = $state<boolean>(false);
   let suggestedTags = $state<string[]>([]);
 
   // Centralized Ollama endpoint helper + model constants
@@ -1543,7 +1543,7 @@
       if (response.ok) {
         const savedState = await response.json();
         lastSaved = new Date();
-        isDirty = $state(false);
+        isDirty = false;
 
         send({ type: 'SAVE_SUCCESS', state: savedState });
 
@@ -1620,7 +1620,7 @@
 
     canvas?.renderAll();
     isDirty = true;
-    showTaggingDialog = $state(false);
+    showTaggingDialog = false;
   }
 
   // Loki.js caching
@@ -1966,17 +1966,17 @@
   // Add small backdrop/modal keyboard helpers to satisfy Svelte accessibility rules
   function handleBackdropKeydownForEvidence(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showEvidenceDialog = $state(false);
+      showEvidenceDialog = false;
     }
   }
   function handleBackdropKeydownForTagging(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showTaggingDialog = $state(false);
+      showTaggingDialog = false;
     }
   }
   function handleBackdropKeydownForShare(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-      showShareDialog = $state(false);
+      showShareDialog = false;
     }
   }
   // helper to stop keyboard propagation from inside the modal (used on inner .modal)
@@ -2248,7 +2248,7 @@
             class="w-full justify-start mb-2"
             onclick={() => {
               addEvidence(item);
-              showEvidenceDialog = $state(false);
+              showEvidenceDialog = false;
             }}
           >
             {item.title}

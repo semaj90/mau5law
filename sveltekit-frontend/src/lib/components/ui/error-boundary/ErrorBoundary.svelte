@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { Message } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { Card } from 'bits-ui';
   import { Button } from '$lib/components/ui/Button.svelte';
@@ -17,7 +18,7 @@
   // Create snippet-typed aliases for rendering
   const fallbackSnippet: Snippet | undefined = fallback as unknown as Snippet | undefined;
   const childrenSnippet: Snippet | undefined = children as unknown as Snippet | undefined;
-  let hasError = $state(false);
+  let hasError = $state<boolean>(false);
   let error = $state<Error | null>(null);
   let errorId = $state<string>('');
   // Error logging
@@ -71,7 +72,7 @@
   }
   // Reset error state
   function resetError() {
-    hasError = $state(false);
+    hasError = false;
     error = null;
     errorId = '';
   }

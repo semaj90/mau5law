@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
   let overlayEl = $state<HTMLElement;
   let autoProgressTimer: number | undefinedlet isPlaying>(null)(autoProgress);
   let targetElement = $state<Element | null >(null);
-  let highlightBox = $state(null);
+  let highlightBox = $state<any>(null);
   // Reactive effect replacement for $effect
   // TODO: Convert to $derived: if (open && steps.length > 0) {
   updateTargetHighlight()
@@ -187,7 +187,7 @@ https://svelte.dev/e/js_parse_error -->
     closeOnboarding();
   }
   function closeOnboarding() {
-    open = $state(false);
+    open = false;
     onclose?.();
   }
   function completeOnboarding() {

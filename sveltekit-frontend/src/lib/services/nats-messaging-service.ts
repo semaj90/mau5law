@@ -1,3 +1,5 @@
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 // /**
 //  * NATS Messaging Service for Legal AI Platform
 //  * Real-time messaging integration with NATS Server

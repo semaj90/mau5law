@@ -1,3 +1,4 @@
+import type { Document } from '$lib/types';
 /**
  * XState v5 Actor Wrapper - Fixes UnknownActorLogic issues
  * Proper fromPromise usage with typed context and error handling

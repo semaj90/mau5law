@@ -3,6 +3,7 @@
   Demonstrates XState integration with Svelte 5 for legal document processing
 -->
 <script lang="ts">
+import type { Case } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { useMachine } from '@xstate/svelte';
   import { legalDocumentProcessingMachine, selectors } from '$lib/state/legalDocumentProcessingMachine';
@@ -98,7 +99,7 @@
       {/if}
       <div class="flex items-center space-x-1">
         <div
-          class="w-3 h-3 rounded-full {isProcessing
+          class="w-3" h-3 rounded-full {isProcessing
             ? 'bg-blue-500 animate-pulse'
             : isCompleted
               ? 'bg-green-500'
@@ -194,7 +195,7 @@
               <div class="flex items-center space-x-1">
                 <div class="w-16 bg-gray-200 rounded-full h-2">
                   <div
-                    class="h-2 rounded-full {$context.riskScore > 70
+                    class="h-2" rounded-full {$context.riskScore > 70
                       ? 'bg-red-500'
                       : $context.riskScore > 40
                         ? 'bg-yellow-500'

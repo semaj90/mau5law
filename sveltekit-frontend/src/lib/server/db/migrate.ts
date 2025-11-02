@@ -21,7 +21,7 @@ interface Migration {
   // DB drivers commonly return timestamps as strings; accept both and allow null
   applied_at?: string | Date | null;
 }
-async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike) {
+async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike): Promise<any> {
   console.log('🚀 Running SQL migrations from migrations folder...');
   // Create migrations table if it doesn't exist
   await db.execute(sql`
@@ -97,7 +97,7 @@ async function runSqlMigrations(db: PostgresJsDatabase<any>, pool: PoolLike) {
     }
   }
 }
-async function runMigrations() {
+async function runMigrations(): Promise<any> {
   if (!process.env.DATABASE_URL) {
     throw new Error('DATABASE_URL environment variable is not set.');
   }

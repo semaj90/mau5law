@@ -36,7 +36,7 @@
     keyboardShortcut,
   }: Props = $props();
   let containerElement: HTMLElement;
-  let currentRouteConfig = $state(null);
+  let currentRouteConfig = $state<any>(null);
   // Local fallback for screen reader announcements
   function announceToScreenReader(message: string) {
     if ((accessibilityService as any)?.announceToScreenReader) {

@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator';
   import { FileText, Upload, Save, Loader, CheckCircle, AlertCircle } from 'lucide-svelte';
@@ -79,7 +81,7 @@
     }
   });
 
-  async function loadCaseEvidence() {
+  async function loadCaseEvidence(): Promise<any> {
     try {
       const res = await fetch(`/api/cases/${caseId}/evidence`);
       if (!res.ok) {
@@ -216,7 +218,7 @@
   }
 
   // Enhanced analysis function using our real API endpoint
-  async function handleAnalysis() {
+  async function handleAnalysis(): Promise<any> {
     if (!caseId) return;
     analysisStatus = 'pending';
     analysisProgress = 0;
@@ -285,7 +287,7 @@
   let fileInput: HTMLInputElement | null = null;
 
   // File upload function
-  async function handleFileUpload(event: Event) {
+  async function handleFileUpload(event: Event): Promise<any> {
     // Prefer the event's currentTarget (the input) but fallback to the bound fileInput
     const inputEl = (event.currentTarget as HTMLInputElement | null) ?? fileInput;
     const filesList: FileList | null | undefined = inputEl?.files ?? fileInput?.files;

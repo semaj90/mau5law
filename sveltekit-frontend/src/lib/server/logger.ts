@@ -18,7 +18,7 @@ export async function logStructuredError(payload: {
   message: string;
   error?: any;
   context?: Record<string, unknown>;
-}) {
+}): Promise<any> {
   const record = {
     timestamp: new Date().toISOString(),
     ...payload,
@@ -61,7 +61,7 @@ export async function logStructuredError(payload: {
   else console.info('[logger]', record);
 }
 
-export async function captureAndFormat(error: any) {
+export async function captureAndFormat(error: any): Promise<any> {
   try {
     return formatErrorResponse(error);
   } catch {

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 import type { RequestHandler } from './$types.js';
 /*
  * Enhanced Context7 Autosolve Integration API

@@ -1,3 +1,4 @@
+import type { User } from '$lib/types';
 /**
  * Authentication Components Export - Svelte 5 Compatible
  * User authentication and authorization components

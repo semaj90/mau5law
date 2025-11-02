@@ -1,6 +1,7 @@
 <!-- GPU Cluster Acceleration Demo -->
 <!-- Real-time GPU-accelerated legal AI visualizations -->
 <script lang="ts">
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits.svelte';
@@ -36,9 +37,9 @@
   // Allow fallback to WebGL1 so assignment is type-safe
   let gl = $state<WebGL2RenderingContext | WebGLRenderingContext | null >(null);
   // Demo state
-  let isInitialized = $state(false);
+  let isInitialized = $state<boolean>(false);
   let activeVisualization string = $state('attentionHeatmap');
-  let isRendering = $state(false);
+  let isRendering = $state<boolean>(false);
   let animationFrame = $state<number >(0);
   // Performance metrics
   let gpuMetrics: {
@@ -74,8 +75,8 @@
   // Cached compiled shader programs
   const shaderPrograms: { [key: string]: any } = {}
   // Subscriptions (track to unsubscribe on destroy)
-  let gpuMetricsSub = $state(null);
-  let shaderMetricsSub = $state(null);
+  let gpuMetricsSub = $state<any>(null);
+  let shaderMetricsSub = $state<any>(null);
   // Demo data
   let attentionData = $state<Float32Array>(new Float32Array(0));
   let documentData = $state<Float32Array>(new Float32Array(0));
@@ -105,7 +106,7 @@
       shaderCache.cleanup();
     }
   });
-  async function initializeGPUDemo() {
+  async function initializeGPUDemo(): Promise<void> {
     try {
       console.log('🎮 Initializing GPU Demo...');
       // Check GPU capabilities
@@ -161,7 +162,7 @@
       console.log('✅ GPU Demo initialized successfully');
     } catch (error) {
       console.error('❌ GPU Demo initialization failed:', error);
-      isRendering = $state(false);
+      isRendering = false;
     }
   }
   function generateDemoData() {
@@ -210,7 +211,7 @@
   }
   async function startVisualization(
     type: 'attentionHeatmap' | 'documentNetwork' | 'evidenceTimeline' | 'textFlow'
-  ) {
+  ): Promise<any> {
     if (!isInitialized || !gl || !shaderCache) return;
     try {
       // Stop any current rendering loop
@@ -229,7 +230,7 @@
       animationFrame = requestAnimationFrame(renderLoop);
     } catch (error) {
       console.error(`Failed to start ${type} visualization`, error);
-      isRendering = $state(false);
+      isRendering = false;
     }
   }
   function renderLoop() {
@@ -347,12 +348,12 @@
     }
   }
   function stopVisualization() {
-    isRendering = $state(false);
+    isRendering = false;
     if (animationFrame) {
       cancelAnimationFrame(animationFrame);
     }
   }
-  async function executeGPUWorkload() {
+  async function executeGPUWorkload(): Promise<any> {
     if (!gpuManager) return;
     try {
       const workload = {

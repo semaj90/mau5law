@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 /**
  * SSR Cache Test API - Verify cache system functionality
  */
@@ -61,7 +62,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   }
 };
 
-async function testBasicCaching() {
+async function testBasicCaching(): Promise<any> {
   const testKey = `test:basic:${Date.now()}`;
   const testData: Record<string, unknown> = {
     message: 'Hello from cache!',
@@ -91,7 +92,7 @@ async function testBasicCaching() {
   });
 }
 
-async function testParallelCaching() {
+async function testParallelCaching(): Promise<any> {
   const keys = Array.from({ length: 10 }, (_, i) => `test:parallel:${i}:${Date.now()}`);
   const testData: Array<{ key: string; data: Record<string, unknown> }> = keys.map((key, i) => ({
     key,
@@ -159,7 +160,7 @@ async function testParallelCaching() {
   });
 }
 
-async function testRAGCaching() {
+async function testRAGCaching(): Promise<any> {
   const ragData = {
     query: 'Find legal precedents for Fourth Amendment violations',
     embeddings: new Array(768).fill(0).map(() => Math.random()),
@@ -208,7 +209,7 @@ async function testRAGCaching() {
   });
 }
 
-async function testQuantizedCaching() {
+async function testQuantizedCaching(): Promise<any> {
   const largeResponse = {
     success: true,
     data: {
@@ -262,7 +263,7 @@ async function testQuantizedCaching() {
   });
 }
 
-async function getCacheStats() {
+async function getCacheStats(): Promise<any> {
   const [ssrStats, parallelStats] = await Promise.all([
     ssrLegalAPICache.getCacheStats(),
     orchestrator.getPerformanceStats(),
@@ -286,7 +287,7 @@ async function getCacheStats() {
  * @param userId - The user ID to use for cache scoping and API calls.
  * @returns A JSON response summarizing cache hits, response times, and endpoint results.
  */
-async function testLegalAPIIntegration(userId: string) {
+async function testLegalAPIIntegration(userId: string): Promise<any> {
   const testEndpoints = [
     { endpoint: '/api/v1/cases', params: { page: 1, limit: 5 } },
     { endpoint: '/api/v1/evidence', params: { caseId: 'test-case-id', page: 1 } },

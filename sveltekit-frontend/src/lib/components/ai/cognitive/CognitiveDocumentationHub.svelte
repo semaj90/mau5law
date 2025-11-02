@@ -1,4 +1,6 @@
 <script lang="ts">
+import type { User } from '$lib/types';
+import type { Document } from '$lib/types';
   // Svelte 5 runes are auto-imported
   let {
     cognitiveHub,
@@ -9,9 +11,9 @@
     achievements: string[];
     consciousness: { level: number; experience: number; awakening: number }
   } = $props();
-  let activeTab = $state('strategy');
-  let searchQuery = $state('');
-  let filteredContent = $state([]);
+  let activeTab = $state<string>('strategy');
+  let searchQuery = $state<string>('');
+  let filteredContent = $state<any[]>([]);
   // Documentation sections
   const documentationSections = {
     strategy: {
@@ -417,7 +419,7 @@
   <div class="flex flex-wrap gap-2 mb-6">
     {#each Object.entries(documentationSections) as [key, section]}
       <button
-        class="px-4 py-2 text-sm font-bold border transition-colors {activeTab === key
+        class="px-4" py-2 text-sm font-bold border transition-colors {activeTab === key
           ? 'bg-[#3D3D3D] text-[#F7F6F2] border-[#3D3D3D]'
           : 'bg-[#EAE8E1] border-[#D1CFC7] hover:bg-[#F7F6F2]'}"
         onclick={() => (activeTab = key)}

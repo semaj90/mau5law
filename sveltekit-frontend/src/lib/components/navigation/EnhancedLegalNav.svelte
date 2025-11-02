@@ -17,9 +17,9 @@
     glyphSignature?: string;
   }
   let recentCases = $state<RecentCase[]>([]);
-  let isLoading = $state(true);
+  let isLoading = $state<boolean>(true);
   let navTranslucency = $state(0.92);
-  let scrollY = $state(0);
+  let scrollY = $state<number>(0);
   let refreshInterval: NodeJS.Timeout;
   // NES-style constraints
   const NAV_MEMORY_BUDGET = 64 * 1024; // 64KB for navigation
@@ -51,7 +51,7 @@
   onDestroy(() => {
     if (refreshInterval) clearInterval(refreshInterval);
   });
-  async function loadRecentCases() {
+  async function loadRecentCases(): Promise<any> {
     try {
       isLoading = true;
       // removed unused response assignment

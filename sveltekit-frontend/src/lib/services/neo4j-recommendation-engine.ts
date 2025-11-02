@@ -1,3 +1,4 @@
+import type { Case } from '$lib/types';
 // Assuming this is the content of neo4j-recommendation-engine.ts
 // Please adjust if the actual file content is different.
 
