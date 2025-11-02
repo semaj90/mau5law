@@ -75,11 +75,11 @@ interface CachedSearch {
 
 class RedisService {
   private pool: RedisConnectionPool | null = null;
-  private isConnected = $state(false);
+  private isConnected = false;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 10;
   private reconnectDelay = 1000;
-  private initialized = $state(false);
+  private initialized = false;
   private config: RedisConfig = {
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || '6379'),
@@ -142,7 +142,7 @@ class RedisService {
       return true;
     } catch (error) {
       console.error('❌ [RedisService] Failed to initialize:', error);
-      this.isConnected = $state(false);
+      this.isConnected = false;
       return false;
     }
   }
@@ -161,7 +161,7 @@ class RedisService {
     });
     redis.on('error', (error: Error) => {
       console.error(`❌ [RedisService] ${name} error:`, error);
-      this.isConnected = $state(false);
+      this.isConnected = false;
       // Trigger reconnection logic if not already connected and not max attempts
       if (!this.isConnected && this.reconnectAttempts < this.maxReconnectAttempts) {
         this.handleReconnection();
@@ -169,7 +169,7 @@ class RedisService {
     });
     redis.on('close', () => {
       console.log(`🔌 [RedisService] ${name} disconnected`);
-      this.isConnected = $state(false);
+      this.isConnected = false;
     });
     redis.on('reconnecting', (delay: number) => {
       console.log(`🔄 [RedisService] ${name} reconnecting in ${delay}ms...`);

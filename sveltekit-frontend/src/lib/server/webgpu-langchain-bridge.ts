@@ -212,7 +212,7 @@ export class WebGPULangChainBridge {
     webgpuUtilized: boolean;
   }> {
     const startTime = Date.now();
-    let cacheHit = $state(false);
+    let cacheHit = false;
     let webgpuUtilized = config.useWebGPUCache;
     try {
       // Split document into sections for hierarchical embeddings

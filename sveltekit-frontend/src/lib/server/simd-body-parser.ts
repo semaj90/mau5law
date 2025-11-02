@@ -153,8 +153,8 @@ class SIMDBodyParser {
     let buffer = '';
     let braceCount = 0;
     let currentDoc = '';
-    let inString = $state(false);
-    let escapeNext = $state(false);
+    let inString = false;
+    let escapeNext = false;
     try {
       while (true) {
         const { done, value } = await reader.read();
@@ -165,7 +165,7 @@ class SIMDBodyParser {
         for (let i = 0; i < buffer.length; i++) {
           const char = buffer[i];
           if (escapeNext) {
-            escapeNext = $state(false);
+            escapeNext = false;
             currentDoc += char;
             continue;
           }

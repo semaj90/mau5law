@@ -1,7 +1,10 @@
-import amqp, { type Connection, type Channel } from 'amqplib';
+import amqp from 'amqplib';
+import type { Connection, Channel, Options, ConsumeMessage, Replies } from 'amqplib';
+import { writable, get } from 'svelte/store'; // Import 'get'
+
 let connection: Connection | null = null;
 let channel: Channel | null = null;
-let connectionFailed = $state(false); // Track if connection has failed
+const connectionFailed = writable(false); // Track if connection has failed
 /**
  * Get RabbitMQ connection URLs to try in order
  * Priority: ENV var → Docker Desktop (legal-ai-rabbitmq) → Other Docker → Windows Native
@@ -60,7 +63,8 @@ async function connectWithFallback(): Promise<Connection | null> {
 }
 export async function getRabbitMQChannel(): Promise<Channel | null> {
   // If connection already failed, return null immediately
-  if (connectionFailed) {
+  const $connectionFailed = get(connectionFailed); // Synchronously get the current value
+  if ($connectionFailed) {
     return null;
   }
   if (!channel) {
@@ -70,12 +74,12 @@ export async function getRabbitMQChannel(): Promise<Channel | null> {
         console.log('⚠️ Could not connect to RabbitMQ with any configuration.');
         console.log('⚠️ RabbitMQ is optional - continuing without it.');
         console.log('💡 Tip: Start RabbitMQ with: docker run -d -p 5672:5672 -p 15672:15672 rabbitmq:3-management');
-        connectionFailed = true;
+        connectionFailed.set(true);
         return null;
       }
       connection.on('error', (err) => {
         console.error('RabbitMQ Connection Error:', err);
-        connectionFailed = true;
+        connectionFailed.set(true);
         closeRabbitMQConnection().then(() => {
           console.log('RabbitMQ connection closed after error.');
         });
@@ -90,7 +94,7 @@ export async function getRabbitMQChannel(): Promise<Channel | null> {
     } catch (error) {
       console.error('⚠️ Failed to create RabbitMQ channel:', error instanceof Error ? error.message : error);
       console.log('⚠️ RabbitMQ is optional - continuing without it.');
-      connectionFailed = true;
+      connectionFailed.set(true);
       return null;
     }
   }
@@ -126,8 +130,8 @@ export async function closeRabbitMQConnection() {
  */
 export async function publishMessage(
   queueName: string,
-  message: any,
-  options?: amqp.Options.Publish
+  message: object, // Changed from 'any' to 'object' for better type safety
+  options?: Options.Publish
 ): Promise<boolean> {
   const ch = await getRabbitMQChannel();
   await ch.assertQueue(queueName, { durable: true });
@@ -141,10 +145,11 @@ export async function publishMessage(
  */
 export async function consumeMessages(
   queueName: string,
-  onMessage: (msg: amqp.ConsumeMessage | null) => void,
-  options?: amqp.Options.Consume
-): Promise<amqp.Replies.Consume> {
+  onMessage: (msg: ConsumeMessage | null) => void,
+  options?: Options.Consume
+): Promise<Replies.Consume> {
   const ch = await getRabbitMQChannel();
   await ch.assertQueue(queueName, { durable: true });
   return ch.consume(queueName, onMessage, options);
+}
 }
